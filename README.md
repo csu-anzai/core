@@ -1,3 +1,7 @@
+
+
+> This is a fork of the open source CMS Kajona. The project was forked to decouple the backend framework in order to transform it into a web application framework.
+
 Kajona Content Management Framework
 ==========
 
