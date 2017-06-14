@@ -9,7 +9,6 @@
 
 namespace Kajona\Packagemanager\Installer;
 
-use Kajona\Packagemanager\System\PackagemanagerTemplate;
 use Kajona\System\System\InstallerBase;
 use Kajona\System\System\InstallerInterface;
 use Kajona\System\System\OrmSchemamanager;
@@ -44,20 +43,6 @@ class InstallerPackagemanager extends InstallerBase implements InstallerInterfac
 
 		$strReturn .= "Registering system-constants...\n";
         $this->registerConstant("_packagemanager_defaulttemplate_", "default", SystemSetting::$int_TYPE_STRING, _packagemanager_module_id_);
-
-        $strReturn .= "Initial templatepack sync...\n";
-        PackagemanagerTemplate::syncTemplatepacks();
-
-        $arrPacks = PackagemanagerTemplate::getObjectListFiltered();
-        if(count($arrPacks) > 0) {
-            //search the default package
-            foreach($arrPacks as $objOnePack) {
-                if($objOnePack->getStrName() == "default") {
-                    $objOnePack->setIntRecordStatus(1);
-                    $objOnePack->updateObjectToDb();
-                }
-            }
-        }
 
         $strReturn .= "Setting aspect assignments...\n";
         if(SystemAspect::getAspectByName("management") != null) {
