@@ -26,10 +26,6 @@ class InstallerPackagemanager extends InstallerBase implements InstallerInterfac
 
     public function install() {
 		$strReturn = "";
-        $objManager = new OrmSchemamanager();
-
-        $strReturn .= "Installing table templatepacks...\n";
-        $objManager->createTable("Kajona\\Packagemanager\\System\\PackagemanagerTemplate");
 
 		//register the module
 		$this->registerModule(
@@ -40,9 +36,6 @@ class InstallerPackagemanager extends InstallerBase implements InstallerInterfac
             $this->objMetadata->getStrVersion(),
             true
         );
-
-		$strReturn .= "Registering system-constants...\n";
-        $this->registerConstant("_packagemanager_defaulttemplate_", "default", SystemSetting::$int_TYPE_STRING, _packagemanager_module_id_);
 
         $strReturn .= "Setting aspect assignments...\n";
         if(SystemAspect::getAspectByName("management") != null) {
