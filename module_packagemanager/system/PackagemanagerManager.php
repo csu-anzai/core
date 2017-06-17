@@ -38,6 +38,7 @@ class PackagemanagerManager
 {
 
     const STR_TYPE_MODULE = "MODULE";
+    /** @deprecated */
     const STR_TYPE_TEMPLATE = "TEMPLATE";
     /** @deprecated */
     const STR_TYPE_ELEMENT = "ELEMENT";
@@ -56,13 +57,8 @@ class PackagemanagerManager
      */
     public function getAvailablePackages($strFilterText = "")
     {
-        $arrReturn = array();
-
         $objModuleProvider = new PackagemanagerPackagemanagerModule();
-        $arrReturn = array_merge($arrReturn, $objModuleProvider->getInstalledPackages());
-
-        $objPackageProvider = new PackagemanagerPackagemanagerTemplate();
-        $arrReturn = array_merge($objPackageProvider->getInstalledPackages(), $arrReturn);
+        $arrReturn = $objModuleProvider->getInstalledPackages();
 
         if ($strFilterText != "") {
             $arrReturn = array_filter($arrReturn, function ($objOneMetadata) use ($strFilterText) {
@@ -152,22 +148,15 @@ class PackagemanagerManager
 
         $objManager = null;
 
-        if ($objMetadata->getStrType() == self::STR_TYPE_MODULE || $objMetadata->getStrType() == self::STR_TYPE_ELEMENT) {
+        if ($objMetadata->getStrType() == self::STR_TYPE_MODULE) {
             if ($objMetadata->getBitIsPhar()) {
                 $objManager = new PackagemanagerPackagemanagerPharmodule();
-            }
-            else {
+            } else {
                 $objManager = new PackagemanagerPackagemanagerModule();
             }
 
             $objManager->setObjMetadata($objMetadata);
         }
-
-        if ($objMetadata->getStrType() == self::STR_TYPE_TEMPLATE) {
-            $objManager = new PackagemanagerPackagemanagerTemplate();
-            $objManager->setObjMetadata($objMetadata);
-        }
-
 
         return $objManager;
     }
