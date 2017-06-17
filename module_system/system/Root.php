@@ -63,8 +63,6 @@ abstract class Root
      * The records current systemid
      *
      * @var string
-     * @templateExport
-     *
      * @tableColumn system.system_id
      */
     private $strSystemid = "";
@@ -107,8 +105,6 @@ abstract class Root
      *
      * @var string
      * @versionable
-     * @templateExport
-     * @templateMapper user
      * @tableColumn system.system_owner
      */
     private $strOwner = "";
@@ -127,8 +123,6 @@ abstract class Root
      *
      * @todo migrate to long-timestamp
      * @var int
-     * @templateExport
-     * @templateMapper datetime
      * @tableColumn system.system_lm_time
      */
     private $intLmTime = 0;
@@ -188,8 +182,6 @@ abstract class Root
      * Long-based representation of the timestamp the record was created initially
      *
      * @var int
-     * @templateExport
-     * @templateMapper datetime
      * @tableColumn system.system_create_date
      */
     private $longCreateDate = 0;
@@ -199,9 +191,6 @@ abstract class Root
      *
      * @var Date
      * @versionable
-     * @templateExport
-     * @templateMapper datetime
-     *
      * @tableColumn system_date.system_date_start
      */
     private $objStartDate = null;
@@ -211,9 +200,6 @@ abstract class Root
      *
      * @var Date
      * @versionable
-     * @templateExport
-     * @templateMapper datetime
-     *
      * @tableColumn system_date.system_date_end
      */
     private $objEndDate = null;
@@ -223,9 +209,6 @@ abstract class Root
      *
      * @var Date
      * @versionable
-     * @templateExport
-     * @templateMapper datetime
-     *
      * @tableColumn system_date.system_date_special
      */
     private $objSpecialDate = null;
