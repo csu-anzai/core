@@ -18,7 +18,7 @@ class TemplateIncludeTest extends Testbase
         file_put_contents(_realpath_ . "core/module_v4skin/admin/skins/kajona_v4/test1.tpl", "
             page template
 
-            [KajonaTemplateInclude,"._realpath_ . "core/module_v4skin/admin/skins/kajona_v4/test2.tpl]
+            [KajonaTemplateInclude,/admin/skins/kajona_v4/test2.tpl]
         ");
 
         $this->assertFileExists(_realpath_ . "core/module_v4skin/admin/skins/kajona_v4/test1.tpl");
