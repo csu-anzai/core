@@ -91,7 +91,10 @@ final class ChangelogContainer
     {
         $strUserId = $this->getStrUserId();
         if (validateSystemid($strUserId)) {
-            return Objectfactory::getInstance()->getObject($strUserId)->getStrDisplayName();
+            $objUser = Objectfactory::getInstance()->getObject($strUserId);
+            if($objUser !== null) {
+                return $objUser->getStrDisplayName();
+            }
         } else {
             return "";
         }
