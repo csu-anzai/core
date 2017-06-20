@@ -5,7 +5,7 @@
   "main": "Gruntfile.js",
   "license": "LGPL-2.1",
   "dependencies": {
-    "protractor": "^4.0.13",
+    "protractor": "^5.1.2",
     "protractor-screenshoter-plugin": "0.3.2"
   }
 }
