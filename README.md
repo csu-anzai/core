@@ -1,4 +1,8 @@
-Kajona Content Management Framework
+
+
+> This is a fork of the open source CMS Kajona. The project was forked to decouple the backend framework in order to transform it into a web application framework.
+
+Kajona Core Framework
 ==========
 
 Welcome to the sources of Kajona, an open source content management system.
@@ -12,7 +16,7 @@ Bugtracker / Issues
 ---
 
 Please feel free to report issues, ideas an general feedback using the GitHub issue pages
-https://github.com/kajona/kajonacms/issues
+https://github.com/artemeon/core/issues
 
 Build-System
 ---
@@ -33,7 +37,6 @@ You only have to follow a few steps in order to build a Kajona project out of th
 ```
     /_debugging
     /module_system
-    /module_pages
     /module_samplecontent
     /module_system
     /module_tags

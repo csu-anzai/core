@@ -2,7 +2,6 @@
 
 namespace Kajona\System\System;
 
-use Kajona\System\Portal\ToolkitPortal;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
@@ -39,11 +38,6 @@ class ServiceProvider implements ServiceProviderInterface
      * @see \Kajona\System\Admin\ToolkitAdmin
      */
     const STR_ADMINTOOLKIT = "system_admintoolkit";
-
-    /**
-     * @see \Kajona\System\Portal\ToolkitPortal
-     */
-    const STR_PORTALTOOLKIT = "system_portaltoolkit";
 
     /**
      * @see \Kajona\System\System\Resourceloader
@@ -112,13 +106,6 @@ class ServiceProvider implements ServiceProviderInterface
 
             $strPath = Resourceloader::getInstance()->getPathForFile("/admin/".$strAdminToolkitClass.".php");
             return Classloader::getInstance()->getInstanceFromFilename($strPath);
-        };
-
-        $objContainer[self::STR_PORTALTOOLKIT] = function ($c) {
-            $strPath = Resourceloader::getInstance()->getPathForFile("/portal/ToolkitPortal.php");
-            include_once $strPath;
-
-            return new ToolkitPortal();
         };
 
         $objContainer[self::STR_RESOURCE_LOADER] = function ($c) {

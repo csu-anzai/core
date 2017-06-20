@@ -167,7 +167,11 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
     protected function renderDeleteAction(ModelInterface $objListEntry)
     {
         if ($objListEntry instanceof FlowConfig) {
-            return "";
+            if ($objListEntry->getIntRecordStatus() === 0) {
+                return parent::renderDeleteAction($objListEntry);
+            } else {
+                return "";
+            }
         } elseif ($objListEntry instanceof FlowStatus && $objListEntry->getFlowConfig()->getIntRecordStatus() === 1) {
             return "";
         } elseif ($objListEntry instanceof FlowTransition && $objListEntry->getParentStatus()->getFlowConfig()->getIntRecordStatus() === 1) {
@@ -176,6 +180,10 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
             return "";
         } elseif ($objListEntry instanceof FlowConditionAbstract && $objListEntry->getTransition()->getParentStatus()->getFlowConfig()->getIntRecordStatus() === 1) {
             return "";
+        }
+
+        if ($objListEntry instanceof FlowStatus && ($objListEntry->getIntIndex() == FlowConfig::STATUS_START || $objListEntry->getIntIndex() == FlowConfig::STATUS_END)) {
+            return $this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_deleteDisabled", $this->getLang("flow_step_no_delete")));
         }
 
         return parent::renderDeleteAction($objListEntry);
@@ -260,6 +268,7 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
         $this->setStrCurObjectTypeName('Step');
         $this->setCurObjectClassName(FlowStatus::class);
 
+        /** @var FlowConfig $objFlow */
         $objFlow = $this->objFactory->getObject($this->getParam("systemid"));
 
         /* Create list */
@@ -269,7 +278,13 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
         $objArraySectionIterator->setArraySection(FlowStatus::getObjectListFiltered($objFilter, $this->getSystemid(), $objArraySectionIterator->calculateStartPos(), $objArraySectionIterator->calculateEndPos()));
 
         /* Render list and filter */
-        $strList = $this->renderList($objArraySectionIterator, true, "list".$this->getStrCurObjectTypeName());
+        $strList = "";
+        $strList.= $this->objToolkit->formHeader("#");
+        $strList.= $this->objToolkit->formInputText("set[".$objFlow->getSystemid()."]", $this->getLang("form_flow_name"), $objFlow->getStrName(), "", "", false, $objFlow->getSystemid()."#strName");
+        $strList.= $this->objToolkit->formClose();
+        $strList.= $this->renderList($objArraySectionIterator, true, "list".$this->getStrCurObjectTypeName());
+        $strList.= "<script type='text/javascript'>require(['instantSave'], function(is) {is.init()});</script>";
+
         $strGraph = FlowGraphWriter::write($objFlow);
 
         $strHtml = "<div class='row'>";

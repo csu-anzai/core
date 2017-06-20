@@ -24,10 +24,13 @@ use Kajona\System\System\Pluginmanager;
  */
 class FlowConfig extends Model implements ModelInterface, AdminListableInterface
 {
+    const STATUS_START = 0;
+    const STATUS_END = 1;
+
     /**
      * @var string
      * @tableColumn flow.flow_name
-     * @tableColumnDatatype char20
+     * @tableColumnDatatype char100
      */
     protected $strName;
 
@@ -214,7 +217,7 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
         // get the current active flow
         $objConfig = FlowConfig::getByModelClass($strTargetClass);
         if ($objConfig instanceof FlowConfig) {
-            if ($intRecordStatus == 1) {
+            if ($intRecordStatus == self::STATUS_END) {
                 if ($objConfig->getSystemid() == $this->getSystemid()) {
                     // if this is the same object no problem
                 } else {
@@ -225,6 +228,7 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
                     $arrDiff = array_diff_key($arrCurrentStatus, $arrNewStatus);
                     if (!empty($arrDiff)) {
                         foreach ($arrDiff as $objStatus) {
+                            /** @var FlowStatus $objStatus */
                             $objStatus->assertNoRecordsAreAssignedToThisStatus();
                         }
                     }
@@ -235,18 +239,77 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
                     // or 0
                     $arrCurrentStatus = $this->getStatusIndexMap($this->getArrStatus());
 
-                    $arrDiff = array_diff_key($arrCurrentStatus, [0, 1]);
+                    $arrDiff = array_diff_key($arrCurrentStatus, [self::STATUS_START, self::STATUS_END]);
                     if (!empty($arrDiff)) {
                         foreach ($arrDiff as $objStatus) {
+                            /** @var FlowStatus $objStatus */
                             $objStatus->assertNoRecordsAreAssignedToThisStatus();
                         }
                     }
                 }
             }
         }
+
+        if ($intRecordStatus == self::STATUS_END) {
+            // we must check that we have the 0 and 1 status
+            $arrNeedStatus = [self::STATUS_START, self::STATUS_END];
+            foreach ($arrNeedStatus as $intStatus) {
+                $objStatus = $this->getStatusByIndex($intStatus);
+                if ($objStatus instanceof FlowStatus) {
+                } else {
+                    throw new \RuntimeException("It is required that the status " . $intStatus . " is available");
+                }
+            }
+
+            // validate the status chain of this flow
+            $this->validateStatusChain();
+        }
     }
 
     /**
+     * Validates whether every step is connected through a transition
+     *
+     * @throws \RuntimeException
+     */
+    private function validateStatusChain()
+    {
+        $arrMap = $this->getStatusIndexTransitions($this->getArrStatus());
+        $arrVisited = [];
+
+        $this->walkStatusMap($arrMap, self::STATUS_START, $arrVisited);
+
+        foreach ($arrMap as $intStatus => $arrTargetStatus) {
+            if (!in_array($intStatus, $arrVisited)) {
+                throw new \RuntimeException("Status " . $intStatus . " is not used in a transition");
+            }
+        }
+    }
+
+    /**
+     * Walks through all transitions and saves the visited status in the array $arrVisited. All status which are not
+     * in this array after traversing are not connected through a transition
+     *
+     * @param array $arrMap
+     * @param integer $intStatus
+     * @param array $arrVisited
+     */
+    private function walkStatusMap($arrMap, $intStatus, array &$arrVisited)
+    {
+        if (in_array($intStatus, $arrVisited)) {
+            return;
+        }
+
+        $arrVisited[] = $intStatus;
+
+        $arrTransitions = isset($arrMap[$intStatus]) ? $arrMap[$intStatus] : [];
+        foreach ($arrTransitions as $intTargetStatus) {
+            $this->walkStatusMap($arrMap, $intTargetStatus, $arrVisited);
+        }
+    }
+
+    /**
+     * Returns an array where the key is the status and the value is the status object
+     *
      * @param $arrStatus
      * @return FlowStatus[]
      */
@@ -254,7 +317,28 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
     {
         $arrResult = [];
         foreach ($arrStatus as $objStatus) {
+            /** @var FlowStatus $objStatus */
             $arrResult[$objStatus->getIntIndex()] = $objStatus;
+        }
+        return $arrResult;
+    }
+
+    /**
+     * Returns an array where the key is the status and the value is an array of possible target status
+     *
+     * @param $arrStatus
+     * @return array
+     */
+    private function getStatusIndexTransitions($arrStatus)
+    {
+        $arrResult = [];
+        foreach ($arrStatus as $objStatus) {
+            /** @var FlowStatus $objStatus */
+            $arrTransitions = array_map(function(FlowTransition $objTransition){
+                return $objTransition->getTargetStatus()->getIntIndex();
+            }, $objStatus->getArrTransitions());
+
+            $arrResult[$objStatus->getIntIndex()] = $arrTransitions;
         }
         return $arrResult;
     }

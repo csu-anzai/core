@@ -35,6 +35,7 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
      * @fieldType Kajona\System\Admin\Formentries\FormentryUser
      * @fieldLabel message_to
      * @fieldMandatory
+     * @jsonExport
      */
     private $strUser = "";
 
@@ -45,6 +46,7 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      * @fieldLabel message_subject
      * @fieldMandatory
+     * @jsonExport
      *
      * @addSearchIndex
      */
@@ -57,6 +59,7 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
      * @fieldType Kajona\System\Admin\Formentries\FormentryTextarea
      * @fieldLabel message_body
      * @fieldMandatory
+     * @jsonExport
      *
      * @addSearchIndex
      */
@@ -68,6 +71,7 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
      * @tableColumn messages.message_read
      * @tableColumnDatatype int
      * @tableColumnIndex
+     * @jsonExport
      */
     private $bitRead = 0;
 

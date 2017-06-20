@@ -625,7 +625,7 @@ class AdminFormgenerator
         if ($strClassname !== null) {
             return new $strClassname($this->strFormname, $strPropertyname, $this->objSourceobject);
         } else {
-            throw new Exception("failed to load form-entry of type " . $strClassname, Exception::$level_ERROR);
+            throw new Exception("failed to load form-entry of type " . $strName. "/".  $strClassname, Exception::$level_ERROR);
         }
 
     }

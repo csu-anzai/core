@@ -33,7 +33,7 @@ $arrFilesToUpdate = array(
     __DIR__."/../temp/kajona/core/module_v4skin/admin/skins/kajona_v4/folderview.tpl" => $strSkinReplacement,
     __DIR__."/../temp/kajona/core/module_v4skin/admin/skins/kajona_v4/login.tpl" => $strSkinReplacement,
     __DIR__."/../temp/kajona/core/module_v4skin/admin/skins/kajona_v4/elements.tpl" => $strPeReplacement,
-    __DIR__."/../temp/kajona/core/module_installer/templates/default/tpl/module_installer/installer.tpl" => $strInstallerReplacement
+    __DIR__."/../temp/kajona/core/module_installer/templates/installer.tpl" => $strInstallerReplacement
 );
 
 

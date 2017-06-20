@@ -11,7 +11,6 @@
 
 
 //editable entries
-$lang["_packagemanager_defaulttemplate_"] = "Aktiviertes Template-Pack";
 $lang["action_download"]                 = "Template-Pack herunterladen";
 $lang["action_list"]                     = "Installierte Pakete";
 $lang["action_list_templates"]           = "Template-Verwaltung";
