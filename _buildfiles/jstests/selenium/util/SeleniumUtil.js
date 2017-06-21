@@ -32,10 +32,10 @@ class SeleniumUtil {
     /**
      *
      * @param strUrl
-     * @returns {webdriver.promise.Promise<void>}
+     * @returns {void}
      */
-    static gotToUrl(strUrl) {
-        return SeleniumUtil.getWebDriver().get(SeleniumUtil.getBaseUrl()+"/"+strUrl);
+    static async gotToUrl(strUrl) {
+        await SeleniumUtil.getWebDriver().get(SeleniumUtil.getBaseUrl()+"/"+strUrl);
     };
 
     /**
@@ -83,9 +83,9 @@ class SeleniumUtil {
     /**
      * Switch to the modal dialog
      */
-    static switchToModalDialog() {
-        browser.driver.wait(protractor.until.elementLocated(FOLDERVIEW_IFRAME), 5000);
-        browser.driver.switchTo().frame(browser.driver.findElement(FOLDERVIEW_IFRAME));
+    static async switchToModalDialog() {
+        await browser.driver.wait(protractor.until.elementLocated(FOLDERVIEW_IFRAME), 5000);
+        await browser.driver.switchTo().frame(browser.driver.findElement(FOLDERVIEW_IFRAME));
     }
 }
 

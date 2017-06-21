@@ -1,15 +1,15 @@
 /**
- * Used for builds (local builds or buildserver) started via ant
+ * Used for executing selenium tests locally via IDE
  */
 exports.config = {
     SELENIUM_PROMISE_MANAGER : 0,//disables selenium control flow
     seleniumAddress: 'http://localhost:4444/wd/hub',
     baseUrl: 'https://localhost',//set dynamically in onPrepare
     specs: [
-        'install-spec.js',
-        'login-spec.js',
-        // '../../temp/kajona/core*/module_*/tests/selenium/*-spec.js',
-        // '../../temp/kajona/files/extract/module_*/tests/selenium/*-spec.js'
+        // 'install-spec.js',
+        './login-spec.js',
+        // '../../../../core*/module_*/tests/selenium/*-spec.js',
+        '../../../../core_agp/module_prozessverwaltung/tests/selenium/unterdmimension_range-spec.js'
     ],
     capabilities: {
         browserName: 'chrome',
@@ -49,12 +49,13 @@ exports.config = {
 };
 
 const _getSeleniumBasePath = function() {
-    return __dirname + '/../../temp/kajona/core/_buildfiles/jstests/selenium';
+    return __dirname + '/../../jstests/selenium';
 };
 
 const _getBaseUrl = function() {
     const path = require('path');
     const strPathToProject = path.join(__dirname, "/../../../../");//path to project folder
     const strProjectName = path.basename(strPathToProject);//determine project folder name
-    return browser.baseUrl + "/" + strProjectName + "/core/_buildfiles/temp/kajona";
+    return browser.baseUrl + "/" + strProjectName;
 };
+

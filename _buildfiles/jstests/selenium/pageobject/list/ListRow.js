@@ -25,10 +25,10 @@ class ListRow extends BasePage {
     /**
      * Returns all action icons of the row
      *
-     * @return {webdriver.promise.Promise<WebElement[]>}
+     * @return {WebElement[]}
      */
-    getArrActionIcons() {
-        return this._elementRow.findElements(ACTIONICONS);
+    async getArrActionIcons() {
+        return await this._elementRow.findElements(ACTIONICONS);
     }
 
 }

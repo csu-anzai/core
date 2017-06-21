@@ -15,23 +15,9 @@ class SeleniumSelectboxUtil {
      *
      * @returns {webdriver.promise.Promise<boolean>}
      */
-    static isEmpty(elementSelectBox) {
-
-    }
-
-    /**
-     *
-     * Checks if the given value is selected in the select box
-     *
-     * @param {webdriver.WebElement} elementSelectBox - The selectbox element
-     * @param {string} strValue - The checkbox element
-     *
-     * @returns {webdriver.promise.Promise<boolean>}
-     */
-    static isValueSelected(elementSelectBox, strValue) {
-        return elementSelectBox.getAttribute("value").then(function(value) {
-            return strValue == value;
-        })
+    static async isValueSelected(elementSelectBox, strValue) {
+        let value = await elementSelectBox.getAttribute("value");
+        return strValue == value;
     }
 
     /**
@@ -40,11 +26,11 @@ class SeleniumSelectboxUtil {
      * @param {webdriver.WebElement} elementSelectBox - The selectbox element
      * @param {string} strValue - The checkbox element
      *
-     * @returns {Promise<void>|Promise<null>}
+     * @returns {void|null}
      */
-    static selectByValue(elementSelectBox, strValue) {
+    static async selectByValue(elementSelectBox, strValue) {
         let strCss = "option[value='"+strValue+"']";//e.g. option[value='5']
-        return elementSelectBox.findElement(By.css(strCss)).click();
+        return await elementSelectBox.findElement(By.css(strCss)).click();
     }
 
     /**
@@ -53,10 +39,10 @@ class SeleniumSelectboxUtil {
      * @param {webdriver.WebElement} elementSelectBox - The selectbox element
      * @param {webdriver.WebElement}  elementOption - The checkbox element
      *
-     * @returns {Promise<void>|Promise<null>}
+     * @returns {void}
      */
-    static selectByElementOption(elementSelectBox, elementOption) {
-        return elementOption.click();
+    static async selectByElementOption(elementSelectBox, elementOption) {
+        return await elementOption.click();
     }
 }
 
