@@ -75,7 +75,7 @@ abstract class FlowConditionAbstract extends Model implements ModelInterface, Ad
      */
     public function getStrIcon()
     {
-        return "icon_szenario";
+        return "icon_document";
     }
 
     /**
