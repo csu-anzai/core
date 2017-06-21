@@ -702,7 +702,8 @@ JS;
             throw new Exception("Record is not restoreable", Exception::$level_ERROR);
         }
 
-        $objRecord->restoreObject();
+        $this->objLifeCycleFactory->factory(get_class($objRecord))->restore($objRecord);
+
         $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "deletedRecords"));
         return "";
     }
@@ -733,7 +734,8 @@ JS;
                 throw new Exception($this->getLang("commons_error_permissions"), Exception::$level_ERROR);
             }
 
-            $objRecord->deleteObjectFromDatabase();
+            $this->objLifeCycleFactory->factory(get_class($objRecord))->deleteObjectFromDatabase($objRecord);
+
             $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "deletedRecords"));
         }
         return "";
