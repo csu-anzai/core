@@ -79,7 +79,14 @@ class ServiceProvider implements ServiceProviderInterface
      */
     const STR_CACHE_MANAGER = "system_cache_manager";
 
+    /**
+     * @see \Kajona\System\System\ServiceLifeCycleFactory
+     */
     const STR_LIFE_CYCLE_FACTORY = "system_life_cycle_factory";
+
+    /**
+     * @see \Kajona\System\System\ServiceLifeCycleImpl
+     */
     const STR_LIFE_CYCLE_DEFAULT = "system_life_cycle_default";
 
     public function register(Container $objContainer)
