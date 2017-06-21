@@ -39,7 +39,7 @@ abstract class FlowConditionAbstract extends Model implements ModelInterface, Ad
     /**
      * @return string
      */
-    public function getStrParams(): string
+    public function getStrParams()
     {
         return $this->strParams;
     }
@@ -47,7 +47,7 @@ abstract class FlowConditionAbstract extends Model implements ModelInterface, Ad
     /**
      * @param string $strParams
      */
-    public function setStrParams(string $strParams)
+    public function setStrParams($strParams)
     {
         $this->strParams = $strParams;
     }
