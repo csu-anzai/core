@@ -23,8 +23,7 @@ class SystemtaskFiledump extends SystemtaskBase implements AdminSystemtaskInterf
 
     private $arrFoldersToInclude = array(
         "/files",
-        "/project",
-        "/templates"
+        "/project"
     );
 
 

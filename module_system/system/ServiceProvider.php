@@ -2,7 +2,6 @@
 
 namespace Kajona\System\System;
 
-use Kajona\System\Portal\ToolkitPortal;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
@@ -15,23 +14,73 @@ use Pimple\ServiceProviderInterface;
  */
 class ServiceProvider implements ServiceProviderInterface
 {
+    /**
+     * @see \Kajona\System\System\Database
+     */
     const STR_DB = "system_db";
+
+    /**
+     * @see \Kajona\System\System\Rights
+     */
     const STR_RIGHTS = "system_rights";
+
+    /**
+     * @see \Kajona\System\System\Config
+     */
     const STR_CONFIG = "system_config";
+
+    /**
+     * @see \Kajona\System\System\Session
+     */
     const STR_SESSION = "system_session";
+
+    /**
+     * @see \Kajona\System\Admin\ToolkitAdmin
+     */
     const STR_ADMINTOOLKIT = "system_admintoolkit";
-    const STR_PORTALTOOLKIT = "system_portaltoolkit";
+
+    /**
+     * @see \Kajona\System\System\Resourceloader
+     */
     const STR_RESOURCE_LOADER = "system_resource_loader";
+
+    /**
+     * @see \Kajona\System\System\Classloader
+     */
     const STR_CLASS_LOADER = "system_class_loader";
+
+    /**
+     * @see \Kajona\System\System\Template
+     */
     const STR_TEMPLATE = "system_template";
+
+    /**
+     * @see \Kajona\System\System\Lang
+     */
     const STR_LANG = "system_lang";
+
+    /**
+     * @see \Kajona\System\System\Objectfactory
+     */
     const STR_OBJECT_FACTORY = "system_object_factory";
+
+    /**
+     * @see \Kajona\System\System\ObjectBuilder
+     */
     const STR_OBJECT_BUILDER = "system_object_builder";
+
+    /**
+     * @see \Psr\Log\LoggerInterface
+     */
     const STR_LOGGER = "system_logger";
+
+    /**
+     * @see \Kajona\System\System\CacheManager
+     */
     const STR_CACHE_MANAGER = "system_cache_manager";
+
     const STR_LIFE_CYCLE_FACTORY = "system_life_cycle_factory";
     const STR_LIFE_CYCLE_DEFAULT = "system_life_cycle_default";
-
 
     public function register(Container $objContainer)
     {
@@ -60,13 +109,6 @@ class ServiceProvider implements ServiceProviderInterface
 
             $strPath = Resourceloader::getInstance()->getPathForFile("/admin/".$strAdminToolkitClass.".php");
             return Classloader::getInstance()->getInstanceFromFilename($strPath);
-        };
-
-        $objContainer[self::STR_PORTALTOOLKIT] = function ($c) {
-            $strPath = Resourceloader::getInstance()->getPathForFile("/portal/ToolkitPortal.php");
-            include_once $strPath;
-
-            return new ToolkitPortal();
         };
 
         $objContainer[self::STR_RESOURCE_LOADER] = function ($c) {

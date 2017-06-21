@@ -278,7 +278,7 @@ Dropdown
     <div class="form-group">
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
         <div class="col-sm-6">
-            <select data-placeholder="%%dataplaceholder%%" name="%%name%%" id="%%name%%" class="form-control %%class%%" %%disabled%% %%addons%%>%%options%%</select>
+            <select data-placeholder="%%dataplaceholder%%" name="%%name%%" id="%%name%%" class="form-control %%class%%" %%disabled%% %%addons%% data-kajona-instantsave="%%instantEditor%%" >%%options%%</select>
         </div>
         <div class="col-sm-2 form-opener">
             %%opener%%
@@ -410,7 +410,7 @@ Regular Text-Field
     <div class="form-group">
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
         <div class="col-sm-6 %%class%%">
-            <input type="text" id="%%name%%" name="%%name%%" value="%%value%%" class="form-control" %%readonly%%>
+            <input type="text" id="%%name%%" name="%%name%%" value="%%value%%" class="form-control" %%readonly%% data-kajona-instantsave="%%instantEditor%%">
         </div>
         <div class="col-sm-2 form-opener">
             %%opener%%
@@ -836,7 +836,7 @@ have a surrounding div with class "ac_container" and a div with id "%%name%%_con
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
 
         <div class="col-sm-6">
-            <input type="text" id="%%name%%" name="%%name%%" value="%%value%%" class="form-control %%class%%" %%readonly%%>
+            <input type="text" id="%%name%%" name="%%name%%" value="%%value%%" class="form-control %%class%%" %%readonly%% data-kajona-instantsave="%%instantEditor%%" >
         </div>
         <div class="col-sm-2 form-opener">
             %%opener%%
@@ -871,6 +871,26 @@ A list of checkbox or radio input elements
             </div>
         </div>
     </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label"></label>
+        <div class="col-sm-6">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="checkAll_%%name%%" id="checkAll_%%name%%" %%readonly%%> [lang,commons_select_all,system]
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <script type='text/javascript'>
+require(["jquery"], function($) {
+$("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
+    var checkBoxes = $("input:checkbox[name^='%%name%%']");
+    checkBoxes.prop('checked', $("input:checkbox[name='checkAll_%%name%%']").prop('checked'));
+});
+});
+    </script>
 </input_checkboxarray>
 
 <input_checkboxarray_checkbox>

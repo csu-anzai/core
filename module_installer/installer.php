@@ -49,6 +49,7 @@ class Installer
     private $strBackwardLink = "";
 
     private $strVersion = "V 6.2";
+    private $strMinPhpVersion = "7.0";
 
     /**
      * Instance of template-engine
@@ -223,6 +224,15 @@ class Installer
 
         $strReturn .= "<br />".$this->getLang("installer_phpcheck_intro2")."<ul class='list-group'>";
 
+        $strReturn .= "<li class='list-group-item'>".$this->getLang("installer_phpcheck_version")." ";
+        if (version_compare(phpversion(), $this->strMinPhpVersion, "<")) {
+            $strReturn .= "<span class=\"label label-danger label-as-badge\">&lt; ".$this->strMinPhpVersion."</span>";
+        }
+        else {
+            $strReturn .= "<span class=\"label label-success label-as-badge\">".phpversion()."</span>";
+        }
+        $strReturn .= "</li>";
+
         foreach ($arrFilesAndFolders as $strOneFile) {
             $strReturn .= "<li class='list-group-item'>".$this->getLang("installer_phpcheck_folder").$strOneFile." ";
             if (is_writable(_realpath_.$strOneFile)) {
@@ -343,7 +353,7 @@ class Installer
                 "postDbdriver" => isset($_POST["driver"]) ? $_POST["driver"] : "",
                 "postPrefix"   => isset($_POST["dbprefix"]) != "" ? $_POST["dbprefix"] : "kajona_"
             ),
-            "/module_installer/installer.tpl", "configwizard_form"
+            "/templates/installer.tpl", "configwizard_form"
         );
         $this->strBackwardLink = $this->getBackwardLink(_webpath_."/installer.php");
 
@@ -380,7 +390,7 @@ class Installer
         }
 
         if ($bitShowForm) {
-            $this->strOutput .= $this->objTemplates->fillTemplateFile(array(), "/module_installer/installer.tpl", "loginwizard_form");
+            $this->strOutput .= $this->objTemplates->fillTemplateFile(array(), "/templates/installer.tpl", "loginwizard_form");
         }
 
         $this->strBackwardLink = $this->getBackwardLink(_webpath_."/installer.php");
@@ -445,7 +455,7 @@ class Installer
                     "packageinstaller"     => $strModuleInstaller,
                     "packagehint"          => $strHint
                 ),
-                "/module_installer/installer.tpl", "autoinstall_row"
+                "/templates/installer.tpl", "autoinstall_row"
             );
         }
 
@@ -457,9 +467,9 @@ class Installer
                 "link_autoinstall"   => _webpath_."/installer.php?step=finish&autoInstall=true",
                 "link_manualinstall" => _webpath_."/installer.php?step=install"
             ),
-            "/module_installer/installer.tpl", "modeselect_content"
+            "/templates/installer.tpl", "modeselect_content"
         );
-        $this->strOutput .= $this->objTemplates->fillTemplateFile(array(), "/module_installer/installer.tpl", "autoinstall_cli");
+        $this->strOutput .= $this->objTemplates->fillTemplateFile(array(), "/templates/installer.tpl", "autoinstall_cli");
 
         $this->strBackwardLink = $this->getBackwardLink(_webpath_."/installer.php?step=loginData");
     }
@@ -563,16 +573,16 @@ class Installer
 
 
             if ($objHandler->isInstallable()) {
-                $strRows .= $this->objTemplates->fillTemplateFile($arrTemplate, "/module_installer/installer.tpl", "installer_modules_row_installable");
+                $strRows .= $this->objTemplates->fillTemplateFile($arrTemplate, "/templates/installer.tpl", "installer_modules_row_installable");
             }
             else {
-                $strRows .= $this->objTemplates->fillTemplateFile($arrTemplate, "/module_installer/installer.tpl", "installer_modules_row");
+                $strRows .= $this->objTemplates->fillTemplateFile($arrTemplate, "/templates/installer.tpl", "installer_modules_row");
             }
 
         }
 
         //wrap in form
-        $strReturn .= $this->objTemplates->fillTemplateFile(array("module_rows" => $strRows), "/module_installer/installer.tpl", "installer_modules_form");
+        $strReturn .= $this->objTemplates->fillTemplateFile(array("module_rows" => $strRows), "/templates/installer.tpl", "installer_modules_form");
 
         $this->strOutput .= $strReturn;
         if ($this->isInstalled()) {
@@ -663,10 +673,10 @@ class Installer
             }
 
             if ($objHandler->isInstallable()) {
-                $strRows .= $this->objTemplates->fillTemplateFile($arrTemplate, "/module_installer/installer.tpl", "installer_modules_row_installable");
+                $strRows .= $this->objTemplates->fillTemplateFile($arrTemplate, "/templates/installer.tpl", "installer_modules_row_installable");
             }
             else {
-                $strRows .= $this->objTemplates->fillTemplateFile($arrTemplate, "/module_installer/installer.tpl", "installer_modules_row");
+                $strRows .= $this->objTemplates->fillTemplateFile($arrTemplate, "/templates/installer.tpl", "installer_modules_row");
             }
 
         }
@@ -678,7 +688,7 @@ class Installer
         }
 
         //wrap in form
-        $strReturn .= $this->objTemplates->fillTemplateFile(array("module_rows" => $strRows), "/module_installer/installer.tpl", "installer_samplecontent_form");
+        $strReturn .= $this->objTemplates->fillTemplateFile(array("module_rows" => $strRows), "/templates/installer.tpl", "installer_samplecontent_form");
 
         $this->strOutput .= $strReturn;
         $this->strBackwardLink = $this->getBackwardLink(_webpath_."/installer.php?step=install");
@@ -803,7 +813,7 @@ class Installer
                 array(
                     "log_content" => $this->strLogfile,
                     "systemlog"   => $this->getLang("installer_systemlog")
-                ), "/module_installer/installer.tpl", "installer_log"
+                ), "/templates/installer.tpl", "installer_log"
             );
         }
 
@@ -836,11 +846,11 @@ class Installer
 
             //choose the correct template section
             if ($strCurrentCommand == $strKey) {
-                $strProgress .= $this->objTemplates->fillTemplateFile($arrTemplateEntry, "/module_installer/installer.tpl", "installer_progress_entry_current");
+                $strProgress .= $this->objTemplates->fillTemplateFile($arrTemplateEntry, "/templates/installer.tpl", "installer_progress_entry_current");
                 $strSection = "installer_progress_entry";
             }
             else {
-                $strProgress .= $this->objTemplates->fillTemplateFile($arrTemplateEntry, "/module_installer/installer.tpl", $strSection);
+                $strProgress .= $this->objTemplates->fillTemplateFile($arrTemplateEntry, "/templates/installer.tpl", $strSection);
             }
 
         }
@@ -852,7 +862,7 @@ class Installer
         $arrTemplate["installer_backward"] = $this->strBackwardLink;
         $arrTemplate["installer_logfile"] = $this->strLogfile;
 
-        $strReturn = $this->objTemplates->fillTemplateFile($arrTemplate, "/module_installer/installer.tpl", "installer_main");
+        $strReturn = $this->objTemplates->fillTemplateFile($arrTemplate, "/templates/installer.tpl", "installer_main");
         $strReturn = $this->callScriptlets($strReturn);
         return $strReturn;
     }
@@ -891,7 +901,7 @@ class Installer
      */
     private function getForwardLink($strHref)
     {
-        return $this->objTemplates->fillTemplateFile(array("href" => $strHref, "text" => $this->getLang("installer_next")), "/module_installer/installer.tpl", "installer_forward_link");
+        return $this->objTemplates->fillTemplateFile(array("href" => $strHref, "text" => $this->getLang("installer_next")), "/templates/installer.tpl", "installer_forward_link");
     }
 
     /**
@@ -903,7 +913,7 @@ class Installer
      */
     private function getBackwardLink($strHref)
     {
-        return $this->objTemplates->fillTemplateFile(array("href" => $strHref, "text" => $this->getLang("installer_prev")), "/module_installer/installer.tpl", "installer_backward_link");
+        return $this->objTemplates->fillTemplateFile(array("href" => $strHref, "text" => $this->getLang("installer_prev")), "/templates/installer.tpl", "installer_backward_link");
     }
 
     /**

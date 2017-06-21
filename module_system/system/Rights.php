@@ -108,16 +108,16 @@ class Rights
         //Splitting up the rights
         $arrParams = array();
         $arrParams[] = (int)$arrRights[self::$STR_RIGHT_INHERIT];
-        $arrParams[] = ",". trim($arrRights[self::$STR_RIGHT_VIEW], ",").",";
-        $arrParams[] = ",". trim($arrRights[self::$STR_RIGHT_EDIT], ",").",";
-        $arrParams[] = ",". trim($arrRights[self::$STR_RIGHT_DELETE], ",").",";
-        $arrParams[] = ",". trim($arrRights[self::$STR_RIGHT_RIGHT], ",").",";
-        $arrParams[] = ",". trim($arrRights[self::$STR_RIGHT_RIGHT1], ",").",";
-        $arrParams[] = ",". trim($arrRights[self::$STR_RIGHT_RIGHT2], ",").",";
-        $arrParams[] = ",". trim($arrRights[self::$STR_RIGHT_RIGHT3], ",").",";
-        $arrParams[] = ",". trim($arrRights[self::$STR_RIGHT_RIGHT4], ",").",";
-        $arrParams[] = ",". trim($arrRights[self::$STR_RIGHT_RIGHT5], ",").",";
-        $arrParams[] = ",". trim($arrRights[self::$STR_RIGHT_CHANGELOG], ",").",";
+        $arrParams[] = ",". (!empty($arrRights[self::$STR_RIGHT_VIEW]) ? trim("".$arrRights[self::$STR_RIGHT_VIEW], ",") : "").",";
+        $arrParams[] = ",". (!empty($arrRights[self::$STR_RIGHT_EDIT]) ? trim("".$arrRights[self::$STR_RIGHT_EDIT], ",") : "").",";
+        $arrParams[] = ",". (!empty($arrRights[self::$STR_RIGHT_DELETE]) ? trim("".$arrRights[self::$STR_RIGHT_DELETE], ",") : "").",";
+        $arrParams[] = ",". (!empty($arrRights[self::$STR_RIGHT_RIGHT]) ? trim("".$arrRights[self::$STR_RIGHT_RIGHT], ",") : "").",";
+        $arrParams[] = ",". (!empty($arrRights[self::$STR_RIGHT_RIGHT1]) ? trim("".$arrRights[self::$STR_RIGHT_RIGHT1], ",") : "").",";
+        $arrParams[] = ",". (!empty($arrRights[self::$STR_RIGHT_RIGHT2]) ? trim("".$arrRights[self::$STR_RIGHT_RIGHT2], ",") : "").",";
+        $arrParams[] = ",". (!empty($arrRights[self::$STR_RIGHT_RIGHT3]) ? trim("".$arrRights[self::$STR_RIGHT_RIGHT3], ",") : "").",";
+        $arrParams[] = ",". (!empty($arrRights[self::$STR_RIGHT_RIGHT4]) ? trim("".$arrRights[self::$STR_RIGHT_RIGHT4], ",") : "").",";
+        $arrParams[] = ",". (!empty($arrRights[self::$STR_RIGHT_RIGHT5]) ? trim("".$arrRights[self::$STR_RIGHT_RIGHT5], ",") : "").",";
+        $arrParams[] = ",". (!empty($arrRights[self::$STR_RIGHT_CHANGELOG]) ? trim("".$arrRights[self::$STR_RIGHT_CHANGELOG], ",") : "").",";
         $arrParams[] = $strSystemid;
 
         $strQuery = "UPDATE "._dbprefix_."system
@@ -184,10 +184,10 @@ class Rights
 
         if ($bitSave) {
             $this->objDb->transactionCommit();
-            Logger::getInstance()->addLogRow("saving rights of record ".$strSystemid." succeeded", Logger::$levelInfo);
+            Logger::getInstance()->info("saving rights of record ".$strSystemid." succeeded");
         } else {
             $this->objDb->transactionRollback();
-            Logger::getInstance()->addLogRow("saving rights of record ".$strSystemid." failed", Logger::$levelError);
+            Logger::getInstance()->error("saving rights of record ".$strSystemid." failed");
             throw new Exception("saving rights of record ".$strSystemid." failed", Exception::$level_ERROR);
         }
         
@@ -216,6 +216,34 @@ class Rights
         }
 
         return implode(",", $arrReturn);
+    }
+
+
+    /**
+     * Converts a systemid based permissions set to a short id based one
+     *
+     * @param array $arrPermissions
+     * @return array
+     */
+    public function convertSystemidArrayToShortIdString(array $arrPermissions): array
+    {
+        foreach ($arrPermissions as $strPermission => $arrGroups) {
+            if ($strPermission == self::$STR_RIGHT_INHERIT) {
+                continue;
+            }
+
+            $arrConverted = array();
+            foreach ($arrGroups as $strOneSystemid) {
+                if (empty($strOneSystemid)) {
+                    continue;
+                }
+                $arrConverted[] = UserGroup::getShortIdForGroupId($strOneSystemid);
+            }
+
+            $arrPermissions[$strPermission] = implode(",", $arrConverted);
+        }
+
+        return $arrPermissions;
     }
 
     /**
@@ -359,7 +387,7 @@ class Rights
 
 
         $arrRights = array();
-        if (isset($arrRow["system_id"])) {
+        if (isset($arrRow["system_id"]) && count($arrRow) >= 10) {
             $arrRights[self::$STR_RIGHT_VIEW] = $arrRow["right_view"];
             $arrRights[self::$STR_RIGHT_EDIT] = $arrRow["right_edit"];
             $arrRights[self::$STR_RIGHT_DELETE] = $arrRow["right_delete"];

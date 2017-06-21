@@ -1,9 +1,0 @@
-Module Navigation
-
-V4.6 ----------------------------------------------------------------------------------------------------
-UPDATE: module_navigation | portal generation -> updated some internal data structures to speed up the tree generation
-
-V4.4-----------------------------------------------------------------------------------------------------
-NEW: the navigation-tree node is added to the treeview, too. Otherwise the dragging of nodes to top-level could fail.
-BUG: the sitemap-template used a wrong ul/li nesting
-BUG: the navigation elements' field "include foreign modules" showed "no" for new, uninitialized element-entries, even if the foreign modules were included.

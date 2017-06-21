@@ -160,9 +160,6 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
     $('#content a[rel=popover]').popover();
     tooltip.initTooltip();
 
-    statusDisplay.classOfMessageBox = "alert alert-info";
-    statusDisplay.classOfErrorBox = "alert alert-error";
-
     kajonaScroll = null;
     $(window).scroll(function() {
         var scroll = $(this).scrollTop();
@@ -222,7 +219,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
                     }
                 }
 
-                //Formentry must have at least 2 charackters to trigger search.
+                //Formentry must have at least 2 characters to trigger search.
                 if(event.target.value.length < 2) {
                     event.stopPropagation();
                     return false;
@@ -247,6 +244,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
                     if($('#'+$objCur.attr('id')+'_id')) {
                         $( '#'+$objCur.attr('id')+'_id' ).val( ui.item.systemid);
                     }
+                    $objCur.trigger('change');
                 }
             };
 
@@ -268,7 +266,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
                     $.each($.parseJSON(data), function(index, item) {
                         $('#tagsSubemenu').append("<li><a href='"+item.url+"'><i class='fa fa-tag'></i> "+item.name+"</a></li>");
                     });
-                    $('#tagsSubemenu').append("<li class='divider'></li><li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1&module=tags'><i class='fa fa-tag'></i> "+msg.properties.show_all+"</a></li>")
+                    $('#tagsSubemenu').append("<li class='divider'></li><li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1&module=tags'><i class='fa fa-tag'></i> "+me.properties.tags.show_all+"</a></li>")
                 }
             });
         },

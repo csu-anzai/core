@@ -38,6 +38,7 @@ class PackagemanagerManager
 {
 
     const STR_TYPE_MODULE = "MODULE";
+    /** @deprecated */
     const STR_TYPE_TEMPLATE = "TEMPLATE";
     /** @deprecated */
     const STR_TYPE_ELEMENT = "ELEMENT";
@@ -56,13 +57,8 @@ class PackagemanagerManager
      */
     public function getAvailablePackages($strFilterText = "")
     {
-        $arrReturn = array();
-
         $objModuleProvider = new PackagemanagerPackagemanagerModule();
-        $arrReturn = array_merge($arrReturn, $objModuleProvider->getInstalledPackages());
-
-        $objPackageProvider = new PackagemanagerPackagemanagerTemplate();
-        $arrReturn = array_merge($objPackageProvider->getInstalledPackages(), $arrReturn);
+        $arrReturn = $objModuleProvider->getInstalledPackages();
 
         if ($strFilterText != "") {
             $arrReturn = array_filter($arrReturn, function ($objOneMetadata) use ($strFilterText) {
@@ -152,22 +148,15 @@ class PackagemanagerManager
 
         $objManager = null;
 
-        if ($objMetadata->getStrType() == self::STR_TYPE_MODULE || $objMetadata->getStrType() == self::STR_TYPE_ELEMENT) {
+        if ($objMetadata->getStrType() == self::STR_TYPE_MODULE) {
             if ($objMetadata->getBitIsPhar()) {
                 $objManager = new PackagemanagerPackagemanagerPharmodule();
-            }
-            else {
+            } else {
                 $objManager = new PackagemanagerPackagemanagerModule();
             }
 
             $objManager->setObjMetadata($objMetadata);
         }
-
-        if ($objMetadata->getStrType() == self::STR_TYPE_TEMPLATE) {
-            $objManager = new PackagemanagerPackagemanagerTemplate();
-            $objManager->setObjMetadata($objMetadata);
-        }
-
 
         return $objManager;
     }
@@ -186,7 +175,7 @@ class PackagemanagerManager
     {
         $strTargetFolder = generateSystemid();
 
-        Logger::getInstance(Logger::PACKAGEMANAGEMENT)->addLogRow("extracting package ".$strPackagePath." to "._projectpath_."/temp/".$strTargetFolder, Logger::$levelInfo);
+        Logger::getInstance(Logger::PACKAGEMANAGEMENT)->info("extracting package ".$strPackagePath." to "._projectpath_."/temp/".$strTargetFolder);
 
         $objZip = new Zip();
         $objZip->extractArchive($strPackagePath, _projectpath_."/temp/".$strTargetFolder);
@@ -349,9 +338,7 @@ class PackagemanagerManager
 
         if ($strLatestVersion !== null) {
             if ($strLatestVersion != null && version_compare($strLatestVersion, $objPackage->getObjMetadata()->getStrVersion(), ">")) {
-                Logger::getInstance(Logger::PACKAGEMANAGEMENT)->addLogRow(
-                    "found update for package ".$objPackage->getObjMetadata()->getStrTitle().", installed: ".$objPackage->getObjMetadata()->getStrVersion()." available: ".$strLatestVersion, Logger::$levelInfo
-                );
+                Logger::getInstance(Logger::PACKAGEMANAGEMENT)->info("found update for package ".$objPackage->getObjMetadata()->getStrTitle().", installed: ".$objPackage->getObjMetadata()->getStrVersion()." available: ".$strLatestVersion);
 
                 $this->sendUpdateAvailableMessage($objPackage, $strLatestVersion);
 

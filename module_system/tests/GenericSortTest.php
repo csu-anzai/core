@@ -273,5 +273,46 @@ class SortTest extends Testbase
     }
 
 
+
+    public function testSortOnPrevIdChange()
+    {
+
+        $objRootNode = $this->createObject(SystemAspect::class, "", array(), array("strName" => "sortTest"));
+        $objSubNode1 = $this->createObject(SystemAspect::class, $objRootNode->getSystemid(), array(), array("strName" => "sortTest"));
+        $objSubNode2 = $this->createObject(SystemAspect::class, $objRootNode->getSystemid(), array(), array("strName" => "sortTest"));
+
+        $objSub1N1 = $this->createObject(SystemAspect::class, $objSubNode1->getSystemid(), array(), array("strName" => "sortTest"));
+        $objSub1N2 = $this->createObject(SystemAspect::class, $objSubNode1->getSystemid(), array(), array("strName" => "sortTest"));
+
+        $objSub2N1 = $this->createObject(SystemAspect::class, $objSubNode2->getSystemid(), array(), array("strName" => "sortTest"));
+        $objSub2N2 = $this->createObject(SystemAspect::class, $objSubNode2->getSystemid(), array(), array("strName" => "sortTest"));
+
+
+        //validate sorts pre previd change
+        $this->assertEquals(1, $objSubNode1->getIntSort());
+        $this->assertEquals(2, $objSubNode2->getIntSort());
+
+        $this->assertEquals(1, $objSub1N1->getIntSort());
+        $this->assertEquals(2, $objSub1N2->getIntSort());
+
+        $this->assertEquals(1, $objSub2N1->getIntSort());
+        $this->assertEquals(2, $objSub2N2->getIntSort());
+
+        $objSubNode2->updateObjectToDb($objSubNode1->getSystemid());
+
+
+        $this->assertEquals(1, $objSubNode1->getIntSort(), "t1");
+        $this->assertEquals(3, $objSubNode2->getIntSort(), "t2");
+
+        $this->assertEquals(1, $objSub1N1->getIntSort(), "t3");
+        $this->assertEquals(2, $objSub1N2->getIntSort(), "t4");
+
+        $this->assertEquals(1, $objSub2N1->getIntSort(), "t5");
+        $this->assertEquals(2, $objSub2N2->getIntSort(), "t6");
+
+
+        $objRootNode->deleteObjectFromDatabase();
+    }
+
 }
 
