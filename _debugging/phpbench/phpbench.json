@@ -1,5 +1,5 @@
 {
-  "bootstrap": "../../../core/module_system/bootstrap.php",
+  "bootstrap": "bootstrap.php",
   "path": "benchmarks",
   "time_unit": "milliseconds",
   "outputs": {
