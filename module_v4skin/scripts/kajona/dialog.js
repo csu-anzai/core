@@ -1,7 +1,7 @@
 
-define(['jquery', 'bootstrap'], function ($, bootstrap) {
+define('dialog', ['jquery', 'bootstrap'], function ($, bootstrap) {
 
-    return function (strDialogId, intDialogType, bitDragging, bitResizing) {
+    return /** @alias module:dialog */ function (strDialogId, intDialogType, bitDragging, bitResizing) {
         this.dialog = null;
         this.containerId = strDialogId;
         this.iframeId = null;
