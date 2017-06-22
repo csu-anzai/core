@@ -28,7 +28,7 @@
     $config['dbusername']           = "%%defaultusername%%";           //Username
     $config['dbpassword']           = "%%defaultpassword%%";           //Password
     $config['dbname']               = "%%defaultdbname%%";             //Database name
-    $config['dbdriver']             = "%%defaultdriver%%";             //DB-Driver, one of: mysqli, postgres, sqlite3, oci8
+    $config['dbdriver']             = "%%defaultdriver%%";             //DB-Driver, one of: mysqli, postgres, sqlite3, oci8, sqlsrv
     $config['dbprefix']             = "%%defaultprefix%%";             //table-prefix
     $config['dbport']               = "%%defaultport%%";               //Database port, default: ""
 
@@ -37,7 +37,6 @@
 
 //--common settings -------------------------------------------------------------------------------------
 
-    $config['dirtemplates']         = "/templates";                    //Path containing the templates
     $config['dirlang']              = "/lang";                         //Path containing the language-files
     $config['dirproject']           = "/project";                      //Path containing the project-files
     $config['dirfiles']             = "/files";                        //Path containing the files-directory

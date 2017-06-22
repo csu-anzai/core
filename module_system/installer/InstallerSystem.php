@@ -18,6 +18,7 @@ use Kajona\System\System\IdGenerator;
 use Kajona\System\System\InstallerBase;
 use Kajona\System\System\InstallerInterface;
 use Kajona\System\System\LanguagesLanguage;
+use Kajona\System\System\Logger;
 use Kajona\System\System\MessagingConfig;
 use Kajona\System\System\MessagingMessage;
 use Kajona\System\System\OrmBase;
@@ -935,22 +936,32 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $strReturn .= "Moving data...\n";
 
-        $strQuery = "UPDATE "._dbprefix_."system SET 
-                right_inherit = r.right_inherit, 
-                right_view = r.right_view, 
-                right_edit = r.right_edit, 
-                right_delete = r.right_delete, 
-                right_right = r.right_right, 
-                right_right1 = r.right_right1, 
-                right_right2 = r.right_right2, 
-                right_right3 = r.right_right3,
-                right_right4 = r.right_right4, 
-                right_right5 = r.right_right5, 
-                right_changelog = r.right_changelog
-                FROM (
-                    SELECT right_id, right_inherit, right_view, right_edit, right_delete, right_right, right_right1, right_right2, right_right3, right_right4, right_right5, right_changelog FROM "._dbprefix_."system_right
-                ) AS r WHERE system_id = r.right_id ";
-        $this->objDB->_pQuery($strQuery, array());
+        foreach ($this->objDB->getGenerator("SELECT * FROM "._dbprefix_."system_right ORDER BY right_id", []) as $arrResultSet) {
+            foreach ($arrResultSet as $arrRow) {
+                $strQuery = "UPDATE "._dbprefix_."system 
+                            SET right_inherit = ?, right_view = ?, right_edit = ?, right_delete = ?, right_right = ?, right_right1 = ?, 
+                                right_right2 = ?, right_right3 = ?, right_right4 = ?, right_right5 = ?, right_changelog = ? 
+                          WHERE system_id = ?";
+
+                $this->objDB->_pQuery($strQuery,
+                    [
+                        $arrRow["right_inherit"],
+                        $arrRow["right_view"],
+                        $arrRow["right_edit"],
+                        $arrRow["right_delete"],
+                        $arrRow["right_right"],
+                        $arrRow["right_right1"],
+                        $arrRow["right_right2"],
+                        $arrRow["right_right3"],
+                        $arrRow["right_right4"],
+                        $arrRow["right_right5"],
+                        $arrRow["right_changelog"],
+                        $arrRow["right_id"]
+                    ]
+                );
+            }
+        }
+
 
         Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBQUERIES | Carrier::INT_CACHE_TYPE_DBSTATEMENTS);
 
@@ -973,6 +984,11 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $strQuery = "SELECT system_config_id FROM "._dbprefix_."system_config";
         foreach ($this->objDB->getPArray($strQuery, []) as $arrOneRow) {
+
+            if($this->objDB->getPRow("SELECT COUNT(*) as anz FROM "._dbprefix_."system WHERE system_id = ?", array($arrOneRow["system_config_id"]))["anz"] > 0) {
+                continue;
+            }
+
             $strQuery = "INSERT INTO "._dbprefix_."system 
                 (system_id, system_prev_id, system_module_nr, system_sort, system_status, system_class, system_deleted, right_inherit) values 
                 (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -1016,22 +1032,8 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             $arrIdToInt[$arrOneRow["group_id"]] = $arrOneRow["group_short_id"];
         }
 
-
-        $intStart = 0;
-        $intEnd = $intPagesize;
-
-        if($intPagesize !== null) {
-            $intStart = 0;
-            $intEnd = $intPagesize;
-            $arrResultSet = $this->objDB->getPArray("SELECT * FROM "._dbprefix_."system_right ORDER BY right_id DESC", array(), $intStart, $intEnd-1);
-        } else {
-            $arrResultSet = $this->objDB->getPArray("SELECT * FROM "._dbprefix_."system_right ORDER BY right_id DESC", array());
-        }
-
-        while (count($arrResultSet) > 0) {
-            $strRun .= "Fetching records ".$intStart." to ".($intEnd-1).PHP_EOL;
-            $arrInserts = array();
-
+        $objGenerator = $this->objDB->getGenerator("SELECT * FROM "._dbprefix_."system_right ORDER BY right_id DESC", [], $intPagesize);
+        foreach ($objGenerator as $arrResultSet) {
             foreach ($arrResultSet as $arrSingleRow) {
                 $arrParams = array();
 
@@ -1056,26 +1058,15 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
                 $this->objDB->_pQuery($strQuery, $arrParams);
             }
 
-
-            $strRun .= "Converted ".count($arrResultSet)." source rows ".PHP_EOL;
+            $strLoop = "Converted ".count($arrResultSet)." source rows ".PHP_EOL;
 
             if ($bitEchodata) {
-               echo $strRun;
+                echo $strLoop;
                 flush();
                 ob_flush();
-                $strRun = "";
             }
 
-            if($intPagesize !== null) {
-                $intStart += $intPagesize;
-                $intEnd += $intPagesize;
-                $arrResultSet = $this->objDB->getPArray("SELECT * FROM "._dbprefix_."system_right ORDER BY right_id DESC", [], $intStart, $intEnd - 1);
-            }
-            else {
-                $arrResultSet = array();
-            }
-
-            $this->objDB->flushQueryCache();
+            $strRun .= $strLoop;
         }
 
         return $strRun;

@@ -5,7 +5,7 @@ const SeleniumUtil = requireHelper('/util/SeleniumUtil.js');
 describe('installation', function() {
 
     it('test installation', function() {
-        let intTimeout = 60000 * 10;
+        let intTimeout = 100000 * 10;
 
         // wait max 5 minutes for the installation
         browser.manage().timeouts().pageLoadTimeout(intTimeout);

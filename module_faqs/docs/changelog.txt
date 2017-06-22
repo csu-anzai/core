@@ -1,4 +1,0 @@
-Module FAQs
-
-V4.5 ----------------------------------------------------------------------------------------------------
-NEW: module_faqs | portal view -> updated module faqs to make use of the new templatemapper. the old placeholders are still supported. [ticket #684]

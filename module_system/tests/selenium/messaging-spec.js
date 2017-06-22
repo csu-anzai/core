@@ -11,8 +11,7 @@ describe('module_messaging', function() {
 
         element.all(by.css('.actions')).last().$('a').click();
 
-        browser.driver.wait(protractor.until.elementLocated(By.id('folderviewDialog_iframe')), 5000);
-        browser.driver.switchTo().frame(browser.driver.findElement(by.id('folderviewDialog_iframe')));
+        SeleniumUtil.switchToModalDialog();
 
         // enter a new message to the form
         browser.driver.findElement(by.id('messaging_user')).sendKeys('test');
@@ -32,25 +31,32 @@ describe('module_messaging', function() {
     });
 
     it('provides config page', function() {
-        SeleniumUtil.gotToUrl('index.php?admin=1&module=messaging&action=config');
+
+        let mailConfigUrl = "index.php?admin=1&module=messaging&action=config";
+        let enableInputLocator = By.id('Kajona-Packagemanager-System-Messageproviders-MessageproviderPackageupdate_enabled');
+        let mailInputLocator = By.id('Kajona-Packagemanager-System-Messageproviders-MessageproviderPackageupdate_bymail');
+        let mailButtonLocator = By.css('.bootstrap-switch-id-Kajona-Packagemanager-System-Messageproviders-MessageproviderPackageupdate_bymail');
+
+        SeleniumUtil.gotToUrl(mailConfigUrl);
 
         // check the default values
-        SeleniumWaitHelper.getElementWhenPresent(SeleniumUtil.getWebDriver(), By.id('Kajona-Packagemanager-System-Messageproviders-MessageproviderPackageupdate_bymail'));
-        expect(browser.driver.findElement(by.id('Kajona-Packagemanager-System-Messageproviders-MessageproviderPackageupdate_enabled')).getAttribute('checked')).not.toBe(null);
-        expect(browser.driver.findElement(by.id('Kajona-Packagemanager-System-Messageproviders-MessageproviderPackageupdate_bymail')).getAttribute('checked')).toBe(null);
+        SeleniumWaitHelper.getElementWhenPresent(SeleniumUtil.getWebDriver(), mailInputLocator);
+        expect(browser.driver.findElement(enableInputLocator).getAttribute('checked')).not.toBe(null);
+        expect(browser.driver.findElement(mailInputLocator).getAttribute('checked')).toBe(null);
 
-        browser.driver.wait(protractor.until.elementLocated(by.css('.bootstrap-switch-id-Kajona-Packagemanager-System-Messageproviders-MessageproviderPackageupdate_bymail')), 5000);
+        browser.driver.wait(protractor.until.elementLocated(mailButtonLocator), 5000);
 
         // click the enable button
-        browser.driver.findElement(by.css('.bootstrap-switch-id-Kajona-Packagemanager-System-Messageproviders-MessageproviderPackageupdate_bymail')).click();
+        browser.driver.findElement(mailButtonLocator).click();
+        expect(browser.driver.findElement(mailInputLocator).getAttribute('checked')).not.toBe(null);
 
         // refresh
-        SeleniumUtil.gotToUrl('index.php?admin=1&module=messaging&action=config');
+        SeleniumUtil.gotToUrl(mailConfigUrl);
 
         // and revalidate if the ajax request worked as specified
-        SeleniumWaitHelper.getElementWhenPresent(SeleniumUtil.getWebDriver(), By.id('Kajona-Packagemanager-System-Messageproviders-MessageproviderPackageupdate_bymail'));
-        expect(browser.driver.findElement(by.id('Kajona-Packagemanager-System-Messageproviders-MessageproviderPackageupdate_enabled')).getAttribute('checked')).not.toBe(null);
-        expect(browser.driver.findElement(by.id('Kajona-Packagemanager-System-Messageproviders-MessageproviderPackageupdate_bymail')).getAttribute('checked')).not.toBe(null);
+        SeleniumWaitHelper.getElementWhenPresent(SeleniumUtil.getWebDriver(), mailInputLocator);
+        expect(browser.driver.findElement(enableInputLocator).getAttribute('checked')).not.toBe(null);
+        expect(browser.driver.findElement(mailInputLocator).getAttribute('checked')).not.toBe(null);
     });
 
 });

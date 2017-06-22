@@ -160,9 +160,6 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
     $('#content a[rel=popover]').popover();
     tooltip.initTooltip();
 
-    statusDisplay.classOfMessageBox = "alert alert-info";
-    statusDisplay.classOfErrorBox = "alert alert-error";
-
     kajonaScroll = null;
     $(window).scroll(function() {
         var scroll = $(this).scrollTop();
@@ -269,7 +266,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
                     $.each($.parseJSON(data), function(index, item) {
                         $('#tagsSubemenu').append("<li><a href='"+item.url+"'><i class='fa fa-tag'></i> "+item.name+"</a></li>");
                     });
-                    $('#tagsSubemenu').append("<li class='divider'></li><li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1&module=tags'><i class='fa fa-tag'></i> "+msg.properties.show_all+"</a></li>")
+                    $('#tagsSubemenu').append("<li class='divider'></li><li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1&module=tags'><i class='fa fa-tag'></i> "+me.properties.tags.show_all+"</a></li>")
                 }
             });
         },

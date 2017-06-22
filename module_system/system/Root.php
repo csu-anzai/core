@@ -63,8 +63,6 @@ abstract class Root
      * The records current systemid
      *
      * @var string
-     * @templateExport
-     *
      * @tableColumn system.system_id
      */
     private $strSystemid = "";
@@ -107,8 +105,6 @@ abstract class Root
      *
      * @var string
      * @versionable
-     * @templateExport
-     * @templateMapper user
      * @tableColumn system.system_owner
      */
     private $strOwner = "";
@@ -127,8 +123,6 @@ abstract class Root
      *
      * @todo migrate to long-timestamp
      * @var int
-     * @templateExport
-     * @templateMapper datetime
      * @tableColumn system.system_lm_time
      */
     private $intLmTime = 0;
@@ -188,8 +182,6 @@ abstract class Root
      * Long-based representation of the timestamp the record was created initially
      *
      * @var int
-     * @templateExport
-     * @templateMapper datetime
      * @tableColumn system.system_create_date
      */
     private $longCreateDate = 0;
@@ -199,9 +191,6 @@ abstract class Root
      *
      * @var Date
      * @versionable
-     * @templateExport
-     * @templateMapper datetime
-     *
      * @tableColumn system_date.system_date_start
      */
     private $objStartDate = null;
@@ -211,9 +200,6 @@ abstract class Root
      *
      * @var Date
      * @versionable
-     * @templateExport
-     * @templateMapper datetime
-     *
      * @tableColumn system_date.system_date_end
      */
     private $objEndDate = null;
@@ -223,9 +209,6 @@ abstract class Root
      *
      * @var Date
      * @versionable
-     * @templateExport
-     * @templateMapper datetime
-     *
      * @tableColumn system_date.system_date_special
      */
     private $objSpecialDate = null;
@@ -1015,12 +998,12 @@ abstract class Root
 
         //determine the correct new sort-id - append by default
         if (SystemModule::getModuleByName("system") != null && version_compare(SystemModule::getModuleByName("system")->getStrVersion(), "4.7.5", "lt")) {
-            $strQuery = "SELECT COUNT(*) FROM "._dbprefix_."system WHERE system_prev_id = ? AND system_id != '0' AND system_sort > -1";
+            $strQuery = "SELECT COUNT(*) AS cnt FROM "._dbprefix_."system WHERE system_prev_id = ? AND system_id != '0' AND system_sort > -1";
         } else {
-            $strQuery = "SELECT COUNT(*) FROM "._dbprefix_."system WHERE system_prev_id = ? AND system_id != '0' AND system_deleted = 0 AND system_sort > -1";
+            $strQuery = "SELECT COUNT(*) AS cnt FROM "._dbprefix_."system WHERE system_prev_id = ? AND system_id != '0' AND system_deleted = 0 AND system_sort > -1";
         }
         $arrRow = $this->objDB->getPRow($strQuery, array($strPrevId), 0, false);
-        $intSiblings = $arrRow["COUNT(*)"];
+        $intSiblings = $arrRow["cnt"];
         return (int)($intSiblings + 1);
     }
 
@@ -1166,8 +1149,8 @@ abstract class Root
             $intSpecial = $this->objSpecialDate->getLongTimestamp();
         }
 
-        $arrRow = $this->objDB->getPRow("SELECT COUNT(*) FROM "._dbprefix_."system_date WHERE system_date_id = ?", array($this->getSystemid()));
-        if ($arrRow["COUNT(*)"] == 0) {
+        $arrRow = $this->objDB->getPRow("SELECT COUNT(*) AS cnt FROM "._dbprefix_."system_date WHERE system_date_id = ?", array($this->getSystemid()));
+        if ($arrRow["cnt"] == 0) {
             //insert
             $strQuery = "INSERT INTO "._dbprefix_."system_date
                       (system_date_id, system_date_start, system_date_end, system_date_special) VALUES
@@ -1388,13 +1371,13 @@ abstract class Root
             $strSystemid = $this->getSystemid();
         }
 
-        $strQuery = "SELECT COUNT(*)
+        $strQuery = "SELECT COUNT(*) AS cnt
                      FROM "._dbprefix_."system as sys1,
                           "._dbprefix_."system as sys2
                      WHERE sys1.system_id=?
                        AND sys2.system_prev_id = sys1.system_prev_id";
         $arrRow = $this->objDB->getPRow($strQuery, array($strSystemid), 0, $bitUseCache);
-        return $arrRow["COUNT(*)"];
+        return $arrRow["cnt"];
 
     }
 

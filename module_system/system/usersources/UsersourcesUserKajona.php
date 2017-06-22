@@ -34,7 +34,7 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
 
     /**
      * @var string
-     * @fieldType password
+     * @fieldType Kajona\System\Admin\Formentries\FormentryPassword
      */
     private $strPass = "";
 
@@ -42,7 +42,7 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
      * For form-faking only!
      *
      * @var string
-     * @fieldType password
+     * @fieldType Kajona\System\Admin\Formentries\FormentryPassword
      */
     private $strPass2 = "";
 

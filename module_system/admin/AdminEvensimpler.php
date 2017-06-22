@@ -104,7 +104,7 @@ abstract class AdminEvensimpler extends AdminSimple
         if(isset(self::$arrActionNameMapping[$strAction])) {
             $strAnnotationPrefix = self::$arrActionNameMapping[$strAction];
 
-            if($strAction == "new") {
+            if($strAction == "new" && $objInstance == null) {
                 return $strAction.$this->getStrCurObjectTypeName();
             }
             else {
@@ -273,7 +273,7 @@ abstract class AdminEvensimpler extends AdminSimple
      *
      * @return null|string
      */
-    private function getObjectFilterClass($strCurObjectTypeName)
+    protected function getObjectFilterClass($strCurObjectTypeName)
     {
 
         $objReflection = new Reflection($this);

@@ -25,7 +25,7 @@ use Kajona\System\System\SystemModule;
  * @module search
  * @moduleId _search_module_id_
  */
-class SearchSearch extends Model implements ModelInterface, SortableRatingInterface, AdminListableInterface
+class SearchSearch extends Model implements ModelInterface, AdminListableInterface
 {
     /**
      * @var string
