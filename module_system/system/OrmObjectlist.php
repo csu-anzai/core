@@ -214,9 +214,14 @@ class OrmObjectlist extends OrmBase
         //try to load the sort criteria
         $arrPropertiesOrder = $objReflection->getPropertiesWithAnnotation(OrmBase::STR_ANNOTATION_LISTORDER);
 
+        $bitHasCreateDate = false;
         $arrOrderByCriteria = array();
         foreach ($this->arrOrderBy as $objOneOrder) {
-            $arrOrderByCriteria[] = $objOneOrder->getStrOrderBy();
+            $strOrderBy = $objOneOrder->getStrOrderBy();
+            $arrOrderByCriteria[] = $strOrderBy;
+            if (strpos($strOrderBy, "system_create_date") !== false) {
+                $bitHasCreateDate = true;
+            }
         }
 
 
@@ -240,13 +245,21 @@ class OrmObjectlist extends OrmBase
                     //get column
                     if ($strColumn != "") {
                         $arrOrderByCriteria[] = " ".$strColumn." ".$strOrder." ";
+
+                        if (strpos($strColumn, "system_create_date") !== false) {
+                            $bitHasCreateDate = true;
+                        }
                     }
                 }
             }
         }
 
         $arrOrderByCriteria[] = " CASE WHEN system_sort < 0 THEN 9999999 ELSE system_sort END ASC "; //TODO: add a better way of setting the max value
-        $arrOrderByCriteria[] = " system_create_date DESC ";
+
+        if (!$bitHasCreateDate) {
+            $arrOrderByCriteria[] = " system_create_date DESC ";
+        }
+
         $strOrderBy = "";
         if (count($arrOrderByCriteria) > 0) {
             $strOrderBy = "ORDER BY ".implode(" , ", $arrOrderByCriteria)." ";
