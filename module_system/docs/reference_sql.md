@@ -13,6 +13,8 @@ postgres, oracle, mssql.
 * Mssql: Spalten vom Typ `text` können nicht sortiert werden. Ein Workaround ist: 
   `ORDER BY CAST(TEXT_COLUMN as VARCHAR(100))`
 * Mssql: Spalten in einer `ORDER BY`-Liste dürfen nicht doppelt angegeben werden
+* Mssql: `DISTINCT` kann nicht benutzt werden wenn das `SELECT` eine `TEXT` Spalte 
+  enthält
 
 ##Generators
 The Database-class support Generators to iterate over larget sets of data. Internally,
