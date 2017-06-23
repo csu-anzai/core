@@ -1,6 +1,8 @@
 <?php
 
-namespace Kajona\System\System;
+namespace Kajona\System\System\Lifecycle;
+
+use Kajona\System\System\Root;
 
 /**
  * The life cycle class can contain complex business logic which is executed i.e. on update. Each model class can
@@ -9,9 +11,9 @@ namespace Kajona\System\System;
  * ServiceLifeCycleImpl which is used if no service was specified.
  *
  * You should execute these operations always on the life cycle service and not on the model directly. It is recommended
- * to develop a life cycle service in a stateless way so that multiple calls to an update method with different models
- * always result in the same behaviour. If you need to execute extra logic which is by default not needed i.e. calculate
- * a score you should add a specific update method i.e. `updateWithCalculation`.
+ * to develop a life cycle service in a stateless way so that multiple calls to i.e. an update method with different
+ * models always result in the same behaviour. If you need to execute extra logic which is by default not needed i.e.
+ * calculate a score you should add a specific update method i.e. `updateWithCalculation`.
  *
  * @package Kajona\System\System
  * @author christoph.kappestein@gmail.com

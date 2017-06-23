@@ -1,7 +1,9 @@
 <?php
 
-namespace Kajona\System\System;
+namespace Kajona\System\System\Lifecycle;
 
+use Kajona\System\System\Reflection;
+use Kajona\System\System\ServiceProvider;
 use Pimple\Container;
 
 /**

@@ -1,6 +1,8 @@
 <?php
 
-namespace Kajona\System\System;
+namespace Kajona\System\System\Lifecycle;
+
+use Kajona\System\System\Exception;
 
 /**
  * ServiceLifeCycleModelException

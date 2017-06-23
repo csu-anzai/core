@@ -1,6 +1,8 @@
 <?php
 
-namespace Kajona\System\System;
+namespace Kajona\System\System\Lifecycle;
+
+use Kajona\System\System\Root;
 
 /**
  * ServiceLifeCycleImpl
@@ -32,7 +34,7 @@ class ServiceLifeCycleImpl implements ServiceLifeCycleInterface
         $bitReturn = $objModel->updateObjectToDb($strPrevId);
 
         if (!$bitReturn) {
-            //throw new ServiceLifeCycleUpdateException("Error updating object ".strip_tags($objModel->getStrDisplayName()), $objModel->getSystemid());
+            throw new ServiceLifeCycleUpdateException("Error updating object ".strip_tags($objModel->getStrDisplayName()), $objModel->getSystemid());
         }
     }
 

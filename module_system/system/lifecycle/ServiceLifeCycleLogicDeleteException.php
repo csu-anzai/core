@@ -1,6 +1,6 @@
 <?php
 
-namespace Kajona\System\System;
+namespace Kajona\System\System\Lifecycle;
 
 /**
  * ServiceLifeCycleLogicDeleteException
