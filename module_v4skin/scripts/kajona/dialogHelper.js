@@ -1,7 +1,11 @@
 
-define(['jquery', 'dialog'], function ($, Dialog) {
 
-    return {
+define('dialogHelper', ['jquery', 'dialog'], function ($, Dialog) {
+
+    var loadingModal = null;
+
+
+    return /** @alias module:dialogHelper */ {
         /**
          * Creates a new confirmation dialog
          *
@@ -9,7 +13,7 @@ define(['jquery', 'dialog'], function ($, Dialog) {
          * @param strContent
          * @param strConfirmationLabel
          * @param strConfirmationHref
-         * @returns {*}
+         * @returns {module:dialog}
          */
         showConfirmationDialog : function(strTitle, strContent, strConfirmationLabel, strConfirmationHref) {
             var dialogInstance = new Dialog('jsDialog_1', 1);
@@ -25,7 +29,7 @@ define(['jquery', 'dialog'], function ($, Dialog) {
          *
          * @param strUrl
          * @param strTitle
-         * @returns
+         * @returns {module:dialog}
          */
         showIframeDialog : function(strUrl, strTitle) {
             var dialogInstance = new Dialog('folderviewDialog', 0);
@@ -40,6 +44,29 @@ define(['jquery', 'dialog'], function ($, Dialog) {
 
             return dialogInstance;
 
+        },
+
+        /**
+         * Registers and shows a loading modal
+         * @returns {module:dialog}
+         */
+        showLoadingModal : function() {
+
+            if (loadingModal === null) {
+                loadingModal = new Dialog('jsDialog_3', 3);
+            }
+
+            loadingModal.init();
+            return loadingModal;
+        },
+
+        /**
+         * Hides the currently open loading modal
+         */
+        hideLoadingModal : function() {
+            if (loadingModal instanceof Dialog) {
+                loadingModal.hide();
+            }
         }
     };
 
