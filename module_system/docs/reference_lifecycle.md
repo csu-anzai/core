@@ -69,5 +69,8 @@ model in a property of the class etc.). If you need to execute extra logic which
 needed i.e. calculate a score you should add a specific `protected` update method i.e. 
 `updateWithCalculation`.
 
+You should use a life cycle service only in a controller or in another life cycle service. It is not
+recommended to call a life cycle service from a model. This could create circular references and in
+general complicates the program flow.
 
 [life_cycle_design]: img/life_cycle_design.png
