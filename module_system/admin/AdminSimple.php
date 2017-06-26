@@ -695,10 +695,6 @@ abstract class AdminSimple extends AdminController
             return "";
         }
 
-        if (is_array($arrActions) && count($arrActions) == 1) {
-            return $arrActions[0];
-        }
-
         //create a menu and merge all buttons
         $arrActionMenuEntries = array();
         foreach ($arrActions as $strOneAction) {
