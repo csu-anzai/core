@@ -156,11 +156,11 @@ class ServiceProvider implements ServiceProviderInterface
         };
 
         $objContainer[self::STR_LIFE_CYCLE_FACTORY] = function ($c) {
-            return new LifeCycle\ServiceLifeCycleFactory($c);
+            return new Lifecycle\ServiceLifeCycleFactory($c);
         };
 
         $objContainer[self::STR_LIFE_CYCLE_DEFAULT] = function ($c) {
-            return new LifeCycle\ServiceLifeCycleImpl($c[self::STR_LIFE_CYCLE_FACTORY]);
+            return new Lifecycle\ServiceLifeCycleImpl($c[self::STR_LIFE_CYCLE_FACTORY]);
         };
     }
 }
