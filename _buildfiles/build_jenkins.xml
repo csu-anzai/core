@@ -50,7 +50,7 @@
     <!-- path to the composer binaries -->
     <property name="composerBinariesPath" value="${basedir}${buildPath}/composerbuild/vendor/bin" />
     <!-- npm local cache registry -->
-    <property name="npmLocalRegistry" value="https://buildpackages.kajona.de:4873/" />
+    <property name="npmLocalRegistry" value="http://packages.artemeon.int:4873/" />
 
 
 
