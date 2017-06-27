@@ -155,6 +155,9 @@
 
     <target name="installNpmGuiBuildDependencies" >
         <echo>Execute npm</echo>
+        <exec dir="${basedir}${jsPath}" executable="${path.npm}" failonerror="on">
+            <arg line=" config set registry ${npmLocalRegistry}"/>
+        </exec>
         <exec dir="${basedir}${jsPath}/guideps" executable="${path.npm}" failonerror="on">
             <arg line=" install"/>
         </exec>
