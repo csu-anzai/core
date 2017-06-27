@@ -14,19 +14,6 @@ use Kajona\System\System\Root;
 class ServiceLifeCycleImpl implements ServiceLifeCycleInterface
 {
     /**
-     * @var ServiceLifeCycleFactory
-     */
-    protected $objFactory;
-
-    /**
-     * @param ServiceLifeCycleFactory $objFactory
-     */
-    public function __construct(ServiceLifeCycleFactory $objFactory)
-    {
-        $this->objFactory = $objFactory;
-    }
-
-    /**
      * @inheritdoc
      */
     public function update(Root $objModel, $strPrevId = false)
