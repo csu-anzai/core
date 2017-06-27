@@ -132,7 +132,6 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
          * @param objCallback
          */
         registerLoadCallback : function (strName, objCallback) {
-            debugger;
             arrLoadCallbacks[strName] = objCallback;
         },
 
