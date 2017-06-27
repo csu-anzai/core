@@ -245,7 +245,7 @@ HTML;
         if ($objHighlite instanceof FlowStatus) {
             $arrList["style ".$objHighlite->getSystemid()] = "style {$objHighlite->getSystemid()} fill:#f9f9f9,stroke:{$arrColorMapper[$objHighlite->getStrIcon()]},stroke-width:3px;";
         } elseif ($objHighlite instanceof FlowTransition) {
-            $arrList["style ".$objHighlite->getParentStatus()->getSystemid()] = "style {$objHighlite->getParentStatus()->getSystemid()} fill:#f9f9f9,stroke:#333,stroke-width:3px;";
+            $arrList["style ".$objHighlite->getParentStatus()->getSystemid()] = "style {$objHighlite->getParentStatus()->getSystemid()} fill:#f9f9f9,stroke:{$arrColorMapper[$objHighlite->getStrIcon()]},stroke-width:3px;";
         }
 
         $strGraph = implode("\n", $arrList);
