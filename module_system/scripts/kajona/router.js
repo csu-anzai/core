@@ -20,57 +20,14 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
     var initRouter = function() {
 
         routie('*', function(url) {
-            console.log('processing url '+url);
+            var objUrl = generateUrl(url);
 
-            if(url.trim() === '') {
-                if($('#loginContainer')) {
-                    return;
-                }
-                url = "dashboard";
-            }
-
-            if(url.charAt(0) == "/") {
-                url = url.substr(1);
-            }
-
-            //react on peClose statements by reloading the parent view
-            var isStackedDialog = !!(window.frameElement && window.frameElement.nodeName && window.frameElement.nodeName.toLowerCase() == 'iframe');
-            if(isStackedDialog && url.indexOf('peClose=1') != -1) {
-                parent.KAJONA.admin.folderview.dialog.hide();
-                console.log('parent call: '+parent.window.location.hash);
-                parent.routie.reload();
+            if(!objUrl) {
                 return;
             }
 
-
-            //split to get module, action and params
-            var strParams = '';
-            if( url.indexOf('?') > 0) {
-                strParams = url.substr(url.indexOf('?')+1);
-                url = url.substr(0, url.indexOf('?'));
-            }
-
-            var arrSections = url.split("/");
-
-            var strUrlToLoad = '/index.php?admin=1&module='+arrSections[0];
-            if(arrSections.length >= 2) {
-                strUrlToLoad += '&action='+arrSections[1];
-            }
-            if(arrSections.length >= 3) {
-                strUrlToLoad += '&systemid='+arrSections[2];
-            }
-
-            strUrlToLoad += "&"+strParams;
-
-            // if(isStackedDialog && strUrlToLoad.indexOf('folderview') == -1) {
-            //     strUrlToLoad += "&folderview=1";
-            // }
-
-            strUrlToLoad += "&contentFill=1";
-            console.log('Loading url '+strUrlToLoad);
-
             cleanPage();
-            moduleNavigation.setModuleActive(arrSections[0]);
+            moduleNavigation.setModuleActive(objUrl.module);
 
             applyCallbacks();
 
@@ -78,16 +35,68 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
             if(KAJONA.admin.forms.submittedEl != null) {
                 var data = $(KAJONA.admin.forms.submittedEl).serialize();
                 KAJONA.admin.forms.submittedEl = null;
-                ajax.loadUrlToElement('#moduleOutput', strUrlToLoad, data, false, 'POST');
+                ajax.loadUrlToElement('#moduleOutput', objUrl.url, data, false, 'POST');
 
             } else {
-                ajax.loadUrlToElement('#moduleOutput', strUrlToLoad, null, true);
+                ajax.loadUrlToElement('#moduleOutput', objUrl.url, null, true);
             }
 
 
         });
     };
 
+
+    var generateUrl = function(url) {
+        console.log('processing url '+url);
+
+        if (url.indexOf("#") > 0) {
+            url = url.substr(url.indexOf("#")+1);
+        }
+
+        if(url.trim() === '') {
+            if($('#loginContainer')) {
+                return;
+            }
+            url = "dashboard";
+        }
+
+        if(url.charAt(0) == "/") {
+            url = url.substr(1);
+        }
+
+        //react on peClose statements by reloading the parent view
+        var isStackedDialog = !!(window.frameElement && window.frameElement.nodeName && window.frameElement.nodeName.toLowerCase() == 'iframe');
+        if(isStackedDialog && url.indexOf('peClose=1') != -1) {
+            parent.KAJONA.admin.folderview.dialog.hide();
+            console.log('parent call: '+parent.window.location.hash);
+            parent.routie.reload();
+            return;
+        }
+
+
+        //split to get module, action and params
+        var strParams = '';
+        if( url.indexOf('?') > 0) {
+            strParams = url.substr(url.indexOf('?')+1);
+            url = url.substr(0, url.indexOf('?'));
+        }
+
+        var arrSections = url.split("/");
+
+        var strUrlToLoad = '/index.php?admin=1&module='+arrSections[0];
+        if(arrSections.length >= 2) {
+            strUrlToLoad += '&action='+arrSections[1];
+        }
+        if(arrSections.length >= 3) {
+            strUrlToLoad += '&systemid='+arrSections[2];
+        }
+
+        strUrlToLoad += "&"+strParams;
+
+        strUrlToLoad += "&contentFill=1";
+        console.log('Loading url '+strUrlToLoad);
+        return { url: strUrlToLoad, module: arrSections[0]};
+    };
 
     var cleanPage = function() {
         //contentToolbar.resetBar(); //TODO: aktuell in ToolkitAdmin und RequestDispatcher, muss aber in einen Callback bevor der content in das target div geschrieben wird
@@ -124,6 +133,10 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
 
         init : function() {
             initRouter();
+        },
+
+        generateUrl : function (url) {
+            return generateUrl(url);
         },
 
         /**
