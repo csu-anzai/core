@@ -26,6 +26,28 @@ abstract class DbBase implements DbDriverInterface
      */
     protected $intAffectedRows = 0;
 
+
+    /**
+     * Detects if the current installation runs on win or unix
+     * @return bool
+     */
+    protected function isWinOs()
+    {
+        return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+    }
+
+    /**
+     * Default implementation to detect if a driver handles compression.
+     * By default, db-drivers us a piped gzip / gunzip command when creating / restoring dumps on unix.
+     * If running on windows, the Database class handles the compression / decompression.
+     *
+     * @return bool
+     */
+    public function handlesDumpCompression()
+    {
+        return !$this->isWinOs();
+    }
+
     /**
      * Renames a table
      *
@@ -127,7 +149,7 @@ abstract class DbBase implements DbDriverInterface
 
         foreach ($arrValueSets as $arrOneSet) {
             $arrPlaceholderSets[] = $strPlaceholder;
-            $arrParams = array_merge($arrParams, $arrOneSet);
+            $arrParams = array_merge($arrParams, array_values($arrOneSet));
         }
 
         $strQuery = "INSERT INTO ".$this->encloseTableName($strTable)." (".implode(",", $arrSafeColumns).") VALUES ".implode(",", $arrPlaceholderSets);
@@ -173,7 +195,7 @@ abstract class DbBase implements DbDriverInterface
             }
         }
 
-        $arrRow = $this->getPArraySection("SELECT COUNT(*) FROM ".$this->encloseTableName(_dbprefix_.$strTable)." WHERE ".implode(" AND ", $arrPrimaryCompares), $arrPrimaryValues, 0, 1);
+        $arrRow = $this->getPArraySection("SELECT COUNT(*) AS cnt FROM ".$this->encloseTableName(_dbprefix_.$strTable)." WHERE ".implode(" AND ", $arrPrimaryCompares), $arrPrimaryValues, 0, 1);
 
         if ($arrRow === false) {
             return false;
@@ -181,7 +203,7 @@ abstract class DbBase implements DbDriverInterface
 
         $arrSingleRow = isset($arrRow[0]) ? $arrRow[0] : null;
 
-        if ($arrSingleRow === null || $arrSingleRow["COUNT(*)"] == "0") {
+        if ($arrSingleRow === null || $arrSingleRow["cnt"] == "0") {
             $strQuery = "INSERT INTO ".$this->encloseTableName(_dbprefix_.$strTable)." (".implode(", ", $arrMappedColumns).") VALUES (".implode(", ", $arrPlaceholder).")";
             return $this->_pQuery($strQuery, $arrValues);
         } else {

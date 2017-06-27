@@ -77,7 +77,7 @@ class UsersourcesGroupKajona extends Model implements ModelInterface, Usersource
     {
         //mode-splitting
         if ($this->getSystemid() == "") {
-            Logger::getInstance(Logger::USERSOURCES)->addLogRow("saved new kajona group ".$this->getStrSystemid(), Logger::$levelInfo);
+            Logger::getInstance(Logger::USERSOURCES)->info("saved new kajona group ".$this->getStrSystemid());
             $strGrId = generateSystemid();
             $this->setSystemid($strGrId);
             $strQuery = "INSERT INTO "._dbprefix_."user_group_kajona
@@ -86,7 +86,7 @@ class UsersourcesGroupKajona extends Model implements ModelInterface, Usersource
             return $this->objDB->_pQuery($strQuery, array($strGrId, $this->getStrDesc()));
         }
         else {
-            Logger::getInstance(Logger::USERSOURCES)->addLogRow("updated kajona group ".$this->getSystemid(), Logger::$levelInfo);
+            Logger::getInstance(Logger::USERSOURCES)->info("updated kajona group ".$this->getSystemid());
             $strQuery = "UPDATE "._dbprefix_."user_group_kajona
                             SET group_desc=?
                           WHERE group_id=?";
@@ -136,12 +136,15 @@ class UsersourcesGroupKajona extends Model implements ModelInterface, Usersource
     public function getUserIdsForGroup($intStart = null, $intEnd = null)
     {
         $strQuery = "SELECT k_user.user_id FROM "._dbprefix_."user_kajona as k_user,
-                                         "._dbprefix_."user as user2,
-									     "._dbprefix_."user_kajona_members
+                                         ".$this->objDB->encloseTableName(_dbprefix_."user")." as user2,
+									     "._dbprefix_."user_kajona_members,
+									     "._dbprefix_."system 
 								   WHERE group_member_group_kajona_id= ?
 								  	 AND k_user.user_id = group_member_user_kajona_id
                                      AND k_user.user_id = user2.user_id
-                                   ORDER BY user2.user_username ASC  ";
+                                     AND user2.user_id = system_id
+					                 AND system_deleted = 0
+                                ORDER BY user2.user_username ASC  ";
 
         $arrIds = $this->objDB->getPArray($strQuery, array($this->getSystemid()), $intStart, $intEnd);
 
@@ -160,11 +163,14 @@ class UsersourcesGroupKajona extends Model implements ModelInterface, Usersource
      */
     public function getNumberOfMembers()
     {
-        $strQuery = "SELECT COUNT(*)
-                       FROM "._dbprefix_."user_kajona_members
-					   WHERE group_member_group_kajona_id= ?";
+        $strQuery = "SELECT COUNT(*) AS cnt
+                       FROM "._dbprefix_."user_kajona_members,
+                            "._dbprefix_."system 
+					   WHERE group_member_group_kajona_id= ?
+					     AND group_member_user_kajona_id = system_id
+					     AND system_deleted = 0";
         $arrRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, array($this->getSystemid()));
-        return $arrRow["COUNT(*)"];
+        return $arrRow["cnt"];
     }
 
     /**
@@ -174,7 +180,7 @@ class UsersourcesGroupKajona extends Model implements ModelInterface, Usersource
      */
     public function deleteGroup()
     {
-        Logger::getInstance(Logger::USERSOURCES)->addLogRow("deleted kajona group with id ".$this->getSystemid(), Logger::$levelInfo);
+        Logger::getInstance(Logger::USERSOURCES)->info("deleted kajona group with id ".$this->getSystemid());
         $this->deleteAllUsersFromCurrentGroup();
         $strQuery = "DELETE FROM "._dbprefix_."user_group_kajona WHERE group_id=?";
         CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_RECORDDELETED, array($this->getSystemid(), get_class($this)));

@@ -33,10 +33,8 @@ use Kajona\System\System\SystemJSTreeConfig;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\Toolkit;
-use Kajona\System\System\UserUser;
 use Kajona\Tags\System\TagsFavorite;
 use Kajona\Tags\System\TagsTag;
-
 
 /**
  * Admin-Part of the toolkit-classes
@@ -164,7 +162,7 @@ class ToolkitAdmin extends Toolkit
                 toolbar : '".$strToolbarset."',
                 ".$strTemplateInit."
                 language : '".$strLanguage."',
-                filebrowserBrowseUrl : '".StringUtil::replace("&amp;", "&", getLinkAdminHref("folderview", "browserChooser", "&form_element=ckeditor"))."',
+                filebrowserBrowseUrl : '".StringUtil::replace("&amp;", "&", getLinkAdminHref("folderview", "browserChooser", "&form_element=ckeditor&download=1"))."',
                 filebrowserImageBrowseUrl : '".StringUtil::replace("&amp;", "&", getLinkAdminHref("mediamanager", "folderContentFolderviewMode", "systemid=".SystemSetting::getConfigValue("_mediamanager_default_imagesrepoid_")."&form_element=ckeditor&bit_link=1"))."'
 	        };
             CKEDITOR.replace($(\"textarea[name='".$strName."'][data-kajona-editorid='".$arrTemplate["editorid"]."']\")[0], ckeditorConfig);
@@ -279,9 +277,10 @@ class ToolkitAdmin extends Toolkit
      * @param string $strOpener
      * @param bool $bitReadonly
      *
+     * @param string $strInstantEditor
      * @return string
      */
-    public function formInputText($strName, $strTitle = "", $strValue = "", $strClass = "", $strOpener = "", $bitReadonly = false)
+    public function formInputText($strName, $strTitle = "", $strValue = "", $strClass = "", $strOpener = "", $bitReadonly = false, $strInstantEditor = "")
     {
         $arrTemplate = array();
         $arrTemplate["name"] = $strName;
@@ -289,6 +288,7 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["title"] = $strTitle;
         $arrTemplate["class"] = $strClass;
         $arrTemplate["opener"] = $strOpener;
+        $arrTemplate["instantEditor"] = $strInstantEditor;
         $arrTemplate["readonly"] = ($bitReadonly ? "readonly=\"readonly\"" : "");
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_text");
@@ -308,20 +308,21 @@ class ToolkitAdmin extends Toolkit
      * @throws Exception
      * @return string
      */
-    public function formInputPageSelector($strName, $strTitle = "", $strValue = "", $strClass = "", $bitElements = true, $bitRenderOpener = true, $strAddonAction = "")
+    public function formInputPageSelector($strName, $strTitle = "", $strValue = "", $strClass = "", $bitElements = true, $bitRenderOpener = true, $strAddonAction = "", $strInstantEditor = "")
     {
         $arrTemplate = array();
         $arrTemplate["name"] = $strName;
         $arrTemplate["value"] = htmlspecialchars($strValue, ENT_QUOTES, "UTF-8", false);
         $arrTemplate["title"] = $strTitle;
         $arrTemplate["class"] = $strClass;
+        $arrTemplate["instantEditor"] = $strInstantEditor;
 
         $arrTemplate["opener"] = "";
         if ($bitRenderOpener) {
             $arrTemplate["opener"] .= getLinkAdminDialog(
                 "pages",
                 "pagesFolderBrowser",
-                "&pages=1&form_element=".$strName.(!$bitElements ? "&elements=false" : ""),
+                "&pages=1&form_element=".StringUtil::replace(array("[", "]"), array("\\\[", "\\\]"), $strName).(!$bitElements ? "&elements=false" : ""),
                 Carrier::getInstance()->getObjLang()->getLang("select_page", "pages"),
                 Carrier::getInstance()->getObjLang()->getLang("select_page", "pages"),
                 "icon_externalBrowser",
@@ -330,8 +331,6 @@ class ToolkitAdmin extends Toolkit
         }
 
         $arrTemplate["opener"] .= $strAddonAction;
-
-        $strJsVarName = StringUtil::replace(array("[", "]"), array("", ""), $strName);
 
         $arrTemplate["ajaxScript"] = "
 	        <script type=\"text/javascript\">
@@ -375,10 +374,8 @@ class ToolkitAdmin extends Toolkit
      * @param bool $bitUser
      * @param bool $bitGroups
      * @param bool $bitBlockCurrentUser
-     * @param string $arrValidateSystemid If you want to check the view-permissions for a given systemid, pass the id here
-     *
+     * @param array|string $arrValidateSystemid If you want to check the view-permissions for a given systemid, pass the id here
      * @return string
-     * @throws Exception
      */
     public function formInputUserSelector($strName, $strTitle = "", $strValue = "", $strClass = "", $bitUser = true, $bitGroups = false, $bitBlockCurrentUser = false, array $arrValidateSystemid = null)
     {
@@ -559,24 +556,24 @@ class ToolkitAdmin extends Toolkit
             Carrier::getInstance()->getObjLang()->getLang("filebrowser", "system")
         );
 
-        $strOpener .= " ".getLinkAdminDialog(
-                "mediamanager",
-                "imageDetails",
-                "file='+document.getElementById('".$strName."').value+'",
-                Carrier::getInstance()->getObjLang()->getLang("action_edit_image", "mediamanager"),
-                Carrier::getInstance()->getObjLang()->getLang("action_edit_image", "mediamanager"),
-                "icon_crop",
-                Carrier::getInstance()->getObjLang()->getLang("action_edit_image", "mediamanager"),
-                true,
-                false,
-                " (function() {
-             if(document.getElementById('".$strName."').value != '') {
-                 require('folderview').dialog.setContentIFrame('".urldecode(getLinkAdminHref("mediamanager", "imageDetails", "file='+document.getElementById('".$strName."').value+'"))."');
-                 require('folderview').dialog.setTitle('".$strTitle."');
-                 require('folderview').dialog.init();
-             }
-             return false; })(); return false;"
-            );
+        $strOpener .= " " . getLinkAdminDialog(
+            "mediamanager",
+            "imageDetails",
+            "file='+document.getElementById('" . $strName . "').value+'",
+            Carrier ::getInstance() -> getObjLang() -> getLang("action_edit_image", "mediamanager"),
+            Carrier ::getInstance() -> getObjLang() -> getLang("action_edit_image", "mediamanager"),
+            "icon_crop",
+            Carrier ::getInstance() -> getObjLang() -> getLang("action_edit_image", "mediamanager"),
+            true,
+            false,
+            " (function() {
+         if(document.getElementById('" . $strName . "').value != '') {
+             require('folderview').dialog.setContentIFrame('" . urldecode(getLinkAdminHref("mediamanager", "imageDetails", "file='+document.getElementById('" . $strName . "').value+'")) . "');
+             require('folderview').dialog.setTitle('" . $strTitle . "');
+             require('folderview').dialog.init();
+         }
+         return false; })(); return false;"
+        );
 
         return $this->formInputText($strName, $strTitle, $strValue, $strClass, $strOpener);
     }
@@ -653,7 +650,7 @@ class ToolkitAdmin extends Toolkit
 
         $strButton = $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_submit");
 
-        if($bitWithWrapper) {
+        if ($bitWithWrapper) {
             $strButton = $this->objTemplate->fillTemplateFile(array("button" => $strButton), "/elements.tpl", "input_submit_wrapper");
         }
         return $strButton;
@@ -754,7 +751,7 @@ class ToolkitAdmin extends Toolkit
      * @return string
      * @throws Exception
      */
-    public function formInputDropdown($strName, array $arrKeyValues, $strTitle = "", $strKeySelected = "", $strClass = "", $bitEnabled = true, $strAddons = "", $strDataPlaceholder = "", $strOpener = "")
+    public function formInputDropdown($strName, array $arrKeyValues, $strTitle = "", $strKeySelected = "", $strClass = "", $bitEnabled = true, $strAddons = "", $strDataPlaceholder = "", $strOpener = "", $strInstantEditor = "")
     {
         $strOptions = "";
         foreach (array("", 0, "\"\"") as $strOneKeyToCheck) {
@@ -780,8 +777,7 @@ class ToolkitAdmin extends Toolkit
             $arrTemplate["value"] = $strValue;
             if ((string)$strKey == (string)$strKeySelected) {
                 $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_dropdown_row_selected");
-            }
-            else {
+            } else {
                 $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_dropdown_row");
             }
         }
@@ -795,7 +791,8 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["options"] = $strOptions;
         $arrTemplate["addons"] = $strAddons;
         $arrTemplate["opener"] = $strOpener;
-        $arrTemplate["dataplaceholder"] = $strDataPlaceholder != "" ? $strDataPlaceholder : Carrier::getInstance()->getObjLang()->getLang("commons_dropdown_dataplaceholder", "system");
+        $arrTemplate["instantEditor"] = $strInstantEditor;
+        $arrTemplate["dataplaceholder"] = $strDataPlaceholder != "" ? $strDataPlaceholder : Carrier::getInstance()->getObjLang()->getLang("commons_dropdown_dataplaceholder", "system"); //TODO noch benötigt?
 
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_dropdown", true);
@@ -825,8 +822,7 @@ class ToolkitAdmin extends Toolkit
             $arrTemplate["value"] = $strValue;
             if (in_array($strKey, $arrKeysSelected)) {
                 $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_multiselect_row_selected");
-            }
-            else {
+            } else {
                 $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_multiselect_row");
             }
         }
@@ -853,12 +849,11 @@ class ToolkitAdmin extends Toolkit
      */
     public function formInputTagEditor($strName, $strTitle = "", array $arrValues = array(), $strOnChange = null)
     {
-
         $arrTemplate = array();
         $arrTemplate["name"] = $strName;
         $arrTemplate["title"] = $strTitle;
         $arrTemplate["values"] = json_encode(array_values($arrValues));
-        $arrTemplate["onChange"] = empty($strOnChange) ? "function(){}" : (string)$strOnChange;
+        $arrTemplate["onChange"] = empty($strOnChange) ? "function(field, editor, tags){ $(field).attr('name', $(field).data('name')); $(field).val(tags.join(',')); }" : (string)$strOnChange;
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_tageditor", true);
     }
@@ -923,8 +918,7 @@ class ToolkitAdmin extends Toolkit
             $arrTemplate["btnclass"] = ($bitEnabled ? "" : "disabled");
             if (in_array($strKey, $arrKeysSelected)) {
                 $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_toggle_buttonbar_button_selected");
-            }
-            else {
+            } else {
                 $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_toggle_buttonbar_button");
             }
         }
@@ -1085,7 +1079,7 @@ class ToolkitAdmin extends Toolkit
                     // remove empty entries
                     $arrPath = array_filter($arrPath);
 
-                    $arrPath = array_map(function($strSystemId){
+                    $arrPath = array_map(function ($strSystemId) {
                         return Objectfactory::getInstance()->getObject($strSystemId)->getStrDisplayName();
                     }, $arrPath);
                 }
@@ -1174,6 +1168,7 @@ class ToolkitAdmin extends Toolkit
      * @param string $strText
      * @param string $strClass
      *
+     * @param string $strLevel
      * @return string
      */
     public function formHeadline($strText, $strClass = "", $strLevel = "h2")
@@ -1313,7 +1308,8 @@ class ToolkitAdmin extends Toolkit
                 "elementsPerPage" => $intElementsPerPage,
                 "curPage"         => $intCurPage
             ),
-            "/elements.tpl", "dragable_list_header"
+            "/elements.tpl",
+            "dragable_list_header"
         );
     }
 
@@ -1354,8 +1350,7 @@ class ToolkitAdmin extends Toolkit
         $strImage = $objEntry->getStrIcon();
         if (is_array($strImage)) {
             $strImage = AdminskinHelper::getAdminImage($strImage[0], $strImage[1]);
-        }
-        else {
+        } else {
             $strImage = AdminskinHelper::getAdminImage($strImage);
         }
 
@@ -1411,16 +1406,13 @@ class ToolkitAdmin extends Toolkit
         if ($strDescription != "") {
             if ($this->objTemplate->providesSection("/elements.tpl", "generallist_desc")) {
                 $strSection = "generallist_desc";
-            }
-            else {
+            } else {
                 $strSection = "generallist_desc_1";
             }
-        }
-        else {
+        } else {
             if ($this->objTemplate->providesSection("/elements.tpl", "generallist")) {
                 $strSection = "generallist";
-            }
-            else {
+            } else {
                 $strSection = "generallist_1";
             }
         }
@@ -1447,7 +1439,8 @@ class ToolkitAdmin extends Toolkit
                     "renderinfo" => $objOneAction->getBitRenderInfo() ? "1" : "0",
                     "onclick"    => $objOneAction->getStrOnClickHandler()
                 ),
-                "/elements.tpl", "batchactions_entry"
+                "/elements.tpl",
+                "batchactions_entry"
             ));
         }
 
@@ -1481,24 +1474,23 @@ class ToolkitAdmin extends Toolkit
 
             $bitNrToSkip = 0;
             foreach ($arrHeader as $strCssClass => $strHeader) {
-
                 $bitSkipPrint = 0;
                 $strAddon = "";
-                if(StringUtil::indexOf($strCssClass, "colspan-2") !== false) {
+                if (StringUtil::indexOf($strCssClass, "colspan-2") !== false) {
                     $strAddon = " colspan='2' ";
                     $bitSkipPrint = 1;
                     $strCssClass = StringUtil::replace("colspan-2", "", $strCssClass);
-                } elseif(StringUtil::indexOf($strCssClass, "colspan-3") !== false) {
+                } elseif (StringUtil::indexOf($strCssClass, "colspan-3") !== false) {
                     $strAddon = " colspan='3' ";
                     $bitSkipPrint = 2;
                     $strCssClass = StringUtil::replace("colspan-3", "", $strCssClass);
                 }
 
-                if($bitNrToSkip-- <= 0) {
+                if ($bitNrToSkip-- <= 0) {
                     $strReturn .= $this->objTemplate->fillTemplateFile(array("value" => $strHeader, "class" => $strCssClass, "addons" => $strAddon), "/elements.tpl", "datalist_column_head");
                 }
 
-                if($bitSkipPrint > 0) {
+                if ($bitSkipPrint > 0) {
                     $bitNrToSkip = $bitSkipPrint;
                 }
 
@@ -1589,7 +1581,7 @@ class ToolkitAdmin extends Toolkit
             }
         }
 
-        if($strConfirmationButtonLabel == "") {
+        if ($strConfirmationButtonLabel == "") {
             $strConfirmationButtonLabel = Carrier::getInstance()->getObjLang()->getLang("commons_ok", "system");
         }
 
@@ -1623,18 +1615,15 @@ class ToolkitAdmin extends Toolkit
 
         if (is_object($objInstance) && $objInstance instanceof Model) {
             $objRecord = $objInstance;
-        }
-        elseif (validateSystemid($objInstance) && Objectfactory::getInstance()->getObject($objInstance) !== null) {
+        } elseif (validateSystemid($objInstance) && Objectfactory::getInstance()->getObject($objInstance) !== null) {
             $objRecord = Objectfactory::getInstance()->getObject($objInstance);
-        }
-        else {
+        } else {
             throw new Exception("failed loading instance for ".(is_object($objInstance) ? " @ ".get_class($objInstance) : $objInstance), Exception::$level_ERROR);
         }
 
         if ($objRecord->getIntRecordStatus() == 1) {
             $strLinkContent = AdminskinHelper::getAdminImage("icon_enabled", $strAltActive);
-        }
-        else {
+        } else {
             $strLinkContent = AdminskinHelper::getAdminImage("icon_disabled", $strAltInactive);
         }
 
@@ -1956,7 +1945,6 @@ HTML;
 
 
         foreach ($arrNaviInstances as $objOneInstance) {
-
             $arrActions = AdminHelper::getModuleActionNaviHelper($objOneInstance);
 
             $strActions = "";
@@ -1966,8 +1954,7 @@ HTML;
                         "action" => $strOneAction
                     );
                     $strActions .= $this->objTemplate->fillTemplateFile($arrActionEntries, "/elements.tpl", "sitemap_action_entry");
-                }
-                else {
+                } else {
                     $strActions .= $this->objTemplate->fillTemplateFile(array(), "/elements.tpl", "sitemap_divider_entry");
                 }
             }
@@ -1982,7 +1969,7 @@ HTML;
             );
 
 
-            if(array_key_exists($objOneInstance->getStrName(), $arrCombined)) {
+            if (array_key_exists($objOneInstance->getStrName(), $arrCombined)) {
                 $arrModuleLevel["faicon"] = $arrCombined[$objOneInstance->getStrName()];
 
                 $strBodySection = "sitemap_combined_entry_body";
@@ -1992,22 +1979,20 @@ HTML;
 
                 $strCombinedHeader .= $this->objTemplate->fillTemplateFile($arrModuleLevel, "/elements.tpl", "sitemap_combined_entry_header");
                 $strCombinedBody .= $this->objTemplate->fillTemplateFile($arrModuleLevel, "/elements.tpl", $strBodySection);
-            }
-            else {
+            } else {
 
                 if ($strCurrentModule == $objOneInstance->getStrName()) {
                     $strModules .= $this->objTemplate->fillTemplateFile($arrModuleLevel, "/elements.tpl", "sitemap_module_wrapper_active");
-                }
-                else {
+                } else {
                     $strModules .= $this->objTemplate->fillTemplateFile($arrModuleLevel, "/elements.tpl", "sitemap_module_wrapper");
                 }
             }
         }
 
 
-        if($strCombinedHeader != "") {
+        if ($strCombinedHeader != "") {
             $strSection = "sitemap_combined_entry_wrapper";
-            if(array_key_exists($strCurrentModule, $arrCombined)) {
+            if (array_key_exists($strCurrentModule, $arrCombined)) {
                 $strSection = "sitemap_combined_entry_wrapper_active";
             }
 
@@ -2039,7 +2024,6 @@ HTML;
             $strRows .= $this->objTemplate->fillTemplateFile(array("pathlink" => $strOneEntry), "/elements.tpl", "path_entry");
         }
         return $this->objTemplate->fillTemplateFile(array("pathnavi" => $strRows), "/elements.tpl", "path_container");
-
     }
 
     // --- Content Toolbar ----------------------------------------------------------------------------------
@@ -2057,14 +2041,26 @@ HTML;
         $strRows = "";
         foreach ($arrEntries as $intI => $strOneEntry) {
             if ($intI == $intActiveEntry) {
-                $strRows .= $this->objTemplate->fillTemplateFile(array("entry" => $strOneEntry), "/elements.tpl", "contentToolbar_entry_active");
-            }
-            else {
-                $strRows .= $this->objTemplate->fillTemplateFile(array("entry" => $strOneEntry), "/elements.tpl", "contentToolbar_entry");
+                $strRows .= $this->objTemplate->fillTemplateFile(array("entry" => addslashes($strOneEntry), "active" => 'true'), "/elements.tpl", "contentToolbar_entry");
+            } else {
+                $strRows .= $this->objTemplate->fillTemplateFile(array("entry" => addslashes($strOneEntry), "active" => 'false'), "/elements.tpl", "contentToolbar_entry");
             }
         }
         return $this->objTemplate->fillTemplateFile(array("entries" => $strRows), "/elements.tpl", "contentToolbar_wrapper");
+    }
 
+
+    /**
+     * Adds a new entry to the current toolbar
+     *
+     * @param $strButton
+     * @param $strIdentifier
+     * @return string
+     */
+    public function addToContentToolbar($strButton, $strIdentifier = '', $bitActive = false)
+    {
+        $strEntry = $this->objTemplate->fillTemplateFile(array("entry" => addslashes($strButton), "identifier" => $strIdentifier, "active" => $bitActive ? 'true' : 'false'), "/elements.tpl", "contentToolbar_entry");
+        return $this->objTemplate->fillTemplateFile(array("entries" => $strEntry), "/elements.tpl", "contentToolbar_wrapper");
     }
 
     /**
@@ -2076,6 +2072,9 @@ HTML;
      */
     public function getContentActionToolbar($strContent)
     {
+        if (empty($strContent)) {
+            return "";
+        }
         return $this->objTemplate->fillTemplateFile(array("content" => $strContent), "/elements.tpl", "contentActionToolbar_wrapper");
     }
 
@@ -2097,8 +2096,7 @@ HTML;
         if (method_exists($objCalling, "getRequiredFields") && is_callable(array($objCalling, "getRequiredFields"))) {
             if ($objCalling instanceof AdminFormgenerator) {
                 $arrFields = $objCalling->getRequiredFields();
-            }
-            else {
+            } else {
                 $strTempAction = $objCalling->getAction();
                 $objCalling->setAction($strTargetAction);
                 $arrFields = $objCalling->getRequiredFields();
@@ -2256,11 +2254,9 @@ HTML;
             $bitDisplay = false;
             if ($intCounter2 <= 2) {
                 $bitDisplay = true;
-            }
-            elseif ($intCounter2 >= ($intNrOfPages - 1)) {
+            } elseif ($intCounter2 >= ($intNrOfPages - 1)) {
                 $bitDisplay = true;
-            }
-            elseif ($intCounter2 >= ($intCurrentpage - 2) && $intCounter2 <= ($intCurrentpage + 2)) {
+            } elseif ($intCounter2 >= ($intCurrentpage - 2) && $intCounter2 <= ($intCurrentpage + 2)) {
                 $bitDisplay = true;
             }
 
@@ -2272,8 +2268,7 @@ HTML;
 
                 if ($intI == $intCurrentpage) {
                     $strListItems .= $this->objTemplate->fillTemplateFile($arrLinkTemplate, "/elements.tpl", "pageview_list_item_active");
-                }
-                else {
+                } else {
                     $strListItems .= $this->objTemplate->fillTemplateFile($arrLinkTemplate, "/elements.tpl", "pageview_list_item");
                 }
             }
@@ -2478,20 +2473,16 @@ HTML;
      */
     public function getTree(SystemJSTreeConfig $objTreeConfig)
     {
-        $arrNodesToExpand = $objTreeConfig->getArrNodesToExpand();
-
         $arrTemplate = array();
         $arrTemplate["rootNodeSystemid"] = $objTreeConfig->getStrRootNodeId();
         $arrTemplate["loadNodeDataUrl"] = $objTreeConfig->getStrNodeEndpoint();
         $arrTemplate["treeId"] = "tree_".$objTreeConfig->getStrRootNodeId();
         $arrTemplate["treeConfig"] = $objTreeConfig->toJson();
-        $arrTemplate["treeviewExpanders"] = "";
-        for ($intI = 0; $intI < count($arrNodesToExpand); $intI++) {
-            $arrTemplate["treeviewExpanders"] .= "\"".$arrNodesToExpand[$intI]."\"";
-            if ($intI < count($arrNodesToExpand) - 1) {
-                $arrTemplate["treeviewExpanders"] .= ",";
-            }
-        }
+        $arrTemplate["treeviewExpanders"] = is_array($objTreeConfig->getArrNodesToExpand()) ?
+            json_encode(array_values($objTreeConfig->getArrNodesToExpand())) : "[]" ;//using array_values just in case an associative array is being returned
+        $arrTemplate["initiallySelectedNodes"] = is_array($objTreeConfig->getArrInitiallySelectedNodes()) ?
+            json_encode(array_values($objTreeConfig->getArrInitiallySelectedNodes())) : "[]" ;//using array_values just in case an associative array is being returned
+
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "tree");
     }
 
@@ -2549,7 +2540,6 @@ HTML;
     {
         $strFavorite = "";
         if ($objTag->rightRight1()) {
-
             $strJs = "<script type='text/javascript'>
             require(['tags'], function(tags){
                 tags.createFavoriteEnabledIcon = '".addslashes(AdminskinHelper::getAdminImage("icon_favorite", Carrier::getInstance()->getObjLang()->getLang("tag_favorite_remove", "tags")))."';

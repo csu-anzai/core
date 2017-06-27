@@ -17,11 +17,51 @@ namespace Kajona\System\System;
  * @author stefan.meyer1@yahoo.de
  * @since 5.0
  */
-class OrmCondition extends OrmObjectlistRestriction implements OrmConditionInterface
+class OrmCondition implements OrmConditionInterface
 {
+
     const STR_CONDITION_AND = "AND";
     const STR_CONDITION_OR = "OR";
 
+    private $strWhere = "";
+    protected $arrParams = array();
+
+    private $strTargetClass = "";
+
+    /**
+     * @param string $strWhere
+     * @param string|string[] $arrParams either a single value or an array of params
+     *
+     */
+    public function __construct($strWhere, $arrParams = array())
+    {
+
+        if (!is_array($arrParams)) {
+            $arrParams = array($arrParams);
+        }
+
+        $this->setArrParams($arrParams);
+        $this->setStrWhere($strWhere);
+    }
+
+
+    /**
+     * @param array $arrParams
+     *
+     * @return void
+     */
+    public function setArrParams($arrParams)
+    {
+        $this->arrParams = $arrParams;
+    }
+
+    /**
+     * @return array
+     */
+    public function getArrParams()
+    {
+        return $this->arrParams;
+    }
 
     /**
      * @param string $strWhere
@@ -31,8 +71,55 @@ class OrmCondition extends OrmObjectlistRestriction implements OrmConditionInter
     public function setStrWhere($strWhere)
     {
         $strWhere = StringUtil::trim($strWhere);
-        parent::setStrWhere($strWhere);
+        $this->strWhere = $strWhere;
     }
+
+    /**
+     * @return string
+     */
+    public function getStrWhere()
+    {
+        return $this->strWhere;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStrTargetClass()
+    {
+        return $this->strTargetClass;
+    }
+
+    /**
+     * @param string $strTargetClass
+     */
+    public function setStrTargetClass($strTargetClass)
+    {
+        $this->strTargetClass = $strTargetClass;
+    }
+
+    /**
+     *  Generates an ORDER By Statement
+     *
+     * @param OrmObjectlistOrderby[] $arrOrderBy
+     *
+     * @return string
+     */
+    public static function getOrderByRestrictionsAsString(array $arrOrderBy)
+    {
+        $strOrderBy = "";
+        $arrOrderByStr = array();
+        foreach ($arrOrderBy as $objOrderBy) {
+            $arrOrderByStr[] = $objOrderBy->getStrOrderBy();
+        }
+        if (count($arrOrderByStr) > 0) {
+            $strOrderBy .= " ORDER BY " . implode(", ", $arrOrderByStr);
+        }
+
+        return $strOrderBy;
+
+    }
+
 
     /**
      * Generic method to create an ORM restriction.

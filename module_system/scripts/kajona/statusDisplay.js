@@ -1,3 +1,7 @@
+/**
+ * (c) 2013-2017 by Kajona, www.kajona.de
+ * Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt
+ */
 
 /**
  * General way to display a status message.
@@ -9,14 +13,14 @@
  *
  * Pass a xml-response from a Kajona server to displayXMLMessage() to start the logic
  * or use messageOK() / messageError() passing a regular string
+ *
+ * @module statusDisplay
  */
-define(['jquery'], function ($) {
+define('statusDisplay', ['jquery'], function ($) {
 
-    return {
+    return /** @alias module:statusDisplay */ {
         idOfMessageBox : "jsStatusBox",
         idOfContentBox : "jsStatusBoxContent",
-        classOfMessageBox : "jsStatusBoxMessage",
-        classOfErrorBox : "jsStatusBoxError",
         timeToFadeOutMessage : 3000,
         timeToFadeOutError   : 5000,
         timeToFadeOut : null,
@@ -48,7 +52,7 @@ define(['jquery'], function ($) {
          * @param {String} strMessage
          */
         messageOK : function(strMessage) {
-            $("#"+this.idOfMessageBox).removeClass(this.classOfMessageBox).removeClass(this.classOfErrorBox).addClass(this.classOfMessageBox);
+            $("#"+this.idOfMessageBox).removeClass().addClass("alert alert-info");
             this.timeToFadeOut = this.timeToFadeOutMessage;
             this.startFadeIn(strMessage);
         },
@@ -59,7 +63,7 @@ define(['jquery'], function ($) {
          * @param {String} strMessage
          */
         messageError : function(strMessage) {
-            $("#"+this.idOfMessageBox).removeClass(this.classOfMessageBox).removeClass(this.classOfErrorBox).addClass(this.classOfErrorBox);
+            $("#"+this.idOfMessageBox).removeClass().addClass("alert alert-danger");
             this.timeToFadeOut = this.timeToFadeOutError;
             this.startFadeIn(strMessage);
         },
@@ -86,7 +90,9 @@ define(['jquery'], function ($) {
         fadeIn : function () {
             var me = this;
             $("#"+this.idOfMessageBox).animate({opacity: 0.8}, 1000, function() {
-                window.setTimeout(require('statusDisplay').startFadeOut(), me.timeToFadeOut);
+                window.setTimeout(function(){
+                    me.startFadeOut();
+                }, me.timeToFadeOut);
             });
         },
 

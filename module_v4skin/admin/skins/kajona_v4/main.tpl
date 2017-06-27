@@ -73,7 +73,7 @@
         <div class="col-md-2 hidden-print mainnavi-container sidebar-offcanvas" id="sidebar">
             <div class="sidebar-nav">
                 <div class="panel-group" id="moduleNavigation">
-                    <div class="nav-header">Kajona V5</div>
+                    <div class="nav-header">Kajona V6</div>
                     %%moduleSitemap%%
                 </div>
             </div>
@@ -86,15 +86,16 @@
             <div class="row pathNaviContainer">
                 <div class="col-md-12">
                     %%path%%
+                    %%quickhelp%%
                 </div>
             </div>
 
 
             <div class="row contentTopbar clearfix hidden-print">
-                <div class="col-md-6">
-                    <h1 id="moduleTitle" class="pull-left">%%actionTitle%%</h1>%%quickhelp%%
-                </div>
-                <div class="col-md-6">
+            </div>
+            <div class="navbar navbar-default contentToolbar hidden">
+                <div class="navbar-inner ">
+                    <ul class="nav navbar-nav"></ul>
                     %%actiontoolbar%%
                 </div>
             </div>

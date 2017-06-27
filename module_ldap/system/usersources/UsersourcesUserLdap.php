@@ -13,7 +13,9 @@ use Kajona\Ldap\System\Ldap;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\Logger;
+use Kajona\System\System\Objectfactory;
 use Kajona\System\System\SystemEventidentifier;
+use Kajona\System\System\UserGroup;
 use Kajona\System\System\Usersources\UsersourcesUserInterface;
 
 
@@ -106,7 +108,7 @@ class UsersourcesUserLdap extends \Kajona\System\System\Model implements \Kajona
 
                         ) VALUES (?,?,?,?,?,?)";
 
-            Logger::getInstance(Logger::USERSOURCES)->addLogRow("new ldap user: " . $this->getStrDN(), Logger::$levelInfo);
+            Logger::getInstance(Logger::USERSOURCES)->info("new ldap user: " . $this->getStrDN());
 
             return $this->objDB->_pQuery($strQuery, array(
                 $strUserid,
@@ -125,7 +127,7 @@ class UsersourcesUserLdap extends \Kajona\System\System\Model implements \Kajona
             );
 
 
-            Logger::getInstance(Logger::USERSOURCES)->addLogRow("updated user " . $this->getStrDN(), Logger::$levelInfo);
+            Logger::getInstance(Logger::USERSOURCES)->info("updated user " . $this->getStrDN());
 
             return $this->objDB->_pQuery($strQuery, $arrParams);
         }
@@ -150,7 +152,7 @@ class UsersourcesUserLdap extends \Kajona\System\System\Model implements \Kajona
      */
     public function deleteUser()
     {
-        Logger::getInstance()->addLogRow("deleted ldap user with dn " . $this->getStrDN(), Logger::$levelInfo);
+        Logger::getInstance()->info("deleted ldap user with dn " . $this->getStrDN());
         $strQuery = "DELETE FROM " . _dbprefix_ . "user_ldap WHERE user_ldap_id=?";
         //call other models that may be interested
         $bitDelete = $this->objDB->_pQuery($strQuery, array($this->getSystemid()));
@@ -188,9 +190,23 @@ class UsersourcesUserLdap extends \Kajona\System\System\Model implements \Kajona
             }
         }
 
-
         return $arrReturn;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getShortGroupIdsForUser()
+    {
+        $arrReturn = array();
+        foreach ($this->getGroupIdsForUser() as $strOneGroupId) {
+            /** @var UserGroup $objGroup */
+            $objGroup = Objectfactory::getInstance()->getObject($strOneGroupId);
+            $arrReturn[] = $objGroup->getIntShortId();
+        }
+        return $arrReturn;
+    }
+
 
     /**
      * Hook to update the admin-form when editing / creating a single user

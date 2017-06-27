@@ -15,11 +15,13 @@
 
     "ajax": "kajona/ajax",
     "cacheManager": "kajona/cacheManager",
+    "contentToolbar": "kajona/contentToolbar",
     "changelog": "kajona/changelog",
     "dashboardCalendar": "kajona/dashboardCalendar",
     "desktopNotification": "kajona/desktopNotification",
     "folderview": "kajona/folderview",
     "forms": "kajona/forms",
+    "instantSave": "kajona/instantSave",
     "lang": "kajona/lang",
     "lists": "kajona/lists",
     "loader": "kajona/loader",

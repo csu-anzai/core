@@ -35,6 +35,7 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
      * @fieldType Kajona\System\Admin\Formentries\FormentryUser
      * @fieldLabel message_to
      * @fieldMandatory
+     * @jsonExport
      */
     private $strUser = "";
 
@@ -45,6 +46,7 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      * @fieldLabel message_subject
      * @fieldMandatory
+     * @jsonExport
      *
      * @addSearchIndex
      */
@@ -57,6 +59,7 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
      * @fieldType Kajona\System\Admin\Formentries\FormentryTextarea
      * @fieldLabel message_body
      * @fieldMandatory
+     * @jsonExport
      *
      * @addSearchIndex
      */
@@ -68,6 +71,7 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
      * @tableColumn messages.message_read
      * @tableColumnDatatype int
      * @tableColumnIndex
+     * @jsonExport
      */
     private $bitRead = 0;
 
@@ -175,8 +179,8 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
     public static function markAllMessagesAsRead($strUserid)
     {
         $objORM = new OrmObjectlist();
-        $objORM->addWhereRestriction(new OrmObjectlistPropertyRestriction("bitRead", OrmComparatorEnum::Equal(), 0));
-        $objORM->addWhereRestriction(new OrmObjectlistPropertyRestriction("strUser", OrmComparatorEnum::Equal(), $strUserid));
+        $objORM->addWhereRestriction(new OrmPropertyCondition("bitRead", OrmComparatorEnum::Equal(), 0));
+        $objORM->addWhereRestriction(new OrmPropertyCondition("strUser", OrmComparatorEnum::Equal(), $strUserid));
         /** @var MessagingMessage $objOneMessage */
         foreach ($objORM->getObjectList(__CLASS__) as $objOneMessage) {
             $objOneMessage->setBitRead(true);
@@ -192,8 +196,8 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
     public static function deleteAllReadMessages($strUserid)
     {
         $objORM = new OrmObjectlist();
-        $objORM->addWhereRestriction(new OrmObjectlistPropertyRestriction("bitRead", OrmComparatorEnum::Equal(), 1));
-        $objORM->addWhereRestriction(new OrmObjectlistPropertyRestriction("strUser", OrmComparatorEnum::Equal(), $strUserid));
+        $objORM->addWhereRestriction(new OrmPropertyCondition("bitRead", OrmComparatorEnum::Equal(), 1));
+        $objORM->addWhereRestriction(new OrmPropertyCondition("strUser", OrmComparatorEnum::Equal(), $strUserid));
         /** @var MessagingMessage $objOneMessage */
         foreach ($objORM->getObjectList(__CLASS__) as $objOneMessage) {
             $objOneMessage->deleteObject();
@@ -208,7 +212,7 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
     public static function deleteAllMessages($strUserid)
     {
         $objORM = new OrmObjectlist();
-        $objORM->addWhereRestriction(new OrmObjectlistPropertyRestriction("strUser", OrmComparatorEnum::Equal(), $strUserid));
+        $objORM->addWhereRestriction(new OrmPropertyCondition("strUser", OrmComparatorEnum::Equal(), $strUserid));
         /** @var MessagingMessage $objOneMessage */
         foreach ($objORM->getObjectList(__CLASS__) as $objOneMessage) {
             $objOneMessage->deleteObject();
@@ -230,7 +234,7 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
         }
 
         $objOrm = new OrmObjectlist();
-        $objOrm->addWhereRestriction(new OrmObjectlistPropertyRestriction("strUser", OrmComparatorEnum::Equal(), $strUserid));
+        $objOrm->addWhereRestriction(new OrmPropertyCondition("strUser", OrmComparatorEnum::Equal(), $strUserid));
         $objOrm->addOrderBy(new OrmObjectlistOrderby(" system_create_date DESC  "));
         return $objOrm->getObjectList(__CLASS__, "", $intStart, $intEnd);
     }
@@ -249,7 +253,7 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
     public static function getMessagesByIdentifier($strIdentifier, $intStart = null, $intEnd = null)
     {
         $objOrm = new OrmObjectlist();
-        $objOrm->addWhereRestriction(new OrmObjectlistPropertyRestriction("strInternalIdentifier", OrmComparatorEnum::Equal(), $strIdentifier));
+        $objOrm->addWhereRestriction(new OrmPropertyCondition("strInternalIdentifier", OrmComparatorEnum::Equal(), $strIdentifier));
         return $objOrm->getObjectList(__CLASS__, $intStart, $intEnd);
     }
 
@@ -265,9 +269,9 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
     public static function getNumberOfMessagesForUser($strUserid, $bitOnlyUnread = false)
     {
         $objOrm = new OrmObjectlist();
-        $objOrm->addWhereRestriction(new OrmObjectlistPropertyRestriction("strUser", OrmComparatorEnum::Equal(), $strUserid));
+        $objOrm->addWhereRestriction(new OrmPropertyCondition("strUser", OrmComparatorEnum::Equal(), $strUserid));
         if ($bitOnlyUnread) {
-            $objOrm->addWhereRestriction(new OrmObjectlistRestriction("AND (message_read IS NULL OR message_read = 0 )"));
+            $objOrm->addWhereRestriction(new OrmCondition("(message_read IS NULL OR message_read = 0 )"));
         }
 
         return $objOrm->getObjectCount(__CLASS__);

@@ -70,34 +70,12 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
 			$strReturn .= "An error occurred! ...\n";
 
 
-        //Table for page-element
-        $strReturn .= "Installing search-element table...\n";
-        $objPackageManager = new PackagemanagerManager();
-        if($objPackageManager->getPackage("pages") !== null)
-            $objManager->createTable(ElementSearchAdmin::class);
-
 		$strReturn .= "Registering module...\n";
 		//register the module
-		$this->registerModule("search", _search_module_id_, "SearchPortal.php", "SearchAdmin.php", $this->objMetadata->getStrVersion());
+		$this->registerModule("search", _search_module_id_, "", "SearchAdmin.php", $this->objMetadata->getStrVersion());
 
         $strReturn .= "Registering config-values...\n";
         $this->registerConstant("_search_deferred_indexer_", "false", SystemSetting::$int_TYPE_BOOL, _search_module_id_);
-
-
-        if(SystemModule::getModuleByName("pages") !== null && PagesElement::getElement("search") == null) {
-            $objElement = new PagesElement();
-            $objElement->setStrName("search");
-            $objElement->setStrClassAdmin("ElementSearchAdmin.php");
-            $objElement->setStrClassPortal("ElementSearchPortal.php");
-            $objElement->setIntCachetime(3600);
-            $objElement->setIntRepeat(0);
-            $objElement->setStrVersion($this->objMetadata->getStrVersion());
-            $objElement->updateObjectToDb();
-            $strReturn .= "Element registered...\n";
-        }
-        else {
-            $strReturn .= "Element already installed!...\n";
-        }
 
         $strReturn .= "Rebuilding search index...\n";
         $this->updateIndex();
@@ -128,19 +106,6 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
      */
     public function remove(&$strReturn) {
 
-        //delete the page-element
-        if(SystemModule::getModuleByName("pages") !== null && PagesElement::getElement("search") != null) {
-            $objElement = PagesElement::getElement("search");
-            if($objElement != null) {
-                $strReturn .= "Deleting page-element 'search'...\n";
-                $objElement->deleteObjectFromDatabase();
-            }
-            else {
-                $strReturn .= "Error finding page-element 'search', aborting.\n";
-                return false;
-            }
-        }
-
         /** @var SearchSearch $objOneObject */
         foreach(SearchSearch::getObjectListFiltered() as $objOneObject) {
             $strReturn .= "Deleting object '".$objOneObject->getStrDisplayName()."' ...\n";
@@ -159,7 +124,7 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
         }
 
         //delete the tables
-        foreach(array("search_search", "search_log", "element_search", "search_ix_document", "search_ix_content") as $strOneTable) {
+        foreach(array("search_search", "search_log", "search_ix_document", "search_ix_content") as $strOneTable) {
             $strReturn .= "Dropping table ".$strOneTable."...\n";
             if(!$this->objDB->_pQuery("DROP TABLE ".$this->objDB->encloseTableName(_dbprefix_.$strOneTable), array())) {
                 $strReturn .= "Error deleting table, aborting.\n";

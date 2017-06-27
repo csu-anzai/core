@@ -147,7 +147,7 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
 
         $objOrmList = new OrmObjectlist();
         if($bitJustActive) {
-            $objOrmList->addWhereRestriction(new OrmObjectlistSystemstatusRestriction(OrmComparatorEnum::NotEqual(), 0));
+            $objOrmList->addWhereRestriction(new OrmSystemstatusCondition(OrmComparatorEnum::NotEqual(), 0));
         }
 
         return $objOrmList->getObjectCount(__CLASS__);
@@ -166,7 +166,7 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
     {
 
         $objOrmList = new OrmObjectlist();
-        $objOrmList->addWhereRestriction(new OrmObjectlistPropertyRestriction("strName", OrmComparatorEnum::Equal(), $strName));
+        $objOrmList->addWhereRestriction(new OrmPropertyCondition("strName", OrmComparatorEnum::Equal(), $strName));
         $arrReturn = $objOrmList->getObjectList(__CLASS__);
         if(count($arrReturn) > 0) {
             return $arrReturn[0];
@@ -218,11 +218,11 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
 
         if($bitCommit) {
             $this->objDB->transactionCommit();
-            Logger::getInstance()->addLogRow("moved contents from ".$strSourceLanguage." to ".$this->getStrName()." successfully", Logger::$levelInfo);
+            Logger::getInstance()->info("moved contents from ".$strSourceLanguage." to ".$this->getStrName()." successfully");
         }
         else {
             $this->objDB->transactionRollback();
-            Logger::getInstance()->addLogRow("moved contents from ".$strSourceLanguage." to ".$this->getStrName()." failed", Logger::$levelError);
+            Logger::getInstance()->error("moved contents from ".$strSourceLanguage." to ".$this->getStrName()." failed");
         }
 
         return $bitCommit;
@@ -254,8 +254,8 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
                     if(!preg_match("#q\=[0-9]\.[0-9]#i", $strOneLanguage)) {
                         //search language
                         $objORM = new OrmObjectlist();
-                        $objORM->addWhereRestriction(new OrmObjectlistRestriction("AND system_status = 1", array()));
-                        $objORM->addWhereRestriction(new OrmObjectlistRestriction("AND language_name = ?", array($strOneLanguage)));
+                        $objORM->addWhereRestriction(new OrmCondition("system_status = 1"));
+                        $objORM->addWhereRestriction(new OrmCondition("language_name = ?", array($strOneLanguage)));
                         /** @var LanguagesLanguage $objLang */
                         $objLang = $objORM->getSingleObject(get_called_class());
 
@@ -271,8 +271,8 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
             }
 
             $objORM = new OrmObjectlist();
-            $objORM->addWhereRestriction(new OrmObjectlistRestriction("AND system_status = 1", array()));
-            $objORM->addWhereRestriction(new OrmObjectlistRestriction("AND language_default = 1", array()));
+            $objORM->addWhereRestriction(new OrmCondition("system_status = 1"));
+            $objORM->addWhereRestriction(new OrmCondition("language_default = 1"));
             /** @var LanguagesLanguage $objLang */
             $objLang = $objORM->getSingleObject(get_called_class());
 
@@ -285,7 +285,7 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
             }
             else {
                 $objORM = new OrmObjectlist();
-                $objORM->addWhereRestriction(new OrmObjectlistRestriction("AND system_status = 1", array()));
+                $objORM->addWhereRestriction(new OrmCondition("system_status = 1"));
                 /** @var LanguagesLanguage $objLang */
                 $objLang = $objORM->getSingleObject(get_called_class());
 
@@ -320,7 +320,7 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
         else {
 
             $objORM = new OrmObjectlist();
-            $objORM->addWhereRestriction(new OrmObjectlistRestriction("AND language_default = 1", array()));
+            $objORM->addWhereRestriction(new OrmCondition("language_default = 1"));
             /** @var LanguagesLanguage $objLang */
             $objLang = $objORM->getSingleObject(get_called_class());
 
@@ -358,8 +358,8 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
     public static function getDefaultLanguage()
     {
         $objORM = new OrmObjectlist();
-        $objORM->addWhereRestriction(new OrmObjectlistRestriction("AND system_status = 1", array()));
-        $objORM->addWhereRestriction(new OrmObjectlistRestriction("AND language_default = 1", array()));
+        $objORM->addWhereRestriction(new OrmCondition("system_status = 1"));
+        $objORM->addWhereRestriction(new OrmCondition("language_default = 1"));
         /** @var LanguagesLanguage $objLang */
         return $objORM->getSingleObject(get_called_class());
     }

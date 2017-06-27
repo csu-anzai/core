@@ -142,7 +142,7 @@ class SystemAspect extends Model implements ModelInterface, AdminListableInterfa
     public static function getActiveObjectList()
     {
         $objOrm = new OrmObjectlist();
-        $objOrm->addWhereRestriction(new OrmObjectlistSystemstatusRestriction(OrmComparatorEnum::NotEqual(), 0));
+        $objOrm->addWhereRestriction(new OrmSystemstatusCondition(OrmComparatorEnum::NotEqual(), 0));
         return $objOrm->getObjectList(__CLASS__, "");
     }
 
@@ -155,7 +155,7 @@ class SystemAspect extends Model implements ModelInterface, AdminListableInterfa
     public static function getActiveObjectCount()
     {
         $objOrm = new OrmObjectlist();
-        $objOrm->addWhereRestriction(new OrmObjectlistSystemstatusRestriction(OrmComparatorEnum::NotEqual(), 0));
+        $objOrm->addWhereRestriction(new OrmSystemstatusCondition(OrmComparatorEnum::NotEqual(), 0));
         return $objOrm->getObjectCount(__CLASS__);
     }
 
@@ -184,8 +184,8 @@ class SystemAspect extends Model implements ModelInterface, AdminListableInterfa
     public static function getDefaultAspect($bitIgnorePermissions = false)
     {
         $objORM = new OrmObjectlist();
-        $objORM->addWhereRestriction(new OrmObjectlistRestriction("AND system_status = 1", array()));
-        $objORM->addWhereRestriction(new OrmObjectlistRestriction("AND aspect_default = 1", array()));
+        $objORM->addWhereRestriction(new OrmCondition("system_status = 1"));
+        $objORM->addWhereRestriction(new OrmCondition("aspect_default = 1"));
         /** @var SystemAspect $objAspect */
         $objAspect = $objORM->getSingleObject(get_called_class());
 
@@ -215,7 +215,7 @@ class SystemAspect extends Model implements ModelInterface, AdminListableInterfa
     public static function getAspectByName($strName)
     {
         $objORM = new OrmObjectlist();
-        $objORM->addWhereRestriction(new OrmObjectlistRestriction("AND aspect_name = ?", array($strName)));
+        $objORM->addWhereRestriction(new OrmCondition("aspect_name = ?", array($strName)));
         return $objORM->getSingleObject(get_called_class());
     }
 

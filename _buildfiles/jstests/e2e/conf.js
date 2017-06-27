@@ -1,9 +1,6 @@
-
-var ScreenShotReporter = require('protractor-screenshot-reporter');
-
 exports.config = {
     seleniumAddress: 'http://localhost:4444/wd/hub',
-    baseUrl: 'http://127.0.0.1:8080',
+    baseUrl: 'https://localhost',//set dynamically in onPrepare
     specs: [
         'install-spec.js',
         'login-spec.js',
@@ -17,38 +14,37 @@ exports.config = {
         }
     },
     jasmineNodeOpts: {
-        defaultTimeoutInterval: 480000 // 8 minutes
+        defaultTimeoutInterval: 720000 // 12 minutes
     },
-    plugins: [{
-        package: 'protractor-console-plugin',
-        failOnWarning: false,
-        failOnError: true
+    plugins: [
+    {
+        package: 'protractor-screenshoter-plugin',
+        screenshotPath: '../build/screenshots',
+        clearFoldersBeforeTest: true
     }],
-    onPrepare: function() {
-        var basePath = __dirname + '/../../temp/kajona/core/_buildfiles/jstests/selenium';
+    onPrepare: function () {
 
-        // "relativePath" - path, relative to "basePath" variable
+        /** base path of the selenium */
+        const strBasePath = __dirname + '/../../temp/kajona/core/_buildfiles/jstests/selenium';
 
-        // If your entity files have suffixes - you can also keep them here
-        // not to mention them in test files every time
-        global.requireHelper = function (relativePath) {
-            return require(basePath + relativePath);
+        /** If you are testing against a non-angular site - set ignoreSynchronization setting to true */
+        browser.ignoreSynchronization = true;
+
+
+        /**add requireHelper to global variable */
+        global.requireHelper = function (relativePath) {// "relativePath" - path, relative to "basePath" variable
+            return require(strBasePath + relativePath);
         };
 
-        jasmine.getEnv().addReporter(new ScreenShotReporter({
-            baseDirectory: '../build/screenshots',
-            pathBuilder: function(spec, descriptions, results, capabilities){
-                var fileName = descriptions.reverse().join("_");
-                var name = '';
-                for (var i = 0; i < fileName.length; i++) {
-                    if (fileName.charAt(i).match(/^[A-z0-9_]$/)) {
-                        name+= fileName.charAt(i);
-                    } else if (fileName.charAt(i) == ' ') {
-                        name+= '_';
-                    }
-                }
-                return name;
-            }
-        }));
+        /** Set baseUrl dynamically */
+        const path = require('path');
+        const strPathToProject = path.join(__dirname, "/../../../../");//path to project folder
+        const strProjectName = path.basename(strPathToProject);//determine project folder name
+        browser.baseUrl = browser.baseUrl + "/" + strProjectName + "/core/_buildfiles/temp/kajona";
+
+        // returning the promise makes protractor wait for the reporter config before executing tests
+        return global.browser.getProcessedConfig().then(function (config) {
+            //it is ok to be empty
+        });
     }
 };

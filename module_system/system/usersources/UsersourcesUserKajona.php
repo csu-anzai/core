@@ -34,7 +34,7 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
 
     /**
      * @var string
-     * @fieldType password
+     * @fieldType Kajona\System\Admin\Formentries\FormentryPassword
      */
     private $strPass = "";
 
@@ -42,7 +42,7 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
      * For form-faking only!
      *
      * @var string
-     * @fieldType password
+     * @fieldType Kajona\System\Admin\Formentries\FormentryPassword
      */
     private $strPass2 = "";
 
@@ -199,7 +199,7 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
 
                         ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-            Logger::getInstance(Logger::USERSOURCES)->addLogRow("new kajona user: ".$this->getStrEmail(), Logger::$levelInfo);
+            Logger::getInstance(Logger::USERSOURCES)->info("new kajona user: ".$this->getStrEmail());
 
             return $this->objDB->_pQuery($strQuery, array(
                 $this->getStrSpecialConfig(),
@@ -244,7 +244,7 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
 
             }
 
-            Logger::getInstance(Logger::USERSOURCES)->addLogRow("updated user ".$this->getStrEmail(), Logger::$levelInfo);
+            Logger::getInstance(Logger::USERSOURCES)->info("updated user ".$this->getStrEmail());
 
             return $this->objDB->_pQuery($strQuery, $arrParams, array(false));
         }
@@ -270,7 +270,7 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
      */
     public function deleteUser()
     {
-        Logger::getInstance(Logger::USERSOURCES)->addLogRow("deleted user with id ".$this->getSystemid(), Logger::$levelInfo);
+        Logger::getInstance(Logger::USERSOURCES)->info("deleted user with id ".$this->getSystemid());
         $this->deleteAllUserMemberships();
         $strQuery = "DELETE FROM "._dbprefix_."user_kajona WHERE user_id=?";
         //call other models that may be interested
@@ -318,7 +318,7 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
      */
     public function getGroupIdsForUser()
     {
-        $strQuery = "SELECT group_id
+        $strQuery = "SELECT group_id, group_short_id
                        FROM "._dbprefix_."user_group,
                             "._dbprefix_."user_kajona_members
                       WHERE group_member_user_kajona_id= ?
@@ -334,6 +334,29 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
 
         return $arrReturn;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getShortGroupIdsForUser()
+    {
+        $strQuery = "SELECT group_id, group_short_id
+                       FROM "._dbprefix_."user_group,
+                            "._dbprefix_."user_kajona_members
+                      WHERE group_member_user_kajona_id= ?
+                        AND group_id = group_member_group_kajona_id
+                   ORDER BY group_name ASC  ";
+
+        $arrIds = $this->objDB->getPArray($strQuery, array($this->getSystemid()));
+
+        $arrReturn = array();
+        foreach ($arrIds as $arrOneId) {
+            $arrReturn[] = $arrOneId["group_short_id"];
+        }
+
+        return $arrReturn;
+    }
+
 
     /**
      * Indicates if the current user is editable or read-only

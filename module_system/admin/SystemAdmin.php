@@ -45,6 +45,7 @@ use Kajona\System\System\ResponseObject;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemChangelog;
+use Kajona\System\System\SystemChangelogHelper;
 use Kajona\System\System\SystemChangelogRestorer;
 use Kajona\System\System\SystemCommon;
 use Kajona\System\System\SysteminfoInterface;
@@ -348,74 +349,61 @@ class SystemAdmin extends AdminEvensimpler implements AdminInterface
     protected function actionSystemSettings()
     {
         $strReturn = "";
-        //Check for needed rights
-        if ($this->getParam("save") != "true") {
-            //Create a warning before doing s.th.
-            $strReturn .= $this->objToolkit->warningBox($this->getLang("warnung_settings"));
+        //Create a warning before doing s.th.
+        $strReturn .= $this->objToolkit->warningBox($this->getLang("warnung_settings"));
 
-            $arrTabs = array();
+        $arrTabs = array();
 
-            $arrSettings = SystemSetting::getAllConfigValues();
-            /** @var SystemModule $objCurrentModule */
-            $objCurrentModule = null;
-            $strRows = "";
-            foreach ($arrSettings as $objOneSetting) {
-                if ($objCurrentModule === null || $objCurrentModule->getIntNr() != $objOneSetting->getIntModule()) {
-                    $objTemp = $this->getModuleDataID($objOneSetting->getIntModule(), true);
-                    if ($objTemp !== null) {
-                        //In the first loop, ignore the output
-                        if ($objCurrentModule !== null) {
-                            //Build a form to return
-                            $strTabContent = $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "systemSettings"));
-                            $strTabContent .= $strRows;
-                            $strTabContent .= $this->objToolkit->formInputHidden("save", "true");
-                            $strTabContent .= $this->objToolkit->formInputSubmit($this->getLang("commons_save"));
-                            $strTabContent .= $this->objToolkit->formClose();
-                            $arrTabs[$this->getLang("modul_titel", $objCurrentModule->getStrName())] = $strTabContent;
-                        }
-                        $strRows = "";
-                        $objCurrentModule = $objTemp;
+        $arrSettings = SystemSetting::getObjectListFiltered();
+        /** @var SystemModule $objCurrentModule */
+        $objCurrentModule = null;
+        $strRows = "";
+        foreach ($arrSettings as $objOneSetting) {
+            if ($objCurrentModule === null || $objCurrentModule->getIntNr() != $objOneSetting->getIntModule()) {
+                $objTemp = $this->getModuleDataID($objOneSetting->getIntModule(), true);
+                if ($objTemp !== null) {
+                    //In the first loop, ignore the output
+                    if ($objCurrentModule !== null) {
+                        //Build a form to return
+                        $strTabContent = $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "systemSettings"));
+                        $strTabContent .= $strRows;
+                        $strTabContent .= $this->objToolkit->formClose();
+                        $arrTabs[$this->getLang("modul_titel", $objCurrentModule->getStrName())] = $strTabContent;
                     }
-                }
-                //Build the rows
-                //Print a help-text?
-                $strHelper = $this->getLang($objOneSetting->getStrName()."hint", $objCurrentModule->getStrName());
-                if ($strHelper != "!".$objOneSetting->getStrName()."hint!") {
-                    $strRows .= $this->objToolkit->formTextRow($strHelper);
-                }
-
-                //The input element itself
-                if ($objOneSetting->getIntType() == 0) {
-                    $arrDD = array();
-                    $arrDD["true"] = $this->getLang("commons_yes");
-                    $arrDD["false"] = $this->getLang("commons_no");
-                    $strRows .= $this->objToolkit->formInputDropdown("set[".$objOneSetting->getSystemid()."]", $arrDD, $this->getLang($objOneSetting->getStrName(), $objCurrentModule->getStrName()), $objOneSetting->getStrValue());
-                } elseif ($objOneSetting->getIntType() == 3) {
-                    $strRows .= $this->objToolkit->formInputPageSelector("set[".$objOneSetting->getSystemid()."]", $this->getLang($objOneSetting->getStrName(), $objCurrentModule->getStrName()), $objOneSetting->getStrValue());
-                } else {
-                    $strRows .= $this->objToolkit->formInputText("set[".$objOneSetting->getSystemid()."]", $this->getLang($objOneSetting->getStrName(), $objCurrentModule->getStrName()), $objOneSetting->getStrValue());
+                    $strRows = "";
+                    $objCurrentModule = $objTemp;
                 }
             }
-            //Build a form to return -> include the last module
-            $strTabContent = $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "systemSettings"));
-            $strTabContent .= $strRows;
-            $strTabContent .= $this->objToolkit->formInputHidden("save", "true");
-            $strTabContent .= $this->objToolkit->formInputSubmit($this->getLang("commons_save"));
-            $strTabContent .= $this->objToolkit->formClose();
-
-            $arrTabs[$this->getLang("modul_titel", $objCurrentModule->getStrName())] = $strTabContent;
-
-            $strReturn .= $this->objToolkit->getTabbedContent($arrTabs);
-        } else {
-            //Seems we have to update a few records
-            $arrSettings = $this->getAllParams();
-            foreach ($arrSettings["set"] as $strKey => $strValue) {
-                $objSetting = new SystemSetting($strKey);
-                $objSetting->setStrValue($strValue);
-                $objSetting->updateObjectToDb();
+            //Build the rows
+            //Print a help-text?
+            $strHelper = $this->getLang($objOneSetting->getStrName()."hint", $objCurrentModule->getStrName());
+            if ($strHelper != "!".$objOneSetting->getStrName()."hint!") {
+                $strRows .= $this->objToolkit->formTextRow($strHelper);
             }
-            $strReturn .= $this->objToolkit->warningBox($this->getLang("settings_updated"));
+
+            //The input element itself
+            if ($objOneSetting->getIntType() == 0) {
+                $arrDD = array();
+                $arrDD["true"] = $this->getLang("commons_yes");
+                $arrDD["false"] = $this->getLang("commons_no");
+                $strRows .= $this->objToolkit->formInputDropdown("set[".$objOneSetting->getSystemid()."]", $arrDD, $this->getLang($objOneSetting->getStrName(), $objCurrentModule->getStrName()), $objOneSetting->getStrValue(), "", true, "", "", "", $objOneSetting->getSystemid()."#strValue");
+            } elseif ($objOneSetting->getIntType() == 3) {
+                $strRows .= $this->objToolkit->formInputPageSelector("set[".$objOneSetting->getSystemid()."]", $this->getLang($objOneSetting->getStrName(), $objCurrentModule->getStrName()), $objOneSetting->getStrValue(), "", false, true, "", $objOneSetting->getSystemid()."#strValue");
+            } else {
+                $strRows .= $this->objToolkit->formInputText("set[".$objOneSetting->getSystemid()."]", $this->getLang($objOneSetting->getStrName(), $objCurrentModule->getStrName()), $objOneSetting->getStrValue(), "", "", false, $objOneSetting->getSystemid()."#strValue");
+            }
         }
+        //Build a form to return -> include the last module
+        $strTabContent = $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "systemSettings"));
+        $strTabContent .= $strRows;
+        $strTabContent .= $this->objToolkit->formClose();
+
+        $arrTabs[$this->getLang("modul_titel", $objCurrentModule->getStrName())] = $strTabContent;
+
+        $strReturn .= $this->objToolkit->getTabbedContent($arrTabs);
+
+        $strReturn .= "<script type='text/javascript'>require(['instantSave'], function(is) {is.init()});</script>";
+
 
         return $strReturn;
     }
@@ -714,7 +702,8 @@ JS;
             throw new Exception("Record is not restoreable", Exception::$level_ERROR);
         }
 
-        $objRecord->restoreObject();
+        $this->objLifeCycleFactory->factory(get_class($objRecord))->restore($objRecord);
+
         $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "deletedRecords"));
         return "";
     }
@@ -745,7 +734,8 @@ JS;
                 throw new Exception($this->getLang("commons_error_permissions"), Exception::$level_ERROR);
             }
 
-            $objRecord->deleteObjectFromDatabase();
+            $this->objLifeCycleFactory->factory(get_class($objRecord))->deleteObjectFromDatabase($objRecord);
+
             $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "deletedRecords"));
         }
         return "";
@@ -913,6 +903,13 @@ JS;
             return $strReturn;
         }
 
+        /** @var VersionableInterface $objObject */
+        $objObject = Objectfactory::getInstance()->getObject($strSystemid);
+
+        if (!$objObject instanceof VersionableInterface) {
+            return $this->objToolkit->warningBox($this->getLang("generic_changelog_not_versionable"));
+        }
+
         $strReturn = "";
         //showing a list using the pageview
         $objArraySectionIterator = new ArraySectionIterator(SystemChangelog::getLogEntriesCount($strSystemid));
@@ -944,7 +941,11 @@ JS;
             $strOldValue = $objOneEntry->getStrOldValue();
             $strNewValue = $objOneEntry->getStrNewValue();
 
-            if ($objTarget != null) {
+            //render some properties directly
+            if (in_array($objOneEntry->getStrProperty(), array("rightView", "rightEdit", "rightDelete", "rightRight", "rightRight1", "rightRight2", "rightRight3", "rightRight4", "rightRight5", "rightChangelog", "strPrevId", "strOwner"))) {
+                $strOldValue = SystemChangelogHelper::getStrValueForObjects($strOldValue);
+                $strNewValue = SystemChangelogHelper::getStrValueForObjects($strNewValue);
+            } elseif ($objTarget != null) {
                 $strOldValue = $objTarget->renderVersionValue($objOneEntry->getStrProperty(), $strOldValue);
                 $strNewValue = $objTarget->renderVersionValue($objOneEntry->getStrProperty(), $strNewValue);
             }
@@ -974,7 +975,7 @@ JS;
             $arrToolbar[] = Link::getLinkAdmin($this->getArrModule("modul"), "genericChangelogExportExcel", "&systemid=".$strSystemid, AdminskinHelper::getAdminImage("icon_excel")." ".$this->getLang("change_export_excel"), "", "", false);
         }
 
-        $arrToolbar[] = Link::getLinkAdmin($this->getArrModule("modul"), "changelogDiff", "&systemid=".$strSystemid."&folderview=1", AdminskinHelper::getAdminImage("icon_aspect")." ".$this->getLang("change_diff"), "", "", false);
+        $arrToolbar[] = Link::getLinkAdmin($this->getArrModule("modul"), "changelogDiff", "&systemid=".$strSystemid."&bitBlockFolderview=".$this->getParam("bitBlockFolderview"), AdminskinHelper::getAdminImage("icon_aspect")." ".$this->getLang("change_diff"), "", "", false);
 
         $strReturn .= $this->objToolkit->getContentToolbar($arrToolbar);
 
@@ -994,9 +995,18 @@ JS;
      */
     protected function actionChangelogDiff()
     {
+
+        if ($this->getParam("bitBlockFolderview") == "") {
+            $this->setArrModuleEntry("template", "/folderview.tpl");
+        }
+
         $strSystemId = $this->getSystemid();
         /** @var VersionableInterface $objObject */
         $objObject = Objectfactory::getInstance()->getObject($strSystemId);
+
+        if (!$objObject instanceof VersionableInterface) {
+            return $this->objToolkit->warningBox($this->getLang("generic_changelog_not_versionable"));
+        }
 
         $objNow = new Date();
         $objNow->setEndOfDay();
@@ -1019,7 +1029,7 @@ JS;
 
         $strReturn = "";
         $strReturn .= $this->objToolkit->getContentToolbar(array(
-            Link::getLinkAdmin($this->getArrModule("modul"), "genericChangelog", "&systemid=".$objObject->getStrSystemid()."&folderview=1", AdminskinHelper::getAdminImage("icon_history")." ".$this->getLang("commons_edit_history"), "", "", false),
+            Link::getLinkAdmin($this->getArrModule("modul"), "genericChangelog", "&systemid=".$objObject->getStrSystemid()."&bitBlockFolderview=".$this->getParam("bitBlockFolderview"), AdminskinHelper::getAdminImage("icon_history")." ".$this->getLang("commons_edit_history"), "", "", false),
         ));
 
         $arrTemplate = array(
@@ -1439,15 +1449,57 @@ JS;
                 $intNewStatus = $objCommon->getIntRecordStatus() == 0 ? 1 : 0;
             }
 
-            $objCommon->setIntRecordStatus($intNewStatus);
-            $objCommon->updateObjectToDb();
-            $strReturn .= "<message>".$objCommon->getStrDisplayName()." - ".$this->getLang("setStatusOk")."<newstatus>".$intNewStatus."</newstatus></message>";
-            $this->flushCompletePagesCache();
+            try {
+                $objCommon->setIntRecordStatus($intNewStatus);
+                $objCommon->updateObjectToDb();
+                $strReturn .= "<message>".$objCommon->getStrDisplayName()." - ".$this->getLang("setStatusOk")."<newstatus>".$intNewStatus."</newstatus></message>";
+                $this->flushCompletePagesCache();
+            } catch (\Exception $objE) {
+                ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_INTERNAL_SERVER_ERROR);
+                $strReturn .= "<message><error>".xmlSafeString($objE->getMessage())."</error></message>";
+            }
         } else {
             ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_FORBIDDEN);
             $strReturn .= "<message><error>".xmlSafeString($this->getLang("commons_error_permissions"))."</error></message>";
         }
 
+        return $strReturn;
+    }
+
+    /**
+     * Updates a single property of an obejct. used by the js-insite-editor.
+     * @permissions edit
+     * @return string
+     */
+    protected function actionUpdateObjectProperty()
+    {
+        //get the object to update
+        $objObject = Objectfactory::getInstance()->getObject($this->getSystemid());
+        if ($objObject->rightEdit()) {
+            //any other object - try to find the matching property and write the value
+            if ($this->getParam("property") == "") {
+                ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_BADREQUEST);
+                return "<message><error>missing property param</error></message>";
+            }
+
+            $objReflection = new Reflection($objObject);
+            $strSetter = $objReflection->getSetter($this->getParam("property"));
+            if ($strSetter == null) {
+                ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_BADREQUEST);
+                return "<message><error>setter not found</error></message>";
+            }
+
+            $objObject->{$strSetter}($this->getParam("value"));
+            if ($objObject->updateObjectToDb()) {
+                $strReturn = "<message><success>object update succeeded</success></message>";
+            } else {
+                $strReturn = "<message><error>object update failed</error></message>";
+            }
+
+        } else {
+            ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
+            $strReturn = "<message><error>".$this->getLang("ds_gesperrt").".".$this->getLang("commons_error_permissions")."</error></message>";
+        }
         return $strReturn;
     }
 
@@ -1534,7 +1586,7 @@ JS;
             foreach ($arrFiles as $objTask) {
                 //instantiate the current task
                 if ($objTask->getStrInternalTaskname() == $this->getParam("task")) {
-                    Logger::getInstance(Logger::ADMINTASKS)->addLogRow("executing task ".$objTask->getStrInternalTaskname(), Logger::$levelWarning);
+                    Logger::getInstance(Logger::ADMINTASKS)->warning("executing task ".$objTask->getStrInternalTaskname());
 
                     //let the work begin...
                     $strTempOutput = trim($objTask->executeTask());
@@ -1571,11 +1623,10 @@ JS;
      * Returns all properties for the given module
      *
      * @return string
+     * @responseType json
      */
     public function actionFetchProperty()
     {
-        ResponseObject::getInstance()->setStrResponseType(HttpResponsetypes::STR_TYPE_JSON);
-
         $strTargetModule = $this->getParam("target_module");
         $strReturn = Lang::getInstance()->getProperties($strTargetModule);
 
@@ -1588,11 +1639,10 @@ JS;
      * @return string
      * @permissions changelog
      * @throws Exception
+     * @responseType json
      */
     protected function actionChangelogPropertiesForDate()
     {
-        ResponseObject::getInstance()->setStrResponseType(HttpResponsetypes::STR_TYPE_JSON);
-
         $objObject = Objectfactory::getInstance()->getObject($this->getSystemid());
         $strDate = new Date($this->getParam("date"));
 
@@ -1629,11 +1679,10 @@ JS;
      * @permissions changelog
      * @since 5.1
      * @return string
+     * @responseType json
      */
     protected function actionChangelogChartData()
     {
-        ResponseObject::getInstance()->setStrResponseType(HttpResponsetypes::STR_TYPE_JSON);
-
         $objNow = new Date($this->getParam("now"));
         $objYearAgo = new Date($this->getParam("yearAgo"));
         $strSystemId = $this->getSystemid();

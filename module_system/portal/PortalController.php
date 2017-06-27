@@ -35,12 +35,6 @@ abstract class PortalController extends AbstractController
     protected $arrElementData = array();
 
     /**
-     * @inject system_portaltoolkit
-     * @var ToolkitPortal
-     */
-    protected $objToolkit;
-
-    /**
      * Constructor
      *
      * @param array $arrElementData

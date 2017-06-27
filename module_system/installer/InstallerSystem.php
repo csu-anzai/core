@@ -14,9 +14,11 @@ use Kajona\System\System\Classloader;
 use Kajona\System\System\Date;
 use Kajona\System\System\DbDatatypes;
 use Kajona\System\System\Filesystem;
+use Kajona\System\System\IdGenerator;
 use Kajona\System\System\InstallerBase;
 use Kajona\System\System\InstallerInterface;
 use Kajona\System\System\LanguagesLanguage;
+use Kajona\System\System\Logger;
 use Kajona\System\System\MessagingConfig;
 use Kajona\System\System\MessagingMessage;
 use Kajona\System\System\OrmBase;
@@ -70,17 +72,8 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["system_lock_time"] = array("int", true);
         $arrFields["system_status"] = array("int", true);
         $arrFields["system_class"] = array("char254", true);
-        $arrFields["system_comment"] = array("char254", true);
         $arrFields["system_deleted"] = array("int", true);
 
-        if(!$this->objDB->createTable("system", $arrFields, array("system_id"), array("system_prev_id", "system_module_nr", "system_sort", "system_owner", "system_create_date", "system_status", "system_lm_time", "system_lock_time", "system_deleted")))
-            $strReturn .= "An error occurred! ...\n";
-
-        //Rights table ----------------------------------------------------------------------------------
-        $strReturn .= "Installing table system_right...\n";
-
-        $arrFields = array();
-        $arrFields["right_id"] = array("char20", false);
         $arrFields["right_inherit"] = array("int", true);
         $arrFields["right_view"] = array("text", true);
         $arrFields["right_edit"] = array("text", true);
@@ -93,8 +86,9 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["right_right5"] = array("text", true);
         $arrFields["right_changelog"] = array("text", true);
 
-        if(!$this->objDB->createTable("system_right", $arrFields, array("right_id")))
+        if(!$this->objDB->createTable("system", $arrFields, array("system_id"), array("system_prev_id", "system_module_nr", "system_sort", "system_owner", "system_create_date", "system_status", "system_lm_time", "system_lock_time", "system_deleted")))
             $strReturn .= "An error occurred! ...\n";
+
 
         // Modul table ----------------------------------------------------------------------------------
         $strReturn .= "Installing table system_module...\n";
@@ -115,17 +109,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         // Config table ---------------------------------------------------------------------------------
         $strReturn .= "Installing table system_config...\n";
-
-        $arrFields = array();
-        $arrFields["system_config_id"] = array("char20", false);
-        $arrFields["system_config_name"] = array("char254", true);
-        $arrFields["system_config_value"] = array("char254", true);
-        $arrFields["system_config_type"] = array("int", true);
-        $arrFields["system_config_module"] = array("int", true);
-
-        if(!$this->objDB->createTable("system_config", $arrFields, array("system_config_id")))
-            $strReturn .= "An error occurred! ...\n";
-
+        $objManager->createTable(SystemSetting::class);
 
         // User table -----------------------------------------------------------------------------------
         $strReturn .= "Installing table user...\n";
@@ -254,6 +238,10 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $strReturn .= "Installing password reset history...\n";
         $objManager->createTable(SystemPwchangehistory::class);
 
+        // idgenerator
+        $strReturn .= "Installing idgenerator table...\n";
+        $objManager->createTable(IdGenerator::class);
+
         //Now we have to register module by module
 
         //The Systemkernel
@@ -299,6 +287,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         //3.1: nr of rows in admin
         $this->registerConstant("_admin_nr_of_rows_", 15, SystemSetting::$int_TYPE_INT, _system_modul_id_);
         $this->registerConstant("_admin_only_https_", "false", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
+        $this->registerConstant("_cookies_only_https_", "false", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
 
         //3.1: remoteloader max cachtime --> default 60 min
         $this->registerConstant("_remoteloader_max_cachetime_", 60 * 60, SystemSetting::$int_TYPE_INT, _system_modul_id_);
@@ -328,35 +317,32 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         //Systemid of guest-user & admin group
         $strGuestID = $objGuestGroup->getSystemid();
+        $intGuestShortId = $objGuestGroup->getIntShortId();
         $strAdminID = $objAdminGroup->getSystemid();
+        $intAdminShortid = $objAdminGroup->getIntShortId();
         $this->registerConstant("_guests_group_id_", $strGuestID, SystemSetting::$int_TYPE_STRING, _user_modul_id_);
         $this->registerConstant("_admins_group_id_", $strAdminID, SystemSetting::$int_TYPE_STRING, _user_modul_id_);
+
+        //BUT: We have to modify the right-record of the root node, too
+        $strGroupsAll = ",".$intGuestShortId.",".$intAdminShortid.",";
+        $strGroupsAdmin = ",".$intAdminShortid.",";
 
         //Create an root-record for the tree
         //So, lets generate the record
         $strQuery = "INSERT INTO "._dbprefix_."system
-                     ( system_id, system_prev_id, system_module_nr, system_create_date, system_lm_time, system_status, system_sort, system_class) VALUES
-                     (?, ?, ?, ?, ?, ?, ?, ?)";
+                     ( system_id, system_prev_id, system_module_nr, system_create_date, system_lm_time, system_status, system_sort, system_class,
+                        right_inherit, right_view, right_edit, right_delete, right_right, right_right1, right_right2, right_right3, right_right4, right_right5, right_changelog
+                     ) VALUES
+                     (?, ?, ?, ?, ?, ?, ?, ?,
+                     ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         //Send the query to the db
         $this->objDB->_pQuery(
             $strQuery,
-            array(0, 0, _system_modul_id_, Date::getCurrentTimestamp(), time(), 1, 1, SystemCommon::class)
+            array(0, 0, _system_modul_id_, Date::getCurrentTimestamp(), time(), 1, 1, SystemCommon::class,
+                0, $strGroupsAll, $strGroupsAdmin, $strGroupsAdmin, $strGroupsAdmin, $strGroupsAdmin, $strGroupsAdmin, $strGroupsAdmin, $strGroupsAdmin, $strGroupsAdmin, $strGroupsAdmin)
         );
 
-
-        //BUT: We have to modify the right-record of the root node, too
-        $strGroupsAll = $strGuestID.",".$strAdminID;
-        $strGroupsAdmin = $strAdminID;
-
-        $strQuery = "INSERT INTO "._dbprefix_."system_right
-            (right_id, right_inherit, right_view, right_edit, right_delete, right_right, right_right1, right_right2, right_right3, right_right4, right_right5, right_changelog) VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        $this->objDB->_pQuery(
-            $strQuery,
-            array(0, 0, $strGroupsAll, $strGroupsAdmin, $strGroupsAdmin, $strGroupsAdmin, $strGroupsAdmin, $strGroupsAdmin, $strGroupsAdmin, $strGroupsAdmin, $strGroupsAdmin, $strGroupsAdmin)
-        );
         $this->objDB->flushQueryCache();
 
         $strReturn .= "Modified root-rights....\n";
@@ -512,21 +498,18 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         if($arrModule["module_version"] == "4.6") {
             $strReturn .= "Updating 4.6 to 4.6.1...\n";
             $this->updateModuleVersion("", "4.6.1");
-            $this->objDB->flushQueryCache();
         }
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "4.6.1") {
             $strReturn .= "Updating 4.6.1 to 4.6.2...\n";
             $this->updateModuleVersion("", "4.6.2");
-            $this->objDB->flushQueryCache();
         }
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "4.6.2") {
             $strReturn .= "Updating 4.6.2 to 4.6.3...\n";
             $this->updateModuleVersion("", "4.6.3");
-            $this->objDB->flushQueryCache();
         }
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
@@ -564,7 +547,6 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         if($arrModule["module_version"] == "5.0" || $arrModule["module_version"] == "5.0.1") {
             $strReturn .= "Updating 5.0 to 5.1...\n";
             $this->updateModuleVersion("", "5.1");
-            $this->objDB->flushQueryCache();
         }
 
 
@@ -590,16 +572,33 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "5.1.4") {
-            $strReturn .= "Updating 5.1.4 to 6.2...\n";
-            $this->update_514_62();
-            $this->objDB->flushQueryCache();
+            $strReturn .= $this->update_514_62();
         }
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "5.1.5") {
             $strReturn .= "Updating 5.1.5 to 6.2...\n";
             $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2");
-            $this->objDB->flushQueryCache();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.2") {
+            $strReturn .= $this->update_62_621();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.2.1") {
+            $strReturn .= $this->update_621_622();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.2.2") {
+            $strReturn .= $this->update_622_623();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.2.3") {
+            $strReturn .= $this->update_623_624();
         }
 
         return $strReturn."\n\n";
@@ -716,7 +715,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
 
         $strReturn .= "Updating users and groups\n";
-        $arrRightsRow = Rights::getInstance()->getArrayRights(SystemModule::getModuleIdByNr(_user_modul_id_));
+        $arrRightsRow = $this->objDB->getPRow("SELECT * FROM "._dbprefix_."system_right WHERE right_id = ?", array(SystemModule::getModuleIdByNr(_user_modul_id_)));
 
         foreach($this->objDB->getPArray("SELECT * FROM "._dbprefix_."user", array()) as $arrOneRow) {
             //fire two inserts
@@ -870,5 +869,206 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2");
         return $strReturn;
+    }
+
+    private function update_62_621()
+    {
+        $strReturn = "Updating 6.2 to 6.2.1...\n";
+
+        $strReturn .= "Adding cookie setting\n";
+        $this->registerConstant("_cookies_only_https_", "false", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2.1");
+        return $strReturn;
+    }
+
+
+    private function update_621_622()
+    {
+        $strReturn = "Updating 6.2.1 to 6.2.2...\n";
+
+
+        $strReturn .= "Removing system_comment column...\n";
+        $this->objDB->removeColumn("system", "system_comment");
+
+        Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBQUERIES | Carrier::INT_CACHE_TYPE_DBSTATEMENTS);
+
+        $strReturn .= "Registering the id generator\n";
+        // install idgenerator table
+        $objSchemamanager = new OrmSchemamanager();
+        $objSchemamanager->createTable(IdGenerator::class);
+
+        $strReturn .= "Altering group table...\n";
+        $this->objDB->addColumn("user_group", "group_short_id", DbDatatypes::STR_TYPE_INT);
+
+        $strReturn .= "Adding ids to each group\n";
+        $strQuery = "SELECT group_id FROM "._dbprefix_."user_group WHERE group_short_id < 1 OR group_short_id IS NULL";
+        foreach($this->objDB->getPArray($strQuery, array()) as $arrOneRow) {
+            $strQuery = "UPDATE "._dbprefix_."user_group set group_short_id = ? WHERE group_id = ?";
+            $this->objDB->_pQuery($strQuery, array(IdGenerator::generateNextId(UserGroup::INT_SHORTID_IDENTIFIER), $arrOneRow["group_id"]));
+        }
+
+        $strReturn .= $this->migrateUserData(2500);
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2.2");
+        return $strReturn;
+    }
+
+    private function update_622_623()
+    {
+        $strReturn = "Updating 6.2.2 to 6.2.3...\n";
+
+        $strReturn .= "Adding permission columns to system table";
+        $this->objDB->addColumn("system", "right_inherit", DbDatatypes::STR_TYPE_INT);
+        $this->objDB->addColumn("system", "right_view", DbDatatypes::STR_TYPE_TEXT);
+        $this->objDB->addColumn("system", "right_edit", DbDatatypes::STR_TYPE_TEXT);
+        $this->objDB->addColumn("system", "right_delete", DbDatatypes::STR_TYPE_TEXT);
+        $this->objDB->addColumn("system", "right_right", DbDatatypes::STR_TYPE_TEXT);
+        $this->objDB->addColumn("system", "right_right1", DbDatatypes::STR_TYPE_TEXT);
+        $this->objDB->addColumn("system", "right_right2", DbDatatypes::STR_TYPE_TEXT);
+        $this->objDB->addColumn("system", "right_right3", DbDatatypes::STR_TYPE_TEXT);
+        $this->objDB->addColumn("system", "right_right4", DbDatatypes::STR_TYPE_TEXT);
+        $this->objDB->addColumn("system", "right_right5", DbDatatypes::STR_TYPE_TEXT);
+        $this->objDB->addColumn("system", "right_changelog", DbDatatypes::STR_TYPE_TEXT);
+
+
+        $strReturn .= "Moving data...\n";
+
+        foreach ($this->objDB->getGenerator("SELECT * FROM "._dbprefix_."system_right ORDER BY right_id", []) as $arrResultSet) {
+            foreach ($arrResultSet as $arrRow) {
+                $strQuery = "UPDATE "._dbprefix_."system 
+                            SET right_inherit = ?, right_view = ?, right_edit = ?, right_delete = ?, right_right = ?, right_right1 = ?, 
+                                right_right2 = ?, right_right3 = ?, right_right4 = ?, right_right5 = ?, right_changelog = ? 
+                          WHERE system_id = ?";
+
+                $this->objDB->_pQuery($strQuery,
+                    [
+                        $arrRow["right_inherit"],
+                        $arrRow["right_view"],
+                        $arrRow["right_edit"],
+                        $arrRow["right_delete"],
+                        $arrRow["right_right"],
+                        $arrRow["right_right1"],
+                        $arrRow["right_right2"],
+                        $arrRow["right_right3"],
+                        $arrRow["right_right4"],
+                        $arrRow["right_right5"],
+                        $arrRow["right_changelog"],
+                        $arrRow["right_id"]
+                    ]
+                );
+            }
+        }
+
+
+        Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBQUERIES | Carrier::INT_CACHE_TYPE_DBSTATEMENTS);
+
+
+        $strReturn .= "Dropping old permissions table...\n";
+        $this->objDB->_pQuery("DROP TABLE "._dbprefix_."system_right", array());
+
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2.3");
+        return $strReturn;
+    }
+
+    private function update_623_624()
+    {
+        $strReturn = "Updating 6.2.3 to 6.2.4...\n";
+        $strReturn .= "Shifting settings to 'real' objects\n";
+
+        $arrSystemModule = $this->objDB->getPRow("SELECT module_id FROM "._dbprefix_."system_module WHERE module_name = 'system'", []);
+
+        $strQuery = "SELECT system_config_id FROM "._dbprefix_."system_config";
+        foreach ($this->objDB->getPArray($strQuery, []) as $arrOneRow) {
+
+            if($this->objDB->getPRow("SELECT COUNT(*) as anz FROM "._dbprefix_."system WHERE system_id = ?", array($arrOneRow["system_config_id"]))["anz"] > 0) {
+                continue;
+            }
+
+            $strQuery = "INSERT INTO "._dbprefix_."system 
+                (system_id, system_prev_id, system_module_nr, system_sort, system_status, system_class, system_deleted, right_inherit) values 
+                (?, ?, ?, ?, ?, ?, ?, ?)";
+            $this->objDB->_pQuery($strQuery, [
+                $arrOneRow["system_config_id"],
+                $arrSystemModule["module_id"],
+                _system_modul_id_,
+                -1,
+                1,
+                SystemSetting::class,
+                0,
+                1
+            ]);
+        }
+
+        Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBQUERIES | Carrier::INT_CACHE_TYPE_DBSTATEMENTS | Carrier::INT_CACHE_TYPE_ORMCACHE | Carrier::INT_CACHE_TYPE_OBJECTFACTORY);
+
+        Rights::getInstance()->rebuildRightsStructure($arrSystemModule["module_id"]);
+
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2.4");
+        return $strReturn;
+    }
+
+
+
+    /**
+     * Helper to migrate the system-id based permission table to an int based one
+     *
+     * @param null|int $intPagesize
+     * @param bool $bitEchodata
+     * @return string
+     */
+    public function migrateUserData($intPagesize = null, $bitEchodata = false) {
+
+        $strRun = "Migrating old permissions table to new table data...\n";
+
+        $arrIdToInt = array();
+        foreach ($this->objDB->getPArray("SELECT group_id, group_short_id FROM "._dbprefix_."user_group ORDER BY group_id DESC", array()) as $arrOneRow) {
+            $arrIdToInt[$arrOneRow["group_id"]] = $arrOneRow["group_short_id"];
+        }
+
+        $objGenerator = $this->objDB->getGenerator("SELECT * FROM "._dbprefix_."system_right ORDER BY right_id DESC", [], $intPagesize);
+        foreach ($objGenerator as $arrResultSet) {
+            foreach ($arrResultSet as $arrSingleRow) {
+                $arrParams = array();
+
+                foreach (["right_changelog", "right_delete", "right_edit", "right_right", "right_right1", "right_right2", "right_right3", "right_right4", "right_right5", "right_view"] as $strOneCol) {
+                    $strNewString = ",";
+                    foreach (explode(",", $arrSingleRow[$strOneCol]) as $strOneGroup) {
+                        if (!empty($strOneGroup) && isset($arrIdToInt[$strOneGroup])) {
+                            $strNewString .= $arrIdToInt[$strOneGroup].",";
+                        } elseif (validateSystemid($strOneGroup)) {
+                            //do nothing, seems to be an old id
+                        } else {
+                            //keep migrated ones
+                            $strNewString .= $strOneGroup.",";
+                        }
+                    }
+                    $arrParams[] = $strNewString;
+                }
+
+                $strQuery = "UPDATE "._dbprefix_."system_right SET right_changelog = ?,right_delete = ?,right_edit = ?,right_right = ?,right_right1 = ?,right_right2 = ?,right_right3 = ?,right_right4 = ?,right_right5 = ?,right_view =? WHERE right_id = ?";
+                $arrParams[] = $arrSingleRow["right_id"];
+
+                $this->objDB->_pQuery($strQuery, $arrParams);
+            }
+
+            $strLoop = "Converted ".count($arrResultSet)." source rows ".PHP_EOL;
+
+            if ($bitEchodata) {
+                echo $strLoop;
+                flush();
+                ob_flush();
+            }
+
+            $strRun .= $strLoop;
+        }
+
+        return $strRun;
     }
 }

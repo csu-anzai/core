@@ -11,7 +11,6 @@ namespace Kajona\Packagemanager\Admin;
 use Kajona\Packagemanager\System\PackagemanagerManager;
 use Kajona\Packagemanager\System\PackagemanagerMetadata;
 use Kajona\Packagemanager\System\PackagemanagerPackagemanagerInterface;
-use Kajona\Packagemanager\System\PackagemanagerTemplate;
 use Kajona\Packagemanager\System\ServiceProvider;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminInterface;
@@ -63,7 +62,6 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
     {
         $arrReturn = array();
         $arrReturn[] = array("view", Link::getLinkAdmin($this->getArrModule("modul"), "list", "", $this->getLang("action_list"), "", "", true, "adminnavi"));
-        $arrReturn[] = array("view", Link::getLinkAdmin($this->getArrModule("modul"), "listTemplates", "", $this->getLang("action_list_templates"), "", "", true, "adminnavi"));
         return $arrReturn;
     }
 
@@ -85,8 +83,6 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
             $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "list"));
             return "";
         }
-
-        PackagemanagerTemplate::syncTemplatepacks();
 
         $strReturn = "";
         $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul")), "list");
@@ -208,6 +204,7 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
      *
      * @permissions view,edit
      * @return string
+     * @responseType json
      */
     protected function actionGetUpdateIcons()
     {
@@ -254,7 +251,6 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
             }
         }
 
-        ResponseObject::getInstance()->setStrResponseType(HttpResponsetypes::STR_TYPE_JSON);
         return json_encode($arrReturn);
     }
 
@@ -622,25 +618,6 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
     }
 
     /**
-     * @return string
-     * @autoTestable
-     * @permissions view
-     */
-    protected function actionListTemplates()
-    {
-
-        PackagemanagerTemplate::syncTemplatepacks();
-
-        $objArraySectionIterator = new ArraySectionIterator(PackagemanagerTemplate::getObjectCountFiltered());
-        $objArraySectionIterator->setPageNumber((int)($this->getParam("pv") != "" ? $this->getParam("pv") : 1));
-        $objArraySectionIterator->setArraySection(
-            PackagemanagerTemplate::getObjectListFiltered(null, "", $objArraySectionIterator->calculateStartPos(), $objArraySectionIterator->calculateEndPos())
-        );
-
-        return $this->renderList($objArraySectionIterator);
-    }
-
-    /**
      * @param string $strListIdentifier
      * @param bool $bitDialog
      *
@@ -651,7 +628,6 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
         $arrReturn = array();
         if ($this->getObjModule()->rightEdit()) {
             $arrReturn[] = $this->objToolkit->listButton(Link::getLinkAdminDialog($this->getArrModule("modul"), "addPackage", "&systemid=", $this->getLang("action_upload_package"), $this->getLang("action_upload_package"), "icon_upload", $this->getLang("action_upload_package")));
-            $arrReturn[] = $this->objToolkit->listButton(Link::getLinkAdmin($this->getArrModule("modul"), "new", "", $this->getLang("action_new_copy"), $this->getLang("action_new_copy"), "icon_new"));
         }
 
         return $arrReturn;
@@ -683,22 +659,7 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
      */
     protected function renderAdditionalActions(Model $objListEntry)
     {
-        $arrReturn = array();
-        if ($objListEntry instanceof PackagemanagerTemplate) {
-            if ($objListEntry->getMetadata() != null && !$objListEntry->getMetadata()->getBitIsPhar()) {
-                $arrReturn[] = $this->objToolkit->listButton(
-                    Link::getLinkAdmin($this->getArrModule("modul"), "downloadAsPhar", "&package=".$objListEntry->getMetadata()->getStrTitle(), $this->getLang("package_downloadasphar"), $this->getLang("package_downloadasphar"), "icon_phar")
-                );
-            }
-
-            if ($objListEntry->getStrName() !== "default") {
-                $arrReturn[] = $this->objToolkit->listButton(
-                    Link::getLinkAdmin($this->getArrModule("modul"), "addTemplates", "&systemid=".$objListEntry->getSystemid(), $this->getLang("action_add_templates"), $this->getLang("action_add_templates"), "icon_new")
-                );
-            }
-        }
-
-        return $arrReturn;
+        return array();
     }
 
 
@@ -711,14 +672,6 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
      */
     protected function renderStatusAction(Model $objListEntry, $strAltActive = "", $strAltInactive = "")
     {
-        if ($objListEntry->rightEdit()) {
-            if (SystemSetting::getConfigValue("_packagemanager_defaulttemplate_") == $objListEntry->getStrName()) {
-                return $this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_enabled", $this->getLang("pack_active_no_status")));
-            } else {
-                return $this->objToolkit->listStatusButton($objListEntry, true);
-            }
-        }
-
         return "";
     }
 
@@ -730,27 +683,10 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
      */
     protected function renderDeleteAction(ModelInterface $objListEntry)
     {
-        if ($objListEntry->rightDelete() && $this->getObjModule()->rightDelete()) {
-            if (SystemSetting::getConfigValue("_packagemanager_defaulttemplate_") == $objListEntry->getStrName() || $objListEntry->getStrName() === "default") {
-                return $this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_deleteDisabled", $this->getLang("pack_active_no_delete")));
-            } else {
-                return $this->objToolkit->listDeleteButton($objListEntry->getStrDisplayName(), $this->getLang("delete_question"), Link::getLinkAdminHref($this->getArrModule("modul"), "deleteTemplate", "&systemid=".$objListEntry->getSystemid().""));
-            }
-        }
-
         return "";
     }
 
-    /**
-     * Wrapper to delete a template-pack
-     *
-     * @return void
-     */
-    protected function actionDeleteTemplate()
-    {
-        parent::actionDelete();
-        $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "listTemplates"));
-    }
+
 
     /**
      * Triggers a phar-creation and download of the generated phar
@@ -766,8 +702,7 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
             $objPharService = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_PHARGENERATOR);
             try {
                 $objPharService->generateAndStreamPhar(_realpath_.$objHandler->getStrPath());
-            }
-            catch (Exception $objEx) {
+            } catch (Exception $objEx) {
                 return $this->objToolkit->warningBox($objEx->getMessage(), "alert-danger");
             }
         }
@@ -786,145 +721,11 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
 
     /**
      * @return string
-     * @throws Exception
      * @permissions edit
      */
-    protected function actionAddTemplates()
+    protected function actionNew()
     {
-        $objPack = new PackagemanagerTemplate($this->getSystemid());
-        $objForm = $this->getPackAdminForm($objPack);
-
-
-        $objForm->addField(new FormentryPlaintext("hint"))->setStrValue($this->objToolkit->warningBox($this->getLang("add_templates_hint", array($objPack->getStrName(), _templatepath_."/".$objPack->getStrName()))));
-        $objForm->setFieldToPosition("hint", 1);
-        $objForm->removeField("pack_name");
-
-        if ($objForm->getField("pack_modules[module_pages]") !== null) {
-            $objForm->getField("pack_modules[module_pages]")->setStrValue(false);
-        }
-
-        $strReturn = $objForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "addTemplateToPack"));
-        return $strReturn;
-    }
-
-    protected function actionAddTemplateToPack()
-    {
-        $objPack = new PackagemanagerTemplate($this->getSystemid());
-        $objFilesystem = new Filesystem();
-
-        $arrModules = $this->getParam("pack_path");
-        foreach ($arrModules as $strName => $strValue) {
-            if ($strValue != "") {
-                $strName = StringUtil::replace(StringUtil::toLowerCase(_realpath_), _realpath_, $strName);
-                $strTarget = _templatepath_."/".$objPack->getStrName()."/".StringUtil::substring($strName, StringUtil::indexOf($strName, "/default/") + 9);
-                $objFilesystem->fileCopy($strName, $strTarget);
-            }
-        }
-
-        Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_CLASSLOADER);
-        $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "listTemplates"));
-        return "";
-    }
-
-    /**
-     * @param AdminFormgenerator|null $objForm
-     *
-     * @return string
-     * @permissions edit
-     */
-    protected function actionNew(AdminFormgenerator $objForm = null)
-    {
-        if ($objForm == null) {
-            $objForm = $this->getPackAdminForm();
-        }
-
-        $strReturn = $objForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "copyPack"));
-        return $strReturn;
-    }
-
-    /**
-     * @return AdminFormgenerator
-     */
-    private function getPackAdminForm(PackagemanagerTemplate $objTargetObject = null)
-    {
-        $objFormgenerator = new AdminFormgenerator("pack", $objTargetObject);
-        $objFormgenerator->addField(new FormentryText("pack", "name"))->setStrLabel($this->getLang("pack_name"))->setBitMandatory(true)->setStrValue($this->getParam("pack_name"));
-        $objFormgenerator->addField(new FormentryPlaintext())->setStrValue($this->objToolkit->warningBox($this->getLang("pack_copy_include"), "alert-info"));
-        $arrModules = Classloader::getInstance()->getArrModules();
-        $objFilesystem = new Filesystem();
-
-        foreach ($arrModules as $strOneModule) {
-            //validate if there's a template-folder existing
-            if (is_dir(Resourceloader::getInstance()->getAbsolutePathForModule($strOneModule)."/templates/default/tpl")) {
-                $arrContent = $objFilesystem->getFilelist(Resourceloader::getInstance()->getAbsolutePathForModule($strOneModule)."/templates/default", array(".tpl"), true);
-
-                if (count($arrContent) > 0) {
-                    $objFormgenerator->addField(new FormentryHeadline())->setStrValue(StringUtil::replace("module_", "", $strOneModule));
-
-
-                    foreach ($arrContent as $strPath => $strOneFile) {
-                        $bitReadonly = false;
-                        if ($objTargetObject != null) {
-                            $strPath2 = _templatepath_."/".$objTargetObject->getStrName()."/".StringUtil::substring($strPath, StringUtil::indexOf($strPath, "/default/") + 9);
-                            if (is_file(_realpath_.$strPath2)) {
-                                $bitReadonly = true;
-                            }
-                        }
-
-                        $strOneFileAppend = " <code>".StringUtil::substring($strPath, StringUtil::indexOf($strPath, "/tpl") + 4)."</code>";
-
-
-                        $objFormgenerator->addField(new FormentryCheckbox("pack", "path[".$strPath."]"))->setStrLabel($strOneFile.$strOneFileAppend)->setStrValue($bitReadonly || ($objTargetObject == null && $strOneModule == "module_pages" && $strOneFile == "home.tpl" || $strOneFile == "standard.tpl"))
-                            //->setStrHint(" <code>".$strPath."</code>")
-                            ->setBitReadonly($bitReadonly);;
-
-                    }
-                }
-            }
-
-        }
-        return $objFormgenerator;
-    }
-
-    /**
-     * @permissions edit
-     * @return string
-     */
-    protected function actionCopyPack()
-    {
-        $objForm = $this->getPackAdminForm();
-
-        $strPackName = $this->getParam("pack_name");
-        $strPackName = createFilename($strPackName, true);
-
-        if ($strPackName != "" && is_dir(_realpath_._templatepath_."/".$strPackName)) {
-            $objForm->addValidationError("name", $this->getLang("pack_folder_existing"));
-        }
-
-        if (!$objForm->validateForm()) {
-            return $this->actionNew($objForm);
-        }
-
-
-        $objFilesystem = new Filesystem();
-        $objFilesystem->folderCreate(_templatepath_."/".$strPackName);
-        $objFilesystem->folderCreate(_templatepath_."/".$strPackName."/tpl");
-        $objFilesystem->folderCreate(_templatepath_."/".$strPackName."/css");
-        $objFilesystem->folderCreate(_templatepath_."/".$strPackName."/js");
-
-        $arrModules = $this->getParam("pack_path");
-        foreach ($arrModules as $strName => $strValue) {
-            if ($strValue != "") {
-                $strName = StringUtil::replace(StringUtil::toLowerCase(_realpath_), _realpath_, $strName);
-                $strTarget = _templatepath_."/".$strPackName."/".StringUtil::substring($strName, StringUtil::indexOf($strName, "/default/") + 9);
-                $objFilesystem->fileCopy($strName, $strTarget);
-            }
-        }
-
-        Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_CLASSLOADER);
-
-        $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "listTemplates"));
-        return "";
+        return $this->renderError("commons_error_permissions");
     }
 
 
@@ -953,6 +754,5 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
         foreach ($arrContent["folders"] as $strOneFolder) {
             $this->checkWritableRecursive($strFolder."/".$strOneFolder, $arrErrors);
         }
-
     }
 }

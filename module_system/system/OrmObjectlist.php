@@ -37,7 +37,7 @@ class OrmObjectlist extends OrmBase
 {
 
     /**
-     * @var OrmObjectlistRestriction[]
+     * @var OrmCondition[]
      */
     private $arrWhereRestrictions = array();
 
@@ -62,7 +62,7 @@ class OrmObjectlist extends OrmBase
     {
 
         //build the query
-        $strQuery = "SELECT COUNT(*)
+        $strQuery = "SELECT COUNT(*) AS cnt
                        ".$this->getQueryBase($strTargetClass)."
                        ".($strPrevid != "" && $strPrevid !== null ? " AND system_prev_id = ? " : "")."";
 
@@ -75,7 +75,7 @@ class OrmObjectlist extends OrmBase
         $this->processWhereRestrictions($strQuery, $arrParams, $strTargetClass);
 
         $arrRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, $arrParams);
-        return $arrRow["COUNT(*)"];
+        return $arrRow["cnt"];
 
     }
 
@@ -263,7 +263,7 @@ class OrmObjectlist extends OrmBase
             return;
         }
 
-        $this->addWhereRestriction(new OrmObjectlistRestriction($this->getDeletedWhereRestriction(), array()));
+        $this->addWhereRestriction(new OrmCondition($this->getDeletedWhereRestriction("", ""), array()));
     }
 
 
@@ -297,13 +297,13 @@ class OrmObjectlist extends OrmBase
     /**
      * Add a where restriction to the current queries
      *
-     * @param OrmObjectlistRestriction $objRestriction
+     * @param OrmConditionInterface $objCondition
      *
      * @return void
      */
-    public function addWhereRestriction(OrmObjectlistRestriction $objRestriction)
+    public function addWhereRestriction(OrmConditionInterface $objCondition)
     {
-        $this->arrWhereRestrictions[] = $objRestriction;
+        $this->arrWhereRestrictions[] = $objCondition;
     }
 
     /**

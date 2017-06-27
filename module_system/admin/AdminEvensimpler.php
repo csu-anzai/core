@@ -104,7 +104,7 @@ abstract class AdminEvensimpler extends AdminSimple
         if(isset(self::$arrActionNameMapping[$strAction])) {
             $strAnnotationPrefix = self::$arrActionNameMapping[$strAction];
 
-            if($strAction == "new") {
+            if($strAction == "new" && $objInstance == null) {
                 return $strAction.$this->getStrCurObjectTypeName();
             }
             else {
@@ -253,6 +253,11 @@ abstract class AdminEvensimpler extends AdminSimple
             $objForm = $this->getAdminForm($objInstance);
             $objForm->addField(new FormentryHidden("", "mode"))->setStrValue("edit");
 
+            $bitValidate = $this->getParam("validate") === "true";
+            if ($bitValidate) {
+                $objForm->validateForm();
+            }
+
             return $objForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "save".$this->getStrCurObjectTypeName()));
         }
         else {
@@ -268,7 +273,7 @@ abstract class AdminEvensimpler extends AdminSimple
      *
      * @return null|string
      */
-    private function getObjectFilterClass($strCurObjectTypeName)
+    protected function getObjectFilterClass($strCurObjectTypeName)
     {
 
         $objReflection = new Reflection($this);
@@ -350,7 +355,7 @@ abstract class AdminEvensimpler extends AdminSimple
                 "folderview" => $this->getParam("folderview"),
             );
 
-            $strFilterUrl = Link::getLinkAdminHref($this->getArrModule("module"), $this->getAction(), "&" . http_build_query($arrParams));
+            $strFilterUrl = Link::getLinkAdminHref($this->getArrModule("module"), $this->getAction(), $arrParams);
         }
 
         if ($objFilter->getBitFilterUpdated()) {
@@ -451,7 +456,7 @@ abstract class AdminEvensimpler extends AdminSimple
      */
     protected function persistModel(Model $objModel, $strPrevId = false)
     {
-        $objModel->updateObjectToDb($strPrevId);
+        $this->objLifeCycleFactory->factory(get_class($objModel))->update($objModel, $strPrevId);
     }
 
     /**

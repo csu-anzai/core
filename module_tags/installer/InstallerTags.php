@@ -61,25 +61,6 @@ class InstallerTags extends InstallerBase implements InstallerRemovableInterface
 		$strReturn .= "Registering system-constants...\n";
         $this->registerConstant("_tags_defaultprivate_", "false", SystemSetting::$int_TYPE_BOOL, _tags_modul_id_);
 
-        //Register the element
-        $strReturn .= "Registering tags-element...\n";
-
-        //check, if not already existing
-        if(SystemModule::getModuleByName("pages") !== null && PagesElement::getElement("tags") == null) {
-            $objElement = new PagesElement();
-            $objElement->setStrName("tags");
-            $objElement->setStrClassAdmin("ElementTagsAdmin.php");
-            $objElement->setStrClassPortal("ElementTagsPortal.php");
-            $objElement->setIntCachetime(3600*24*30);
-            $objElement->setIntRepeat(0);
-            $objElement->setStrVersion($this->objMetadata->getStrVersion());
-            $objElement->updateObjectToDb();
-            $strReturn .= "Element registered...\n";
-        }
-        else {
-            $strReturn .= "Element already installed!...\n";
-        }
-
 		return $strReturn;
 
 	}
@@ -109,18 +90,6 @@ class InstallerTags extends InstallerBase implements InstallerRemovableInterface
         if(SystemSetting::getConfigByName("_tags_defaultprivate_") != null)
             SystemSetting::getConfigByName("_tags_defaultprivate_")->deleteObjectFromDatabase();
 
-        //delete the page-element
-        if(SystemModule::getModuleByName("pages") !== null && PagesElement::getElement("tags") != null) {
-            $objElement = PagesElement::getElement("tags");
-            if($objElement != null) {
-                $strReturn .= "Deleting page-element 'tags'...\n";
-                $objElement->deleteObjectFromDatabase();
-            }
-            else {
-                $strReturn .= "Error finding page-element 'guestbook', tags.\n";
-                return false;
-            }
-        }
 
         /** @var TagsFavorite $objOneObject */
         foreach(TagsFavorite::getObjectListFiltered() as $objOneObject) {

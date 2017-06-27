@@ -42,9 +42,6 @@ class ScriptletXConstants implements ScriptletInterface
             date("d.m.y H:i", time())
         );
 
-        $arrConstants[] = "_packagemanager_defaulttemplate_";
-        $arrValues[] = SystemSetting::getConfigValue("_packagemanager_defaulttemplate_");
-
         if (defined("_skinwebpath_")) {
             $arrConstants[] = "_skinwebpath_";
             $arrValues[] = _skinwebpath_;

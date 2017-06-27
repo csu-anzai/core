@@ -93,7 +93,7 @@ $lang["commons_validator_int_validationmessage"] = "Das Feld muss Ganzzahlen ent
 $lang["commons_validator_numeric_validationmessage"] = "Das Feld muss numerische Werte enthalten";
 $lang["commons_validator_posint_validationmessage"] = "Das Feld muss positive Ganzzahlen enthalten";
 $lang["commons_yes"]                     = "Ja";
-$lang["commons_filter_active"]            = "<span class='smaller pull-right'><i class=\"fa fa-filter\"></i> Aktiver Listen-Filter</span>";
+$lang["commons_filter_active"]            = "Aktiver Listen-Filter";
 $lang["filter_show_hide"]                = "Filter ein-/ausblenden";
 
 $lang["commons_remove_assignment"]                     = "Zuordnung löschen";
@@ -122,9 +122,9 @@ $lang["commons_from"] = "Von";
 $lang["commons_to"] = "Bis";
 
 $lang["commons_record_status"] = "Status";
-$lang["commons_record_deleted"] = "Gelöscht";
-$lang["commons_record_prev"] = "Vorläufer";
-$lang["commons_record_owner"] = "Besitzer";
+$lang["commons_record_deleted"] = "Datensatz Gelöscht";
+$lang["commons_record_prev"] = "Übergeordneter Datensatz";
+$lang["commons_record_owner"] = "Ersteller des Datensatzes";
 $lang["commons_record_startdate"] = "Startdatum";
 $lang["commons_record_enddate"] = "Enddatum";
 $lang["commons_record_specialdate"] = "Sonder-Datum";

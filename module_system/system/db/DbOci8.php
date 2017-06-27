@@ -112,7 +112,7 @@ class DbOci8 extends DbBase
 
         $strQuery = "INSERT ALL ";
         foreach ($arrValueSets as $arrOneSet) {
-            $arrParams = array_merge($arrParams, $arrOneSet);
+            $arrParams = array_merge($arrParams, array_values($arrOneSet));
 
             $strQuery .= " INTO ".$this->encloseTableName($strTable)." ".$strColumnNames." VALUES ".$strPlaceholder." ";
         }
@@ -539,6 +539,15 @@ class DbOci8 extends DbBase
 
     //--- DUMP & RESTORE ------------------------------------------------------------------------------------
 
+
+    /**
+     * @inheritdoc
+     */
+    public function handlesDumpCompression()
+    {
+        return false;
+    }
+
     /**
      * Dumps the current db
      *
@@ -547,18 +556,18 @@ class DbOci8 extends DbBase
      *
      * @return bool
      */
-    public function dbExport($strFilename, $arrTables)
+    public function dbExport(&$strFilename, $arrTables)
     {
 
         $strFilename = _realpath_.$strFilename;
         $strTables = implode(",", $arrTables);
 
         $strCommand = $this->strDumpBin." ".$this->objCfg->getStrUsername()."/".$this->objCfg->getStrPass()." CONSISTENT=n TABLES=".$strTables." FILE='".$strFilename."'";
-        Logger::getInstance(Logger::DBLOG)->addLogRow("dump command: ".$strCommand, Logger::$levelInfo);
+        Logger::getInstance(Logger::DBLOG)->info("dump command: ".$strCommand);
         //Now do a systemfork
         $intTemp = "";
         system($strCommand, $intTemp);
-        Logger::getInstance(Logger::DBLOG)->addLogRow($this->strDumpBin." exited with code ".$intTemp, Logger::$levelInfo);
+        Logger::getInstance(Logger::DBLOG)->info($this->strDumpBin." exited with code ".$intTemp);
         return $intTemp == 0;
     }
 
@@ -576,7 +585,7 @@ class DbOci8 extends DbBase
         $strCommand = $this->strRestoreBin." ".$this->objCfg->getStrUsername()."/".$this->objCfg->getStrPass()." FILE='".$strFilename."'";
         $intTemp = "";
         system($strCommand, $intTemp);
-        Logger::getInstance(Logger::DBLOG)->addLogRow($this->strRestoreBin." exited with code ".$intTemp, Logger::$levelInfo);
+        Logger::getInstance(Logger::DBLOG)->info($this->strRestoreBin." exited with code ".$intTemp);
         return $intTemp == 0;
     }
 

@@ -11,11 +11,11 @@ The content and the portal are glued by templates, controlling the behavior and 
 
 A fully integrated portal-editor allows in-page editing, making the fully fledged backend obsolete for most everyday tasks. The portal-editor is enabled automatically as soon as you are logged in with an admin-account browsing the portal.
 
-The portal is opened automatically when opening the installation-folder if Kajona with your webbrowser. To access the administration backend, just append ```/admin``` to the installation-directory, e.g. ```http://my-website.com/kajona/admin``` or ```http://my-website.com/admin```. Log in using the credentials provided during the installation.
+The portal is opened automatically when opening the installation-folder of Kajona with your webbrowser. To access the administration backend, just append ```/admin``` to the installation-directory, e.g. ```http://my-website.com/kajona/admin``` or ```http://my-website.com/admin```. Log in using the credentials provided during the installation.
 
 
 ##Requirements
-Kajona is written in PHP and requires at least PHP version 5.5. Kajona requires the following PHP-modules to be available in order to run smoothly:
+Kajona is written in PHP and requires at least PHP version 7.0. Kajona requires the following PHP-modules to be available in order to run smoothly:
 
 * mbstring
 * gd-lib
@@ -33,7 +33,7 @@ In addition, one of the following databases is required:
 
 New databases may be connected by adding a new database-driver to the database-abstraction.
 
-PHP need to be installed along a webserver like Apache HTTPD, but every other webserver like IIS oder nginx is totally fine, too.
+PHP needs to be installed along a webserver like Apache HTTPD, but every other webserver like IIS oder nginx is totally fine, too.
 
 
 

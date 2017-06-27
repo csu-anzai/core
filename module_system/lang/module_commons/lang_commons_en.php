@@ -93,7 +93,7 @@ $lang["commons_validator_int_validationmessage"] = "The field must contain integ
 $lang["commons_validator_numeric_validationmessage"] = "The field must contain numeric values";
 $lang["commons_validator_posint_validationmessage"] = "The field must contain positive integer values";
 $lang["commons_yes"]                     = "Yes";
-$lang["commons_filter_active"]            = "<span class='smaller pull-right'><i class=\"fa fa-filter\"></i> List-filter in use</span>";
+$lang["commons_filter_active"]            = "List-filter in use";
 $lang["filter_show_hide"]                = "Show/hide filter";
 
 $lang["commons_remove_assignment"]                     = "Remove assignment";
@@ -122,9 +122,9 @@ $lang["commons_from"] = "From";
 $lang["commons_to"] = "To";
 
 $lang["commons_record_status"] = "Status";
-$lang["commons_record_deleted"] = "Deleted";
-$lang["commons_record_prev"] = "Parent";
-$lang["commons_record_owner"] = "Owner";
+$lang["commons_record_deleted"] = "Record Deleted";
+$lang["commons_record_prev"] = "Parent object";
+$lang["commons_record_owner"] = "Record creator";
 $lang["commons_record_startdate"] = "Start date";
 $lang["commons_record_enddate"] = "End date";
 $lang["commons_record_specialdate"] = "Special date";

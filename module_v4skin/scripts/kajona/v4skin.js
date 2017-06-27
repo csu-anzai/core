@@ -1,5 +1,5 @@
 
-define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'statusDisplay', 'messaging', 'ajax', 'util'], function ($, bootstrap, jqueryui, workingIndicator, tooltip, statusDisplay, messaging, ajax, util) {
+define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'statusDisplay', 'messaging', 'ajax', 'util', 'folderview'], function ($, bootstrap, jqueryui, workingIndicator, tooltip, statusDisplay, messaging, ajax, util, folderview) {
 
     var breadcrumb = {
 
@@ -160,9 +160,6 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
     $('#content a[rel=popover]').popover();
     tooltip.initTooltip();
 
-    statusDisplay.classOfMessageBox = "alert alert-info";
-    statusDisplay.classOfErrorBox = "alert alert-error";
-
     kajonaScroll = null;
     $(window).scroll(function() {
         var scroll = $(this).scrollTop();
@@ -222,7 +219,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
                     }
                 }
 
-                //Formentry must have at least 2 charackters to trigger search.
+                //Formentry must have at least 2 characters to trigger search.
                 if(event.target.value.length < 2) {
                     event.stopPropagation();
                     return false;
@@ -247,6 +244,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
                     if($('#'+$objCur.attr('id')+'_id')) {
                         $( '#'+$objCur.attr('id')+'_id' ).val( ui.item.systemid);
                     }
+                    $objCur.trigger('change');
                 }
             };
 
@@ -268,7 +266,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
                     $.each($.parseJSON(data), function(index, item) {
                         $('#tagsSubemenu').append("<li><a href='"+item.url+"'><i class='fa fa-tag'></i> "+item.name+"</a></li>");
                     });
-                    $('#tagsSubemenu').append("<li class='divider'></li><li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1&module=tags'><i class='fa fa-tag'></i> "+msg.properties.show_all+"</a></li>")
+                    $('#tagsSubemenu').append("<li class='divider'></li><li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1&module=tags'><i class='fa fa-tag'></i> "+me.properties.tags.show_all+"</a></li>")
                 }
             });
         },
@@ -312,74 +310,29 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
         },
 
         /**
-         * Sets an array of items to an object list. We remove only elements which are available in the arrAvailableIds array
+         * Use folderview.setObjectListItems
          *
-         * @param strElementName  - name of the objectlist element
-         * @param arrItems        - array with item of the following format {strSystemId: <systemid>, strDisplayName:<displayname>, strIcon:<icon>}
-         * @param arrAvailableIds -
+         * @deprecated
+         * @param strElementName
+         * @param arrItems
+         * @param arrAvailableIds
+         * @param strDeleteButton
          */
         setObjectListItems: function(strElementName, arrItems, arrAvailableIds, strDeleteButton){
-            var table = util.getElementFromOpener(strElementName);
-
-            var tbody = table.find('tbody');
-            if(tbody.length > 0) {
-                // remove only elements which are in the arrAvailableIds array
-                tbody.children().each(function(){
-                    var strId = $(this).find('input[type="hidden"]').val();
-                    if($.inArray(strId, arrAvailableIds) !== -1) {//if strId in array
-                        $(this).remove();
-                    }
-                });
-
-                // add new elements
-                for(var i = 0; i < arrItems.length; i++) {
-                    var strEscapedTitle = $('<div></div>').text(arrItems[i].strDisplayName).html();
-                    var html = '';
-                    html+= '<tr>';
-                    html+= '    <td>' + arrItems[i].strIcon + '</td>';
-                    html+= '    <td>' + strEscapedTitle + ' <input type="hidden" name="' + strElementName + '[]" value="' + arrItems[i].strSystemId + '" /></td>';
-                    html+= '    <td class="icon-cell">';
-                    html+= '        <a href="#" onclick="require(\'v4skin\').removeObjectListItem(this);return false">' + strDeleteButton + '</a>';
-                    html+= '    </td>';
-                    html+= '</tr>';
-
-                    tbody.append(html);
-                }
-            }
+            console.log('v4skin.setObjectListItems is deprecated please use folderview.setObjectListItems instead');
+            folderview.setObjectListItems(strElementName, arrItems, arrAvailableIds, strDeleteButton);
         },
 
+        /**
+         * Use folderview.setCheckboxArrayObjectListItems
+         *
+         * @deprecated
+         * @param strElementName
+         * @param arrItems
+         */
         setCheckboxArrayObjectListItems : function(strElementName, arrItems){
-            var form = util.getElementFromOpener(strElementName);
-
-            var table = form.find('table');
-            if(table.length > 0) {
-                // add new elements
-                for(var i = 0; i < arrItems.length; i++) {
-                    var strEscapedTitle = $('<div></div>').text(arrItems[i].strDisplayName).html();
-                    var html = '';
-
-                    // check whether form entry exists already in the table if so skip. We need to escape the form element name
-                    // since it contains brackets
-                    var formElementName = strElementName + '[' + arrItems[i].strSystemId + ']';
-                    var existingFormEls = table.find('input[name=' + formElementName.replace(/(:|\.|\[|\]|,)/g, "\\$1") + ']');
-                    if (existingFormEls.length > 0) {
-                        continue;
-                    }
-
-                    html+= '<tbody>';
-                    html+= '<tr data-systemid="' + arrItems[i].strSystemId + '">';
-                    html+= '    <td class="listcheckbox"><input type="checkbox" name="' + formElementName + '" data-systemid="' + arrItems[i].strSystemId + '" checked></td>';
-                    html+= '    <td class="listimage">' + arrItems[i].strIcon + '</td>';
-                    html+= '    <td class="title">';
-                    html+= '        <div class="small text-muted">' + arrItems[i].strPath + '</div>';
-                    html+= '        ' + arrItems[i].strDisplayName;
-                    html+= '    </td>';
-                    html+= '</tr>';
-                    html+= '</tbody>';
-
-                    table.append(html);
-                }
-            }
+            console.log('v4skin.setCheckboxArrayObjectListItems is deprecated please use folderview.setCheckboxArrayObjectListItems instead');
+            folderview.setCheckboxArrayObjectListItems(strElementName, arrItems);
         },
 
         /**

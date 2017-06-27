@@ -196,7 +196,7 @@ class DbPostgres extends DbBase
 
         $arrReturn = array();
         foreach ($arrTemp as $arrOneRow) {
-            if (StringUtil::indexOf($arrOneRow["name"], _dbprefix_) !== false) {
+            if (empty(_dbprefix_) || StringUtil::indexOf($arrOneRow["name"], _dbprefix_) !== false) {
                 $arrReturn[] = $arrOneRow;
             }
         }
@@ -328,7 +328,7 @@ class DbPostgres extends DbBase
         }
 
         //build the mysql code
-        $strQuery .= "CREATE TABLE ".$strName." ( \n";
+        $strQuery .= "CREATE TABLE ".$this->encloseTableName($strName)." ( \n";
 
         //loop the fields
         foreach ($arrFields as $strFieldName => $arrColumnSettings) {
@@ -362,9 +362,9 @@ class DbPostgres extends DbBase
         if ($bitCreate && count($arrIndices) > 0) {
             foreach ($arrIndices as $strOneIndex) {
                 if (is_array($strOneIndex)) {
-                    $strQuery = "CREATE INDEX ix_".generateSystemid()." ON ".$strName." ( ".implode(", ", $strOneIndex).") ";
+                    $strQuery = "CREATE INDEX ix_".generateSystemid()." ON ".$this->encloseTableName($strName)." ( ".implode(", ", $strOneIndex).") ";
                 } else {
-                    $strQuery = "CREATE INDEX ix_".generateSystemid()." ON ".$strName." ( ".$strOneIndex.") ";
+                    $strQuery = "CREATE INDEX ix_".generateSystemid()." ON ".$this->encloseTableName($strName)." ( ".$strOneIndex.") ";
                 }
                 $bitCreate = $bitCreate && $this->_pQuery($strQuery, array());
             }
@@ -426,22 +426,27 @@ class DbPostgres extends DbBase
      *
      * @return bool
      */
-    public function dbExport($strFilename, $arrTables)
+    public function dbExport(&$strFilename, $arrTables)
     {
         $strFilename = _realpath_.$strFilename;
         $strTables = "-t ".implode(" -t ", $arrTables);
 
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        if ($this->isWinOs()) {
             $strCommand = "SET \"PGPASSWORD=".$this->objCfg->getStrPass()."\" && ";
         } else {
             $strCommand = "PGPASSWORD=\"".$this->objCfg->getStrPass()."\" ";
         }
 
-        $strCommand .= $this->strDumpBin." --clean --no-owner -h".$this->objCfg->getStrHost()." -U".$this->objCfg->getStrUsername()." -p".$this->objCfg->getIntPort()." ".$strTables." ".$this->objCfg->getStrDbName()." > \"".$strFilename."\"";
+        if ($this->handlesDumpCompression()) {
+            $strFilename .= ".gz";
+            $strCommand .= $this->strDumpBin." --clean --no-owner -h".$this->objCfg->getStrHost()." -U".$this->objCfg->getStrUsername()." -p".$this->objCfg->getIntPort()." ".$strTables." ".$this->objCfg->getStrDbName()." | gzip > \"".$strFilename."\"";
+        } else {
+            $strCommand .= $this->strDumpBin." --clean --no-owner -h".$this->objCfg->getStrHost()." -U".$this->objCfg->getStrUsername()." -p".$this->objCfg->getIntPort()." ".$strTables." ".$this->objCfg->getStrDbName()." > \"".$strFilename."\"";
+        }
         //Now do a systemfork
         $intTemp = "";
         $strResult = system($strCommand, $intTemp);
-        Logger::getInstance(Logger::DBLOG)->addLogRow($this->strDumpBin." exited with code ".$intTemp, Logger::$levelInfo);
+        Logger::getInstance(Logger::DBLOG)->info($this->strDumpBin." exited with code ".$intTemp);
         return $intTemp == 0;
     }
 
@@ -456,18 +461,29 @@ class DbPostgres extends DbBase
     {
         $strFilename = _realpath_.$strFilename;
 
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        if ($this->isWinOs()) {
             $strCommand = "SET \"PGPASSWORD=".$this->objCfg->getStrPass()."\" && ";
         } else {
             $strCommand = "PGPASSWORD=\"".$this->objCfg->getStrPass()."\" ";
         }
 
-        $strCommand .= $this->strRestoreBin." -q -h".$this->objCfg->getStrHost()." -U".$this->objCfg->getStrUsername()." -p".$this->objCfg->getIntPort()." ".$this->objCfg->getStrDbName()." < \"".$strFilename."\"";
+        if ($this->handlesDumpCompression() && StringUtil::endsWith($strFilename, ".gz")) {
+            $strCommand .= " gunzip -c \"".$strFilename."\" | ".$this->strRestoreBin." -q -h".$this->objCfg->getStrHost()." -U".$this->objCfg->getStrUsername()." -p".$this->objCfg->getIntPort()." ".$this->objCfg->getStrDbName()."";
+        } else {
+            $strCommand .= $this->strRestoreBin." -q -h".$this->objCfg->getStrHost()." -U".$this->objCfg->getStrUsername()." -p".$this->objCfg->getIntPort()." ".$this->objCfg->getStrDbName()." < \"".$strFilename."\"";
+        }
+
         $intTemp = "";
         $strResult = system($strCommand, $intTemp);
-        Logger::getInstance(Logger::DBLOG)->addLogRow($this->strRestoreBin." exited with code ".$intTemp, Logger::$levelInfo);
+        Logger::getInstance(Logger::DBLOG)->info($this->strRestoreBin." exited with code ".$intTemp);
         return $intTemp == 0;
     }
+
+    public function encloseTableName($strTable)
+    {
+        return "\"{$strTable}\"";
+    }
+
 
     /**
      * @param string $strValue
@@ -486,14 +502,13 @@ class DbPostgres extends DbBase
      *
      * @return string
      */
-    private function processQuery($strQuery)
+    protected function processQuery($strQuery)
     {
-        $intCount = 1;
-        while (StringUtil::indexOf($strQuery, "?") !== false) {
-            $intPos = StringUtil::indexOf($strQuery, "?");
-            $strQuery = substr($strQuery, 0, $intPos)."$".$intCount++.substr($strQuery, $intPos + 1);
-        }
-
+        $strQuery = preg_replace_callback('/\?/', function($strValue){
+            static $intI = 0;
+            $intI++;
+            return '$' . $intI;
+        }, $strQuery);
 
         $strQuery = StringUtil::replace(" LIKE ", " ILIKE ", $strQuery, true, true);
 

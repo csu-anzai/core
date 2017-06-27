@@ -55,6 +55,7 @@ final class Session
 
     const STR_SESSION_USERID = "STR_SESSION_USERID";
     const STR_SESSION_GROUPIDS = "STR_SESSION_GROUPIDS";
+    const STR_SESSION_GROUPIDS_SHORT = "STR_SESSION_GROUPIDS_SHORT";
     const STR_SESSION_ISADMIN = "STR_SESSION_ISADMIN";
 
 
@@ -93,6 +94,12 @@ final class Session
 
         //New session needed or using the already started one?
         if (!session_id()) {
+            $strPath = preg_replace('#http(s?)://'.getServer("HTTP_HOST").'#i', '', _webpath_);
+            if ($strPath == "" || $strPath[0] != "/") {
+                $strPath = "/".$strPath;
+            }
+
+            @session_set_cookie_params(0, $strPath, null, SystemSetting::getConfigValue("_cookies_only_https_") == "true", true);
             @session_start();
         }
 
@@ -460,7 +467,7 @@ final class Session
 
 
         if ($bitReturn === false) {
-            Logger::getInstance()->addLogRow("Unsuccessful login attempt by user ".$strName, Logger::$levelInfo);
+            Logger::getInstance()->info("Unsuccessful login attempt by user ".$strName);
             UserLog::generateLog(0, $strName);
         }
 
@@ -484,8 +491,8 @@ final class Session
                 $this->getObjInternalSession()->setStrUserid($objTargetUser->getSystemid());
                 $this->setSession(self::STR_SESSION_USERID, $objTargetUser->getSystemid());
 
-                $strGroups = implode(",", $objTargetUser->getArrGroupIds());
-                $this->setSession(self::STR_SESSION_GROUPIDS, $strGroups);
+                $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $objTargetUser->getArrGroupIds()));
+                $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $objTargetUser->getArrShortGroupIds()));
                 $this->getObjInternalSession()->updateObjectToDb();
                 $this->objUser = $objTargetUser;
 
@@ -510,11 +517,11 @@ final class Session
             $this->getObjInternalSession()->setStrLoginstatus(SystemSession::$LOGINSTATUS_LOGGEDIN);
             $this->getObjInternalSession()->setStrUserid($objUser->getSystemid());
             $this->getObjInternalSession()->setStrLoginprovider($objUser->getStrSubsystem());
-            $strGroups = implode(",", $objUser->getArrGroupIds());
 
             //save some metadata to the php-session
             $this->setSession(self::STR_SESSION_USERID, $objUser->getSystemid());
-            $this->setSession(self::STR_SESSION_GROUPIDS, $strGroups);
+            $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $objUser->getArrGroupIds()));
+            $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $objUser->getArrShortGroupIds()));
             $this->setSession(self::STR_SESSION_ISADMIN, $objUser->getIntAdmin());
 
             $this->getObjInternalSession()->updateObjectToDb();
@@ -530,7 +537,7 @@ final class Session
             $objUser->updateObjectToDb();
 
             //Drop a line to the logger
-            Logger::getInstance()->addLogRow("User: ".$objUser->getStrUsername()." successfully logged in, login provider: ".$objUser->getStrSubsystem(), Logger::$levelInfo);
+            Logger::getInstance()->info("User: ".$objUser->getStrUsername()." successfully logged in, login provider: ".$objUser->getStrSubsystem());
             UserLog::generateLog();
 
             //right now we have the time to do a few cleanups...
@@ -556,7 +563,7 @@ final class Session
      */
     public function logout()
     {
-        Logger::getInstance()->addLogRow("User: ".$this->getUsername()." successfully logged out", Logger::$levelInfo);
+        Logger::getInstance()->info("User: ".$this->getUsername()." successfully logged out");
         UserLog::registerLogout();
 
         CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_USERLOGOUT, array($this->getUserID()));
@@ -640,7 +647,7 @@ final class Session
     }
 
     /**
-     * Returns the groups the user is member in as a string
+     * Returns the systemids of groups the user is member in as a string
      *
      * @return string
      */
@@ -655,13 +662,28 @@ final class Session
     }
 
     /**
-     * Returns the groups the user is member in as an array
+     * Returns the systemids of groups the user is member in as an array
      *
      * @return array
      */
     public function getGroupIdsAsArray()
     {
         return explode(",", $this->getGroupIdsAsString());
+    }
+
+    /**
+     * Returns the short ids of groups the user is member in as an array
+     *
+     * @return array
+     */
+    public function getShortGroupIdsAsArray()
+    {
+        if ($this->getObjInternalSession() != null) {
+            $strGroupids = $this->getSession(self::STR_SESSION_GROUPIDS_SHORT);
+        } else {
+            $strGroupids = UserGroup::getShortIdForGroupId(SystemSetting::getConfigValue("_guests_group_id_"));
+        }
+        return explode(",", $strGroupids);
     }
 
     /**
@@ -732,7 +754,6 @@ final class Session
 
         $this->setSession("KAJONA_INTERNAL_SESSID", $objSession->getSystemid());
         $this->objInternalSession = $objSession;
-
     }
 
     /**

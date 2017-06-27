@@ -36,14 +36,15 @@ class OrmPermissionCondition extends OrmCondition
 
         $this->arrUserGroupIds = $arrUserGroupIds;
         $this->strPermission = $strPermission;
-        $this->strAlternativeColumn = $strColumn;
 
         if ($this->arrUserGroupIds === null) {
             $this->arrUserGroupIds = Carrier::getInstance()->getObjSession()->getGroupIdsAsArray();
         }
 
-        if ($this->strColumn == null) {
+        if ($strColumn == null) {
             $this->strColumn = "right_".$strPermission;
+        } else {
+            $this->strColumn = $strColumn;
         }
     }
 
@@ -58,7 +59,7 @@ class OrmPermissionCondition extends OrmCondition
 
         $objCompound = new OrmCompositeCondition(array(), OrmCondition::STR_CONDITION_OR);
         foreach ($this->arrUserGroupIds as $strUserGroupId) {
-            $objCompound->addCondition(new OrmCondition("{$this->strColumn} {$strLikeOperator}  ?", array("%".$strUserGroupId."%")));
+            $objCompound->addCondition(new OrmCondition("{$this->strColumn} {$strLikeOperator}  ?", array("%,".UserGroup::getShortIdForGroupId($strUserGroupId).",%")));
         }
 
         return $objCompound;

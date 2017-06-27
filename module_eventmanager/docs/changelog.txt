@@ -1,4 +1,0 @@
-Module Eventmanager
-
-V5.0.1 ----------------------------------------------------------------------------------------------------
-BUG: eventmanager | EventmanagerPortal.php -> fixed a possible XSS injection, thx to https://www.netsparker.com

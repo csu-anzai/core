@@ -42,15 +42,6 @@ class DeletedRecordsFilter extends FilterBase
     private $strClass;
 
     /**
-     * @var string
-     * @tableColumn system.system_comment
-     * @fieldType Kajona\System\Admin\Formentries\FormentryText
-     *
-     * @filterCompareOperator LIKE
-     */
-    private $strComment;
-
-    /**
      * @var int
      * @tableColumn system.system_deleted
      */
@@ -101,14 +92,14 @@ class DeletedRecordsFilter extends FilterBase
     public static function getDeletedRecordsCount(DeletedRecordsFilter $objFilter)
     {
         $objFilter->setIntDeleted(1);
-        $strQuery = "SELECT COUNT(*) FROM "._dbprefix_."system AS system WHERE ";
+        $strQuery = "SELECT COUNT(*) AS cnt FROM "._dbprefix_."system AS system WHERE ";
 
         $objCompound = new OrmCompositeCondition($objFilter->getOrmConditions());
         $strQuery .= $objCompound->getStrWhere();
         $arrParams = $objCompound->getArrParams();
 
         $arrRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, $arrParams);
-        return $arrRow["COUNT(*)"];
+        return $arrRow["cnt"];
     }
 
 
@@ -142,22 +133,6 @@ class DeletedRecordsFilter extends FilterBase
     public function setStrClass($strClass)
     {
         $this->strClass = $strClass;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStrComment()
-    {
-        return $this->strComment;
-    }
-
-    /**
-     * @param string $strComment
-     */
-    public function setStrComment($strComment)
-    {
-        $this->strComment = $strComment;
     }
 
     /**

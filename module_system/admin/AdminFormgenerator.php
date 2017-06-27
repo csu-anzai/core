@@ -346,8 +346,12 @@ class AdminFormgenerator
         $strButtons = "";
 
         //Check if class property is set
-        if($this->intButtonConfig !== null) {
+        if ($this->intButtonConfig !== null) {
             $intButtonConfig = $this->intButtonConfig;
+        }
+
+        if ($intButtonConfig & self::BIT_BUTTON_BACK) {
+            $strButtons .= $objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_back", "system"), "backbtn", "", "", true, false);
         }
 
         if ($intButtonConfig & self::BIT_BUTTON_SUBMIT) {
@@ -376,10 +380,6 @@ class AdminFormgenerator
 
         if ($intButtonConfig & self::BIT_BUTTON_CONTINUE) {
             $strButtons .= $objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_continue", "system"), "continuebtn", "", "", true, false);
-        }
-
-        if ($intButtonConfig & self::BIT_BUTTON_BACK) {
-            $strButtons .= $objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_back", "system"), "backbtn", "", "", true, false);
         }
 
         if ($intButtonConfig & self::BIT_BUTTON_SAVENEXT) {
@@ -627,7 +627,7 @@ class AdminFormgenerator
         if ($strClassname !== null) {
             return new $strClassname($this->strFormname, $strPropertyname, $this->objSourceobject);
         } else {
-            throw new Exception("failed to load form-entry of type " . $strClassname, Exception::$level_ERROR);
+            throw new Exception("failed to load form-entry of type " . $strName. "/".  $strClassname, Exception::$level_ERROR);
         }
 
     }

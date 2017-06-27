@@ -287,11 +287,15 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
             if ($objOneIterable instanceof MediamanagerFile && $objOneIterable->rightView()) {
                 if ($objOneIterable->getIntType() == MediamanagerFile::$INT_TYPE_FOLDER) {
                     return $this->objToolkit->listButton(
-                        Link::getLinkAdmin($this->getArrModule("modul"), "folderContentFolderviewMode", "&form_element=".$strTargetfield."&systemid=".$objOneIterable->getSystemid(), "", $this->getLang("action_open_folder"), "icon_folderActionOpen")
+                        Link::getLinkAdmin($this->getArrModule("modul"), "folderContentFolderviewMode", "&form_element=".$strTargetfield."&systemid=".$objOneIterable->getSystemid()."&download=".$this->getParam("download"), "", $this->getLang("action_open_folder"), "icon_folderActionOpen")
                     );
                 } elseif ($objOneIterable->getIntType() == MediamanagerFile::$INT_TYPE_FILE) {
-                    return $this->objToolkit->listButton(
-                        "<a href=\"#\" title=\"".$this->getLang("commons_accept")."\" rel=\"tooltip\" onclick=\"require('folderview').selectCallback([['".$strTargetfield."', '".$objOneIterable->getStrFilename()."']]);\">".AdminskinHelper::getAdminImage("icon_accept")."</a>"
+                    $strValue = $objOneIterable->getStrFilename();
+                    if($this->getParam("download") == "1") {
+                        $strValue = _webpath_."/download.php?systemid=".$objOneIterable->getSystemid();
+                    }
+                    return $this->objToolkit->listButton( //TODO
+                        "<a href=\"#\" title=\"".$this->getLang("commons_accept")."\" rel=\"tooltip\" onclick=\"require('folderview').selectCallback([['".$strTargetfield."', '".$strValue."']]);\">".AdminskinHelper::getAdminImage("icon_accept")."</a>"
                     );
                 }
 
@@ -633,7 +637,7 @@ HTML;
                         Link::getLinkAdmin(
                             $this->getArrModule("modul"),
                             "folderContentFolderviewMode",
-                            "&form_element=".$strTargetfield."&systemid=".$objOneRepo->getSystemid(),
+                            "&form_element=".$strTargetfield."&systemid=".$objOneRepo->getSystemid()."&download=".$this->getParam("download"),
                             "",
                             $this->getLang("action_open_folder"),
                             "icon_folderActionOpen"
@@ -663,7 +667,7 @@ HTML;
 
             $strReturn .= $this->actionUploadFileInternal();
             $strReturn .= $this->generateNewFolderDialogCode();
-            $strReturn .= $this->renderFloatingGrid($objIterator, MediamanagerAdmin::INT_LISTTYPE_FOLDERVIEW, "&form_element=".$strTargetfield, false);
+            $strReturn .= $this->renderFloatingGrid($objIterator, MediamanagerAdmin::INT_LISTTYPE_FOLDERVIEW, "&form_element=".$strTargetfield."&download=".$this->getParam("download"), false);
         }
 
         return $strReturn;
@@ -681,7 +685,7 @@ HTML;
             $strTargetfield = xssSafeString($this->getParam("form_element"));
 
             if ($objOneIterable->getIntType() == MediamanagerFile::$INT_TYPE_FOLDER) {
-                return "onclick=\"document.location='".Link::getLinkAdminHref($this->getArrModule("modul"), "folderContentFolderviewMode", "&form_element=".$strTargetfield."&systemid=".$objOneIterable->getSystemid())."'\"";
+                return "onclick=\"document.location='".Link::getLinkAdminHref($this->getArrModule("modul"), "folderContentFolderviewMode", "&form_element=".$strTargetfield."&systemid=".$objOneIterable->getSystemid())."&download=".$this->getParam("download")."'\"";
             } elseif ($objOneIterable->getIntType() == MediamanagerFile::$INT_TYPE_FILE) {
                 $strValue = $objOneIterable->getStrFilename();
                 $arrMime = $this->objToolkit->mimeType($strValue);
@@ -692,6 +696,8 @@ HTML;
 
                 if ($bitImage && $strTargetfield == "ckeditor") {
                     $strValue = _webpath_."/image.php?image=".$strValue;
+                } elseif($this->getParam("download") == "1") {
+                    $strValue = _webpath_."/download.php?systemid=".$objOneIterable->getSystemid();
                 } else {
                     $strValue = _webpath_.$strValue;
                 }
@@ -896,7 +902,7 @@ HTML;
             //folder already existing?
             if (!is_dir(_realpath_.$strPrevPath."/".$strFolder)) {
 
-                Logger::getInstance()->addLogRow("creating folder ".$strPrevPath."/".$strFolder, Logger::$levelInfo);
+                Logger::getInstance()->info("creating folder ".$strPrevPath."/".$strFolder);
 
                 $objFilesystem = new Filesystem();
                 if ($objFilesystem->folderCreate($strPrevPath."/".$strFolder)) {
@@ -977,10 +983,27 @@ HTML;
         $bitPostData = false;
         if (is_array($arrSource)) {
             $strFilename = $arrSource["name"];
+
+            //handle copy n paste entries - rather conservative
+            if ($strFilename == "blob") {
+                switch ($arrSource["type"]) {
+                    case 'image/png':
+                        $strFilename = generateSystemid().".png";
+                        break;
+                    case 'image/gif':
+                        $strFilename = generateSystemid().".gif";
+                        break;
+                    case 'image/jpg':
+                        $strFilename = generateSystemid().".jpg";
+                        break;
+                }
+            }
         } else {
             $bitPostData = getPostRawData() != "";
             $strFilename = $arrSource;
         }
+
+
 
         $strTarget = $strFolder."/".createFilename($strFilename);
         $objFilesystem = new Filesystem();
@@ -1010,7 +1033,7 @@ HTML;
                         $strReturn .= "<message>".$this->getLang("xmlupload_success")."</message>";
                     }
 
-                    Logger::getInstance()->addLogRow("uploaded file ".$strTarget, Logger::$levelInfo);
+                    Logger::getInstance()->info("uploaded file ".$strTarget);
 
                     $objRepo->syncRepo();
                 } else {
@@ -1076,7 +1099,7 @@ HTML;
 
         $strReturn .= "<repo>".xmlSafeString(strip_tags($strResult))."</repo>";
 
-        Logger::getInstance()->addLogRow("synced gallery partially >".$this->getSystemid().": ".$strResult, Logger::$levelInfo);
+        Logger::getInstance()->info("synced gallery partially >".$this->getSystemid().": ".$strResult);
 
         return $strReturn;
     }
@@ -1106,7 +1129,7 @@ HTML;
         $strResult += $arrSyncs["insert"] + $arrSyncs["delete"];
         $strReturn .= "<repo>".xmlSafeString(strip_tags($strResult))."</repo>";
 
-        Logger::getInstance()->addLogRow("synced gallery partially >".$this->getSystemid().": ".$strResult, Logger::$levelInfo);
+        Logger::getInstance()->info("synced gallery partially >".$this->getSystemid().": ".$strResult);
 
         return $strReturn;
     }
@@ -1135,7 +1158,7 @@ HTML;
         $objImage->load($strFile);
         $objImage->addOperation(new ImageRotate($this->getParam("angle")));
         if ($objImage->save($strFile)) {
-            Logger::getInstance()->addLogRow("rotated file ".$strFile, Logger::$levelInfo);
+            Logger::getInstance()->info("rotated file ".$strFile);
             $strReturn .= "<message>".xmlSafeString($this->getLang("xml_rotate_success"))."</message>";
         } else {
             ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
@@ -1171,7 +1194,7 @@ HTML;
         $objImage->load($strFile);
         $objImage->addOperation(new ImageCrop($this->getParam("intX"), $this->getParam("intY"), $this->getParam("intWidth"), $this->getParam("intHeight")));
         if ($objImage->save($strFile)) {
-            Logger::getInstance()->addLogRow("cropped file ".$strFile, Logger::$levelInfo);
+            Logger::getInstance()->info("cropped file ".$strFile);
             $strReturn .= "<message>".xmlSafeString($this->getLang("xml_cropping_success"))."</message>";
         } else {
             ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);

@@ -33,7 +33,7 @@ $lang["_system_portal_disablepage_"]     = "Página temporária";
 $lang["_system_portal_disablepage_hint"] = "Esta página é visualizada, se o sistema(portal) se encontrar desactivado.";
 $lang["_system_release_time_"]           = "Duração da sessão";
 $lang["_system_release_time_hint"]       = "Depois deste tempo em segundos a sesão torna-se inválida.";
-$lang["about_part1"]                     = "<h2>Kajona V5 - Sistema de Gestão de Conteúdos em Código Aberto</h2>Kajona V 5.1<br /><br /><a href=\"http://www.kajona.de\" target=\"_blank\">www.kajona.de</a><br /><a href=\"mailto:info@kajona.de\" target=\"_blank\">info@kajona.de</a><br /><br />Para mais informações, suporte ou sugestões, Por favor visite o nosso endereço.<br />Suporte adicional é dado no nosso <a href=\"http://board.kajona.de/\" target=\"_blank\">fórum</a>.";
+$lang["about_part1"]                     = "<h2>Kajona V6 - Sistema de Gestão de Conteúdos em Código Aberto</h2>Kajona V 6.2<br /><br /><a href=\"http://www.kajona.de\" target=\"_blank\">www.kajona.de</a><br /><a href=\"mailto:info@kajona.de\" target=\"_blank\">info@kajona.de</a><br /><br />Para mais informações, suporte ou sugestões, Por favor visite o nosso endereço.<br />Suporte adicional é dado no nosso <a href=\"http://board.kajona.de/\" target=\"_blank\">fórum</a>.";
 $lang["about_part2_header"]              = "<h2>Responsável do projecto</h2>";
 $lang["about_part2a_header"]             = "<h2>Contribuições / Programadores</h2>";
 $lang["about_part2b_header"]             = "<h2>Traduções</h2>";
@@ -127,8 +127,6 @@ $lang["systemtask_dbconsistency_curprev_ok"] = "Todas as relações dos nós (pa
 $lang["systemtask_dbconsistency_date_error"] = "As seguintes datas de registo estão incorrectas (registos de sistema em falta)";
 $lang["systemtask_dbconsistency_date_ok"] = "Todos os registos de datas tem correspondência com os registos do sistema";
 $lang["systemtask_dbconsistency_name"]   = "Verificar consistência da Base de Dados";
-$lang["systemtask_dbconsistency_right_error"] = "Os seguintes direitos de registo estão incorrectos (registos de sistema em falta)";
-$lang["systemtask_dbconsistency_right_ok"] = "Todos os direitos de registo correspondem com os direitos do sistema";
 $lang["systemtask_dbexport_error"]       = "Erro a exportar a Base de Dados";
 $lang["systemtask_dbexport_name"]        = "Cópia de Segurança da Base de Dados";
 $lang["systemtask_dbexport_success"]     = "Cópia de segurança criada com sucesso";

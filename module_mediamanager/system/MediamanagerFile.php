@@ -16,10 +16,10 @@ use Kajona\System\System\LanguagesLanguage;
 use Kajona\System\System\Link;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\OrmComparatorEnum;
+use Kajona\System\System\OrmCondition;
 use Kajona\System\System\OrmObjectlist;
 use Kajona\System\System\OrmObjectlistOrderby;
-use Kajona\System\System\OrmObjectlistPropertyRestriction;
-use Kajona\System\System\OrmObjectlistRestriction;
+use Kajona\System\System\OrmPropertyCondition;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\SearchPortalobjectInterface;
 use Kajona\System\System\StringUtil;
@@ -362,7 +362,7 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
      */
     private function countOtherFilesWithSamePath()
     {
-        $strQuery = "SELECT COUNT(*)
+        $strQuery = "SELECT COUNT(*) AS cnt
                        FROM "._dbprefix_."system,
                             "._dbprefix_."mediamanager_file
                     WHERE system_id = file_id
@@ -371,7 +371,7 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
 
 
         $arrRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, array($this->getStrFilename(), $this->getSystemid()));
-        return $arrRow["COUNT(*)"];
+        return $arrRow["cnt"];
     }
 
     protected function updateStateToDb()
@@ -437,15 +437,15 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
 
         $objORM = new OrmObjectlist();
         if ($intTypeFilter !== false) {
-            $objORM->addWhereRestriction(new OrmObjectlistRestriction(" AND file_type = ? ", array($intTypeFilter)));
+            $objORM->addWhereRestriction(new OrmCondition("file_type = ?", array($intTypeFilter)));
         }
 
         if ($bitActiveOnly) {
-            $objORM->addWhereRestriction(new OrmObjectlistRestriction(" AND system_status = 1 ", array()));
+            $objORM->addWhereRestriction(new OrmCondition("system_status = 1"));
         }
 
         if ($bitOnlyPackages) {
-            $objORM->addWhereRestriction(new OrmObjectlistRestriction(" AND (file_ispackage = 1 OR file_type= ? ) ", array(self::$INT_TYPE_FOLDER)));
+            $objORM->addWhereRestriction(new OrmCondition("(file_ispackage = 1 OR file_type= ? )", array(self::$INT_TYPE_FOLDER)));
         }
 
         return $objORM->getObjectList(get_called_class(), $strPrevID, $intStart, $intEnd);
@@ -468,15 +468,15 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
 
         $objORM = new OrmObjectlist();
         if ($intTypeFilter !== false) {
-            $objORM->addWhereRestriction(new OrmObjectlistRestriction(" AND file_type = ? ", array($intTypeFilter)));
+            $objORM->addWhereRestriction(new OrmCondition("file_type = ?", array($intTypeFilter)));
         }
 
         if ($bitActiveOnly) {
-            $objORM->addWhereRestriction(new OrmObjectlistRestriction(" AND system_status = 1 ", array()));
+            $objORM->addWhereRestriction(new OrmCondition("system_status = 1"));
         }
 
         if ($bitOnlyPackages) {
-            $objORM->addWhereRestriction(new OrmObjectlistRestriction(" AND (file_ispackage = 1 OR file_type= ? ) ", array(self::$INT_TYPE_FOLDER)));
+            $objORM->addWhereRestriction(new OrmCondition("(file_ispackage = 1 OR file_type= ? )", array(self::$INT_TYPE_FOLDER)));
         }
 
         return $objORM->getObjectCount(get_called_class(), $strPrevID);
@@ -498,10 +498,10 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
 
         $objORM = new OrmObjectlist();
         if ($bitActiveOnly) {
-            $objORM->addWhereRestriction(new OrmObjectlistRestriction(" AND system_status = 1 ", array()));
+            $objORM->addWhereRestriction(new OrmCondition("system_status = 1"));
         }
         if ($strCategoryFilter !== false) {
-            $objORM->addWhereRestriction(new OrmObjectlistRestriction(" AND file_cat = ? ", array($strCategoryFilter)));
+            $objORM->addWhereRestriction(new OrmCondition("file_cat = ?", array($strCategoryFilter)));
         }
 
         if ($strNameFilter !== false) {
@@ -513,16 +513,16 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
                     $arrParams[] = trim($strOneLike);
                 }
 
-                $strWhere = "AND ( ".implode(" OR ", $arrWhere)." )";
+                $strWhere = "( ".implode(" OR ", $arrWhere)." )";
             }
             else {
                 $arrParams[] = $strNameFilter."%";
-                $strWhere = "AND file_name LIKE ?";
+                $strWhere = "file_name LIKE ?";
             }
 
-            $objORM->addWhereRestriction(new OrmObjectlistRestriction($strWhere, $arrParams));
+            $objORM->addWhereRestriction(new OrmCondition($strWhere, $arrParams));
         }
-        $objORM->addWhereRestriction(new OrmObjectlistPropertyRestriction("bitIspackage", OrmComparatorEnum::Equal(), 1));
+        $objORM->addWhereRestriction(new OrmPropertyCondition("bitIspackage", OrmComparatorEnum::Equal(), 1));
         $objORM->addOrderBy(new OrmObjectlistOrderby("file_name ASC"));
         return $objORM->getObjectList(get_called_class(), "", $intStart, $intEnd);
 
@@ -543,10 +543,10 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
         $objORM = new OrmObjectlist();
 
         if ($bitActiveOnly) {
-            $objORM->addWhereRestriction(new OrmObjectlistRestriction(" AND system_status = 1 ", array()));
+            $objORM->addWhereRestriction(new OrmCondition("system_status = 1"));
         }
         if ($strCategoryFilter !== false) {
-            $objORM->addWhereRestriction(new OrmObjectlistRestriction(" AND file_cat = ? ", array($strCategoryFilter)));
+            $objORM->addWhereRestriction(new OrmCondition("file_cat = ? ", array($strCategoryFilter)));
         }
 
         if ($strNameFilter !== false) {
@@ -558,16 +558,16 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
                     $arrParams[] = trim($strOneLike);
                 }
 
-                $strWhere = "AND ( ".implode(" OR ", $arrWhere)." )";
+                $strWhere = "( ".implode(" OR ", $arrWhere)." )";
             }
             else {
                 $arrParams[] = $strNameFilter."%";
-                $strWhere = "AND file_name LIKE ?";
+                $strWhere = "file_name LIKE ?";
             }
 
-            $objORM->addWhereRestriction(new OrmObjectlistRestriction($strWhere, $arrParams));
+            $objORM->addWhereRestriction(new OrmCondition($strWhere, $arrParams));
         }
-        $objORM->addWhereRestriction(new OrmObjectlistPropertyRestriction("bitIspackage", OrmComparatorEnum::Equal(), 1));
+        $objORM->addWhereRestriction(new OrmPropertyCondition("bitIspackage", OrmComparatorEnum::Equal(), 1));
         return $objORM->getObjectCount(get_called_class());
     }
 
@@ -600,7 +600,7 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
     {
 
         $objORM = new OrmObjectlist();
-        $objORM->addWhereRestriction(new OrmObjectlistRestriction("AND file_filename = ?", array($strPath)));
+        $objORM->addWhereRestriction(new OrmCondition("file_filename = ?", array($strPath)));
         $arrFiles = $objORM->getObjectList(get_called_class());
 
         foreach ($arrFiles as $objFile) {
@@ -628,12 +628,12 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
     {
 
         $strPrevid = $this->getPrevId();
-        $arrRow = $this->objDB->getPRow("SELECT COUNT(*) FROM "._dbprefix_."mediamanager_repo WHERE repo_id = ?", array($strPrevid));
-        while ($arrRow["COUNT(*)"] == 0 && $strPrevid != "" && $strPrevid != "0") {
+        $arrRow = $this->objDB->getPRow("SELECT COUNT(*) AS cnt FROM "._dbprefix_."mediamanager_repo WHERE repo_id = ?", array($strPrevid));
+        while ($arrRow["cnt"] == 0 && $strPrevid != "" && $strPrevid != "0") {
             /** @var MediamanagerFile $objFile */
             $objFile = Objectfactory::getInstance()->getObject($strPrevid);
             $strPrevid = $objFile->getPrevId();
-            $arrRow = $this->objDB->getPRow("SELECT COUNT(*) FROM "._dbprefix_."mediamanager_repo WHERE repo_id = ?", array($strPrevid));
+            $arrRow = $this->objDB->getPRow("SELECT COUNT(*) AS cnt FROM "._dbprefix_."mediamanager_repo WHERE repo_id = ?", array($strPrevid));
         }
 
         return $strPrevid;

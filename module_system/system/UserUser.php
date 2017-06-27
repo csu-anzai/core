@@ -46,6 +46,7 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
      * @tableColumn user.user_username
      * @tableColumnDatatype char254
      * @tableColumnIndex
+     * @listOrder ASC
      */
     private $strUsername = "";
 
@@ -179,13 +180,14 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
      */
     protected function onInsertToDb()
     {
-        Logger::getInstance(Logger::USERSOURCES)->addLogRow("new user for subsystem ".$this->getStrSubsystem()." / ".$this->getStrUsername(), Logger::$levelInfo);
+        Logger::getInstance(Logger::USERSOURCES)->info("new user for subsystem ".$this->getStrSubsystem()." / ".$this->getStrUsername());
         $objSources = new UserSourcefactory();
         $objProvider = $objSources->getUsersource($this->getStrSubsystem());
         $objTargetUser = $objProvider->getNewUser();
         $objTargetUser->updateObjectToDb();
         $objTargetUser->setNewRecordId($this->getSystemid());
         $this->objDB->flushQueryCache();
+        $this->objSourceUser = $objTargetUser;
         return true;
     }
 
@@ -203,7 +205,7 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
         $strDbPrefix = _dbprefix_;
 
         $strQuery = "SELECT user_tbl.user_id
-                      FROM {$strDbPrefix}system, {$strDbPrefix}user AS user_tbl
+                      FROM {$strDbPrefix}system, ".Carrier::getInstance()->getObjDB()->encloseTableName(_dbprefix_."user")." AS user_tbl
                       LEFT JOIN {$strDbPrefix}user_kajona AS user_kajona ON user_tbl.user_id = user_kajona.user_id
                       WHERE
                           (user_tbl.user_username LIKE ? OR user_kajona.user_forename LIKE ? OR user_kajona.user_name LIKE ?)
@@ -233,7 +235,7 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
     {
         $strDbPrefix = _dbprefix_;
 
-        $strQuery = "SELECT COUNT(*)
+        $strQuery = "SELECT COUNT(*) AS cnt
                       FROM {$strDbPrefix}system, {$strDbPrefix}user AS user_tbl 
                       LEFT JOIN {$strDbPrefix}user_kajona AS user_kajona ON user_tbl.user_id = user_kajona.user_id
                       WHERE
@@ -244,7 +246,7 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
         $arrParams = array("%".$strUsernameFilter."%", "%".$strUsernameFilter."%", "%".$strUsernameFilter."%");
 
         $arrRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, $arrParams);
-        return $arrRow["COUNT(*)"];
+        return $arrRow["cnt"];
     }
 
 
@@ -289,8 +291,11 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
             throw new Exception("You can't delete yourself", Exception::$level_FATALERROR);
         }
 
-        Logger::getInstance(Logger::USERSOURCES)->addLogRow("deleted user with id ".$this->getSystemid()." (".$this->getStrUsername()." / ".$this->getStrName().",".$this->getStrForename().")", Logger::$levelWarning);
-        $this->getObjSourceUser()->deleteUser();
+        Logger::getInstance(Logger::USERSOURCES)->warning("deleted user with id ".$this->getSystemid()." (".$this->getStrUsername()." / ".$this->getStrName().",".$this->getStrForename().")");
+        $objUsersources = new UserSourcefactory();
+        $objSourceUser = $objUsersources->getSourceUser($this, true);
+        $objSourceUser->deleteUser();
+
         return parent::deleteObjectFromDatabase();
     }
 
@@ -304,6 +309,17 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
     {
         $this->loadSourceObject();
         return $this->objSourceUser->getGroupIdsForUser();
+    }
+
+    /**
+     * Returns an array of short group-ids the current user is assigned to
+     *
+     * @return array string
+     */
+    public function getArrShortGroupIds()
+    {
+        $this->loadSourceObject();
+        return $this->objSourceUser->getShortGroupIdsForUser();
     }
 
     /**
