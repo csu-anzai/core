@@ -35,5 +35,5 @@ $lang["tag_assignments"]                 = "Assignments";
 $lang["tag_edit"]                        = "Edit";
 $lang["tag_favorite_add"]                = "Set as favorite";
 $lang["tag_favorite_remove"]             = "Delete favorite";
-$lang["tag_name_hint"]                   = "A set of tags may be submitted as a comma-separated list";
+$lang["tag_name_hint"]                   = "A set of tags may be submitted as a comma separated list";
 $lang["tagsection_header"]               = "Tags";
