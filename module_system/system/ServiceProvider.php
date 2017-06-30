@@ -2,7 +2,6 @@
 
 namespace Kajona\System\System;
 
-use Kajona\System\Portal\ToolkitPortal;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
@@ -39,11 +38,6 @@ class ServiceProvider implements ServiceProviderInterface
      * @see \Kajona\System\Admin\ToolkitAdmin
      */
     const STR_ADMINTOOLKIT = "system_admintoolkit";
-
-    /**
-     * @see \Kajona\System\Portal\ToolkitPortal
-     */
-    const STR_PORTALTOOLKIT = "system_portaltoolkit";
 
     /**
      * @see \Kajona\System\System\Resourceloader
@@ -85,6 +79,16 @@ class ServiceProvider implements ServiceProviderInterface
      */
     const STR_CACHE_MANAGER = "system_cache_manager";
 
+    /**
+     * @see \Kajona\System\System\Lifecycle\ServiceLifeCycleFactory
+     */
+    const STR_LIFE_CYCLE_FACTORY = "system_life_cycle_factory";
+
+    /**
+     * @see \Kajona\System\System\Lifecycle\ServiceLifeCycleImpl
+     */
+    const STR_LIFE_CYCLE_DEFAULT = "system_life_cycle_default";
+
     public function register(Container $objContainer)
     {
         $objContainer[self::STR_DB] = function ($c) {
@@ -112,13 +116,6 @@ class ServiceProvider implements ServiceProviderInterface
 
             $strPath = Resourceloader::getInstance()->getPathForFile("/admin/".$strAdminToolkitClass.".php");
             return Classloader::getInstance()->getInstanceFromFilename($strPath);
-        };
-
-        $objContainer[self::STR_PORTALTOOLKIT] = function ($c) {
-            $strPath = Resourceloader::getInstance()->getPathForFile("/portal/ToolkitPortal.php");
-            include_once $strPath;
-
-            return new ToolkitPortal();
         };
 
         $objContainer[self::STR_RESOURCE_LOADER] = function ($c) {
@@ -156,6 +153,14 @@ class ServiceProvider implements ServiceProviderInterface
 
         $objContainer[self::STR_CACHE_MANAGER] = function ($c) {
             return new CacheManager();
+        };
+
+        $objContainer[self::STR_LIFE_CYCLE_FACTORY] = function ($c) {
+            return new Lifecycle\ServiceLifeCycleFactory($c);
+        };
+
+        $objContainer[self::STR_LIFE_CYCLE_DEFAULT] = function ($c) {
+            return new Lifecycle\ServiceLifeCycleImpl();
         };
     }
 }

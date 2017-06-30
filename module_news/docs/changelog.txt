@@ -1,4 +1,0 @@
-Module News
-
-V5.0.1 --------------------------------------------------------------------------------------------------
-BUG: news | NewsNews.php -> the link generated for a search entry linked a list page, not a details page
