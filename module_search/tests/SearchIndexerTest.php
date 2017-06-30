@@ -13,7 +13,6 @@ use Kajona\System\System\Objectfactory;
 use Kajona\System\System\SystemChangelog;
 use Kajona\System\System\SystemModule;
 use Kajona\System\Tests\Testbase;
-use Kajona\Tags\System\TagsTag;
 
 class SearchIndexerTest extends Testbase
 {
@@ -167,8 +166,10 @@ class SearchIndexerTest extends Testbase
 
     public function testObjectIndexerPerformance()
     {
-        $objObject = new TagsTag();
-        $objObject->setStrName("demo 1");
+        $objObject = new MessagingMessage();
+        $objObject->setStrTitle("unittest demo message");
+        $objObject->setStrBody("unittest demo message body");
+        $objObject->setStrMessageProvider("Kajona\\System\\System\\Messageproviders\\MessageproviderPersonalmessage");
         $objObject->updateObjectToDb();
         $strObjectId = $objObject->getSystemid();
 

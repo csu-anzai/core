@@ -9,7 +9,6 @@
 
 namespace Kajona\Tags\Installer;
 
-use Kajona\Pages\System\PagesElement;
 use Kajona\System\System\InstallerBase;
 use Kajona\System\System\InstallerRemovableInterface;
 use Kajona\System\System\OrmSchemamanager;

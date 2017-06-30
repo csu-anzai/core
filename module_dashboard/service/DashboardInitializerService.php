@@ -13,8 +13,6 @@ use Kajona\Dashboard\Admin\Widgets\AdminwidgetSystemlog;
 use Kajona\Dashboard\Admin\Widgets\AdminwidgetTodo;
 use Kajona\Dashboard\Admin\Widgets\AdminwidgetUpdatecheck;
 use Kajona\Dashboard\System\DashboardWidget;
-use Kajona\Pages\Admin\Widgets\AdminwidgetLastmodifiedpages;
-use Kajona\Stats\Admin\Widgets\AdminwidgetStats;
 use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemModule;
 

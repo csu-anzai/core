@@ -20,7 +20,7 @@ class ObjectValidatorTest extends Testbase
     public function testObjectValidator()
     {
         $objObject = new TagsTag();
-        $objForm = new AdminFormgenerator("news", $objObject);
+        $objForm = new AdminFormgenerator("tags", $objObject);
         $objForm->generateFieldsFromObject();
 
         $objSourceObjectBefore = $objForm->getObjSourceobject();

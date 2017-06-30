@@ -6,12 +6,12 @@ use Kajona\Search\Event\SearchRequestEndprocessinglistener;
 use Kajona\Search\System\SearchEnumIndexaction;
 use Kajona\Search\System\SearchIndexqueue;
 use Kajona\System\System\Database;
+use Kajona\System\System\MessagingMessage;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\SystemChangelog;
 use Kajona\System\System\SystemEventidentifier;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\Tests\Testbase;
-use Kajona\Tags\System\TagsTag;
 
 class SearchDeferredIndexerTest extends Testbase
 {
@@ -23,8 +23,10 @@ class SearchDeferredIndexerTest extends Testbase
         $objConfig->setStrValue("true");
         $objConfig->updateObjectToDb();
 
-        $objObject = new TagsTag();
-        $objObject->setStrName("demo 1");
+        $objObject = new MessagingMessage();
+        $objObject->setStrTitle("unittest demo message");
+        $objObject->setStrBody("unittest demo message body");
+        $objObject->setStrMessageProvider("Kajona\\System\\System\\Messageproviders\\MessageproviderPersonalmessage");
         $objObject->updateObjectToDb();
         $strObjectId = $objObject->getSystemid();
 
@@ -67,8 +69,10 @@ class SearchDeferredIndexerTest extends Testbase
         $intQueriesStart = Database::getInstance()->getNumber();
 
         for ($intI = 0; $intI < 15; $intI++) {
-            $objObject = new TagsTag();
-            $objObject->setStrName("demo 1");
+            $objObject = new MessagingMessage();
+            $objObject->setStrTitle("unittest demo message");
+            $objObject->setStrBody("unittest demo message body");
+            $objObject->setStrMessageProvider("Kajona\\System\\System\\Messageproviders\\MessageproviderPersonalmessage");
             $objObject->updateObjectToDb();
             $arrObjectIds[] = $objObject->getSystemid();
         }
@@ -93,8 +97,10 @@ class SearchDeferredIndexerTest extends Testbase
         $intQueriesStart = Database::getInstance()->getNumber();
 
         for ($intI = 0; $intI < 15; $intI++) {
-            $objObject = new TagsTag();
-            $objObject->setStrName("demo 1");
+            $objObject = new MessagingMessage();
+            $objObject->setStrTitle("unittest demo message");
+            $objObject->setStrBody("unittest demo message body");
+            $objObject->setStrMessageProvider("Kajona\\System\\System\\Messageproviders\\MessageproviderPersonalmessage");
             $objObject->updateObjectToDb();
             $arrObjectIds[] = $objObject->getSystemid();
         }
