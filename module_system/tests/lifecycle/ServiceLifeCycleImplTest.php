@@ -7,6 +7,7 @@ use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleImpl;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
+use Kajona\System\System\Root;
 use Kajona\System\Tests\Testbase;
 
 class ServiceLifeCycleImplTest extends Testbase
@@ -38,7 +39,10 @@ class ServiceLifeCycleImplTest extends Testbase
             ->with($this->equalTo($strSystemId))
             ->willReturn(true);
 
-        $this->objServiceImpl->update($objModel, $strSystemId);
+        /** @var $objModel Root */
+        $result = $this->objServiceImpl->update($objModel, $strSystemId);
+
+        $this->assertEmpty($result);
     }
 
     /**
@@ -62,7 +66,10 @@ class ServiceLifeCycleImplTest extends Testbase
         $objModel->method('deleteObject')
             ->willReturn(true);
 
-        $this->objServiceImpl->delete($objModel);
+        /** @var $objModel Root */
+        $result = $this->objServiceImpl->delete($objModel);
+
+        $this->assertEmpty($result);
     }
 
     /**
@@ -83,7 +90,10 @@ class ServiceLifeCycleImplTest extends Testbase
         $objModel->method('deleteObjectFromDatabase')
             ->willReturn(true);
 
-        $this->objServiceImpl->deleteObjectFromDatabase($objModel);
+        /** @var $objModel Root */
+        $result = $this->objServiceImpl->deleteObjectFromDatabase($objModel);
+
+        $this->assertEmpty($result);
     }
 
     /**
@@ -104,7 +114,10 @@ class ServiceLifeCycleImplTest extends Testbase
         $objModel->method('restoreObject')
             ->willReturn(true);
 
-        $this->objServiceImpl->restore($objModel);
+        /** @var $objModel Root */
+        $result = $this->objServiceImpl->restore($objModel);
+
+        $this->assertEmpty($result);
     }
 
     /**
@@ -125,7 +138,9 @@ class ServiceLifeCycleImplTest extends Testbase
         $objModel->method('copyObject')
             ->willReturn(true);
 
-        $this->objServiceImpl->copy($objModel);
+        $result = $this->objServiceImpl->copy($objModel);
+
+        $this->assertInstanceOf(Root::class, $result);
     }
 
     /**
