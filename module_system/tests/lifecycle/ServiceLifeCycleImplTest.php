@@ -35,7 +35,8 @@ class ServiceLifeCycleImplTest extends Testbase
         $strSystemId = generateSystemid();
 
         $objModel = $this->createMock(DummyModel::class);
-        $objModel->method('updateObjectToDb')
+        $objModel->expects($this->once())
+            ->method('updateObjectToDb')
             ->with($this->equalTo($strSystemId))
             ->willReturn(true);
 
@@ -53,7 +54,8 @@ class ServiceLifeCycleImplTest extends Testbase
         $strSystemId = generateSystemid();
 
         $objModel = $this->createMock(DummyModel::class);
-        $objModel->method('updateObjectToDb')
+        $objModel->expects($this->once())
+            ->method('updateObjectToDb')
             ->with($this->equalTo($strSystemId))
             ->willReturn(false);
 
@@ -63,7 +65,8 @@ class ServiceLifeCycleImplTest extends Testbase
     public function testDelete()
     {
         $objModel = $this->createMock(DummyModel::class);
-        $objModel->method('deleteObject')
+        $objModel->expects($this->once())
+            ->method('deleteObject')
             ->willReturn(true);
 
         /** @var $objModel Root */
@@ -78,7 +81,8 @@ class ServiceLifeCycleImplTest extends Testbase
     public function testDeleteFailure()
     {
         $objModel = $this->createMock(DummyModel::class);
-        $objModel->method('deleteObject')
+        $objModel->expects($this->once())
+            ->method('deleteObject')
             ->willReturn(false);
 
         $this->objServiceImpl->delete($objModel);
@@ -87,7 +91,8 @@ class ServiceLifeCycleImplTest extends Testbase
     public function testDeleteObjectFromDatabase()
     {
         $objModel = $this->createMock(DummyModel::class);
-        $objModel->method('deleteObjectFromDatabase')
+        $objModel->expects($this->once())
+            ->method('deleteObjectFromDatabase')
             ->willReturn(true);
 
         /** @var $objModel Root */
@@ -102,7 +107,8 @@ class ServiceLifeCycleImplTest extends Testbase
     public function testDeleteObjectFromDatabaseFailure()
     {
         $objModel = $this->createMock(DummyModel::class);
-        $objModel->method('deleteObjectFromDatabase')
+        $objModel->expects($this->once())
+            ->method('deleteObjectFromDatabase')
             ->willReturn(false);
 
         $this->objServiceImpl->deleteObjectFromDatabase($objModel);
@@ -111,7 +117,8 @@ class ServiceLifeCycleImplTest extends Testbase
     public function testRestore()
     {
         $objModel = $this->createMock(DummyModel::class);
-        $objModel->method('restoreObject')
+        $objModel->expects($this->once())
+            ->method('restoreObject')
             ->willReturn(true);
 
         /** @var $objModel Root */
@@ -126,7 +133,8 @@ class ServiceLifeCycleImplTest extends Testbase
     public function testRestoreFailure()
     {
         $objModel = $this->createMock(DummyModel::class);
-        $objModel->method('restoreObject')
+        $objModel->expects($this->once())
+            ->method('restoreObject')
             ->willReturn(false);
 
         $this->objServiceImpl->restore($objModel);
@@ -135,7 +143,8 @@ class ServiceLifeCycleImplTest extends Testbase
     public function testCopy()
     {
         $objModel = $this->createMock(DummyModel::class);
-        $objModel->method('copyObject')
+        $objModel->expects($this->once())
+            ->method('copyObject')
             ->willReturn(true);
 
         $result = $this->objServiceImpl->copy($objModel);
@@ -149,7 +158,8 @@ class ServiceLifeCycleImplTest extends Testbase
     public function testCopyFailure()
     {
         $objModel = $this->createMock(DummyModel::class);
-        $objModel->method('copyObject')
+        $objModel->expects($this->once())
+            ->method('copyObject')
             ->willReturn(false);
 
         $this->objServiceImpl->copy($objModel);
