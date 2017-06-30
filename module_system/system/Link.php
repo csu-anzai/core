@@ -473,38 +473,6 @@ class Link
 
                 $strAddKeys = "";
 
-                //used later to add seo-relevant keywords
-                $objPage = \Kajona\Pages\System\PagesPage::getPageByName($strPageI);
-                if ($objPage !== null) {
-                    if ($strLanguage != "") {
-                        $objPage->setStrLanguage($strLanguage);
-                        $objPage->initObject();
-                    }
-
-                    $strAddKeys = $objPage->getStrSeostring().($strSeoAddon != "" && $objPage->getStrSeostring() != "" ? "-" : "").urlSafeString($strSeoAddon);
-                    if (StringUtil::length($strAddKeys) > 0 && StringUtil::length($strAddKeys) <= 2) {
-                        $strAddKeys .= "__";
-                    }
-
-                    //trim string
-                    $strAddKeys = StringUtil::truncate($strAddKeys, 100, "");
-
-                    if ($strLanguage != "") {
-                        $strHref .= $strLanguage."/";
-                    }
-
-                    $strPath = $objPage->getStrPath();
-                    if ($strPath == "") {
-                        $objPage->updatePath();
-                        $strPath = $objPage->getStrPath();
-                        $objPage->updateObjectToDb();
-                    }
-                    if ($strPath != "") {
-                        $strHref .= $strPath."/";
-                    }
-
-                }
-
                 //ok, here we go. schema for rewrite_links: pagename.addKeywords.action.systemid.language.html
                 //but: special case: just pagename & language
                 if ($strAction == "" && $strSystemid == "" && $strAddKeys == "") {

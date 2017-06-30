@@ -7,7 +7,6 @@
 namespace Kajona\System;
 
 use Kajona\Mediamanager\System\MediamanagerFile;
-use Kajona\Pages\System\PagesPageelement;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\HttpStatuscodes;

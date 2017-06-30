@@ -6,10 +6,7 @@
 ********************************************************************************************************/
 namespace Kajona\System\Installer;
 
-use Kajona\Pages\System\PagesPage;
-use Kajona\Pages\System\PagesPageelement;
 use Kajona\System\System\Carrier;
-use Kajona\System\System\Classloader;
 use Kajona\System\System\Database;
 use Kajona\System\System\LanguagesLanguage;
 use Kajona\System\System\SamplecontentInstallerInterface;
@@ -62,26 +59,12 @@ class InstallerSamplecontentZZLanguages implements SamplecontentInstallerInterfa
 
             $strReturn .= " Target language: de\n";
 
-            if (class_exists("Kajona\\Pages\\System\\PagesPage", false) || Classloader::getInstance()->loadClass("Kajona\\Pages\\System\\PagesPage") !== false) {
-                PagesPage::assignNullProperties("de", true);
-            }
-            if (class_exists("Kajona\\Pages\\System\\PagesPageelement", false) || Classloader::getInstance()->loadClass("Kajona\\Pages\\System\\PagesPageelement") !== false) {
-                PagesPageelement::assignNullElements("de");
-            }
-
             $objLang = new LanguagesLanguage();
             $objLang->setStrAdminLanguageToWorkOn("de");
         }
         else {
 
             $strReturn .= " Target language: en\n";
-
-            if (class_exists("Kajona\\Pages\\System\\PagesPage", false) || Classloader::getInstance()->loadClass("Kajona\\Pages\\System\\PagesPage") !== false) {
-                PagesPage::assignNullProperties("en", true);
-            }
-            if (class_exists("Kajona\\Pages\\System\\PagesPageelement", false) || Classloader::getInstance()->loadClass("Kajona\\Pages\\System\\PagesPageelement") !== false) {
-                PagesPageelement::assignNullElements("en");
-            }
 
             $objLang = new LanguagesLanguage();
             $objLang->setStrAdminLanguageToWorkOn("en");

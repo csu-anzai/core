@@ -2,7 +2,6 @@
 
 namespace Kajona\Search\Tests;
 
-use Kajona\News\System\NewsNews;
 use Kajona\Search\Event\SearchRequestEndprocessinglistener;
 use Kajona\Search\System\SearchEnumIndexaction;
 use Kajona\Search\System\SearchIndexqueue;
@@ -10,9 +9,9 @@ use Kajona\System\System\Database;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\SystemChangelog;
 use Kajona\System\System\SystemEventidentifier;
-use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\Tests\Testbase;
+use Kajona\Tags\System\TagsTag;
 
 class SearchDeferredIndexerTest extends Testbase
 {
@@ -20,21 +19,14 @@ class SearchDeferredIndexerTest extends Testbase
 
     public function testObjectIndexer()
     {
-        //use a news-record, if available
-        if (SystemModule::getModuleByName("news") === null) {
-            return;
-        }
-
         $objConfig = SystemSetting::getConfigByName("_search_deferred_indexer_");
         $objConfig->setStrValue("true");
         $objConfig->updateObjectToDb();
 
-        $objNews = new NewsNews();
-        $objNews->setStrTitle("demo 1");
-        $objNews->setStrIntro("intro demo news");
-        $objNews->setStrText("text demo news");
-        $objNews->updateObjectToDb();
-        $strNewsId = $objNews->getSystemid();
+        $objObject = new TagsTag();
+        $objObject->setStrName("demo 1");
+        $objObject->updateObjectToDb();
+        $strObjectId = $objObject->getSystemid();
 
         //trigger the endprocessinglistener
         $objHandler = new SearchRequestEndprocessinglistener();
@@ -43,22 +35,22 @@ class SearchDeferredIndexerTest extends Testbase
 
         //query queue table
         $objQueue = new SearchIndexqueue();
-        $arrRows = $objQueue->getRowsBySystemid(SearchEnumIndexaction::INDEX(), $strNewsId);
+        $arrRows = $objQueue->getRowsBySystemid(SearchEnumIndexaction::INDEX(), $strObjectId);
         $this->assertTrue(count($arrRows) == 1);
-        $this->assertTrue($arrRows[0]["search_queue_systemid"] == $objNews->getSystemid());
+        $this->assertTrue($arrRows[0]["search_queue_systemid"] == $objObject->getSystemid());
 
 
-        Objectfactory::getInstance()->getObject($strNewsId)->deleteObjectFromDatabase();
+        Objectfactory::getInstance()->getObject($strObjectId)->deleteObjectFromDatabase();
         $objHandler->handleEvent(SystemEventidentifier::EVENT_SYSTEM_REQUEST_AFTERCONTENTSEND, array());
 
 
-        $arrRows = $objQueue->getRowsBySystemid(SearchEnumIndexaction::DELETE(), $strNewsId);
+        $arrRows = $objQueue->getRowsBySystemid(SearchEnumIndexaction::DELETE(), $strObjectId);
         $this->assertTrue(count($arrRows) == 1);
-        $this->assertTrue($arrRows[0]["search_queue_systemid"] == $objNews->getSystemid());
+        $this->assertTrue($arrRows[0]["search_queue_systemid"] == $objObject->getSystemid());
 
 
         $objConfig = SystemSetting::getConfigByName("_search_deferred_indexer_");
-        $objQueue->deleteBySystemid($strNewsId);
+        $objQueue->deleteBySystemid($strObjectId);
         $objConfig->setStrValue("false");
         $objConfig->updateObjectToDb();
 
@@ -66,11 +58,7 @@ class SearchDeferredIndexerTest extends Testbase
 
     public function testObjectIndexerPerformance()
     {
-        if (SystemModule::getModuleByName("news") === null) {
-            return;
-        }
-
-        $arrNewsIds = array();
+        $arrObjectIds = array();
 
 
         //echo "Indexing without deferred indexer...\n";
@@ -79,12 +67,10 @@ class SearchDeferredIndexerTest extends Testbase
         $intQueriesStart = Database::getInstance()->getNumber();
 
         for ($intI = 0; $intI < 15; $intI++) {
-            $objNews = new NewsNews();
-            $objNews->setStrTitle("demo 1");
-            $objNews->setStrIntro("intro demo news");
-            $objNews->setStrText("text demo news");
-            $objNews->updateObjectToDb();
-            $arrNewsIds[] = $objNews->getSystemid();
+            $objObject = new TagsTag();
+            $objObject->setStrName("demo 1");
+            $objObject->updateObjectToDb();
+            $arrObjectIds[] = $objObject->getSystemid();
         }
 
         //echo "Queries pre indexing: ", Database::getInstance()->getNumber() - $intQueriesStart . " \n";
@@ -107,12 +93,10 @@ class SearchDeferredIndexerTest extends Testbase
         $intQueriesStart = Database::getInstance()->getNumber();
 
         for ($intI = 0; $intI < 15; $intI++) {
-            $objNews = new NewsNews();
-            $objNews->setStrTitle("demo 1");
-            $objNews->setStrIntro("intro demo news");
-            $objNews->setStrText("text demo news");
-            $objNews->updateObjectToDb();
-            $arrNewsIds[] = $objNews->getSystemid();
+            $objObject = new TagsTag();
+            $objObject->setStrName("demo 1");
+            $objObject->updateObjectToDb();
+            $arrObjectIds[] = $objObject->getSystemid();
         }
 
         //echo "Queries pre indexing: ", Database::getInstance()->getNumber() - $intQueriesStart . " \n";
@@ -131,8 +115,8 @@ class SearchDeferredIndexerTest extends Testbase
         $objConfig->setStrValue("false");
         $objConfig->updateObjectToDb();
 
-        foreach ($arrNewsIds as $strNewsId)
-            Objectfactory::getInstance()->getObject($strNewsId)->deleteObjectFromDatabase();
+        foreach ($arrObjectIds as $strObjectId)
+            Objectfactory::getInstance()->getObject($strObjectId)->deleteObjectFromDatabase();
 
     }
 }

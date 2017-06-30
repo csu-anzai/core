@@ -6,10 +6,11 @@ use Kajona\Jsonapi\Admin\JsonapiAdmin;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Session;
-use Kajona\System\System\SystemModule;
 use Kajona\System\System\UserUser;
+use Kajona\Tags\System\TagsTag;
+use PHPUnit\Framework\TestCase;
 
-class JsonapiAdminTest extends \PHPUnit_Framework_TestCase
+class JsonapiAdminTest extends TestCase
 {
     public function testGet()
     {
@@ -17,7 +18,7 @@ class JsonapiAdminTest extends \PHPUnit_Framework_TestCase
 
         $objAdmin = $this->getAdminMock("GET");
 
-        Carrier::getInstance()->setParam("class", NewsNews::class);
+        Carrier::getInstance()->setParam("class", TagsTag::class);
 
         $strResult = $objAdmin->action("dispatch");
 
@@ -34,7 +35,7 @@ class JsonapiAdminTest extends \PHPUnit_Framework_TestCase
     "entries": [
         {
             "_id": "",
-            "_class": "Kajona\\News\\System\\NewsNews",
+            "_class": "Kajona\Tags\System\TagsTag",
             "_icon": "icon_news",
             "_displayName": "Installation successful",
             "_additionalInfo": "0 Hits",
@@ -49,7 +50,7 @@ class JsonapiAdminTest extends \PHPUnit_Framework_TestCase
         },
         {
             "_id": "",
-            "_class": "Kajona\\News\\System\\NewsNews",
+            "_class": "Kajona\Tags\System\TagsTag",
             "_icon": "icon_news",
             "_displayName": "Sed non enim est",
             "_additionalInfo": "0 Hits",
@@ -96,7 +97,7 @@ JSON;
         $arrUsers = UserUser::getAllUsersByName("admin");
         Session::getInstance()->loginUser($arrUsers[0]);
 
-        Carrier::getInstance()->setParam("class", NewsNews::class);
+        Carrier::getInstance()->setParam("class", TagsTag::class);
         Carrier::getInstance()->setParam("news_title", "");
         Carrier::getInstance()->setParam("news_datestart", "");
 
@@ -128,7 +129,7 @@ JSON;
         $arrUsers = UserUser::getAllUsersByName("admin");
         Session::getInstance()->loginUser($arrUsers[0]);
 
-        Carrier::getInstance()->setParam("class", NewsNews::class);
+        Carrier::getInstance()->setParam("class", TagsTag::class);
         Carrier::getInstance()->setParam("news_title", "");
         Carrier::getInstance()->setParam("news_datestart", "");
 

@@ -6,7 +6,6 @@
 ********************************************************************************************************/
 
 namespace Kajona\Search\System;
-use Kajona\Pages\System\PagesPageelement;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\SearchResultobjectInterface;
 use Kajona\System\System\StringUtil;
@@ -59,17 +58,6 @@ class SearchCommons extends \Kajona\System\System\Model implements \Kajona\Syste
         $arrReturn = array();
         foreach ($arrHits as $objOneResult) {
             $objInstance = $objOneResult->getObjObject();
-
-            if ($objInstance instanceof PagesPageelement) {
-                $objInstance = $objInstance->getConcreteAdminInstance();
-
-                if ($objInstance != null) {
-                    $objInstance->loadElementData();
-                }
-                else {
-                    continue;
-                }
-            }
 
             $arrUpdatedResults = $objInstance->updateSearchResult($objOneResult);
             if (is_array($arrUpdatedResults)) {

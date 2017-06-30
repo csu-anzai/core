@@ -7,7 +7,6 @@
 namespace Kajona\Mediamanager\System;
 
 use Kajona\Packagemanager\System\PackagemanagerMetadata;
-use Kajona\Pages\System\PagesPage;
 use Kajona\Search\System\SearchResult;
 use Kajona\System\System\AdminGridableInterface;
 use Kajona\System\System\Carrier;
@@ -209,21 +208,9 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
 
 
             $objCur = Objectfactory::getInstance()->getObject($arrOneElement["system_id"]);
-            while($objCur != null && !$objCur instanceof PagesPage && !$objCur instanceof SystemModule) {
+            while($objCur != null && !$objCur instanceof SystemModule) {
                 $objCur = Objectfactory::getInstance()->getObject($objCur->getStrPrevId());
             }
-
-            if ($objCur instanceof PagesPage && $objCur->getStrName() != 'master') {
-                $objCurResult = clone($objResult);
-                $objCurResult->setStrPagelink(Link::getLinkPortal($objCur->getStrName(), "", "_self", $this->getStrDisplayName(), "mediaFolder", "&highlight=".urlencode(html_entity_decode($objResult->getObjSearch()->getStrQuery(), ENT_QUOTES, "UTF-8")), $this->getPrevId(), "", "", $this->getStrDisplayName()));
-                $objCurResult->setStrPagename($objCur->getStrName());
-                $objCurResult->setStrAdditionalTitle($this->getStrName());
-                $objCurResult->setStrDescription($this->getStrDescription());
-                $arrReturn[] = $objCurResult;
-
-            }
-
-
         }
 
         return $arrReturn;

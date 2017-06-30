@@ -9,7 +9,6 @@
 
 namespace Kajona\Search\System;
 
-use Kajona\Pages\System\PagesPageelement;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\Objectfactory;
@@ -119,12 +118,6 @@ class SearchIndexwriter {
 
         if(!self::isIndexAvailable())
             return;
-
-        if($objInstance != null && $objInstance instanceof PagesPageelement) {
-            $objInstance = $objInstance->getConcreteAdminInstance();
-            if($objInstance != null)
-                $objInstance->loadElementData();
-        }
 
         if($objInstance == null)
             return;
