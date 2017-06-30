@@ -456,7 +456,7 @@ abstract class AdminEvensimpler extends AdminSimple
      */
     protected function persistModel(Model $objModel, $strPrevId = false)
     {
-        $objModel->updateObjectToDb($strPrevId);
+        $this->objLifeCycleFactory->factory(get_class($objModel))->update($objModel, $strPrevId);
     }
 
     /**
