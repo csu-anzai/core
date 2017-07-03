@@ -10,8 +10,8 @@ const ListPagination = requireHelper('/pageobject/list/ListPagination.js');
 
 
 /** Constants */
-const LIST = by.css(".table.admintable");
-const LIST_ROWS = by.css("tbody > tr:not([data-systemid='batchActionSwitch'])");
+const LIST = By.css(".table.admintable");
+const LIST_ROWS = By.css("tbody > tr:not([data-systemid='batchActionSwitch'])");
 
 
 /**
@@ -21,15 +21,6 @@ class List extends MainContent {
 
     constructor() {
         super();
-
-        /** @type {webdriver.promise.Promise<ListRow[]>} */
-        this._arrListRows = this._createListRows();
-
-        /** @type {ListBatchActionRow} */
-        this._listBatchActionRow = new ListBatchActionRow(this.elementList);
-
-        /** @type {ListPagination} */
-        this._listPagination = new ListPagination(this.elementList);
     }
 
     /**
@@ -53,7 +44,8 @@ class List extends MainContent {
      * @returns {ListPagination}
      */
     async getPagination() {
-        return this._listPagination;
+        let listElement = await this.elementList;
+        return new ListPagination(listElement);
     }
 
 
@@ -62,7 +54,13 @@ class List extends MainContent {
      * @returns {ListRow[]}
      */
     async getArrListRows() {
-        return this._arrListRows;
+        let arrElemRows = await this.elementsListRows();
+
+        let arrListRows = [];
+        for(let i = 0; i<arrElemRows.length; i++) {
+            arrListRows.push(new ListRow(arrElemRows[i]));
+        }
+        return arrListRows;
     }
 
 
@@ -71,21 +69,8 @@ class List extends MainContent {
      * @returns {ListBatchActionRow}
      */
     async getBatchActionRow() {
-        return this._listBatchActionRow;
-    }
-
-    /**
-     *
-     * @returns {ListRow[]}
-     */
-    async _createListRows() {
-        let arrElemRows = await this.elementsListRows();
-
-        let arrListRows = [];
-        for(let i = 0; i<arrElemRows.length; i++) {
-            arrListRows.push(new ListRow(arrElemRows[i]));
-        }
-        return arrListRows;
+        let listElement = await this.elementList;
+        return new ListBatchActionRow(listElement);
     }
 }
 

@@ -8,8 +8,8 @@ exports.config = {
     specs: [
         'install-spec.js',
         'login-spec.js',
-        // '../../temp/kajona/core*/module_*/tests/selenium/*-spec.js',
-        // '../../temp/kajona/files/extract/module_*/tests/selenium/*-spec.js'
+        '../../temp/kajona/core*/module_*/tests/selenium/*-spec.js',
+        '../../temp/kajona/files/extract/module_*/tests/selenium/*-spec.js'
     ],
     capabilities: {
         browserName: 'chrome',
