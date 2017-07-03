@@ -8,7 +8,7 @@
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
-      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+      <stringProp name="TestPlan.user_define_classpath">C:\Users\ck\tools\apache-jmeter\lib\mysql-java-driver-5.1.42.jar,C:\Users\ck\tools\apache-jmeter\lib\postgresql-42.1.1.jar</stringProp>
     </TestPlan>
     <hashTree>
       <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="TEST_CONFIG" enabled="true">
@@ -36,6 +36,11 @@
           <elementProp name="admin_password" elementType="Argument">
             <stringProp name="Argument.name">admin_password</stringProp>
             <stringProp name="Argument.value">test123</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="process_id" elementType="Argument">
+            <stringProp name="Argument.name">process_id</stringProp>
+            <stringProp name="Argument.value">766eef55956548801c3d</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -151,7 +156,7 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">100</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">4</stringProp>
+        <stringProp name="ThreadGroup.num_threads">10</stringProp>
         <stringProp name="ThreadGroup.ramp_time">4</stringProp>
         <longProp name="ThreadGroup.start_time">1382077517000</longProp>
         <longProp name="ThreadGroup.end_time">1382077517000</longProp>
@@ -320,6 +325,34 @@
           <stringProp name="filename"></stringProp>
         </ResultCollector>
         <hashTree/>
+        <JDBCDataSource guiclass="TestBeanGUI" testclass="JDBCDataSource" testname="DB-Connection" enabled="false">
+          <boolProp name="autocommit">true</boolProp>
+          <stringProp name="checkQuery">Select 1</stringProp>
+          <stringProp name="connectionAge">5000</stringProp>
+          <stringProp name="dataSource">agp_connection</stringProp>
+          <stringProp name="dbUrl">jdbc:postgresql:agp_core</stringProp>
+          <stringProp name="driver">org.postgresql.Driver</stringProp>
+          <boolProp name="keepAlive">true</boolProp>
+          <stringProp name="password">test123</stringProp>
+          <stringProp name="poolMax">10</stringProp>
+          <stringProp name="timeout">10000</stringProp>
+          <stringProp name="transactionIsolation">DEFAULT</stringProp>
+          <stringProp name="trimInterval">60000</stringProp>
+          <stringProp name="username">agp</stringProp>
+        </JDBCDataSource>
+        <hashTree/>
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Get-Random-Process-Id" enabled="false">
+          <stringProp name="dataSource">agp_connection</stringProp>
+          <stringProp name="query">SELECT proz_prozess_id FROM agp_proz_prozess WHERE proz_proz_nextmepcall &gt; 0 LIMIT 1;</stringProp>
+          <stringProp name="queryArguments"></stringProp>
+          <stringProp name="queryArgumentsTypes"></stringProp>
+          <stringProp name="queryTimeout"></stringProp>
+          <stringProp name="queryType">Select Statement</stringProp>
+          <stringProp name="resultSetHandler">Store as String</stringProp>
+          <stringProp name="resultVariable">process</stringProp>
+          <stringProp name="variableNames">process_id</stringProp>
+        </JDBCSampler>
+        <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="doLogin" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -374,7 +407,7 @@
               </elementProp>
               <elementProp name="leistungsscheine_prozessid_id" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">69df23359565484bb05c</stringProp>
+                <stringProp name="Argument.value">${process_id}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">leistungsscheine_prozessid_id</stringProp>
@@ -446,13 +479,77 @@
         </HTTPSamplerProxy>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/leistungsscheine/saveUnterdimensionenMultiple.html" enabled="true">
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">multieval=obj_69df23359565484bb05c_20170703000000_amount%3D1%26obj_69df23359565484bb05c_20170703000000_date%3D%26obj_69df23359565484bb05c_20170703000000_unterdimension_ebe29c259565483781c3%3D1%26obj_69df23359565484bb05c_20170703000000_unterdimension_a797ec45956548393361%3D%26obj_69df23359565484bb05c_20170703000000_unterdimension_2a1974959565483c38dc%3D1%26obj_69df23359565484bb05c_20170703000000_unterdimension_9af58e759565483d7931%3D%26obj_69df23359565484bb05c_20170703000000_unterdimension_22fd48259565483ea216%3D1%26obj_69df23359565484bb05c_20170703000000_unterdimension_db6b3f65956548401f40%3D%26obj_69df23359565484bb05c_20170703000000_unterdimension_0e4dfee595654845729c%3D1%26obj_69df23359565484bb05c_20170703000000_unterdimension_d4e22a55956548481a56%3D%26formsent%3D1%26objects%3D69df23359565484bb05c_20170703000000%26date%3D20170703000000%26comment%3D%26delivery%3D%26foreignid%3D%26redirecturl%3D%26eval_type%3D%26quickrelease%3Dchecked%26systemid%3D&amp;obj_69df23359565484bb05c_20170703000000_unterdimension_ebe29c259565483781c3=1&amp;obj_69df23359565484bb05c_20170703000000_unterdimension_a797ec45956548393361=&amp;obj_69df23359565484bb05c_20170703000000_unterdimension_2a1974959565483c38dc=1&amp;obj_69df23359565484bb05c_20170703000000_unterdimension_9af58e759565483d7931=&amp;obj_69df23359565484bb05c_20170703000000_unterdimension_22fd48259565483ea216=1&amp;obj_69df23359565484bb05c_20170703000000_unterdimension_db6b3f65956548401f40=&amp;obj_69df23359565484bb05c_20170703000000_unterdimension_0e4dfee595654845729c=1&amp;obj_69df23359565484bb05c_20170703000000_unterdimension_d4e22a55956548481a56=&amp;submitbtn=Speichern</stringProp>
+              <elementProp name="multieval" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                <stringProp name="Argument.value">obj_${process_id}_20170703000000_amount=1&amp;obj_${process_id}_20170703000000_date=&amp;obj_${process_id}_20170703000000_unterdimension_ebe29c259565483781c3=1&amp;obj_${process_id}_20170703000000_unterdimension_a797ec45956548393361=&amp;obj_${process_id}_20170703000000_unterdimension_2a1974959565483c38dc=1&amp;obj_${process_id}_20170703000000_unterdimension_9af58e759565483d7931=&amp;obj_${process_id}_20170703000000_unterdimension_22fd48259565483ea216=1&amp;obj_${process_id}_20170703000000_unterdimension_db6b3f65956548401f40=&amp;obj_${process_id}_20170703000000_unterdimension_0e4dfee595654845729c=1&amp;obj_${process_id}_20170703000000_unterdimension_d4e22a55956548481a56=&amp;formsent=1&amp;objects=${process_id}_20170703000000&amp;date=20170703000000&amp;comment=&amp;delivery=&amp;foreignid=&amp;redirecturl=&amp;eval_type=&amp;quickrelease=checked&amp;systemid= </stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">multieval</stringProp>
+              </elementProp>
+              <elementProp name="obj_${process_id}_20170703000000_unterdimension_ebe29c259565483781c3" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">1</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">obj_${process_id}_20170703000000_unterdimension_ebe29c259565483781c3</stringProp>
+              </elementProp>
+              <elementProp name="obj_${process_id}_20170703000000_unterdimension_a797ec45956548393361" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value"></stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">obj_${process_id}_20170703000000_unterdimension_a797ec45956548393361</stringProp>
+              </elementProp>
+              <elementProp name="obj_${process_id}_20170703000000_unterdimension_2a1974959565483c38dc" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">1</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">obj_${process_id}_20170703000000_unterdimension_2a1974959565483c38dc</stringProp>
+              </elementProp>
+              <elementProp name="obj_${process_id}_20170703000000_unterdimension_9af58e759565483d7931" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value"></stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">obj_${process_id}_20170703000000_unterdimension_9af58e759565483d7931</stringProp>
+              </elementProp>
+              <elementProp name="obj_${process_id}_20170703000000_unterdimension_22fd48259565483ea216" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">1</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">obj_${process_id}_20170703000000_unterdimension_22fd48259565483ea216</stringProp>
+              </elementProp>
+              <elementProp name="obj_${process_id}_20170703000000_unterdimension_db6b3f65956548401f40" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value"></stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">obj_${process_id}_20170703000000_unterdimension_db6b3f65956548401f40</stringProp>
+              </elementProp>
+              <elementProp name="obj_${process_id}_20170703000000_unterdimension_0e4dfee595654845729c" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">1</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">obj_${process_id}_20170703000000_unterdimension_0e4dfee595654845729c</stringProp>
+              </elementProp>
+              <elementProp name="obj_${process_id}_20170703000000_unterdimension_d4e22a55956548481a56" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value"></stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">obj_${process_id}_20170703000000_unterdimension_d4e22a55956548481a56</stringProp>
+              </elementProp>
+              <elementProp name="submitbtn" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">Speichern</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">submitbtn</stringProp>
               </elementProp>
             </collectionProp>
           </elementProp>
@@ -601,8 +698,8 @@
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 60 seconds" enabled="true">
-          <stringProp name="ConstantTimer.delay">60000</stringProp>
+        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 30 seconds" enabled="true">
+          <stringProp name="ConstantTimer.delay">30000</stringProp>
         </ConstantTimer>
         <hashTree/>
       </hashTree>
