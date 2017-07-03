@@ -1,6 +1,8 @@
 /**
  * Used for builds (local builds or buildserver) started via ant
  */
+let SpecReporter = require('jasmine-spec-reporter').SpecReporter;
+
 exports.config = {
     SELENIUM_PROMISE_MANAGER : 0,//disables selenium control flow
     seleniumAddress: 'http://localhost:4444/wd/hub',
@@ -41,11 +43,38 @@ exports.config = {
         /** Set baseUrl dynamically */
         browser.baseUrl = _getBaseUrl();
 
-        // returning the promise makes protractor wait for the reporter config before executing tests
+        //add jesamine spec reporter
+        _addJasmineSpecReporter();
+
+        // returning the promise makes protractor wait for the reporter config (protractor-screenshoter-plugin) before executing tests
         return global.browser.getProcessedConfig().then(function (config) {
             //it is ok to be empty
         });
     }
+};
+
+const _addJasmineSpecReporter = function() {
+    jasmine.getEnv().addReporter(new SpecReporter({
+        spec: {
+            displayDuration: true,
+            displayErrorMessages: true,
+            displayFailed: true,
+            displayPending: true,
+            displayStacktrace: true,
+            displaySuccessful: true
+        },
+        suite: {
+            displayNumber: true
+        },
+        summary: {
+            displayDuration: true,
+            displayErrorMessages: true,
+            displayFailed: true,
+            displayPending: true,
+            displayStacktrace: true,
+            displaySuccessful: true
+        },
+    }));
 };
 
 const _getSeleniumBasePath = function() {

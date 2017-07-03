@@ -5,10 +5,7 @@ const SeleniumUtil = requireHelper('/util/SeleniumUtil.js');
 describe('installation', function() {
 
     it('test installation', async function() {
-        let intTimeout = 100000 * 10;
-
-        // wait max 5 minutes for the installation
-        browser.manage().timeouts().pageLoadTimeout(intTimeout);
+        let intTimeout = 1000 * 60 * 12;//12 Minutes
 
         await SeleniumUtil.gotToUrl('installer.php');
 
@@ -38,11 +35,14 @@ describe('installation', function() {
         await webDriver.findElement(By.css('.savechanges')).click();
 
         // wait for the installation
-        await webDriver.wait(function() {
-            return webDriver.getCurrentUrl().then(function(url) {
-                return /finish/.test(url);
-            });
-        }, intTimeout);
+        let EC = browser.ExpectedConditions;
+        await browser.wait(EC.urlContains('finish'), intTimeout); // Checks that the current URL contains the expected text
+
+        // await webDriver.wait(function() {
+        //     return webDriver.getCurrentUrl().then(function(url) {
+        //         return /finish/.test(url);
+        //     });
+        // }, intTimeout);
 
         // now we must have a success message
         expect(webDriver.findElement(By.css('.alert-success')).getText()).toMatch('Herzlichen Glückwunsch!');
