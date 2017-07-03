@@ -32,8 +32,8 @@ class ListBatchActionRow extends BasePage {
      *
      * @returns {webdriver.promise.Promise<void>|!webdriver.promise.Promise.<void>}
      */
-    createObject() {
-        return this.elementBatchActionRow.findElement(By.css("td.actions a")).click();
+    async createObject() {
+        return await this.elementBatchActionRow.findElement(By.css("td.actions a")).click();
     }
 }
 

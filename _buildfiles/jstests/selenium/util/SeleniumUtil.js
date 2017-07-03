@@ -14,10 +14,10 @@ class SeleniumUtil {
      *
      * @param {webdriver.WebElement} element - The Element to which should be moved to
      *
-     * @returns {webdriver.promise.Promise<void>}
+     * @returns {void}
      */
-    static moveToElement(element) {
-        return SeleniumUtil.getWebDriver().actions().mouseMove(element).perform();
+    static async moveToElement(element) {
+        return await SeleniumUtil.getWebDriver().actions().mouseMove(element).perform();
     };
 
     /**
@@ -56,28 +56,23 @@ class SeleniumUtil {
      *
      * @returns {webdriver.promise.Promise<void>}
      */
-    static loginOrLogout(strUserName, strPassword) {
+    static async loginOrLogout(strUserName, strPassword) {
 
-        const SeleniumUtil = this;
+        const SeleniumWaitHelper = requireHelper('/util/SeleniumWaitHelper.js');
         const LoginPage = requireHelper('/pageobject/LoginPage.js');
         const AdminLandingPage = requireHelper('/pageobject/AdminLandingPage.js');
 
-        //check if user is not logged in -> if yes log in
-        return LoginPage.getPage().then(function (loginPage) {
-            return SeleniumUtil.getWebDriver().wait(protractor.until.elementLocated(LOGINCONTAINER)).then(function(bitLoginContainerIsPresent) {
+        let loginPage = await LoginPage.getPage();
 
-                //if login containe ris present => login
-                if(bitLoginContainerIsPresent) {
-                    return loginPage.login(strUserName, strPassword);
-                }
+        //if login container is present => login
+        let bitLoginContainerIsPresent = await SeleniumWaitHelper.isElementDisplayed(this.getWebDriver(), LOGINCONTAINER);
+        if(bitLoginContainerIsPresent) {
+            return await loginPage.login(strUserName, strPassword);
+        }
 
-                //else logout user
-                let page = AdminLandingPage.getPage();
-                return page.then(function (adminlandingPage) {
-                    return adminlandingPage.topMenu.logout();
-                });
-            });
-        });
+        //else logout user
+        let adminlandingPage = await AdminLandingPage.getPage();
+        return await adminlandingPage.topMenu.logout();
     };
 
     /**

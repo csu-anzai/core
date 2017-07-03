@@ -55,12 +55,10 @@ class ListPagination extends BasePage {
      *
      * @returns {Promise<integer>}
      */
-    getIntPaginationTotalNumber() {
-        return this.elementPageinationTotal.findElement(By.css("span")).getText()
-            .then(function (strTotalText) {
-                let arrSplit = strTotalText.split(":");
-                return parseInt(arrSplit[1].trim());
-            });
+    async getIntPaginationTotalNumber() {
+        let strTotalText = await this.elementPageinationTotal.findElement(By.css("span")).getText();
+        let arrSplit = strTotalText.split(":");
+        return parseInt(arrSplit[1].trim());
     }
 }
 

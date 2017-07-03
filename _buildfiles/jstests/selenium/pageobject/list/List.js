@@ -52,16 +52,16 @@ class List extends MainContent {
      *
      * @returns {ListPagination}
      */
-    getPagination() {
+    async getPagination() {
         return this._listPagination;
     }
 
 
     /**
      *
-     * @returns {webdriver.promise.Promise<ListRow[]>}
+     * @returns {ListRow[]}
      */
-    getArrListRows() {
+    async getArrListRows() {
         return this._arrListRows;
     }
 
@@ -70,22 +70,22 @@ class List extends MainContent {
      *
      * @returns {ListBatchActionRow}
      */
-    getBatchActionRow() {
+    async getBatchActionRow() {
         return this._listBatchActionRow;
     }
 
     /**
      *
-     * @returns {webdriver.promise.Promise<ListRow[]>}
+     * @returns {ListRow[]}
      */
-    _createListRows() {
-        return this.elementsListRows.then(function(arrElemRows) {
-            let arrListRows = [];
-            for(let i = 0; i<arrElemRows.length; i++) {
-                arrListRows.push(new ListRow(arrElemRows[i]));
-            }
-            return arrListRows;
-        });
+    async _createListRows() {
+        let arrElemRows = await this.elementsListRows;
+
+        let arrListRows = [];
+        for(let i = 0; i<arrElemRows.length; i++) {
+            arrListRows.push(new ListRow(arrElemRows[i]));
+        }
+        return arrListRows;
     }
 }
 
