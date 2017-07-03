@@ -6,9 +6,9 @@
 const BasePage = requireHelper('/pageobject/base/BasePage.js');
 
 /** Constants */
-const PAGINATION = by.xpath("following-sibling::div[@class='pager'][1]");
-const PAGELINKS = by.css("li[data-kajona-pagenum]");
-const TOTALCOUNT = by.css("li:last-child");
+const PAGINATION = By.xpath("following-sibling::div[@class='pager'][1]");
+const PAGELINKS = By.css("li[data-kajona-pagenum]");
+const TOTALCOUNT = By.css("li:last-child");
 
 /**
  *
@@ -53,7 +53,7 @@ class ListPagination extends BasePage {
     /**
      * Gets the number of entries from the pagination.
      *
-     * @returns {Promise<integer>}
+     * @returns {integer}
      */
     async getIntPaginationTotalNumber() {
         let strTotalText = await this.elementPageinationTotal.findElement(By.css("span")).getText();

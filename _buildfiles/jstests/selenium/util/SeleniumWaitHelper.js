@@ -15,7 +15,7 @@ class SeleniumWaitHelper {
      * @returns {!webdriver.WebElement}
      */
     static async getElementWhenDisplayed(webDriver, locator) {
-        webDriver.wait(
+        await webDriver.wait(
             protractor.until.elementIsVisible(webDriver.findElement(locator), 10000)
         );
 
@@ -31,7 +31,7 @@ class SeleniumWaitHelper {
      * @returns {bool}
      */
     static async isElementDisplayed(webDriver, locator) {
-        webDriver.wait(
+        await webDriver.wait(
             protractor.until.elementIsVisible(webDriver.findElement(locator), 10000)
         );
 
@@ -50,10 +50,10 @@ class SeleniumWaitHelper {
      *
      * @param {webdriver.WebDriver} webDriver
      * @param locator
-     * @returns {!webdriver.WebElement[]}
+     * @returns {WebElement[]}
      */
     static async getElementsWhenPresent(webDriver, locator) {
-        webDriver.wait(
+        await webDriver.wait(
             protractor.until.elementsLocated(locator, 10000)
         );
 
@@ -69,7 +69,7 @@ class SeleniumWaitHelper {
      * @returns {!webdriver.WebElement}
      */
     static async getElementWhenPresent(webDriver, locator) {
-        webDriver.wait(
+        await webDriver.wait(
             protractor.until.elementLocated(locator, 10000)
         );
 

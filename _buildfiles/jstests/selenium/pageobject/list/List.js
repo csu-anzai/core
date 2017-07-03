@@ -42,10 +42,10 @@ class List extends MainContent {
 
     /**
      *
-     * @returns {webdriver.promise.Promise<WebElement[]>}
+     * @returns {WebElement[]}
      */
-    get elementsListRows () {
-        return this.elementList.findElements(LIST_ROWS);
+    async elementsListRows () {
+        return await this.elementList.findElements(LIST_ROWS);
     }
 
     /**
@@ -79,7 +79,7 @@ class List extends MainContent {
      * @returns {ListRow[]}
      */
     async _createListRows() {
-        let arrElemRows = await this.elementsListRows;
+        let arrElemRows = await this.elementsListRows();
 
         let arrListRows = [];
         for(let i = 0; i<arrElemRows.length; i++) {
