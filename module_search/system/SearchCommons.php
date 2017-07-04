@@ -6,11 +6,13 @@
 ********************************************************************************************************/
 
 namespace Kajona\Search\System;
+
+use Kajona\System\System\Model;
+use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\SearchResultobjectInterface;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemModule;
-
 
 /**
  * This class contains a few methods used by the search as little helpers
@@ -21,7 +23,7 @@ use Kajona\System\System\SystemModule;
  * @module search
  * @moduleId _search_module_id_
  */
-class SearchCommons extends \Kajona\System\System\Model implements \Kajona\System\System\ModelInterface
+class SearchCommons extends Model implements ModelInterface
 {
 
 
@@ -62,8 +64,7 @@ class SearchCommons extends \Kajona\System\System\Model implements \Kajona\Syste
             $arrUpdatedResults = $objInstance->updateSearchResult($objOneResult);
             if (is_array($arrUpdatedResults)) {
                 $arrReturn = array_merge($arrReturn, $arrUpdatedResults);
-            }
-            else if ($objOneResult != null && $objOneResult instanceof SearchResult) {
+            } elseif ($objOneResult != null && $objOneResult instanceof SearchResult) {
                 $arrReturn[] = $objOneResult;
             }
         }
@@ -112,18 +113,15 @@ class SearchCommons extends \Kajona\System\System\Model implements \Kajona\Syste
         $arrReturn = array();
 
         foreach ($arrResults as $objOneResult) {
-
             if (isset($arrReturn[$objOneResult->getStrSortHash()])) {
                 $objResult = $arrReturn[$objOneResult->getStrSortHash()];
                 $objResult->setIntHits($objResult->getIntHits() + 1);
-            }
-            else {
+            } else {
                 $arrReturn[$objOneResult->getStrSortHash()] = $objOneResult;
             }
         }
 
         return $arrReturn;
-
     }
 
     /**
