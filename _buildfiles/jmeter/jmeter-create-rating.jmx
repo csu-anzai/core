@@ -43,6 +43,11 @@
             <stringProp name="Argument.value">766eef55956548801c3d</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="workflow_key" elementType="Argument">
+            <stringProp name="Argument.name">workflow_key</stringProp>
+            <stringProp name="Argument.value">9a76eae59565460708a7</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </Arguments>
       <hashTree/>
@@ -672,7 +677,7 @@ if (conn != null) {
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/xml.php?module=workflows&amp;action=trigger&amp;authkey=b946a775412f6ca04397</stringProp>
+          <stringProp name="HTTPSampler.path">${path}/xml.php?module=workflows&amp;action=trigger&amp;authkey=${workflow_key}</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
