@@ -649,8 +649,8 @@ if (conn != null) {
           <hashTree/>
         </hashTree>
         <GaussianRandomTimer guiclass="GaussianRandomTimerGui" testclass="GaussianRandomTimer" testname="Wait" enabled="true">
-          <stringProp name="ConstantTimer.delay">2000</stringProp>
-          <stringProp name="RandomTimer.range">1000.0</stringProp>
+          <stringProp name="ConstantTimer.delay">5000</stringProp>
+          <stringProp name="RandomTimer.range">2000.0</stringProp>
         </GaussianRandomTimer>
         <hashTree/>
       </hashTree>
