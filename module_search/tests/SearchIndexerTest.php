@@ -2,7 +2,6 @@
 
 namespace Kajona\Search\Tests;
 
-use Kajona\News\System\NewsNews;
 use Kajona\Search\System\SearchContent;
 use Kajona\Search\System\SearchDocument;
 use Kajona\Search\System\SearchIndexwriter;
@@ -167,16 +166,12 @@ class SearchIndexerTest extends Testbase
 
     public function testObjectIndexerPerformance()
     {
-        if (SystemModule::getModuleByName("news") === null) {
-            return;
-        }
-
-        $objNews = new NewsNews();
-        $objNews->setStrTitle("demo 1");
-        $objNews->setStrIntro("intro demo news");
-        $objNews->setStrText("text demo news");
-        $objNews->updateObjectToDb();
-        $strNewsId = $objNews->getSystemid();
+        $objObject = new MessagingMessage();
+        $objObject->setStrTitle("unittest demo message");
+        $objObject->setStrBody("unittest demo message body");
+        $objObject->setStrMessageProvider("Kajona\\System\\System\\Messageproviders\\MessageproviderPersonalmessage");
+        $objObject->updateObjectToDb();
+        $strObjectId = $objObject->getSystemid();
 
         //echo "Status changes with disabled changelog indexer integration...\n";
         SystemChangelog::$bitChangelogEnabled = false;
@@ -184,8 +179,8 @@ class SearchIndexerTest extends Testbase
         $intQueriesStart = Database::getInstance()->getNumber();
 
         for ($intI = 0; $intI < 150; $intI++) {
-            $objNews->setIntRecordStatus($intI % 2);
-            $objNews->updateObjectToDb();
+            $objObject->setIntRecordStatus($intI % 2);
+            $objObject->updateObjectToDb();
         }
 
         $intTimeEnd = microtime(true);
@@ -200,8 +195,8 @@ class SearchIndexerTest extends Testbase
         $intQueriesStart = Database::getInstance()->getNumber();
 
         for ($intI = 0; $intI < 150; $intI++) {
-            $objNews->setIntRecordStatus($intI % 2);
-            $objNews->updateObjectToDb();
+            $objObject->setIntRecordStatus($intI % 2);
+            $objObject->updateObjectToDb();
         }
 
         $intTimeEnd = microtime(true);
@@ -210,7 +205,7 @@ class SearchIndexerTest extends Testbase
         //echo "Queries: ", Database::getInstance()->getNumber() - $intQueriesStart . " \n";
 
 
-        Objectfactory::getInstance()->getObject($strNewsId)->deleteObjectFromDatabase();
+        Objectfactory::getInstance()->getObject($strObjectId)->deleteObjectFromDatabase();
 
     }
 

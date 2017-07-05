@@ -16,7 +16,7 @@ use Kajona\System\System\Model;
 use Kajona\System\System\OrmBase;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\StringUtil;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 
 /**
@@ -27,7 +27,7 @@ use PHPUnit_Framework_TestCase;
  * @since 3.4
  * @author sidler@mulchprod.de
  */
-abstract class Testbase extends PHPUnit_Framework_TestCase
+abstract class Testbase extends TestCase
 {
 
     private $arrTestStartDate = null;

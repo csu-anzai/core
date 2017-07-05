@@ -2,9 +2,8 @@
 
 namespace Kajona\System\Tests;
 
-use Kajona\News\System\NewsNews;
 use Kajona\System\Admin\AdminFormgenerator;
-use Kajona\System\System\SystemModule;
+use Kajona\Tags\System\TagsTag;
 
 class ObjectValidatorTest extends Testbase
 {
@@ -20,13 +19,8 @@ class ObjectValidatorTest extends Testbase
      */
     public function testObjectValidator()
     {
-        $objModule = SystemModule::getModuleByName("news");
-        if ($objModule == null) {
-            return;
-        }
-
-        $objNews = new NewsNews();
-        $objForm = new AdminFormgenerator("news", $objNews);
+        $objObject = new TagsTag();
+        $objForm = new AdminFormgenerator("tags", $objObject);
         $objForm->generateFieldsFromObject();
 
         $objSourceObjectBefore = $objForm->getObjSourceobject();

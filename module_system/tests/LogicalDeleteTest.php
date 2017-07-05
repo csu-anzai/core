@@ -118,11 +118,5 @@ class LogicalDeleteTest extends Testbase
         OrmBase::setObjHandleLogicalDeletedGlobal(OrmDeletedhandlingEnum::EXCLUDED);
         parent::tearDown();
     }
-
-
-    public function testDeleteSortHandling()
-    {
-
-    }
 }
 

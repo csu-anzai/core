@@ -77,12 +77,6 @@ To register the object validator you have created  you need to add the class-ann
 	 */
 	class YourmoduleMyobject extends \Kajona\System\System\Model {
 	    //...object code here...
-	} 
- 
-A concrete example for an object validator is implemented  for class "NewsNews" in module "module_news".
-
-class: ``module_news/system/NewsNews.php``
-
-object validator: ``module_news/system/validators/NewsNewsObjectvalidator.php``
+	}
 
  

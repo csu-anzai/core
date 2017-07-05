@@ -9,12 +9,13 @@ namespace Kajona\System\Tests;
 use Kajona\System\System\BootstrapCache;
 use Kajona\System\System\Classloader;
 use Kajona\System\System\StringUtil;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author stefan.meyer1@yahoo.com
  * @since 6.0
  */
-class NamspacesTest extends \PHPUnit_Framework_TestCase
+class NamspacesTest extends TestCase
 {
 
     /**
