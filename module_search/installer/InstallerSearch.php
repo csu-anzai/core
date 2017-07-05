@@ -9,18 +9,13 @@
 
 namespace Kajona\Search\Installer;
 
-use Kajona\Packagemanager\System\PackagemanagerManager;
-use Kajona\Pages\System\PagesElement;
-use Kajona\Search\Admin\Elements\ElementSearchAdmin;
 use Kajona\Search\System\SearchIndexwriter;
 use Kajona\Search\System\SearchSearch;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\DbDatatypes;
-use Kajona\System\System\Filesystem;
 use Kajona\System\System\InstallerBase;
 use Kajona\System\System\InstallerRemovableInterface;
 use Kajona\System\System\OrmSchemamanager;
-use Kajona\System\System\Resourceloader;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
 

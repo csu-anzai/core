@@ -7,13 +7,13 @@
 namespace Kajona\Mediamanager\System;
 
 use Kajona\Packagemanager\System\PackagemanagerMetadata;
-use Kajona\Pages\System\PagesPage;
 use Kajona\Search\System\SearchResult;
 use Kajona\System\System\AdminGridableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Filesystem;
-use Kajona\System\System\LanguagesLanguage;
 use Kajona\System\System\Link;
+use Kajona\System\System\Model;
+use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\OrmComparatorEnum;
 use Kajona\System\System\OrmCondition;
@@ -40,7 +40,7 @@ use Kajona\System\System\Zip;
  *
  * @formGenerator Kajona\Mediamanager\Admin\MediamanagerFileFormgenerator
  */
-class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\System\System\ModelInterface, AdminGridableInterface, SearchPortalobjectInterface
+class MediamanagerFile extends Model implements ModelInterface, AdminGridableInterface, SearchPortalobjectInterface
 {
 
 
@@ -175,7 +175,6 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
      */
     public function updateSearchResult(SearchResult $objResult)
     {
-        $objLanguages = new LanguagesLanguage();
         $objORM = new OrmObjectlist();
 
         $strQuery = "SELECT system_id
@@ -206,24 +205,10 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
         $arrReturn = array();
 
         foreach ($arrRows as $arrOneElement) {
-
-
             $objCur = Objectfactory::getInstance()->getObject($arrOneElement["system_id"]);
-            while($objCur != null && !$objCur instanceof PagesPage && !$objCur instanceof SystemModule) {
+            while ($objCur != null && !$objCur instanceof SystemModule) {
                 $objCur = Objectfactory::getInstance()->getObject($objCur->getStrPrevId());
             }
-
-            if ($objCur instanceof PagesPage && $objCur->getStrName() != 'master') {
-                $objCurResult = clone($objResult);
-                $objCurResult->setStrPagelink(Link::getLinkPortal($objCur->getStrName(), "", "_self", $this->getStrDisplayName(), "mediaFolder", "&highlight=".urlencode(html_entity_decode($objResult->getObjSearch()->getStrQuery(), ENT_QUOTES, "UTF-8")), $this->getPrevId(), "", "", $this->getStrDisplayName()));
-                $objCurResult->setStrPagename($objCur->getStrName());
-                $objCurResult->setStrAdditionalTitle($this->getStrName());
-                $objCurResult->setStrDescription($this->getStrDescription());
-                $arrReturn[] = $objCurResult;
-
-            }
-
-
         }
 
         return $arrReturn;
@@ -346,8 +331,7 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
             $objFilesystem = new Filesystem();
             if ($this->getIntType() == self::$INT_TYPE_FILE) {
                 $objFilesystem->fileDelete($this->getStrFilename());
-            }
-            else {
+            } else {
                 $objFilesystem->folderDelete($this->getStrFilename());
             }
         }
@@ -401,8 +385,7 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
             $this->setStrName($objMetadata->getStrTitle());
             $this->setStrDescription(nl2br($objMetadata->getStrDescription(). "<br />Version: ".$objMetadata->getStrVersion()));
             $this->setStrCat($objMetadata->getStrType());
-        }
-        else {
+        } else {
             $this->setBitIspackage(0);
         }
     }
@@ -514,8 +497,7 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
                 }
 
                 $strWhere = "( ".implode(" OR ", $arrWhere)." )";
-            }
-            else {
+            } else {
                 $arrParams[] = $strNameFilter."%";
                 $strWhere = "file_name LIKE ?";
             }
@@ -525,7 +507,6 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
         $objORM->addWhereRestriction(new OrmPropertyCondition("bitIspackage", OrmComparatorEnum::Equal(), 1));
         $objORM->addOrderBy(new OrmObjectlistOrderby("file_name ASC"));
         return $objORM->getObjectList(get_called_class(), "", $intStart, $intEnd);
-
     }
 
     /**
@@ -559,8 +540,7 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
                 }
 
                 $strWhere = "( ".implode(" OR ", $arrWhere)." )";
-            }
-            else {
+            } else {
                 $arrParams[] = $strNameFilter."%";
                 $strWhere = "file_name LIKE ?";
             }
@@ -604,7 +584,6 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
         $arrFiles = $objORM->getObjectList(get_called_class());
 
         foreach ($arrFiles as $objFile) {
-
             $objTemp = Objectfactory::getInstance()->getObject($objFile->getStrPrevId());
             while (validateSystemid($objTemp->getSystemid())) {
                 if ($objTemp->getSystemid() == $strRepoId) {
@@ -904,7 +883,4 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
     {
         return $this->strScreen3;
     }
-
-
 }
-

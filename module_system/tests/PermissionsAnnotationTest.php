@@ -11,12 +11,13 @@ use Kajona\System\System\Classloader;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\StringUtil;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author sidler@mulchprod.de
  * @since 6.2
  */
-class PermissionsAnnotationTest extends \PHPUnit_Framework_TestCase
+class PermissionsAnnotationTest extends TestCase
 {
     public function permissionDataProvider()
     {

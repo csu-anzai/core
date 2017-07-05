@@ -16,7 +16,7 @@ $objWizardManager = new \Kajona\Wizard\System\WizardManager(
 $objWizardManager->addPage(
     "news",
     new \Kajona\Wizard\System\WizardPage(
-        \Kajona\News\System\NewsNews::class,
+        \Kajona\Tags\System\TagsTag::class,
         \Kajona\System\Admin\AdminFormgenerator::BIT_BUTTON_CONTINUE,
         "News"
     )
@@ -25,7 +25,7 @@ $objWizardManager->addPage(
 $objWizardManager->addPage(
     "category",
     new \Kajona\Wizard\System\WizardPage(
-        \Kajona\News\System\NewsCategory::class,
+        \Kajona\Tags\System\TagsTag::class,
         \Kajona\System\Admin\AdminFormgenerator::BIT_BUTTON_CONTINUE | \Kajona\System\Admin\AdminFormgenerator::BIT_BUTTON_BACK,
         "Category"
     )
