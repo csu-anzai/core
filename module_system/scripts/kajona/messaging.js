@@ -20,16 +20,13 @@ define('messaging', ['jquery', 'ajax'], function ($, ajax) {
          * Expects a callback-function whereas the number is passed as a param.
          *
          * @param objCallback
-         * @deprecated replaced by getRecentMessages
          */
         getUnreadCount : function(objCallback) {
             var me = this;
             ajax.genericAjaxCall("messaging", "getUnreadMessagesCount", "", function(data, status, jqXHR) {
                 if(status == 'success') {
-                    var objResponse = $($.parseXML(data));
-                    me.intCount = objResponse.find("messageCount").text();
-                    objCallback(objResponse.find("messageCount").text());
-
+                    me.intCount = $.parseJSON(data);
+                    objCallback(me.intCount);
                 }
             });
         },
