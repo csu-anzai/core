@@ -1,5 +1,5 @@
 
-define(['jquery', 'bootstrap'], function ($, bootstrap) {
+define(['jquery', 'bootstrap', 'router'], function ($, bootstrap, router) {
 
     return function (strDialogId, intDialogType, bitDragging, bitResizing) {
         this.dialog = null;
@@ -80,6 +80,8 @@ define(['jquery', 'bootstrap'], function ($, bootstrap) {
 
         this.setContentIFrame = function(strUrl) {
             this.iframeId = this.containerId + '_iframe';
+            strUrl = router.generateUrl(strUrl);
+            strUrl = KAJONA_WEBPATH+strUrl.url+"&combinedLoad=1";
             this.iframeURL = strUrl;
         };
 

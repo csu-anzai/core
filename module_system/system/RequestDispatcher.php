@@ -233,7 +233,10 @@ class RequestDispatcher
                             }
                         }
 
-                        if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::INDEX()) && empty(Carrier::getInstance()->getParam("contentFill"))) {
+                        if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::INDEX())
+                            && (empty(Carrier::getInstance()->getParam("contentFill"))
+                                || !empty(Carrier::getInstance()->getParam("combinedLoad")))
+                        ) {
                             $objHelper = new SkinAdminController();
                             $strReturn = $objHelper->actionGenerateMainTemplate($strReturn);
                         }

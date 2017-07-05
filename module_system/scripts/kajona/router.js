@@ -64,11 +64,10 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
             url = url.substr(1);
         }
 
-        //react on peClose statements by reloading the parent view
         var isStackedDialog = !!(window.frameElement && window.frameElement.nodeName && window.frameElement.nodeName.toLowerCase() == 'iframe');
         if(isStackedDialog && url.indexOf('peClose=1') != -1) {
+            //react on peClose statements by reloading the parent view
             parent.KAJONA.admin.folderview.dialog.hide();
-            console.log('parent call: '+parent.window.location.hash);
             parent.routie.reload();
             return;
         }

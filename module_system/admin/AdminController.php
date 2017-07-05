@@ -244,7 +244,7 @@ abstract class AdminController extends AbstractController
         //if requested the pe, load different template
         $strTemplate = AdminskinHelper::getPathForSkin($this->objSession->getAdminSkin()).$this->getArrModule("template");
         if ($this->getParam("peClose") == 1 || $this->getParam("pe") == 1) {
-            $strTemplate = "/folderview.tpl";
+//            $strTemplate = "/folderview.tpl";
         }
        // return $this->objTemplate->fillTemplateFile($this->arrOutput, $strTemplate);
     }
