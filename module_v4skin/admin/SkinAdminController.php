@@ -46,7 +46,6 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
 
 
         //move to separate getters
-        $arrTemplate["path_home"] = AdminHelper::getAdminPathNaviHome();
 //        $arrTemplate["moduleSitemap"] = $this->objToolkit->getAdminSitemap();
 
 //        if (SystemAspect::getActiveObjectCount() > 1) {
@@ -62,8 +61,9 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
         $arrTemplate["head"] = "<script type=\"text/javascript\">KAJONA_DEBUG = ".$this->objConfig->getDebug("debuglevel")."; KAJONA_WEBPATH = '"._webpath_."'; KAJONA_BROWSER_CACHEBUSTER = ".SystemSetting::getConfigValue("_system_browser_cachebuster_")."; KAJONA_LANGUAGE = '".Carrier::getInstance()->getObjSession()->getAdminLanguage()."';KAJONA_PHARMAP = ".json_encode(array_values(Classloader::getInstance()->getArrPharModules()))."; var require = {$objAdminHelper->generateRequireJsConfig()};</script>";
 
         $strTemplate = AdminskinHelper::getPathForSkin($this->objSession->getAdminSkin()).$this->getArrModule("template");
+        $strTemplate = AdminskinHelper::getPathForSkin($this->objSession->getAdminSkin())."/main.tpl";
         if ($this->getParam("peClose") == 1 || $this->getParam("pe") == 1) {
-            $strTemplate = "/folderview.tpl";
+//            $strTemplate = "/folderview.tpl";
         }
         return $this->objTemplate->fillTemplateFile($arrTemplate, $strTemplate);
     }
@@ -76,7 +76,7 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
         $arrTemplate["webpathTitle"] = urldecode(str_replace(["http://", "https://"], ["", ""], _webpath_));
         $arrTemplate["head"] = "<script type=\"text/javascript\">KAJONA_DEBUG = ".$this->objConfig->getDebug("debuglevel")."; KAJONA_WEBPATH = '"._webpath_."'; KAJONA_BROWSER_CACHEBUSTER = ".SystemSetting::getConfigValue("_system_browser_cachebuster_")."; KAJONA_LANGUAGE = '".Carrier::getInstance()->getObjSession()->getAdminLanguage()."';KAJONA_PHARMAP = ".json_encode(array_values(Classloader::getInstance()->getArrPharModules()))."; var require = {$objAdminHelper->generateRequireJsConfig()};</script>";
 
-        $strTemplate = "/folderview.tpl";
+        $strTemplate = "/main.tpl";
         return $this->objTemplate->fillTemplateFile($arrTemplate, $strTemplate);
     }
 

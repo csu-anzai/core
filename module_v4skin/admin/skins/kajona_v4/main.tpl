@@ -90,7 +90,7 @@
             <div class="row pathNaviContainer">
                 <div class="col-md-12">
                     <ul class="breadcrumb">
-                        <li class='pathentry home'>%%path_home%%</li>
+                        <li class='pathentry home'><i class='fa fa-home'></i></span></li>
                     </ul>
                     <div id="quickhelp" class=" pull-right" style=" "><i class="fa fa-question-circle"></i></div>
                 </div>
