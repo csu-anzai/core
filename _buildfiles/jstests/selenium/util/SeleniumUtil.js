@@ -65,7 +65,7 @@ class SeleniumUtil {
         let loginPage = await LoginPage.getPage();
 
         //if login container is present => login
-        let bitLoginContainerIsPresent = await SeleniumWaitHelper.isElementDisplayed(this.getWebDriver(), LOGINCONTAINER);
+        let bitLoginContainerIsPresent = await SeleniumWaitHelper.isElementDisplayed(LOGINCONTAINER);
         if(bitLoginContainerIsPresent) {
             return await loginPage.login(strUserName, strPassword);
         }

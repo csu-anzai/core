@@ -6,7 +6,7 @@
 const BasePage = requireHelper('/pageobject/base/BasePage.js');
 
 /** Constants */
-const CONTENTTOPBAR = by.css("div.contentTopbar");
+const CONTENTTOPBAR = By.css("div.contentTopbar");
 
 /**
  *

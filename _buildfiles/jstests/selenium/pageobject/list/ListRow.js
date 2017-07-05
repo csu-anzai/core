@@ -4,7 +4,7 @@
 const BasePage = requireHelper('/pageobject/base/BasePage.js');
 
 /** Constants */
-const ACTIONICONS = by.css("td.actions span.listButton");
+const ACTIONICONS = By.css("td.actions span.listButton");
 
 /**
  *

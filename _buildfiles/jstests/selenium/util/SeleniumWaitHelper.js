@@ -1,5 +1,6 @@
 "use strict";
 
+const SeleniumUtil = requireHelper('/util/SeleniumUtil.js');
 
 /**
  *
@@ -10,11 +11,12 @@ class SeleniumWaitHelper {
      * Returns an elements when it is displayed.
      * This is a blocking wait.
      *
-     * @param {webdriver.WebDriver} webDriver
      * @param locator
      * @returns {!webdriver.WebElement}
      */
-    static async getElementWhenDisplayed(webDriver, locator) {
+    static async getElementWhenDisplayed(locator) {
+        const webDriver = SeleniumUtil.getWebDriver();
+
         await webDriver.wait(
             protractor.until.elementIsVisible(webDriver.findElement(locator), 10000)
         );
@@ -26,11 +28,12 @@ class SeleniumWaitHelper {
      * Checks if an element is displayed
      * This is a blocking wait.
      *
-     * @param {webdriver.WebDriver} webDriver
      * @param locator
      * @returns {bool}
      */
-    static async isElementDisplayed(webDriver, locator) {
+    static async isElementDisplayed(locator) {
+        const webDriver = SeleniumUtil.getWebDriver();
+
         await webDriver.wait(
             protractor.until.elementIsVisible(webDriver.findElement(locator), 10000)
         );
@@ -48,11 +51,12 @@ class SeleniumWaitHelper {
      * Returns all elements when it is present in the DOM.
      * This is a blocking wait.
      *
-     * @param {webdriver.WebDriver} webDriver
      * @param locator
      * @returns {WebElement[]}
      */
-    static async getElementsWhenPresent(webDriver, locator) {
+    static async getElementsWhenPresent(locator) {
+        const webDriver = SeleniumUtil.getWebDriver();
+
         await webDriver.wait(
             protractor.until.elementsLocated(locator, 10000)
         );
@@ -64,11 +68,12 @@ class SeleniumWaitHelper {
      * Returns an element when it is present in the DOM.
      * This is a blocking wait.
      *
-     * @param webDriver
      * @param locator
      * @returns {!webdriver.WebElement}
      */
-    static async getElementWhenPresent(webDriver, locator) {
+    static async getElementWhenPresent(locator) {
+        const webDriver = SeleniumUtil.getWebDriver();
+
         await webDriver.wait(
             protractor.until.elementLocated(locator, 10000)
         );
@@ -79,11 +84,12 @@ class SeleniumWaitHelper {
     /**
      * Checks if an element exists.
      *
-     * @param webDriver
      * @param locator
      * @returns {bool}
      */
-    static async isElementExists(webDriver, locator) {
+    static async isElementExists(locator) {
+        const webDriver = SeleniumUtil.getWebDriver();
+
         return await webDriver.findElement(locator).then(
             function (element) {
                 return true;

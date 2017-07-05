@@ -9,8 +9,8 @@ const SeleniumWaitHelper = requireHelper('/util/SeleniumWaitHelper.js');
 /** Constants */
 const LEFTNAVIGATION_XPATH_NAVIGATION = ".//*[@id='moduleNavigation']";
 
-const NAVIGATION = by.xpath(LEFTNAVIGATION_XPATH_NAVIGATION);
-const NAVIGATION_HAMBURGER = by.xpath(".//*[@data-toggle='offcanvas']");//visible when page width < 932px
+const NAVIGATION = By.xpath(LEFTNAVIGATION_XPATH_NAVIGATION);
+const NAVIGATION_HAMBURGER = By.xpath(".//*[@data-toggle='offcanvas']");//visible when page width < 932px
 
 
 /**
@@ -59,7 +59,7 @@ class LeftNavigation extends BasePage {
     /**
      * Checks if the hamburger element to open/close the navigation is present
      *
-     * @returns {webdriver.promise.Promise<boolean>}
+     * @returns {boolean}
      */
     async isNavigationHamburgerDisplayed() {
         return await this.element_navigationHamburger.isDisplayed();
@@ -68,7 +68,7 @@ class LeftNavigation extends BasePage {
     /**
      * Checks if the navigation is displayed
      *
-     * @returns {Promise<boolean>}
+     * @returns {boolean}
      */
     async isNavigationDisplayed() {
         let strPath = LEFTNAVIGATION_XPATH_NAVIGATION + "/../../..";
@@ -83,11 +83,11 @@ class LeftNavigation extends BasePage {
      * Gets a module from the navigation with the given name
      *
      * @param {string} strMenuName
-     * @returns {WebElementPromise|!webdriver.WebElement}
+     * @returns {webdriver.WebElement}
      */
     async getNavigationModule(strMenuName) {
         let strPathMenu = LEFTNAVIGATION_XPATH_NAVIGATION + "//*[contains(concat(' ', @class, ' '), ' panel-heading ')]/a[contains(text(), '" + strMenuName + "')]";
-        return await SeleniumWaitHelper.getElementWhenDisplayed(this.webDriver, By.xpath(strPathMenu));
+        return await SeleniumWaitHelper.getElementWhenDisplayed(By.xpath(strPathMenu));
     }
 
     /**
@@ -139,7 +139,7 @@ class LeftNavigation extends BasePage {
         await this.openNavigationModule(strMenuName);
 
         let strPathToLinks = LEFTNAVIGATION_XPATH_NAVIGATION + "//*[contains(concat(' ', @class, ' '), ' panel-heading ')]/a[contains(text(), '" + strMenuName + "')]/../..//li[a[contains(concat(' ', @class, ' '), ' adminnavi ')]]";
-        return await SeleniumWaitHelper.getElementsWhenPresent(this.webDriver, By.xpath(strPathToLinks));
+        return await SeleniumWaitHelper.getElementsWhenPresent(By.xpath(strPathToLinks));
     };
 
 
@@ -153,7 +153,7 @@ class LeftNavigation extends BasePage {
         await this.openNavigationModule(strMenuName);
 
         let strPathToLinks = LEFTNAVIGATION_XPATH_NAVIGATION + "//*[contains(concat(' ', @class, ' '), ' panel-heading ')]/a[contains(text(), '" + strMenuName + "')]/../..//li[a[contains(concat(' ', @class, ' '), ' adminnavi ')]][" + intLinkPosition + "]";
-        return await SeleniumWaitHelper.getElementWhenDisplayed(this.webDriver, By.xpath(strPathToLinks));
+        return await SeleniumWaitHelper.getElementWhenDisplayed(By.xpath(strPathToLinks));
     }
 }
 

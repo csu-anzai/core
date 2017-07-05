@@ -51,7 +51,7 @@ class TopMenu extends BasePage {
      *
      * @param {string} strSearchTerm
      *
-     * @returns {WebElementPromise|!webdriver.WebElement}
+     * @returns {webdriver.WebElement}
      */
     async search(strSearchTerm) {
         return await this.element_searchBox.sendKeys(strSearchTerm);
@@ -60,7 +60,7 @@ class TopMenu extends BasePage {
     /**
      * Logs out.
      *
-     * @returns {Promise<void>}
+     * @returns {void}
      */
     async logout() {
         await this.showUserMenu();
@@ -70,7 +70,7 @@ class TopMenu extends BasePage {
     /**
      * Displays the user menu.
      *
-     * @returns {webdriver.promise.Promise.<void>}
+     * @returns {void}
      */
     async showUserMenu() {
         let element = await this.element_lnkUserMenu;

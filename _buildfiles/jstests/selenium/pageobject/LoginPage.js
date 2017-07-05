@@ -10,9 +10,9 @@ const AdminLandingPage = requireHelper('/pageobject/AdminLandingPage.js');
 
 
 /** Constants */
-const USERNAME = by.id("name");
-const PASSWORD = by.id("passwort");
-const LOGINBUTTON = by.css("button");
+const USERNAME = By.id("name");
+const PASSWORD = By.id("passwort");
+const LOGINBUTTON = By.css("button");
 
 /**
  *
