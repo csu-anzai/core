@@ -77,7 +77,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
                 });
                 $('#messagingShortlist').append("<li class='divider'></li><li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1&module=messaging'><i class='fa fa-envelope'></i> " + msg.properties.show_all + "</a></li>");
 
-                window.setTimeout(msg.pollMessages, 20000);
+                window.setTimeout(msg.pollMessages, 200000);
                 messaging.bitFirstLoad = false;
             });
         }
