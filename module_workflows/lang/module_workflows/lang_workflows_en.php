@@ -10,7 +10,7 @@
 //Kajona Language Editor Core Build 398
 
 //non-editable entries
-$lang["permissions_header"]              = array(0 => "View", 1 => "Edit", 2 => "Delete", 3 => "Permissions", 4 => "Handlers", 5 => "", 6 => "", 7 => "", 8 => "");
+$lang["permissions_header"]              = array(0 => "View", 1 => "Edit", 2 => "Delete", 3 => "Permissions", 4 => "Handlers", 5 => "Stats", 6 => "", 7 => "", 8 => "");
 
 
 //editable entries

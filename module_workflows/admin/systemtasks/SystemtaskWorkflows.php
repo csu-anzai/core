@@ -69,12 +69,8 @@ class SystemtaskWorkflows extends SystemtaskBase implements AdminSystemtaskInter
             return $this->getLang("commons_error_permissions");
         }
 
-
         $objWorkflowController = new WorkflowsController();
-
-        $objWorkflowController->scheduleWorkflows();
-        $objWorkflowController->runWorkflows();
-
+        $objWorkflowController->processWorkflows();
 
         return "";
     }
