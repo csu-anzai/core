@@ -1056,14 +1056,22 @@ Part to display the login status, user is logged in
     <ul class="dropdown-menu generalContextMenu" role="menu">
         <li class="dropdown-submenu">
             <a tabindex="-1" href="#"><i class='fa fa-envelope'></i> [lang,modul_titel,messaging]</a>
-            <ul class="dropdown-menu sub-menu" id="messagingShortlist"></ul>
+            <ul class="dropdown-menu sub-menu" id="messagingShortlist">
+                <li><a>Loading...</a></li>
+                <li class="divider"></li>
+                <li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1&module=messaging'><i class='fa fa-envelope'></i> [lang,action_show_all,messaging]</a></li>
+            </ul>
         </li>
 
         <!-- messages will be inserted here -->
         <li class="divider"></li>
         <li class="dropdown-submenu">
             <a tabindex="-1" href="#"><i class='fa fa-tag'></i> [lang,modul_titel,tags]</a>
-            <ul class="dropdown-menu sub-menu" id="tagsSubemenu"></ul>
+            <ul class="dropdown-menu sub-menu" id="tagsSubemenu">
+                <li><a>Loading...</a></li>
+                <li class="divider"></li>
+                <li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1&module=tags'><i class='fa fa-tag'></i> [lang,action_show_all,tags]</a></li>
+            </ul>
         </li>
         <li class="divider"></li>
         <li><a href="%%dashboard%%"><i class='fa fa-home'></i> %%dashboardTitle%%</a></li>
@@ -1084,7 +1092,14 @@ Part to display the login status, user is logged in
                     notification_body : '[lang,messaging_notification_body,messaging]',
                     show_all : '[lang,action_show_all,messaging]'
                 };
-                v4skin.messaging.pollMessages()
+
+                $('#messagingShortlist').parent().on('mouseover', function(e) {
+                    v4skin.messaging.pollMessages();
+                    $('#messagingShortlist').parent().unbind('mouseover');
+
+                });
+
+                window.setTimeout(v4skin.messaging.pollMessageCount, 2000);
             });
         }
         else {
@@ -1094,7 +1109,11 @@ Part to display the login status, user is logged in
         if(%%renderTags%%) {
             $(function() {
                 v4skin.properties.tags.show_all = '[lang,action_show_all,tags]';
-                v4skin.initTagMenu();
+
+                $('#tagsSubemenu').parent().on('mouseover', function(e) {
+                    v4skin.initTagMenu();
+                    $('#tagsSubemenu').parent().unbind('mouseover');
+                });
             });
         }
         else {
