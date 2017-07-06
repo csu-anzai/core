@@ -78,6 +78,8 @@ class ReflectionPerformanceTest extends Testbase  {
 
 //        $this->assertTrue($intTimeUsedUserFunc > $intTimeUsedString);
 //        $this->assertTrue($intTimeUsedUserFunc > $intTimeUsedRef);
+
+        $this->assertTrue(true);//dummy assertion to make test not risky. Until here no exception should have occurred
     }
 
 }

@@ -121,8 +121,11 @@ class SearchDeferredIndexerTest extends Testbase
         $objConfig->setStrValue("false");
         $objConfig->updateObjectToDb();
 
-        foreach ($arrObjectIds as $strObjectId)
+        foreach ($arrObjectIds as $strObjectId) {
             Objectfactory::getInstance()->getObject($strObjectId)->deleteObjectFromDatabase();
+        }
+
+        $this->assertTrue(true);//dummy assertion to make test not risky. Until here no exception should have occurred
 
     }
 }

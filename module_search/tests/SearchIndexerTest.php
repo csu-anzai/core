@@ -161,6 +161,8 @@ class SearchIndexerTest extends Testbase
 //        echo "Index erstellt in " . sprintf('%f', $time) . " sec.\n";
 //        echo "Index erstellt mit " . (Database::getInstance()->getNumber() - $intQueriesStart) . " queries.\n";
 
+        $this->assertTrue(true);//dummy assertion to make test not risky
+
     }
 
 
@@ -206,6 +208,8 @@ class SearchIndexerTest extends Testbase
 
 
         Objectfactory::getInstance()->getObject($strObjectId)->deleteObjectFromDatabase();
+
+        $this->assertTrue(true);//dummy assertion to make test not risky. Until here no exception should have occurred
 
     }
 

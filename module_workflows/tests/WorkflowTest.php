@@ -13,67 +13,21 @@ class WorkflowTest extends Testbase
 {
 
     /**
-     * Tests method getWorkflowsForSystemid with existing workflow objects
-     */
-    public function test_getWorkflowsForSystemid_1()
-    {
-        $arrWorkflows = WorkflowsWorkflow::getAllworkflows();
-        $arrMap = array();
-
-        //1. Collect all workflows for all objects
-        /** @var  WorkflowsWorkflow */
-        foreach ($arrWorkflows as $objWorkflow) {
-            $strAffectedSystemId = $objWorkflow->getStrAffectedSystemid();
-            if (!validateSystemid($strAffectedSystemId)) {
-                continue;
-            }
-
-            $strWorkflowClass = $objWorkflow->getStrClass();
-
-            if (!array_key_exists($strAffectedSystemId, $arrMap)) {
-                $arrMap[$strAffectedSystemId] = array();
-            }
-
-            if (!array_key_exists($strWorkflowClass, $arrMap[$strAffectedSystemId])) {
-                $arrMap[$strAffectedSystemId][$strWorkflowClass] = 1;
-            } else {
-                $arrMap[$strAffectedSystemId][$strWorkflowClass]++;
-            }
-        }
-
-        //2. Now assert
-        foreach ($arrMap as $strSystemId => $arrClasses) {
-            $arrWorkflows = WorkflowsWorkflow::getWorkflowsForSystemid($strSystemId, false, array_keys($arrClasses));
-            $this->assertEquals(count($arrWorkflows), array_sum($arrClasses));
-
-            $arrWorkflows = WorkflowsWorkflow::getWorkflowsForSystemid($strSystemId, false);
-            $this->assertEquals(count($arrWorkflows), array_sum($arrClasses));
-
-            foreach ($arrMap[$strSystemId] as $strClass => $intCount) {
-                $arrWorkflows = WorkflowsWorkflow::getWorkflowsForSystemid($strSystemId, false, $strClass);
-                $this->assertEquals(count($arrWorkflows), $intCount);
-
-                $arrWorkflows = WorkflowsWorkflow::getWorkflowsForSystemid($strSystemId, false, array($strClass));
-                $this->assertEquals(count($arrWorkflows), $intCount);
-            }
-        }
-    }
-
-
-    /**
      * Tests method getWorkflowsForSystemid with newly created workflow objects
      */
-    public function test_getWorkflowsForSystemid_2()
+    public function test_getWorkflowsForSystemid_1()
     {
 
         //1 Init settings
         $strSystemId1 = generateSystemid();
         $strSystemId2 = generateSystemid();
+        $strWorkflowClass_1 = "Kajona\\Workflows\\System\\Workflows\\Test";
+        $strWorkflowClass_2 = "Kajona\\Workflows\\System\\Workflows\\Test_2";
         $arrWorkflowsClasses =
             array(
-                array("class" => "Kajona\\Workflows\\System\\Workflows\\WorkflowWorkflowsMessagesummary", "systemid" => $strSystemId1, "amount" => 5),
-                array("class" => "Kajona\\Workflows\\System\\Workflows\\WorkflowWorkflowsMessagesummary", "systemid" => $strSystemId2, "amount" => 5),
-                array("class" => "Kajona\\Workflows\\System\\Workflows\\WorkflowWorkflowsDbdump", "systemid" => $strSystemId2, "amount" => 23)
+                array("class" => $strWorkflowClass_1, "systemid" => $strSystemId1, "amount" => 5),
+                array("class" => $strWorkflowClass_1, "systemid" => $strSystemId2, "amount" => 5),
+                array("class" => $strWorkflowClass_2, "systemid" => $strSystemId2, "amount" => 23)
             );
 
 
@@ -101,10 +55,20 @@ class WorkflowTest extends Testbase
             $this->assertEquals(count($arrWorkflows), $arrInfo["amount"]);
         }
 
-        $arrWorkflows = WorkflowsWorkflow::getWorkflowsForSystemid($strSystemId1, false, array("Kajona\\Workflows\\System\\Workflows\\WorkflowWorkflowsMessagesummary"));
+        $arrWorkflows = WorkflowsWorkflow::getWorkflowsForSystemid($strSystemId1, false, array($strWorkflowClass_1));
         $this->assertEquals(count($arrWorkflows), 5);
-        $arrWorkflows = WorkflowsWorkflow::getWorkflowsForSystemid($strSystemId2, false, array("Kajona\\Workflows\\System\\Workflows\\WorkflowWorkflowsDbdump", "Kajona\\Workflows\\System\\Workflows\\WorkflowWorkflowsMessagesummary"));
+        $arrWorkflows = WorkflowsWorkflow::getWorkflowsForSystemid($strSystemId2, false, array(
+            $strWorkflowClass_1,
+            $strWorkflowClass_2
+        ));
         $this->assertEquals(count($arrWorkflows), 28);
+
+
+        //4. Assert workflow by class
+        $arrWorkflows = WorkflowsWorkflow::getWorkflowsForClass($strWorkflowClass_1, false);
+        $this->assertCount(10, $arrWorkflows);
+        $arrWorkflows = WorkflowsWorkflow::getWorkflowsForClass($strWorkflowClass_2, false);
+        $this->assertCount(23, $arrWorkflows);
 
 
         //4. Delete created workflow objects

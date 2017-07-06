@@ -38,6 +38,8 @@ class GeneralActionTest extends Testbase
 
         Carrier::getInstance()->getObjRights()->setBitTestMode(false);
 
+        $this->assertTrue(true);//dummy assertion to make test not risky. Until here no exception should have occurred
+
     }
 
 
@@ -64,6 +66,8 @@ class GeneralActionTest extends Testbase
         }
 
         Carrier::getInstance()->getObjRights()->setBitTestMode(false);
+
+        $this->assertTrue(true);//dummy assertion to make test not risky. Until here no exception should have occurred
 
     }
 
@@ -112,6 +116,8 @@ class GeneralActionTest extends Testbase
                 }
             }
         }
+
+        $this->assertTrue(true);//dummy assertion to make test not risky. Until here no exception should have occurred
 
     }
 
