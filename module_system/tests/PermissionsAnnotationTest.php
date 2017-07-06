@@ -21,6 +21,8 @@ class PermissionsAnnotationTest extends TestCase
 {
     public function permissionDataProvider()
     {
+        $this->markTestSkipped("Pending until Kajona 7.0");
+
         $arrReturn = [];
 
         //load all admin-classes
