@@ -14,12 +14,14 @@ class MediamanagerTest extends Testbase
     public function testFileSync()
     {
 
+        $objFilesystem = new Filesystem();
+        $objFilesystem->folderCreate(_filespath_ . "/images/samples");
+        $objFilesystem->folderCreate(_filespath_ . "/images/autotest");
+
         if (!is_file(_realpath_ . "files/images/samples/IMG_3000.JPG")) {
             file_put_contents(_realpath_ . "files/images/samples/IMG_3000.JPG", "dummy");
         }
 
-        $objFilesystem = new Filesystem();
-        $objFilesystem->folderCreate(_filespath_ . "/images/autotest");
 
         $objFilesystem->fileCopy(_filespath_ . "/images/samples/IMG_3000.JPG", _filespath_ . "/images/autotest/IMG_3000.jpg");
         $objFilesystem->fileCopy(_filespath_ . "/images/samples/IMG_3000.JPG", _filespath_ . "/images/autotest/IMG_3000.png");
