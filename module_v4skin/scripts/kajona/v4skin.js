@@ -67,8 +67,8 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
         },
 
         pollMessageCount : function() {
-            messaging.getUnreadCount(function (objResponse) {
-                msg.updateCountInfo(objResponse);
+            messaging.getUnreadCount(function (intCount) {
+                msg.updateCountInfo(intCount);
             });
 
             window.setTimeout(msg.pollMessageCount, 30000);
