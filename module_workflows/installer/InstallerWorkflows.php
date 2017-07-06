@@ -42,7 +42,7 @@ class InstallerWorkflows extends InstallerBase implements InstallerRemovableInte
         $arrFields["wfc_id"]                     = array("char20", false);
         $arrFields["wfc_start"]                  = array("long", false);
         $arrFields["wfc_end"]                    = array("long", true);
-        if(!$this->objDB->createTable("workflows_stat_wfc", $arrFields, array("wfc_id")))
+        if(!$this->objDB->createTable("workflows_stat_wfc", $arrFields, array("wfc_id"), array("wfc_start")))
             $strReturn .= "An error occured! ...\n";
 
         $arrFields = array();
@@ -52,7 +52,7 @@ class InstallerWorkflows extends InstallerBase implements InstallerRemovableInte
         $arrFields["wfh_end"]                    = array("long", true);
         $arrFields["wfh_class"]                  = array("char254", false);
         $arrFields["wfh_result"]                 = array("char20", true);
-        if(!$this->objDB->createTable("workflows_stat_wfh", $arrFields, array("wfh_id")))
+        if(!$this->objDB->createTable("workflows_stat_wfh", $arrFields, array("wfh_id"), array('wfh_start', 'wfh_result')))
             $strReturn .= "An error occured! ...\n";
 
 		//register the module
@@ -232,7 +232,7 @@ class InstallerWorkflows extends InstallerBase implements InstallerRemovableInte
         $arrFields["wfc_id"]                     = array("char20", false);
         $arrFields["wfc_start"]                  = array("long", false);
         $arrFields["wfc_end"]                    = array("long", true);
-        if(!$this->objDB->createTable("workflows_stat_wfc", $arrFields, array("wfc_id")))
+        if(!$this->objDB->createTable("workflows_stat_wfc", $arrFields, array("wfc_id"), array("wfc_start")))
             $strReturn .= "An error occured! ...\n";
 
         $arrFields = array();
@@ -242,7 +242,7 @@ class InstallerWorkflows extends InstallerBase implements InstallerRemovableInte
         $arrFields["wfh_end"]                    = array("long", true);
         $arrFields["wfh_class"]                  = array("char254", false);
         $arrFields["wfh_result"]                 = array("char20", true);
-        if(!$this->objDB->createTable("workflows_stat_wfh", $arrFields, array("wfh_id")))
+        if(!$this->objDB->createTable("workflows_stat_wfh", $arrFields, array("wfh_id"), array('wfh_start', 'wfh_result')))
             $strReturn .= "An error occured! ...\n";
 
         $strReturn .= "Updating module-versions...\n";

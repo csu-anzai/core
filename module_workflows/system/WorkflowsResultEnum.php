@@ -1,25 +1,12 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2004-2006 by MulchProductions, www.mulchprod.de                                                 *
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
+*   (c) 2007-2017 by Kajona, www.kajona.de                                                              *
 *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-*-------------------------------------------------------------------------------------------------------*
-*	$Id$					    *
 ********************************************************************************************************/
 
 namespace Kajona\Workflows\System;
 
-use Kajona\System\System\AdminListableInterface;
-use Kajona\System\System\Carrier;
 use Kajona\System\System\EnumBase;
-use Kajona\System\System\Exception;
-use Kajona\System\System\OrmComparatorEnum;
-use Kajona\System\System\OrmCondition;
-use Kajona\System\System\OrmObjectlist;
-use Kajona\System\System\OrmObjectlistOrderby;
-use Kajona\System\System\OrmPropertyCondition;
-use Kajona\System\System\OrmPropertyInCondition;
-use Kajona\System\System\ServiceProvider;
 
 
 /**
@@ -30,6 +17,7 @@ use Kajona\System\System\ServiceProvider;
  *
  * @method static WorkflowsResultEnum INACTIVE()
  * @method static WorkflowsResultEnum LOCKED()
+ * @method static WorkflowsResultEnum PROCESSED_BY_OTHER_THREAD()
  * @method static WorkflowsResultEnum EXECUTE_FINISHED()
  * @method static WorkflowsResultEnum EXECUTE_SCHEDULED()
  */
@@ -43,6 +31,6 @@ class WorkflowsResultEnum extends EnumBase
      */
     protected function getArrValues()
     {
-        return ["INACTIVE", "LOCKED", "EXECUTE_FINISHED", "EXECUTE_SCHEDULED"];
+        return ["INACTIVE", "LOCKED", "EXECUTE_FINISHED", "EXECUTE_SCHEDULED", "PROCESSED_BY_OTHER_THREAD"];
     }
 }

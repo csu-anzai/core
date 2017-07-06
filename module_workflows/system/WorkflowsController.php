@@ -63,7 +63,6 @@ class WorkflowsController
         Logger::getInstance(self::STR_LOGFILE)->info("scheduling workflows, count: ".count($arrWorkflows));
 
         foreach ($arrWorkflows as $objOneWorkflow) {
-
             if ($objOneWorkflow->getIntRecordStatus() == 0) {
                 Logger::getInstance(self::STR_LOGFILE)->warning("workflow ".$objOneWorkflow->getSystemid()." is inactive, can't be scheduled");
                 continue;
@@ -116,8 +115,6 @@ class WorkflowsController
         Logger::getInstance(self::STR_LOGFILE)->info("running workflows, count: ".count($arrWorkflows));
 
 
-
-
         foreach ($arrWorkflows as $objOneWorkflow) {
             $strWfRunId = generateSystemid();
 
@@ -145,6 +142,10 @@ class WorkflowsController
             //so skip if the wf-state is either no longer scheduled or the nr of executions differ
             $arrRow = Carrier::getInstance()->getObjDB()->getPRow("SELECT * FROM "._dbprefix_."workflows WHERE workflows_id = ?", array($objOneWorkflow->getSystemid()), 0, false);
             if ($arrRow["workflows_state"] != WorkflowsWorkflow::$INT_STATE_SCHEDULED || $arrRow["workflows_runs"] != $objOneWorkflow->getIntRuns()) {
+                $objDb->_pQuery(
+                    "INSERT INTO "._dbprefix_."workflows_stat_wfh (wfh_id, wfh_wfc, wfh_start, wfh_end, wfh_class, wfh_result) VALUES (?,?,?,?,?,?)",
+                    [$strWfRunId, $this->strProcessId, new Date(), new Date(), $objOneWorkflow->getStrClass(), WorkflowsResultEnum::PROCESSED_BY_OTHER_THREAD()]
+                );
                 Logger::getInstance(self::STR_LOGFILE)->info("skipping workflow ".$objOneWorkflow->getSystemid().", seems it was executed in the meantime");
                 continue;
             }
