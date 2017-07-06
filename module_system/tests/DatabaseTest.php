@@ -412,7 +412,7 @@ SQL;
 
     /**
      * @dataProvider dataPostgresProcessQueryProvider
-     * @covers DbPostgres::processQuery()
+     * @covers \Kajona\System\System\Db\::processQuery
      */
     public function testPostgresProcessQuery($strExpect, $strQuery)
     {
