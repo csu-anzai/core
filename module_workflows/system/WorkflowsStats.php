@@ -5,7 +5,9 @@
 ********************************************************************************************************/
 
 namespace Kajona\Workflows\System;
+
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Database;
 use Kajona\System\System\Date;
 
 /**
@@ -18,6 +20,20 @@ class WorkflowsStats
 {
 
     /**
+     * @var Database
+     */
+    private $objDb = null;
+
+    /**
+     * WorkflowsStats constructor.
+     */
+    public function __construct()
+    {
+        $this->objDb = Carrier::getInstance()->getObjDB();
+    }
+
+
+    /**
      * Fetches all controller runs for a date
      * @param Date $objDate
      * @param int $intStart
@@ -26,8 +42,7 @@ class WorkflowsStats
      */
     public function getControllerForDate(Date $objDate, int $intStart, int $intEnd): array
     {
-        $objDb = Carrier::getInstance()->getObjDB();
-        return $objDb->getPArray(
+        return $this->objDb->getPArray(
             "SELECT controller.*, (SELECT COUNT(*) AS anz FROM "._dbprefix_."workflows_stat_wfh WHERE wfh_wfc = controller.wfc_id ) as anzhandler FROM "._dbprefix_."workflows_stat_wfc AS controller WHERE wfc_start >= ? AND wfc_start <= ? ORDER BY wfc_start",
             [$objDate->setBeginningOfDay()->getLongTimestamp(), $objDate->setEndOfDay()->getLongTimestamp()],
             $intStart,
@@ -42,8 +57,7 @@ class WorkflowsStats
      */
     public function getControllerForDateCount(Date $objDate): int
     {
-        $objDb = Carrier::getInstance()->getObjDB();
-        return $objDb->getPRow(
+        return $this->objDb->getPRow(
             "SELECT COUNT(*) AS cnt FROM "._dbprefix_."workflows_stat_wfc WHERE wfc_start >= ? AND wfc_start <= ?",
             [$objDate->setBeginningOfDay()->getLongTimestamp(), $objDate->setEndOfDay()->getLongTimestamp()]
         )["cnt"];
@@ -56,8 +70,7 @@ class WorkflowsStats
      */
     public function getHandlerForController(string $strSystemid): array
     {
-        $objDb = Carrier::getInstance()->getObjDB();
-        return $objDb->getPArray(
+        return $this->objDb->getPArray(
             "SELECT * FROM "._dbprefix_."workflows_stat_wfh WHERE wfh_wfc = ? ORDER BY wfh_start",
             [$strSystemid]
         );
