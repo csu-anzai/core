@@ -66,6 +66,7 @@ class FlowManagerTest extends FlowTestAbstract
         $objStep = $this->objManager->getCurrentStepForModel($objModel);
 
         $this->assertInstanceOf(FlowStatus::class, $objStep);
+        $this->assertEquals(0, $objStep->getIntIndex());
     }
 
     public function testGetFlowForModel()
