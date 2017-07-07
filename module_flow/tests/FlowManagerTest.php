@@ -44,6 +44,7 @@ class FlowManagerTest extends FlowTestAbstract
         $objTransition = $arrTransitions[0];
 
         $this->assertInstanceOf(FlowTransition::class, $objTransition);
+        $this->assertEquals(1, $objTransition->getTargetStatus()->getIntIndex());
     }
 
     public function testGetNextTransitionForModel()
@@ -54,6 +55,7 @@ class FlowManagerTest extends FlowTestAbstract
         $objTransition = $this->objManager->getNextTransitionForModel($objModel);
 
         $this->assertInstanceOf(FlowTransition::class, $objTransition);
+        $this->assertEquals(1, $objTransition->getTargetStatus()->getIntIndex());
     }
 
     public function testGetCurrentStepForModel()
