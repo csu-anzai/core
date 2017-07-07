@@ -20,6 +20,7 @@ use Kajona\System\System\EnumBase;
  * @method static WorkflowsResultEnum PROCESSED_BY_OTHER_THREAD()
  * @method static WorkflowsResultEnum EXECUTE_FINISHED()
  * @method static WorkflowsResultEnum EXECUTE_SCHEDULED()
+ * @method static WorkflowsResultEnum EXCEPTION()
  */
 class WorkflowsResultEnum extends EnumBase
 {
@@ -31,6 +32,6 @@ class WorkflowsResultEnum extends EnumBase
      */
     protected function getArrValues()
     {
-        return ["INACTIVE", "LOCKED", "EXECUTE_FINISHED", "EXECUTE_SCHEDULED", "PROCESSED_BY_OTHER_THREAD"];
+        return ["INACTIVE", "LOCKED", "EXECUTE_FINISHED", "EXECUTE_SCHEDULED", "PROCESSED_BY_OTHER_THREAD", "EXCEPTION"];
     }
 }

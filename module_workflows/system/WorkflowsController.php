@@ -163,19 +163,28 @@ class WorkflowsController
             $objDb->_pQuery("INSERT INTO "._dbprefix_."workflows_stat_wfh (wfh_id, wfh_wfc, wfh_start, wfh_class) VALUES (?,?,?,?)", [$strWfRunId, $this->strProcessId, new Date(), $objOneWorkflow->getStrClass()]);
 
 
-            if ($objHandler->execute()) {
-                //handler executed successfully. shift to state 'executed'
-                $objOneWorkflow->setIntState(WorkflowsWorkflow::$INT_STATE_EXECUTED);
-                Logger::getInstance(self::STR_LOGFILE)->info(" execution finished, new state: executed");
-                $objDb->_pQuery("UPDATE "._dbprefix_."workflows_stat_wfh SET wfh_end = ?, wfh_result = ? where wfh_id = ?", [new Date(), WorkflowsResultEnum::EXECUTE_FINISHED(), $strWfRunId]);
-            }
-            else {
-                //handler failed to execute. reschedule.
+            try {
+                if ($objHandler->execute()) {
+                    //handler executed successfully. shift to state 'executed'
+                    $objOneWorkflow->setIntState(WorkflowsWorkflow::$INT_STATE_EXECUTED);
+                    Logger::getInstance(self::STR_LOGFILE)->info(" execution finished, new state: executed");
+                    $objDb->_pQuery("UPDATE "._dbprefix_."workflows_stat_wfh SET wfh_end = ?, wfh_result = ? where wfh_id = ?", [new Date(), WorkflowsResultEnum::EXECUTE_FINISHED(), $strWfRunId]);
+                } else {
+                    //handler failed to execute. reschedule.
+                    $objHandler->schedule();
+                    $objOneWorkflow->setIntState(WorkflowsWorkflow::$INT_STATE_SCHEDULED);
+                    Logger::getInstance(self::STR_LOGFILE)->info(" execution finished, new state: scheduled");
+                    $objDb->_pQuery("UPDATE "._dbprefix_."workflows_stat_wfh SET wfh_end = ?, wfh_result = ? where wfh_id = ?", [new Date(), WorkflowsResultEnum::EXECUTE_SCHEDULED(), $strWfRunId]);
+                }
+            } catch (\Exception $objEx) {
+                //fetch exceptions and reschedule the workflow - hopefully possible
+                Logger::getInstance(self::STR_LOGFILE)->error(" execution failed, message: ".$objEx->getMessage());
+                $objDb->_pQuery("UPDATE "._dbprefix_."workflows_stat_wfh SET wfh_end = ?, wfh_result = ? where wfh_id = ?", [new Date(), WorkflowsResultEnum::EXCEPTION(), $strWfRunId]);
                 $objHandler->schedule();
                 $objOneWorkflow->setIntState(WorkflowsWorkflow::$INT_STATE_SCHEDULED);
-                Logger::getInstance(self::STR_LOGFILE)->info(" execution finished, new state: scheduled");
-                $objDb->_pQuery("UPDATE "._dbprefix_."workflows_stat_wfh SET wfh_end = ?, wfh_result = ? where wfh_id = ?", [new Date(), WorkflowsResultEnum::EXECUTE_SCHEDULED(), $strWfRunId]);
             }
+
+
 
             $objOneWorkflow->setIntRuns($objOneWorkflow->getIntRuns() + 1);
             $objOneWorkflow->updateObjectToDb();
