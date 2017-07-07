@@ -1,15 +1,14 @@
 <?php
 
-namespace Kajona\System\Tests;
+namespace Kajona\Flow\Tests;
 
 use Kajona\Flow\System\FlowConfig;
 use Kajona\Flow\System\FlowHandlerAbstract;
 use Kajona\Flow\System\FlowManager;
-use Kajona\Flow\System\FlowModelTrait;
 use Kajona\Flow\System\FlowStatus;
 use Kajona\Flow\System\FlowTransition;
 use Kajona\System\System\Model;
-use Kajona\System\System\Root;
+use Kajona\System\Tests\Testbase;
 
 class FlowManagerTest extends Testbase
 {
