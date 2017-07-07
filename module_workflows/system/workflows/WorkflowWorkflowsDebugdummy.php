@@ -7,11 +7,9 @@
 
 namespace Kajona\Workflows\System\Workflows;
 
-use Kajona\System\System\Carrier;
 use Kajona\System\System\Date;
 use Kajona\Workflows\System\WorkflowsHandlerInterface;
 use Kajona\Workflows\System\WorkflowsWorkflow;
-
 
 /**
  * Workflow to create a dbdump in a regular interval, by default configured for 24h
