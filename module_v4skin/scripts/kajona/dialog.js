@@ -1,5 +1,5 @@
 
-define('dialog', ['jquery', 'bootstrap', 'router'], function ($, bootstrap, router) {
+define('dialog', ['jquery', 'bootstrap', 'router', 'util'], function ($, bootstrap, router, util) {
 
     return /** @alias module:dialog */ function (strDialogId, intDialogType, bitDragging, bitResizing) {
         this.dialog = null;
@@ -101,11 +101,8 @@ define('dialog', ['jquery', 'bootstrap', 'router'], function ($, bootstrap, rout
                     intHeight = '';
             }
 
-            var isStackedDialog = !!(window.frameElement && window.frameElement.nodeName && window.frameElement.nodeName.toLowerCase() == 'iframe');
 
-
-
-            if (isStackedDialog) {
+            if (util.isStackedDialog()) {
                 if(this.iframeURL != null) {
                     //open the iframe in a regular popup
                     //workaround for stacked dialogs. if a modal is already opened, the second iframe is loaded in a popup window.
@@ -137,7 +134,7 @@ define('dialog', ['jquery', 'bootstrap', 'router'], function ($, bootstrap, rout
             }
 
 
-            if(!isStackedDialog && this.bitLarge) {
+            if(!util.isStackedDialog() && this.bitLarge) {
                 $('#' + this.containerId+" .modal-dialog").addClass("modal-lg-lg");
 
                 $('#' + this.containerId).on('hidden.bs.modal', function (e) {

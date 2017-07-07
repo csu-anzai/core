@@ -76,10 +76,12 @@
             <div class="sidebar-nav" id="moduleNavigation">
             </div>
             <script type="text/javascript">
-              require(['moduleNavigation'], function(mNavi) {
-                    mNavi.loadNavigation();
-              });
-                </script>
+                require(['util', 'moduleNavigation'], function(util, mNavi) {
+                    if (!util.isStackedDialog()) {
+                        mNavi.loadNavigation();
+                    }
+                });
+            </script>
 
         </div>
 

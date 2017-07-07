@@ -74,6 +74,14 @@ define('util', ['jquery'], function ($) {
     };
 
     /**
+     * Detects if the current viewport is embedded in an iframe or a popup
+     * @returns {boolean}
+     */
+    util.isStackedDialog = function() {
+        return !!(window.frameElement && window.frameElement.nodeName && window.frameElement.nodeName.toLowerCase() == 'iframe');
+    };
+
+    /**
      * Used to show/hide an html element
      *
      * @param {String} strElementId

@@ -26,6 +26,11 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
         },
 
         pollMessageCount : function() {
+
+            if(util.isStackedDialog()) {
+                return;
+            }
+
             messaging.getUnreadCount(function (intCount) {
                 msg.updateCountInfo(intCount);
             });
