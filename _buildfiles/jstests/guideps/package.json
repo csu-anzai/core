@@ -6,6 +6,7 @@
   "license": "LGPL-2.1",
   "dependencies": {
     "protractor": "^5.1.2",
-    "protractor-screenshoter-plugin": "0.3.2"
+    "protractor-screenshoter-plugin": "0.3.2",
+    "jasmine-spec-reporter": "^4.1.1"
   }
 }

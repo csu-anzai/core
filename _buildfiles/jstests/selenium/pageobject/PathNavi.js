@@ -8,8 +8,8 @@ const BasePage = requireHelper('/pageobject/base/BasePage.js');
 
 
 /** Constants */
-const PATHCONTAINER = by.css("div.pathNaviContainer");
-const BREADCRUMP = by.css("ul.breadcrumb");
+const PATHCONTAINER = By.css("div.pathNaviContainer");
+const BREADCRUMP = By.css("ul.breadcrumb");
 
 /**
  *
@@ -32,7 +32,7 @@ class PathNavi extends BasePage {
     }
 
     /**
-     *
+     * @returns {WebElementPromise|!webdriver.WebElement}
      */
     get element_breadCrumb() {
         this.elemPathNavi.findElement(BREADCRUMP);

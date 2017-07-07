@@ -3,3 +3,4 @@ vendor/
 .vagrant/
 *.phar
 _buildfiles/jstests/node_modules
+_buildfiles/jstests/guideps/node_modules

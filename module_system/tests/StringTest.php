@@ -8,10 +8,6 @@ use Kajona\System\System\StringUtil;
 class StringTest extends Testbase
 {
 
-    public function testStringTest()
-    {
-    }
-
     public function testStrToDate()
     {
         $strString = "";

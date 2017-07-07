@@ -10,8 +10,8 @@ const ListPagination = requireHelper('/pageobject/list/ListPagination.js');
 
 
 /** Constants */
-const LIST = by.css(".table.admintable");
-const LIST_ROWS = by.css("tbody > tr:not([data-systemid='batchActionSwitch'])");
+const LIST = By.css(".table.admintable");
+const LIST_ROWS = By.css("tbody > tr:not([data-systemid='batchActionSwitch'])");
 
 
 /**
@@ -21,15 +21,6 @@ class List extends MainContent {
 
     constructor() {
         super();
-
-        /** @type {webdriver.promise.Promise<ListRow[]>} */
-        this._arrListRows = this._createListRows();
-
-        /** @type {ListBatchActionRow} */
-        this._listBatchActionRow = new ListBatchActionRow(this.elementList);
-
-        /** @type {ListPagination} */
-        this._listPagination = new ListPagination(this.elementList);
     }
 
     /**
@@ -42,27 +33,34 @@ class List extends MainContent {
 
     /**
      *
-     * @returns {webdriver.promise.Promise<WebElement[]>}
+     * @returns {WebElement[]}
      */
-    get elementsListRows () {
-        return this.elementList.findElements(LIST_ROWS);
+    async elementsListRows () {
+        return await this.elementList.findElements(LIST_ROWS);
     }
 
     /**
      *
      * @returns {ListPagination}
      */
-    getPagination() {
-        return this._listPagination;
+    async getPagination() {
+        let listElement = await this.elementList;
+        return new ListPagination(listElement);
     }
 
 
     /**
      *
-     * @returns {webdriver.promise.Promise<ListRow[]>}
+     * @returns {ListRow[]}
      */
-    getArrListRows() {
-        return this._arrListRows;
+    async getArrListRows() {
+        let arrElemRows = await this.elementsListRows();
+
+        let arrListRows = [];
+        for(let i = 0; i<arrElemRows.length; i++) {
+            arrListRows.push(new ListRow(arrElemRows[i]));
+        }
+        return arrListRows;
     }
 
 
@@ -70,22 +68,9 @@ class List extends MainContent {
      *
      * @returns {ListBatchActionRow}
      */
-    getBatchActionRow() {
-        return this._listBatchActionRow;
-    }
-
-    /**
-     *
-     * @returns {webdriver.promise.Promise<ListRow[]>}
-     */
-    _createListRows() {
-        return this.elementsListRows.then(function(arrElemRows) {
-            let arrListRows = [];
-            for(let i = 0; i<arrElemRows.length; i++) {
-                arrListRows.push(new ListRow(arrElemRows[i]));
-            }
-            return arrListRows;
-        });
+    async getBatchActionRow() {
+        let listElement = await this.elementList;
+        return new ListBatchActionRow(listElement);
     }
 }
 

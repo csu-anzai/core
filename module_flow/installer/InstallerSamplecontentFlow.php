@@ -7,10 +7,6 @@
 
 namespace Kajona\Flow\Installer;
 
-use Kajona\Flow\System\FlowConfig;
-use Kajona\Flow\System\FlowStatus;
-use Kajona\Flow\System\FlowTransition;
-use Kajona\News\System\NewsNews;
 use Kajona\System\System\SamplecontentInstallerInterface;
 
 /**

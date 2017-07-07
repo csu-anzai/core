@@ -75,7 +75,7 @@ abstract class FlowActionAbstract extends Model implements ModelInterface, Admin
      */
     public function getStrIcon()
     {
-        return "icon_szenario";
+        return "icon_play";
     }
 
     /**

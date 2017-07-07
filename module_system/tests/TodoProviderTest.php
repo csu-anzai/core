@@ -13,6 +13,10 @@ class TodoProviderTest extends Testbase
         $arrPlugins = $objPluginManager->getPlugins();
         $arrNames = array();
 
+        if(count($arrNames) === 0) {
+            $this->markTestSkipped("No todo providers found");
+        }
+
         foreach ($arrPlugins as $objPlugin) {
             // get all categories
 

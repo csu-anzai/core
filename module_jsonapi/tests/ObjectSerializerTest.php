@@ -3,12 +3,10 @@
 namespace Kajona\Jsonapi\Tests;
 
 use Kajona\Jsonapi\System\ObjectSerializer;
-use Kajona\News\System\NewsNews;
-use Kajona\System\System\Date;
 use Kajona\System\System\MessagingMessage;
-use Kajona\System\System\SystemAspect;
+use PHPUnit\Framework\TestCase;
 
-class ObjectSerializerTest extends \PHPUnit_Framework_TestCase
+class ObjectSerializerTest extends TestCase
 {
     public function testSerialize()
     {

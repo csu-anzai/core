@@ -18,6 +18,7 @@ use Kajona\System\System\Link;
 use Kajona\System\System\Lockmanager;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
+use Kajona\System\System\ServiceLifeCycleFactory;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\VersionableInterface;
@@ -33,6 +34,12 @@ abstract class AdminSimple extends AdminController
 {
 
     private $strPeAddon = "";
+
+    /**
+     * @inject system_life_cycle_factory
+     * @var ServiceLifeCycleFactory
+     */
+    protected $objLifeCycleFactory;
 
     /**
      * @param string $strSystemid
@@ -126,9 +133,7 @@ abstract class AdminSimple extends AdminController
     {
         $objRecord = $this->objFactory->getObject($this->getSystemid());
         if ($objRecord != null && $objRecord->rightDelete()) {
-            if (!$objRecord->deleteObject()) {
-                throw new Exception("error deleting object ".strip_tags($objRecord->getStrDisplayName()), Exception::$level_ERROR);
-            }
+            $this->objLifeCycleFactory->factory(get_class($objRecord))->delete($objRecord);
 
             $strTargetUrl = urldecode($this->getParam("reloadUrl"));
 
@@ -170,9 +175,7 @@ abstract class AdminSimple extends AdminController
     {
         $objRecord = $this->objFactory->getObject($this->getSystemid());
         if ($objRecord != null && $objRecord->rightEdit()) {
-            if (!$objRecord->copyObject()) {
-                throw new Exception("error creating a copy of object ".strip_tags($objRecord->getStrDisplayName()), Exception::$level_ERROR);
-            }
+            $this->objLifeCycleFactory->factory(get_class($objRecord))->copy($objRecord);
 
             $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), $this->getActionNameForClass("list", $objRecord), "&systemid=".$objRecord->getPrevId()));
         }
@@ -690,10 +693,6 @@ abstract class AdminSimple extends AdminController
 
         if (is_array($arrActions) && count($arrActions) == 0) {
             return "";
-        }
-
-        if (is_array($arrActions) && count($arrActions) == 1) {
-            return $arrActions[0];
         }
 
         //create a menu and merge all buttons

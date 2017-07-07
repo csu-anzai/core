@@ -46,6 +46,38 @@ class DatabaseTest extends Testbase
         $this->assertTrue(in_array(_dbprefix_ . "temp_autotest_new", Carrier::getInstance()->getObjDB()->getTables()));
     }
 
+    public function testCreateIndex()
+    {
+        $objDb = Carrier::getInstance()->getObjDB();
+        $this->createTable();
+
+        $bitResult = $objDb->createIndex("temp_autotest", "foo_index", ["temp_char10", "temp_char20"]);
+
+        $this->assertTrue($bitResult);
+    }
+
+    public function testCreateUnqiueIndex()
+    {
+        $objDb = Carrier::getInstance()->getObjDB();
+        $this->createTable();
+
+        $bitResult = $objDb->createIndex("temp_autotest", "foo_index", ["temp_char10", "temp_char20"], true);
+
+        $this->assertTrue($bitResult);
+    }
+
+    public function testHasIndex()
+    {
+        $objDb = Carrier::getInstance()->getObjDB();
+        $this->createTable();
+
+        $this->assertFalse($objDb->hasIndex("temp_autotest", "foo_index"));
+
+        $bitResult = $objDb->createIndex("temp_autotest", "foo_index", ["temp_char10", "temp_char20"]);
+
+        $this->assertTrue($objDb->hasIndex("temp_autotest", "foo_index"));
+        $this->assertTrue($bitResult);
+    }
 
     public function testFloatHandling()
     {
@@ -380,7 +412,7 @@ SQL;
 
     /**
      * @dataProvider dataPostgresProcessQueryProvider
-     * @covers DbPostgres::processQuery()
+     * @covers \Kajona\System\System\Db\DbPostgres::processQuery
      */
     public function testPostgresProcessQuery($strExpect, $strQuery)
     {

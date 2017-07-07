@@ -13,8 +13,6 @@ use Kajona\Dashboard\Admin\Widgets\AdminwidgetSystemlog;
 use Kajona\Dashboard\Admin\Widgets\AdminwidgetTodo;
 use Kajona\Dashboard\Admin\Widgets\AdminwidgetUpdatecheck;
 use Kajona\Dashboard\System\DashboardWidget;
-use Kajona\Pages\Admin\Widgets\AdminwidgetLastmodifiedpages;
-use Kajona\Stats\Admin\Widgets\AdminwidgetStats;
 use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemModule;
 
@@ -38,15 +36,6 @@ class DashboardInitializerService
 
         if (SystemAspect::getAspectByName("content") !== null) {
             $strContentAspectId = SystemAspect::getAspectByName("content")->getSystemid();
-
-            if (SystemModule::getModuleByName("pages") !== null) {
-                $objDashboard = new DashboardWidget();
-                $objDashboard->setStrColumn("column1");
-                $objDashboard->setStrUser($strUserid);
-                $objDashboard->setStrClass(AdminwidgetLastmodifiedpages::class);
-                $objDashboard->setStrContent(serialize(["nrofrows" => "4"]));
-                $objDashboard->updateObjectToDb(DashboardWidget::getWidgetsRootNodeForUser($strUserid, $strContentAspectId));
-            }
 
             $objDashboard = new DashboardWidget();
             $objDashboard->setStrColumn("column2");

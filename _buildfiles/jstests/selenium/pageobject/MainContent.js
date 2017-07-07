@@ -7,7 +7,7 @@ const BasePage = requireHelper('/pageobject/base/BasePage.js');
 
 
 /** Constants */
-const MAINCONTENT = by.css("div#content");
+const MAINCONTENT = By.css("div#content");
 
 /**
  *

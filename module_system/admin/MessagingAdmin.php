@@ -547,16 +547,14 @@ JS;
      *
      * @permissions view
      * @autoTestable
-     *
-     * @deprecated
-     *
-     * @return string
+     **
+     * @responseType json
      */
     protected function actionGetUnreadMessagesCount()
     {
         Carrier::getInstance()->getObjSession()->setBitBlockDbUpdate(true);
         Session::getInstance()->sessionClose();
-        return "<messageCount>".MessagingMessage::getNumberOfMessagesForUser($this->objSession->getUserID(), true)."</messageCount>";
+        return json_encode(MessagingMessage::getNumberOfMessagesForUser($this->objSession->getUserID(), true));
     }
 
     /**

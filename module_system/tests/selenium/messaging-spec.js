@@ -6,57 +6,65 @@ const SeleniumWaitHelper = requireHelper('/util/SeleniumWaitHelper.js');
 
 describe('module_messaging', function() {
 
-    it('test list', function() {
-        SeleniumUtil.gotToUrl('index.php?admin=1&module=messaging&action=list');
+    it('test list', async function() {
+        await SeleniumUtil.gotToUrl('index.php?admin=1&module=messaging&action=list');
 
-        element.all(by.css('.actions')).last().$('a').click();
-
-        SeleniumUtil.switchToModalDialog();
+        await element.all(by.css('.actions')).last().$('a').click();
+        await SeleniumUtil.switchToModalDialog();
 
         // enter a new message to the form
-        browser.driver.findElement(by.id('messaging_user')).sendKeys('test');
+        let inputUser = await SeleniumWaitHelper.getElementWhenPresent(by.id('messaging_user'));
+        let inputTitle = await SeleniumWaitHelper.getElementWhenPresent(by.id('messaging_title'));
+        let inputBody = await SeleniumWaitHelper.getElementWhenPresent(by.id('messaging_body'));
+        let buttonSubmit = await SeleniumWaitHelper.getElementWhenPresent(by.css('button[type="submit"]'));
+
+        await inputUser.sendKeys('test');
 
         // select user from autocomplete
-        browser.driver.wait(protractor.until.elementLocated(by.css('.ui-autocomplete .ui-menu-item')), 5000);
-        browser.driver.findElement(by.css('.ui-autocomplete .ui-menu-item')).click();
+        let autoCompleteEntry = await SeleniumWaitHelper.getElementWhenPresent(by.css('.ui-autocomplete .ui-menu-item'));
+        await autoCompleteEntry.click();
 
-        browser.driver.findElement(by.id('messaging_title')).sendKeys('foo');
-        browser.driver.findElement(by.id('messaging_body')).sendKeys('bar');
-        browser.driver.findElement(by.css('button[type="submit"]')).click();
+        await inputTitle.sendKeys('foo');
+        await inputBody.sendKeys('bar');
+        await buttonSubmit.click();
 
-        expect(browser.driver.findElement(by.id('content')).getText()).toMatch('Die Nachricht wurde erfolgreich verschickt.');
+        let elementContent = await SeleniumWaitHelper.getElementWhenPresent(by.id('content'));
+        expect(elementContent.getText()).toMatch('Die Nachricht wurde erfolgreich verschickt.');
 
-        browser.driver.findElement(by.css('button[type="submit"]')).click();
-        browser.driver.switchTo().defaultContent();
+        let buttonOK = await SeleniumWaitHelper.getElementWhenPresent(by.css('button[type="submit"]'));
+        await buttonOK.click();
+        await browser.driver.switchTo().defaultContent();
     });
 
-    it('provides config page', function() {
-
+    it('provides config page', async function() {
         let mailConfigUrl = "index.php?admin=1&module=messaging&action=config";
         let enableInputLocator = By.id('Kajona-Packagemanager-System-Messageproviders-MessageproviderPackageupdate_enabled');
         let mailInputLocator = By.id('Kajona-Packagemanager-System-Messageproviders-MessageproviderPackageupdate_bymail');
         let mailButtonLocator = By.css('.bootstrap-switch-id-Kajona-Packagemanager-System-Messageproviders-MessageproviderPackageupdate_bymail');
 
-        SeleniumUtil.gotToUrl(mailConfigUrl);
+        await SeleniumUtil.gotToUrl(mailConfigUrl);
 
         // check the default values
-        SeleniumWaitHelper.getElementWhenPresent(SeleniumUtil.getWebDriver(), mailInputLocator);
-        expect(browser.driver.findElement(enableInputLocator).getAttribute('checked')).not.toBe(null);
-        expect(browser.driver.findElement(mailInputLocator).getAttribute('checked')).toBe(null);
 
-        browser.driver.wait(protractor.until.elementLocated(mailButtonLocator), 5000);
+        let activeElement = await SeleniumWaitHelper.getElementWhenPresent(enableInputLocator);
+        let mailElement =  await SeleniumWaitHelper.getElementWhenPresent(mailInputLocator);
+        expect(activeElement.getAttribute('checked')).not.toBe(null);
+        expect(mailElement.getAttribute('checked')).toBe(null);
 
         // click the enable button
-        browser.driver.findElement(mailButtonLocator).click();
-        expect(browser.driver.findElement(mailInputLocator).getAttribute('checked')).not.toBe(null);
+        let mailButton = await SeleniumWaitHelper.getElementWhenPresent(mailButtonLocator);
+        await mailButton.click();
+        mailElement =  await SeleniumWaitHelper.getElementWhenPresent(mailInputLocator);
+        expect(mailElement.getAttribute('checked')).not.toBe(null);
 
         // refresh
-        SeleniumUtil.gotToUrl(mailConfigUrl);
+        await SeleniumUtil.gotToUrl(mailConfigUrl);
 
         // and revalidate if the ajax request worked as specified
-        SeleniumWaitHelper.getElementWhenPresent(SeleniumUtil.getWebDriver(), mailInputLocator);
-        expect(browser.driver.findElement(enableInputLocator).getAttribute('checked')).not.toBe(null);
-        expect(browser.driver.findElement(mailInputLocator).getAttribute('checked')).not.toBe(null);
+        activeElement = await SeleniumWaitHelper.getElementWhenPresent(enableInputLocator);
+        mailElement =  await SeleniumWaitHelper.getElementWhenPresent(mailInputLocator);
+        expect(activeElement.getAttribute('checked')).not.toBe(null);
+        expect(mailElement.getAttribute('checked')).not.toBe(null);
     });
 
 });

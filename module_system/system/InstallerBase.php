@@ -10,7 +10,6 @@
 namespace Kajona\System\System;
 
 use Kajona\Packagemanager\System\PackagemanagerMetadata;
-use Kajona\Pages\System\PagesElement;
 
 /**
  * Base class for all installers. Provides some needed function to avoid multiple

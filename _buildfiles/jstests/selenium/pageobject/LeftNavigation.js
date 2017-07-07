@@ -9,8 +9,8 @@ const SeleniumWaitHelper = requireHelper('/util/SeleniumWaitHelper.js');
 /** Constants */
 const LEFTNAVIGATION_XPATH_NAVIGATION = ".//*[@id='moduleNavigation']";
 
-const NAVIGATION = by.xpath(LEFTNAVIGATION_XPATH_NAVIGATION);
-const NAVIGATION_HAMBURGER = by.xpath(".//*[@data-toggle='offcanvas']");//visible when page width < 932px
+const NAVIGATION = By.xpath(LEFTNAVIGATION_XPATH_NAVIGATION);
+const NAVIGATION_HAMBURGER = By.xpath(".//*[@data-toggle='offcanvas']");//visible when page width < 932px
 
 
 /**
@@ -44,43 +44,38 @@ class LeftNavigation extends BasePage {
      *
      * @returns {*}
      */
-    showNavigation() {
-        var context = this;
+    async showNavigation() {
+        let isMenuDisplayed = await this.isNavigationDisplayed();
 
-        return this.isNavigationDisplayed().then(function(isMenuDisplayed) {
-
-            //if menu is not displayed, check if there is a hamburger element and click it
-            if(!isMenuDisplayed) {
-                context.isNavigationHamburgerDisplayed().then(function(isHamburgerMenuVisible) {
-                    if(isHamburgerMenuVisible) {
-                        context.element_navigationHamburger.click();
-                    }
-                });
+        //if menu is not displayed, check if there is a hamburger element and click it
+        if(!isMenuDisplayed) {
+            let isHamburgerMenuVisible = await this.isNavigationHamburgerDisplayed();
+            if(isHamburgerMenuVisible) {
+                await this.element_navigationHamburger.click();
             }
-        });
+        }
     }
 
     /**
      * Checks if the hamburger element to open/close the navigation is present
      *
-     * @returns {webdriver.promise.Promise<boolean>}
+     * @returns {boolean}
      */
-    isNavigationHamburgerDisplayed() {
-        return this.element_navigationHamburger.isDisplayed();
+    async isNavigationHamburgerDisplayed() {
+        return await this.element_navigationHamburger.isDisplayed();
     }
 
     /**
      * Checks if the navigation is displayed
      *
-     * @returns {Promise<boolean>}
+     * @returns {boolean}
      */
-    isNavigationDisplayed() {
-        var strPath = LEFTNAVIGATION_XPATH_NAVIGATION + "/../../..";
+    async isNavigationDisplayed() {
+        let strPath = LEFTNAVIGATION_XPATH_NAVIGATION + "/../../..";
 
         //if element has class active -> menu is displayed
-        return this.webDriver.findElement(By.xpath(strPath)).getAttribute("class").then(function (strValue) {
-            return strValue.indexOf("active") !== -1
-        });
+        let strValue = await this.webDriver.findElement(By.xpath(strPath)).getAttribute("class");
+        return strValue.indexOf("active") !== -1
     }
 
 
@@ -88,11 +83,11 @@ class LeftNavigation extends BasePage {
      * Gets a module from the navigation with the given name
      *
      * @param {string} strMenuName
-     * @returns {WebElementPromise|!webdriver.WebElement}
+     * @returns {webdriver.WebElement}
      */
-    getNavigationModule(strMenuName) {
-        var strPathMenu = LEFTNAVIGATION_XPATH_NAVIGATION + "//*[contains(concat(' ', @class, ' '), ' panel-heading ')]/a[contains(text(), '" + strMenuName + "')]";
-        return SeleniumWaitHelper.getElementWhenDisplayed(this.webDriver, By.xpath(strPathMenu));
+    async getNavigationModule(strMenuName) {
+        let strPathMenu = LEFTNAVIGATION_XPATH_NAVIGATION + "//*[contains(concat(' ', @class, ' '), ' panel-heading ')]/a[contains(text(), '" + strMenuName + "')]";
+        return await SeleniumWaitHelper.getElementWhenDisplayed(By.xpath(strPathMenu));
     }
 
     /**
@@ -101,22 +96,20 @@ class LeftNavigation extends BasePage {
      * @param {string} strMenuName
      * @returns {Promise<boolean>}
      */
-    isNavigationModuleOpened(strMenuName) {
-        return this.getNavigationModule(strMenuName).then(function (menuElement) {
+    async isNavigationModuleOpened(strMenuName) {
+        let menuElement = await this.getNavigationModule(strMenuName);
 
-            return menuElement.getAttribute("class").then(function (strValueclass) {
-                if (strValueclass === null || strValueclass.indexOf("collapsed") > -1) {
-                    return false;
-                }
-                else if (strValueclass === "") {
-                    return menuElement.getAttribute("aria-expanded").then(function (strValueAria) {
-                        return (strValueAria === "true");
-                    });
-                }
+        let strValueclass = await menuElement.getAttribute("class");
 
-                return true;
-            });
-        });
+        if (strValueclass === null || strValueclass.indexOf("collapsed") > -1) {
+            return false;
+        }
+        else if (strValueclass === "") {
+            let strValueAria = await menuElement.getAttribute("aria-expanded");
+            return (strValueAria === "true");
+        }
+
+        return true;
     }
 
     /**
@@ -125,20 +118,14 @@ class LeftNavigation extends BasePage {
      * @param {string} strMenuName
      * @returns {*}
      */
-    openNavigationModule(strMenuName) {
-        var context = this;
+    async openNavigationModule(strMenuName) {
+        await this.showNavigation();
 
-        return this.showNavigation().then(function () {
-
-            context.isNavigationModuleOpened(strMenuName).then(function(isModuleMenuOpened) {
-                if(!isModuleMenuOpened) {
-                    context.getNavigationModule(strMenuName).then(function (menuElement) {
-                        menuElement.click();
-                    });
-                }
-            });
-
-        });
+        let isModuleMenuOpened = await this.isNavigationModuleOpened(strMenuName);
+        if(!isModuleMenuOpened) {
+            let menuElement = await this.getNavigationModule(strMenuName);
+            menuElement.click();
+        }
     };
 
 
@@ -148,14 +135,11 @@ class LeftNavigation extends BasePage {
      * @param {string} strMenuName
      * @returns {*}
      */
-    getNavigationModuleLinks(strMenuName) {
-        var context = this;
+    async getNavigationModuleLinks(strMenuName) {
+        await this.openNavigationModule(strMenuName);
 
-        return this.openNavigationModule(strMenuName)
-            .then(function () {
-                var strPathToLinks = LEFTNAVIGATION_XPATH_NAVIGATION + "//*[contains(concat(' ', @class, ' '), ' panel-heading ')]/a[contains(text(), '" + strMenuName + "')]/../..//li[a[contains(concat(' ', @class, ' '), ' adminnavi ')]]";
-                return SeleniumWaitHelper.getElementsWhenPresent(context.webDriver, By.xpath(strPathToLinks));
-            });
+        let strPathToLinks = LEFTNAVIGATION_XPATH_NAVIGATION + "//*[contains(concat(' ', @class, ' '), ' panel-heading ')]/a[contains(text(), '" + strMenuName + "')]/../..//li[a[contains(concat(' ', @class, ' '), ' adminnavi ')]]";
+        return await SeleniumWaitHelper.getElementsWhenPresent(By.xpath(strPathToLinks));
     };
 
 
@@ -165,15 +149,12 @@ class LeftNavigation extends BasePage {
      * @param {integer} intLinkPosition
      * @returns {*}
      */
-    getModuleMenuLink(strMenuName, intLinkPosition) {
-        var context = this;
+    async getModuleMenuLink(strMenuName, intLinkPosition) {
+        await this.openNavigationModule(strMenuName);
 
-        return this.openNavigationModule(strMenuName).then(function () {
-            var strPathToLinks = LEFTNAVIGATION_XPATH_NAVIGATION + "//*[contains(concat(' ', @class, ' '), ' panel-heading ')]/a[contains(text(), '" + strMenuName + "')]/../..//li[a[contains(concat(' ', @class, ' '), ' adminnavi ')]][" + intLinkPosition + "]";
-            return SeleniumWaitHelper.getElementWhenDisplayed(context.webDriver, By.xpath(strPathToLinks));
-        });
+        let strPathToLinks = LEFTNAVIGATION_XPATH_NAVIGATION + "//*[contains(concat(' ', @class, ' '), ' panel-heading ')]/a[contains(text(), '" + strMenuName + "')]/../..//li[a[contains(concat(' ', @class, ' '), ' adminnavi ')]][" + intLinkPosition + "]";
+        return await SeleniumWaitHelper.getElementWhenDisplayed(By.xpath(strPathToLinks));
     }
-
 }
 
 

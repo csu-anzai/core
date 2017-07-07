@@ -2,10 +2,9 @@
 
 namespace Kajona\Tags\Tests;
 
-use Kajona\Pages\System\PagesFolder;
-use Kajona\Pages\System\PagesPage;
 use Kajona\System\System\SystemAspect;
-use Kajona\System\System\SystemModule;
+use Kajona\System\System\UserGroup;
+use Kajona\System\System\UserUser;
 use Kajona\System\Tests\Testbase;
 use Kajona\Tags\System\TagsTag;
 
@@ -80,15 +79,10 @@ class TagsTest extends Testbase
 
     public function testTagAssignment()
     {
-
-        if (SystemModule::getModuleByName("pages") === null) {
-            return true;
-        }
-
         $strName = generateSystemid();
-        $arrPages = PagesPage::getAllPages();
+        $arrUsergroups = UserGroup::getObjectListFiltered();
 
-        if (count($arrPages) == 0) {
+        if (count($arrUsergroups) == 0) {
             return;
         }
 
@@ -97,14 +91,14 @@ class TagsTest extends Testbase
         $objTag->updateObjectToDb();
 
 
-        foreach ($arrPages as $objOnePage) {
+        foreach ($arrUsergroups as $objOnePage) {
             $objTag->assignToSystemrecord($objOnePage->getSystemid());
             break;
         }
 
-        $arrFolder = PagesFolder::getFolderList();
-        foreach ($arrFolder as $objOneFolder) {
-            $objTag->assignToSystemrecord($objOneFolder->getSystemid());
+        $arrUsers = UserUser::getObjectListFiltered();
+        foreach ($arrUsers as $objUser) {
+            $objTag->assignToSystemrecord($objUser->getSystemid());
             break;
         }
 
@@ -120,8 +114,8 @@ class TagsTest extends Testbase
         $arrAssignment = $objTag->getArrAssignedRecords();
         $this->assertEquals(count($arrAssignment), 2);
 
-        $this->assertTrue($arrAssignment[0] instanceof PagesPage || $arrAssignment[0] instanceof PagesFolder);
-        $this->assertTrue($arrAssignment[1] instanceof PagesPage || $arrAssignment[1] instanceof PagesFolder);
+        $this->assertTrue($arrAssignment[0] instanceof UserGroup || $arrAssignment[0] instanceof UserUser);
+        $this->assertTrue($arrAssignment[1] instanceof UserGroup || $arrAssignment[1] instanceof UserUser);
 
 
         $strOldSysid = $objTag->getSystemid();
@@ -135,8 +129,8 @@ class TagsTest extends Testbase
 
         $this->assertEquals(count($arrAssignment), 2);
 
-        $this->assertTrue($arrAssignment[0] instanceof PagesPage || $arrAssignment[0] instanceof PagesFolder);
-        $this->assertTrue($arrAssignment[1] instanceof PagesPage || $arrAssignment[1] instanceof PagesFolder);
+        $this->assertTrue($arrAssignment[0] instanceof UserGroup || $arrAssignment[0] instanceof UserUser);
+        $this->assertTrue($arrAssignment[1] instanceof UserGroup || $arrAssignment[1] instanceof UserUser);
 
         $objTag->deleteObjectFromDatabase();
     }

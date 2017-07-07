@@ -27,9 +27,13 @@ require(['router', 'jquery', 'jquery-ui', 'jquery-touchPunch', 'bootstrap', 'v4s
 
     // BC layer
 
+    /** @deprecated */
     jsDialog_0 = new Dialog('jsDialog_0', 0);
+    /** @deprecated */
     jsDialog_1 = new Dialog('jsDialog_1', 1);
+    /** @deprecated */
     jsDialog_2 = new Dialog('jsDialog_2', 2);
+    /** @deprecated */
     jsDialog_3 = new Dialog('jsDialog_3', 3);
 
     KAJONA.admin.forms.submittedEl = null;

@@ -5,26 +5,12 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
 
     var msg = {
 
-        bitFirstLoad : true,
-
         properties: null,
 
         pollMessages : function() {
-            var me = this;
-            messaging.getRecentMessages(function (objResponse) {
-                var $userNotificationsCount = $('#userNotificationsCount');
-                var oldCount = $userNotificationsCount.text();
-                $userNotificationsCount.text(objResponse.messageCount);
-                if (objResponse.messageCount > 0) {
-                    $userNotificationsCount.show();
-                    if (oldCount != objResponse.messageCount) {
-                        var strTitle = document.title.replace("(" + oldCount + ")", "");
-                        document.title = "(" + objResponse.messageCount + ") " + strTitle;
-                    }
 
-                } else {
-                    $userNotificationsCount.hide();
-                }
+            messaging.getRecentMessages(function (objResponse) {
+                msg.updateCountInfo(objResponse.messageCount);
 
                 $('#messagingShortlist').empty();
                 $.each(objResponse.messages, function (index, item) {
@@ -33,11 +19,35 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
                     else
                         $('#messagingShortlist').append("<li><a href='" + item.details + "'><i class='fa fa-envelope'></i> " + item.title + "</a></li>");
                 });
+
                 $('#messagingShortlist').append("<li class='divider'></li><li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1#/messaging'><i class='fa fa-envelope'></i> <span data-lang-property='messages:action_show_all'></span></a></li>");
                 lang.initializeProperties('#messagingShortlist');
-                window.setTimeout(msg.pollMessages, 20000);
-                messaging.bitFirstLoad = false;
             });
+        },
+
+        pollMessageCount : function() {
+            messaging.getUnreadCount(function (intCount) {
+                msg.updateCountInfo(intCount);
+            });
+
+            window.setTimeout(msg.pollMessageCount, 30000);
+        },
+
+        updateCountInfo: function(intCount) {
+            var $userNotificationsCount = $('#userNotificationsCount');
+            var oldCount = $userNotificationsCount.text();
+            $userNotificationsCount.text(intCount);
+            if (intCount > 0) {
+                $userNotificationsCount.show();
+                if (oldCount != intCount) {
+                    var strTitle = document.title.replace("(" + oldCount + ")", "");
+                    document.title = "(" + intCount + ") " + strTitle;
+                }
+
+            } else {
+                $userNotificationsCount.hide();
+            }
+
         }
     };
 
@@ -221,6 +231,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
             var me = this;
             ajax.genericAjaxCall("tags", "getFavoriteTags", "", function(data, status, jqXHR) {
                 if(status == 'success') {
+                    $('#tagsSubemenu').empty();
                     $.each($.parseJSON(data), function(index, item) {
                         $('#tagsSubemenu').append("<li><a href='"+item.url+"'><i class='fa fa-tag'></i> "+item.name+"</a></li>");
                     });
