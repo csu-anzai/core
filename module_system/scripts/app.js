@@ -17,6 +17,9 @@ require(['router', 'jquery', 'jquery-ui', 'jquery-touchPunch', 'bootstrap', 'v4s
         };
     }
 
+    KAJONA.util.dialogHelper = dialogHelper;
+    // a reference to a possible dialogHandler
+    KAJONA.util.folderviewHandler = {};
     KAJONA.admin.folderview.dialog = new Dialog('folderviewDialog', 0);
     folderview.dialog = KAJONA.admin.folderview.dialog;
 

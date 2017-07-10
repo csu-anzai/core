@@ -135,6 +135,23 @@
     </div>
 </div>
 
+<!-- folderview container -->
+<div class="modal fade" id="folderviewDialogStacked" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3 id="folderviewDialogStacked_title" class="modal-title">BROWSER</h3>
+            </div>
+            <div class="modal-body">
+                <div id="folderviewDialogStacked_loading" class="loadingContainer loadingContainerBackground"></div>
+                <div id="folderviewDialogStacked_content"><!-- filled by js --></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- modal dialog container -->
 <div class="modal fade" id="jsDialog_0">
     <div class="modal-dialog modal-lg">

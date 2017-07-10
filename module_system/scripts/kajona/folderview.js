@@ -30,10 +30,17 @@ define("folderview", ["jquery", "util"], function($, util){
          * @param {function} objCallback
          */
         selectCallback: function (arrTargetsValues, objCallback) {
+
             if (window.opener) {
                 window.opener.require('folderview').fillFormFields(arrTargetsValues);
             } else if (parent) {
-                parent.require('folderview').fillFormFields(arrTargetsValues);
+                if(parent.KAJONA.util.folderviewHandler) {
+                    parent.KAJONA.util.folderviewHandler.fillFormFields(arrTargetsValues);
+                    parent.KAJONA.util.folderviewHandler = null;
+                } else {
+                    parent.require('folderview').fillFormFields(arrTargetsValues);
+                }
+
             }
 
             if ($.isFunction(objCallback)) {
