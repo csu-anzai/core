@@ -13,6 +13,7 @@ use Kajona\System\Admin\Formentries\FormentryDivider;
 use Kajona\System\Admin\Formentries\FormentryHeadline;
 use Kajona\System\Admin\Formentries\FormentryHidden;
 use Kajona\System\Admin\Formentries\FormentryPlaintext;
+use Kajona\System\Admin\Formentries\FormentryText;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Lang;
@@ -504,7 +505,7 @@ class AdminFormgenerator
         $strReadonly = $objReflection->getAnnotationValueForProperty($strPropertyName, self::STR_READONLY_ANNOTATION);
 
         if ($strType === null) {
-            $strType = "text";
+            $strType = FormentryText::class;
         }
 
 
