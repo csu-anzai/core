@@ -10,7 +10,7 @@
 //Kajona Language Editor Core Build 398
 
 //non-editable entries
-$lang["permissions_header"]              = array(0 => "View", 1 => "Edit", 2 => "Delete", 3 => "Permissions", 4 => "Handlers", 5 => "", 6 => "", 7 => "", 8 => "");
+$lang["permissions_header"]              = array(0 => "View", 1 => "Edit", 2 => "Delete", 3 => "Permissions", 4 => "Handlers", 5 => "Stats", 6 => "", 7 => "", 8 => "");
 
 
 //editable entries
@@ -20,6 +20,7 @@ $lang["action_edit_handler"]             = "Edit default values";
 $lang["action_instantiate_handler"]      = "Create a new workflow instance";
 $lang["action_list_handlers"]            = "Workflow handlers";
 $lang["action_show_details"]             = "Show details";
+$lang["action_stats"]                    = "Statistics";
 $lang["delete_question"]                 = "Do you really want to delete the workflow &quot;<b>%%element_name%%</b>&quot;?";
 $lang["handler_instances"]               = "{0} instances";
 $lang["handler_instatiate"]              = "Do you really want to create a new instance of the handler <b>{0}</b>?";
@@ -70,3 +71,13 @@ $lang["workflow_text2"]                  = "Text 2";
 $lang["workflow_text3"]                  = "Text 3";
 $lang["workflow_trigger"]                = "Next execution";
 $lang["workflow_ui"]                     = "Show edit-form for the current step";
+$lang["stats_start"]                     = "Start";
+$lang["stats_end"]                       = "End";
+$lang["stats_duration"]                  = "Duration";
+$lang["stats_amount"]                    = "Nr. of handlers";
+$lang["stats_result"]                    = "Result";
+$lang["stats_class"]                     = "Handler";
+$lang["chart_handler"]                   = "Nr. of executed handlers";
+$lang["chart_broken"]                    = "Nr. of broken controllers";
+$lang["chart_handler_broken"]            = "Nr. of broken handlers";
+$lang["chart_processed"]                 = "Nr. of successful controllers";

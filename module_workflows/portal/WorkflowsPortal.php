@@ -51,9 +51,7 @@ class WorkflowsPortal extends PortalController implements PortalInterface
         Carrier::getInstance()->getObjSession()->setBitBlockDbUpdate(true);
         if ($this->getParam("authkey") == SystemSetting::getConfigValue("_workflows_trigger_authkey_")) {
             $objWorkflowController = new WorkflowsController();
-            $objWorkflowController->scheduleWorkflows();
-            $objWorkflowController->runWorkflows();
-
+            $objWorkflowController->processWorkflows();
             return "<message>Execution successful</message>";
         }
 
