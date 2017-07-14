@@ -122,13 +122,14 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
         $objStats = new WorkflowsStats();
 
         //add a simple line-chart
-        list($arrProcessedController, $arrBrokenController, $arrHandlers) = $objStats->getHourlyStats($objDate);
+        list($arrProcessedController, $arrBrokenController, $arrHandlers, $arrBrokenHandlers) = $objStats->getHourlyStats($objDate);
 
         $objChart = GraphFactory::getGraphInstance();
 
         $objChart->addLinePlot($arrProcessedController, $this->getLang("chart_processed"));
         $objChart->addLinePlot($arrBrokenController, $this->getLang("chart_broken"));
         $objChart->addLinePlot($arrHandlers, $this->getLang("chart_handler"));
+        $objChart->addLinePlot($arrBrokenHandlers, $this->getLang("chart_handler_broken"));
 
         $objChart->setIntWidth(1200);
         $strReturn .= $objChart->renderGraph();
@@ -147,6 +148,7 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
                 $arrOneRow["wfc_end"] != "" ? dateToString(new Date($arrOneRow["wfc_end"])) : "<i class='fa fa-warning' style='color: red;'></i>",
                 $arrOneRow["wfc_end"] != "" ? round(((new Date($arrOneRow["wfc_end"]))->getTimeInOldStyle() - (new Date($arrOneRow["wfc_start"]))->getTimeInOldStyle()) / 60, 4) ." min"  : "",
                 $arrOneRow["anzhandler"],
+                ($arrOneRow["anzexception"] > 0 ? "<i class='fa fa-warning' style='color: red;'></i> " : "").
                 Link::getLinkAdminDialog($this->getArrModule("module"), $this->getAction(), ["systemid" => $arrOneRow["wfc_id"]], $this->getLang("action_show_details"), $this->getLang("action_show_details"), "icon_lens")
             ];
         }

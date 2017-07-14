@@ -79,4 +79,5 @@ $lang["stats_result"]                    = "Result";
 $lang["stats_class"]                     = "Handler";
 $lang["chart_handler"]                   = "Nr. of executed handlers";
 $lang["chart_broken"]                    = "Nr. of broken controllers";
+$lang["chart_handler_broken"]            = "Nr. of broken handlers";
 $lang["chart_processed"]                 = "Nr. of successful controllers";

@@ -79,4 +79,5 @@ $lang["stats_result"]                    = "Ergebnis";
 $lang["stats_class"]                     = "Handler";
 $lang["chart_handler"]                   = "Anz. ausgeführte Handler";
 $lang["chart_broken"]                    = "Anz. fehlerhafte Controller";
+$lang["chart_handler_broken"]            = "Anz. fehlerhafte Handler";
 $lang["chart_processed"]                 = "Anz. erfolgreiche Controller";

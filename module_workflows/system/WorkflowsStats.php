@@ -43,8 +43,12 @@ class WorkflowsStats
     public function getControllerForDate(Date $objDate, int $intStart, int $intEnd): array
     {
         return $this->objDb->getPArray(
-            "SELECT controller.*, (SELECT COUNT(*) AS anz FROM "._dbprefix_."workflows_stat_wfh WHERE wfh_wfc = controller.wfc_id ) as anzhandler FROM "._dbprefix_."workflows_stat_wfc AS controller WHERE wfc_start >= ? AND wfc_start <= ? ORDER BY wfc_start",
-            [$objDate->setBeginningOfDay()->getLongTimestamp(), $objDate->setEndOfDay()->getLongTimestamp()],
+            "SELECT controller.*, 
+                      (SELECT COUNT(*) AS anz FROM "._dbprefix_."workflows_stat_wfh WHERE wfh_wfc = controller.wfc_id ) as anzhandler,
+                       (SELECT COUNT(*) AS anz FROM "._dbprefix_."workflows_stat_wfh WHERE wfh_wfc = controller.wfc_id AND wfh_result = ? ) as anzexception
+                       
+                       FROM "._dbprefix_."workflows_stat_wfc AS controller WHERE wfc_start >= ? AND wfc_start <= ? ORDER BY wfc_start",
+            [WorkflowsResultEnum::EXCEPTION(), $objDate->setBeginningOfDay()->getLongTimestamp(), $objDate->setEndOfDay()->getLongTimestamp()],
             $intStart,
             $intEnd
         );
@@ -93,6 +97,7 @@ class WorkflowsStats
         $arrProcessedController = [];
         $arrBrokenController = [];
         $arrHandlers = [];
+        $arrBrokenHandlers = [];
 
         for ($intI = 0; $intI <= 23; $intI++) {
             $objStart->setIntHour($intI);
@@ -103,10 +108,11 @@ class WorkflowsStats
             $arrProcessedController[$strKey] = $objDb->getPRow("SELECT COUNT(*) as anz FROM "._dbprefix_."workflows_stat_wfc WHERE wfc_start >= ? AND wfc_start <= ? AND wfc_end IS NOT NULL", [$objStart, $objEnd])["anz"];
             $arrBrokenController[$strKey]    = $objDb->getPRow("SELECT COUNT(*) as anz FROM "._dbprefix_."workflows_stat_wfc WHERE wfc_start >= ? AND wfc_start <= ? AND wfc_end IS NULL", [$objStart, $objEnd])["anz"];
             $arrHandlers[$strKey]            = $objDb->getPRow("SELECT COUNT(*) as anz FROM "._dbprefix_."workflows_stat_wfh WHERE wfh_start >= ? AND wfh_start <= ?", [$objStart, $objEnd])["anz"];
+            $arrBrokenHandlers[$strKey]      = $objDb->getPRow("SELECT COUNT(*) as anz FROM "._dbprefix_."workflows_stat_wfh WHERE wfh_start >= ? AND wfh_start <= ?  AND wfh_result = ?", [$objStart, $objEnd, WorkflowsResultEnum::EXCEPTION()])["anz"];
 
         }
 
-        return [$arrProcessedController, $arrBrokenController, $arrHandlers];
+        return [$arrProcessedController, $arrBrokenController, $arrHandlers, $arrBrokenHandlers];
     }
 
 }
