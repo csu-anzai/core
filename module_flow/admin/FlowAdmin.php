@@ -10,16 +10,21 @@
 namespace Kajona\Flow\Admin;
 
 use Kajona\Flow\System\FlowActionAbstract;
+use Kajona\Flow\System\FlowActionUserInputInterface;
 use Kajona\Flow\System\FlowConditionAbstract;
 use Kajona\Flow\System\FlowConfig;
 use Kajona\Flow\System\FlowGraphWriter;
+use Kajona\Flow\System\FlowManager;
 use Kajona\Flow\System\FlowStatus;
 use Kajona\Flow\System\FlowStatusFilter;
 use Kajona\Flow\System\FlowTransition;
 use Kajona\System\Admin\AdminEvensimpler;
+use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminInterface;
+use Kajona\System\Admin\Formentries\FormentryHeadline;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\ArraySectionIterator;
+use Kajona\System\System\Lang;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
@@ -54,6 +59,12 @@ use Kajona\System\System\Objectfactory;
  */
 class FlowAdmin extends AdminEvensimpler implements AdminInterface
 {
+    /**
+     * @inject flow_manager
+     * @var FlowManager
+     */
+    protected $objFlowManager;
+
     /**
      * @return array
      */
@@ -500,6 +511,180 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
         $this->setCurObjectClassName($this->getParam("class"));
         $this->setStrCurObjectTypeName("TransitionCondition");
         return parent::actionSave();
+    }
+
+    /**
+     * @return string
+     * @permissions view
+     */
+    public function actionSetNextStatus()
+    {
+        $strSystemId = $this->getSystemid();
+        $strRedirect = $this->getParam("redirect");
+
+        if (!validateSystemid($strSystemId)) {
+            throw new \RuntimeException("No systemid provided");
+        }
+
+        $objObject = Objectfactory::getInstance()->getObject($strSystemId);
+
+        if (!$objObject->rightEdit()) {
+            throw new \RuntimeException("No rights to edit the object");
+        }
+
+        /** @var FlowConfig $objFlow */
+        $objFlow = $this->objFlowManager->getFlowForModel($objObject);
+
+        if (!$objFlow instanceof FlowConfig) {
+            throw new \RuntimeException("No flow is assigned to the provided object");
+        }
+
+        $arrTransitions = $this->objFlowManager->getPossibleTransitionsForModel($objObject);
+        if (!empty($arrTransitions)) {
+            $strHtml = "";
+            $strHtml.= $this->objToolkit->formHeader(Link::getLinkAdminHref("flow", "setNextStatusSave"));
+            $strHtml.= $this->objToolkit->getTextRow($this->objToolkit->warningBox($this->getLang("form_next_status_description", "flow", [$objObject->getStrDisplayName()]), "alert-info"));
+            $strHtml.= $this->objToolkit->formInputHidden("systemid", $strSystemId);
+            $strHtml.= $this->objToolkit->formInputHidden("redirect", $strRedirect);
+
+            $arrOptions = [];
+            $strValidation = "";
+
+            // @TODO if we have only one possible status we could directly set the status of the record
+
+            foreach ($arrTransitions as $objTransition) {
+                /** @var FlowTransition $objTransition */
+                $objTargetStatus = $objTransition->getTargetStatus();
+
+                // validation
+                $objResult = $objFlow->getHandler()->validateStatusTransition($objObject, $objTransition);
+
+                if (!$objResult->isValid()) {
+                    $arrErrors = $objResult->getErrors();
+                    if (!empty($arrErrors)) {
+                        $strValidation .= "<div id='error-" . $objTransition->getSystemid() . "' class='transition-error alert alert-danger' style='display:none'>";
+                        $strValidation .= "<ul>";
+                        foreach ($arrErrors as $strError) {
+                            if (!empty($strError)) {
+                                $strError = htmlspecialchars($strError);
+                                $strValidation .= "<li>{$strError}</li>";
+                            }
+                        }
+                        $strValidation .= "</ul>";
+                        $strValidation .= "</div>";
+                    } else {
+                        // in case the result is not valid and we have no error message we skip the menu entry
+                        continue;
+                    }
+                }
+
+                $arrOptions[$objTransition->getSystemid()] = $objTargetStatus->getStrDisplayName();
+            }
+
+            $strHtml.= $this->objToolkit->formInputDropdown("transition_id", $arrOptions, "Status", key($arrOptions));
+            $strHtml.= $this->objToolkit->formTextRow($strValidation);
+
+            $strButtons = "";
+            $strButtons.= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_cancel", "system"), "cancelbtn", "", "", true, false);
+            $strButtons.= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_submit", "system"), "submitbtn", "", "", true, false);
+
+            $strHtml.= $this->objToolkit->formInputButtonWrapper($strButtons);
+            $strHtml.= $this->objToolkit->formClose();
+
+            $strHtml.= <<<HTML
+<script type="text/javascript">
+$('#transition_id').on('click', function(){
+    $('.transition-error').hide();
+    $('#error-' + $(this).val()).show();
+});
+</script> 
+HTML;
+
+            return $strHtml;
+        } else {
+            // no status possible so redirect
+            $this->adminReload($strRedirect);
+            return "";
+        }
+    }
+
+    /**
+     * @return string
+     * @permissions view
+     */
+    public function actionSetNextStatusSave()
+    {
+        $strSystemId = $this->getSystemid();
+        $strRedirect = $this->getParam("redirect");
+        $strTransitionId = $this->getParam("transition_id");
+
+        if (!validateSystemid($strSystemId)) {
+            throw new \RuntimeException("No systemid provided");
+        }
+
+        $objObject = Objectfactory::getInstance()->getObject($strSystemId);
+
+        if (!$objObject->rightEdit()) {
+            throw new \RuntimeException("No rights to edit the object");
+        }
+
+        /** @var FlowConfig $objFlow */
+        $objFlow = $this->objFlowManager->getFlowForModel($objObject);
+
+        if (!$objFlow instanceof FlowConfig) {
+            throw new \RuntimeException("No flow is assigned to the provided object");
+        }
+
+        $objTransition = Objectfactory::getInstance()->getObject($strTransitionId);
+        if ($objTransition instanceof FlowTransition) {
+            $arrActions = $objTransition->getArrActions();
+            $objForm = new AdminFormgenerator("", null);
+            $bitInputRequired = false;
+
+            foreach ($arrActions as $objAction) {
+                if ($objAction instanceof FlowActionUserInputInterface) {
+                    $objForm->addField(new FormentryHeadline())->setStrValue($objAction->getTitle());
+                    $objAction->configureUserInputForm($objForm);
+                    $bitInputRequired = true;
+                }
+            }
+
+            if ($bitInputRequired) {
+                if ($_SERVER["REQUEST_METHOD"] == "GET" || !$objForm->validateForm()) {
+                    $strForm = $objForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "setNextStatusSave", "&systemid=" . $objObject->getStrSystemid() . "&transition_id=" . $strTransitionId));
+                    return $strForm;
+                } else {
+                    foreach ($arrActions as $objAction) {
+                        if ($objAction instanceof FlowActionUserInputInterface) {
+                            $objActionForm = new AdminFormgenerator("", null);
+                            $objAction->configureUserInputForm($objActionForm);
+                            $arrFields = $objActionForm->getArrFields();
+
+                            $arrData = [];
+                            foreach ($arrFields as $strName => $objField) {
+                                $arrData[$strName] = $this->getParam($strName);
+                            }
+
+                            $objAction->handleUserInput($objObject, $objTransition, $arrData);
+                        }
+                    }
+                }
+            }
+
+            $objHandler = $objFlow->getHandler();
+            $objHandler->handleStatusTransition($objObject, $objTransition);
+        } else {
+            throw new \RuntimeException("Invalid transition id");
+        }
+
+        // redirect
+        if (empty($strRedirect)) {
+            $this->adminReload(Link::getLinkAdminHref($objObject->getArrModule("modul"), "list", "&systemid=" . $objObject->getStrPrevId()));
+        } else {
+            $this->adminReload($strRedirect);
+        }
+
+        return "";
     }
 
     protected function getActionNameForClass($strAction, $objInstance)
