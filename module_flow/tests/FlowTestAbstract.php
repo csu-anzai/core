@@ -38,6 +38,7 @@ abstract class FlowTestAbstract extends Testbase
         $this->objFlow->setStrTargetClass(FlowModelTest::class);
         $this->objFlow->setStrHandlerClass(FlowHandlerTest::class);
         $this->objFlow->setIntRecordStatus(1);
+        $this->objFlow->setBitValidateConsistency(false);
         $this->objFlow->updateObjectToDb();
 
         $objRedStatus = new FlowStatus();
