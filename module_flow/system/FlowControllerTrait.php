@@ -158,6 +158,13 @@ require(["jquery", "ajax"], function($, ajax){
         $objFlow = $this->objFlowManager->getFlowForModel($objObject);
         if (!empty($arrTransitions)) {
             $arrMenu = array();
+
+            $strLink = htmlspecialchars(Link::getLinkAdminHref("flow", "showFlow", ["systemid" => $this->getSystemid(), "folderview" => "1"]));
+            $strTitle = $this->getLang("flow_current_status", "flow");
+            $arrMenu[] = array(
+                "fullentry" => '<li><a href="#" onclick="require(\'dialogHelper\').showIframeDialog(\''.$strLink.'\', \''.$strTitle.'\'); return false;">'.$strTitle.'</a></li><li role="separator" class="divider"></li>',
+            );
+
             foreach ($arrTransitions as $objTransition) {
                 /** @var FlowTransition $objTransition */
                 $objTargetStatus = $objTransition->getTargetStatus();

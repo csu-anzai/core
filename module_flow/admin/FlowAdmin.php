@@ -13,6 +13,7 @@ use Kajona\Flow\System\FlowActionAbstract;
 use Kajona\Flow\System\FlowConditionAbstract;
 use Kajona\Flow\System\FlowConfig;
 use Kajona\Flow\System\FlowGraphWriter;
+use Kajona\Flow\System\FlowManager;
 use Kajona\Flow\System\FlowStatus;
 use Kajona\Flow\System\FlowStatusFilter;
 use Kajona\Flow\System\FlowTransition;
@@ -54,6 +55,12 @@ use Kajona\System\System\Objectfactory;
  */
 class FlowAdmin extends AdminEvensimpler implements AdminInterface
 {
+    /**
+     * @inject flow_manager
+     * @var FlowManager
+     */
+    protected $objFlowManager;
+
     /**
      * @return array
      */
@@ -257,6 +264,33 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
         } else {
             return $strAction;
         }
+    }
+
+    /**
+     * @return string
+     * @permissions view
+     */
+    public function actionShowFlow()
+    {
+        $strSystemId = $this->getSystemid();
+
+        if (!validateSystemid($strSystemId)) {
+            throw new \RuntimeException("No systemid provided");
+        }
+
+        $objObject = Objectfactory::getInstance()->getObject($strSystemId);
+
+        /** @var FlowConfig $objFlow */
+        $objFlow = $this->objFlowManager->getFlowForModel($objObject);
+
+        if (!$objFlow instanceof FlowConfig) {
+            throw new \RuntimeException("No flow is assigned to the provided object");
+        }
+
+        $intCurrentStatus = $objObject->getIntRecordStatus();
+        $objStatus = $objFlow->getStatusByIndex($intCurrentStatus);
+
+        return FlowGraphWriter::write($objFlow, $objStatus);
     }
 
     /**

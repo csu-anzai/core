@@ -47,6 +47,8 @@ $lang["flow_step_icon_8"]       = "icon_flag_yellow";
 
 $lang["flow_step_no_delete"] = "It is not possible to delete this status";
 
+$lang["flow_current_status"]   = "Current status";
+
 $lang["delete_step_question"]   = "Do you really want to delete the step &quot;<b>%%element_name%%</b>&quot;?";
 $lang["delete_transition_question"]   = "Do you really want to delete the transition &quot;<b>%%element_name%%</b>&quot;?";
 $lang["delete_transition_action_question"]   = "Do you really want to delete the action &quot;<b>%%element_name%%</b>&quot;?";
