@@ -58,3 +58,5 @@ $lang["delete_question"]   = "Möchten Sie die Konfiguration &quot;<b>%%element_
 $lang["flow_transition_action_list"]   = "Die folgenden Aktionen sind zu dem Statusübergang (<b>{0}</b> nach <b>{1}</b>) zugeordnet.";
 $lang["flow_transition_condition_list"]   = "Die folgenden Bedingungen sind zu dem Statusübergang (<b>{0}</b> nach <b>{1}</b>) zugeordnet.";
 
+$lang["form_next_status_description"]   = "Auf dieser Seite können Sie für das Objekt <b>{0}</b> den Folgestatus auswählen.";
+

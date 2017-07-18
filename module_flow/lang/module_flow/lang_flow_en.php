@@ -58,3 +58,4 @@ $lang["delete_question"]   = "Do you really want to delete the configuration &qu
 $lang["flow_transition_action_list"]   = "The following actions are assigned to the transition (<b>{0}</b> to <b>{1}</b>).";
 $lang["flow_transition_condition_list"]   = "The following conditions are assigned to the transition (<b>{0}</b> to <b>{1}</b>).";
 
+$lang["form_next_status_description"]   = "Please select the next status for the object <b>{0}</b>.";
