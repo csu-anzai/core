@@ -10,9 +10,11 @@ namespace Kajona\Flow\System;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\Formentries\FormentryHeadline;
 use Kajona\System\System\AdminskinHelper;
+use Kajona\System\System\Carrier;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 use Kajona\System\System\Objectfactory;
+use Kajona\System\System\RedirectException;
 use Kajona\System\Xml;
 
 /**
@@ -121,10 +123,16 @@ require(["jquery", "ajax"], function($, ajax){
                 }
                 */
 
-                $bitReturn = $objHandler->handleStatusTransition($objObject, $objTransition);
-
-                if ($bitReturn) {
+                try{
+                    $objHandler->handleStatusTransition($objObject, $objTransition);
                     $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "list", "&systemid=" . $objObject->getStrPrevId()));
+                }
+                catch(RedirectException $e) {
+                    throw $e;
+                }
+                catch(\Exception $e) {
+                    $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
+                    return $objToolkit->warningBox($e->getMessage());
                 }
             }
         }

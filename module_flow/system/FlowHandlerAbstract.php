@@ -85,7 +85,7 @@ abstract class FlowHandlerAbstract implements FlowHandlerInterface
             Database::getInstance()->transactionRollback();
 
             Logger::getInstance(Logger::SYSTEMLOG)->addLogRow("Status-Transition error: " . $e->getMessage() . "\n" . $e->getTraceAsString(), Logger::$levelError);
-            return false;
+            throw $e;
         }
 
         return true;
