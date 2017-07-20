@@ -624,6 +624,7 @@ $('#transition_id').on('click', function(){
     $('.transition-error').hide();
     $('#error-' + $(this).val()).show();
 });
+$('#transition_id').trigger('click');
 </script> 
 HTML;
 
@@ -653,6 +654,11 @@ HTML;
 
         if (!$objObject->rightEdit()) {
             throw new \RuntimeException("No rights to edit the object");
+        }
+
+        if ($this->getParam("cancelbtn") != "") {
+            $this->adminReload($strRedirect);
+            return "";
         }
 
         /** @var FlowConfig $objFlow */
