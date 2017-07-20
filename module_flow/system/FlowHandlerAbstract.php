@@ -120,7 +120,8 @@ abstract class FlowHandlerAbstract implements FlowHandlerInterface
      * @param FlowTransition $objTransition
      * @return FlowConditionResult
      */
-    private function validateObjectForm(Model $objObject, FlowTransition $objTransition) {
+    private function validateObjectForm(Model $objObject, FlowTransition $objTransition)
+    {
         $objResult = new FlowConditionResult();
 
         //validate if form is valid in current status
@@ -155,7 +156,8 @@ abstract class FlowHandlerAbstract implements FlowHandlerInterface
      * @param FlowTransition $objTransition
      * @return FlowConditionResult
      */
-    private function validateTransitionsConditions(Model $objObject, FlowTransition $objTransition) {
+    private function validateTransitionsConditions(Model $objObject, FlowTransition $objTransition)
+    {
         $objResult = new FlowConditionResult();
 
         // validate all assigned conditions
