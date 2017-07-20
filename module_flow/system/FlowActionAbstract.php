@@ -39,7 +39,7 @@ abstract class FlowActionAbstract extends Model implements ModelInterface, Admin
     /**
      * @return string
      */
-    public function getStrParams(): string
+    public function getStrParams()
     {
         return $this->strParams;
     }
