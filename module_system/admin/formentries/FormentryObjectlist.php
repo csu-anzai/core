@@ -126,6 +126,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
 
 
         $arrObjects = $objSourceObject->{$strGetter}();
+        count($arrObjects);//Keep this code here! Just to initializes the array due to lazy load
         $arrNotObjects = array_values(array_filter((array)$arrObjects, function (Model $objObject) {
             return !$objObject->rightView();
         }));
