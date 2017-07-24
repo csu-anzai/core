@@ -143,7 +143,14 @@ class UsersourcesGroupLdap extends \Kajona\System\System\Model implements \Kajon
         $arrReturn = array();
         //load all members from ldap
         $objLdap = Ldap::getInstance($this->intCfg);
-        $arrMembers = $objLdap->getMembersOfGroup($this->getStrDn());
+
+        $arrMembers = [];
+        try {
+            $arrMembers = $objLdap->getMembersOfGroup($this->getStrDn());
+        } catch (\Exception $e) {
+            Logger::getInstance()->notice($e->getMessage());
+        }
+
         sort($arrMembers);
         $objSource = new UsersourcesSourceLdap();
 
