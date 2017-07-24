@@ -89,6 +89,10 @@ abstract class FlowActionAbstract extends Model implements ModelInterface, Admin
     public function getStrAdditionalInfo()
     {
         $arrParams = $this->getArrParameters();
+        if (empty($arrParams)) {
+            return "";
+        }
+
         $arrParts = [];
         foreach ($arrParams as $strKey => $strValue) {
             $arrParts[] = $strKey . ": " . $strValue;
