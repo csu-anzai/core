@@ -579,6 +579,7 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
 
             // @TODO if we have only one possible status we could directly set the status of the record
 
+            $intErrors = 0;
             foreach ($arrTransitions as $objTransition) {
                 /** @var FlowTransition $objTransition */
                 $objTargetStatus = $objTransition->getTargetStatus();
@@ -587,6 +588,8 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
                 $objResult = $objFlow->getHandler()->validateStatusTransition($objObject, $objTransition);
 
                 if (!$objResult->isValid()) {
+                    $intErrors++;
+
                     $arrErrors = $objResult->getErrors();
                     if (!empty($arrErrors)) {
                         $strValidation .= "<div id='error-" . $objTransition->getSystemid() . "' class='transition-error alert alert-danger' style='display:none'>";
@@ -606,6 +609,12 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
                 }
 
                 $arrOptions[$objTransition->getSystemid()] = $objTargetStatus->getStrDisplayName();
+            }
+
+            // in case we have only invalid transitions redirect the user
+            if (count($arrTransitions) == $intErrors) {
+                $this->adminReload($strRedirect);
+                return "";
             }
 
             $strHtml.= $this->objToolkit->formInputDropdown("transition_id", $arrOptions, "Status", key($arrOptions));
