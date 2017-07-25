@@ -800,6 +800,17 @@ class Rights
 
         $arrExistingRights = $this->getArrayRightsShortIds($strSystemid);
 
+        // convert existing rights to short ids
+        $arrExistingRights = array_map(function($arrGroupIds){
+            if (is_array($arrGroupIds)) {
+                return implode(",", array_map(function($strGroupId){
+                    UserGroup::getShortIdForGroupId($strGroupId);
+                }, $arrGroupIds));
+            } else {
+                return $arrGroupIds;
+            }
+        }, $arrExistingRights);
+
         // rights not given, add now, disabling inheritance
         $arrNewRights = $arrExistingRights;
         $arrNewRights[self::$STR_RIGHT_INHERIT] = 0;
