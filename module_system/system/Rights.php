@@ -779,20 +779,38 @@ class Rights
     }
 
     /**
+     * Method to set for each right an array of group ids. This overwrites all existing group ids.
+     * The array accepts the following structure:
+     *
+     * <code>
+     * $arrRights = [
+     *  "view" => ["group_a_id", "group_b_id"],
+     *   ...
+     * ];
+     * </code>
+     *
      * @param array $arrRights
      * @param string $strSystemid
      * @return bool
      */
     public function setGroupsToRights(array $arrRights, string $strSystemid): bool
     {
-        $bitReturn = true;
-        foreach ($arrRights as $strRight => $arrGroups) {
-            foreach ($arrGroups as $strGroupId) {
-                $bitReturn = $bitReturn && $this->addGroupToRight($strGroupId, $strSystemid, $strRight);
-            }
+        $this->objDb->flushQueryCache();
+        $this->flushRightsCache();
+
+        $arrExistingRights = $this->getArrayRightsShortIds($strSystemid);
+
+        // rights not given, add now, disabling inheritance
+        $arrNewRights = $arrExistingRights;
+        $arrNewRights[self::$STR_RIGHT_INHERIT] = 0;
+
+        foreach ($arrRights as $strRight => $arrGroupIds) {
+            $arrNewRights[$strRight] = implode(",", array_map(function($strGroupId){
+                return UserGroup::getShortIdForGroupId($strGroupId);
+            }, $arrGroupIds));
         }
 
-        return $bitReturn;
+        return $this->setRights($arrNewRights, $strSystemid);
     }
 
     /**
