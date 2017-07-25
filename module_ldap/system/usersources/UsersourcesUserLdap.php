@@ -185,8 +185,12 @@ class UsersourcesUserLdap extends \Kajona\System\System\Model implements \Kajona
         foreach ($arrLdapGroups as $strOneGroupId) {
             $objGroup = new UsersourcesGroupLdap($strOneGroupId);
 
-            if ($objGroup->getIntCfg() == $this->intCfg && $objLdap->isUserMemberOfGroup($this->getStrDN(), $objGroup->getStrDn())) {
-                $arrReturn[] = $strOneGroupId;
+            try {
+                if ($objGroup->getIntCfg() == $this->intCfg && $objLdap->isUserMemberOfGroup($this->getStrDN(), $objGroup->getStrDn())) {
+                    $arrReturn[] = $strOneGroupId;
+                }
+            } catch (\Exception $e) {
+                Logger::getInstance()->notice($e->getMessage());
             }
         }
 
