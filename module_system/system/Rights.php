@@ -779,6 +779,23 @@ class Rights
     }
 
     /**
+     * @param array $arrRights
+     * @param string $strSystemid
+     * @return bool
+     */
+    public function setGroupsToRights(array $arrRights, string $strSystemid): bool
+    {
+        $bitReturn = true;
+        foreach ($arrRights as $strRight => $arrGroups) {
+            foreach ($arrGroups as $strGroupId) {
+                $bitReturn = $bitReturn && $this->addGroupToRight($strGroupId, $strSystemid, $strRight);
+            }
+        }
+
+        return $bitReturn;
+    }
+
+    /**
      * Removes a group from a right at a given systemid
      * <b>NOTE: By setting rights using this method, inheritance is set to false!!!</b>
      *
