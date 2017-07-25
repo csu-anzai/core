@@ -780,7 +780,7 @@ class Rights
 
     /**
      * Method to set for each right an array of group ids. This overwrites all existing group ids.
-     * The array accepts the following structure:
+     * The method adds also the admin group to the right. The array accepts the following structure:
      *
      * <code>
      * $arrRights = [
@@ -798,14 +798,17 @@ class Rights
         $this->objDb->flushQueryCache();
         $this->flushRightsCache();
 
+        $strAdminGroupId = SystemSetting::getConfigValue("_admins_group_id_");
         $arrExistingRights = $this->getArrayRightsShortIds($strSystemid);
 
+        $objConvertGroupIds = function($strGroupId){
+            return UserGroup::getShortIdForGroupId($strGroupId);
+        };
+
         // convert existing rights to short ids
-        $arrExistingRights = array_map(function($arrGroupIds){
+        $arrExistingRights = array_map(function($arrGroupIds) use ($objConvertGroupIds){
             if (is_array($arrGroupIds)) {
-                return implode(",", array_map(function($strGroupId){
-                    UserGroup::getShortIdForGroupId($strGroupId);
-                }, $arrGroupIds));
+                return implode(",", array_map($objConvertGroupIds, $arrGroupIds));
             } else {
                 return $arrGroupIds;
             }
@@ -816,9 +819,13 @@ class Rights
         $arrNewRights[self::$STR_RIGHT_INHERIT] = 0;
 
         foreach ($arrRights as $strRight => $arrGroupIds) {
-            $arrNewRights[$strRight] = implode(",", array_map(function($strGroupId){
-                return UserGroup::getShortIdForGroupId($strGroupId);
-            }, $arrGroupIds));
+            // add admin group
+            $arrNewGroupIds = $arrGroupIds;
+            if (!in_array($strAdminGroupId, $arrGroupIds)) {
+                $arrNewGroupIds[] = $strAdminGroupId;
+            }
+
+            $arrNewRights[$strRight] = implode(",", array_map($objConvertGroupIds, $arrNewGroupIds));
         }
 
         return $this->setRights($arrNewRights, $strSystemid);
