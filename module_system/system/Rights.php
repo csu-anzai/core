@@ -801,31 +801,29 @@ class Rights
         $strAdminGroupId = SystemSetting::getConfigValue("_admins_group_id_");
         $arrExistingRights = $this->getArrayRightsShortIds($strSystemid);
 
-        $objConvertGroupIds = function($strGroupId){
-            return UserGroup::getShortIdForGroupId($strGroupId);
-        };
-
-        // convert existing rights to short ids
-        $arrExistingRights = array_map(function($arrGroupIds) use ($objConvertGroupIds){
-            if (is_array($arrGroupIds)) {
-                return implode(",", array_map($objConvertGroupIds, $arrGroupIds));
+        // convert short right ids array to string
+        $arrExistingRights = array_map(function($arrRights){
+            if (is_array($arrRights)) {
+                return implode(",", array_filter($arrRights));
             } else {
-                return $arrGroupIds;
+                return $arrRights;
             }
         }, $arrExistingRights);
 
-        // rights not given, add now, disabling inheritance
+        // set new rights
         $arrNewRights = $arrExistingRights;
         $arrNewRights[self::$STR_RIGHT_INHERIT] = 0;
 
         foreach ($arrRights as $strRight => $arrGroupIds) {
             // add admin group
             $arrNewGroupIds = $arrGroupIds;
-            if (!in_array($strAdminGroupId, $arrGroupIds)) {
+            if (!in_array($strAdminGroupId, $arrNewGroupIds)) {
                 $arrNewGroupIds[] = $strAdminGroupId;
             }
 
-            $arrNewRights[$strRight] = implode(",", array_map($objConvertGroupIds, $arrNewGroupIds));
+            $arrNewRights[$strRight] = implode(",", array_map(function($strGroupId){
+                return UserGroup::getShortIdForGroupId($strGroupId);
+            }, $arrNewGroupIds));
         }
 
         return $this->setRights($arrNewRights, $strSystemid);
