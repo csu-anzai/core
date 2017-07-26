@@ -906,6 +906,10 @@ class Rights
     {
         $arrRights = $this->getArrayRights($strSystemId);
         foreach ($arrRights as $strRight => $arrGroupIds) {
+            if($strRight == self::$STR_RIGHT_INHERIT) {
+                continue;
+            }
+
             if (in_array($strGroupId, $arrGroupIds)) {
                 $this->removeGroupFromRight($strGroupId, $strSystemId, $strRight);
             }
