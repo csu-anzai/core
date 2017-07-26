@@ -779,6 +779,20 @@ class Rights
     }
 
     /**
+     * Method for adding several rights to a group for the given systemid
+     *
+     * @param $strSystemId
+     * @param $strGroupId
+     * @param array $arrRights
+     */
+    public function addRightsToGroup($strSystemId, $strGroupId, array $arrRights)
+    {
+        foreach ($arrRights as $strRight) {
+            $this->addGroupToRight($strGroupId, $strSystemId, $strRight);
+        }
+    }
+
+    /**
      * Method to set for each right an array of group ids. This overwrites all existing group ids.
      * The method adds also the admin group to the right. The array accepts the following structure:
      *
@@ -878,6 +892,28 @@ class Rights
         $bitReturn = $this->setRights($arrRights, $strSystemid);
 
         return $bitReturn;
+    }
+
+
+    /**
+     * Removes the given rights for the given groups for the given system id.
+     *
+     * Rights _admins_group_id_ will not be removed
+     * Inherit rights are ignored
+     *
+     *
+     * @param $strSystemId
+     * @param $strGroupId
+     * @param array $arrRights
+     */
+    public function removeAllRightsFromGroup($strSystemId, $strGroupId)
+    {
+        $arrRights = $this->getArrayRights($strSystemId);
+        foreach ($arrRights as $strRight => $arrGroupIds) {
+            if (in_array($strGroupId, $arrGroupIds)) {
+                $this->removeGroupFromRight($strGroupId, $strSystemId, $strRight);
+            }
+        }
     }
 
     /**
