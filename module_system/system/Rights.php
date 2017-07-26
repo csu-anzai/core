@@ -896,11 +896,7 @@ class Rights
 
 
     /**
-     * Removes the given rights for the given groups for the given system id.
-     *
-     * Rights _admins_group_id_ will not be removed
-     * Inherit rights are ignored
-     *
+     * Removes all rights for the given group for the given system id.
      *
      * @param $strSystemId
      * @param $strGroupId
