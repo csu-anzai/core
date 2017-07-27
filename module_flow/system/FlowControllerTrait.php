@@ -42,8 +42,8 @@ trait FlowControllerTrait
 
         $strIcon = AdminskinHelper::getAdminImage($objCurrentStatus->getStrIcon(), $objCurrentStatus->getStrDisplayName());
 
-        if (!$objListEntry->rightEdit()) {
-            return $strIcon;
+        if (!$objListEntry->rightView()) {
+            return "";
         }
 
         $strMenuId = "status-menu-" . generateSystemid();
@@ -157,22 +157,22 @@ require(["jquery", "ajax"], function($, ajax){
             return "";
         }
 
-        if (!$objObject->rightEdit()) {
+        if (!$objObject->rightView()) {
             return "<ul><li class='dropdown-header'>" . $this->getLang("list_flow_no_right", "flow") . "</li></ul>";
         }
+
+        $arrMenu = array();
+
+        $strLink = htmlspecialchars(Link::getLinkAdminHref("flow", "showFlow", ["systemid" => $this->getSystemid(), "folderview" => "1"]));
+        $strTitle = $this->getLang("flow_current_status", "flow");
+        $arrMenu[] = array(
+            "fullentry" => '<li><a href="#" onclick="require(\'dialogHelper\').showIframeDialog(\''.$strLink.'\', \''.$strTitle.'\'); return false;">'.$strTitle.'</a></li><li role="separator" class="divider"></li>',
+        );
 
         $strClass = $objObject->getSystemid() . "-errors";
         $arrTransitions = $this->objFlowManager->getPossibleTransitionsForModel($objObject);
         $objFlow = $this->objFlowManager->getFlowForModel($objObject);
-        if (!empty($arrTransitions)) {
-            $arrMenu = array();
-
-            $strLink = htmlspecialchars(Link::getLinkAdminHref("flow", "showFlow", ["systemid" => $this->getSystemid(), "folderview" => "1"]));
-            $strTitle = $this->getLang("flow_current_status", "flow");
-            $arrMenu[] = array(
-                "fullentry" => '<li><a href="#" onclick="require(\'dialogHelper\').showIframeDialog(\''.$strLink.'\', \''.$strTitle.'\'); return false;">'.$strTitle.'</a></li><li role="separator" class="divider"></li>',
-            );
-
+        if (!empty($arrTransitions) && $objObject->rightEdit()) {
             foreach ($arrTransitions as $objTransition) {
                 /** @var FlowTransition $objTransition */
                 $objTargetStatus = $objTransition->getTargetStatus();
@@ -213,16 +213,17 @@ require(["jquery", "ajax"], function($, ajax){
                     );
                 }
             }
+        }
 
-            if (!empty($arrMenu)) {
-                $strHtml = $this->objToolkit->registerMenu(generateSystemid(), $arrMenu);
+        if (!empty($arrMenu)) {
+            $strHtml = $this->objToolkit->registerMenu(generateSystemid(), $arrMenu);
 
-                // hack to remove the div around the ul since the div is already in the html
-                preg_match("#<ul>(.*)</ul>#ims", $strHtml, $arrMatches);
+            // hack to remove the div around the ul since the div is already in the html
+            preg_match("#<ul>(.*)</ul>#ims", $strHtml, $arrMatches);
 
-                // js to init the tooltip for validation errors
-                $strTitle = json_encode($objObject->getStrDisplayName());
-                $strJs = <<<HTML
+            // js to init the tooltip for validation errors
+            $strTitle = json_encode($objObject->getStrDisplayName());
+            $strJs = <<<HTML
 <script type='text/javascript'>
     require(['jquery', 'dialogHelper'], function($, dialogHelper){
         $('.{$strClass}').parent().on('click', function(){
@@ -235,10 +236,9 @@ require(["jquery", "ajax"], function($, ajax){
 </script>
 HTML;
 
-                return $arrMatches[0] . $strJs;
-            }
+            return $arrMatches[0] . $strJs;
+        } else {
+            return "<ul><li class='dropdown-header'>" . $this->getLang("list_flow_no_status", "flow") . "</li></ul>";
         }
-
-        return "<ul><li class='dropdown-header'>" . $this->getLang("list_flow_no_status", "flow") . "</li></ul>";
     }
 }
