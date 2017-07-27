@@ -217,6 +217,15 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
         }
     }
 
+    public function getActionIcons($objOneIterable, $strListIdentifier = "")
+    {
+        if ($strListIdentifier == "") {
+            return "";
+        } else {
+            return parent::getActionIcons($objOneIterable, $strListIdentifier);
+        }
+    }
+
     public function getNewEntryAction($strListIdentifier, $bitDialog = false)
     {
         $strAction = parent::getNewEntryAction($strListIdentifier, $bitDialog);
