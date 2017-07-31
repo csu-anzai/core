@@ -259,6 +259,7 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
                 if ($objStatus instanceof FlowStatus) {
                     $objTransition = new FlowTransition();
                     $objTransition->setStrTargetStatus($objStatus->getSystemid());
+                    $objTransition->setIntVisible(1);
                     $objTransition->updateObjectToDb($this->getSystemid());
                 } else {
                     throw new \InvalidArgumentException("Provided value is no FlowStatus object");

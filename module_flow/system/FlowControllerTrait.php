@@ -174,6 +174,11 @@ require(["jquery", "ajax"], function($, ajax){
         $objFlow = $this->objFlowManager->getFlowForModel($objObject);
         if (!empty($arrTransitions) && $objObject->rightEdit()) {
             foreach ($arrTransitions as $objTransition) {
+                // skip if not visible
+                if (!$objTransition->isVisible()) {
+                    continue;
+                }
+
                 /** @var FlowTransition $objTransition */
                 $objTargetStatus = $objTransition->getTargetStatus();
 
