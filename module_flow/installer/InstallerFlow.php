@@ -82,7 +82,7 @@ class InstallerFlow extends InstallerBase
         $strReturn = "Updating flow transition table\n";
         $this->objDB->addColumn("flow_step_transition", "transition_visible", DbDatatypes::STR_TYPE_INT);
 
-        // make all existing transition visible
+        // make all existing transitions visible
         $dbPrefix = _dbprefix_;
         $this->objDB->_pQuery("UPDATE {$dbPrefix}flow_step_transition SET transition_visible = 1", []);
 
