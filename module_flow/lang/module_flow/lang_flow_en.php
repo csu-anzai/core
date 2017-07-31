@@ -28,6 +28,7 @@ $lang["form_flow_deletegroups"] = "Delete";
 $lang["form_flow_rightgroups"]  = "Rights";
 $lang["form_flow_usergroup"]    = "User groups";
 $lang["form_flow_transitions"]  = "Transitions";
+$lang["form_flow_visible"]      = "Visible";
 
 $lang["form_flow_targetstatus"] = "Target-Status";
 $lang["form_flow_actions"]      = "Actions";
@@ -44,6 +45,9 @@ $lang["flow_step_icon_5"]       = "icon_flag_orange";
 $lang["flow_step_icon_6"]       = "icon_flag_purple";
 $lang["flow_step_icon_7"]       = "icon_flag_red";
 $lang["flow_step_icon_8"]       = "icon_flag_yellow";
+
+$lang["transition_visible_0"]   = "No";
+$lang["transition_visible_1"]   = "Yes";
 
 $lang["flow_step_no_delete"] = "It is not possible to delete this status";
 
