@@ -31,6 +31,18 @@ class FlowGraphWriter
     private static function writeMermaid(FlowConfig $objFlow, $objHighlite = null)
     {
         $arrStatus = $objFlow->getArrStatus();
+
+        // sort status
+        usort($arrStatus, function(FlowStatus $objA, FlowStatus $objB){
+            if ($objA->getIntIndex() == 1) {
+                return 1;
+            }
+            if ($objA->getIntIndex() == $objB->getIntIndex()) {
+                return 0;
+            }
+            return ($objA->getIntIndex() < $objB->getIntIndex()) ? -1 : 1;
+        });
+
         $arrList = array("graph TD;");
 
         //color mapper
