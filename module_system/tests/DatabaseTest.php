@@ -490,21 +490,22 @@ SQL;
     {
         $this->createTable();
 
-        $objDB = Database::getInstance();
-        $objDB->multiInsert("temp_autotest",
-            ["temp_id"], [
-                [generateSystemid()],
-            ]
-        );
-
         $objLeftDate = new Date();
         $objLeftDate->setNextMonth();
         $objRightDate = new Date();
 
-        $strPrefix = _dbprefix_;
-        $arrRow = $objDB->getPRow("SELECT " . $objLeftDate->getLongTimestamp() . " - " . $objRightDate->getLongTimestamp() . " AS result FROM {$strPrefix}temp_autotest", []);
+        $objDB = Database::getInstance();
+        $objDB->multiInsert("temp_autotest",
+            ["temp_id", "temp_long"], [
+                [generateSystemid(), $objRightDate->getLongTimestamp()],
+            ]
+        );
 
-        $this->assertEquals(100000000, $arrRow["result"]);
+        $strPrefix = _dbprefix_;
+        $arrRow = $objDB->getPRow("SELECT " . $objLeftDate->getLongTimestamp() . " - " . $objRightDate->getLongTimestamp() . " AS result_1, " . $objLeftDate->getLongTimestamp() . " - temp_long AS result_2 FROM {$strPrefix}temp_autotest", []);
+
+        $this->assertEquals(100000000, $arrRow["result_1"]);
+        $this->assertEquals(100000000, $arrRow["result_2"]);
     }
 }
 
