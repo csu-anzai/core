@@ -4,6 +4,7 @@ namespace Kajona\System\Tests;
 
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Database;
+use Kajona\System\System\Date;
 use Kajona\System\System\Db\DbPostgres;
 use Kajona\System\System\DbDatatypes;
 
@@ -480,6 +481,30 @@ SQL;
         $this->assertEquals(5, $j);
 
         $objDb->_pQuery("DROP TABLE " . $strTable, []);
+    }
+
+    /**
+     * This test checks whether we can use a long timestamp format in in an sql query
+     */
+    public function testIntComparison()
+    {
+        $this->createTable();
+
+        $objDB = Database::getInstance();
+        $objDB->multiInsert("temp_autotest",
+            ["temp_id"], [
+                [generateSystemid()],
+            ]
+        );
+
+        $objLeftDate = new Date();
+        $objLeftDate->setNextMonth();
+        $objRightDate = new Date();
+
+        $strPrefix = _dbprefix_;
+        $arrRow = $objDB->getPRow("SELECT " . $objLeftDate->getLongTimestamp() . " - " . $objRightDate->getLongTimestamp() . " AS result FROM {$strPrefix}temp_autotest", []);
+
+        $this->assertEquals(100000000, $arrRow["result"]);
     }
 }
 
