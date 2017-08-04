@@ -313,6 +313,23 @@ Multiselect
     <option value="%%key%%" selected="selected">%%value%%</option>
 </input_multiselect_row_selected>
 
+Date interval
+<input_date_interval>
+    <div class="form-group">
+        <label for="%%name%%_unit" class="col-sm-3 control-label">%%title%%</label>
+        <div class="col-sm-6">
+            <div class="row">
+                <div class="col-md-4">
+                    <select name="%%name%%_unit" id="%%name%%_unit" class="form-control %%class%%" %%disabled%% %%addons%%>%%units%%</select>
+                </div>
+                <div class="col-md-8">
+                    <input type="number" name="%%name%%_value" id="%%name%%_value" value="%%value%%" class="form-control %%class%%" %%disabled%%>
+                </div>
+            </div>
+        </div>
+    </div>
+</input_date_interval>
+
 Toggle Button-Bar
 <input_toggle_buttonbar>
     <div class="form-group">

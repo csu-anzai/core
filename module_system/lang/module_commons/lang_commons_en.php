@@ -88,6 +88,7 @@ $lang["commons_text"]                    = "Text";
 $lang["commons_title"]                   = "Title";
 $lang["commons_unlock"]                  = "Unlock record";
 $lang["commons_validator_date_validationmessage"] = "The field must contain a date format '{0}'";
+$lang["commons_validator_dateinterval_validationmessage"] = "The field must contain a valida interval format";
 $lang["commons_validator_field_empty"]   = "'{0}' is empty";
 $lang["commons_validator_int_validationmessage"] = "The field must contain integer values";
 $lang["commons_validator_numeric_validationmessage"] = "The field must contain numeric values";
