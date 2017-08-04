@@ -16,5 +16,8 @@ $lang["image_edit"]                      = "Edit image";
 $lang["template"]                        = "Template";
 
 $lang["interval_day"]                    = "Day";
+$lang["interval_days"]                   = "Days";
 $lang["interval_month"]                  = "Month";
+$lang["interval_months"]                 = "Months";
 $lang["interval_year"]                   = "Year";
+$lang["interval_years"]                  = "Years";

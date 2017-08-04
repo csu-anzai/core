@@ -8,6 +8,7 @@ namespace Kajona\System\Admin\Formentries;
 
 use Kajona\System\Admin\FormentryPrintableInterface;
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Lang;
 use Kajona\System\System\Validators\DateIntervalValidator;
 
 /**
@@ -80,16 +81,29 @@ class FormentryDateInterval extends FormentryBase implements FormentryPrintableI
     {
         $strValue = $this->getStrValue();
         $objInterval = null;
-        if (is_string($strValue)) {
+        if (!empty($strValue) && is_string($strValue)) {
             $objInterval = new \DateInterval($strValue);
         } elseif ($strValue instanceof \DateInterval) {
             $objInterval = $strValue;
         }
 
         if ($objInterval !== null) {
-            return $objInterval->format("%y years, %m month, %d days");
+            $objLang = Lang::getInstance();
+            $arrFormat = [];
+            if ($objInterval->y > 0) {
+                $arrFormat[] = "%y " . $objLang->getLang(($objInterval->y > 1 ? "interval_years" : "interval_year"), "elements");
+            }
+            if ($objInterval->m > 0) {
+                $arrFormat[] = "%m " . $objLang->getLang(($objInterval->m > 1 ? "interval_months" : "interval_month"), "elements");
+            }
+            if ($objInterval->d > 0) {
+                $arrFormat[] = "%d " . $objLang->getLang(($objInterval->d > 1 ? "interval_days" : "interval_day"), "elements");
+            }
+            if (count($arrFormat) > 0) {
+                return $objInterval->format(implode(", ", $arrFormat));
+            }
         }
 
-        return "";
+        return "-";
     }
 }
