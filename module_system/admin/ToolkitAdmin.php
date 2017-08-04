@@ -813,10 +813,11 @@ class ToolkitAdmin extends Toolkit
      */
     public function formInputInterval($strName, $strTitle = "", \DateInterval $objValue = null, $strClass = "", $bitReadonly = false)
     {
+        $objLang = Lang::getInstance();
         $arrKeyValues = [
-            "D" => "Tag",
-            "M" => "Monat",
-            "Y" => "Jahr",
+            "D" => $objLang->getLang("interval_day", "elements"),
+            "M" => $objLang->getLang("interval_month", "elements"),
+            "Y" => $objLang->getLang("interval_year", "elements"),
         ];
 
         $strKeySelected = "";

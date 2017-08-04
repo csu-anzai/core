@@ -14,3 +14,7 @@
 $lang["directory"]                       = "Ordner";
 $lang["image_edit"]                      = "Bild bearbeiten";
 $lang["template"]                        = "Template";
+
+$lang["interval_day"]                    = "Tag";
+$lang["interval_month"]                  = "Monat";
+$lang["interval_year"]                   = "Jahr";
