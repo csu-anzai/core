@@ -319,11 +319,11 @@ Date interval
         <label for="%%name%%_unit" class="col-sm-3 control-label">%%title%%</label>
         <div class="col-sm-6">
             <div class="row">
-                <div class="col-md-4">
-                    <select name="%%name%%_unit" id="%%name%%_unit" class="form-control %%class%%" %%disabled%% %%addons%%>%%units%%</select>
-                </div>
                 <div class="col-md-8">
                     <input type="number" name="%%name%%_value" id="%%name%%_value" value="%%value%%" class="form-control %%class%%" %%disabled%%>
+                </div>
+                <div class="col-md-4">
+                    <select name="%%name%%_unit" id="%%name%%_unit" class="form-control %%class%%" %%disabled%% %%addons%%>%%units%%</select>
                 </div>
             </div>
         </div>
