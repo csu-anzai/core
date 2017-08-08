@@ -61,12 +61,6 @@ class InstallerFlow extends InstallerBase
         // sync all handler classes
         FlowConfig::syncHandler();
 
-
-        $strReturn .= "updating aspect...\n";
-        $objModule = SystemModule::getModuleByName("flow");
-        $objModule->setStrAspect(SystemAspect::getAspectByName(ArtemeonCommon::STR_ASPECT_VERWALTUNG)->getSystemid());
-        $objModule->updateObjectToDb();
-
         return $strReturn;
     }
 
