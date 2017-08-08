@@ -10,6 +10,7 @@ Reference: Formentries
 | Kajona\System\Admin\Formentries\FormentryCheckboxarray	        | 4.8        | Renders a list of objects as an array of checkboxes, e.g. assignments |
 | Kajona\System\Admin\Formentries\FormentryCheckboxarrayObjectList  | 5.1        | Renders a standard table containing a checkbox and the display name of the object |
 | Kajona\System\Admin\Formentries\FormentryDate                     | 4.1        | Date-Input with date-picker |
+| Kajona\System\Admin\Formentries\FormentryDateInterval             | 7.0        | Provides an input to enter a date interval |
 | Kajona\System\Admin\Formentries\FormentryDatetime                 | 4.1        | Like Date but with two inputs to set a time (HH:MM), too |
 | Kajona\System\Admin\Formentries\FormentryDivider                  | 4.0        | Graphical element to separate form-entries from each other |
 | Kajona\System\Admin\Formentries\FormentryDropdown	                | 4.0        | Dropdown of values, one value is selectable |
@@ -19,7 +20,7 @@ Reference: Formentries
 | Kajona\System\Admin\Formentries\FormentryHeadline                 | 4.0        | Headline-Element to group formentries (h2) |
 | Kajona\System\Admin\Formentries\FormentryHidden                   | 4.0        | Hidden element to pass additional values |
 | Kajona\System\Admin\Formentries\FormentryImage                    | 4.0        | An image-selector, linking the mediamanager module and includes the direct cropping and image-editing of the selected value |
-| Kajona\System\Admin\Formentries\FormentryInt                      | 6.2         | Allows the input of a formatted int value, full i18n support |
+| Kajona\System\Admin\Formentries\FormentryInt                      | 6.2        | Allows the input of a formatted int value, full i18n support |
 | Kajona\System\Admin\Formentries\FormentryMonthYearDropdown        | 4.4        | Renders two dropdown boxes in order to change date, one for the month, the other for the year. |
 | Kajona\System\Admin\Formentries\FormentryMultiselect              | 4.2        | List of values, many are selectable |
 | Kajona\System\Admin\Formentries\FormentryObjectlist               | 4.7        | For properties of type @objectlist. Makes the assigned objects visible in the form with the possbility to add and remove assignments |
