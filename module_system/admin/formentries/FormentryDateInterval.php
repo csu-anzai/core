@@ -12,8 +12,10 @@ use Kajona\System\System\Lang;
 use Kajona\System\System\Validators\DateIntervalValidator;
 
 /**
+ * Provides a simple input to enter a date interval i.e. 1 month
+ *
  * @author christoph.kappestein@artemeon.de
- * @since 4.0
+ * @since 7.0
  * @package module_formgenerator
  */
 class FormentryDateInterval extends FormentryBase implements FormentryPrintableInterface
