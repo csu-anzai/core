@@ -9,6 +9,7 @@
 
 namespace Kajona\Flow\Installer;
 
+use AGP\Agp_Commons\System\ArtemeonCommon;
 use Kajona\Flow\System\FlowActionAbstract;
 use Kajona\Flow\System\FlowConditionAbstract;
 use Kajona\Flow\System\FlowConfig;
@@ -17,6 +18,7 @@ use Kajona\Flow\System\FlowTransition;
 use Kajona\System\System\DbDatatypes;
 use Kajona\System\System\InstallerBase;
 use Kajona\System\System\OrmSchemamanager;
+use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemModule;
 
 /**
@@ -58,6 +60,12 @@ class InstallerFlow extends InstallerBase
 
         // sync all handler classes
         FlowConfig::syncHandler();
+
+
+        $strReturn .= "updating aspect...\n";
+        $objModule = SystemModule::getModuleByName("flow");
+        $objModule->setStrAspect(SystemAspect::getAspectByName(ArtemeonCommon::STR_ASPECT_VERWALTUNG)->getSystemid());
+        $objModule->updateObjectToDb();
 
         return $strReturn;
     }
