@@ -179,6 +179,23 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
     }
 
     /**
+     * Returns all available transitions for this flow
+     *
+     * @return FlowTransition[]
+     */
+    public function getAllTransitions()
+    {
+        $arrTransitions = [];
+        $arrStatus = $this->getArrStatus();
+        foreach ($arrStatus as $objStatus) {
+            /** @var FlowStatus $objStatus */
+            $arrTransitions = array_merge($arrTransitions, $objStatus->getArrTransitions());
+        }
+
+        return $arrTransitions;
+    }
+
+    /**
      * @return FlowHandlerInterface
      */
     public function getHandler()
