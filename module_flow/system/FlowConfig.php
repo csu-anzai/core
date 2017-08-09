@@ -196,6 +196,21 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
     }
 
     /**
+     * Returns all transitions which are assigned to a specific status
+     *
+     * @return FlowTransition[]
+     */
+    public function getTransitionsByIndex($intIndex)
+    {
+        $objStatus = $this->getStatusByIndex($intIndex);
+        if ($objStatus instanceof FlowStatus) {
+            return $objStatus->getArrTransitions();
+        } else {
+            return [];
+        }
+    }
+
+    /**
      * @return FlowHandlerInterface
      */
     public function getHandler()
