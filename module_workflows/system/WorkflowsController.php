@@ -115,7 +115,11 @@ class WorkflowsController
             }
 
 
-            $objLockmanager->lockRecord();
+            $bitReturn = $objLockmanager->lockRecord();
+            if (!$bitReturn) {
+                Logger::getInstance(self::STR_LOGFILE)->warning("workflow ".$objOneWorkflow->getSystemid()." cant lock workflow record");
+                continue;
+            }
 
             /**
              * @var WorkflowsHandlerInterface
