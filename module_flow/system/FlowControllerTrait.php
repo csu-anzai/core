@@ -68,12 +68,23 @@ require(["jquery", "ajax"], function($, ajax){
      * Action to set the next status
      *
      * @return string
-     * @permissions edit
+     * @permissions view
      */
     protected function actionSetStatus()
     {
         $objObject = $this->objFactory->getObject($this->getSystemid());
         if ($objObject instanceof Model) {
+            // check right
+            if ($objObject instanceof FlowModelRightInterface) {
+                $bitHasRight = $objObject->rightStatus();
+            } else {
+                $bitHasRight = $objObject->rightEdit();
+            }
+
+            if (!$bitHasRight) {
+                throw new \RuntimeException("No right to change the status of the object");
+            }
+
             $strTransitionId = $this->getParam("transition_id");
             $objFlow = $this->objFlowManager->getFlowForModel($objObject);
             $objTransition = Objectfactory::getInstance()->getObject($strTransitionId);
