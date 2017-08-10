@@ -172,7 +172,16 @@ require(["jquery", "ajax"], function($, ajax){
         $strClass = $objObject->getSystemid() . "-errors";
         $arrTransitions = $this->objFlowManager->getPossibleTransitionsForModel($objObject);
         $objFlow = $this->objFlowManager->getFlowForModel($objObject);
-        if (!empty($arrTransitions) && $objObject->rightEdit()) {
+
+        // check right
+        $bitHasRight = false;
+        if ($objObject instanceof FlowModelRightInterface && $objObject->rightStatus()) {
+            $bitHasRight = true;
+        } elseif ($objObject->rightEdit()) {
+            $bitHasRight = true;
+        }
+
+        if (!empty($arrTransitions) && $bitHasRight) {
             foreach ($arrTransitions as $objTransition) {
                 // skip if not visible
                 if (!$objTransition->isVisible()) {
