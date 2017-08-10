@@ -565,8 +565,10 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
 
         $objObject = Objectfactory::getInstance()->getObject($strSystemId);
 
-        if ($objObject instanceof FlowModelRightInterface && !$objObject->rightStatus()) {
-            throw new \RuntimeException("No rights to edit the object");
+        if ($objObject instanceof FlowModelRightInterface) {
+            if (!$objObject->rightStatus()) {
+                throw new \RuntimeException("No rights to edit the object");
+            }
         } elseif (!$objObject->rightEdit()) {
             throw new \RuntimeException("No rights to edit the object");
         }
