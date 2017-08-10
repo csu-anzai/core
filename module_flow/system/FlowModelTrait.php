@@ -37,6 +37,14 @@ trait FlowModelTrait
         }
     }
 
+    /**
+     * @return bool
+     */
+    public function rightStatus()
+    {
+        return $this->rightEdit();
+    }
+
     protected function buildPermissionRow($arrGroups) : string
     {
         return implode(",", $this->convertPermissionToShortIds($this->getPermissionGroupIds($arrGroups)));

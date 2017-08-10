@@ -15,6 +15,7 @@ use Kajona\Flow\System\FlowConditionAbstract;
 use Kajona\Flow\System\FlowConfig;
 use Kajona\Flow\System\FlowGraphWriter;
 use Kajona\Flow\System\FlowManager;
+use Kajona\Flow\System\FlowModelRightInterface;
 use Kajona\Flow\System\FlowStatus;
 use Kajona\Flow\System\FlowStatusFilter;
 use Kajona\Flow\System\FlowTransition;
@@ -564,7 +565,9 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
 
         $objObject = Objectfactory::getInstance()->getObject($strSystemId);
 
-        if (!$objObject->rightEdit()) {
+        if ($objObject instanceof FlowModelRightInterface && !$objObject->rightStatus()) {
+            throw new \RuntimeException("No rights to edit the object");
+        } elseif (!$objObject->rightEdit()) {
             throw new \RuntimeException("No rights to edit the object");
         }
 
