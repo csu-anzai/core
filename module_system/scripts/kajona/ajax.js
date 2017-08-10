@@ -8,7 +8,7 @@
  *
  * @module ajax
  */
-define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'forms'], function ($, statusDisplay, workingIndicator, tooltip, forms) {
+define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'], function ($, statusDisplay, workingIndicator, tooltip, util) {
 
     return /** @alias module:ajax */ {
 
@@ -28,7 +28,7 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'forms
         loadUrlToElement: function(strElementSelector, strUrl, strData, bitBlockLoadingContainer) {
             workingIndicator.start();
 
-            var objField = forms.getObjField(strElementSelector);
+            var objField = util.getObjField(strElementSelector);
 
             if(!bitBlockLoadingContainer) {
                 objField.html('<div class="loadingContainer"></div>');
