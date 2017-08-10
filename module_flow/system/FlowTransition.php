@@ -33,6 +33,16 @@ class FlowTransition extends Model implements ModelInterface, AdminListableInter
     protected $strTargetStatus;
 
     /**
+     * @var int
+     * @tableColumn flow_step_transition.transition_visible
+     * @tableColumnDatatype int
+     * @fieldType Kajona\System\Admin\Formentries\FormentryDropdown
+     * @fieldDDValues [0 => transition_visible_0],[1 => transition_visible_1]
+     * @fieldMandatory
+     */
+    protected $intVisible = 1;
+
+    /**
      * @return string
      */
     public function getStrTargetStatus()
@@ -46,6 +56,30 @@ class FlowTransition extends Model implements ModelInterface, AdminListableInter
     public function setStrTargetStatus(string $strTargetStatus)
     {
         $this->strTargetStatus = $strTargetStatus;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIntVisible()
+    {
+        return $this->intVisible;
+    }
+
+    /**
+     * @param int $intVisible
+     */
+    public function setIntVisible($intVisible)
+    {
+        $this->intVisible = $intVisible;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVisible()
+    {
+        return !!$this->intVisible;
     }
 
     /**

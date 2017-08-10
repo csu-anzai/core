@@ -9,13 +9,16 @@
 
 namespace Kajona\Flow\Installer;
 
+use AGP\Agp_Commons\System\ArtemeonCommon;
 use Kajona\Flow\System\FlowActionAbstract;
 use Kajona\Flow\System\FlowConditionAbstract;
 use Kajona\Flow\System\FlowConfig;
 use Kajona\Flow\System\FlowStatus;
 use Kajona\Flow\System\FlowTransition;
+use Kajona\System\System\DbDatatypes;
 use Kajona\System\System\InstallerBase;
 use Kajona\System\System\OrmSchemamanager;
+use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemModule;
 
 /**
@@ -68,6 +71,24 @@ class InstallerFlow extends InstallerBase
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         $strReturn .= "Version found:\n\t Module: ".$arrModule["module_name"].", Version: ".$arrModule["module_version"]."\n\n";
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if ($arrModule["module_version"] == "6.2") {
+            $strReturn .= $this->update_62_70();
+        }
+
+        return $strReturn;
+    }
+
+    private function update_62_70()
+    {
+        $strReturn = "Updating flow transition table\n";
+        $this->objDB->addColumn("flow_step_transition", "transition_visible", DbDatatypes::STR_TYPE_INT);
+
+        // make all existing transitions visible
+        $dbPrefix = _dbprefix_;
+        $this->objDB->_pQuery("UPDATE {$dbPrefix}flow_step_transition SET transition_visible = 1", []);
+
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
         return $strReturn;
     }
 }

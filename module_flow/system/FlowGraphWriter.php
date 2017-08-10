@@ -31,6 +31,18 @@ class FlowGraphWriter
     private static function writeMermaid(FlowConfig $objFlow, $objHighlite = null)
     {
         $arrStatus = $objFlow->getArrStatus();
+
+        // sort status
+        usort($arrStatus, function(FlowStatus $objA, FlowStatus $objB){
+            if ($objA->getIntIndex() == 1) {
+                return 1;
+            }
+            if ($objA->getIntIndex() == $objB->getIntIndex()) {
+                return 0;
+            }
+            return ($objA->getIntIndex() < $objB->getIntIndex()) ? -1 : 1;
+        });
+
         $arrList = array("graph TD;");
 
         //color mapper
@@ -53,14 +65,13 @@ class FlowGraphWriter
                 /** @var $objTransition FlowTransition */
                 $objTargetStatus = $objTransition->getTargetStatus();
                 if ($objTargetStatus instanceof FlowStatus) {
-                    $arrList[] = $objStatus->getStrSystemid() . "[" . $objStatus->getStrName() . "]-- <span data-" . $objTransition->getSystemid() . ">______</span> -->" . $objTargetStatus->getSystemid() . "[" . $objTargetStatus->getStrName() . "];";
+                    $strLineStart = $objTransition->isVisible() ? "--" : "-.";
+                    $strLineEnd = $objTransition->isVisible() ? "--" : ".-";
+                    $arrList[] = $objStatus->getStrSystemid() . "[" . $objStatus->getStrName() . "]{$strLineStart} <span data-" . $objTransition->getSystemid() . ">______</span> {$strLineEnd}>" . $objTargetStatus->getSystemid() . "[" . $objTargetStatus->getStrName() . "];";
                 }
             }
             $arrList["style ".$objStatus->getSystemid()] = "style {$objStatus->getSystemid()} fill:#f9f9f9,stroke:{$arrColorMapper[$objStatus->getStrIcon()]},stroke-width:1px;";
         }
-
-
-
 
         if ($objHighlite instanceof FlowStatus) {
             $arrList["style ".$objHighlite->getSystemid()] = "style {$objHighlite->getSystemid()} fill:#f9f9f9,stroke:{$arrColorMapper[$objHighlite->getStrIcon()]},stroke-width:3px;";

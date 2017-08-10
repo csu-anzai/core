@@ -798,6 +798,68 @@ class ToolkitAdmin extends Toolkit
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_dropdown", true);
     }
 
+    /**
+     * Returns a regular text-input field
+     *
+     * @param string $strName
+     * @param string $strTitle
+     * @param string $strValue
+     * @param string $strClass
+     * @param string $strOpener
+     * @param bool $bitReadonly
+     *
+     * @param string $strInstantEditor
+     * @return string
+     */
+    public function formInputInterval($strName, $strTitle = "", \DateInterval $objValue = null, $strClass = "", $bitReadonly = false)
+    {
+        $objLang = Lang::getInstance();
+        $arrKeyValues = [
+            "D" => $objLang->getLang("interval_day", "elements"),
+            "M" => $objLang->getLang("interval_month", "elements"),
+            "Y" => $objLang->getLang("interval_year", "elements"),
+        ];
+
+        $strKeySelected = "";
+        $strValue = "";
+        if ($objValue !== null) {
+            if ($objValue->d > 0) {
+                $strKeySelected = "D";
+                $strValue = $objValue->d;
+            } elseif ($objValue->m > 0) {
+                $strKeySelected = "M";
+                $strValue = $objValue->m;
+            } elseif ($objValue->y > 0) {
+                $strKeySelected = "Y";
+                $strValue = $objValue->y;
+            }
+        }
+        if (empty($strKeySelected)) {
+            $strKeySelected = "D";
+        }
+
+        $strOptions = "";
+        foreach ($arrKeyValues as $strKey => $strVal) {
+            $arrTemplate = array();
+            $arrTemplate["key"] = $strKey;
+            $arrTemplate["value"] = $strVal;
+            if ((string)$strKey == (string)$strKeySelected) {
+                $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_dropdown_row_selected");
+            } else {
+                $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_dropdown_row");
+            }
+        }
+
+        $arrTemplate = array();
+        $arrTemplate["name"] = $strName;
+        $arrTemplate["value"] = $strValue;
+        $arrTemplate["title"] = $strTitle;
+        $arrTemplate["class"] = $strClass;
+        $arrTemplate["units"] = $strOptions;
+        $arrTemplate["readonly"] = ($bitReadonly ? "readonly=\"readonly\"" : "");
+
+        return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_date_interval");
+    }
 
     /**
      * Returning a complete dropdown but in multiselect-style
