@@ -174,11 +174,10 @@ require(["jquery", "ajax"], function($, ajax){
         $objFlow = $this->objFlowManager->getFlowForModel($objObject);
 
         // check right
-        $bitHasRight = false;
-        if ($objObject instanceof FlowModelRightInterface && $objObject->rightStatus()) {
-            $bitHasRight = true;
-        } elseif ($objObject->rightEdit()) {
-            $bitHasRight = true;
+        if ($objObject instanceof FlowModelRightInterface) {
+            $bitHasRight = $objObject->rightStatus();
+        } else {
+            $bitHasRight = $objObject->rightEdit();
         }
 
         if (!empty($arrTransitions) && $bitHasRight) {

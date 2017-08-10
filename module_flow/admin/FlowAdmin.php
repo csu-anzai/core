@@ -675,7 +675,11 @@ HTML;
 
         $objObject = Objectfactory::getInstance()->getObject($strSystemId);
 
-        if (!$objObject->rightEdit()) {
+        if ($objObject instanceof FlowModelRightInterface) {
+            if (!$objObject->rightStatus()) {
+                throw new \RuntimeException("No rights to edit the object");
+            }
+        } elseif (!$objObject->rightEdit()) {
             throw new \RuntimeException("No rights to edit the object");
         }
 
