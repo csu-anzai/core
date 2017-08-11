@@ -8,7 +8,38 @@
  *
  * @module messaging
  */
-define('messaging', ['jquery', 'ajax'], function ($, ajax) {
+define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialogHelper) {
+
+    /**
+     * Internal helper to built a real callback based on the action provided by the backend
+     * @param $onAccept
+     * @returns {Function}
+     */
+    var getActionCallback = function($onAccept) {
+
+        if ($onAccept.type === 'redirect') {
+            return function() {
+                document.location.href = $onAccept.target;
+            };
+        }
+
+        if ($onAccept.type === 'ajax') {
+            return function() {
+                ajax.genericAjaxCall($onAccept.module, $onAccept.action, $onAccept.systemid);
+            };
+        }
+
+        return function() {};
+    };
+
+    /**
+     * Renders an alert generated on the backend
+     * @param $objAlert
+     */
+    var renderAlert = function($objAlert) {
+        dialogHelper.showConfirmationDialog($objAlert.title, $objAlert.body, $objAlert.confirmLabel, getActionCallback($objAlert.onAccept));
+        ajax.genericAjaxCall("messaging", "deleteAlert", $objAlert.systemid);
+    };
 
     return /** @alias module:messaging */ {
         properties: null,
@@ -25,8 +56,13 @@ define('messaging', ['jquery', 'ajax'], function ($, ajax) {
             var me = this;
             ajax.genericAjaxCall("messaging", "getUnreadMessagesCount", "", function(data, status, jqXHR) {
                 if(status == 'success') {
-                    me.intCount = $.parseJSON(data);
+                    var $objResult = $.parseJSON(data);
+                    me.intCount = $objResult.count;
                     objCallback(me.intCount);
+
+                    if($objResult.alert) {
+                        renderAlert($objResult.alert);
+                    }
                 }
             });
         },

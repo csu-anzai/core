@@ -11,21 +11,22 @@ namespace Kajona\System\Admin;
 
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\ArraySectionIterator;
+use Kajona\System\System\AuthenticationException;
 use Kajona\System\System\Carrier;
-use Kajona\System\System\HttpResponsetypes;
+use Kajona\System\System\Exception;
 use Kajona\System\System\Link;
 use Kajona\System\System\Messageproviders\MessageproviderExtendedInterface;
 use Kajona\System\System\Messageproviders\MessageproviderPersonalmessage;
+use Kajona\System\System\MessagingAlert;
 use Kajona\System\System\MessagingConfig;
 use Kajona\System\System\MessagingMessage;
 use Kajona\System\System\MessagingMessagehandler;
 use Kajona\System\System\Model;
 use Kajona\System\System\Objectfactory;
-use Kajona\System\System\ResponseObject;
+use Kajona\System\System\ServiceProvider;
 use Kajona\System\System\Session;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemChangelog;
-
 
 /**
  * Admin-class to manage a users messages.
@@ -533,12 +534,12 @@ JS;
         else {
             return $this->getLang("commons_error_permissions");
         }
-
     }
 
 
     /**
-     * Gets the number of unread messages for the current user
+     * Gets the number of unread messages for the current user.
+     * Fetches the latest alert, too - if given.
      *
      * @permissions view
      * @autoTestable
@@ -549,7 +550,7 @@ JS;
     {
         Carrier::getInstance()->getObjSession()->setBitBlockDbUpdate(true);
         Session::getInstance()->sessionClose();
-        return json_encode(MessagingMessage::getNumberOfMessagesForUser($this->objSession->getUserID(), true));
+        return json_encode(["count" => MessagingMessage::getNumberOfMessagesForUser($this->objSession->getUserID(), true), "alert" => MessagingAlert::getNextAlertForUser($this->objSession->getUserID())]);
     }
 
     /**
@@ -581,13 +582,28 @@ JS;
             );
         }
 
+
         $arrReturn = array(
             "messages"     => $arrReturn,
-            "messageCount" => MessagingMessage::getNumberOfMessagesForUser($this->objSession->getUserID(), true)
+            "messageCount" => MessagingMessage::getNumberOfMessagesForUser($this->objSession->getUserID(), true),
         );
 
         return json_encode($arrReturn);
     }
 
+    /**
+     * @permissions view
+     * @responseType json
+     */
+    protected function actionDeleteAlert()
+    {
+        $objAlert = Objectfactory::getInstance()->getObject($this->getSystemid());
+        if ($objAlert instanceof MessagingAlert && $objAlert->getStrUser() == $this->objSession->getUserID()) {
+            return json_encode(
+                Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_LIFE_CYCLE_FACTORY)->factory(get_class($objAlert))->delete($objAlert)
+            );
+        }
+        throw new AuthenticationException("User is not allowed to delete action", Exception::$level_ERROR);
+    }
 
 }

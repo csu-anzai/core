@@ -89,6 +89,11 @@ class ServiceProvider implements ServiceProviderInterface
      */
     const STR_LIFE_CYCLE_DEFAULT = "system_life_cycle_default";
 
+    /**
+     * @see \Kajona\System\System\MessagingAlertLifeCycle
+     */
+    const STR_LIFE_CYCLE_MESSAGES_ALERT = "system_life_cycle_messages_alert";
+
     public function register(Container $objContainer)
     {
         $objContainer[self::STR_DB] = function ($c) {
@@ -161,6 +166,10 @@ class ServiceProvider implements ServiceProviderInterface
 
         $objContainer[self::STR_LIFE_CYCLE_DEFAULT] = function ($c) {
             return new Lifecycle\ServiceLifeCycleImpl();
+        };
+
+        $objContainer[self::STR_LIFE_CYCLE_MESSAGES_ALERT] = function ($c) {
+            return new MessagingAlertLifeCycle();
         };
     }
 }
