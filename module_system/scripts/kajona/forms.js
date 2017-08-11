@@ -21,7 +21,7 @@ define('forms', ['jquery', 'tooltip', 'util'], function ($, tooltip, util) {
      * @param objField - my be a jquery field or a id selector
      */
     forms.hideField = function(objField) {
-        objField = util.getObjField(objField);
+        objField = util.getElement(objField);
 
         var objFormGroup = objField.closest('.form-group');
 
@@ -41,7 +41,7 @@ define('forms', ['jquery', 'tooltip', 'util'], function ($, tooltip, util) {
      * @param objField - my be a jquery object or an id selector
      */
     forms.showField = function(objField) {
-        objField = util.getObjField(objField);
+        objField = util.getElement(objField);
 
         var objFormGroup = objField.closest('.form-group');
 
@@ -61,7 +61,7 @@ define('forms', ['jquery', 'tooltip', 'util'], function ($, tooltip, util) {
      * @param objField - my be a jquery object or an id selector
      */
     forms.setFieldReadOnly = function(objField) {
-        objField = util.getObjField(objField);
+        objField = util.getElement(objField);
 
         if (objField.is('input:checkbox') || objField.is('select')) {
             objField.prop("disabled", "disabled");
@@ -77,7 +77,7 @@ define('forms', ['jquery', 'tooltip', 'util'], function ($, tooltip, util) {
      * @param objField - my be a jquery object or an id selector
      */
     forms.setFieldEditable = function(objField) {
-        objField = util.getObjField(objField);
+        objField = util.getElement(objField);
 
         if (objField.is('input:checkbox') || objField.is('select')) {
             objField.removeProp("disabled");
@@ -95,7 +95,7 @@ define('forms', ['jquery', 'tooltip', 'util'], function ($, tooltip, util) {
      */
     forms.getObjField = function (objField) {
         // If objField is already a jQuery object
-        return util.getObjField(objField);
+        return util.getElement(objField);
     };
 
 

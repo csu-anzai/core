@@ -28,16 +28,16 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
         loadUrlToElement: function(strElementSelector, strUrl, strData, bitBlockLoadingContainer) {
             workingIndicator.start();
 
-            var objField = util.getObjField(strElementSelector);
+            var objElement = util.getElement(strElementSelector);
 
             if(!bitBlockLoadingContainer) {
-                objField.html('<div class="loadingContainer"></div>');
+                objElement.html('<div class="loadingContainer"></div>');
             }
 
             $.get(KAJONA_WEBPATH+strUrl, strData)
                 .done(
                     function(data) {
-                        objField.html(data);
+                        objElement.html(data);
                         tooltip.initTooltip();
                     }
                 )

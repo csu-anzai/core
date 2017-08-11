@@ -293,15 +293,15 @@ define('util', ['jquery'], function ($) {
     /**
      * Gets the jQuery object
      *
-     * @param objField - my be a jquery object or an id selector
+     * @param objElement - my be a jquery object or an id selector
      */
-    util.getObjField = function (objField) {
-        // If objField is already a jQuery object
-        if(objField instanceof jQuery) {
-            return objField
+    util.getElement = function (objElement) {
+        // If objElement is already a jQuery object
+        if(objElement instanceof jQuery) {
+            return objElement
         } else {
             // Convert to jQuery object
-            return $(objField);
+            return $(objElement);
         }
     };
 
