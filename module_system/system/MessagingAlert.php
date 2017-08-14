@@ -11,7 +11,7 @@ namespace Kajona\System\System;
 /**
  * Model for a single alert, emitted by the messaging subsytem.
  * Alerts differ from messages, since alerts are shown automatically as soon as the user navigates in the system.
- * The user is granted with an option to accept the alert or to dismiss the alert, on accept a custom js callback may be executed.
+ * The user is granted with an option to accept the alert or to dismiss the alert, on accept a custom js action may be executed.
  * As soon as the alert is rendered on the users screen, it is marked and read and deleted automatically.
  *
  * Please do not use Alerts directly, use the MessagingMessagehandler::sendAlertToUser() method instead.
