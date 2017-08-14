@@ -600,7 +600,7 @@ JS;
         $objAlert = Objectfactory::getInstance()->getObject($this->getSystemid());
         if ($objAlert instanceof MessagingAlert && $objAlert->getStrUser() == $this->objSession->getUserID()) {
             return json_encode(
-                Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_LIFE_CYCLE_FACTORY)->factory(get_class($objAlert))->delete($objAlert)
+                $this->objLifeCycleFactory->factory(get_class($objAlert))->delete($objAlert)
             );
         }
         throw new AuthenticationException("User is not allowed to delete action", Exception::$level_ERROR);
