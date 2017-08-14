@@ -6,9 +6,9 @@
 
 namespace Kajona\System\System;
 
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Messageproviders\MessageproviderInterface;
 use Kajona\System\System\Validators\EmailValidator;
-
 
 /**
  * The messagehandler provides common methods to interact with the messaging-subsystem
@@ -19,6 +19,18 @@ use Kajona\System\System\Validators\EmailValidator;
  */
 class MessagingMessagehandler
 {
+    /**
+     * @var ServiceLifeCycleFactory
+     */
+    protected $objLifeCycleFactory;
+
+    /**
+     * @param ServiceLifeCycleFactory|null $objLifeCycleFactory
+     */
+    public function __construct(ServiceLifeCycleFactory $objLifeCycleFactory = null)
+    {
+        $this->objLifeCycleFactory = $objLifeCycleFactory === null ? Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_LIFE_CYCLE_FACTORY) : $objLifeCycleFactory;
+    }
 
     /**
      * @return MessageproviderInterface[]
@@ -32,11 +44,11 @@ class MessagingMessagehandler
 
                 if ($objInstance != null && $objInstance instanceof MessageproviderInterface) {
                     $strOneFile = $objInstance;
-                }
-                else {
+                } else {
                     $strOneFile = null;
                 }
-            });
+            }
+        );
 
         return array_filter($arrHandler, function ($objInstance) {
             return $objInstance != null;
@@ -72,6 +84,25 @@ class MessagingMessagehandler
 
 
     /**
+     * Sends an alert to a single user.
+     * The alert is shown to the user directly, the user is forced to either accept or dismiss the alert
+     * @param MessagingAlert $objAlert
+     * @param UserUser $objUser
+     */
+    public function sendAlertToUser(MessagingAlert $objAlert, UserUser $objUser)
+    {
+        //is user currently active?
+        if ($objUser->getIntRecordStatus() != 1) {
+            return;
+        }
+
+        $objAlert->setStrUser($objUser->getSystemid());
+        $objAlert->setObjSendDate(new Date());
+
+        $this->objLifeCycleFactory->factory(get_class($objAlert))->update($objAlert);
+    }
+
+    /**
      * Sends a message.
      * If the list of recipients contains a group, the message is duplicated for each member.
      *
@@ -92,7 +123,6 @@ class MessagingMessagehandler
         $arrRecipients = $this->getRecipientsFromArray($arrRecipients);
 
         foreach ($arrRecipients as $objOneUser) {
-
             //skip inactive users
             if ($objOneUser == null || $objOneUser->getIntRecordStatus() != 1) {
                 continue;
@@ -101,7 +131,6 @@ class MessagingMessagehandler
             $objConfig = MessagingConfig::getConfigForUserAndProvider($objOneUser->getSystemid(), $objMessage->getObjMessageProvider());
 
             if ($objConfig->getBitEnabled()) {
-
                 //clone the message
                 $objCurrentMessage = new MessagingMessage();
                 $objCurrentMessage->setStrTitle($objMessage->getStrTitle());
@@ -119,7 +148,6 @@ class MessagingMessagehandler
                 }
             }
         }
-
     }
 
 
@@ -183,8 +211,7 @@ class MessagingMessagehandler
         foreach ($arrRecipients as $objOneRecipient) {
             if ($objOneRecipient instanceof UserUser) {
                 $arrReturn[$objOneRecipient->getStrSystemid()] = $objOneRecipient;
-            }
-            elseif ($objOneRecipient instanceof UserGroup) {
+            } elseif ($objOneRecipient instanceof UserGroup) {
                 $objUsersources = new UserSourcefactory();
                 if ($objUsersources->getSourceGroup($objOneRecipient) != null) {
                     $arrMembers = $objUsersources->getSourceGroup($objOneRecipient)->getUserIdsForGroup();
