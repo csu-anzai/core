@@ -8,7 +8,7 @@
  *
  * @module forms
  */
-define('forms', ['jquery', 'tooltip'], function ($, tooltip) {
+define('forms', ['jquery', 'tooltip', 'util'], function ($, tooltip, util) {
 
     /** @exports forms */
     var forms = {};
@@ -21,7 +21,7 @@ define('forms', ['jquery', 'tooltip'], function ($, tooltip) {
      * @param objField - my be a jquery field or a id selector
      */
     forms.hideField = function(objField) {
-        objField = this.getObjField(objField);
+        objField = util.getElement(objField);
 
         var objFormGroup = objField.closest('.form-group');
 
@@ -41,7 +41,7 @@ define('forms', ['jquery', 'tooltip'], function ($, tooltip) {
      * @param objField - my be a jquery object or an id selector
      */
     forms.showField = function(objField) {
-        objField = this.getObjField(objField);
+        objField = util.getElement(objField);
 
         var objFormGroup = objField.closest('.form-group');
 
@@ -61,7 +61,7 @@ define('forms', ['jquery', 'tooltip'], function ($, tooltip) {
      * @param objField - my be a jquery object or an id selector
      */
     forms.setFieldReadOnly = function(objField) {
-        objField = this.getObjField(objField);
+        objField = util.getElement(objField);
 
         if (objField.is('input:checkbox') || objField.is('select')) {
             objField.prop("disabled", "disabled");
@@ -77,7 +77,7 @@ define('forms', ['jquery', 'tooltip'], function ($, tooltip) {
      * @param objField - my be a jquery object or an id selector
      */
     forms.setFieldEditable = function(objField) {
-        objField = this.getObjField(objField);
+        objField = util.getElement(objField);
 
         if (objField.is('input:checkbox') || objField.is('select')) {
             objField.removeProp("disabled");
@@ -91,15 +91,11 @@ define('forms', ['jquery', 'tooltip'], function ($, tooltip) {
      * Gets the jQuery object
      *
      * @param objField - my be a jquery object or an id selector
+     * @deprecated
      */
     forms.getObjField = function (objField) {
         // If objField is already a jQuery object
-        if(objField instanceof jQuery) {
-            return objField
-        } else {
-            // Convert to jQuery object
-            return $(objField);
-        }
+        return util.getElement(objField);
     };
 
 

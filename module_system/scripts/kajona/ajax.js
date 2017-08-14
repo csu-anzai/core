@@ -8,7 +8,7 @@
  *
  * @module ajax
  */
-define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip'], function ($, statusDisplay, workingIndicator, tooltip) {
+define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'], function ($, statusDisplay, workingIndicator, tooltip, util) {
 
     return /** @alias module:ajax */ {
 
@@ -21,22 +21,23 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip'], funct
          * Possible usage:
          * ajax.loadUrlToElement('#report_container', '/xml.php?admin=1&module=stats&action=getReport', '&plugin=general');
          *
-         * @param strElementSelector
+         * @param strElementSelector (may be selector or a jquery object)
          * @param strUrl
          * @param strData
          */
         loadUrlToElement: function(strElementSelector, strUrl, strData, bitBlockLoadingContainer) {
             workingIndicator.start();
 
+            var objElement = util.getElement(strElementSelector);
+
             if(!bitBlockLoadingContainer) {
-                $(strElementSelector).html('<div class="loadingContainer"></div>');
+                objElement.html('<div class="loadingContainer"></div>');
             }
 
-            var target = strElementSelector;
             $.get(KAJONA_WEBPATH+strUrl, strData)
                 .done(
                     function(data) {
-                        $(strElementSelector).html(data);
+                        objElement.html(data);
                         tooltip.initTooltip();
                     }
                 )
