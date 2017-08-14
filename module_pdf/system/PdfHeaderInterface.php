@@ -27,5 +27,6 @@ interface PdfHeaderInterface {
      * @return void
      */
     public function writeHeader($objPdf);
-    
+
+    public function setBitSkipFirstPage(bool $bitSkip);
 }

@@ -28,4 +28,6 @@ interface PdfFooterInterface {
      */
     public function writeFooter($objPdf);
 
+    public function setBitSkipFirstPage(bool $bitSkip);
+
 }
