@@ -68,12 +68,23 @@ require(["jquery", "ajax"], function($, ajax){
      * Action to set the next status
      *
      * @return string
-     * @permissions edit
+     * @permissions view
      */
     protected function actionSetStatus()
     {
         $objObject = $this->objFactory->getObject($this->getSystemid());
         if ($objObject instanceof Model) {
+            // check right
+            if ($objObject instanceof FlowModelRightInterface) {
+                $bitHasRight = $objObject->rightStatus();
+            } else {
+                $bitHasRight = $objObject->rightEdit();
+            }
+
+            if (!$bitHasRight) {
+                throw new \RuntimeException("No right to change the status of the object");
+            }
+
             $strTransitionId = $this->getParam("transition_id");
             $objFlow = $this->objFlowManager->getFlowForModel($objObject);
             $objTransition = Objectfactory::getInstance()->getObject($strTransitionId);
@@ -172,7 +183,15 @@ require(["jquery", "ajax"], function($, ajax){
         $strClass = $objObject->getSystemid() . "-errors";
         $arrTransitions = $this->objFlowManager->getPossibleTransitionsForModel($objObject);
         $objFlow = $this->objFlowManager->getFlowForModel($objObject);
-        if (!empty($arrTransitions) && $objObject->rightEdit()) {
+
+        // check right
+        if ($objObject instanceof FlowModelRightInterface) {
+            $bitHasRight = $objObject->rightStatus();
+        } else {
+            $bitHasRight = $objObject->rightEdit();
+        }
+
+        if (!empty($arrTransitions) && $bitHasRight) {
             foreach ($arrTransitions as $objTransition) {
                 // skip if not visible
                 if (!$objTransition->isVisible()) {
