@@ -458,11 +458,13 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
                 $objRedStatus = new FlowStatus();
                 $objRedStatus->setStrName("In Bearbeitung");
                 $objRedStatus->setStrIcon("icon_flag_red");
+                $objRedStatus->setIntIndex(0);
                 $objRedStatus->updateObjectToDb($objFlow->getSystemid());
 
                 $objGreenStatus = new FlowStatus();
                 $objGreenStatus->setStrName("Freigegeben");
                 $objGreenStatus->setStrIcon("icon_flag_green");
+                $objGreenStatus->setIntIndex(1);
                 $objGreenStatus->updateObjectToDb($objFlow->getSystemid());
 
                 $objTransition = new FlowTransition();
