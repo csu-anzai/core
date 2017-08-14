@@ -265,4 +265,65 @@ HTML;
             return "<ul><li class='dropdown-header'>" . $this->getLang("list_flow_no_status", "flow") . "</li></ul>";
         }
     }
+
+    /**
+     * Ajax endpoint to trigger a status transition
+     *
+     * @return string
+     * @permissions view
+     * @responseType json
+     * @xml
+     */
+    protected function actionSetAjaxStatus()
+    {
+        $objObject = $this->objFactory->getObject($this->getSystemid());
+        if ($objObject instanceof Model) {
+            // check right
+            if ($objObject instanceof FlowModelRightInterface) {
+                $bitHasRight = $objObject->rightStatus();
+            } else {
+                $bitHasRight = $objObject->rightEdit();
+            }
+
+            if (!$bitHasRight) {
+                return json_encode(["type" => "error", "message" => $this->getLang("commons_error_permissions", "commons")]);
+            }
+
+            $strTransitionId = $this->getParam("transition_id");
+            $objFlow = $this->objFlowManager->getFlowForModel($objObject);
+            $objTransition = Objectfactory::getInstance()->getObject($strTransitionId);
+
+            if ($objTransition instanceof FlowTransition) {
+                $arrActions = $objTransition->getArrActions();
+                $objForm = new AdminFormgenerator("", null);
+                $bitInputRequired = false;
+
+                foreach ($arrActions as $objAction) {
+                    if ($objAction instanceof FlowActionUserInputInterface) {
+                        $objForm->addField(new FormentryHeadline())->setStrValue($objAction->getTitle());
+                        $objAction->configureUserInputForm($objForm);
+                        $bitInputRequired = true;
+                    }
+                }
+
+                if ($bitInputRequired) {
+                    // in this case an action needs additional user input so we redirect the user to the form
+                    $strRedirect = Link::getLinkAdminHref($this->getArrModule("modul"), "setStatus", "&systemid=" . $objObject->getStrSystemid() . "&transition_id=" . $strTransitionId);
+                    return json_encode(["type" => "redirect", "href" => $strRedirect]);
+                }
+
+                $objHandler = $objFlow->getHandler();
+
+                try {
+                    $objHandler->handleStatusTransition($objObject, $objTransition);
+                } catch (RedirectException $e) {
+                    return json_encode(["type" => "redirect", "href" => $e->getHref()]);
+                } catch (\Exception $e) {
+                    return json_encode(["type" => "error", "message" => $e->getMessage()]);
+                }
+            }
+        }
+
+        return json_encode(["type" => "success", "message" => $this->getLang("action_status_change_success", "flow")]);
+    }
 }
