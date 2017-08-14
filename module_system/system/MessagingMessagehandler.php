@@ -6,6 +6,7 @@
 
 namespace Kajona\System\System;
 
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Messageproviders\MessageproviderInterface;
 use Kajona\System\System\Validators\EmailValidator;
 
@@ -18,6 +19,18 @@ use Kajona\System\System\Validators\EmailValidator;
  */
 class MessagingMessagehandler
 {
+    /**
+     * @var ServiceLifeCycleFactory
+     */
+    protected $objLifeCycleFactory;
+
+    /**
+     * @param ServiceLifeCycleFactory|null $objLifeCycleFactory
+     */
+    public function __construct(ServiceLifeCycleFactory $objLifeCycleFactory = null)
+    {
+        $this->objLifeCycleFactory = $objLifeCycleFactory === null ? Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_LIFE_CYCLE_FACTORY) : $objLifeCycleFactory;
+    }
 
     /**
      * @return MessageproviderInterface[]
@@ -85,7 +98,8 @@ class MessagingMessagehandler
 
         $objAlert->setStrUser($objUser->getSystemid());
         $objAlert->setObjSendDate(new Date());
-        Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_LIFE_CYCLE_FACTORY)->factory(get_class($objAlert))->update($objAlert);
+
+        $this->objLifeCycleFactory->factory(get_class($objAlert))->update($objAlert);
     }
 
     /**
