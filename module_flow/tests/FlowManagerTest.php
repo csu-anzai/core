@@ -15,20 +15,14 @@ class FlowManagerTest extends FlowTestAbstract
     {
         $arrStatus = $this->objManager->getPossibleStatusForModel(new FlowModelTest());
 
-        $this->assertEquals([
-            0 => 'In Bearbeitung',
-            1 => 'Freigegeben',
-        ], $arrStatus);
+        $this->assertEquals(['In Bearbeitung', 'Freigegeben'], array_values($arrStatus));
     }
 
     public function testGetPossibleStatusForClass()
     {
         $arrStatus = $this->objManager->getPossibleStatusForClass(FlowModelTest::class);
 
-        $this->assertEquals([
-            0 => 'In Bearbeitung',
-            1 => 'Freigegeben',
-        ], $arrStatus);
+        $this->assertEquals(['In Bearbeitung', 'Freigegeben'], array_values($arrStatus));
     }
 
     public function testGetPossibleTransitionsForModel()
