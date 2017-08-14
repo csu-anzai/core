@@ -1116,7 +1116,7 @@ Part to display the login status, user is logged in
 
                 });
 
-                window.setTimeout(v4skin.messaging.pollMessageCount, 2000);
+                window.setTimeout(v4skin.messaging.pollMessageCount, 1000);
             });
         }
         else {
