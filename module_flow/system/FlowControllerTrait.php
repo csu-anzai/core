@@ -309,21 +309,25 @@ HTML;
                 if ($bitInputRequired) {
                     // in this case an action needs additional user input so we redirect the user to the form
                     $strRedirect = Link::getLinkAdminHref($this->getArrModule("modul"), "setStatus", "&systemid=" . $objObject->getStrSystemid() . "&transition_id=" . $strTransitionId);
-                    return json_encode(["type" => "redirect", "href" => $strRedirect]);
+                    return json_encode(["type" => "redirect", "target" => $strRedirect]);
                 }
 
                 $objHandler = $objFlow->getHandler();
 
                 try {
                     $objHandler->handleStatusTransition($objObject, $objTransition);
+
+                    return json_encode(["type" => "success", "message" => $this->getLang("action_status_change_success", "flow")]);
                 } catch (RedirectException $e) {
-                    return json_encode(["type" => "redirect", "href" => $e->getHref()]);
+                    return json_encode(["type" => "redirect", "target" => $e->getHref()]);
                 } catch (\Exception $e) {
                     return json_encode(["type" => "error", "message" => $e->getMessage()]);
                 }
+            } else {
+                return json_encode(["type" => "error", "message" => "Invalid transition"]);
             }
+        } else {
+            return json_encode(["type" => "error", "message" => "Invalid object"]);
         }
-
-        return json_encode(["type" => "success", "message" => $this->getLang("action_status_change_success", "flow")]);
     }
 }
