@@ -23,7 +23,12 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
             };
         } else if ($onAccept.type === 'ajax') {
             return function() {
-                ajax.genericAjaxCall($onAccept.module, $onAccept.action, $onAccept.systemid);
+                ajax.genericAjaxCall($onAccept.module, $onAccept.action, $onAccept.systemid, function(){
+                    // on ok we trigger the getUnreadCount again since the ajax call could have created
+                    // other alert messages
+                    me.getUnreadCount(function(){
+                    });
+                });
             };
         }
 
@@ -39,7 +44,8 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
         ajax.genericAjaxCall("messaging", "deleteAlert", $objAlert.systemid);
     };
 
-    return /** @alias module:messaging */ {
+    /** @alias module:messaging */
+    var me = {
         properties: null,
         bitFirstLoad : true,
         intCount : 0,
@@ -51,7 +57,6 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
          * @param objCallback
          */
         getUnreadCount : function(objCallback) {
-            var me = this;
             ajax.genericAjaxCall("messaging", "getUnreadMessagesCount", "", function(data, status, jqXHR) {
                 if(status == 'success') {
                     var $objResult = $.parseJSON(data);
@@ -80,4 +85,5 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
         }
     };
 
+    return me;
 });
