@@ -79,28 +79,20 @@ class FlowManager
 
             // filter out transitions where the condition is not valid
             foreach ($arrTransitions as $objTransition) {
-                $arrConditions = $objTransition->getArrConditions();
-                $bitValid = true;
+                // validate conditions
                 if ($bitValidateConditions) {
-                    foreach ($arrConditions as $objCondition) {
-                        // check whether all assigned conditions are valid
-                        $objResult = $objCondition->validateCondition($objObject, $objTransition);
-                        $bitValid = $bitValid && $objResult->isValid();
-                        if ($bitValid === false) {
-                            break;
-                        }
+                    $objResult = $objHandler->validateStatusTransition($objObject, $objTransition);
+                    if (!$objResult->isValid()) {
+                        continue;
                     }
                 }
 
                 // ask the handler whether this transition is visible
-                $bitValid = $bitValid && $objHandler->isTransitionVisible($objObject, $objTransition);
-                if ($bitValid === false) {
+                if (!$objHandler->isTransitionVisible($objObject, $objTransition)) {
                     continue;
                 }
 
-                if ($bitValid === true) {
-                    $arrResult[] = $objTransition;
-                }
+                $arrResult[] = $objTransition;
             }
 
             return $arrResult;
