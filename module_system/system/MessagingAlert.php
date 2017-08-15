@@ -41,7 +41,6 @@ use Kajona\System\System\Alert\MessagingAlertActionInterface;
  */
 class MessagingAlert extends Model implements ModelInterface, AdminListableInterface, \JsonSerializable
 {
-
     /**
      * @var string
      * @tableColumn messages_alert.alert_user
@@ -49,6 +48,14 @@ class MessagingAlert extends Model implements ModelInterface, AdminListableInter
      * @tableColumnIndex
      */
     private $strUser = "";
+
+    /**
+     * @var string
+     * @tableColumn messages_alert.alert_ref
+     * @tableColumnDatatype char20
+     * @tableColumnIndex
+     */
+    private $strRef = "";
 
     /**
      * @var string
@@ -61,6 +68,7 @@ class MessagingAlert extends Model implements ModelInterface, AdminListableInter
      * @var string
      * @tableColumn messages_alert.alert_body
      * @tableColumnDatatype longtext
+     * @blockEscaping
      */
     private $strBody = "";
 
@@ -102,10 +110,10 @@ class MessagingAlert extends Model implements ModelInterface, AdminListableInter
         $this->strConfirmLabel = $this->getLang("commons_ok");
     }
 
-
     /**
      * Fetches the next alert for the current user - if given
-     * @param $strUserid
+     *
+     * @param string $strUserid
      * @return MessagingAlert|null
      */
     public static function getNextAlertForUser($strUserid)
@@ -195,6 +203,22 @@ class MessagingAlert extends Model implements ModelInterface, AdminListableInter
     public function setStrUser($strUser)
     {
         $this->strUser = $strUser;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStrRef()
+    {
+        return $this->strRef;
+    }
+
+    /**
+     * @param string $strRef
+     */
+    public function setStrRef($strRef)
+    {
+        $this->strRef = $strRef;
     }
 
     /**
