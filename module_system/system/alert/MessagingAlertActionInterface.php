@@ -5,7 +5,7 @@
 ********************************************************************************************************/
 declare(strict_types=1);
 
-namespace Kajona\System\System;
+namespace Kajona\System\System\Alert;
 
 /**
  * Base interface for alert actions

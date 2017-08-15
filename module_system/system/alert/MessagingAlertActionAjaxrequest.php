@@ -5,7 +5,7 @@
 ********************************************************************************************************/
 declare(strict_types=1);
 
-namespace Kajona\System\System;
+namespace Kajona\System\System\Alert;
 
 /**
  * Action for an alert, forces the frontend to fire an ajax request using the ajax.js module
@@ -16,13 +16,22 @@ namespace Kajona\System\System;
  */
 class MessagingAlertActionAjaxrequest implements MessagingAlertActionInterface
 {
-
+    /**
+     * @var string
+     */
     private $strModule = "";
+
+    /**
+     * @var string
+     */
     private $strAction = "";
+
+    /**
+     * @var string
+     */
     private $strSystemid = "";
 
     /**
-     * MessagingAlertActionAjaxrequest constructor.
      * @param string $strModule
      * @param string $strAction
      * @param string $strSystemid

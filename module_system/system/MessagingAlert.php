@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Kajona\System\System;
 
+use Kajona\System\System\Alert\MessagingAlertActionInterface;
 
 /**
  * Model for a single alert, emitted by the messaging subsytem.

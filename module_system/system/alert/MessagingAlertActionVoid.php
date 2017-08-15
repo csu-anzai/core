@@ -5,7 +5,7 @@
 ********************************************************************************************************/
 declare(strict_types=1);
 
-namespace Kajona\System\System;
+namespace Kajona\System\System\Alert;
 
 /**
  * Dummy action, rendering an ok button but doing nothing

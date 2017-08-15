@@ -10,11 +10,16 @@ namespace Kajona\Flow\System;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\Formentries\FormentryHeadline;
 use Kajona\System\System\AdminskinHelper;
+use Kajona\System\System\Alert\MessagingAlertActionRedirect;
+use Kajona\System\System\Alert\MessagingAlertActionVoid;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Link;
+use Kajona\System\System\MessagingAlert;
+use Kajona\System\System\MessagingMessagehandler;
 use Kajona\System\System\Model;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\RedirectException;
+use Kajona\System\System\Session;
 use Kajona\System\Xml;
 
 /**
@@ -28,6 +33,18 @@ trait FlowControllerTrait
      * @var FlowManager
      */
     protected $objFlowManager;
+
+    /**
+     * @inject system_message_handler
+     * @var MessagingMessagehandler
+     */
+    protected $objMessageHandler;
+
+    /**
+     * @inject system_session
+     * @var Session
+     */
+    protected $objSession;
 
     protected function renderStatusAction(Model $objListEntry, $strAltActive = "", $strAltInactive = "")
     {
@@ -277,6 +294,8 @@ HTML;
     protected function actionSetAjaxStatus()
     {
         $objObject = $this->objFactory->getObject($this->getSystemid());
+        $objAlert = null;
+
         if ($objObject instanceof Model) {
             // check right
             if ($objObject instanceof FlowModelRightInterface) {
@@ -286,7 +305,7 @@ HTML;
             }
 
             if (!$bitHasRight) {
-                return json_encode(["type" => "error", "message" => $this->getLang("commons_error_permissions", "commons")]);
+                return json_encode(["success" => false, "message" => $this->getLang("commons_error_permissions", "commons")]);
             }
 
             $strTransitionId = $this->getParam("transition_id");
@@ -309,25 +328,38 @@ HTML;
                 if ($bitInputRequired) {
                     // in this case an action needs additional user input so we redirect the user to the form
                     $strRedirect = Link::getLinkAdminHref($this->getArrModule("modul"), "setStatus", "&systemid=" . $objObject->getStrSystemid() . "&transition_id=" . $strTransitionId);
-                    return json_encode(["type" => "redirect", "target" => $strRedirect]);
+
+                    $objAlert = new MessagingAlert();
+                    $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
+                    $objAlert->setStrBody($this->objToolkit->warningBox($this->getLang("action_status_change_redirect", "flow"), "alert-info"));
+                    $objAlert->setObjAlertAction(new MessagingAlertActionRedirect($strRedirect));
+                } else {
+                    try {
+                        $objFlow->getHandler()->handleStatusTransition($objObject, $objTransition);
+
+                        $objAlert = new MessagingAlert();
+                        $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
+                        $objAlert->setStrBody($this->objToolkit->warningBox($this->getLang("action_status_change_success", "flow"), "alert-success"));
+                        $objAlert->setObjAlertAction(new MessagingAlertActionVoid());
+                    } catch (RedirectException $e) {
+                        $objAlert = new MessagingAlert();
+                        $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
+                        $objAlert->setStrBody($this->objToolkit->warningBox($this->getLang("action_status_change_redirect", "flow"), "alert-info"));
+                        $objAlert->setObjAlertAction(new MessagingAlertActionRedirect($e->getHref()));
+                    } catch (\Exception $e) {
+                        $objAlert = new MessagingAlert();
+                        $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
+                        $objAlert->setStrBody($this->objToolkit->warningBox($e->getMessage(), "alert-danger"));
+                        $objAlert->setObjAlertAction(new MessagingAlertActionVoid());
+                    }
                 }
-
-                $objHandler = $objFlow->getHandler();
-
-                try {
-                    $objHandler->handleStatusTransition($objObject, $objTransition);
-
-                    return json_encode(["type" => "success", "message" => $this->getLang("action_status_change_success", "flow")]);
-                } catch (RedirectException $e) {
-                    return json_encode(["type" => "redirect", "target" => $e->getHref()]);
-                } catch (\Exception $e) {
-                    return json_encode(["type" => "error", "message" => $e->getMessage()]);
-                }
-            } else {
-                return json_encode(["type" => "error", "message" => "Invalid transition"]);
             }
-        } else {
-            return json_encode(["type" => "error", "message" => "Invalid object"]);
         }
+
+        if ($objAlert instanceof MessagingAlert) {
+            $this->objMessageHandler->sendAlertToUser($objAlert, $this->objSession->getUser());
+        }
+
+        return json_encode(["success" => true]);
     }
 }

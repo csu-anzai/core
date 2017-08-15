@@ -21,9 +21,7 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
             return function() {
                 document.location.href = $onAccept.target;
             };
-        }
-
-        if ($onAccept.type === 'ajax') {
+        } else if ($onAccept.type === 'ajax') {
             return function() {
                 ajax.genericAjaxCall($onAccept.module, $onAccept.action, $onAccept.systemid);
             };
