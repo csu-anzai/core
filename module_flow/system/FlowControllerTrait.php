@@ -198,7 +198,7 @@ require(["jquery", "ajax"], function($, ajax){
         );
 
         $strClass = $objObject->getSystemid() . "-errors";
-        $arrTransitions = $this->objFlowManager->getPossibleTransitionsForModel($objObject);
+        $arrTransitions = $this->objFlowManager->getPossibleTransitionsForModel($objObject, false);
         $objFlow = $this->objFlowManager->getFlowForModel($objObject);
 
         // check right

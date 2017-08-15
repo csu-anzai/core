@@ -66,9 +66,10 @@ class FlowManager
      * Returns all available status transition for the model
      *
      * @param Model $objObject
+     * @param bool $bitValidateConditions
      * @return FlowTransition[]
      */
-    public function getPossibleTransitionsForModel(Model $objObject) : array
+    public function getPossibleTransitionsForModel(Model $objObject, $bitValidateConditions = true) : array
     {
         $objStep = $this->getCurrentStepForModel($objObject);
         if ($objStep instanceof FlowStatus) {
@@ -80,19 +81,21 @@ class FlowManager
             foreach ($arrTransitions as $objTransition) {
                 $arrConditions = $objTransition->getArrConditions();
                 $bitValid = true;
-                foreach ($arrConditions as $objCondition) {
-                    // check whether all assigned conditions are valid
-                    $objResult = $objCondition->validateCondition($objObject, $objTransition);
-                    $bitValid = $objResult->isValid();
-                    if ($bitValid === false) {
-                        break;
+                if ($bitValidateConditions) {
+                    foreach ($arrConditions as $objCondition) {
+                        // check whether all assigned conditions are valid
+                        $objResult = $objCondition->validateCondition($objObject, $objTransition);
+                        $bitValid = $bitValid && $objResult->isValid();
+                        if ($bitValid === false) {
+                            break;
+                        }
                     }
+                }
 
-                    // ask the handler whether this transition is visible
-                    $bitValid = $objHandler->isTransitionVisible($objObject, $objTransition);
-                    if ($bitValid === false) {
-                        break;
-                    }
+                // ask the handler whether this transition is visible
+                $bitValid = $bitValid && $objHandler->isTransitionVisible($objObject, $objTransition);
+                if ($bitValid === false) {
+                    continue;
                 }
 
                 if ($bitValid === true) {
