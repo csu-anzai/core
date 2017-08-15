@@ -28,5 +28,10 @@ interface PdfHeaderInterface {
      */
     public function writeHeader($objPdf);
 
+    /**
+     * If set to true, the first page is rendered without a header row
+     * @param bool $bitSkip
+     * @return void
+     */
     public function setBitSkipFirstPage(bool $bitSkip);
 }

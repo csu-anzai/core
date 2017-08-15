@@ -28,6 +28,11 @@ interface PdfFooterInterface {
      */
     public function writeFooter($objPdf);
 
+    /**
+     * If set to true, the first page is rendered without a footer row
+     * @param bool $bitSkip
+     * @return void
+     */
     public function setBitSkipFirstPage(bool $bitSkip);
 
 }
