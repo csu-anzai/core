@@ -10,7 +10,6 @@
 namespace Kajona\Pdf\System;
 
 
-
 /**
  * Sample implementation of a footer.
  *
@@ -18,8 +17,10 @@ namespace Kajona\Pdf\System;
  * @package module_pdf
  * @since 3.3.0
  */
-class PdfHeader implements PdfHeaderInterface {
+class PdfHeader implements PdfHeaderInterface
+{
 
+    private $bitSkipFirstPage = false;
 
     /**
      * Writes the header for a single page.
@@ -27,7 +28,12 @@ class PdfHeader implements PdfHeaderInterface {
      *
      * @param PdfTcpdf $objPdf
      */
-    public function writeHeader($objPdf) {
+    public function writeHeader($objPdf)
+    {
+
+        if ($this->bitSkipFirstPage && $objPdf->getPage() == 1) {
+            return;
+        }
 
         $objPdf->SetY(3);
 
@@ -41,5 +47,22 @@ class PdfHeader implements PdfHeaderInterface {
         $objPdf->Ln(30);
 
     }
+
+    /**
+     * @return bool
+     */
+    public function getBitSkipFirstPage(): bool
+    {
+        return $this->bitSkipFirstPage;
+    }
+
+    /**
+     * @param bool $bitSkipFirstPage
+     */
+    public function setBitSkipFirstPage(bool $bitSkipFirstPage)
+    {
+        $this->bitSkipFirstPage = $bitSkipFirstPage;
+    }
+
 
 }
