@@ -133,7 +133,7 @@ class AdminFormgenerator
         $this->strFormname = $strFormname;
         $this->objSourceobject = $objSourceobject;
 
-        $this->strOnSubmit = "$(this).on('submit', function() { return false; }); $(window).off('unload'); require('forms').animateSubmit(this); return true;";
+        $this->strOnSubmit = "$(this).on('submit', function() { return false; }); $(window).off('unload'); require('messaging').setPollingEnabled(false); require('forms').animateSubmit(this); return true;";
         $this->objLang = Lang::getInstance();
     }
 
