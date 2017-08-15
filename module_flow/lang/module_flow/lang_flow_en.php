@@ -66,4 +66,4 @@ $lang["form_next_status_description"]   = "Please select the next status for the
 
 $lang["action_status_change_title"]   = "Response";
 $lang["action_status_change_success"]   = "Status change was successful.";
-$lang["action_status_change_redirect"]   = "The system needs  user input in order to execute the status change.";
+$lang["action_status_change_redirect"]   = "The system needs user input in order to execute the status change.";
