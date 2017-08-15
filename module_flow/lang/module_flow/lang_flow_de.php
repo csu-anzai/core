@@ -66,5 +66,5 @@ $lang["form_next_status_description"]   = "Auf dieser Seite können Sie für das
 
 $lang["action_status_change_title"]   = "Rückmeldung";
 $lang["action_status_change_success"]   = "Statuswechsel erfolgreich durchgeführt.";
-$lang["action_status_change_redirect"]   = "Statuswechsel erfolgreich durchgeführt.";
+$lang["action_status_change_redirect"]   = "Das System benötigt eine Benutzereingabe um den Statusübergang durchzuführen.";
 
