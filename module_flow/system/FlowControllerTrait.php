@@ -335,12 +335,36 @@ HTML;
                     $objAlert->setObjAlertAction(new MessagingAlertActionRedirect($strRedirect));
                 } else {
                     try {
-                        $objFlow->getHandler()->handleStatusTransition($objObject, $objTransition);
+                        // validation
+                        $objResult = $objFlow->getHandler()->validateStatusTransition($objObject, $objTransition);
 
-                        $objAlert = new MessagingAlert();
-                        $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
-                        $objAlert->setStrBody($this->objToolkit->warningBox($this->getLang("action_status_change_success", "flow"), "alert-success"));
-                        $objAlert->setObjAlertAction(new MessagingAlertActionVoid());
+                        if (!$objResult->isValid()) {
+                            $arrErrors = $objResult->getErrors();
+                            if (!empty($arrErrors)) {
+                                $strTooltip = "<ul>";
+                                foreach ($arrErrors as $strError) {
+                                    if (!empty($strError)) {
+                                        $strError = htmlspecialchars($strError);
+                                        $strTooltip.= "<li>{$strError}</li>";
+                                    }
+                                }
+                                $strTooltip.= "</ul>";
+
+                                $objAlert = new MessagingAlert();
+                                $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
+                                $objAlert->setStrBody($this->objToolkit->warningBox($strTooltip, "alert-danger"));
+                                $objAlert->setObjAlertAction(new MessagingAlertActionVoid());
+                            }
+                        } else {
+                            // execute status transition
+                            $objFlow->getHandler()->handleStatusTransition($objObject, $objTransition);
+
+                            $objAlert = new MessagingAlert();
+                            $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
+                            $objAlert->setStrBody($this->objToolkit->warningBox($this->getLang("action_status_change_success", "flow"), "alert-success"));
+                            $objAlert->setObjAlertAction(new MessagingAlertActionVoid());
+                        }
+
                     } catch (RedirectException $e) {
                         $objAlert = new MessagingAlert();
                         $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
