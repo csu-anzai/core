@@ -82,7 +82,8 @@ class FlowManager
                 $bitValid = true;
                 foreach ($arrConditions as $objCondition) {
                     // check whether all assigned conditions are valid
-                    $bitValid = $objCondition->validateCondition($objObject, $objTransition);
+                    $objResult = $objCondition->validateCondition($objObject, $objTransition);
+                    $bitValid = $objResult->isValid();
                     if ($bitValid === false) {
                         break;
                     }
