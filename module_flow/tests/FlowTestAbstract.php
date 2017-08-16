@@ -8,6 +8,7 @@ use Kajona\Flow\System\FlowManager;
 use Kajona\Flow\System\FlowStatus;
 use Kajona\Flow\System\FlowTransition;
 use Kajona\System\System\Model;
+use Kajona\System\System\ModelInterface;
 use Kajona\System\Tests\Testbase;
 
 abstract class FlowTestAbstract extends Testbase
@@ -66,8 +67,12 @@ abstract class FlowTestAbstract extends Testbase
     }
 }
 
-class FlowModelTest extends Model
+class FlowModelTest extends Model implements ModelInterface
 {
+    public function getStrDisplayName()
+    {
+        return "";
+    }
 }
 
 class FlowHandlerTest extends FlowHandlerAbstract
