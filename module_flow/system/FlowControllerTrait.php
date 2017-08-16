@@ -291,7 +291,7 @@ HTML;
      * @responseType json
      * @xml
      */
-    protected function actionSetAjaxStatus()
+    protected function actionApiSetFlowStatus()
     {
         $objObject = $this->objFactory->getObject($this->getSystemid());
         $objAlert = null;
