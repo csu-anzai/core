@@ -550,7 +550,11 @@ JS;
     {
         Carrier::getInstance()->getObjSession()->setBitBlockDbUpdate(true);
         Session::getInstance()->sessionClose();
-        return json_encode(["count" => MessagingMessage::getNumberOfMessagesForUser($this->objSession->getUserID(), true), "alert" => MessagingAlert::getNextAlertForUser($this->objSession->getUserID())]);
+
+        return json_encode([
+            "count" => MessagingMessage::getNumberOfMessagesForUser($this->objSession->getUserID(), true),
+            "alert" => MessagingAlert::getNextAlertForUser($this->objSession->getUserID())
+        ]);
     }
 
     /**

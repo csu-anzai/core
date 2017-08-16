@@ -10,6 +10,12 @@
  */
 define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialogHelper) {
 
+
+    var pollInterval = 30000;
+    var pollingEnabled = false;
+
+    var intCount = 0;
+
     /**
      * Internal helper to built a real callback based on the action provided by the backend
      * @param $onAccept
@@ -21,11 +27,14 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
             return function() {
                 document.location.href = $onAccept.target;
             };
-        }
-
-        if ($onAccept.type === 'ajax') {
+        } else if ($onAccept.type === 'ajax') {
             return function() {
-                ajax.genericAjaxCall($onAccept.module, $onAccept.action, $onAccept.systemid);
+                ajax.genericAjaxCall($onAccept.module, $onAccept.action, $onAccept.systemid, function(){
+                    // on ok we trigger the getUnreadCount again since the ajax call could have created
+                    // other alert messages
+                    me.getUnreadCount(function(){
+                    });
+                });
             };
         }
 
@@ -41,10 +50,25 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
         ajax.genericAjaxCall("messaging", "deleteAlert", $objAlert.systemid);
     };
 
-    return /** @alias module:messaging */ {
+    /**
+     * Triggers the polling of unread messages from the backend
+     */
+    var pollMessageCount = function() {
+        if(!pollingEnabled) {
+            return;
+        }
+
+        me.getUnreadCount(function (intCount) {
+            me.updateCountInfo(intCount);
+        });
+
+        window.setTimeout(pollMessageCount, pollInterval);
+    };
+
+    /** @alias module:messaging */
+    var me = {
         properties: null,
         bitFirstLoad : true,
-        intCount : 0,
 
         /**
          * Gets the number of unread messages for the current user.
@@ -53,12 +77,10 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
          * @param objCallback
          */
         getUnreadCount : function(objCallback) {
-            var me = this;
             ajax.genericAjaxCall("messaging", "getUnreadMessagesCount", "", function(data, status, jqXHR) {
                 if(status == 'success') {
                     var $objResult = $.parseJSON(data);
-                    me.intCount = $objResult.count;
-                    objCallback(me.intCount);
+                    objCallback($objResult.count);
 
                     if($objResult.alert) {
                         renderAlert($objResult.alert);
@@ -79,7 +101,43 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
                     objCallback(objResponse);
                 }
             });
+        },
+
+        /**
+         * Enables or disables the polling of message counts / alerts
+         * @param bitEnabled
+         */
+        setPollingEnabled : function(bitEnabled) {
+
+            if(!pollingEnabled && bitEnabled) {
+                pollMessageCount();
+            }
+
+            pollingEnabled = bitEnabled;
+        },
+
+
+        /**
+         * Updates the count info of the current unread messages
+         * @param intCount
+         */
+        updateCountInfo: function(intCount) {
+            var $userNotificationsCount = $('#userNotificationsCount');
+            var oldCount = $userNotificationsCount.text();
+            $userNotificationsCount.text(intCount);
+            if (intCount > 0) {
+                $userNotificationsCount.show();
+                if (oldCount != intCount) {
+                    var strTitle = document.title.replace("(" + oldCount + ")", "");
+                    document.title = "(" + intCount + ") " + strTitle;
+                }
+
+            } else {
+                $userNotificationsCount.hide();
+            }
+
         }
     };
 
+    return me;
 });

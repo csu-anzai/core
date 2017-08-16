@@ -5,8 +5,7 @@
 ********************************************************************************************************/
 declare(strict_types=1);
 
-namespace Kajona\System\System;
-
+namespace Kajona\System\System\Alert;
 
 /**
  * Action for an alert, forces the frontend to load a specific url
@@ -17,12 +16,13 @@ namespace Kajona\System\System;
  */
 class MessagingAlertActionRedirect implements MessagingAlertActionInterface
 {
-
+    /**
+     * @var string
+     */
     private $strUrl;
 
     /**
-     * MessagingAlertActionRedirect constructor.
-     * @param $strUrl
+     * @param string $strUrl
      */
     public function __construct($strUrl)
     {

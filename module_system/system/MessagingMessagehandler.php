@@ -91,8 +91,13 @@ class MessagingMessagehandler
      */
     public function sendAlertToUser(MessagingAlert $objAlert, UserUser $objUser)
     {
-        //is user currently active?
+        // is user currently active?
         if ($objUser->getIntRecordStatus() != 1) {
+            return;
+        }
+
+        // check whether an alert exists already for the reference
+        if ($this->hasAlert($objAlert->getStrRef(), $objUser->getSystemid())) {
             return;
         }
 
@@ -150,6 +155,24 @@ class MessagingMessagehandler
         }
     }
 
+    /**
+     * Returns whether an alert exists for a specific reference id
+     *
+     * @param string $strRef
+     * @param $strUserId
+     * @return bool
+     */
+    protected function hasAlert($strRef, $strUserId)
+    {
+        if (empty($strRef)) {
+            return false;
+        }
+
+        $objOrm = new OrmObjectlist();
+        $objOrm->addWhereRestriction(new OrmPropertyCondition("strRef", OrmComparatorEnum::Equal(), $strRef));
+        $objOrm->addWhereRestriction(new OrmPropertyCondition("strUser", OrmComparatorEnum::Equal(), $strUserId));
+        return $objOrm->getSingleObject(MessagingAlert::class) !== null;
+    }
 
     /**
      * Sends a copy of the message to the user by mail

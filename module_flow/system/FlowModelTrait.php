@@ -18,26 +18,6 @@ use Kajona\System\System\UserGroup;
 trait FlowModelTrait
 {
     /**
-     * Method which calculates the rights depending on the status of the model
-     */
-    public function calcPermissions()
-    {
-        $objConfig = FlowConfig::getByModelClass(get_class($this));
-        if ($objConfig instanceof FlowConfig) {
-            $objStatus = $objConfig->getStatusByIndex($this->getIntRecordStatus());
-            if ($objStatus instanceof FlowStatus) {
-                $objRights = Carrier::getInstance()->getObjRights();
-
-                $arrSelfPermission = $objRights->getArrayRights($this->getSystemid());
-                $arrSelfPermission[Rights::$STR_RIGHT_INHERIT] = 0;
-                $arrSelfPermission[Rights::$STR_RIGHT_EDIT] = $this->buildPermissionRow($objStatus->getArrEditGroups());
-
-                $objRights->setRights($arrSelfPermission, $this->getSystemid());
-            }
-        }
-    }
-
-    /**
      * @return bool
      */
     public function rightStatus()

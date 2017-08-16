@@ -63,3 +63,7 @@ $lang["flow_transition_action_list"]   = "The following actions are assigned to 
 $lang["flow_transition_condition_list"]   = "The following conditions are assigned to the transition (<b>{0}</b> to <b>{1}</b>).";
 
 $lang["form_next_status_description"]   = "Please select the next status for the object <b>{0}</b>.";
+
+$lang["action_status_change_title"]   = "Response";
+$lang["action_status_change_success"]   = "Status change was successful.";
+$lang["action_status_change_redirect"]   = "The system needs user input in order to execute the status change.";

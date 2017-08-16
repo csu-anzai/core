@@ -66,9 +66,10 @@ class FlowManager
      * Returns all available status transition for the model
      *
      * @param Model $objObject
+     * @param bool $bitValidateConditions
      * @return FlowTransition[]
      */
-    public function getPossibleTransitionsForModel(Model $objObject) : array
+    public function getPossibleTransitionsForModel(Model $objObject, $bitValidateConditions = true) : array
     {
         $objStep = $this->getCurrentStepForModel($objObject);
         if ($objStep instanceof FlowStatus) {
@@ -78,25 +79,20 @@ class FlowManager
 
             // filter out transitions where the condition is not valid
             foreach ($arrTransitions as $objTransition) {
-                $arrConditions = $objTransition->getArrConditions();
-                $bitValid = true;
-                foreach ($arrConditions as $objCondition) {
-                    // check whether all assigned conditions are valid
-                    $bitValid = $objCondition->validateCondition($objObject, $objTransition);
-                    if ($bitValid === false) {
-                        break;
-                    }
-
-                    // ask the handler whether this transition is visible
-                    $bitValid = $objHandler->isTransitionVisible($objObject, $objTransition);
-                    if ($bitValid === false) {
-                        break;
+                // validate conditions
+                if ($bitValidateConditions) {
+                    $objResult = $objHandler->validateStatusTransition($objObject, $objTransition);
+                    if (!$objResult->isValid()) {
+                        continue;
                     }
                 }
 
-                if ($bitValid === true) {
-                    $arrResult[] = $objTransition;
+                // ask the handler whether this transition is visible
+                if (!$objHandler->isTransitionVisible($objObject, $objTransition)) {
+                    continue;
                 }
+
+                $arrResult[] = $objTransition;
             }
 
             return $arrResult;
