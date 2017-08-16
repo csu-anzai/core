@@ -54,7 +54,7 @@ class FormentryHeadline extends FormentryBase implements FormentryPrintableInter
      * @return string
      */
     public function getValueAsText() {
-        return Carrier::getInstance()->getObjToolkit("admin")->formHeadline($this->getStrValue());
+        return Carrier::getInstance()->getObjToolkit("admin")->formHeadline($this->getStrValue(), "", $this->strLevel);
     }
 
     /**
