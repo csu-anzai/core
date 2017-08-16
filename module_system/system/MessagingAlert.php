@@ -50,6 +50,8 @@ class MessagingAlert extends Model implements ModelInterface, AdminListableInter
     private $strUser = "";
 
     /**
+     * A general reference to a database record or a generated id
+     * 
      * @var string
      * @tableColumn messages_alert.alert_ref
      * @tableColumnDatatype char20
