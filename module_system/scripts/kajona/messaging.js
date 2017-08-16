@@ -108,14 +108,12 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
          * @param bitEnabled
          */
         setPollingEnabled : function(bitEnabled) {
+            pollingEnabled = bitEnabled;
 
-            if(!pollingEnabled && bitEnabled) {
+            if (bitEnabled) {
                 pollMessageCount();
             }
-
-            pollingEnabled = bitEnabled;
         },
-
 
         /**
          * Updates the count info of the current unread messages
