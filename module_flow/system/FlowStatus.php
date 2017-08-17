@@ -109,6 +109,35 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
     }
 
     /**
+     * @return string
+     */
+    public function getStrColor()
+    {
+        switch ($this->strIcon) {
+            case 'icon_flag_black':
+                return '#000000';
+            case 'icon_flag_blue':
+                return '#0040b3';
+            case 'icon_flag_brown':
+                return '#d47a0b';
+            case 'icon_flag_green':
+                return '#0e8500';
+            case 'icon_flag_grey':
+                return '#aeaeae';
+            case 'icon_flag_orange':
+                return '#ff5600';
+            case 'icon_flag_purple':
+                return '#e23bff';
+            case 'icon_flag_red':
+                return '#d42f00';
+            case 'icon_flag_yellow':
+                return '#ffe211';
+        }
+
+        return '#eee';
+    }
+
+    /**
      * Return the status int for this step
      *
      * @return int
