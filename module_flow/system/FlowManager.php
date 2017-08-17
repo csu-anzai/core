@@ -64,7 +64,9 @@ class FlowManager
     }
 
     /**
-     * Returns all available status transition for the model
+     * Returns all available transitions which are valid for the current model status. This means
+     * that the assigned conditions are validated. If the argument bitValidateConditions is false
+     * all visible transitions are returned
      *
      * @param Model $objObject
      * @param bool $bitValidateConditions
