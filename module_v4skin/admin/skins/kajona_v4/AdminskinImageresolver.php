@@ -189,6 +189,8 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface {
         "icon_updateError"                 => "<span class='kj-icon fa-stack'><i class='fa fa-cloud-download'></i><i class='fa fa-exclamation-triangle fa-stack-1x kj-stack'></i></span>",
         "icon_upload"                      => "<i class='kj-icon fa fa-upload'></i>",
         "icon_user"                        => "<i class='kj-icon fa fa-user'></i>",
+        "icon_userPending"                 => "<span class='kj-icon fa-stack'><i class='fa fa-user'></i><i class='fa fa-pause fa-stack-1x kj-stack' style='color: orange;'></i></span>",
+        "icon_userDone"                    => "<span class='kj-icon fa-stack'><i class='fa fa-user'></i><i class='fa fa-check fa-stack-1x kj-stack' style='color: green;'></i></span>",
         "icon_userswitch"                  => "<span class='kj-icon fa-stack'><i class='fa fa-user'></i><i class='fa fa-play fa-stack-1x kj-stack'></i></span>",
         "icon_word"                        => "<i class='kj-icon fa fa-ms-word'></i>",
         "icon_workflow"                    => "<i class='kj-icon fa fa-cog'></i>",

@@ -23,6 +23,7 @@ use Kajona\System\Admin\AdminEvensimpler;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminInterface;
 use Kajona\System\Admin\Formentries\FormentryHeadline;
+use Kajona\System\Admin\Formentries\FormentryHidden;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\ArraySectionIterator;
 use Kajona\System\System\Lang;
@@ -633,6 +634,7 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
 
             $strHtml.= $this->objToolkit->formInputDropdown("transition_id", $arrOptions, "Status", key($arrOptions));
             $strHtml.= $this->objToolkit->formTextRow($strValidation);
+            $strHtml.= $this->objToolkit->formInputHidden("change_status", "1");
 
             $strButtons = "";
             $strButtons.= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_cancel", "system"), "cancelbtn", "", "", true, false);
@@ -668,6 +670,7 @@ HTML;
         $strSystemId = $this->getSystemid();
         $strRedirect = $this->getParam("redirect");
         $strTransitionId = $this->getParam("transition_id");
+        $bitStatusChange = $this->getParam("change_status");
 
         if (!validateSystemid($strSystemId)) {
             throw new \RuntimeException("No systemid provided");
@@ -699,6 +702,9 @@ HTML;
         if ($objTransition instanceof FlowTransition) {
             $arrActions = $objTransition->getArrActions();
             $objForm = new AdminFormgenerator("", null);
+            $objForm->addField(new FormentryHidden("", "redirect"))->setStrValue($strRedirect);
+            $objForm->addField(new FormentryHidden("", "transition_id"))->setStrValue($strTransitionId);
+
             $bitInputRequired = false;
 
             foreach ($arrActions as $objAction) {
@@ -710,7 +716,7 @@ HTML;
             }
 
             if ($bitInputRequired) {
-                if ($_SERVER["REQUEST_METHOD"] == "GET" || !$objForm->validateForm()) {
+                if ($bitStatusChange || !$objForm->validateForm()) {
                     $strForm = $objForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "setNextStatusSave", "&systemid=" . $objObject->getStrSystemid() . "&transition_id=" . $strTransitionId));
                     return $strForm;
                 } else {

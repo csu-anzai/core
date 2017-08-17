@@ -12,7 +12,7 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
 
 
     var pollInterval = 30000;
-    var pollingEnabled = false;
+    var timeout = null;
 
     var intCount = 0;
 
@@ -54,15 +54,11 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
      * Triggers the polling of unread messages from the backend
      */
     var pollMessageCount = function() {
-        if(!pollingEnabled) {
-            return;
-        }
-
         me.getUnreadCount(function (intCount) {
             me.updateCountInfo(intCount);
         });
 
-        window.setTimeout(pollMessageCount, pollInterval);
+        timeout = window.setTimeout(pollMessageCount, pollInterval);
     };
 
     /** @alias module:messaging */
@@ -108,14 +104,19 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
          * @param bitEnabled
          */
         setPollingEnabled : function(bitEnabled) {
-
-            if(!pollingEnabled && bitEnabled) {
-                pollMessageCount();
+            if (bitEnabled) {
+                // start timeout only if we have not already a timeout
+                if (!timeout) {
+                    pollMessageCount();
+                }
+            } else {
+                // if we have a timeout clear
+                if (timeout) {
+                    window.clearTimeout(timeout);
+                }
+                timeout = null;
             }
-
-            pollingEnabled = bitEnabled;
         },
-
 
         /**
          * Updates the count info of the current unread messages
