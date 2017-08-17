@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Kajona\Flow\System;
 
+use InvalidArgumentException;
 use Kajona\System\System\Model;
 
 /**
@@ -38,7 +39,7 @@ class FlowManager
      * @param Model $objObject
      * @return array
      */
-    public function getPossibleStatusForModel(Model $objObject) : array
+    public function getPossibleStatusForModel(Model $objObject): array
     {
         return $this->getPossibleStatusForClass(get_class($objObject));
     }
@@ -47,7 +48,7 @@ class FlowManager
      * @param string $objObject
      * @return array
      */
-    public function getPossibleStatusForClass(string $objObject) : array
+    public function getPossibleStatusForClass(string $objObject): array
     {
         $objFlow = $this->getFlowForClass($objObject);
         if ($objFlow instanceof FlowConfig) {
@@ -69,7 +70,7 @@ class FlowManager
      * @param bool $bitValidateConditions
      * @return FlowTransition[]
      */
-    public function getPossibleTransitionsForModel(Model $objObject, $bitValidateConditions = true) : array
+    public function getPossibleTransitionsForModel(Model $objObject, $bitValidateConditions = true): array
     {
         $objStep = $this->getCurrentStepForModel($objObject);
         if ($objStep instanceof FlowStatus) {
@@ -154,5 +155,41 @@ class FlowManager
             }
         }
         return $this->arrFlows[$strClass];
+    }
+
+    /**
+     * Executes an action with the given classname of the transition from sourceindex to targetindex
+     *
+     * @param int $intSourceIndex
+     * @param int $intTargetndex
+     * @param Model $objModel
+     * @param string $strActionClassName
+     * @throws InvalidArgumentException
+     *
+     */
+    public function executeTransitionAction(int $intSourceIndex, int $intTargetndex, Model $objModel, string $strActionClassName)
+    {
+        $objFlow = $this->getFlowForModel($objModel);
+        if ($objFlow === null) {
+            throw new InvalidArgumentException("Flow not found for model " . get_class($objModel));
+        }
+
+        $objStatus = $objFlow->getStatusByIndex($intSourceIndex);
+        if ($objStatus === null) {
+            throw new InvalidArgumentException("Status not found for source index $intSourceIndex ");
+        }
+
+        $objTransition = $objStatus->getTransitionByTargetIndex($intTargetndex);
+        if ($objTransition === null) {
+            throw new InvalidArgumentException("Transition not found for target index $intTargetndex");
+        }
+
+        //Now try to execute the action
+        $arrActions = $objTransition->getArrActions();
+        foreach ($arrActions as $objAction) {
+            if ($objAction instanceof $strActionClassName) {
+                $objAction->executeAction($objModel, $objTransition);
+            }
+        }
     }
 }
