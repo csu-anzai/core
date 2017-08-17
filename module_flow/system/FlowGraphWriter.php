@@ -28,6 +28,11 @@ class FlowGraphWriter
         return self::writeCytoscape($objFlow, $objHighlite);
     }
 
+    /**
+     * @param FlowConfig $objFlow
+     * @param FlowStatus|FlowTransition $objHighlite
+     * @return string
+     */
     private static function writeCytoscape(FlowConfig $objFlow, $objHighlite)
     {
         $arrStatus = $objFlow->getArrStatus();
@@ -48,10 +53,10 @@ class FlowGraphWriter
             $strBgColor = "#fff";
             $strBorder = "solid";
             if ($objHighlite instanceof FlowStatus && $objHighlite->getSystemid() == $objStatus->getSystemid()) {
-                $strBgColor = "#ccc";
+                $strBgColor = "#eee";
                 $strBorder = "dashed";
             } elseif ($objHighlite instanceof FlowTransition && $objHighlite->getParentStatus()->getSystemid() == $objStatus->getSystemid()) {
-                $strBgColor = "#ccc";
+                $strBgColor = "#eee";
                 $strBorder = "dashed";
             }
 
@@ -62,7 +67,8 @@ class FlowGraphWriter
                     'color' => $objStatus->getStrColor(),
                     'bgcolor' => $strBgColor,
                     'border' => $strBorder,
-                ]
+                ],
+                'grabbable' => false
             ];
         }
 
@@ -89,6 +95,9 @@ class FlowGraphWriter
         $strNodes = json_encode($arrNodes);
         $strTransitions = json_encode($arrTrans);
 
+        $strTmpSystemId = generateSystemid();
+        $strLinkTransition = Link::getLinkAdminHref("flow", "listTransition", "&systemid=" . $strTmpSystemId);
+
         return <<<HTML
 <div id='flow-graph' class='mermaid' style='position:absolute;width:90%;height:800px;border:1px solid #999;'></div>
 <script type="text/javascript">
@@ -98,19 +107,15 @@ class FlowGraphWriter
 
         var cy = cytoscape({
           container: document.getElementById('flow-graph'),
-
-          boxSelectionEnabled: false,
-          autounselectify: true,
-
           style: cytoscape.stylesheet()
             .selector('node')
               .css({
-                'font-size': '18',
+                'font-size': '14',
                 'label': 'data(name)',
                 'text-valign': 'center',
                 'shape': 'roundrectangle',
-                'width': '180',
-                'height': '60',
+                'width': '150',
+                'height': '35',
                 'border-width': '4',
                 'border-style': 'data(border)',
                 'border-color': 'data(color)',
@@ -124,25 +129,26 @@ class FlowGraphWriter
                 'target-arrow-color': '#ddd',
                 'curve-style': 'bezier'
               }),
-
           elements: {
             nodes: {$strNodes}, 
             edges: {$strTransitions}
           },
           layout: {
             name: 'dagre'
-          }
+          },
+          boxSelectionEnabled: false,
+          autounselectify: true,
+          zoomingEnabled: true,
+          userZoomingEnabled: false,
+          panningEnabled: true,
+          userPanningEnabled: false
         });
 
-        /*
-        var bfs = cy.elements().bfs('#a', function(){}, true);
-        
-        bfs.path[i].addClass('highlighted');
-        i++;
-        */
-        
+        cy.$('node').on('click', function(e){
+          var ele = e.target;
+          location.href = "{$strLinkTransition}".replace('{$strTmpSystemId}', ele.id());
+        });
     });
-
 </script>
 HTML;
     }
