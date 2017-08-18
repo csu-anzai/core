@@ -125,6 +125,15 @@ class FlowTransition extends Model implements ModelInterface, AdminListableInter
     /**
      * @return string
      */
+    public function getStrIconColor()
+    {
+        return $this->getTargetStatus() ? $this->getTargetStatus()->getStrIconColor() : null;
+    }
+
+
+    /**
+     * @return string
+     */
     public function getStrDisplayName()
     {
         return $this->getTargetStatus() ? $this->getTargetStatus()->getStrName() : null;
