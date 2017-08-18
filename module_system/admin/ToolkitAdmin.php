@@ -294,6 +294,29 @@ class ToolkitAdmin extends Toolkit
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_text");
     }
 
+
+    /**
+     * Returns a field to enter hex-color values using a color picker
+     *
+     * @param string $strName
+     * @param string $strTitle
+     * @param string $strValue
+     * @param bool $bitReadonly
+     *
+     * @return string
+     */
+    public function formInputColorPicker($strName, $strTitle = "", $strValue = "", $bitReadonly = false, $strInstantEditor = "")
+    {
+        $arrTemplate = array();
+        $arrTemplate["name"] = $strName;
+        $arrTemplate["value"] = htmlspecialchars($strValue, ENT_QUOTES, "UTF-8", false);
+        $arrTemplate["title"] = $strTitle;
+        $arrTemplate["instantEditor"] = $strInstantEditor;
+        $arrTemplate["readonly"] = ($bitReadonly ? "readonly=\"readonly\"" : "");
+
+        return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_colorpicker");
+    }
+
     /**
      * Returns a regular text-input field
      *
