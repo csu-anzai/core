@@ -118,9 +118,9 @@ class FlowGraphWriter
               'label': 'data(name)',
               'text-valign': 'center',
               'shape': 'roundrectangle',
-              'width': '150',
+              'width': '180',
               'height': '35',
-              'border-width': '4',
+              'border-width': '2',
               'border-style': 'data(border)',
               'border-color': 'data(color)',
               'background-color': 'data(bgcolor)'
