@@ -9,7 +9,6 @@ namespace Kajona\System\Admin\Formentries;
 use Kajona\System\Admin\FormentryPrintableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Validators\ColorValidator;
-use Kajona\System\System\Validators\TextValidator;
 
 /**
  * Color picker input field

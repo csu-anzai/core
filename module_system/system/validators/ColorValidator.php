@@ -11,7 +11,6 @@ namespace Kajona\System\System\Validators;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\ValidatorInterface;
 
-
 /**
  * Validates color in hex, rgba, rgb hsl codes
  *
@@ -20,7 +19,8 @@ use Kajona\System\System\ValidatorInterface;
  *
  * @see https://stackoverflow.com/a/43706299
  */
-class ColorValidator implements ValidatorInterface {
+class ColorValidator implements ValidatorInterface
+{
 
     /**
      * Validates the passed chunk of data.
@@ -29,10 +29,12 @@ class ColorValidator implements ValidatorInterface {
      * @param string $objValue
      * @return bool
      */
-    public function validate($objValue) {
+    public function validate($objValue)
+    {
 
-        if(!is_string($objValue))
+        if (!is_string($objValue)) {
             return false;
+        }
 
         return preg_match('/^(#(?:[0-9a-f]{2}){2,4}|#[0-9a-f]{3}|(?:rgba?|hsla?)\((?:\d+%?(?:deg|rad|grad|turn)?(?:,|\s)+){2,3}[\s\/]*[\d\.]+%?\))$/i', $objValue);
     }
