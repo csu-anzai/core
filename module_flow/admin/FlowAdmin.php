@@ -82,7 +82,7 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
         $arrActions = parent::renderAdditionalActions($objListEntry);
 
         if ($objListEntry instanceof FlowConfig) {
-            $arrActions[] = $this->objToolkit->listButton(Link::getLinkAdmin($this->getArrModule("modul"), "listStep", "&systemid=" . $objListEntry->getSystemid(), "", $this->getLang("action_steps"), "icon_kriterium"));
+            $arrActions[] = $this->objToolkit->listButton(Link::getLinkAdmin($this->getArrModule("modul"), "listStep", "&systemid=" . $objListEntry->getSystemid(), "", $this->getLang("action_steps"), "icon_edit"));
         } elseif ($objListEntry instanceof FlowStatus) {
             $arrActions[] = $this->objToolkit->listButton(Link::getLinkAdmin($this->getArrModule("modul"), "listTransition", "&systemid=" . $objListEntry->getSystemid(), "", $this->getLang("action_transitions"), "icon_project"));
         } elseif ($objListEntry instanceof FlowTransition) {
