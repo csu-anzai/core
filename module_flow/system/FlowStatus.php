@@ -27,6 +27,16 @@ use Kajona\System\System\UserGroup;
  */
 class FlowStatus extends Model implements ModelInterface, AdminListableInterface
 {
+    const COLOR_BLACK = "#000000";
+    const COLOR_BLUE = "#0040b3";
+    const COLOR_BROWN = "#d47a0b";
+    const COLOR_GREEN = "#0e8500";
+    const COLOR_GREY = "#aeaeae";
+    const COLOR_ORANGE = "#ff5600";
+    const COLOR_PURPLE = "#e23bff";
+    const COLOR_RED = "#d42f00";
+    const COLOR_YELLOW = "#ffe211";
+
     /**
      * @var string
      * @tableColumn flow_step.step_name
@@ -113,37 +123,6 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
     public function setStrIconColor($strIconColor)
     {
         $this->strIconColor = $strIconColor;
-    }
-
-
-
-    /**
-     * @return string
-     */
-    public function getStrColor()
-    {
-        switch ($this->strIcon) {
-            case 'icon_flag_black':
-                return '#000000';
-            case 'icon_flag_blue':
-                return '#0040b3';
-            case 'icon_flag_brown':
-                return '#d47a0b';
-            case 'icon_flag_green':
-                return '#0e8500';
-            case 'icon_flag_grey':
-                return '#aeaeae';
-            case 'icon_flag_orange':
-                return '#ff5600';
-            case 'icon_flag_purple':
-                return '#e23bff';
-            case 'icon_flag_red':
-                return '#d42f00';
-            case 'icon_flag_yellow':
-                return '#ffe211';
-        }
-
-        return '#eee';
     }
 
     /**

@@ -64,7 +64,7 @@ class FlowGraphWriter
                 'data' => [
                     'id' => $objStatus->getSystemid(),
                     'name' => $objStatus->getStrName(),
-                    'color' => $objStatus->getStrColor(),
+                    'color' => $objStatus->getStrIconColor(),
                     'bgcolor' => $strBgColor,
                     'border' => $strBorder,
                 ],
