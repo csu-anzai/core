@@ -129,7 +129,7 @@ class FlowGraphWriter
               'font-size': '14',
               'label': 'data(name)',
               'text-valign': 'center',
-              'shape': 'roundrectangle',
+              'shape': 'rectangle',
               'width': '180',
               'height': '35',
               'border-width': '2',
