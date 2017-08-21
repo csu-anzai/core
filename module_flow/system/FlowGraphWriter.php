@@ -102,8 +102,19 @@ class FlowGraphWriter
         $strTmpSystemId = generateSystemid();
         $strLinkTransition = Link::getLinkAdminHref("flow", "listTransition", "&systemid=" . $strTmpSystemId);
 
+        if (count($arrNodes) > 4) {
+            $strLayout = json_encode([
+                'name' => 'dagre'
+            ]);
+        } else {
+            $strLayout = json_encode([
+                'name' => 'grid',
+                'rows' => 4
+            ]);
+        }
+
         return <<<HTML
-<div id='flow-graph' style='position:absolute;width:90%;height:800px;border:1px solid #999;'></div>
+<div id='flow-graph' style='position:absolute;width:90%;height:1000px;border:1px solid #999;'></div>
 <script type="text/javascript">
     require(['cytoscape', 'cytoscape-dagre', 'dagre'], function(cytoscape, cd, dagre){
         
@@ -140,9 +151,10 @@ class FlowGraphWriter
             nodes: {$strNodes}, 
             edges: {$strTransitions}
           },
-          layout: {
-            name: 'dagre'
-          },
+          layout: {$strLayout},
+          zoom: 1,
+          minZoom: 1,
+          maxZoom: 1,
           boxSelectionEnabled: false,
           autounselectify: true,
           zoomingEnabled: true,
