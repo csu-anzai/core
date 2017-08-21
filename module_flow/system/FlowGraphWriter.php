@@ -115,7 +115,7 @@ class FlowGraphWriter
         */
 
         return <<<HTML
-<div id='flow-graph' style='position:absolute;width:90%;height:1000px;border:1px solid #999;'></div>
+<div id='flow-graph' style='width:90%;height:800px;border:0px solid #999;'></div>
 <script type="text/javascript">
     require(['cytoscape', 'cytoscape-dagre', 'dagre'], function(cytoscape, cd, dagre){
         
@@ -126,12 +126,14 @@ class FlowGraphWriter
           style: [{
             selector: 'node',
             style: {
-              'font-size': '14',
+              'font-size': '13',
+              'font-family': 'Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif',
               'label': 'data(name)',
               'text-valign': 'center',
               'shape': 'rectangle',
-              'width': '180',
-              'height': '35',
+              'width': 'label',
+              'padding' : '10',
+              'height': 'label',
               'border-width': '2',
               'border-style': 'data(border)',
               'border-color': 'data(color)',
@@ -140,10 +142,10 @@ class FlowGraphWriter
            }, {
             selector: 'edge',
             style: {
-              'width': 4,
+              'width': 2,
               'target-arrow-shape': 'triangle',
-              'line-color': '#ddd',
-              'target-arrow-color': '#ddd',
+              'line-color': '#525252',
+              'target-arrow-color': '#525252',
               'curve-style': 'bezier',
               'control-point-step-size': 40
             }
@@ -158,7 +160,7 @@ class FlowGraphWriter
           boxSelectionEnabled: false,
           autounselectify: true,
           zoomingEnabled: true,
-          userZoomingEnabled: false,
+          userZoomingEnabled: true,
           panningEnabled: true,
           userPanningEnabled: true
         });
