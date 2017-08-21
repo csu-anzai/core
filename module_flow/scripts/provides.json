@@ -1,6 +1,9 @@
 {
   "paths": {
     "mermaid": "mermaid/mermaid.min",
-    "flow": "kajona/flow"
+    "flow": "kajona/flow",
+    "cytoscape": "cytoscape/cytoscape",
+    "cytoscape-dagre": "cytoscape/cytoscape-dagre",
+    "dagre": "cytoscape/dagre.min"
   }
 }

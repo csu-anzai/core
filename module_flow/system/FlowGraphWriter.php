@@ -25,7 +25,155 @@ class FlowGraphWriter
      */
     public static function write(FlowConfig $objFlow, $objHighlite = null)
     {
-        return self::writeMermaid($objFlow, $objHighlite);
+        return self::writeCytoscape($objFlow, $objHighlite);
+    }
+
+    /**
+     * @param FlowConfig $objFlow
+     * @param FlowStatus|FlowTransition $objHighlite
+     * @return string
+     */
+    private static function writeCytoscape(FlowConfig $objFlow, $objHighlite)
+    {
+        $arrStatus = $objFlow->getArrStatus();
+
+        // sort status
+        usort($arrStatus, function(FlowStatus $objA, FlowStatus $objB){
+            if ($objA->getIntIndex() == 1) {
+                return 1;
+            }
+            if ($objA->getIntIndex() == $objB->getIntIndex()) {
+                return 0;
+            }
+            return ($objA->getIntIndex() < $objB->getIntIndex()) ? -1 : 1;
+        });
+
+        $arrNodes = [];
+        foreach ($arrStatus as $objStatus) {
+            $strBgColor = "#fff";
+            $strBorder = "solid";
+            if ($objHighlite instanceof FlowStatus && $objHighlite->getSystemid() == $objStatus->getSystemid()) {
+                $strBgColor = "#eee";
+                $strBorder = "dashed";
+            } elseif ($objHighlite instanceof FlowTransition && $objHighlite->getParentStatus()->getSystemid() == $objStatus->getSystemid()) {
+                $strBgColor = "#eee";
+                $strBorder = "dashed";
+            }
+
+            $arrNodes[] = [
+                'data' => [
+                    'id' => $objStatus->getSystemid(),
+                    'name' => $objStatus->getStrName(),
+                    'color' => $objStatus->getStrIconColor(),
+                    'bgcolor' => $strBgColor,
+                    'border' => $strBorder,
+                ],
+                'grabbable' => false
+            ];
+        }
+
+        $arrTrans = [];
+
+        foreach ($arrStatus as $objStatus) {
+            /** @var FlowStatus $objStatus */
+            $arrTransitions = $objStatus->getArrTransitions();
+            foreach ($arrTransitions as $objTransition) {
+                if (!$objTransition->isVisible()) {
+                    continue;
+                }
+
+                /** @var $objTransition FlowTransition */
+                $objParentStatus = $objTransition->getParentStatus();
+                $objTargetStatus = $objTransition->getTargetStatus();
+
+                $arrTrans[] = [
+                    'data' => [
+                        'id' => $objTransition->getSystemid(),
+                        'source' => $objParentStatus->getSystemid(),
+                        'target' => $objTargetStatus->getSystemid(),
+                    ]
+                ];
+            }
+        }
+
+        $strNodes = json_encode($arrNodes);
+        $strTransitions = json_encode($arrTrans);
+
+        $strTmpSystemId = generateSystemid();
+        $strLinkTransition = Link::getLinkAdminHref("flow", "listTransition", "&systemid=" . $strTmpSystemId);
+
+        $strLayout = json_encode([
+            'name' => 'dagre',
+            'fit' => false,
+        ]);
+
+        /*
+        $strLayout = json_encode([
+            'name' => 'grid',
+            'rows' => 4
+        ]);
+        */
+
+        return <<<HTML
+<div id='flow-graph' style='width:90%;height:800px;border:0px solid #999;'></div>
+<script type="text/javascript">
+    require(['cytoscape', 'cytoscape-dagre', 'dagre'], function(cytoscape, cd, dagre){
+        
+        cd(cytoscape, dagre);
+
+        var cy = cytoscape({
+          container: document.getElementById('flow-graph'),
+          style: [{
+            selector: 'node',
+            style: {
+              'font-size': '13',
+              'font-family': 'Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif',
+              'label': 'data(name)',
+              'text-valign': 'center',
+              'shape': 'rectangle',
+              'width': 'label',
+              'padding' : '10',
+              'height': 'label',
+              'border-width': '2',
+              'border-style': 'data(border)',
+              'border-color': 'data(color)',
+              'background-color': 'data(bgcolor)'
+            }
+           }, {
+            selector: 'edge',
+            style: {
+              'width': 2,
+              'target-arrow-shape': 'triangle',
+              'line-color': '#525252',
+              'target-arrow-color': '#525252',
+              'curve-style': 'bezier',
+              'control-point-step-size': 40
+            }
+          }],
+          elements: {
+            nodes: {$strNodes}, 
+            edges: {$strTransitions}
+          },
+          layout: {$strLayout},
+          zoom: 1,
+          pan: { x: ($('#flow-graph').innerWidth() / 2) - 90, y: 40 },
+          boxSelectionEnabled: false,
+          autounselectify: true,
+          zoomingEnabled: true,
+          userZoomingEnabled: true,
+          panningEnabled: true,
+          userPanningEnabled: true
+        });
+
+        /*
+        cy.$('node').on('click', function(e){
+          var ele = e.target;
+          location.href = "{$strLinkTransition}".replace('{$strTmpSystemId}', ele.id());
+        });
+        */
+    });
+</script>
+HTML;
     }
 
     private static function writeMermaid(FlowConfig $objFlow, $objHighlite = null)

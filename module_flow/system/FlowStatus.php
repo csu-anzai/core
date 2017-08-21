@@ -27,6 +27,16 @@ use Kajona\System\System\UserGroup;
  */
 class FlowStatus extends Model implements ModelInterface, AdminListableInterface
 {
+    const COLOR_BLACK = "#000000";
+    const COLOR_BLUE = "#0040b3";
+    const COLOR_BROWN = "#d47a0b";
+    const COLOR_GREEN = "#0e8500";
+    const COLOR_GREY = "#aeaeae";
+    const COLOR_ORANGE = "#ff5600";
+    const COLOR_PURPLE = "#e23bff";
+    const COLOR_RED = "#d42f00";
+    const COLOR_YELLOW = "#ffe211";
+
     /**
      * @var string
      * @tableColumn flow_step.step_name
@@ -114,8 +124,6 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
     {
         $this->strIconColor = $strIconColor;
     }
-
-
 
     /**
      * Return the status int for this step
