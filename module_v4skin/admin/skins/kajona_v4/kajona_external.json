@@ -40,5 +40,12 @@
         "source" : "http://mkoryak.github.io/floatThead",
         "license" : "MIT",
         "licenseurl" : "http://opensource.org/licenses/MIT"
-    }
+    },
+    {
+        "name" : "bootstrap-colorpicker",
+        "version" : "2.5.1",
+        "source" : "https://github.com/farbelous/bootstrap-colorpicker",
+        "license" : "Apache License v2",
+        "licenseurl" : "http://www.apache.org/licenses/LICENSE-2.0"
+    },
 ]

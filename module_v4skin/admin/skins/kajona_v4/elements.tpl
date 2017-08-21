@@ -435,6 +435,29 @@ Regular Text-Field
     </div>
 </input_text>
 
+Color Picker
+<input_colorpicker>
+    <div class="form-group colorpicker-component">
+        <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
+        <div class="col-sm-6">
+            <div class="input-group colorpicker-component" id="c_%%name%%">
+                <div class="input-group-addon"><i></i></div>
+                <input id="%%name%%" name="%%name%%" class="form-control" type="text" value="%%value%%" %%readonly%% data-kajona-instantsave="%%instantEditor%%">
+            </div>
+        </div>
+        <script type="text/javascript">
+        require(["bootstrap-colorpicker"], function(colorpicker) {
+            $('#c_%%name%%').colorpicker({component: '*'});
+
+//            if($('#%%name%%').is(':focus')) {
+//                $('#%%name%%').blur();
+//                $('#%%name%%').focus();
+//            }
+        });
+        </script>
+    </div>
+</input_colorpicker>
+
 Textarea
 <input_textarea>
     <div class="form-group">

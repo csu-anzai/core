@@ -191,19 +191,6 @@ HTML;
 
         $arrList = array("graph TD;");
 
-        //color mapper
-        $arrColorMapper = [
-            "icon_flag_black" => "#000000",
-            "icon_flag_blue" => "#0040b3",
-            "icon_flag_brown" => "#d47a0b",
-            "icon_flag_green" => "#0e8500",
-            "icon_flag_grey" => "#aeaeae",
-            "icon_flag_orange" => "#ff5600",
-            "icon_flag_purple" => "#e23bff",
-            "icon_flag_red" => "#d42f00",
-            "icon_flag_yellow" => "#ffe211",
-        ];
-
         foreach ($arrStatus as $objStatus) {
             /** @var FlowStatus $objStatus */
             $arrTransitions = $objStatus->getArrTransitions();
@@ -216,13 +203,13 @@ HTML;
                     $arrList[] = $objStatus->getStrSystemid() . "[" . $objStatus->getStrName() . "]{$strLineStart} <span data-" . $objTransition->getSystemid() . ">______</span> {$strLineEnd}>" . $objTargetStatus->getSystemid() . "[" . $objTargetStatus->getStrName() . "];";
                 }
             }
-            $arrList["style ".$objStatus->getSystemid()] = "style {$objStatus->getSystemid()} fill:#f9f9f9,stroke:{$arrColorMapper[$objStatus->getStrIcon()]},stroke-width:1px;";
+            $arrList["style ".$objStatus->getSystemid()] = "style {$objStatus->getSystemid()} fill:#f9f9f9,stroke:{$objStatus->getStrIconColor()},stroke-width:1px;";
         }
 
         if ($objHighlite instanceof FlowStatus) {
-            $arrList["style ".$objHighlite->getSystemid()] = "style {$objHighlite->getSystemid()} fill:#f9f9f9,stroke:{$arrColorMapper[$objHighlite->getStrIcon()]},stroke-width:3px;";
+            $arrList["style ".$objHighlite->getSystemid()] = "style {$objHighlite->getSystemid()} fill:#f9f9f9,stroke:{$objHighlite->getStrIconColor()},stroke-width:3px;";
         } elseif ($objHighlite instanceof FlowTransition) {
-            $arrList["style ".$objHighlite->getParentStatus()->getSystemid()] = "style {$objHighlite->getParentStatus()->getSystemid()} fill:#f9f9f9,stroke:{$arrColorMapper[$objHighlite->getStrIcon()]},stroke-width:3px;";
+            $arrList["style ".$objHighlite->getParentStatus()->getSystemid()] = "style {$objHighlite->getParentStatus()->getSystemid()} fill:#f9f9f9,stroke:{$objHighlite->getStrIconColor()},stroke-width:3px;";
         }
 
         $strGraph = implode("\n", $arrList);

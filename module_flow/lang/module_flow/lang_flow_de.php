@@ -20,7 +20,7 @@ $lang["action_transition_action"] = "Aktionen";
 $lang["action_transition_condition"] = "Bedingungen";
 
 $lang["form_flow_name"]         = "Name";
-$lang["form_flow_icon"]         = "Icon";
+$lang["form_flow_iconcolor"]    = "Farbe";
 $lang["form_flow_headline_groups"] = "Gruppen Konfiguration";
 $lang["form_flow_viewgroups"]   = "Ansehen";
 $lang["form_flow_editgroups"]   = "Bearbeiten";

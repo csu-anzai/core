@@ -457,13 +457,13 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
                 // we create automatically the start and end status
                 $objRedStatus = new FlowStatus();
                 $objRedStatus->setStrName("In Bearbeitung");
-                $objRedStatus->setStrIcon("icon_flag_red");
+                $objRedStatus->setStrIconColor("#FF0000");
                 $objRedStatus->setIntIndex(0);
                 $objRedStatus->updateObjectToDb($objFlow->getSystemid());
 
                 $objGreenStatus = new FlowStatus();
                 $objGreenStatus->setStrName("Freigegeben");
-                $objGreenStatus->setStrIcon("icon_flag_green");
+                $objGreenStatus->setStrIconColor("#00893d");
                 $objGreenStatus->setIntIndex(1);
                 $objGreenStatus->updateObjectToDb($objFlow->getSystemid());
 
