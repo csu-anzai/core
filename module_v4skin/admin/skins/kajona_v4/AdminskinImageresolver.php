@@ -117,7 +117,7 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_edit"                   => "<i class='kj-icon fa fa-pencil'></i>",
         "icon_editDisabled"           => "<span class='kj-icon fa-stack'><i class='fa fa-pencil'></i><i class='fa fa-ban fa-stack-1x kj-stack' style='color: red'></i></span>",
         "icon_editLocked"             => "<span class='kj-icon fa-stack'><i class='fa fa-pencil'></i><i class='fa fa-lock fa-stack-1x kj-stack' style='color: red'></i></span>",
-        "icon_enabled"                => "<i class='kj-icon fa fa-flag'></i>",
+        "icon_enabled"                => "<i class='kj-icon fa fa-flag' style='color: #00893d;'></i>",
         "icon_enabledLocked"          => "<span class='kj-icon fa-stack'><i class='fa fa-flag' style='color: #00893d;'></i><i class='fa fa-lock fa-stack-1x kj-stack' style='color: red'></i></span>",
         "icon_event"                  => "<i class='kj-icon fa fa-calendar-o'></i>",
         "icon_eventLocked"            => "<span class='kj-icon fa-stack'><i class='fa fa-calendar-o'></i><i class='fa fa-lock fa-stack-1x kj-stack' style='color: red'></i></span>",
