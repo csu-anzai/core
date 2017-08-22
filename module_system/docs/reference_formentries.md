@@ -9,6 +9,7 @@ Reference: Formentries
 | Kajona\System\Admin\Formentries\FormentryCheckbox	                | 4.0        | Simple checkbox element |
 | Kajona\System\Admin\Formentries\FormentryCheckboxarray	        | 4.8        | Renders a list of objects as an array of checkboxes, e.g. assignments |
 | Kajona\System\Admin\Formentries\FormentryCheckboxarrayObjectList  | 5.1        | Renders a standard table containing a checkbox and the display name of the object |
+| Kajona\System\Admin\Formentries\FormentryColorpicker              | 7.0        | Input field with color-picker |
 | Kajona\System\Admin\Formentries\FormentryDate                     | 4.1        | Date-Input with date-picker |
 | Kajona\System\Admin\Formentries\FormentryDateInterval             | 7.0        | Provides an input to enter a date interval |
 | Kajona\System\Admin\Formentries\FormentryDatetime                 | 4.1        | Like Date but with two inputs to set a time (HH:MM), too |
@@ -28,7 +29,6 @@ Reference: Formentries
 | Kajona\System\Admin\Formentries\FormentryPassword                 | 4.0        | Password input field |
 | Kajona\System\Admin\Formentries\FormentryPlaintext                | 4.3        | Use this formentry to inject plaintext into the html-output. May be used to add js-script tags and code. |
 | Kajona\System\Admin\Formentries\FormentrySubheadline              | 4.7        | Headline-Element to nest headlines  |
-| Kajona\Pages\Admin\Formentries\FormentryTemplate                  | 4.3        | A dropdown rendering a list of possible templates for a single element / field. May be parametrized by @fieldTemplateDir passing the relevant folder (e.g. /element_rssfeed) |
 | Kajona\System\Admin\Formentries\FormentryText                     | 4.0        | Text-input field, single line |
 | Kajona\System\Admin\Formentries\FormentryTextrow                  | 4.3        | Formentry useable as a graphical element, adds a line or paragaph of text to the current output. |
 | Kajona\System\Admin\Formentries\FormentryToggleButtonbar          | 4.7        | Returns a toggle button bar which can be used in the same way as an multiselect but with better useability |

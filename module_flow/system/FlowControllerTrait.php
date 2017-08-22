@@ -244,7 +244,7 @@ require(["jquery", "ajax"], function($, ajax){
 
                 if (!empty($strValidation)) {
                     $arrMenu[] = array(
-                        "name" => AdminskinHelper::getAdminImage($objTargetStatus->getStrIcon() . "_disabled") . " " . $objTargetStatus->getStrDisplayName() . $strValidation,
+                        "name" => AdminskinHelper::getAdminImage("icon_flag_hex_disabled_" . $objTargetStatus->getStrIconColor()) . " " . $objTargetStatus->getStrDisplayName() . $strValidation,
                         "link" => "#",
                     );
                 } else {
