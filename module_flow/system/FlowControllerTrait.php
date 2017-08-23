@@ -331,7 +331,7 @@ HTML;
 
                     $objAlert = new MessagingAlert();
                     $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
-                    $objAlert->setStrBody($this->objToolkit->warningBox($this->getLang("action_status_change_redirect", "flow"), "alert-info"));
+                    $objAlert->setStrBody($this->getLang("action_status_change_redirect", "flow"));
                     $objAlert->setObjAlertAction(new MessagingAlertActionRedirect($strRedirect));
                 } else {
                     try {
@@ -361,14 +361,14 @@ HTML;
 
                             $objAlert = new MessagingAlert();
                             $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
-                            $objAlert->setStrBody($this->objToolkit->warningBox($this->getLang("action_status_change_success", "flow"), "alert-success"));
+                            $objAlert->setStrBody($this->getLang("action_status_change_success", "flow"), "alert-success");
                             $objAlert->setObjAlertAction(new MessagingAlertActionVoid());
                         }
 
                     } catch (RedirectException $e) {
                         $objAlert = new MessagingAlert();
                         $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
-                        $objAlert->setStrBody($this->objToolkit->warningBox($this->getLang("action_status_change_success", "flow"), "alert-info"));
+                        $objAlert->setStrBody($this->getLang("action_status_change_success", "flow"));
                         $objAlert->setObjAlertAction(new MessagingAlertActionRedirect($e->getHref()));
                     } catch (\Exception $e) {
                         $objAlert = new MessagingAlert();
