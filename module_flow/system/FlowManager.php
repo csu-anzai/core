@@ -39,16 +39,16 @@ class FlowManager
      * @param Model $objObject
      * @return array
      */
-    public function getPossibleStatusForModel(Model $objObject): array
+    public function getArrStatusForModel(Model $objObject): array
     {
-        return $this->getPossibleStatusForClass(get_class($objObject));
+        return $this->getArrStatusForClass(get_class($objObject));
     }
 
     /**
      * @param string $objObject
      * @return array
      */
-    public function getPossibleStatusForClass(string $objObject): array
+    public function getArrStatusForClass(string $objObject): array
     {
         $objFlow = $this->getFlowForClass($objObject);
         if ($objFlow instanceof FlowConfig) {

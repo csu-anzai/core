@@ -11,16 +11,16 @@ require_once __DIR__ . "/FlowTestAbstract.php";
 
 class FlowManagerTest extends FlowTestAbstract
 {
-    public function getPossibleStatusForModel()
+    public function getStatusForModel()
     {
-        $arrStatus = $this->objManager->getPossibleStatusForModel(new FlowModelTest());
+        $arrStatus = $this->objManager->getArrStatusForModel(new FlowModelTest());
 
         $this->assertEquals(['In Bearbeitung', 'Freigegeben'], array_values($arrStatus));
     }
 
-    public function testGetPossibleStatusForClass()
+    public function testGetStatusForClass()
     {
-        $arrStatus = $this->objManager->getPossibleStatusForClass(FlowModelTest::class);
+        $arrStatus = $this->objManager->getArrStatusForClass(FlowModelTest::class);
 
         $this->assertEquals(['In Bearbeitung', 'Freigegeben'], array_values($arrStatus));
     }
