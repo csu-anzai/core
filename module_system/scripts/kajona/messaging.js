@@ -61,6 +61,15 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
         timeout = window.setTimeout(pollMessageCount, pollInterval);
     };
 
+    // listen to browser events to enable/disable notification polling if window is not active
+    $(window).focus(function(){
+        me.setPollingEnabled(true);
+    });
+
+    $(window).blur(function(){
+        me.setPollingEnabled(false);
+    });
+
     /** @alias module:messaging */
     var me = {
         properties: null,
