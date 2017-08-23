@@ -51,13 +51,13 @@ class FlowGraphWriter
         $arrNodes = [];
         foreach ($arrStatus as $objStatus) {
             $strBgColor = "#fff";
-            $strBorder = "solid";
+            $strBorder = "2";
             if ($objHighlite instanceof FlowStatus && $objHighlite->getSystemid() == $objStatus->getSystemid()) {
                 $strBgColor = "#eee";
-                $strBorder = "dashed";
+                $strBorder = "4";
             } elseif ($objHighlite instanceof FlowTransition && $objHighlite->getParentStatus()->getSystemid() == $objStatus->getSystemid()) {
                 $strBgColor = "#eee";
-                $strBorder = "dashed";
+                $strBorder = "4";
             }
 
             $arrNodes[] = [
@@ -115,7 +115,7 @@ class FlowGraphWriter
         */
 
         return <<<HTML
-<div id='flow-graph' style='width:90%;height:800px;border:0px solid #999;'></div>
+<div style='width: 90%; height: 600px; overflow-y: scroll;'><div id='flow-graph' style='width:100%;height:1000px;border:0px solid #999;'></div></div>
 <script type="text/javascript">
     require(['cytoscape', 'cytoscape-dagre', 'dagre'], function(cytoscape, cd, dagre){
         
@@ -134,8 +134,8 @@ class FlowGraphWriter
               'width': 'label',
               'padding' : '10',
               'height': 'label',
-              'border-width': '2',
-              'border-style': 'data(border)',
+              'border-width': 'data(border)',
+              'border-style': 'solid',
               'border-color': 'data(color)',
               'background-color': 'data(bgcolor)'
             }
@@ -160,7 +160,7 @@ class FlowGraphWriter
           boxSelectionEnabled: false,
           autounselectify: true,
           zoomingEnabled: true,
-          userZoomingEnabled: true,
+          userZoomingEnabled: false,
           panningEnabled: true,
           userPanningEnabled: true
         });
