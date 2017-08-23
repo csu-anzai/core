@@ -91,6 +91,7 @@ class FlowGraphWriter
                         'id' => $objTransition->getSystemid(),
                         'source' => $objParentStatus->getSystemid(),
                         'target' => $objTargetStatus->getSystemid(),
+                        //'label' => "A: ".count($objTransition->getArrActions())." C: ".count($objTransition->getArrConditions()),
                     ]
                 ];
             }
@@ -147,7 +148,11 @@ class FlowGraphWriter
               'line-color': '#525252',
               'target-arrow-color': '#525252',
               'curve-style': 'bezier',
-              'control-point-step-size': 40
+              'control-point-step-size': 40,
+              'font-size' : '10',
+              'text-margin-x' : '0',
+              'text-margin-y' : '0',
+              'label': 'data(label)'
             }
           }],
           elements: {
