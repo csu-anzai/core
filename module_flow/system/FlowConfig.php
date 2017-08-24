@@ -54,11 +54,6 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
     private $objHandler;
 
     /**
-     * @var FlowStatus[]
-     */
-    private $arrStatus;
-
-    /**
      * @var FlowManager
      */
     private $objFlowManager;
@@ -151,7 +146,7 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
      */
     public function getArrStatus()
     {
-        return $this->arrStatus === null ? $this->arrStatus = FlowStatus::getObjectListFiltered(null, $this->getStrSystemid()) : $this->arrStatus;
+        return FlowStatus::getObjectListFiltered(null, $this->getStrSystemid());
     }
 
     /**
@@ -391,8 +386,6 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
         $this->setIntRecordStatus(0);
 
         $bitReturn = parent::copyObject($strNewPrevid, $bitChangeTitle, $bitCopyChilds);
-
-        $this->arrStatus = null;
 
         $arrNameSystemId = [];
         $arrStatus = $this->getArrStatus();
