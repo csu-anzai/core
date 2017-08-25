@@ -19,7 +19,7 @@ namespace Kajona\System\System;
  * @package module_system
  * @author sidler@mulchprod.de
  *
- * @deprectated this class will be removed from future releases, all logic will be moved to class root.
+ * @deprecated this class will be removed from future releases, all logic will be moved to class root.
  */
 abstract class Model extends Root
 {
