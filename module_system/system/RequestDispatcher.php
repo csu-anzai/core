@@ -183,16 +183,6 @@ class RequestDispatcher
 
 
                         return "<html><head></head><body><script type='text/javascript'>document.location='".Link::getLinkAdminHref($strModule, $strAction, $arrParams, false, true)."';</script></body></html>";
-                        if (empty(Carrier::getInstance()->getParam("folderview"))) {
-                            return "<html><head></head><body><script type='text/javascript'>document.location='".Link::getLinkAdminHref($strModule, $strAction, $arrParams, false, true)."';</script></body></html>";
-//                            $strReturn = $objHelper->actionGenerateMainTemplate($strReturn);
-                        } else {
-                            $strReturn = $objHelper->actionGenerateFolderviewTemplate($strReturn);
-                        }
-                        return $strReturn;
-
-
-
                     }
 
 

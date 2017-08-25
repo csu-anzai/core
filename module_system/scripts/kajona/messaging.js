@@ -8,7 +8,7 @@
  *
  * @module messaging
  */
-define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialogHelper) {
+define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util'], function ($, ajax, dialogHelper, util) {
 
 
     var pollInterval = 30000;
@@ -113,6 +113,12 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
          * @param bitEnabled
          */
         setPollingEnabled : function(bitEnabled) {
+            if(util.isStackedDialog()) {
+                bitEnabled = false;
+            }
+
+            console.debug('polling: '+bitEnabled);
+
             if (bitEnabled) {
                 // start timeout only if we have not already a timeout
                 if (!timeout) {

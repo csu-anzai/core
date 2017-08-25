@@ -228,7 +228,9 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
         $(window).off('unload');
 
         this.animateSubmit(objForm);
-        messaging.setPollingEnabled(false);
+
+        //TODO: not required anymore?
+        //messaging.setPollingEnabled(false);
 
         var $btn = $(document.activeElement);
         if (
