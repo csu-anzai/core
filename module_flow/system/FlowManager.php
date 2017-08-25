@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Kajona\Flow\System;
 
+use InvalidArgumentException;
 use Kajona\System\System\Model;
 
 /**
@@ -38,16 +39,16 @@ class FlowManager
      * @param Model $objObject
      * @return array
      */
-    public function getPossibleStatusForModel(Model $objObject) : array
+    public function getArrStatusForModel(Model $objObject): array
     {
-        return $this->getPossibleStatusForClass(get_class($objObject));
+        return $this->getArrStatusForClass(get_class($objObject));
     }
 
     /**
      * @param string $objObject
      * @return array
      */
-    public function getPossibleStatusForClass(string $objObject) : array
+    public function getArrStatusForClass(string $objObject): array
     {
         $objFlow = $this->getFlowForClass($objObject);
         if ($objFlow instanceof FlowConfig) {
@@ -63,12 +64,15 @@ class FlowManager
     }
 
     /**
-     * Returns all available status transition for the model
+     * Returns all available transitions which are valid for the current model status. This means
+     * that the assigned conditions are validated. If the argument bitValidateConditions is false
+     * all visible transitions are returned
      *
      * @param Model $objObject
+     * @param bool $bitValidateConditions
      * @return FlowTransition[]
      */
-    public function getPossibleTransitionsForModel(Model $objObject) : array
+    public function getPossibleTransitionsForModel(Model $objObject, $bitValidateConditions = true): array
     {
         $objStep = $this->getCurrentStepForModel($objObject);
         if ($objStep instanceof FlowStatus) {
@@ -78,25 +82,20 @@ class FlowManager
 
             // filter out transitions where the condition is not valid
             foreach ($arrTransitions as $objTransition) {
-                $arrConditions = $objTransition->getArrConditions();
-                $bitValid = true;
-                foreach ($arrConditions as $objCondition) {
-                    // check whether all assigned conditions are valid
-                    $bitValid = $objCondition->validateCondition($objObject, $objTransition);
-                    if ($bitValid === false) {
-                        break;
-                    }
-
-                    // ask the handler whether this transition is visible
-                    $bitValid = $objHandler->isTransitionVisible($objObject, $objTransition);
-                    if ($bitValid === false) {
-                        break;
+                // validate conditions
+                if ($bitValidateConditions) {
+                    $objResult = $objHandler->validateStatusTransition($objObject, $objTransition);
+                    if (!$objResult->isValid()) {
+                        continue;
                     }
                 }
 
-                if ($bitValid === true) {
-                    $arrResult[] = $objTransition;
+                // ask the handler whether this transition is visible
+                if (!$objHandler->isTransitionVisible($objObject, $objTransition)) {
+                    continue;
                 }
+
+                $arrResult[] = $objTransition;
             }
 
             return $arrResult;
@@ -158,5 +157,41 @@ class FlowManager
             }
         }
         return $this->arrFlows[$strClass];
+    }
+
+    /**
+     * Executes an action with the given classname of the transition from sourceindex to targetindex
+     *
+     * @param int $intSourceIndex
+     * @param int $intTargetndex
+     * @param Model $objModel
+     * @param string $strActionClassName
+     * @throws InvalidArgumentException
+     *
+     */
+    public function executeTransitionAction(int $intSourceIndex, int $intTargetndex, Model $objModel, string $strActionClassName)
+    {
+        $objFlow = $this->getFlowForModel($objModel);
+        if ($objFlow === null) {
+            throw new InvalidArgumentException("Flow not found for model " . get_class($objModel));
+        }
+
+        $objStatus = $objFlow->getStatusByIndex($intSourceIndex);
+        if ($objStatus === null) {
+            throw new InvalidArgumentException("Status not found for source index $intSourceIndex ");
+        }
+
+        $objTransition = $objStatus->getTransitionByTargetIndex($intTargetndex);
+        if ($objTransition === null) {
+            throw new InvalidArgumentException("Transition not found for target index $intTargetndex");
+        }
+
+        //Now try to execute the action
+        $arrActions = $objTransition->getArrActions();
+        foreach ($arrActions as $objAction) {
+            if ($objAction instanceof $strActionClassName) {
+                $objAction->executeAction($objModel, $objTransition);
+            }
+        }
     }
 }

@@ -20,7 +20,7 @@ $lang["action_transition_action"] = "Aktionen";
 $lang["action_transition_condition"] = "Bedingungen";
 
 $lang["form_flow_name"]         = "Name";
-$lang["form_flow_icon"]         = "Icon";
+$lang["form_flow_iconcolor"]    = "Farbe";
 $lang["form_flow_headline_groups"] = "Gruppen Konfiguration";
 $lang["form_flow_viewgroups"]   = "Ansehen";
 $lang["form_flow_editgroups"]   = "Bearbeiten";
@@ -28,6 +28,7 @@ $lang["form_flow_deletegroups"] = "Löschen";
 $lang["form_flow_rightgroups"]  = "Rechte";
 $lang["form_flow_usergroup"]    = "Benutzergruppe";
 $lang["form_flow_transitions"]  = "Übergänge";
+$lang["form_flow_visible"]      = "Sichtbar";
 
 $lang["form_flow_targetstatus"] = "Ziel-Status";
 $lang["form_flow_actions"]      = "Aktionen";
@@ -45,7 +46,12 @@ $lang["flow_step_icon_6"]       = "icon_flag_purple";
 $lang["flow_step_icon_7"]       = "icon_flag_red";
 $lang["flow_step_icon_8"]       = "icon_flag_yellow";
 
+$lang["transition_visible_0"]   = "Nein";
+$lang["transition_visible_1"]   = "Ja";
+
 $lang["flow_step_no_delete"] = "Dieser Status kann nicht gelöscht werden";
+
+$lang["flow_current_status"]   = "Aktueller Status";
 
 $lang["delete_step_question"]   = "Möchten Sie den Schritt &quot;<b>%%element_name%%</b>&quot; wirklich löschen?";
 $lang["delete_transition_question"]   = "Möchten Sie den Übergang &quot;<b>%%element_name%%</b>&quot; wirklich löschen?";
@@ -55,4 +61,10 @@ $lang["delete_question"]   = "Möchten Sie die Konfiguration &quot;<b>%%element_
 
 $lang["flow_transition_action_list"]   = "Die folgenden Aktionen sind zu dem Statusübergang (<b>{0}</b> nach <b>{1}</b>) zugeordnet.";
 $lang["flow_transition_condition_list"]   = "Die folgenden Bedingungen sind zu dem Statusübergang (<b>{0}</b> nach <b>{1}</b>) zugeordnet.";
+
+$lang["form_next_status_description"]   = "Auf dieser Seite können Sie für das Objekt <b>{0}</b> den Folgestatus auswählen.";
+
+$lang["action_status_change_title"]   = "Rückmeldung";
+$lang["action_status_change_success"]   = "Statuswechsel erfolgreich durchgeführt.";
+$lang["action_status_change_redirect"]   = "Das System benötigt eine Benutzereingabe um den Statusübergang durchzuführen.";
 

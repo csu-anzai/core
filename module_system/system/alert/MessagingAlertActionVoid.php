@@ -3,8 +3,25 @@
 *   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
 *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
 ********************************************************************************************************/
+declare(strict_types=1);
 
-namespace Kajona\Statustransition\System\Config;
+namespace Kajona\System\System\Alert;
 
-define("_statustransition_module_id_", 1470996506);
+/**
+ * Dummy action, rendering an ok button but doing nothing
+ *
+ * @author sidler@mulchprod.de
+ * @since 7.0
+ *
+ */
+class MessagingAlertActionVoid implements MessagingAlertActionInterface
+{
+    /**
+     * @inheritDoc
+     */
+    public function getAsActionArray(): array
+    {
+        return ["type" => "void"];
+    }
 
+}

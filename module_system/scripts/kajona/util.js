@@ -299,6 +299,22 @@ define('util', ['jquery'], function ($) {
 
 
     /**
+     * Gets the jQuery object
+     *
+     * @param objElement - my be a jquery object or an id selector
+     */
+    util.getElement = function (objElement) {
+        // If objElement is already a jQuery object
+        if(objElement instanceof jQuery) {
+            return objElement
+        } else {
+            // Convert to jQuery object
+            return $(objElement);
+        }
+    };
+
+
+    /**
      * decodes html entites, call it just like
      * util decodeHTMLEntities(strText)
      *

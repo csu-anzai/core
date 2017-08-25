@@ -25,26 +25,178 @@ class FlowGraphWriter
      */
     public static function write(FlowConfig $objFlow, $objHighlite = null)
     {
-        return self::writeMermaid($objFlow, $objHighlite);
+        return self::writeCytoscape($objFlow, $objHighlite);
+    }
+
+    /**
+     * @param FlowConfig $objFlow
+     * @param FlowStatus|FlowTransition $objHighlite
+     * @return string
+     */
+    private static function writeCytoscape(FlowConfig $objFlow, $objHighlite)
+    {
+        $arrStatus = $objFlow->getArrStatus();
+
+        // sort status
+        usort($arrStatus, function(FlowStatus $objA, FlowStatus $objB){
+            if ($objA->getIntIndex() == 1) {
+                return 1;
+            }
+            if ($objA->getIntIndex() == $objB->getIntIndex()) {
+                return 0;
+            }
+            return ($objA->getIntIndex() < $objB->getIntIndex()) ? -1 : 1;
+        });
+
+        $arrNodes = [];
+        foreach ($arrStatus as $objStatus) {
+            $strBgColor = "#fff";
+            $strBorder = "2";
+            if ($objHighlite instanceof FlowStatus && $objHighlite->getSystemid() == $objStatus->getSystemid()) {
+                $strBgColor = "#eee";
+                $strBorder = "4";
+            } elseif ($objHighlite instanceof FlowTransition && $objHighlite->getParentStatus()->getSystemid() == $objStatus->getSystemid()) {
+                $strBgColor = "#eee";
+                $strBorder = "4";
+            }
+
+            $arrNodes[] = [
+                'data' => [
+                    'id' => $objStatus->getSystemid(),
+                    'name' => $objStatus->getStrName(),
+                    'color' => $objStatus->getStrIconColor(),
+                    'bgcolor' => $strBgColor,
+                    'border' => $strBorder,
+                ],
+                'grabbable' => false
+            ];
+        }
+
+        $arrTrans = [];
+
+        foreach ($arrStatus as $objStatus) {
+            /** @var FlowStatus $objStatus */
+            $arrTransitions = $objStatus->getArrTransitions();
+            foreach ($arrTransitions as $objTransition) {
+                if (!$objTransition->isVisible()) {
+                    continue;
+                }
+
+                /** @var $objTransition FlowTransition */
+                $objParentStatus = $objTransition->getParentStatus();
+                $objTargetStatus = $objTransition->getTargetStatus();
+
+                $arrTrans[] = [
+                    'data' => [
+                        'id' => $objTransition->getSystemid(),
+                        'source' => $objParentStatus->getSystemid(),
+                        'target' => $objTargetStatus->getSystemid(),
+                        //'label' => "A: ".count($objTransition->getArrActions())." C: ".count($objTransition->getArrConditions()),
+                    ]
+                ];
+            }
+        }
+
+        $strNodes = json_encode($arrNodes);
+        $strTransitions = json_encode($arrTrans);
+
+        $strTmpSystemId = generateSystemid();
+        $strLinkTransition = Link::getLinkAdminHref("flow", "listTransition", "&systemid=" . $strTmpSystemId);
+
+        $strLayout = json_encode([
+            'name' => 'dagre',
+            'fit' => false,
+        ]);
+
+        /*
+        $strLayout = json_encode([
+            'name' => 'grid',
+            'rows' => 4
+        ]);
+        */
+
+        return <<<HTML
+<div style='width: 90%; height: 600px; overflow-y: scroll;'><div id='flow-graph' style='width:100%;height:1000px;border:0px solid #999;'></div></div>
+<script type="text/javascript">
+    require(['cytoscape', 'cytoscape-dagre', 'dagre'], function(cytoscape, cd, dagre){
+        
+        cd(cytoscape, dagre);
+
+        var cy = cytoscape({
+          container: document.getElementById('flow-graph'),
+          style: [{
+            selector: 'node',
+            style: {
+              'font-size': '13',
+              'font-family': 'Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif',
+              'label': 'data(name)',
+              'text-valign': 'center',
+              'shape': 'rectangle',
+              'width': 'label',
+              'padding' : '10',
+              'height': 'label',
+              'border-width': 'data(border)',
+              'border-style': 'solid',
+              'border-color': 'data(color)',
+              'background-color': 'data(bgcolor)'
+            }
+           }, {
+            selector: 'edge',
+            style: {
+              'width': 2,
+              'target-arrow-shape': 'triangle',
+              'line-color': '#525252',
+              'target-arrow-color': '#525252',
+              'curve-style': 'bezier',
+              'control-point-step-size': 40,
+              'font-size' : '10',
+              'text-margin-x' : '0',
+              'text-margin-y' : '0',
+              'label': 'data(label)'
+            }
+          }],
+          elements: {
+            nodes: {$strNodes}, 
+            edges: {$strTransitions}
+          },
+          layout: {$strLayout},
+          zoom: 1,
+          pan: { x: ($('#flow-graph').innerWidth() / 2) - 90, y: 40 },
+          boxSelectionEnabled: false,
+          autounselectify: true,
+          zoomingEnabled: true,
+          userZoomingEnabled: false,
+          panningEnabled: true,
+          userPanningEnabled: true
+        });
+
+        /*
+        cy.$('node').on('click', function(e){
+          var ele = e.target;
+          location.href = "{$strLinkTransition}".replace('{$strTmpSystemId}', ele.id());
+        });
+        */
+    });
+</script>
+HTML;
     }
 
     private static function writeMermaid(FlowConfig $objFlow, $objHighlite = null)
     {
         $arrStatus = $objFlow->getArrStatus();
-        $arrList = array("graph TD;");
 
-        //color mapper
-        $arrColorMapper = [
-            "icon_flag_black" => "#000000",
-            "icon_flag_blue" => "#0040b3",
-            "icon_flag_brown" => "#d47a0b",
-            "icon_flag_green" => "#0e8500",
-            "icon_flag_grey" => "#aeaeae",
-            "icon_flag_orange" => "#ff5600",
-            "icon_flag_purple" => "#e23bff",
-            "icon_flag_red" => "#d42f00",
-            "icon_flag_yellow" => "#ffe211",
-        ];
+        // sort status
+        usort($arrStatus, function(FlowStatus $objA, FlowStatus $objB){
+            if ($objA->getIntIndex() == 1) {
+                return 1;
+            }
+            if ($objA->getIntIndex() == $objB->getIntIndex()) {
+                return 0;
+            }
+            return ($objA->getIntIndex() < $objB->getIntIndex()) ? -1 : 1;
+        });
+
+        $arrList = array("graph TD;");
 
         foreach ($arrStatus as $objStatus) {
             /** @var FlowStatus $objStatus */
@@ -53,19 +205,18 @@ class FlowGraphWriter
                 /** @var $objTransition FlowTransition */
                 $objTargetStatus = $objTransition->getTargetStatus();
                 if ($objTargetStatus instanceof FlowStatus) {
-                    $arrList[] = $objStatus->getStrSystemid() . "[" . $objStatus->getStrName() . "]-- <span data-" . $objTransition->getSystemid() . ">______</span> -->" . $objTargetStatus->getSystemid() . "[" . $objTargetStatus->getStrName() . "];";
+                    $strLineStart = $objTransition->isVisible() ? "--" : "-.";
+                    $strLineEnd = $objTransition->isVisible() ? "--" : ".-";
+                    $arrList[] = $objStatus->getStrSystemid() . "[" . $objStatus->getStrName() . "]{$strLineStart} <span data-" . $objTransition->getSystemid() . ">______</span> {$strLineEnd}>" . $objTargetStatus->getSystemid() . "[" . $objTargetStatus->getStrName() . "];";
                 }
             }
-            $arrList["style ".$objStatus->getSystemid()] = "style {$objStatus->getSystemid()} fill:#f9f9f9,stroke:{$arrColorMapper[$objStatus->getStrIcon()]},stroke-width:1px;";
+            $arrList["style ".$objStatus->getSystemid()] = "style {$objStatus->getSystemid()} fill:#f9f9f9,stroke:{$objStatus->getStrIconColor()},stroke-width:1px;";
         }
 
-
-
-
         if ($objHighlite instanceof FlowStatus) {
-            $arrList["style ".$objHighlite->getSystemid()] = "style {$objHighlite->getSystemid()} fill:#f9f9f9,stroke:{$arrColorMapper[$objHighlite->getStrIcon()]},stroke-width:3px;";
+            $arrList["style ".$objHighlite->getSystemid()] = "style {$objHighlite->getSystemid()} fill:#f9f9f9,stroke:{$objHighlite->getStrIconColor()},stroke-width:3px;";
         } elseif ($objHighlite instanceof FlowTransition) {
-            $arrList["style ".$objHighlite->getParentStatus()->getSystemid()] = "style {$objHighlite->getParentStatus()->getSystemid()} fill:#f9f9f9,stroke:{$arrColorMapper[$objHighlite->getStrIcon()]},stroke-width:3px;";
+            $arrList["style ".$objHighlite->getParentStatus()->getSystemid()] = "style {$objHighlite->getParentStatus()->getSystemid()} fill:#f9f9f9,stroke:{$objHighlite->getStrIconColor()},stroke-width:3px;";
         }
 
         $strGraph = implode("\n", $arrList);

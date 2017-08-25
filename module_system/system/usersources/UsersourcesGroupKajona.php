@@ -13,7 +13,10 @@ use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\Logger;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
+use Kajona\System\System\Objectfactory;
+use Kajona\System\System\SystemChangelog;
 use Kajona\System\System\SystemEventidentifier;
+use Kajona\System\System\UserGroup;
 
 
 /**
@@ -218,7 +221,13 @@ class UsersourcesGroupKajona extends Model implements ModelInterface, Usersource
      */
     public function addMember(UsersourcesUserInterface $objUser)
     {
+        $objLog = new SystemChangelog();
+        $objLog->processChanges(Objectfactory::getInstance()->getObject($this->getSystemid()), "editMemberships", [["property" => UserGroup::STR_ASSIGNMENT_PROPERTY, "oldvalue" => '', "newvalue" => $objUser->getSystemid()]]);
+
+        $this->bitBlockRemoveCl = true;
         $this->removeMember($objUser);
+        $this->bitBlockRemoveCl = false;
+
         $strQuery = "INSERT INTO "._dbprefix_."user_kajona_members
                        (group_member_group_kajona_id, group_member_user_kajona_id) VALUES
                          (?, ?)";
@@ -237,6 +246,7 @@ class UsersourcesGroupKajona extends Model implements ModelInterface, Usersource
     }
 
 
+    private $bitBlockRemoveCl = false;
     /**
      * Removes a member from the current group - if possible.
      *
@@ -246,6 +256,12 @@ class UsersourcesGroupKajona extends Model implements ModelInterface, Usersource
      */
     public function removeMember(UsersourcesUserInterface $objUser)
     {
+        //add a changelog entry
+        if (!$this->bitBlockRemoveCl) {
+            $objLog = new SystemChangelog();
+            $objLog->processChanges(Objectfactory::getInstance()->getObject($this->getSystemid()), "editMemberships", [["property" => UserGroup::STR_ASSIGNMENT_PROPERTY, "oldvalue" => $objUser->getSystemid(), "newvalue" => '']]);
+        }
+
         $strQuery = "DELETE FROM "._dbprefix_."user_kajona_members
 						WHERE group_member_group_kajona_id=?
 						  AND group_member_user_kajona_id=?";

@@ -88,6 +88,7 @@ $lang["commons_text"]                    = "Text";
 $lang["commons_title"]                   = "Titel";
 $lang["commons_unlock"]                  = "Datensatz entsperren";
 $lang["commons_validator_date_validationmessage"] = "Das Feld muss ein Datumsformat im Format '{0}' enthalten";
+$lang["commons_validator_dateinterval_validationmessage"] = "Das Feld muss ein gültiges Interval Format enthalten";
 $lang["commons_validator_field_empty"]   = "'{0}' ist leer";
 $lang["commons_validator_int_validationmessage"] = "Das Feld muss Ganzzahlen enthalten";
 $lang["commons_validator_numeric_validationmessage"] = "Das Feld muss numerische Werte enthalten";

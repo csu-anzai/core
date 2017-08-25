@@ -128,12 +128,13 @@ abstract class FilterBase
      * Creates a new filter object or retrieves a filter object from the session.
      * If retrieved from session a clone is being returned.
      *
+     * @param string $strClass
      * @return self
      */
-    public static function getOrCreateFromSession()
+    public static function getOrCreateFromSession($strClass = null)
     {
         /** @var FilterBase $objFilter */
-        $strCalledClass = get_called_class();
+        $strCalledClass = $strClass === null ? get_called_class() : $strClass;
         $objFilter = new $strCalledClass();
         $strFilterId = $objFilter->getFilterId();
 

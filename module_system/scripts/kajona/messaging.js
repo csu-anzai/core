@@ -8,12 +8,72 @@
  *
  * @module messaging
  */
-define('messaging', ['jquery', 'ajax'], function ($, ajax) {
+define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialogHelper) {
 
-    return /** @alias module:messaging */ {
+
+    var pollInterval = 30000;
+    var timeout = null;
+
+    var intCount = 0;
+
+    /**
+     * Internal helper to built a real callback based on the action provided by the backend
+     * @param $onAccept
+     * @returns {Function}
+     */
+    var getActionCallback = function($onAccept) {
+
+        if ($onAccept.type === 'redirect') {
+            return function() {
+                document.location.href = $onAccept.target;
+            };
+        } else if ($onAccept.type === 'ajax') {
+            return function() {
+                ajax.genericAjaxCall($onAccept.module, $onAccept.action, $onAccept.systemid, function(){
+                    // on ok we trigger the getUnreadCount again since the ajax call could have created
+                    // other alert messages
+                    me.getUnreadCount(function(){
+                    });
+                });
+            };
+        }
+
+        return function() {};
+    };
+
+    /**
+     * Renders an alert generated on the backend
+     * @param $objAlert
+     */
+    var renderAlert = function($objAlert) {
+        dialogHelper.showConfirmationDialog($objAlert.title, $objAlert.body, $objAlert.confirmLabel, getActionCallback($objAlert.onAccept));
+        ajax.genericAjaxCall("messaging", "deleteAlert", $objAlert.systemid);
+    };
+
+    /**
+     * Triggers the polling of unread messages from the backend
+     */
+    var pollMessageCount = function() {
+        me.getUnreadCount(function (intCount) {
+            me.updateCountInfo(intCount);
+        });
+
+        timeout = window.setTimeout(pollMessageCount, pollInterval);
+    };
+
+    // listen to browser events to enable/disable notification polling if window is not active
+    $(window).focus(function(){
+        me.setPollingEnabled(true);
+    });
+
+    $(window).blur(function(){
+        me.setPollingEnabled(false);
+    });
+
+    /** @alias module:messaging */
+    var me = {
         properties: null,
         bitFirstLoad : true,
-        intCount : 0,
 
         /**
          * Gets the number of unread messages for the current user.
@@ -22,11 +82,14 @@ define('messaging', ['jquery', 'ajax'], function ($, ajax) {
          * @param objCallback
          */
         getUnreadCount : function(objCallback) {
-            var me = this;
             ajax.genericAjaxCall("messaging", "getUnreadMessagesCount", "", function(data, status, jqXHR) {
                 if(status == 'success') {
-                    me.intCount = $.parseJSON(data);
-                    objCallback(me.intCount);
+                    var $objResult = $.parseJSON(data);
+                    objCallback($objResult.count);
+
+                    if($objResult.alert) {
+                        renderAlert($objResult.alert);
+                    }
                 }
             });
         },
@@ -43,7 +106,48 @@ define('messaging', ['jquery', 'ajax'], function ($, ajax) {
                     objCallback(objResponse);
                 }
             });
+        },
+
+        /**
+         * Enables or disables the polling of message counts / alerts
+         * @param bitEnabled
+         */
+        setPollingEnabled : function(bitEnabled) {
+            if (bitEnabled) {
+                // start timeout only if we have not already a timeout
+                if (!timeout) {
+                    pollMessageCount();
+                }
+            } else {
+                // if we have a timeout clear
+                if (timeout) {
+                    window.clearTimeout(timeout);
+                }
+                timeout = null;
+            }
+        },
+
+        /**
+         * Updates the count info of the current unread messages
+         * @param intCount
+         */
+        updateCountInfo: function(intCount) {
+            var $userNotificationsCount = $('#userNotificationsCount');
+            var oldCount = $userNotificationsCount.text();
+            $userNotificationsCount.text(intCount);
+            if (intCount > 0) {
+                $userNotificationsCount.show();
+                if (oldCount != intCount) {
+                    var strTitle = document.title.replace("(" + oldCount + ")", "");
+                    document.title = "(" + intCount + ") " + strTitle;
+                }
+
+            } else {
+                $userNotificationsCount.hide();
+            }
+
         }
     };
 
+    return me;
 });

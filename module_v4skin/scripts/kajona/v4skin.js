@@ -10,7 +10,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
         pollMessages : function() {
 
             messaging.getRecentMessages(function (objResponse) {
-                msg.updateCountInfo(objResponse.messageCount);
+                messaging.updateCountInfo(objResponse.messageCount);
 
                 $('#messagingShortlist').empty();
                 $.each(objResponse.messages, function (index, item) {
@@ -23,37 +23,9 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
                 $('#messagingShortlist').append("<li class='divider'></li><li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1#/messaging'><i class='fa fa-envelope'></i> <span data-lang-property='messages:action_show_all'></span></a></li>");
                 lang.initializeProperties('#messagingShortlist');
             });
-        },
-
-        pollMessageCount : function() {
-
-            if(util.isStackedDialog()) {
-                return;
-            }
-
-            messaging.getUnreadCount(function (intCount) {
-                msg.updateCountInfo(intCount);
-            });
-
-            window.setTimeout(msg.pollMessageCount, 30000);
-        },
-
-        updateCountInfo: function(intCount) {
-            var $userNotificationsCount = $('#userNotificationsCount');
-            var oldCount = $userNotificationsCount.text();
-            $userNotificationsCount.text(intCount);
-            if (intCount > 0) {
-                $userNotificationsCount.show();
-                if (oldCount != intCount) {
-                    var strTitle = document.title.replace("(" + oldCount + ")", "");
-                    document.title = "(" + intCount + ") " + strTitle;
-                }
-
-            } else {
-                $userNotificationsCount.hide();
-            }
-
         }
+
+
     };
 
     $.widget('custom.catcomplete', $.ui.autocomplete, {

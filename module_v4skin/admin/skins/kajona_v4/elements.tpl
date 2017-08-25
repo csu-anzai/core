@@ -313,6 +313,23 @@ Multiselect
     <option value="%%key%%" selected="selected">%%value%%</option>
 </input_multiselect_row_selected>
 
+Date interval
+<input_date_interval>
+    <div class="form-group">
+        <label for="%%name%%_unit" class="col-sm-3 control-label">%%title%%</label>
+        <div class="col-sm-6">
+            <div class="row">
+                <div class="col-md-8">
+                    <input type="number" name="%%name%%_value" id="%%name%%_value" value="%%value%%" class="form-control %%class%%" %%disabled%%>
+                </div>
+                <div class="col-md-4">
+                    <select name="%%name%%_unit" id="%%name%%_unit" class="form-control %%class%%" %%disabled%% %%addons%%>%%units%%</select>
+                </div>
+            </div>
+        </div>
+    </div>
+</input_date_interval>
+
 Toggle Button-Bar
 <input_toggle_buttonbar>
     <div class="form-group">
@@ -417,6 +434,29 @@ Regular Text-Field
         </div>
     </div>
 </input_text>
+
+Color Picker
+<input_colorpicker>
+    <div class="form-group colorpicker-component">
+        <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
+        <div class="col-sm-6">
+            <div class="input-group colorpicker-component" id="c_%%name%%">
+                <div class="input-group-addon"><i></i></div>
+                <input id="%%name%%" name="%%name%%" class="form-control" type="text" value="%%value%%" %%readonly%% data-kajona-instantsave="%%instantEditor%%">
+            </div>
+        </div>
+        <script type="text/javascript">
+        require(["bootstrap-colorpicker"], function(colorpicker) {
+            $('#c_%%name%%').colorpicker({component: '*'});
+
+//            if($('#%%name%%').is(':focus')) {
+//                $('#%%name%%').blur();
+//                $('#%%name%%').focus();
+//            }
+        });
+        </script>
+    </div>
+</input_colorpicker>
 
 Textarea
 <input_textarea>
@@ -1084,7 +1124,7 @@ Part to display the login status, user is logged in
     </ul>
 </div>
 <script type="text/javascript">
-    require(['jquery', 'v4skin'], function($, v4skin){
+    require(['jquery', 'v4skin', 'messaging'], function($, v4skin, messaging){
         if(%%renderMessages%%) {
             $(function() {
                 v4skin.messaging.properties = {
@@ -1099,7 +1139,7 @@ Part to display the login status, user is logged in
 
                 });
 
-                window.setTimeout(v4skin.messaging.pollMessageCount, 2000);
+                window.setTimeout(function() { messaging.setPollingEnabled(true); }, 1000);
             });
         }
         else {

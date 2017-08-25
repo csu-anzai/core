@@ -20,7 +20,7 @@ $lang["action_transition_action"] = "Actions";
 $lang["action_transition_condition"] = "Conditions";
 
 $lang["form_flow_name"]         = "Name";
-$lang["form_flow_icon"]         = "Icon";
+$lang["form_flow_iconcolor"]    = "Color";
 $lang["form_flow_headline_groups"] = "Group configuration";
 $lang["form_flow_viewgroups"]   = "View";
 $lang["form_flow_editgroups"]   = "Edit";
@@ -28,6 +28,7 @@ $lang["form_flow_deletegroups"] = "Delete";
 $lang["form_flow_rightgroups"]  = "Rights";
 $lang["form_flow_usergroup"]    = "User groups";
 $lang["form_flow_transitions"]  = "Transitions";
+$lang["form_flow_visible"]      = "Visible";
 
 $lang["form_flow_targetstatus"] = "Target-Status";
 $lang["form_flow_actions"]      = "Actions";
@@ -45,7 +46,12 @@ $lang["flow_step_icon_6"]       = "icon_flag_purple";
 $lang["flow_step_icon_7"]       = "icon_flag_red";
 $lang["flow_step_icon_8"]       = "icon_flag_yellow";
 
+$lang["transition_visible_0"]   = "No";
+$lang["transition_visible_1"]   = "Yes";
+
 $lang["flow_step_no_delete"] = "It is not possible to delete this status";
+
+$lang["flow_current_status"]   = "Current status";
 
 $lang["delete_step_question"]   = "Do you really want to delete the step &quot;<b>%%element_name%%</b>&quot;?";
 $lang["delete_transition_question"]   = "Do you really want to delete the transition &quot;<b>%%element_name%%</b>&quot;?";
@@ -56,3 +62,8 @@ $lang["delete_question"]   = "Do you really want to delete the configuration &qu
 $lang["flow_transition_action_list"]   = "The following actions are assigned to the transition (<b>{0}</b> to <b>{1}</b>).";
 $lang["flow_transition_condition_list"]   = "The following conditions are assigned to the transition (<b>{0}</b> to <b>{1}</b>).";
 
+$lang["form_next_status_description"]   = "Please select the next status for the object <b>{0}</b>.";
+
+$lang["action_status_change_title"]   = "Response";
+$lang["action_status_change_success"]   = "Status change was successful.";
+$lang["action_status_change_redirect"]   = "The system needs user input in order to execute the status change.";

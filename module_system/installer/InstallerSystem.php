@@ -19,6 +19,7 @@ use Kajona\System\System\InstallerBase;
 use Kajona\System\System\InstallerInterface;
 use Kajona\System\System\LanguagesLanguage;
 use Kajona\System\System\Logger;
+use Kajona\System\System\MessagingAlert;
 use Kajona\System\System\MessagingConfig;
 use Kajona\System\System\MessagingMessage;
 use Kajona\System\System\OrmBase;
@@ -233,6 +234,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $strReturn .= "Installing table messages...\n";
         $objManager->createTable(MessagingMessage::class);
         $objManager->createTable(MessagingConfig::class);
+        $objManager->createTable(MessagingAlert::class);
 
         // password change history
         $strReturn .= "Installing password reset history...\n";
@@ -599,6 +601,11 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "6.2.3") {
             $strReturn .= $this->update_623_624();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.2.4") {
+            $strReturn .= $this->update_624_70();
         }
 
         return $strReturn."\n\n";
@@ -1011,6 +1018,23 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2.4");
+        return $strReturn;
+    }
+
+
+    private function update_624_70()
+    {
+        $strReturn = "Updating 6.2.4 to 7.0...\n";
+        $strReturn .= "Adding alert table\n";
+
+        $objManager = new OrmSchemamanager();
+        $objManager->createTable(MessagingAlert::class);
+
+        $strReturn .= "Adding user group flag\n";
+        $this->objDB->addColumn("user_group", "group_system_group", DbDatatypes::STR_TYPE_INT);
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
         return $strReturn;
     }
 

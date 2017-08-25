@@ -143,7 +143,7 @@ class Rights
     /**
      * Writes rights to the database.
      * Wrapper to the recursive function Rights::setRightsRecursive($arrRights, $strSystemid)
-     * Make sure to pass short-ids only! And please think about using the official api "addGroupToRight"
+     * Make sure to pass short-ids only! And please think about using the official api "addGroupToRight" or "setGroupsToRights"
      *
      * @param mixed $arrRights
      * @param string $strSystemid
@@ -207,7 +207,7 @@ class Rights
             return "";
         }
         $arrReturn = array();
-        foreach (explode(",", trim($strEntry, ",")) as $strOneEntry) {
+        foreach (explode(",", trim("".$strEntry, ",")) as $strOneEntry) {
             if (is_numeric($strOneEntry)) {
                 $arrReturn[] = UserGroup::getGroupIdForShortId((int)$strOneEntry);
             } elseif (validateSystemid($strOneEntry)) {
@@ -779,6 +779,71 @@ class Rights
     }
 
     /**
+     * Method for adding several rights to a group for the given systemid
+     *
+     * @param $strSystemId
+     * @param $strGroupId
+     * @param array $arrRights
+     */
+    public function addRightsToGroup($strSystemId, $strGroupId, array $arrRights)
+    {
+        foreach ($arrRights as $strRight) {
+            $this->addGroupToRight($strGroupId, $strSystemId, $strRight);
+        }
+    }
+
+    /**
+     * Method to set for each right an array of group ids. This overwrites all existing group ids.
+     * The method adds also the admin group to the right. The array accepts the following structure:
+     *
+     * <code>
+     * $arrRights = [
+     *  "view" => ["group_a_id", "group_b_id"],
+     *   ...
+     * ];
+     * </code>
+     *
+     * @param array $arrRights
+     * @param string $strSystemid
+     * @return bool
+     */
+    public function setGroupsToRights(array $arrRights, string $strSystemid): bool
+    {
+        $this->objDb->flushQueryCache();
+        $this->flushRightsCache();
+
+        $strAdminGroupId = SystemSetting::getConfigValue("_admins_group_id_");
+        $arrExistingRights = $this->getArrayRightsShortIds($strSystemid);
+
+        // convert short right ids array to string
+        $arrExistingRights = array_map(function($arrRights){
+            if (is_array($arrRights)) {
+                return implode(",", array_filter($arrRights));
+            } else {
+                return $arrRights;
+            }
+        }, $arrExistingRights);
+
+        // set new rights
+        $arrNewRights = $arrExistingRights;
+        $arrNewRights[self::$STR_RIGHT_INHERIT] = 0;
+
+        foreach ($arrRights as $strRight => $arrGroupIds) {
+            // add admin group
+            $arrNewGroupIds = $arrGroupIds;
+            if (!in_array($strAdminGroupId, $arrNewGroupIds)) {
+                $arrNewGroupIds[] = $strAdminGroupId;
+            }
+
+            $arrNewRights[$strRight] = implode(",", array_map(function($strGroupId){
+                return UserGroup::getShortIdForGroupId($strGroupId);
+            }, $arrNewGroupIds));
+        }
+
+        return $this->setRights($arrNewRights, $strSystemid);
+    }
+
+    /**
      * Removes a group from a right at a given systemid
      * <b>NOTE: By setting rights using this method, inheritance is set to false!!!</b>
      *
@@ -827,6 +892,28 @@ class Rights
         $bitReturn = $this->setRights($arrRights, $strSystemid);
 
         return $bitReturn;
+    }
+
+
+    /**
+     * Removes all rights for the given group for the given system id.
+     *
+     * @param $strSystemId
+     * @param $strGroupId
+     * @param array $arrRights
+     */
+    public function removeAllRightsFromGroup($strSystemId, $strGroupId)
+    {
+        $arrRights = $this->getArrayRights($strSystemId);
+        foreach ($arrRights as $strRight => $arrGroupIds) {
+            if($strRight == self::$STR_RIGHT_INHERIT) {
+                continue;
+            }
+
+            if (in_array($strGroupId, $arrGroupIds)) {
+                $this->removeGroupFromRight($strGroupId, $strSystemId, $strRight);
+            }
+        }
     }
 
     /**

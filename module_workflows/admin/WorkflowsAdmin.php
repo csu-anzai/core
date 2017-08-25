@@ -1,29 +1,29 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2004-2006 by MulchProductions, www.mulchprod.de                                                 *
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-*-------------------------------------------------------------------------------------------------------*
-*	$Id$					    *
+*   (c) 2007-2017 by Kajona, www.kajona.de                                                              *
 ********************************************************************************************************/
 
 namespace Kajona\Workflows\Admin;
 
+use Kajona\System\Admin\AdminEvensimpler;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminInterface;
-use Kajona\System\Admin\AdminSimple;
+use Kajona\System\Admin\Formentries\FormentryDate;
 use Kajona\System\Admin\Formentries\FormentryHidden;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\ArraySectionIterator;
+use Kajona\System\System\Carrier;
+use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
+use Kajona\System\System\GraphFactory;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserUser;
 use Kajona\Workflows\System\WorkflowsHandler;
+use Kajona\Workflows\System\WorkflowsStats;
 use Kajona\Workflows\System\WorkflowsWorkflow;
-
 
 /**
  * Admin class of the workflows-module. Responsible for editing workflows and organizing them.
@@ -34,7 +34,7 @@ use Kajona\Workflows\System\WorkflowsWorkflow;
  * @module workflows
  * @moduleId _workflows_module_id_
  */
-class WorkflowsAdmin extends AdminSimple implements AdminInterface
+class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
 {
 
     const STR_LIST_HANDLER = "STR_LIST_HANDLER";
@@ -59,17 +59,15 @@ class WorkflowsAdmin extends AdminSimple implements AdminInterface
     public function getOutputModuleNavi()
     {
         $arrReturn = array();
-        $arrReturn[] = array("view", Link::getLinkAdmin($this->getArrModule("modul"), "myList", "", $this->getLang("module_mylist"), "", "", true, "adminnavi"));
-        $arrReturn[] = array("edit", Link::getLinkAdmin($this->getArrModule("modul"), "list", "", $this->getLang("commons_list"), "", "", true, "adminnavi"));
+        $arrReturn[] = array("view", Link::getLinkAdmin($this->getArrModule("modul"), "myList", "", $this->getLang("module_mylist")));
+        $arrReturn[] = array("edit", Link::getLinkAdmin($this->getArrModule("modul"), "list", "", $this->getLang("commons_list")));
         $arrReturn[] = array("", "");
-        $arrReturn[] = array("right1", Link::getLinkAdmin($this->getArrModule("modul"), "listHandlers", "", $this->getLang("action_list_handlers"), "", "", true, "adminnavi"));
+        $arrReturn[] = array("right1", Link::getLinkAdmin($this->getArrModule("modul"), "listHandlers", "", $this->getLang("action_list_handlers")));
+        $arrReturn[] = array("right2", Link::getLinkAdmin($this->getArrModule("modul"), "stats", "", $this->getLang("action_stats")));
         return $arrReturn;
     }
 
     /**
-     * @param string $strSystemid
-     * @param string $strStopSystemid
-     *
      * @return array
      */
     public function getArrOutputNaviEntries()
@@ -85,15 +83,82 @@ class WorkflowsAdmin extends AdminSimple implements AdminInterface
 
 
     /**
-     * Renders the form to create a new entry
+     * Generates some stats about the current executions.
      *
-     * @return string
-     * @permissions edit
+     * @permissions right2
      */
-    protected function actionNew()
+    protected function actionStats()
     {
-        return "";
+
+        if (validateSystemid($this->getSystemid())) {
+            $this->setArrModuleEntry("template", "/folderview.tpl");
+
+            $objStats = new WorkflowsStats();
+            $arrTableRows = [];
+            foreach ($objStats->getHandlerForController($this->getSystemid()) as $arrOneRow) {
+                $arrTableRows[] = [
+                    dateToString(new Date($arrOneRow["wfh_start"])),
+                    $arrOneRow["wfh_end"] != "" ? dateToString(new Date($arrOneRow["wfh_end"])) : "<i class='fa fa-warning' style='color: red;'></i>",
+                    $arrOneRow["wfh_end"] != "" ? round(((new Date($arrOneRow["wfh_end"]))->getTimeInOldStyle() - (new Date($arrOneRow["wfh_start"]))->getTimeInOldStyle()) / 60, 4) ." min"  : "",
+                    $arrOneRow["wfh_result"],
+                    $arrOneRow["wfh_class"],
+                ];
+            }
+
+            return $this->objToolkit->dataTable([$this->getLang("stats_start"), $this->getLang("stats_end"), $this->getLang("stats_duration"),$this->getLang("stats_result"), $this->getLang("stats_class")], $arrTableRows);
+        }
+
+
+        $objDate = new Date();
+        if ($this->getParam("stats_date") != "") {
+            $objDate->generateDateFromParams("stats_date", Carrier::getAllParams());
+        }
+
+        $objForm = new AdminFormgenerator("stats", null);
+        $objForm->addField(new FormentryDate("stats", "date"))->setStrValue($objDate);
+        $strReturn = $objForm->renderForm(Link::getLinkAdminHref($this->getArrModule("module"), "stats", "&pv=1"));
+
+
+        $objStats = new WorkflowsStats();
+
+        //add a simple line-chart
+        list($arrProcessedController, $arrBrokenController, $arrHandlers, $arrBrokenHandlers) = $objStats->getHourlyStats($objDate);
+
+        $objChart = GraphFactory::getGraphInstance();
+
+        $objChart->addLinePlot($arrProcessedController, $this->getLang("chart_processed"));
+        $objChart->addLinePlot($arrBrokenController, $this->getLang("chart_broken"));
+        $objChart->addLinePlot($arrHandlers, $this->getLang("chart_handler"));
+        $objChart->addLinePlot($arrBrokenHandlers, $this->getLang("chart_handler_broken"));
+
+        $objChart->setIntWidth(1200);
+        $strReturn .= $objChart->renderGraph();
+
+
+
+        $objIterator = new ArraySectionIterator($objStats->getControllerForDateCount($objDate));
+        $objIterator->setPageNumber($this->getParam("pv"));
+        $objIterator->setArraySection($objStats->getControllerForDate($objDate, $objIterator->calculateStartPos(), $objIterator->calculateEndPos()));
+
+
+        $arrTableRows = [];
+        foreach ($objIterator as $arrOneRow) {
+            $arrTableRows[] = [
+                dateToString(new Date($arrOneRow["wfc_start"])),
+                $arrOneRow["wfc_end"] != "" ? dateToString(new Date($arrOneRow["wfc_end"])) : "<i class='fa fa-warning' style='color: red;'></i>",
+                $arrOneRow["wfc_end"] != "" ? round(((new Date($arrOneRow["wfc_end"]))->getTimeInOldStyle() - (new Date($arrOneRow["wfc_start"]))->getTimeInOldStyle()) / 60, 4) ." min"  : "",
+                $arrOneRow["anzhandler"],
+                ($arrOneRow["anzexception"] > 0 ? "<i class='fa fa-warning' style='color: red;'></i> " : "").
+                Link::getLinkAdminDialog($this->getArrModule("module"), $this->getAction(), ["systemid" => $arrOneRow["wfc_id"]], $this->getLang("action_show_details"), $this->getLang("action_show_details"), "icon_lens")
+            ];
+        }
+
+        $strReturn .= $this->objToolkit->dataTable([$this->getLang("stats_start"), $this->getLang("stats_end"), $this->getLang("stats_duration"), $this->getLang("stats_amount"), ""], $arrTableRows);
+
+        $strReturn .= $this->objToolkit->getPageview($objIterator, $this->getArrModule("module"), $this->getAction(), "&stats_date=".$objDate);
+        return $strReturn;
     }
+
 
     /**
      * Renders the form to edit an existing entry
@@ -122,7 +187,6 @@ class WorkflowsAdmin extends AdminSimple implements AdminInterface
      */
     protected function actionList()
     {
-
         $objIterator = new ArraySectionIterator(WorkflowsWorkflow::getObjectCountFiltered());
         $objIterator->setPageNumber($this->getParam("pv"));
         $objIterator->setArraySection(WorkflowsWorkflow::getAllworkflows($objIterator->calculateStartPos(), $objIterator->calculateEndPos()));
@@ -140,7 +204,6 @@ class WorkflowsAdmin extends AdminSimple implements AdminInterface
      */
     protected function actionMyList()
     {
-
         $objIterator = new ArraySectionIterator(
             WorkflowsWorkflow::getPendingWorkflowsForUserCount(array_merge(array($this->objSession->getUserID()), $this->objSession->getGroupIdsAsArray()))
         );
@@ -183,8 +246,7 @@ class WorkflowsAdmin extends AdminSimple implements AdminInterface
                 $objUser = new UserUser($strOneId, false);
                 if ($objUser->getStrUsername() != "") {
                     $strResponsible .= $objUser->getStrUsername();
-                }
-                else {
+                } else {
                     $objGroup = new UserGroup($strOneId);
                     $strResponsible .= $objGroup->getStrName();
                 }
@@ -242,13 +304,12 @@ class WorkflowsAdmin extends AdminSimple implements AdminInterface
         //ui given? current user responsible?
         //magic: the difference of the tasks' ids and the users' ids should be less than the count of the task-ids - then at least one id matches
         if ($objWorkflow->getObjWorkflowHandler()->providesUserInterface() && ($objWorkflow->getStrResponsible() == "" || count(array_diff($arrIdsOfTask, $arrIdsToCheck)) < count($arrIdsOfTask))) {
-
             $strCreator = "";
+
             if (validateSystemid($objWorkflow->getStrOwner())) {
                 $objUser = new UserUser($objWorkflow->getStrOwner(), false);
                 $strCreator .= $objUser->getStrUsername();
             }
-            $strInfo = $this->objToolkit->getTextRow($this->getLang("workflow_owner")." ".$strCreator);
 
             $strResponsible = "";
             foreach (explode(",", $objWorkflow->getStrResponsible()) as $strOneId) {
@@ -260,8 +321,7 @@ class WorkflowsAdmin extends AdminSimple implements AdminInterface
                     $objUser = new UserUser($strOneId, false);
                     if ($objUser->getStrUsername() != "") {
                         $strResponsible .= $objUser->getStrUsername();
-                    }
-                    else {
+                    } else {
                         $objGroup = new UserGroup($strOneId);
                         $strResponsible .= $objGroup->getStrName();
                     }
@@ -281,16 +341,14 @@ class WorkflowsAdmin extends AdminSimple implements AdminInterface
                     $strForm->addField(new FormentryHidden(null, "systemid"))->setStrValue($objWorkflow->getSystemid());
                 }
                 $strReturn .= $strForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "saveUI"));
-            }
-            else {
+            } else {
                 $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "saveUI"));
                 $strReturn .= $strForm;
                 $strReturn .= $this->objToolkit->formInputHidden("systemid", $objWorkflow->getSystemid());
                 $strReturn .= $this->objToolkit->formInputSubmit($this->getLang("commons_save"));
                 $strReturn .= $this->objToolkit->formClose();
             }
-        }
-        else {
+        } else {
             $strReturn .= $this->getLang("commons_error_permissions");
         }
 
@@ -326,8 +384,7 @@ class WorkflowsAdmin extends AdminSimple implements AdminInterface
             $objWorkflow->updateObjectToDb();
 
             $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "myList"));
-        }
-        else {
+        } else {
             $strReturn .= $this->getLang("commons_error_permissions");
         }
 
@@ -344,8 +401,7 @@ class WorkflowsAdmin extends AdminSimple implements AdminInterface
     {
         if ($objListEntry instanceof WorkflowsHandler) {
             return $this->objToolkit->listButton(Link::getLinkAdmin($this->getArrModule("modul"), "editHandler", "&systemid=".$objListEntry->getSystemid(), "", $this->getLang("action_edit_handler"), "icon_edit"));
-        }
-        else {
+        } else {
             return "";
         }
     }
@@ -413,32 +469,6 @@ class WorkflowsAdmin extends AdminSimple implements AdminInterface
      *
      * @return string
      */
-    protected function renderPermissionsAction(Model $objListEntry)
-    {
-        if ($objListEntry instanceof WorkflowsHandler) {
-            return "";
-        }
-        return parent::renderPermissionsAction($objListEntry);
-    }
-
-    /**
-     * @param Model $objListEntry
-     *
-     * @return string
-     */
-    protected function renderTagAction(Model $objListEntry)
-    {
-        if ($objListEntry instanceof WorkflowsHandler) {
-            return "";
-        }
-        return parent::renderTagAction($objListEntry);
-    }
-
-    /**
-     * @param Model $objListEntry
-     *
-     * @return string
-     */
     protected function renderCopyAction(Model $objListEntry)
     {
         return "";
@@ -488,20 +518,6 @@ class WorkflowsAdmin extends AdminSimple implements AdminInterface
     }
 
     /**
-     * @param Model $objListEntry
-     *
-     * @return string
-     */
-    protected function renderChangeHistoryAction(Model $objListEntry)
-    {
-        if ($objListEntry instanceof WorkflowsHandler) {
-            return "";
-        }
-        return parent::renderChangeHistoryAction($objListEntry);
-    }
-
-
-    /**
      * Lists all handlers available to the system
      *
      * @return string
@@ -520,7 +536,6 @@ class WorkflowsAdmin extends AdminSimple implements AdminInterface
 
         $strReturn .= $this->renderList($objIterator, false, self::STR_LIST_HANDLER);
         return $strReturn;
-
     }
 
     /**
@@ -545,8 +560,7 @@ class WorkflowsAdmin extends AdminSimple implements AdminInterface
             $strReturn .= $this->objToolkit->formHeadline($objHandler->getObjInstanceOfHandler()->getStrName()." (".$objHandler->getStrHandlerClass().")");
             $strReturn .= $objForm->renderForm(getLinkAdminHref($this->getArrModule("modul"), "saveHandler"));
             return $strReturn;
-        }
-        else {
+        } else {
             $strReturn .= $this->getLang("commons_error_permissions");
         }
 
@@ -583,7 +597,6 @@ class WorkflowsAdmin extends AdminSimple implements AdminInterface
         $objHandler = new WorkflowsHandler($this->getSystemid());
 
         if ($objHandler->rightRight1()) {
-
             $objForm = $this->getHandlerForm($objHandler);
             if (!$objForm->validateForm()) {
                 return $this->actionEditHandler($objForm);
@@ -594,12 +607,10 @@ class WorkflowsAdmin extends AdminSimple implements AdminInterface
 
             $this->adminReload(getLinkAdminHref($this->getArrModule("modul"), "listHandlers", ""));
             return "";
-        }
-        else {
+        } else {
             return $this->getLang("commons_error_permissions");
         }
     }
-
 
 
     /**

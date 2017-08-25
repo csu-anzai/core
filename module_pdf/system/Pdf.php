@@ -306,6 +306,7 @@ class Pdf {
         $this->objPdf->Ln();
 
         // add table of content at page 1
+        $this->setFont();
         $this->objPdf->addTOC($intTargetPage, $this->objPdf->getFontFamily(), ' . ', $strTitle);
         // end of TOC page
         $this->objPdf->endTOCPage();

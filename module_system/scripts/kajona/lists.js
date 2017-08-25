@@ -72,7 +72,7 @@ define('lists', ['jquery', 'lang'], function ($, lang) {
             curConfirm = curConfirm.replace('%title%', strTitle);
 
             jsDialog_1.setTitle(this.strDialogTitle);
-            jsDialog_1.setContent(curConfirm, this.strDialogStart,  'javascript:require(\'lists\').executeActions();', true);
+            jsDialog_1.setContent(curConfirm, this.strDialogStart, 'javascript:require(\'lists\').executeActions();', true);
             jsDialog_1.init();
 
             //reset pending list on hide
