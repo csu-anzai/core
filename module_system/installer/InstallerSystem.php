@@ -1030,6 +1030,9 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $objManager = new OrmSchemamanager();
         $objManager->createTable(MessagingAlert::class);
 
+        $strReturn .= "Adding user group flag\n";
+        $this->objDB->addColumn("user_group", "group_system_group", DbDatatypes::STR_TYPE_INT);
+
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
         return $strReturn;

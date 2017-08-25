@@ -21,6 +21,7 @@ use Kajona\System\System\Config;
 use Kajona\System\System\Cookie;
 use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
+use Kajona\System\System\FilterBase;
 use Kajona\System\System\Filters\UserGroupFilter;
 use Kajona\System\System\HttpResponsetypes;
 use Kajona\System\System\LanguagesLanguage;
@@ -54,7 +55,7 @@ use Kajona\System\System\Validators\EmailValidator;
  * @module user
  * @moduleId _user_modul_id_
  */
-class UserAdmin extends AdminSimple implements AdminInterface
+class UserAdmin extends AdminEvensimpler implements AdminInterface
 {
 
     private $STR_USERFILTER_SESSION_KEY = "USERLIST_FILTER_SESSION_KEY";
@@ -164,7 +165,7 @@ class UserAdmin extends AdminSimple implements AdminInterface
             if ($objUserMgmt->getUsersource($objUser->getStrSubsystem())->getMembersEditable()) {
                 $strReturn .= "<script type='text/javascript'>
                 setTimeout(function() {
-                    KAJONA.admin.folderview.dialog.setContentIFrame('".Link::getLinkAdminHref("user", "editMemberships", "&systemid=".$objUser->getSystemid()."&folderview=1&redirectToList=1")."'); KAJONA.admin.folderview.dialog.setTitle('".StringUtil::jsSafeString($this->getLang("user_memberships").$objUser->getStrDisplayName())."');
+                    KAJONA.admin.folderview.dialog.setContentIFrame('".Link::getLinkAdminHref("user", "editMemberships", "&systemid=".$objUser->getSystemid()."&folderview=1&redirecttolist=1")."'); KAJONA.admin.folderview.dialog.setTitle('".StringUtil::jsSafeString($this->getLang("user_memberships").$objUser->getStrDisplayName())."');
                     KAJONA.admin.folderview.dialog.init();
                 }, 500);
                 </script>";
@@ -808,18 +809,12 @@ class UserAdmin extends AdminSimple implements AdminInterface
 
         $strReturn = "";
 
-        //add a filter-form
-        $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "groupList"));
-        $strReturn .= $this->objToolkit->formInputText("grouplist_filter", $this->getLang("group_name"), $this->objSession->getSession($this->STR_GROUPFILTER_SESSION_KEY));
-        $strReturn .= $this->objToolkit->formInputSubmit($this->getLang("userlist_filter"));
-        $strReturn .= $this->objToolkit->formInputHidden("doFilter", "1");
-        $strReturn .= $this->objToolkit->formClose();
 
 
-        $objFilter = new UserGroupFilter();
-        if ($this->objSession->getSession($this->STR_GROUPFILTER_SESSION_KEY) != "") {
-            $objFilter->setStrName($this->objSession->getSession($this->STR_GROUPFILTER_SESSION_KEY));
-        }
+
+        /** @var UserGroupFilter $objFilter */
+        $objFilter = FilterBase::getOrCreateFromSession(UserGroupFilter::class);
+        $strReturn .= $this->renderFilter($objFilter);
 
         $objArraySectionIterator = new ArraySectionIterator(UserGroup::getObjectCountFiltered($objFilter));
         $objArraySectionIterator->setPageNumber((int)($this->getParam("pv") != "" ? $this->getParam("pv") : 1));
@@ -989,6 +984,7 @@ class UserAdmin extends AdminSimple implements AdminInterface
         $arrBlockedGroups[] = SystemSetting::getConfigValue("_admins_group_id_");
 
         $bitRenderEdit = Carrier::getInstance()->getObjSession()->isSuperAdmin() || ($objGroup->rightEdit() && !in_array($objGroup->getSystemid(), $arrBlockedGroups));
+        $bitRenderEdit = $bitRenderEdit && $objGroup->getIntSystemGroup() != 1;
 
         return $bitRenderEdit;
     }
@@ -1173,10 +1169,6 @@ class UserAdmin extends AdminSimple implements AdminInterface
      */
     protected function actionEditMemberships()
     {
-        $strReturn = "";
-        //open the form
-        $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "saveMembership"));
-        //Create a list of checkboxes
         /** @var UserUser $objUser */
         $objUser = Objectfactory::getInstance()->getObject($this->getSystemid());
 
@@ -1187,44 +1179,35 @@ class UserAdmin extends AdminSimple implements AdminInterface
         $arrGroups = $objSourcesytem->getAllGroupIds();
         $arrUserGroups = $objUser->getArrGroupIds();
 
+        $objForm = new AdminFormgenerator("user", $objUser);
+
+        $strJs = <<<HTML
+            <a href="javascript:require('permissions').toggleEmtpyRows('[lang,permissions_toggle_visible,system]', '[lang,permissions_toggle_hidden,system]', 'form .form-group');" id="rowToggleLink" class="rowsVisible">[lang,permissions_toggle_visible,system]</a><br /><br />
+HTML;
+        $objForm->addField(new FormentryPlaintext())->setStrValue($strJs);
+
         if (count($arrUserGroups) == 0) {
-            $strReturn .= $this->objToolkit->warningBox($this->getLang("form_user_hint_groups"));
+            $objForm->addField(new FormentryPlaintext())->setStrValue($this->objToolkit->warningBox($this->getLang("form_user_hint_groups")));
         }
 
-        $arrRows = [];
         foreach ($arrGroups as $strSingleGroup) {
-            //to avoid privilege escalation, the admin-group has to be treated in a special manner
-            //only render the group, if the current user is member of this group
+            //to avoid privilege escalation, the admin-group and other special groups need to be treated in a special manner
             $objSingleGroup = new UserGroup($strSingleGroup);
             if (!$this->isGroupEditable($objSingleGroup)) {
                 continue;
             }
 
-            $strCheckbox = $this->objToolkit->formInputCheckbox($objSingleGroup->getSystemid(), "", in_array($strSingleGroup, $arrUserGroups));
-            $strCheckbox = StringUtil::substring($strCheckbox, StringUtil::indexOf($strCheckbox, "<input"));
-            $strCheckbox = StringUtil::substring($strCheckbox, 0, StringUtil::indexOf($strCheckbox, ">") + 1);
-
-            $arrRows[] = [$strCheckbox, $objSingleGroup->getStrName()];
+            $objForm->addField(new FormentryCheckbox("user", "group[".$objSingleGroup->getSystemid()."]"))->setStrLabel($objSingleGroup->getStrName())->setStrValue(in_array($strSingleGroup, $arrUserGroups));
         }
 
-        $strReturn .= <<<HTML
-    <a href="javascript:require('permissions').toggleEmtpyRows('[lang,permissions_toggle_visible,system]', '[lang,permissions_toggle_hidden,system]', 'table.kajona-data-table tr');" id="rowToggleLink" class="rowsVisible">[lang,permissions_toggle_visible,system]</a><br /><br />
-HTML;
-
-
-        $strReturn .= $this->objToolkit->dataTable([], $arrRows);
-
-        $strReturn .= "<script type=\"text/javascript\">
+        $objForm->addField(new FormentryPlaintext())->setStrValue("<script type=\"text/javascript\">
             require(['permissions'], function(permissions){
-                permissions.toggleEmtpyRows('".$this->getLang("permissions_toggle_visible", "system")."', '".$this->getLang("permissions_toggle_hidden", "system")."', 'table.kajona-data-table tr');
+                permissions.toggleEmtpyRows('".$this->getLang("permissions_toggle_visible", "system")."', '".$this->getLang("permissions_toggle_hidden", "system")."', 'form .form-group');
             });
-        </script>";
+        </script>");
 
-        $strReturn .= $this->objToolkit->formInputHidden("redirectToList", $this->getParam("redirectToList"));
-        $strReturn .= $this->objToolkit->formInputHidden("systemid", $this->getSystemid());
-        $strReturn .= $this->objToolkit->formInputSubmit($this->getLang("commons_save"));
-        $strReturn .= $this->objToolkit->formClose();
-        return $strReturn;
+        $objForm->addField(new FormentryHidden("", "redirecttolist"))->setStrValue($this->getParam("redirecttolist"));
+        return $objForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "saveMembership"));
     }
 
     /**
@@ -1261,63 +1244,45 @@ HTML;
         $objSourcesytem = $objUsersources->getUsersource($objUser->getStrSubsystem());
 
         $arrGroups = $objSourcesytem->getAllGroupIds();
-        $arrUserGroups = $objUser->getArrGroupIds();
+        $arrAssignedUserGroups = $objUser->getArrGroupIds();
 
         //validate possible blocked groups
         $objConfig = Config::getInstance("module_system", "blockedgroups.php");
         $arrBlockedGroups = explode(",", $objConfig->getConfig("blockedgroups"));
 
-        //Searching for groups to enter
-        foreach ($arrGroups as $strSingleGroup) {
-            $objGroup = new UserGroup($strSingleGroup);
-            //skipped for blocked groups, those won't be updated
+        $arrNewAssignment = [];
+
+        //loop old assignemts in order to create a filter
+        foreach ($arrAssignedUserGroups as $strOldId) {
+            /** @var UserGroup $objGroup */
+            $objGroup = Objectfactory::getInstance()->getObject($strOldId);
             if (!$this->isGroupEditable($objGroup)) {
-                continue;
-            }
-
-
-            if ($this->getParam($strSingleGroup) != "") {
-                //add the user to this group
-                if (!in_array($strSingleGroup, $arrUserGroups)) {
-                    $objGroup->getObjSourceGroup()->addMember($objUser->getObjSourceUser());
-                } else {
-                    //user is already in the group, remove the marker
-                    foreach ($arrUserGroups as $strKey => $strValue) {
-                        if ($strValue == $strSingleGroup) {
-                            $arrUserGroups[$strKey] = null;
-                        }
-                    }
-                }
-
+                $arrNewAssignment[] = $strOldId;
             }
         }
 
-        //check, if the current user is member of the admin-group.
-        //if not, remain the admin-group as-is
-        if (!Carrier::getInstance()->getObjSession()->isSuperAdmin()) {
-            $intKey = array_search(SystemSetting::getConfigValue("_admins_group_id_"), $arrUserGroups);
-            if ($intKey !== false) {
-                $arrUserGroups[$intKey] = null;
-            }
-
-            foreach ($arrBlockedGroups as $strOneGroup) {
-                $intKey = array_search($strOneGroup, $arrUserGroups);
-                if ($intKey !== false) {
-                    $arrUserGroups[$intKey] = null;
-                }
-            }
+        //loop the post result
+        $arrPost = is_array($this->getParam("user_group")) ? array_keys($this->getParam("user_group")) : [];
+        foreach ($arrPost as $strGroup => $strSelected) {
+            $arrNewAssignment[] = $strGroup;
         }
 
-        //loop the users' list in order to remove unwanted relations
-        foreach ($arrUserGroups as $strValue) {
-            if (validateSystemid($strValue)) {
-                $objGroup = new UserGroup($strValue);
+        //create memberships
+        foreach ($arrNewAssignment as $strGroupId) {
+            $objGroup = Objectfactory::getInstance()->getObject($strGroupId);
+            $objGroup->getObjSourceGroup()->addMember($objUser->getObjSourceUser());
+        }
+
+        foreach ($arrAssignedUserGroups as $strOneGroup) {
+            if (!in_array($strOneGroup, $arrNewAssignment)) {
+                $objGroup = Objectfactory::getInstance()->getObject($strOneGroup);
                 $objGroup->getObjSourceGroup()->removeMember($objUser->getObjSourceUser());
             }
         }
 
+
         if ($this->getParam("folderview")) {
-            $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "list", "&peClose=1&blockAction=1".($this->getParam("redirectToList") != "" ? "&peRefreshPage=".urlencode(Link::getLinkAdminHref("user", "list", "", false)) : "")));
+            $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "list", "&peClose=1&blockAction=1".($this->getParam("redirecttolist") != "" ? "&peRefreshPage=".urlencode(Link::getLinkAdminHref("user", "list", "", false)) : "")));
         } else {
             $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "list"));
         }

@@ -52,7 +52,7 @@ define("permissions", ["jquery"], function($){
 
             $(parentSelector).each(function() {
 
-                if($(this).find("input:checked").length == 0 && $(this).find("th").length == 0) {
+                if($(this).find("input").length > 0 && $(this).find("input:checked").length == 0 && $(this).find("th").length == 0) {
 
                     if(perms.toggleMode == "show") {
                         $(this).removeClass("hidden");

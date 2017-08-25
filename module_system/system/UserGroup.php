@@ -58,6 +58,13 @@ class UserGroup extends Model implements ModelInterface, AdminListableInterface
     private $intShortId = 0;
 
     /**
+     * @var int
+     * @tableColumn user_group.group_system_group
+     * @tableColumnDatatype int
+     */
+    private $intSystemGroup = 0;
+
+    /**
      * @var UsersourcesGroupInterface
      */
     private $objSourceGroup;
@@ -344,5 +351,23 @@ class UserGroup extends Model implements ModelInterface, AdminListableInterface
         $this->intShortId = $intShortId;
         return $this;
     }
+
+    /**
+     * @return int
+     */
+    public function getIntSystemGroup(): int
+    {
+        return $this->intSystemGroup;
+    }
+
+    /**
+     * @param int $intSystemGroup
+     */
+    public function setIntSystemGroup(int $intSystemGroup)
+    {
+        $this->intSystemGroup = $intSystemGroup;
+    }
+
+
 
 }

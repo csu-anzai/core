@@ -45,6 +45,7 @@ $lang["group_add_user"]                  = "Add user";
 $lang["group_dn"]                        = "Distinguished-Name in the directory";
 $lang["group_memberlist"]                = "Members of group ";
 $lang["group_name"]                      = "Group title";
+$lang["form_usergroupfilter_systemfilter"] = "Exlude system groups";
 $lang["group_usersource"]                = "Group-Source";
 $lang["gruppe_anlegen_erfolg"]           = "Group was saved successfully";
 $lang["gruppe_anlegen_fehler"]           = "An error occurred while saving group";
