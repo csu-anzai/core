@@ -164,3 +164,4 @@ $lang["userlist_filter"]                 = "Filter anwenden";
 $lang["usersource_kajona_name"]          = "Kajona intern";
 $lang["user_copy_info"]                  = "Die Gruppeneinstellungen werden von dem Benutzer {0} kopiert. Im nächsten Schritt ist es möglich diese weiter anzupassen.";
 $lang["user_last_pwchanges_info"]        = "Benutzer welche das Passwort zurückgesetzt haben:";
+$lang["change_type_group"]               = "Gruppe";
