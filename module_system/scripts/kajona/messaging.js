@@ -117,8 +117,6 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util'], function ($, aja
                 bitEnabled = false;
             }
 
-            console.debug('polling: '+bitEnabled);
-
             if (bitEnabled) {
                 // start timeout only if we have not already a timeout
                 if (!timeout) {
