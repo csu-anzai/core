@@ -1240,10 +1240,6 @@ HTML;
     {
 
         $objUser = new UserUser($this->getSystemid());
-        $objUsersources = new UserSourcefactory();
-        $objSourcesytem = $objUsersources->getUsersource($objUser->getStrSubsystem());
-
-        $arrGroups = $objSourcesytem->getAllGroupIds();
         $arrAssignedUserGroups = $objUser->getArrGroupIds();
 
         //validate possible blocked groups
