@@ -278,9 +278,9 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         //New Constant: Max time to lock records
         $this->registerConstant("_system_lock_maxtime_", 7200, SystemSetting::$int_TYPE_INT, _system_modul_id_);
         //Email to send error-reports
-        $this->registerConstant("_system_admin_email_", $this->objSession->getSession("install_email"), SystemSetting::$int_TYPE_STRING, _system_modul_id_);
+        $this->registerConstant("_system_admin_email_", Carrier::getInstance()->getObjSession()->getSession("install_email"), SystemSetting::$int_TYPE_STRING, _system_modul_id_);
 
-        $this->registerConstant("_system_email_defaultsender_", $this->objSession->getSession("install_email"), SystemSetting::$int_TYPE_STRING, _system_modul_id_);
+        $this->registerConstant("_system_email_defaultsender_", Carrier::getInstance()->getObjSession()->getSession("install_email"), SystemSetting::$int_TYPE_STRING, _system_modul_id_);
         $this->registerConstant("_system_email_forcesender_", "false", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
 
         //3.0.2: user are allowed to change their settings?
@@ -356,12 +356,12 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $strPassword = "kajona";
         $strEmail = "";
         //Login-Data given from installer?
-        if($this->objSession->getSession("install_username") !== false && $this->objSession->getSession("install_username") != "" &&
-            $this->objSession->getSession("install_password") !== false && $this->objSession->getSession("install_password") != ""
+        if(Carrier::getInstance()->getObjSession()->getSession("install_username") !== false && Carrier::getInstance()->getObjSession()->getSession("install_username") != "" &&
+            Carrier::getInstance()->getObjSession()->getSession("install_password") !== false && Carrier::getInstance()->getObjSession()->getSession("install_password") != ""
         ) {
-            $strUsername = ($this->objSession->getSession("install_username"));
-            $strPassword = ($this->objSession->getSession("install_password"));
-            $strEmail = ($this->objSession->getSession("install_email"));
+            $strUsername = (Carrier::getInstance()->getObjSession()->getSession("install_username"));
+            $strPassword = (Carrier::getInstance()->getObjSession()->getSession("install_password"));
+            $strEmail = (Carrier::getInstance()->getObjSession()->getSession("install_email"));
         }
 
         //create a default language
