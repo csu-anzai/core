@@ -102,7 +102,7 @@ class UserGroupFilter extends FilterBase
     /**
      * @return int
      */
-    public function getIntSystemFilter(): int
+    public function getIntSystemFilter()
     {
         return $this->intSystemFilter;
     }
@@ -110,7 +110,7 @@ class UserGroupFilter extends FilterBase
     /**
      * @param int $intSystemFilter
      */
-    public function setIntSystemFilter(int $intSystemFilter)
+    public function setIntSystemFilter($intSystemFilter)
     {
         $this->intSystemFilter = $intSystemFilter;
     }
