@@ -46,6 +46,12 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
     private $strContentLanguage;
 
+    /**
+     * @var Session
+     * @inject system_session
+     */
+    private $objSession;
+
     public function __construct() {
         parent::__construct();
 

@@ -26,10 +26,10 @@ abstract class InstallerBase implements InstallerInterface {
     protected $objMetadata = null;
 
     /**
-     *
+     * @inject system_db
      * @var Database
      */
-    protected $objDB = null; //Object to the database
+    protected $objDB;
 
 
 
@@ -49,10 +49,6 @@ abstract class InstallerBase implements InstallerInterface {
         $strDir = dirname(_realpath_.$strDir);
         $this->objMetadata = new PackagemanagerMetadata();
         $this->objMetadata->autoInit(StringUtil::replace(array("/installer", _realpath_), array("", ""), $strDir));
-
-
-        $objCarrier = Carrier::getInstance();
-        $this->objDB = $objCarrier->getObjDB();
     }
 
     /**
