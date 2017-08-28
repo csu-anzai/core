@@ -31,6 +31,9 @@ class SystemJSTreeNode implements JsonSerializable
 
     const STR_NODE_DATA = "data";
     const STR_NODE_DATA_RIGHTEDIT = "rightedit";
+    const STR_NODE_DATA_CUSTOMTYPES = "customtypes"; //use this for custom nesting rules
+    const STR_NODE_DATA_CUSTOMTYPE_TYPE = "type";
+    const STR_NODE_DATA_CUSTOMTYPE_VALIDCHILDREN = "valid_children";
 
     const STR_NODE_AATTR = "a_attr";
     const STR_NODE_AATTR_HREF = "href";

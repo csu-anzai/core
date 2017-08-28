@@ -113,6 +113,17 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
                 return false;
             }
 
+            //check if custom types are set. If yes check if the type of the current node can be moved to the target node
+            if(node.data.customtypes) {
+                var curType = node.data.customtypes.type;
+                var arrValidChildrenTarget = targetNode.data.customtypes.valid_children;
+
+                //now check if the currenty type can be placed to the target node by checking the valid children
+                if($.inArray(curType, arrValidChildrenTarget) === -1) {
+                    return false;
+                }
+            }
+
             //dragged node already direct childnode of target?
             var arrTargetChildren = targetNode.children;
             if ($.inArray(strDragId, arrTargetChildren) > -1) {
@@ -216,7 +227,7 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
                         'url': function (node) {
                             return treeContext.loadNodeDataUrl;
                         },
-                        'data': function (node, cb) {//params to be added to the given ulr on ajay call
+                        'data': function (node, cb) {//params to be added to the given ulr on ajax call
                             var data = {};
                             if (node.id === "#") {
                                 data.systemid = treeContext.rootNodeSystemid;
