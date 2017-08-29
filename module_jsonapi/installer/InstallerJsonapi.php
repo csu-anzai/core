@@ -83,6 +83,12 @@ class InstallerJsonapi extends InstallerBase implements InstallerRemovableInterf
             $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2");
         }
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if ($arrModule["module_version"] == "6.2") {
+            $strReturn .= "Updating to 6.5...\n";
+            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5");
+        }
+
         return $strReturn."\n\n";
 	}
 

@@ -2,11 +2,11 @@
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://apidocs.kajona.de/xsd/package.xsd">
     <title>flow</title>
     <description>Module which provides a status transition system.</description>
-    <version>7.0</version>
+    <version>6.5</version>
     <author>Kajona Team</author>
     <type>MODULE</type>
     <providesInstaller>TRUE</providesInstaller>
     <requiredModules>
-        <module name="system" version="5.1" />
+        <module name="system" version="6.5" />
     </requiredModules>
 </package>
