@@ -46,11 +46,17 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
     private $strContentLanguage;
 
+    /**
+     * @var Session
+     * @inject system_session
+     */
+    private $objSession;
+
     public function __construct() {
         parent::__construct();
 
         //set the correct language
-        $this->strContentLanguage = Carrier::getInstance()->getObjSession()->getAdminLanguage(true, true);
+        $this->strContentLanguage = $this->objSession->getAdminLanguage(true, true);
     }
 
     public function install() {
