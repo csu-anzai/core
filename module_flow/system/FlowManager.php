@@ -106,7 +106,7 @@ class FlowManager
 
     /**
      * Returns the next transition which can be used if we want to automatically set the next status for the object.
-     * Not we return only a transition in case we have exactly one possible transition otherwise the method returns
+     * Note we return only a transition in case we have exactly one possible transition otherwise the method returns
      * null
      *
      * @param Model $objObject
