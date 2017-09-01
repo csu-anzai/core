@@ -5,12 +5,12 @@
     >
     <title>jsonapi</title>
     <description>Provides an generic JSON API to create, receive, update and delete database entries</description>
-    <version>6.2</version>
+    <version>6.5</version>
     <author>christoph.kappestein@gmail.com</author>
     <type>MODULE</type>
     <providesInstaller>TRUE</providesInstaller>
     <requiredModules>
-        <module name="system" version="6.2" />
-        <module name="basicauthentication" version="6.2" />
+        <module name="system" version="6.5" />
+        <module name="basicauthentication" version="6.5" />
     </requiredModules>
 </package>

@@ -105,15 +105,21 @@ class FlowManager
     }
 
     /**
-     * Returns the next transition which can be used if we want to automatically set the next status for the object
+     * Returns the next transition which can be used if we want to automatically set the next status for the object.
+     * Note we return only a transition in case we have exactly one possible transition otherwise the method returns
+     * null
      *
      * @param Model $objObject
-     * @return FlowTransition|false
+     * @return FlowTransition|null
      */
     public function getNextTransitionForModel(Model $objObject)
     {
         $arrTransitions = $this->getPossibleTransitionsForModel($objObject);
-        return reset($arrTransitions);
+        if (count($arrTransitions) == 1) {
+            return $arrTransitions[0];
+        } else {
+            return null;
+        }
     }
 
     /**

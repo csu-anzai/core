@@ -1242,10 +1242,6 @@ HTML;
         $objUser = new UserUser($this->getSystemid());
         $arrAssignedUserGroups = $objUser->getArrGroupIds();
 
-        //validate possible blocked groups
-        $objConfig = Config::getInstance("module_system", "blockedgroups.php");
-        $arrBlockedGroups = explode(",", $objConfig->getConfig("blockedgroups"));
-
         $arrNewAssignment = [];
 
         //loop old assignemts in order to create a filter
@@ -1259,7 +1255,7 @@ HTML;
 
         //loop the post result
         $arrPost = is_array($this->getParam("user_group")) ? array_keys($this->getParam("user_group")) : [];
-        foreach ($arrPost as $strGroup => $strSelected) {
+        foreach ($arrPost as $strGroup) {
             $arrNewAssignment[] = $strGroup;
         }
 

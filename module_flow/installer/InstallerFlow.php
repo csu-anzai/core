@@ -73,13 +73,13 @@ class InstallerFlow extends InstallerBase
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if ($arrModule["module_version"] == "6.2") {
-            $strReturn .= $this->update_62_70();
+            $strReturn .= $this->update_62_65();
         }
 
         return $strReturn;
     }
 
-    private function update_62_70()
+    private function update_62_65()
     {
         $strReturn = "Updating flow transition table\n";
         $this->objDB->addColumn("flow_step_transition", "transition_visible", DbDatatypes::STR_TYPE_INT);
@@ -88,7 +88,7 @@ class InstallerFlow extends InstallerBase
         $dbPrefix = _dbprefix_;
         $this->objDB->_pQuery("UPDATE {$dbPrefix}flow_step_transition SET transition_visible = 1", []);
 
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5");
         return $strReturn;
     }
 }

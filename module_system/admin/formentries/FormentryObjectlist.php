@@ -164,11 +164,6 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
 
     public function getValueAsText()
     {
-        $objSourceObject = $this->getObjSourceObject();
-        if ($objSourceObject == null) {
-            return "";
-        }
-
 
         if (!empty($this->arrKeyValues)) {
             $strHtml = "";

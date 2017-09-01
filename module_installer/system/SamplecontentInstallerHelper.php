@@ -27,7 +27,7 @@ class SamplecontentInstallerHelper
         //search for installers available
         $arrTempInstaller = Resourceloader::getInstance()->getFolderContent("/installer", array(".php"), false, null, function (&$strFilename, $strPath) {
             /** @var SamplecontentInstallerInterface $objInstance */
-            $objInstance = Classloader::getInstance()->getInstanceFromFilename($strPath, "Kajona\\System\\System\\SamplecontentInstallerInterface");
+            $objInstance = Classloader::getInstance()->getInstanceFromFilename($strPath, "Kajona\\System\\System\\SamplecontentInstallerInterface", null, null, true);
 
             //See if a legacy class was stored in the file
             if ($objInstance == null) {
@@ -84,7 +84,7 @@ class SamplecontentInstallerHelper
             if(StringUtil::indexOf($strPath, $objPackage->getStrPath()) !== false) {
 
                 /** @var SamplecontentInstallerInterface $objInstance */
-                $objInstance = Classloader::getInstance()->getInstanceFromFilename($strPath, null, "Kajona\\System\\System\\SamplecontentInstallerInterface");
+                $objInstance = Classloader::getInstance()->getInstanceFromFilename($strPath, null, "Kajona\\System\\System\\SamplecontentInstallerInterface", null, true);
                 if($objInstance != null) {
                     self::initInstaller($objInstance);
                     return $objInstance;

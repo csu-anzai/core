@@ -18,12 +18,20 @@ use Kajona\Packagemanager\System\PackagemanagerMetadata;
  * @abstract
  * @package module_system
  */
-abstract class InstallerBase extends Root implements InstallerInterface {
+abstract class InstallerBase implements InstallerInterface {
 
     /**
      * @var PackagemanagerMetadata
      */
     protected $objMetadata = null;
+
+    /**
+     * @inject system_db
+     * @var Database
+     */
+    protected $objDB;
+
+
 
     /**
      * Constructor
@@ -41,7 +49,6 @@ abstract class InstallerBase extends Root implements InstallerInterface {
         $strDir = dirname(_realpath_.$strDir);
         $this->objMetadata = new PackagemanagerMetadata();
         $this->objMetadata->autoInit(StringUtil::replace(array("/installer", _realpath_), array("", ""), $strDir));
-        parent::__construct();
     }
 
     /**
@@ -137,71 +144,6 @@ abstract class InstallerBase extends Root implements InstallerInterface {
         return $bitReturn;
 	}
 
-    /**
-     * Updates an element to the given version
-     *
-     * @param string $strElementName
-     * @param string $strVersion
-     */
-    protected function updateElementVersion($strElementName, $strVersion) {
-        if(SystemModule::getModuleByName("pages", true) !== null && Resourceloader::getInstance()->getCorePathForModule("module_pages") !== null) {
-            $this->objDB->flushQueryCache();
-            $objElement = PagesElement::getElement($strElementName);
-            if($objElement != null) {
-                $objElement->setStrVersion($strVersion);
-                $objElement->updateObjectToDb();
-
-                Logger::getInstance()->info("element ".$strElementName." updated to ".$strVersion);
-            }
-            $this->objDB->flushQueryCache();
-        }
-    }
-
-    /**
-     * Updates both, module and element to a new version -  if named the same way.
-     * Makes use of $this->objMetadata->getStrTitle() to fetch the current name
-     *
-     * @param $strNewVersion
-     *
-     * @return bool
-     */
-    protected function updateElementAndModule($strNewVersion)
-    {
-        $bitReturn = $this->updateModuleVersion($this->objMetadata->getStrTitle(), $strNewVersion);
-        $bitReturn = $bitReturn && $this->updateElementVersion($this->objMetadata->getStrTitle(), $strNewVersion);
-        return $bitReturn;
-    }
-
-    /**
-     * Removes the elements / modules handled by the current installer.
-     * Use the reference param to add a human readable logging.
-     *
-     * @param string &$strReturn
-     *
-     * @return bool
-     */
-    protected function removeModuleAndElement(&$strReturn) {
-        //delete the page-element
-        $objElement = PagesElement::getElement($this->objMetadata->getStrTitle());
-        if($objElement != null) {
-            $strReturn .= "Deleting page-element '".$this->objMetadata->getStrTitle()."'...\n";
-            $objElement->deleteObjectFromDatabase();
-        }
-        else {
-            $strReturn .= "Error finding page-element '".$this->objMetadata->getStrTitle()."', aborting.\n";
-            return false;
-        }
-
-        //delete the module-node
-        $strReturn .= "Deleting the module-registration...\n";
-        $objModule = SystemModule::getModuleByName($this->objMetadata->getStrTitle(), true);
-        if(!$objModule->deleteObjectFromDatabase()) {
-            $strReturn .= "Error deleting module, aborting.\n";
-            return false;
-        }
-
-        return true;
-    }
 
 	/**
 	 * Registers a constant to load at system-startup

@@ -46,11 +46,17 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
     private $strContentLanguage;
 
+    /**
+     * @var Session
+     * @inject system_session
+     */
+    private $objSession;
+
     public function __construct() {
         parent::__construct();
 
         //set the correct language
-        $this->strContentLanguage = Carrier::getInstance()->getObjSession()->getAdminLanguage(true, true);
+        $this->strContentLanguage = $this->objSession->getAdminLanguage(true, true);
     }
 
     public function install() {
@@ -605,7 +611,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "6.2.4") {
-            $strReturn .= $this->update_624_70();
+            $strReturn .= $this->update_624_65();
         }
 
         return $strReturn."\n\n";
@@ -1022,9 +1028,9 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
     }
 
 
-    private function update_624_70()
+    private function update_624_65()
     {
-        $strReturn = "Updating 6.2.4 to 7.0...\n";
+        $strReturn = "Updating 6.2.4 to 6.5...\n";
         $strReturn .= "Adding alert table\n";
 
         $objManager = new OrmSchemamanager();
@@ -1034,7 +1040,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $this->objDB->addColumn("user_group", "group_system_group", DbDatatypes::STR_TYPE_INT);
 
         $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5");
         return $strReturn;
     }
 

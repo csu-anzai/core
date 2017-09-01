@@ -13,7 +13,6 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Reflection;
-use Kajona\System\System\SearchPortalobjectInterface;
 use Kajona\System\System\SystemModule;
 
 
@@ -137,10 +136,6 @@ class SearchIndexwriter
         $objSearchDocument = new SearchDocument();
         $objSearchDocument->setDocumentId(generateSystemid());
         $objSearchDocument->setStrSystemId($objInstance->getSystemid());
-        if ($objInstance instanceof SearchPortalobjectInterface) {
-            $objSearchDocument->setBitPortalObject(true);
-            $objSearchDocument->setStrContentLanguage($objInstance->getContentLang());
-        }
 
         $objReflection = new Reflection($objInstance);
         $arrProperties = $objReflection->getPropertiesWithAnnotation(self::STR_ANNOTATION_ADDSEARCHINDEX);

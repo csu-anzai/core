@@ -9,7 +9,6 @@ namespace Kajona\Search\System;
 
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
-use Kajona\System\System\SearchPortalobjectInterface;
 use Kajona\System\System\SearchResultobjectInterface;
 
 
@@ -194,7 +193,7 @@ class SearchResult
     }
 
     /**
-     * @return Model|ModelInterface|SearchResultobjectInterface|SearchPortalobjectInterface
+     * @return Model|ModelInterface|SearchResultobjectInterface
      */
     public function getObjObject()
     {

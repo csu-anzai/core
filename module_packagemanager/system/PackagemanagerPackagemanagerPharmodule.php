@@ -202,7 +202,7 @@ class PackagemanagerPackagemanagerPharmodule extends PackagemanagerPackagemanage
         foreach (new RecursiveIteratorIterator($objPhar) as $objFile) {
             if (strpos($objFile->getPathname(), "/installer/") !== false && StringUtil::substring($objFile->getPathname(), -4) === ".php") {
                 /** @var $objInstaller InstallerInterface */
-                $objInstaller = Classloader::getInstance()->getInstanceFromFilename($objFile->getPathname());
+                $objInstaller = Classloader::getInstance()->getInstanceFromFilename($objFile->getPathname(), null, null, null, true);
                 $arrReturn[] = $objInstaller;
             }
         }

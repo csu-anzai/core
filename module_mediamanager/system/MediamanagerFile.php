@@ -21,9 +21,7 @@ use Kajona\System\System\OrmObjectlist;
 use Kajona\System\System\OrmObjectlistOrderby;
 use Kajona\System\System\OrmPropertyCondition;
 use Kajona\System\System\Resourceloader;
-use Kajona\System\System\SearchPortalobjectInterface;
 use Kajona\System\System\StringUtil;
-use Kajona\System\System\SystemModule;
 use Kajona\System\System\Zip;
 
 
@@ -40,7 +38,7 @@ use Kajona\System\System\Zip;
  *
  * @formGenerator Kajona\Mediamanager\Admin\MediamanagerFileFormgenerator
  */
-class MediamanagerFile extends Model implements ModelInterface, AdminGridableInterface, SearchPortalobjectInterface
+class MediamanagerFile extends Model implements ModelInterface, AdminGridableInterface
 {
 
 
@@ -157,76 +155,6 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
     {
         return Link::getLinkAdminHref("mediamanager", "edit", "&systemid=".$this->getSystemid()."&source=search");
     }
-
-    /**
-     * Return an on-lick link for the passed object.
-     * This link is rendered by the portal search result generator, so
-     * make sure the link is a valid portal page.
-     * If you want to suppress the entry from the result, return an empty string instead.
-     * If you want to add additional entries to the result set, clone the result and modify
-     * the new instance to your needs. Pack them in an array and they'll be merged
-     * into the result set afterwards.
-     * Make sure to return the passed result-object in this array, too.
-     *
-     * @param SearchResult $objResult
-     *
-     * @see getLinkPortalHref()
-     * @return mixed
-     */
-    public function updateSearchResult(SearchResult $objResult)
-    {
-        $objORM = new OrmObjectlist();
-
-        $strQuery = "SELECT system_id
-                       FROM "._dbprefix_."element_downloads,
-                            "._dbprefix_."page_element,
-                            "._dbprefix_."system
-                      WHERE download_id = ?
-                        AND content_id = page_element_id
-                        AND content_id = system_id
-                        AND system_status = 1
-                        ".$objORM->getDeletedWhereRestriction()."
-                        AND page_element_ph_language = ? ";
-
-        $arrRows = $this->objDB->getPArray($strQuery, array($this->getRepositoryId(), $objResult->getObjSearch()->getStrPortalLangFilter()));
-
-        $strQuery = "SELECT system_id
-                       FROM "._dbprefix_."element_gallery,
-                            "._dbprefix_."page_element,
-                            "._dbprefix_."system
-                      WHERE gallery_id = ?
-                        AND content_id = page_element_id
-                        AND content_id = system_id
-                        AND system_status = 1
-                        ".$objORM->getDeletedWhereRestriction()."
-                        AND page_element_ph_language = ? ";
-
-        $arrRows = array_merge($arrRows, $this->objDB->getPArray($strQuery, array($this->getRepositoryId(), $objResult->getObjSearch()->getStrPortalLangFilter())));
-        $arrReturn = array();
-
-        foreach ($arrRows as $arrOneElement) {
-            $objCur = Objectfactory::getInstance()->getObject($arrOneElement["system_id"]);
-            while ($objCur != null && !$objCur instanceof SystemModule) {
-                $objCur = Objectfactory::getInstance()->getObject($objCur->getStrPrevId());
-            }
-        }
-
-        return $arrReturn;
-    }
-
-    /**
-     * Since the portal may be split in different languages,
-     * return the content lang of the current record using the common
-     * abbreviation such as "de" or "en".
-     * If the content is not assigned to any language, return "" instead (e.g. a single image).
-     *
-     * @return mixed
-     */
-    public function getContentLang()
-    {
-        return "";
-    }
-
 
     /**
      * Returns the icon the be used in lists.
