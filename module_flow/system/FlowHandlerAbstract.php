@@ -51,6 +51,11 @@ abstract class FlowHandlerAbstract implements FlowHandlerInterface
         try {
             Database::getInstance()->transactionBegin();
 
+            // check whether the object has the correct status
+            if ($objObject->getIntRecordStatus() != $objTransition->getParentStatus()->getIntIndex()) {
+                throw new \RuntimeException("Object is not in status " . $objTransition->getParentStatus()->getStrName());
+            }
+
             $intNewStatus = $objTransition->getTargetStatus()->getIntStatus();
 
             if ($intNewStatus != $objObject->getIntRecordStatus()) {
