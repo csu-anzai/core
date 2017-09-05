@@ -30,7 +30,7 @@ CKEDITOR.editorConfig = function(config) {
     //default toolbar, e.g. used for the page paragraphs
     config.toolbar_standard =
         [
-            ['Source','Save','-','Cut','Copy','Paste','PasteText','-'],
+            ['Cut','Copy','Paste','PasteText','-'],
             ['Undo','Redo','-','RemoveFormat'],
             ['Link','Unlink','Anchor'],
             ['Image','Table','HorizontalRule','SpecialChar'],['Maximize'],
@@ -52,7 +52,6 @@ CKEDITOR.editorConfig = function(config) {
     //limited toolbar, e.g. used for the downloads and the gallery
     config.toolbar_minimal =
         [
-            ['Source','Save','-'],
             ['Undo','Redo','-','RemoveFormat'],
             ['Link','Unlink'],
             ['Bold','Italic','Underline'],
@@ -62,7 +61,6 @@ CKEDITOR.editorConfig = function(config) {
     //limited toolbar but with support for images
     config.toolbar_minimalimage =
         [
-            ['Source','Save','-'],
             ['Undo','Redo','-','RemoveFormat'],
             ['Link','Unlink', 'Image'],
             ['Bold','Italic','Underline'],
@@ -98,4 +96,5 @@ CKEDITOR.editorConfig = function(config) {
     config.enterMode = CKEDITOR.ENTER_BR;
     config.width = 620;
     config.height = 250;
+    config.removePlugins = 'elementspath';
 };
