@@ -43,6 +43,13 @@ class FlowTransition extends Model implements ModelInterface, AdminListableInter
     protected $intVisible = 1;
 
     /**
+     * This field contains parameters from the user input action
+     *
+     * @var array
+     */
+    protected $arrParams;
+
+    /**
      * @return string
      */
     public function getStrTargetStatus()
@@ -80,6 +87,22 @@ class FlowTransition extends Model implements ModelInterface, AdminListableInter
     public function isVisible()
     {
         return !!$this->intVisible;
+    }
+
+    /**
+     * @return array
+     */
+    public function getArrParams()
+    {
+        return $this->arrParams;
+    }
+
+    /**
+     * @param array $arrParams
+     */
+    public function setArrParams(array $arrParams)
+    {
+        $this->arrParams = $arrParams;
     }
 
     /**
