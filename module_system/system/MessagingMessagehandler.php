@@ -227,7 +227,7 @@ class MessagingMessagehandler
      *
      * @return UserUser[]
      */
-    private function getRecipientsFromArray($arrRecipients)
+    public function getRecipientsFromArray($arrRecipients)
     {
         $arrReturn = array();
 
