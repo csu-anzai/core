@@ -368,6 +368,7 @@ HTML;
                             $strRedirectUrl = ResponseObject::getInstance()->getStrRedirectUrl();
                             if (!empty($strRedirectUrl)) {
                                 $objAlert->setObjAlertAction(new MessagingAlertActionRedirect($strRedirectUrl));
+                                ResponseObject::getInstance()->setStrRedirectUrl("");
                             }
                         }
 
