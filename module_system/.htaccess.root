@@ -108,6 +108,9 @@
 # Enable the IE XSS protection module by default, see https://blogs.msdn.microsoft.com/ieinternals/2011/01/31/controlling-the-xss-filter/
 #Header set X-XSS-Protection "1"
 
+# Enable X-Frame same origin to allow iframes and frames from the same source-domain / subdomain, see https://developer.mozilla.org/de/docs/Web/HTTP/Headers/X-Frame-Options
+#Header set X-Frame-Options SAMEORIGIN
+
 ######################################## PERFORMANCE ######################################################
 # borrowed from HTML5 Boilerplate; http://html5boilerplate.com/
 
