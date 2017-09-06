@@ -55,6 +55,11 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
                     workingIndicator.stop();
                 }
             ).error(function(data) {
+
+                if (data.status === 500 && KAJONA_DEBUG === 1) {
+                    objElement.html(data.responseText);
+                }
+
                 //maybe it was xml, so strip
                 statusDisplay.messageError("<b>Request failed!</b><br />" + data);
             });
