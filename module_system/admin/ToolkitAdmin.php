@@ -534,16 +534,17 @@ class ToolkitAdmin extends Toolkit
      * @param string $strValue
      * @param string $strRepositoryId
      * @param string $strClass
+     * @param bool $bitLinkAsDownload
      *
      * @return string
      * @since 3.3.4
      */
-    public function formInputFileSelector($strName, $strTitle = "", $strValue = "", $strRepositoryId = "", $strClass = "")
+    public function formInputFileSelector($strName, $strTitle = "", $strValue = "", $strRepositoryId = "", $strClass = "", $bitLinkAsDownload = true)
     {
         $strOpener = getLinkAdminDialog(
             "mediamanager",
             "folderContentFolderviewMode",
-            "&form_element=".$strName."&systemid=".$strRepositoryId,
+            "&form_element=".$strName."&systemid=".$strRepositoryId.($bitLinkAsDownload ? "&download=1" : ""),
             Carrier::getInstance()->getObjLang()->getLang("filebrowser", "system"),
             Carrier::getInstance()->getObjLang()->getLang("filebrowser", "system"),
             "icon_externalBrowser",
