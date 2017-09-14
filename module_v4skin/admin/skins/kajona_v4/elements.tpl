@@ -1564,9 +1564,16 @@ The language switch surrounds the buttons
             </div>
         </div>
         <div class="col-md-8 treeViewContent" data-kajona-treeid="%%treeId%%">
-            <div class=""><a href="#" onclick="require('tree').toggleTreeView('%%treeId%%');" title="[lang,treeviewtoggle,system]" rel="tooltip"><i class="fa fa-bars"></i></a></div>
+            <div class=""><a href="#" id="%%treeId%%_toggle" onclick="" title="[lang,treeviewtoggle,system]" rel="tooltip"><i class="fa fa-bars"></i></a></div>
             %%sideContent%%
         </div>
+
+        <script type='text/javascript'>
+            $('#%%treeId%%_toggle').on('click', function(e) {
+                require('tree').toggleTreeView('%%treeId%%');
+                e.preventDefault();
+            })
+        </script>
     </div>
 </treeview>
 
