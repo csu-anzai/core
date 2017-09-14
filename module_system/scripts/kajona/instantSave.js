@@ -68,7 +68,10 @@ define(['jquery', 'ajax'], function ($, ajax) {
 
     scanElements = function() {
         $('[data-kajona-instantsave][data-kajona-instantsave != ""]').each(function(key, value) {
-            $(this).on('change', saveChangeHandler);
+            if (!$(this)[0].hasAttribute('data-kajona-instantsave-init')) {
+                $(this).on('change', saveChangeHandler);
+                $(this).attr('data-kajona-instantsave-init', 'true');
+            }
         });
     };
 
