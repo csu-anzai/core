@@ -310,6 +310,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $this->registerConstant("_system_changehistory_enabled_", "false", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
 
         $this->registerConstant("_system_timezone_", "", SystemSetting::$int_TYPE_STRING, _system_modul_id_);
+        $this->registerConstant("_system_session_ipfixation_", "true", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
 
 
         //Creating the admin & guest groups
@@ -612,6 +613,11 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "6.2.4") {
             $strReturn .= $this->update_624_65();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.5") {
+            $strReturn .= $this->update_65_651();
         }
 
         return $strReturn."\n\n";
@@ -1041,6 +1047,18 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5");
+        return $strReturn;
+    }
+
+    private function update_65_651()
+    {
+        $strReturn = "Updating 6.5 to 6.5.1...\n";
+        $strReturn .= "Adding session setting\n";
+
+        $this->registerConstant("_system_session_ipfixation_", "true", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.1");
         return $strReturn;
     }
 
