@@ -65,7 +65,8 @@ final class Session
     private function __construct()
     {
         //Generating a session-key using a few characteristic values
-        $this->strKey = md5(_realpath_.getServer("REMOTE_ADDR"));
+        $strAddon = SystemSetting::getConfigValue("_system_session_ipfixation_") === "false" ? "" : getServer("REMOTE_ADDR");
+        $this->strKey = md5(_realpath_.$strAddon);
         $this->arrRequestArray = array();
     }
 
