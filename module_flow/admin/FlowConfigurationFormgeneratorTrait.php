@@ -35,6 +35,7 @@ trait FlowConfigurationFormgeneratorTrait
         $objSource = $this->getObjSourceobject();
         $arrParameters = null;
         if ($this->isValidSourceObject($objSource)) {
+            $objType = $objSource;
             $strClass = $objSource->getStrRecordClass();
             $arrParameters = $objSource->getArrParameters();
 
@@ -48,13 +49,13 @@ trait FlowConfigurationFormgeneratorTrait
             }
         } else {
             $strClass = Carrier::getInstance()->getParam("class");
+            $objType = new $strClass();
         }
 
         if (class_exists($strClass)) {
             $this->addField(new FormentryHidden("", "class"))
                 ->setStrValue($strClass);
 
-            $objType = new $strClass();
             if ($this->isValidSourceObject($objType)) {
                 $this->addField(new FormentryTextrow("description"))
                     ->setStrValue($objType->getDescription());
