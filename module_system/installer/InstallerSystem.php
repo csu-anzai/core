@@ -21,6 +21,7 @@ use Kajona\System\System\LanguagesLanguage;
 use Kajona\System\System\Logger;
 use Kajona\System\System\MessagingConfig;
 use Kajona\System\System\MessagingMessage;
+use Kajona\System\System\MessagingQueue;
 use Kajona\System\System\OrmBase;
 use Kajona\System\System\OrmSchemamanager;
 use Kajona\System\System\Resourceloader;
@@ -34,6 +35,8 @@ use Kajona\System\System\SystemPwchangehistory;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserUser;
+use Kajona\System\System\Workflows\WorkflowMessageQueue;
+use Kajona\Workflows\System\WorkflowsWorkflow;
 
 /**
  * Installer for the system-module
@@ -233,6 +236,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $strReturn .= "Installing table messages...\n";
         $objManager->createTable(MessagingMessage::class);
         $objManager->createTable(MessagingConfig::class);
+        $objManager->createTable(MessagingQueue::class);
 
         // password change history
         $strReturn .= "Installing password reset history...\n";
@@ -241,6 +245,14 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         // idgenerator
         $strReturn .= "Installing idgenerator table...\n";
         $objManager->createTable(IdGenerator::class);
+
+        // workflows
+        $strReturn .= "Registering message queue workflow...\n";
+        if(WorkflowsWorkflow::getWorkflowsForClassCount(WorkflowMessageQueue::class, false) == 0) {
+            $objWorkflow = new WorkflowsWorkflow();
+            $objWorkflow->setStrClass(WorkflowMessageQueue::class);
+            $objWorkflow->updateObjectToDb();
+        }
 
         //Now we have to register module by module
 
@@ -600,6 +612,12 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         if($arrModule["module_version"] == "6.2.3") {
             $strReturn .= $this->update_623_624();
         }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.2.4") {
+            $strReturn .= $this->update_624_625();
+        }
+
 
         return $strReturn."\n\n";
     }
@@ -1014,7 +1032,26 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         return $strReturn;
     }
 
+    private function update_624_625()
+    {
+        $strReturn = "Updating 6.2.4 to 6.2.5...\n";
+        $strReturn .= "Install message queue\n";
 
+        $objManager = new OrmSchemamanager();
+        $objManager->createTable(MessagingQueue::class);
+
+        // add workflow
+        $strReturn .= "Registering message queue workflow...\n";
+        if(WorkflowsWorkflow::getWorkflowsForClassCount(WorkflowMessageQueue::class, false) == 0) {
+            $objWorkflow = new WorkflowsWorkflow();
+            $objWorkflow->setStrClass(WorkflowMessageQueue::class);
+            $objWorkflow->updateObjectToDb();
+        }
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2.5");
+        return $strReturn;
+    }
 
     /**
      * Helper to migrate the system-id based permission table to an int based one

@@ -449,5 +449,35 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
         return $this->strMessageRefId;
     }
 
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            "message_title" => $this->strTitle,
+            "message_body" => $this->strBody,
+            "message_internalidentifier" => $this->strInternalIdentifier,
+            "message_provider" => $this->strMessageProvider,
+            "message_sender" => $this->strSenderId,
+            "message_messageref" => $this->strMessageRefId,
+        ];
+    }
 
+    /**
+     * @param array $data
+     * @return static
+     */
+    public static function fromArray(array $data)
+    {
+        $objMessage = new static();
+        $objMessage->setStrTitle(isset($data["message_title"]) ? $data["message_title"] : null);
+        $objMessage->setStrBody(isset($data["message_body"]) ? $data["message_body"] : null);
+        $objMessage->setStrInternalIdentifier(isset($data["message_internalidentifier"]) ? $data["message_internalidentifier"] : null);
+        $objMessage->setStrMessageProvider(isset($data["message_provider"]) ? $data["message_provider"] : null);
+        $objMessage->setStrSenderId(isset($data["message_sender"]) ? $data["message_sender"] : null);
+        $objMessage->setStrMessageRefId(isset($data["message_messageref"]) ? $data["message_messageref"] : null);
+
+        return $objMessage;
+    }
 }
