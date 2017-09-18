@@ -10,7 +10,6 @@
 namespace Kajona\System\Admin;
 
 use Kajona\Packagemanager\System\PackagemanagerManager;
-use Kajona\System\Admin\Formentries\FormentryHidden;
 use Kajona\System\Admin\Formentries\FormentryText;
 use Kajona\System\Admin\Formentries\FormentryTextarea;
 use Kajona\System\Admin\Formentries\FormentryUser;
@@ -25,8 +24,8 @@ use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Filesystem;
 use Kajona\System\System\Filters\DeletedRecordsFilter;
-use Kajona\System\System\HttpResponsetypes;
 use Kajona\System\System\HttpStatuscodes;
+use Kajona\System\System\JStreeDnDInterface;
 use Kajona\System\System\Lang;
 use Kajona\System\System\Link;
 use Kajona\System\System\Lockmanager;
@@ -52,7 +51,6 @@ use Kajona\System\System\SysteminfoInterface;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSession;
 use Kajona\System\System\SystemSetting;
-use Kajona\System\System\SystemWorker;
 use Kajona\System\System\Validators\EmailValidator;
 use Kajona\System\System\VersionableInterface;
 use PHPExcel;
@@ -1703,5 +1701,39 @@ JS;
         }
 
         return json_encode($arrChart);
+    }
+
+
+    /**
+     * Validates if the node can be moved
+     *
+     * @return string
+     * @permissions view
+     * @responseType json
+     * @xml
+     */
+    protected function actionApiValidateMoveNode()
+    {
+        $arrReturn = [
+            "isValid" => true
+        ];
+
+        $strMovedNodeId = $this->getParam("systemid");
+        $strOldParentId= $this->getParam("old_parent_id");
+        $strNewParentId = $this->getParam("new_parent_id");
+
+        $objMovedNode = Objectfactory::getInstance()->getObject($strMovedNodeId);
+        $objNewParent = Objectfactory::getInstance()->getObject($strNewParentId);
+
+        if ($objMovedNode instanceof JStreeDnDInterface) {
+            $bitIsValid = $objMovedNode->isValidParentNode($strNewParentId);
+            $arrReturn = [
+                "isValid" => $bitIsValid,
+                "dialogTitle" => $this->getLang("commons_tree_error_invalid_drop_target_title", "system", []),
+                "dialogMessages" => $this->getLang("commons_tree_error_invalid_drop_target_message", "system", [$objMovedNode->getStrDisplayName(), $objNewParent->getStrDisplayName()])
+            ];
+        }
+
+        return json_encode($arrReturn);
     }
 }

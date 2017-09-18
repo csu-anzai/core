@@ -118,6 +118,8 @@ $lang["commons_object_validator_number_fieldcompare_less_than"] = "'{0}' must be
 $lang["commons_object_validator_number_fieldcompare_lessequals_than"] = "'{0}' must be <= '{1}'.";
 
 $lang["commons_tree_contextmenu_loadallsubnodes"] = "Expand all";
+$lang["commons_tree_error_invalid_drop_target_title"] = "Moving not possible";
+$lang["commons_tree_error_invalid_drop_target_message"] = "Moving '{0}' to '{1}' is not possible";
 
 $lang["commons_from"] = "From";
 $lang["commons_to"] = "To";

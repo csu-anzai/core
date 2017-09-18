@@ -6,7 +6,7 @@
 /**
  * @module tree
  */
-define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($, jstree, ajax, lang, cacheManager) {
+define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager', 'dialogHelper'], function ($, jstree, ajax, lang, cacheManager, dialogHelper) {
 
     /** @exports tree */
     var kajonatree = {
@@ -116,10 +116,10 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
             //check if custom types are set. If yes check if the type of the current node can be moved to the target node
             if(node.data.customtypes) {
                 var curType = node.data.customtypes.type;
-                var arrValidChildrenTarget = targetNode.data.customtypes.valid_children;
+                var arrValidChildrenTargetParent = node_parent.data.customtypes.valid_children;
 
                 //now check if the currenty type can be placed to the target node by checking the valid children
-                if($.inArray(curType, arrValidChildrenTarget) === -1) {
+                if($.inArray(curType, arrValidChildrenTargetParent) === -1) {
                     return false;
                 }
             }
@@ -290,8 +290,35 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
                 });
 
             $jsTree
-                .on('move_node.jstree', function (e, data) {
-                    moveNode(data);
+                .on('move_node.jstree', function (e, dataEvent) {
+
+                    var movedNode = dataEvent.node;
+                    var oldParentId = dataEvent.old_parent;
+                    var newParentId = dataEvent.parent;
+
+                    var strParams = "&systemid="+movedNode.id;
+                    strParams += "&old_parent_id="+oldParentId;
+                    strParams += "&new_parent_id="+newParentId;
+
+                    ajax.genericAjaxCall(
+                        "system",
+                        "apiValidateMoveNode",
+                        strParams,
+                        function(dataAjax, status, jqXHR) {
+
+                            if(status == "success") {
+                                var objReturn = JSON.parse(dataAjax);
+                                if (objReturn.isValid === false) {
+                                    dialogHelper.showConfirmationDialog(objReturn.dialogTitle, objReturn.dialogMessages, "OK", function(){return;});
+                                    var _Tree = $('#' + treeContext.treeId).jstree(true);
+                                    _Tree.refresh();
+                                }
+                                else {
+                                    moveNode(dataEvent);
+                                }
+                            }
+                        }
+                    );
                 });
 
             $jsTree
