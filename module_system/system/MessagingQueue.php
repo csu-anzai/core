@@ -125,13 +125,13 @@ class MessagingQueue extends Model implements ModelInterface
      * @param Date $objDate
      * @return MessagingQueue[]
      */
-    public static function getMessagesForToday()
+    public static function getMessagesForDate(Date $objDate)
     {
-        $objNowDate = new Date();
-        $objNowDate->setBeginningOfDay();
+        $objTargetDate = clone $objDate;
+        $objTargetDate->setBeginningOfDay();
 
         $objORM = new OrmObjectlist();
-        $objORM->addWhereRestriction(new OrmPropertyCondition("objSendDate", OrmComparatorEnum::Equal(), $objNowDate->getLongTimestamp()));
+        $objORM->addWhereRestriction(new OrmPropertyCondition("objSendDate", OrmComparatorEnum::LessThenEquals(), $objTargetDate->getLongTimestamp()));
 
         return $objORM->getObjectList(get_called_class());
     }

@@ -77,11 +77,14 @@ class WorkflowMessageQueue implements WorkflowsHandlerInterface
 
     public function execute()
     {
-        $arrQueue = MessagingQueue::getMessagesForToday();
+        $objNow = $this->getNowDate();
+        $arrQueue = MessagingQueue::getMessagesForDate($objNow);
         $objHandler = new MessagingMessagehandler();
 
         foreach ($arrQueue as $objMessageQueue) {
             $objHandler->sendMessageObject($objMessageQueue->getMessage(), $objMessageQueue->getReceiver());
+
+            $objMessageQueue->deleteObjectFromDatabase();
         }
 
         //trigger again
@@ -114,5 +117,10 @@ class WorkflowMessageQueue implements WorkflowsHandlerInterface
     public function providesUserInterface()
     {
         return false;
+    }
+
+    protected function getNowDate()
+    {
+        return new Date();
     }
 }
