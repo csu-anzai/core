@@ -118,7 +118,12 @@ class MessagingQueue extends Model implements ModelInterface
      */
     public function getStrDisplayName()
     {
-        return "";
+        $objMessage = $this->getMessage();
+        if ($objMessage instanceof MessagingMessage) {
+            return $objMessage->getStrTitle();
+        } else {
+            return "-";
+        }
     }
 
     /**
