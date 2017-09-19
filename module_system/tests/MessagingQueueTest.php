@@ -74,6 +74,65 @@ class MessagingQueueTest extends Testbase
         $this->assertEquals($strReference, $objMessage->getStrMessageRefId());
     }
 
+    public function testSendMessageToQueueSendNow()
+    {
+        $strText = generateSystemid() . " autotest";
+        $strTitle = generateSystemid() . " title";
+        $strIdentifier = generateSystemid() . " identifier";
+        $strSender = generateSystemid();
+        $strReference = generateSystemid();
+        $objSendDate = new Date();
+
+        $objMessage = new MessagingMessage();
+        $objMessage->setStrTitle($strTitle);
+        $objMessage->setStrBody($strText);
+        $objMessage->setStrInternalIdentifier($strIdentifier);
+        $objMessage->setObjMessageProvider(new MessageproviderExceptions());
+        $objMessage->setStrSenderId($strSender);
+        $objMessage->setStrMessageRefId($strReference);
+
+        $objUser = UserUser::getAllUsersByName("user")[0];
+
+        $objMessageHandler = $this->getMockBuilder(MessagingMessagehandler::class)
+            ->setMethods(["sendMessageObject"])
+            ->getMock();
+
+        $objMessageHandler->expects($this->once())
+            ->method("sendMessageObject");
+
+        $objMessageHandler->sendMessageToQueue($objMessage, $objUser, $objSendDate);
+    }
+
+    public function testSendMessageToQueueSendFuture()
+    {
+        $strText = generateSystemid() . " autotest";
+        $strTitle = generateSystemid() . " title";
+        $strIdentifier = generateSystemid() . " identifier";
+        $strSender = generateSystemid();
+        $strReference = generateSystemid();
+        $objSendDate = new Date();
+        $objSendDate->setNextDay();
+
+        $objMessage = new MessagingMessage();
+        $objMessage->setStrTitle($strTitle);
+        $objMessage->setStrBody($strText);
+        $objMessage->setStrInternalIdentifier($strIdentifier);
+        $objMessage->setObjMessageProvider(new MessageproviderExceptions());
+        $objMessage->setStrSenderId($strSender);
+        $objMessage->setStrMessageRefId($strReference);
+
+        $objUser = UserUser::getAllUsersByName("user")[0];
+
+        $objMessageHandler = $this->getMockBuilder(MessagingMessagehandler::class)
+            ->setMethods(["sendMessageObject"])
+            ->getMock();
+
+        $objMessageHandler->expects($this->never())
+            ->method("sendMessageObject");
+
+        $objMessageHandler->sendMessageToQueue($objMessage, $objUser, $objSendDate);
+    }
+
     private function removeAllQueueEntries()
     {
         $strPrefix = _dbprefix_;
