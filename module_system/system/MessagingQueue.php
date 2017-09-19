@@ -16,7 +16,7 @@ namespace Kajona\System\System;
  * @module messaging
  * @moduleId _messaging_module_id_
  */
-class MessagingQueue extends Model
+class MessagingQueue extends Model implements ModelInterface
 {
     /**
      * @var string
@@ -111,6 +111,14 @@ class MessagingQueue extends Model
     public function getMessage()
     {
         return !empty($this->strMessage) ? MessagingMessage::fromArray(json_decode($this->strMessage, true)) : null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStrDisplayName()
+    {
+        return "";
     }
 
     /**
