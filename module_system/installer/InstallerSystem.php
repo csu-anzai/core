@@ -246,14 +246,6 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $strReturn .= "Installing idgenerator table...\n";
         $objManager->createTable(IdGenerator::class);
 
-        // workflows
-        $strReturn .= "Registering message queue workflow...\n";
-        if(WorkflowsWorkflow::getWorkflowsForClassCount(WorkflowMessageQueue::class, false) == 0) {
-            $objWorkflow = new WorkflowsWorkflow();
-            $objWorkflow->setStrClass(WorkflowMessageQueue::class);
-            $objWorkflow->updateObjectToDb();
-        }
-
         //Now we have to register module by module
 
         //The Systemkernel
