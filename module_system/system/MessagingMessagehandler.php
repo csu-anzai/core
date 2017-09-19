@@ -71,86 +71,29 @@ class MessagingMessagehandler
     }
 
     /**
-     * Inserts the message into a queue and send the message in the future
-     *
-     * @param MessagingMessage $objMessage
-     * @param $arrRecipients
-     * @param Date $objSendDate
-     */
-    public function sendMessageToQueue(MessagingMessage $objMessage, $arrRecipients, Date $objSendDate)
-    {
-        $objTargetDate = clone $objSendDate;
-        $objTargetDate->setBeginningOfDay();
-
-        $objNowDate = new Date();
-        $objNowDate->setBeginningOfDay();
-
-        if ($objTargetDate->getTimeInOldStyle() > $objNowDate->getTimeInOldStyle()) {
-            // insert into queue
-            $arrUsers = $this->getUsers($objMessage, $arrRecipients);
-
-            foreach ($arrUsers as $objOneUser) {
-                $objMessageQueue = new MessagingQueue();
-                $objMessageQueue->setStrReceiver($objOneUser->getSystemid());
-                $objMessageQueue->setObjSendDate($objTargetDate);
-                $objMessageQueue->setMessage($objMessage);
-                $objMessageQueue->updateObjectToDb();
-            }
-        } else {
-            $this->sendMessageObject($objMessage, $arrRecipients);
-        }
-    }
-
-    /**
-     * Sends a message.
-     * If the list of recipients contains a group, the message is duplicated for each member.
-     *
+     * Sends a message. If the list of recipients contains a group, the message is duplicated for each member. In case
+     * a send date was provided we send the message at the provided date, if the date is now or in the past we send
+     * the message direct.
      *
      * @param MessagingMessage $objMessage
      * @param UserGroup[]|UserUser[]|UserGroup|UserUser $arrRecipients
-     *
-     * @return bool
+     * @param Date|null $objSendDate
      */
-    public function sendMessageObject(MessagingMessage $objMessage, $arrRecipients)
+    public function sendMessageObject(MessagingMessage $objMessage, $arrRecipients, Date $objSendDate = null)
     {
         $objValidator = new EmailValidator();
-        $arrUsers = $this->getUsers($objMessage, $arrRecipients);
+        $objNowDate = new Date();
+        $objNowDate->setBeginningOfDay();
 
-        foreach ($arrUsers as $objOneUser) {
-            //clone the message
-            $objCurrentMessage = new MessagingMessage();
-            $objCurrentMessage->setStrTitle($objMessage->getStrTitle());
-            $objCurrentMessage->setStrBody($objMessage->getStrBody());
-            $objCurrentMessage->setStrUser($objOneUser->getSystemid());
-            $objCurrentMessage->setStrInternalIdentifier($objMessage->getStrInternalIdentifier());
-            $objCurrentMessage->setStrMessageProvider($objMessage->getStrMessageProvider());
-            $objCurrentMessage->setStrMessageRefId($objMessage->getStrMessageRefId());
-            $objCurrentMessage->setStrSenderId(validateSystemid($objMessage->getStrSenderId()) ? $objMessage->getStrSenderId() : Carrier::getInstance()->getObjSession()->getUserID());
-            $objCurrentMessage->updateObjectToDb();
-
-            $objConfig = MessagingConfig::getConfigForUserAndProvider($objOneUser->getSystemid(), $objMessage->getObjMessageProvider());
-            if ($objConfig->getBitBymail() && $objValidator->validate($objOneUser->getStrEmail())) {
-                $this->sendMessageByMail($objCurrentMessage, $objOneUser);
-            }
-        }
-    }
-
-    /**
-     * @param MessagingMessage $objMessage
-     * @param $arrRecipients
-     * @return array
-     */
-    private function getUsers(MessagingMessage $objMessage, $arrRecipients)
-    {
         if ($arrRecipients instanceof UserGroup || $arrRecipients instanceof UserUser) {
             $arrRecipients = array($arrRecipients);
         }
 
-        $arrResult = [];
         $arrRecipients = $this->getRecipientsFromArray($arrRecipients);
 
         foreach ($arrRecipients as $objOneUser) {
-            // skip inactive users
+
+            //skip inactive users
             if ($objOneUser == null || $objOneUser->getIntRecordStatus() != 1) {
                 continue;
             }
@@ -158,12 +101,38 @@ class MessagingMessagehandler
             $objConfig = MessagingConfig::getConfigForUserAndProvider($objOneUser->getSystemid(), $objMessage->getObjMessageProvider());
 
             if ($objConfig->getBitEnabled()) {
-                $arrResult[] = $objOneUser;
+                if ($objSendDate !== null) {
+                    $objSendDate->setBeginningOfDay();
+                }
+
+                if ($objSendDate !== null && $objSendDate->getTimeInOldStyle() > $objNowDate->getTimeInOldStyle()) {
+                    // insert into queue
+                    $objMessageQueue = new MessagingQueue();
+                    $objMessageQueue->setStrReceiver($objOneUser->getSystemid());
+                    $objMessageQueue->setObjSendDate($objSendDate);
+                    $objMessageQueue->setMessage($objMessage);
+                    $objMessageQueue->updateObjectToDb();
+                } else {
+                    //clone the message
+                    $objCurrentMessage = new MessagingMessage();
+                    $objCurrentMessage->setStrTitle($objMessage->getStrTitle());
+                    $objCurrentMessage->setStrBody($objMessage->getStrBody());
+                    $objCurrentMessage->setStrUser($objOneUser->getSystemid());
+                    $objCurrentMessage->setStrInternalIdentifier($objMessage->getStrInternalIdentifier());
+                    $objCurrentMessage->setStrMessageProvider($objMessage->getStrMessageProvider());
+                    $objCurrentMessage->setStrMessageRefId($objMessage->getStrMessageRefId());
+                    $objCurrentMessage->setStrSenderId(validateSystemid($objMessage->getStrSenderId()) ? $objMessage->getStrSenderId() : Carrier::getInstance()->getObjSession()->getUserID());
+
+                    $objCurrentMessage->updateObjectToDb();
+
+                    if ($objConfig->getBitBymail() && $objValidator->validate($objOneUser->getStrEmail())) {
+                        $this->sendMessageByMail($objCurrentMessage, $objOneUser);
+                    }
+                }
             }
         }
-
-        return $arrResult;
     }
+
 
     /**
      * Sends a copy of the message to the user by mail
