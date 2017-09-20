@@ -33,8 +33,8 @@ class SystemJSTreeNode implements JsonSerializable
     //data attributes
     const STR_NODE_DATA = "data";
     const STR_NODE_DATA_RIGHTEDIT = "rightedit";
-    const STR_NODE_DATA_DND_CHECK_PARENT_ID = "check_parent_id";
-    const STR_NODE_DATA_DND_IS_DRAGGABLE = "is_draggable";
+    const STR_NODE_DATA_DND_CHECK_PARENT_ID_ACTIVE = "check_parent_id_active";
+    const STR_NODE_DATA_DND_IS_NOT_DRAGGABLE = "is_not_draggable";
     const STR_NODE_DATA_CUSTOMTYPES = "customtypes"; //use this for custom nesting rules
     const STR_NODE_DATA_CUSTOMTYPES_TYPE = "type";
     const STR_NODE_DATA_CUSTOMTYPES_VALIDCHILDREN = "valid_children";

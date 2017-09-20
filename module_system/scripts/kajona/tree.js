@@ -147,7 +147,7 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
              *
              * If this is the case check if the node with the attribute check_parent_id is parent of 'node_parent'
              */
-            var nodeWithDataAttribute = getNodeWithDataAttribute(node, 'check_parent_id', true);
+            var nodeWithDataAttribute = getNodeWithDataAttribute(node, 'check_parent_id_active', true);
             if(nodeWithDataAttribute !== null) {
                 var idToCheck = nodeWithDataAttribute.id;
                 var arrParents = node_parent.parents;
@@ -308,9 +308,9 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
                     'is_draggable': function(arrArguments, event) {
 
                         var node = arrArguments[0];
-                        var nodeDataAttribute = getNodeWithDataAttribute(node, 'is_draggable');
+                        var nodeDataAttribute = getNodeWithDataAttribute(node, 'is_not_draggable');
                         if(nodeDataAttribute !== null){
-                            return nodeDataAttribute.data.is_draggable;
+                            return false;
                         }
 
                         return true;
