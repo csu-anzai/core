@@ -9,6 +9,7 @@ namespace AGP\System\System\Validators;
 
 use AGP\System\System\HierarchyValidatorInterface;
 use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\HierarchyValidatorFactory;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Root;
 
@@ -68,7 +69,7 @@ class HierarchyValidatorBase implements HierarchyValidatorInterface
 
         //3. Check if given node is a valid child for the given new parent
         $objNewObjectParent = Objectfactory::getInstance()->getObject($strNewParentId);
-        $objValidatorParent = AdminFormgenerator::getHierarchyValidatorForObject($objNewObjectParent);
+        $objValidatorParent = HierarchyValidatorFactory::newHierarchyValidator($objNewObjectParent);
         $arrValidChildren = $objValidatorParent->getArrValidChildNodes($objNewObjectParent);
         if (!in_array(get_class($objObject), $arrValidChildren)) {
             return false;
@@ -97,7 +98,7 @@ class HierarchyValidatorBase implements HierarchyValidatorInterface
         $arrParentNodes = $objObject->getPathArray();
         foreach ($arrParentNodes as $strParentId) {
             $objCurrParent = Objectfactory::getInstance()->getObject($strParentId);
-            $objCurrValidatorParent = AdminFormgenerator::getHierarchyValidatorForObject($objCurrParent);
+            $objCurrValidatorParent = HierarchyValidatorFactory::newHierarchyValidator($objCurrParent);
 
             if (!$objCurrValidatorParent->isMovable($objCurrParent)) {
                 return $objCurrParent;
@@ -118,7 +119,7 @@ class HierarchyValidatorBase implements HierarchyValidatorInterface
         $arrParentNodes = $objObject->getPathArray();
         foreach ($arrParentNodes as $strParentId) {
             $objCurrParent = Objectfactory::getInstance()->getObject($strParentId);
-            $objCurrValidatorParent = AdminFormgenerator::getHierarchyValidatorForObject($objCurrParent);
+            $objCurrValidatorParent = HierarchyValidatorFactory::newHierarchyValidator($objCurrParent);
 
             if ($objCurrValidatorParent->isParentPathCheckActive($objCurrParent)) {
                 return $objCurrParent;
