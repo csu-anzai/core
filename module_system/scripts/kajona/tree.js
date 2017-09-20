@@ -6,7 +6,7 @@
 /**
  * @module tree
  */
-define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager', 'dialogHelper'], function ($, jstree, ajax, lang, cacheManager, dialogHelper) {
+define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($, jstree, ajax, lang, cacheManager) {
 
     /** @exports tree */
     var kajonatree = {
@@ -113,17 +113,6 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager', 'dialogHelpe
                 return false;
             }
 
-            //check if custom types are set. If yes check if the type of the current node can be moved to the target node
-            if(node.data.customtypes) {
-                var curType = node.data.customtypes.type;
-                var arrValidChildrenTargetParent = node_parent.data.customtypes.valid_children;
-
-                //now check if the currenty type can be placed to the target node by checking the valid children
-                if($.inArray(curType, arrValidChildrenTargetParent) === -1) {
-                    return false;
-                }
-            }
-
             //dragged node already direct childnode of target?
             var arrTargetChildren = targetNode.children;
             if ($.inArray(strDragId, arrTargetChildren) > -1) {
@@ -141,7 +130,71 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager', 'dialogHelpe
                 return false;//TODO maybe not needed, already check by jstree it self
             }
 
+            //Check child nodes
+            if(node.data.customtypes) {
+                var curType = node.data.customtypes.type;
+                var arrValidChildrenTargetParent = node_parent.data.customtypes.valid_children;
+
+                //now check if the currenty type can be placed to the target node by checking the valid children
+                if($.inArray(curType, arrValidChildrenTargetParent) === -1) {
+                    return false;
+                }
+            }
+
+            /*
+             * Check if the current node can be placed below the given parent node
+             * by checking if one of parent nodes of the 'node' to be dragged has an attribute check_parent_id
+             *
+             * If this is the case check if the node with the attribute check_parent_id is parent of 'node_parent'
+             */
+            var nodeWithDataAttribute = getNodeWithDataAttribute(node, 'check_parent_id', true);
+            if(nodeWithDataAttribute !== null) {
+                var idToCheck = nodeWithDataAttribute.id;
+                var arrParents = node_parent.parents;
+                arrParents.unshift(node_parent.id);
+
+                if ($.inArray(idToCheck, arrParents) === -1) {
+                    return false;
+                }
+            }
+
             return true;
+        }
+
+
+        /**
+         * Checks if the current or at least one it's parent nodes has the given data attribute.
+         * Returns the node which has the given data attribute or null
+         *
+         * @param node
+         * @param strAttribute
+         * @param bitCheckParentNodes - set to true if parant nodes should be checked too
+         * @returns Returns the node which has the given data attribute or null
+         */
+        function getNodeWithDataAttribute(node, strAttribute, bitCheckParentNodes) {
+
+            //Check node directly
+            if(node.data.hasOwnProperty(strAttribute)){
+                return node;
+            }
+
+            //Check parent nodes
+            if(bitCheckParentNodes === true) {
+                var tree = kajonatree.helper.getTreeInstance();
+                var arrParents = node.parents;
+
+                for (var i = 0, len = arrParents.length; i < len; i++) {
+                    var parentNode = tree.get_node(arrParents[i]);
+                    if (parentNode.id == "#") {//skip internal root node
+                        return null;
+                    }
+                    if (parentNode.data.hasOwnProperty(strAttribute)) {
+                        return parentNode
+                    }
+                }
+            }
+
+            return null;
         }
 
 
@@ -251,7 +304,17 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager', 'dialogHelpe
                     'animation': false
                 },
                 'dnd': {
-                    'check_while_dragging': true
+                    'check_while_dragging': true,
+                    'is_draggable': function(arrArguments, event) {
+
+                        var node = arrArguments[0];
+                        var nodeDataAttribute = getNodeWithDataAttribute(node, 'is_draggable');
+                        if(nodeDataAttribute !== null){
+                            return nodeDataAttribute.data.is_draggable;
+                        }
+
+                        return true;
+                    }
                 },
                 'checkbox': {},
                 'types': {},
@@ -291,34 +354,7 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager', 'dialogHelpe
 
             $jsTree
                 .on('move_node.jstree', function (e, dataEvent) {
-
-                    var movedNode = dataEvent.node;
-                    var oldParentId = dataEvent.old_parent;
-                    var newParentId = dataEvent.parent;
-
-                    var strParams = "&systemid="+movedNode.id;
-                    strParams += "&old_parent_id="+oldParentId;
-                    strParams += "&new_parent_id="+newParentId;
-
-                    ajax.genericAjaxCall(
-                        "system",
-                        "apiValidateMoveNode",
-                        strParams,
-                        function(dataAjax, status, jqXHR) {
-
-                            if(status == "success") {
-                                var objReturn = JSON.parse(dataAjax);
-                                if (objReturn.isValid === false) {
-                                    dialogHelper.showConfirmationDialog(objReturn.dialogTitle, objReturn.dialogMessages, "OK", function(){return;});
-                                    var _Tree = $('#' + treeContext.treeId).jstree(true);
-                                    _Tree.refresh();
-                                }
-                                else {
-                                    moveNode(dataEvent);
-                                }
-                            }
-                        }
-                    );
+                    moveNode(dataEvent);
                 });
 
             $jsTree

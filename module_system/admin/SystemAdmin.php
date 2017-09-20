@@ -25,7 +25,6 @@ use Kajona\System\System\Exception;
 use Kajona\System\System\Filesystem;
 use Kajona\System\System\Filters\DeletedRecordsFilter;
 use Kajona\System\System\HttpStatuscodes;
-use Kajona\System\System\JStreeDnDInterface;
 use Kajona\System\System\Lang;
 use Kajona\System\System\Link;
 use Kajona\System\System\Lockmanager;
@@ -1701,39 +1700,5 @@ JS;
         }
 
         return json_encode($arrChart);
-    }
-
-
-    /**
-     * Validates if the node can be moved
-     *
-     * @return string
-     * @permissions view
-     * @responseType json
-     * @xml
-     */
-    protected function actionApiValidateMoveNode()
-    {
-        $arrReturn = [
-            "isValid" => true
-        ];
-
-        $strMovedNodeId = $this->getParam("systemid");
-        $strOldParentId= $this->getParam("old_parent_id");
-        $strNewParentId = $this->getParam("new_parent_id");
-
-        $objMovedNode = Objectfactory::getInstance()->getObject($strMovedNodeId);
-        $objNewParent = Objectfactory::getInstance()->getObject($strNewParentId);
-
-        if ($objMovedNode instanceof JStreeDnDInterface) {
-            $bitIsValid = $objMovedNode->isValidParentNode($strNewParentId);
-            $arrReturn = [
-                "isValid" => $bitIsValid,
-                "dialogTitle" => $this->getLang("commons_tree_error_invalid_drop_target_title", "system", []),
-                "dialogMessages" => $this->getLang("commons_tree_error_invalid_drop_target_message", "system", [$objMovedNode->getStrDisplayName(), $objNewParent->getStrDisplayName()])
-            ];
-        }
-
-        return json_encode($arrReturn);
     }
 }
