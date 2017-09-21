@@ -21,8 +21,8 @@ use Kajona\Workflows\System\WorkflowsWorkflow;
  */
 class WorkflowMessageQueue implements WorkflowsHandlerInterface
 {
-    private $intSendHour = 2;
-    private $intSendMin = 0;
+    private $intSendHour = 4;
+    private $intSendMin = 35;
 
     /**
      * @var WorkflowsWorkflow
@@ -64,7 +64,7 @@ class WorkflowMessageQueue implements WorkflowsHandlerInterface
      */
     public function getDefaultValues()
     {
-        return array(2, 0);
+        return array(4, 35);
     }
 
     public function setObjWorkflow($objWorkflow)
