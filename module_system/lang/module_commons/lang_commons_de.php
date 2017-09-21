@@ -131,3 +131,5 @@ $lang["commons_record_owner"] = "Ersteller des Datensatzes";
 $lang["commons_record_startdate"] = "Startdatum";
 $lang["commons_record_enddate"] = "Enddatum";
 $lang["commons_record_specialdate"] = "Sonder-Datum";
+
+$lang["commons_error_move_hierarchy"] = "Das Verschieben unterhalb des angegeben Objektes ist nicht möglich";
