@@ -8,6 +8,7 @@ use Kajona\System\System\Messageproviders\MessageproviderExceptions;
 use Kajona\System\System\MessagingMessage;
 use Kajona\System\System\MessagingMessagehandler;
 use Kajona\System\System\MessagingQueue;
+use Kajona\System\System\Objectfactory;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserUser;
@@ -197,8 +198,19 @@ class MessagingTest extends Testbase
     private function removeAllQueueEntries()
     {
         $strPrefix = _dbprefix_;
-        Database::getInstance()->_pQuery("DELETE FROM {$strPrefix}messages WHERE 1=1", []);
-        Database::getInstance()->_pQuery("DELETE FROM {$strPrefix}messages_queue WHERE 1=1", []);
+        $objDb = Database::getInstance();
+
+        $arrResult = $objDb->getPArray("SELECT message_id FROM {$strPrefix}messages", []);
+        foreach ($arrResult as $arrRow) {
+            $objMessage = Objectfactory::getInstance()->getObject($arrRow["message_id"]);
+            $objMessage->deleteObjectFromDatabase();
+        }
+
+        $arrResult = $objDb->getPArray("SELECT queue_id FROM {$strPrefix}messages_queue", []);
+        foreach ($arrResult as $arrRow) {
+            $objQueue = Objectfactory::getInstance()->getObject($arrRow["queue_id"]);
+            $objQueue->deleteObjectFromDatabase();
+        }
     }
 }
 
