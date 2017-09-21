@@ -16,8 +16,8 @@ use Kajona\System\System\Root;
 
 
 /**
- * Form generator factory which creates AdminFormgenerator instances based on an model. The formgenerator class
- * can be specified by a @formGenerator annotation on the model
+ * Form generator factory which creates HierarchyValidator instances based on a model. The hierarchy validator class
+ * can be specified by a @hierarchyValidator annotation on the model
  *
  * @author stefan.meyer1@yahoo.de
  * @since  6.5
@@ -29,7 +29,7 @@ class HierarchyValidatorFactory
 
     /**
      * @param Root $objObject
-     * @return HierarchyValidatorBase|null
+     * @return HierarchyValidatorInterface|null
      * @throws Exception
      */
     public static function newHierarchyValidator(Root $objObject)
