@@ -80,7 +80,7 @@ class WorkflowMessageQueue implements WorkflowsHandlerInterface
     public function execute()
     {
         $objNow = $this->getNowDate();
-        $arrQueue = MessagingQueue::getMessagesForDate($objNow);
+        $arrQueue = MessagingQueue::getPendingMessages($objNow);
         $objHandler = new MessagingMessagehandler();
 
         foreach ($arrQueue as $objMessageQueue) {

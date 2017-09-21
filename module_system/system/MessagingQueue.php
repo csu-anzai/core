@@ -127,10 +127,13 @@ class MessagingQueue extends Model implements ModelInterface
     }
 
     /**
+     * Returns all pending messages for the current date. This includes all messages from now and
+     * perhaps messages from the past in case the workflow was not executed on the day
+     *
      * @param Date $objDate
      * @return MessagingQueue[]
      */
-    public static function getMessagesForDate(Date $objDate)
+    public static function getPendingMessages(Date $objDate)
     {
         $objTargetDate = clone $objDate;
         $objTargetDate->setBeginningOfDay();
