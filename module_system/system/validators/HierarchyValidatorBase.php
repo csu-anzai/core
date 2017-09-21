@@ -8,10 +8,10 @@ declare(strict_types=1);
 namespace AGP\System\System\Validators;
 
 use AGP\System\System\HierarchyValidatorInterface;
-use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\HierarchyValidatorFactory;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Root;
+use Kajona\System\System\SystemModule;
 
 /**
  * Base hierarchy validator
@@ -77,8 +77,11 @@ class HierarchyValidatorBase implements HierarchyValidatorInterface
 
         //4. Check if one the parents of the given node has ParentPathCheckActive set
         $objParentNode = $this->getNodeWithParentPathCheckActive($objObject);
+
+
+
         if ($objParentNode !== null) {
-            $arrParentNodes = $objParentNode->getPathArray();
+            $arrParentNodes = $objParentNode->getPathArray("", SystemModule::getModuleIdByNr($objParentNode->getIntModuleNr()));
             array_unshift($arrParentNodes, $objParentNode->getStrSystemid());
 
             return in_array($strNewParentId, $arrParentNodes);
@@ -95,7 +98,7 @@ class HierarchyValidatorBase implements HierarchyValidatorInterface
      */
     private function getParentNodeMovable(Root $objObject)
     {
-        $arrParentNodes = $objObject->getPathArray();
+        $arrParentNodes = $objObject->getPathArray("", SystemModule::getModuleIdByNr($objObject->getIntModuleNr()));
         foreach ($arrParentNodes as $strParentId) {
             $objCurrParent = Objectfactory::getInstance()->getObject($strParentId);
             $objCurrValidatorParent = HierarchyValidatorFactory::newHierarchyValidator($objCurrParent);
@@ -116,7 +119,7 @@ class HierarchyValidatorBase implements HierarchyValidatorInterface
      */
     private function getNodeWithParentPathCheckActive(Root $objObject)
     {
-        $arrParentNodes = $objObject->getPathArray();
+        $arrParentNodes = $objObject->getPathArray("", SystemModule::getModuleIdByNr($objObject->getIntModuleNr()));
         foreach ($arrParentNodes as $strParentId) {
             $objCurrParent = Objectfactory::getInstance()->getObject($strParentId);
             $objCurrValidatorParent = HierarchyValidatorFactory::newHierarchyValidator($objCurrParent);
