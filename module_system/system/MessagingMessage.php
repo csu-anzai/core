@@ -24,7 +24,7 @@ use Kajona\System\System\Messageproviders\MessageproviderInterface;
  *
  * @formGenerator Kajona\System\Admin\MessagingMessageFormgenerator
  */
-class MessagingMessage extends Model implements ModelInterface, AdminListableInterface
+class MessagingMessage extends Model implements ModelInterface, AdminListableInterface, \JsonSerializable
 {
 
     /**
@@ -450,9 +450,9 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
     }
 
     /**
-     * @return array
+     * @inheritdoc
      */
-    public function toArray()
+    public function jsonSerialize()
     {
         return [
             "message_title" => $this->strTitle,
@@ -465,18 +465,22 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
     }
 
     /**
-     * @param array $data
-     * @return static
+     * Creates a message object based on a json encoded string
+     *
+     * @param string $strData
+     * @return static|null
      */
-    public static function fromArray(array $data)
+    public static function fromJson($strData)
     {
+        $arrData = json_decode($strData, true);
+
         $objMessage = new static();
-        $objMessage->setStrTitle(isset($data["message_title"]) ? $data["message_title"] : null);
-        $objMessage->setStrBody(isset($data["message_body"]) ? $data["message_body"] : null);
-        $objMessage->setStrInternalIdentifier(isset($data["message_internalidentifier"]) ? $data["message_internalidentifier"] : null);
-        $objMessage->setStrMessageProvider(isset($data["message_provider"]) ? $data["message_provider"] : null);
-        $objMessage->setStrSenderId(isset($data["message_sender"]) ? $data["message_sender"] : null);
-        $objMessage->setStrMessageRefId(isset($data["message_messageref"]) ? $data["message_messageref"] : null);
+        $objMessage->setStrTitle(isset($arrData["message_title"]) ? $arrData["message_title"] : null);
+        $objMessage->setStrBody(isset($arrData["message_body"]) ? $arrData["message_body"] : null);
+        $objMessage->setStrInternalIdentifier(isset($arrData["message_internalidentifier"]) ? $arrData["message_internalidentifier"] : null);
+        $objMessage->setStrMessageProvider(isset($arrData["message_provider"]) ? $arrData["message_provider"] : null);
+        $objMessage->setStrSenderId(isset($arrData["message_sender"]) ? $arrData["message_sender"] : null);
+        $objMessage->setStrMessageRefId(isset($arrData["message_messageref"]) ? $arrData["message_messageref"] : null);
 
         return $objMessage;
     }

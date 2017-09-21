@@ -90,11 +90,11 @@ class MessagingQueue extends Model implements ModelInterface
     }
 
     /**
-     * @param string $strMessage
+     * @param MessagingMessage $strMessage
      */
     public function setMessage(MessagingMessage $objMessage)
     {
-        $this->setStrMessage(json_encode($objMessage->toArray()));
+        $this->setStrMessage(json_encode($objMessage));
     }
 
     /**
@@ -110,7 +110,7 @@ class MessagingQueue extends Model implements ModelInterface
      */
     public function getMessage()
     {
-        return !empty($this->strMessage) ? MessagingMessage::fromArray(json_decode($this->strMessage, true)) : null;
+        return !empty($this->strMessage) ? MessagingMessage::fromJson($this->strMessage) : null;
     }
 
     /**
