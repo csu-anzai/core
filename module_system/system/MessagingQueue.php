@@ -90,7 +90,7 @@ class MessagingQueue extends Model implements ModelInterface
     }
 
     /**
-     * @param MessagingMessage $strMessage
+     * @param MessagingMessage $objMessage
      */
     public function setMessage(MessagingMessage $objMessage)
     {
