@@ -14,8 +14,6 @@ use Kajona\System\System\Database;
 use Kajona\System\System\LanguagesLanguage;
 use Kajona\System\System\SamplecontentInstallerInterface;
 use Kajona\System\System\SystemModule;
-use Kajona\System\System\Workflows\WorkflowMessageQueue;
-use Kajona\Workflows\System\WorkflowsWorkflow;
 
 
 /**
@@ -90,13 +88,6 @@ class InstallerSamplecontentZZLanguages implements SamplecontentInstallerInterfa
 
         }
 
-        // workflows
-        $strReturn .= "Registering message queue workflow...\n";
-        if(WorkflowsWorkflow::getWorkflowsForClassCount(WorkflowMessageQueue::class, false) == 0) {
-            $objWorkflow = new WorkflowsWorkflow();
-            $objWorkflow->setStrClass(WorkflowMessageQueue::class);
-            $objWorkflow->updateObjectToDb();
-        }
 
         return $strReturn;
     }
