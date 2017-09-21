@@ -85,7 +85,7 @@ class WorkflowMessageQueue implements WorkflowsHandlerInterface
 
         foreach ($arrQueue as $objMessageQueue) {
             $objMessage = $objMessageQueue->getMessage();
-            $objReceiver = $objMessageQueue->getReceiver();
+            $objReceiver = $objMessageQueue->getRecipient();
 
             if ($objMessage instanceof MessagingMessage && $objReceiver instanceof UserUser) {
                 $objHandler->sendMessageObject($objMessage, $objReceiver);

@@ -20,10 +20,10 @@ class MessagingQueue extends Model implements ModelInterface
 {
     /**
      * @var string
-     * @tableColumn messages_queue.queue_receiver
+     * @tableColumn messages_queue.queue_recipient
      * @tableColumnDatatype char20
      */
-    private $strReceiver = "";
+    private $strRecipient = "";
 
     /**
      * @var string
@@ -44,17 +44,17 @@ class MessagingQueue extends Model implements ModelInterface
     /**
      * @return string
      */
-    public function getStrReceiver()
+    public function getStrRecipient()
     {
-        return $this->strReceiver;
+        return $this->strRecipient;
     }
 
     /**
-     * @param string $strReceiver
+     * @param string $strRecipient
      */
-    public function setStrReceiver($strReceiver)
+    public function setStrRecipient($strRecipient)
     {
-        $this->strReceiver = $strReceiver;
+        $this->strRecipient = $strRecipient;
     }
 
     /**
@@ -100,9 +100,9 @@ class MessagingQueue extends Model implements ModelInterface
     /**
      * @return UserUser
      */
-    public function getReceiver()
+    public function getRecipient()
     {
-        return Objectfactory::getInstance()->getObject($this->strReceiver);
+        return Objectfactory::getInstance()->getObject($this->strRecipient);
     }
 
     /**

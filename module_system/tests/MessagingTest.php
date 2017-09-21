@@ -104,7 +104,7 @@ class MessagingTest extends Testbase
         $objSendDate->setBeginningOfDay();
 
         $this->assertInstanceOf(MessagingQueue::class, $objQueue);
-        $this->assertEquals($objUser->getSystemid(), $objQueue->getStrReceiver());
+        $this->assertEquals($objUser->getSystemid(), $objQueue->getStrRecipient());
         $this->assertEquals($objSendDate->getLongTimestamp(), $objQueue->getObjSendDate()->getLongTimestamp());
 
         $objDbMessage = $objQueue->getMessage();

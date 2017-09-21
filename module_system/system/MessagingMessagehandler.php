@@ -108,7 +108,7 @@ class MessagingMessagehandler
                 if ($objSendDate !== null && $objSendDate->getTimeInOldStyle() > $objNowDate->getTimeInOldStyle()) {
                     // insert into queue
                     $objMessageQueue = new MessagingQueue();
-                    $objMessageQueue->setStrReceiver($objOneUser->getSystemid());
+                    $objMessageQueue->setStrRecipient($objOneUser->getSystemid());
                     $objMessageQueue->setObjSendDate($objSendDate);
                     $objMessageQueue->setMessage($objMessage);
                     $objMessageQueue->updateObjectToDb();
