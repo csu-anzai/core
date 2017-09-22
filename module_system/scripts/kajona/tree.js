@@ -163,23 +163,20 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
 
 
         /**
-         * Checks if the current or at least one it's parent nodes has the given data attribute.
+         * Checks if the current node has the given data attribute.
+         * If 'bitCheckParentNodesOnly' is set to true the first parent node which have the 'strAttribute' set will be returned.
+         *
          * Returns the node which has the given data attribute or null
          *
          * @param node
          * @param strAttribute
-         * @param bitCheckParentNodes - set to true if parant nodes should be checked too
+         * @param bitCheckParentNodesOnly - set to true if only parant nodes should be checked
          * @returns Returns the node which has the given data attribute or null
          */
-        function getNodeWithDataAttribute(node, strAttribute, bitCheckParentNodes) {
-
-            //Check node directly
-            if(node.data.hasOwnProperty(strAttribute)){
-                return node;
-            }
+        function getNodeWithDataAttribute(node, strAttribute, bitCheckParentNodesOnly) {
 
             //Check parent nodes
-            if(bitCheckParentNodes === true) {
+            if(bitCheckParentNodesOnly === true) {
                 var tree = kajonatree.helper.getTreeInstance();
                 var arrParents = node.parents;
 
@@ -191,6 +188,12 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
                     if (parentNode.data.hasOwnProperty(strAttribute)) {
                         return parentNode
                     }
+                }
+            }
+            else {
+                //Check node directly
+                if(node.data.hasOwnProperty(strAttribute)){
+                    return node;
                 }
             }
 
