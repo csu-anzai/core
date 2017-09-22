@@ -27,6 +27,8 @@ interface HierarchyValidatorInterface
 
     /**
      * Method which checks if the given object can be moved only within a certain part of the hierarchy.
+     * If this method return true,  a node below the given node CANNOT be moved outside the partial hierarchy
+     * If this method return false, a node below the given node CAN    be moved outside the partial hierarchy
      *
      * Example 1: Move Node 'Node 2.1.1' below 'Node 1.1'
      * - Node 1 (hasParentPathCheck = true)

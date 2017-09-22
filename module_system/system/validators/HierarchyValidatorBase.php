@@ -35,6 +35,7 @@ class HierarchyValidatorBase implements HierarchyValidatorInterface
     /**
      * Return by default false: The node can be moved everywhere in the hierarchy
      *
+     *
      * @inheritdoc
      */
     public function isParentPathCheckActive(Root $objObject)
@@ -67,9 +68,9 @@ class HierarchyValidatorBase implements HierarchyValidatorInterface
             return false;
         }
 
-        //3. Check if given node is a valid child for the given new parent
         $objNewObjectParent = Objectfactory::getInstance()->getObject($strNewParentId);
         if ($objNewObjectParent !== null) {
+            //3. Check if given node is a valid child for the given new parent
             $objValidatorParent = HierarchyValidatorFactory::newHierarchyValidator($objNewObjectParent);
             $arrValidChildren = $objValidatorParent->getArrValidChildNodes($objNewObjectParent);
             if (!in_array(get_class($objObject), $arrValidChildren)) {
@@ -79,10 +80,8 @@ class HierarchyValidatorBase implements HierarchyValidatorInterface
             //4. Check if one the parents of the given node has ParentPathCheckActive set
             $objParentNode = $this->getNodeWithParentPathCheckActive($objObject);
             if ($objParentNode !== null) {
-                $arrParentNodes = $objParentNode->getPathArray("", SystemModule::getModuleIdByNr($objParentNode->getIntModuleNr()));
-                array_unshift($arrParentNodes, $objParentNode->getStrSystemid());
-
-                return in_array($strNewParentId, $arrParentNodes);
+                $arrPathIds = $objParentNode->getPathArray("", SystemModule::getModuleIdByNr($objParentNode->getIntModuleNr()));
+                return in_array($strNewParentId, $arrPathIds);
             }
         }
 
@@ -97,7 +96,7 @@ class HierarchyValidatorBase implements HierarchyValidatorInterface
      */
     private function getParentNodeMovable(Root $objObject)
     {
-        $arrParentNodes = $objObject->getPathArray("", SystemModule::getModuleIdByNr($objObject->getIntModuleNr()));
+        $arrParentNodes = $objObject->getPathArray($objObject->getStrPrevId(), SystemModule::getModuleIdByNr($objObject->getIntModuleNr()));
         foreach ($arrParentNodes as $strParentId) {
             $objCurrParent = Objectfactory::getInstance()->getObject($strParentId);
             $objCurrValidatorParent = HierarchyValidatorFactory::newHierarchyValidator($objCurrParent);
@@ -118,7 +117,7 @@ class HierarchyValidatorBase implements HierarchyValidatorInterface
      */
     private function getNodeWithParentPathCheckActive(Root $objObject)
     {
-        $arrParentNodes = $objObject->getPathArray("", SystemModule::getModuleIdByNr($objObject->getIntModuleNr()));
+        $arrParentNodes = $objObject->getPathArray($objObject->getStrPrevId(), SystemModule::getModuleIdByNr($objObject->getIntModuleNr()));
         foreach ($arrParentNodes as $strParentId) {
             $objCurrParent = Objectfactory::getInstance()->getObject($strParentId);
             $objCurrValidatorParent = HierarchyValidatorFactory::newHierarchyValidator($objCurrParent);
