@@ -37,7 +37,7 @@ class HierarchyValidatorFactory
         $objReflection = new Reflection($objObject);
         $arrHierarchyValidator = $objReflection->getAnnotationValuesFromClass(self::STR_HIERARCHYVALIDATOR_ANNOTATION);
 
-        if (count($arrHierarchyValidator) == 1) {
+        if (count($arrHierarchyValidator) > 0) {
             $strHierarchyValidator = $arrHierarchyValidator[0];
             if (!class_exists($strHierarchyValidator)) {
                 throw new Exception("Hierarchy validator " . $strHierarchyValidator . " not existing", Exception::$level_ERROR);
