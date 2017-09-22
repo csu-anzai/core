@@ -88,7 +88,7 @@ abstract class FlowConditionAbstract extends Model implements ModelInterface, Ad
 
     public function getStrAdditionalInfo()
     {
-        return "";
+        return $this->getStrParams();
     }
 
     public function getStrLongDescription()
