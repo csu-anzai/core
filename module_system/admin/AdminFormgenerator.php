@@ -971,7 +971,7 @@ class AdminFormgenerator
     {
         $objReflection = new Reflection($objObject);
         $arrObjectValidator = $objReflection->getAnnotationValuesFromClass(self::STR_OBJECTVALIDATOR_ANNOTATION);
-        if (count($arrObjectValidator) == 1) {
+        if (count($arrObjectValidator) > 0) {
             $strObjectValidator = $arrObjectValidator[0];
             if (!class_exists($strObjectValidator)) {
                 throw new Exception("object validator " . $strObjectValidator . " not existing", Exception::$level_ERROR);
