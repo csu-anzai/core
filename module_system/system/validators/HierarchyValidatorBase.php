@@ -113,7 +113,7 @@ class HierarchyValidatorBase implements HierarchyValidatorInterface
      *
      * Determines if one of the parent nodes of the given node '$objObject' has isParentPathCheckActive set to true.
      *  If this is not the case, everything is ok -> return true
-     *  If this is case it will checked, if the the new parent node '$objNewObjectParent' is somewhere within that path
+     *  If this is case it will checked, if the the new parent node '$objNewObjectParent' is somewhere within the path of the found node
      *
      * @param Root $objObject
      * @param Root $objNewObjectParent

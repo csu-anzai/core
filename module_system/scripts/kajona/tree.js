@@ -108,45 +108,75 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
                 strInsertPosition = more.pos; //"b"=>before, "a"=>after, "i"=inside
 
 
-            //user can only move node if he has right on the dragged node and the parent node
+            //1. user can only move node if he has right on the dragged node and the parent node
             if(!node.data.rightedit && !node_parent.data.rightedit) {
                 return false;
             }
 
-            //dragged node already direct childnode of target?
+            //2. dragged node already direct childnode of target?
             var arrTargetChildren = targetNode.children;
             if ($.inArray(strDragId, arrTargetChildren) > -1) {
                 return false;
             }
 
-            //dragged node is parent of target?
+            //3. dragged node is parent of target?
             var arrTargetParents = targetNode.parents;
             if ($.inArray(strDragId, arrTargetParents) > -1) {
                 return false;//TODO maybe not needed, already check by jstree it self
             }
 
-            //dragged node same as target node?
+            //4. dragged node same as target node?
             if (strDragId == strTargetId) {
                 return false;//TODO maybe not needed, already check by jstree it self
             }
 
-            //Check child nodes
+            //5. Check if node is valid child of node_parent
+            if(!isValidChildNodeForParent(node, node_parent)) {
+                return false;
+            }
+
+            //6. Check node_parent is valid parent for node
+            if (!isValidParentNodeForChild(node, node_parent)) {
+                return false;
+            }
+
+            return true;
+        }
+
+
+        /**
+         * Checks if given node is a valid child node for the given parent
+         *
+         * @param node
+         * @param node_parent
+         * @returns {boolean}
+         */
+        function isValidChildNodeForParent(node, node_parent) {
             if(node.data.customtypes) {
                 var curType = node.data.customtypes.type;
                 var arrValidChildrenTargetParent = node_parent.data.customtypes.valid_children;
 
-                //now check if the currenty type can be placed to the target node by checking the valid children
-                if($.inArray(curType, arrValidChildrenTargetParent) === -1) {
+                if(arrValidChildrenTargetParent === null) {
+                    return true;
+                }
+
+                //now check if the current type can be placed to the target node by checking the valid children
+                if($.inArray(curType, arrValidChildrenTargetParent) === -1) {//-1 == curType not in array
                     return false;
                 }
             }
 
-            /*
-             * Check if the current node can be placed below the given parent node
-             * by checking if one of parent nodes of the 'node' to be dragged has an attribute check_parent_id
-             *
-             * If this is the case check if the node with the attribute check_parent_id is parent of 'node_parent'
-             */
+            return true;
+        }
+
+        /*
+         * Check node_parent is valid parent for node
+         *
+         * Determines if one of the parent nodes of the given node 'node' has check_parent_id_active set to true.
+         *  If this is not the case, everything is ok -> return true
+         *  If this is case it will checked, if the the new parent node 'node_parent' is somewhere within the path of the found node
+         */
+        function isValidParentNodeForChild(node, node_parent) {
             var nodeWithDataAttribute = getNodeWithDataAttribute(node, 'check_parent_id_active', true);
             if(nodeWithDataAttribute !== null) {
                 var idToCheck = nodeWithDataAttribute.id;
@@ -157,9 +187,9 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
                     return false;
                 }
             }
-
             return true;
         }
+
 
 
         /**
