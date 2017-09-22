@@ -99,7 +99,12 @@ class FormentryDateInterval extends FormentryBase implements FormentryPrintableI
                 $arrFormat[] = "%m " . $objLang->getLang(($objInterval->m > 1 ? "interval_months" : "interval_month"), "elements");
             }
             if ($objInterval->d > 0) {
-                $arrFormat[] = "%d " . $objLang->getLang(($objInterval->d > 1 ? "interval_days" : "interval_day"), "elements");
+                if ($objInterval->d % 7 == 0) {
+                    $intWeeks = $objInterval->d / 7;
+                    $arrFormat[] = "{$intWeeks} " . $objLang->getLang(($intWeeks > 1 ? "interval_weeks" : "interval_week"), "elements");
+                } else {
+                    $arrFormat[] = "%d " . $objLang->getLang(($objInterval->d > 1 ? "interval_days" : "interval_day"), "elements");
+                }
             }
             if (count($arrFormat) > 0) {
                 return $objInterval->format(implode(", ", $arrFormat));
