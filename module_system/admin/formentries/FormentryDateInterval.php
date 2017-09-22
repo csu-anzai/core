@@ -68,7 +68,7 @@ class FormentryDateInterval extends FormentryBase implements FormentryPrintableI
         $strUnit = isset($arrParams[$strName . "_unit"]) ? $arrParams[$strName . "_unit"] : null;
         $strValue = isset($arrParams[$strName]) ? (int) $arrParams[$strName] : 0;
 
-        if (in_array($strUnit, ["D", "M", "Y"]) && $strValue > 0) {
+        if (in_array($strUnit, ["D", "W", "M", "Y"]) && $strValue > 0) {
             $strDuration = "P" . $strValue . $strUnit;
             $this->setStrValue($strDuration);
         } else {

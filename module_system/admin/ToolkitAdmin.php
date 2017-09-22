@@ -840,6 +840,7 @@ class ToolkitAdmin extends Toolkit
         $objLang = Lang::getInstance();
         $arrKeyValues = [
             "D" => $objLang->getLang("interval_day", "elements"),
+            "W" => $objLang->getLang("interval_week", "elements"),
             "M" => $objLang->getLang("interval_month", "elements"),
             "Y" => $objLang->getLang("interval_year", "elements"),
         ];
@@ -848,8 +849,13 @@ class ToolkitAdmin extends Toolkit
         $strValue = "";
         if ($objValue !== null) {
             if ($objValue->d > 0) {
-                $strKeySelected = "D";
-                $strValue = $objValue->d;
+                if ($objValue->d % 7 == 0) {
+                    $strKeySelected = "W";
+                    $strValue = $objValue->d / 7;
+                } else {
+                    $strKeySelected = "D";
+                    $strValue = $objValue->d;
+                }
             } elseif ($objValue->m > 0) {
                 $strKeySelected = "M";
                 $strValue = $objValue->m;
