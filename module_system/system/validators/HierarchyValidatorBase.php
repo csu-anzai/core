@@ -136,27 +136,6 @@ class HierarchyValidatorBase implements HierarchyValidatorInterface
 
 
     /**
-     * Gets the first parent node which is no movable
-     *
-     * @param Root $objObject
-     * @return \Kajona\System\System\Model|\Kajona\System\System\ModelInterface|null
-     */
-    private function getParentNodeMovable(Root $objObject)
-    {
-        $arrParentNodes = $objObject->getPathArray($objObject->getStrPrevId(), SystemModule::getModuleIdByNr($objObject->getIntModuleNr()));
-        foreach ($arrParentNodes as $strParentId) {
-            $objCurrParent = Objectfactory::getInstance()->getObject($strParentId);
-            $objCurrValidatorParent = HierarchyValidatorFactory::newHierarchyValidator($objCurrParent);
-
-            if (!$objCurrValidatorParent->isMovable($objCurrParent)) {
-                return $objCurrParent;
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Gets the first parent node which has ParentPathCheckActive set to true
      *
      * @param Root $objObject
