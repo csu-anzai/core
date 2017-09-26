@@ -17,6 +17,8 @@ $lang["template"]                        = "Template";
 
 $lang["interval_day"]                    = "Day";
 $lang["interval_days"]                   = "Days";
+$lang["interval_week"]                   = "Week";
+$lang["interval_weeks"]                  = "Weeks";
 $lang["interval_month"]                  = "Month";
 $lang["interval_months"]                 = "Months";
 $lang["interval_year"]                   = "Year";

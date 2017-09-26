@@ -294,6 +294,7 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_ampel_rot" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_rot'><i class='kj-icon fa fa-circle red' ></i><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i></span>",
         "icon_ampel_gruen" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_gruen'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle green'></i></span>",
         "icon_ampel_grau" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_grau'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i></span>",
+        "icon_ampel_lavendel" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_lavendel'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle lavendel'></i><i class='kj-icon fa fa-circle-thin'></i></span>",
 
     ];
 
