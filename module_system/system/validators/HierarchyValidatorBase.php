@@ -5,9 +5,9 @@
 
 declare(strict_types=1);
 
-namespace AGP\System\System\Validators;
+namespace Kajona\System\System\Validators;
 
-use AGP\System\System\HierarchyValidatorInterface;
+use Kajona\System\System\HierarchyValidatorInterface;
 use Kajona\System\Admin\HierarchyValidatorFactory;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Root;

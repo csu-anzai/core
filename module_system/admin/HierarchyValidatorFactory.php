@@ -8,8 +8,8 @@
 
 namespace Kajona\System\Admin;
 
-use AGP\System\System\HierarchyValidatorInterface;
-use AGP\System\System\Validators\HierarchyValidatorBase;
+use Kajona\System\System\HierarchyValidatorInterface;
+use Kajona\System\System\Validators\HierarchyValidatorBase;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\Root;
@@ -43,7 +43,7 @@ class HierarchyValidatorFactory
                 throw new Exception("Hierarchy validator " . $strHierarchyValidator . " not existing", Exception::$level_ERROR);
             }
 
-            /** @var HierarchyValidatorBase $objValidator */
+            /** @var \Kajona\System\System\Validators\HierarchyValidatorBase $objValidator */
             $objValidator = new $strHierarchyValidator();
 
             // check whether we have an correct instance

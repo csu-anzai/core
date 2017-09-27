@@ -3,9 +3,7 @@
 *   (c) 2010-2016 ARTEMEON                                                                              *
 ********************************************************************************************************/
 
-namespace AGP\System\System;
-
-use Kajona\System\System\Root;
+namespace Kajona\System\System;
 
 
 /**
@@ -86,7 +84,7 @@ interface HierarchyValidatorInterface
     public function getArrValidChildNodes(Root $objObject);
 
     /**
-     * Validates if the current node can be put belwo the given new parent id
+     * Validates if the current node can be put below the given new parent id
      *
      * @param $objObject
      * @param $strNewParentId

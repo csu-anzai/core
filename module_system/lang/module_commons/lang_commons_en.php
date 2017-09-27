@@ -132,4 +132,4 @@ $lang["commons_record_startdate"] = "Start date";
 $lang["commons_record_enddate"] = "End date";
 $lang["commons_record_specialdate"] = "Special date";
 
-$lang["commons_error_move_hierarchy"] = "Moving this object to below the given object is not possible";
+$lang["commons_error_move_hierarchy"] = "Moving this object below the given object is not possible";
