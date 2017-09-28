@@ -614,7 +614,7 @@ class ToolkitAdmin extends Toolkit
      *
      * @return string
      */
-    public function formInputTextArea($strName, $strTitle = "", $strValue = "", $strClass = "", $bitReadonly = false, $numberOfRows = 4)
+    public function formInputTextArea($strName, $strTitle = "", $strValue = "", $strClass = "", $bitReadonly = false, $numberOfRows = 4, $strOpener = "")
     {
         $arrTemplate = array();
         $arrTemplate["name"] = $strName;
@@ -623,6 +623,7 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["class"] = $strClass;
         $arrTemplate["readonly"] = ($bitReadonly ? " readonly=\"readonly\" " : "");
         $arrTemplate["numberOfRows"] = $numberOfRows;
+        $arrTemplate["opener"] = $strOpener;
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_textarea");
     }
 
