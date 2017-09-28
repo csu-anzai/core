@@ -498,16 +498,8 @@ abstract class Root
         /** @var $this Root|ModelInterface */
         $this->objDB->transactionBegin();
 
-        //validate, if there are subrecords, so child nodes to be deleted
-        $arrChilds = $this->objDB->getPArray("SELECT system_id FROM "._dbprefix_."system where system_prev_id = ? ORDER BY system_sort DESC", array($this->getSystemid()));
-        foreach ($arrChilds as $arrOneChild) {
-            if (validateSystemid($arrOneChild["system_id"])) {
-                $objInstance = Objectfactory::getInstance()->getObject($arrOneChild["system_id"]);
-                if ($objInstance !== null) {
-                    $objInstance->deleteObject();
-                }
-            }
-        }
+        //first, delete child objects
+        $this->deleteChildObjects();
 
         $this->intRecordDeleted = 1;
         $intOldSortId = $this->intSort;
@@ -556,16 +548,9 @@ abstract class Root
         /** @var $this Root|ModelInterface */
         $this->objDB->transactionBegin();
 
-        //validate, if there are subrecords, so child nodes to be deleted
-        $arrChilds = $this->objDB->getPArray("SELECT system_id FROM "._dbprefix_."system where system_prev_id = ? ORDER BY system_sort DESC", array($this->getSystemid()));
-        foreach ($arrChilds as $arrOneChild) {
-            if (validateSystemid($arrOneChild["system_id"])) {
-                $objInstance = Objectfactory::getInstance()->getObject($arrOneChild["system_id"]);
-                if ($objInstance !== null) {
-                    $objInstance->deleteObjectFromDatabase();
-                }
-            }
-        }
+        //first, delete child objects
+        $this->deleteChildObjectsFromDatabase();
+
 
         $objORM = new OrmObjectdelete($this);
         $bitReturn = $objORM->deleteObject();
@@ -2296,6 +2281,40 @@ abstract class Root
     public function getObjStartDate()
     {
         return $this->objStartDate;
+    }
+
+    /**
+     * Logically deletes the child objects
+     */
+    protected function deleteChildObjects()
+    {
+        //validate, if there are subrecords, so child nodes to be deleted
+        $arrChilds = $this->objDB->getPArray("SELECT system_id FROM " . _dbprefix_ . "system where system_prev_id = ? ORDER BY system_sort DESC", array($this->getSystemid()));
+        foreach ($arrChilds as $arrOneChild) {
+            if (validateSystemid($arrOneChild["system_id"])) {
+                $objInstance = Objectfactory::getInstance()->getObject($arrOneChild["system_id"]);
+                if ($objInstance !== null) {
+                    $objInstance->deleteObject();
+                }
+            }
+        }
+    }
+
+    /**
+     * Delete child objects from database
+     */
+    protected function deleteChildObjectsFromDatabase()
+    {
+        //validate, if there are subrecords, so child nodes to be deleted
+        $arrChilds = $this->objDB->getPArray("SELECT system_id FROM " . _dbprefix_ . "system where system_prev_id = ? ORDER BY system_sort DESC", array($this->getSystemid()));
+        foreach ($arrChilds as $arrOneChild) {
+            if (validateSystemid($arrOneChild["system_id"])) {
+                $objInstance = Objectfactory::getInstance()->getObject($arrOneChild["system_id"]);
+                if ($objInstance !== null) {
+                    $objInstance->deleteObjectFromDatabase();
+                }
+            }
+        }
     }
 
 }
