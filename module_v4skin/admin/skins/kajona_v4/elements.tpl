@@ -1649,6 +1649,11 @@ It containes a list of aspects and provides the possibility to switch the differ
     <span title="%%tooltip%%" rel="tooltip">%%text%%</span>
 </tooltip_text>
 
+<popover_text>
+    <span href="#" title="%%title%%" data-toggle="popover" data-content="%%content%%" data-html="true" data-placement="bottom" data-trigger="%%trigger%%">%%link%%</span>
+    <script type="text/javascript">require(['jquery', 'bootstrap'], function($)  { $('[data-toggle="popover"]').popover(); });</script>
+</popover_text>
+
 
 ---------------------------------------------------------------------------------------------------------
 -- CALENDAR ---------------------------------------------------------------------------------------------
