@@ -1650,8 +1650,8 @@ It containes a list of aspects and provides the possibility to switch the differ
 </tooltip_text>
 
 <popover_text>
-    <span href="#" title="%%title%%" data-toggle="popover" data-content="%%content%%" data-html="true" data-placement="bottom" data-trigger="%%trigger%%">%%link%%</span>
-    <script type="text/javascript">require(['jquery', 'bootstrap'], function($)  { $('[data-toggle="popover"]').popover(); });</script>
+    <span href="#" title="%%title%%" data-toggle="popover" data-content="%%content%%" data-html="true" data-placement="bottom" data-trigger="%%trigger%%" id="%%id%%">%%link%%</span>
+    <script type="text/javascript">require(['jquery', 'bootstrap'], function($)  { $('#%%id%%').popover(); });</script>
 </popover_text>
 
 

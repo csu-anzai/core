@@ -2787,9 +2787,9 @@ HTML;
      * @return string
      * @since 6.5
      */
-    public function getPopoverText($strText, $strPopoverTitle, $strPopoverContent, $strTrigger="hover")
+    public function getPopoverText($strText, $strPopoverTitle, $strPopoverContent, $strTrigger = "hover")
     {
-        return $this->objTemplate->fillTemplateFile(array("title" => $strPopoverTitle, "content" => $strPopoverContent, "link" => $strText, "trigger" => $strTrigger), "/elements.tpl", "popover_text");
+        return $this->objTemplate->fillTemplateFile(array("title" => $strPopoverTitle, "content" => $strPopoverContent, "link" => $strText, "trigger" => $strTrigger, "id" => generateSystemid()), "/elements.tpl", "popover_text");
     }
 
     // --- Calendar Fields ----------------------------------------------------------------------------------
