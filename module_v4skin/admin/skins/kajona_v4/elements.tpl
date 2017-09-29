@@ -465,6 +465,9 @@ Textarea
         <div class="col-sm-6 %%class%%">
             <textarea name="%%name%%" id="%%name%%" class="form-control" rows="%%numberOfRows%%" %%readonly%%>%%value%%</textarea>
         </div>
+        <div class="col-sm-2 form-opener">
+            %%opener%%
+        </div>
     </div>
 </input_textarea>
 

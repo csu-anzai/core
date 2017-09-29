@@ -41,7 +41,7 @@ class FormentryTextarea extends FormentryBase implements FormentryPrintableInter
         if($this->getStrHint() != null)
             $strReturn .= $objToolkit->formTextRow($this->getStrHint());
 
-        $strReturn .= $objToolkit->formInputTextArea($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue(), $this->bitLarge ? "input-large" : "", $this->getBitReadonly(), $this->getIntNumberOfRows());
+        $strReturn .= $objToolkit->formInputTextArea($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue(), $this->bitLarge ? "input-large" : "", $this->getBitReadonly(), $this->getIntNumberOfRows(), $this->strOpener);
 
         return $strReturn;
     }
