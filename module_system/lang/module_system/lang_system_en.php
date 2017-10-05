@@ -326,3 +326,7 @@ $lang["cache_misses"]  = "Misses";
 $lang["cache_uptime"]  = "Uptime";
 $lang["cache_usage"]  = "Usage";
 $lang["cache_available"]  = "Available";
+
+$lang["workflow_messagequeue_title"]  = "Message-Queue sender";
+$lang["workflow_queue_sender_val1"]  = "Hours";
+$lang["workflow_queue_sender_val2"]  = "Minutes";
