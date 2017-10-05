@@ -616,7 +616,12 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "6.2.4") {
-            $strReturn .= $this->update_624_65();
+            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2.5");
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.2.5") {
+            $strReturn .= $this->update_625_65();
         }
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
@@ -1043,7 +1048,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
     }
 
 
-    private function update_624_65()
+    private function update_625_65()
     {
         $strReturn = "Updating 6.2.4 to 6.5...\n";
         $strReturn .= "Adding alert table\n";
