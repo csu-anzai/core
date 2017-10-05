@@ -86,7 +86,9 @@ class MessagingTest extends Testbase
         $objSendDate = new Date();
         $objSendDate->setNextDay();
         $objMessage = $this->newMessage();
-        $objUser = UserUser::getAllUsersByName("user")[0];
+        $objUser = new UserUser();
+        $objUser->setStrUsername(generateSystemid());
+        $objUser->updateObjectToDb();
 
         $objMessageHandler = new MessagingMessagehandler();
         $objMessageHandler->sendMessageObject($objMessage, $objUser, $objSendDate);
@@ -116,13 +118,17 @@ class MessagingTest extends Testbase
         $this->assertEquals($objMessage->getStrMessageProvider(), $objDbMessage->getStrMessageProvider());
         $this->assertEquals($objMessage->getStrSenderId(), $objDbMessage->getStrSenderId());
         $this->assertEquals($objMessage->getStrMessageRefId(), $objDbMessage->getStrMessageRefId());
+
+        $objUser->deleteObjectFromDatabase();
     }
 
     public function testSendMessageObjectWithSendDateNow()
     {
         $objSendDate = new Date();
         $objMessage = $this->newMessage();
-        $objUser = UserUser::getAllUsersByName("user")[0];
+        $objUser = new UserUser();
+        $objUser->setStrUsername(generateSystemid());
+        $objUser->updateObjectToDb();
 
         $objMessageHandler = new MessagingMessagehandler();
         $objMessageHandler->sendMessageObject($objMessage, $objUser, $objSendDate);
@@ -143,6 +149,8 @@ class MessagingTest extends Testbase
         $this->assertEquals($objMessage->getStrMessageProvider(), $objDbMessage->getStrMessageProvider());
         $this->assertEquals($objMessage->getStrSenderId(), $objDbMessage->getStrSenderId());
         $this->assertEquals($objMessage->getStrMessageRefId(), $objDbMessage->getStrMessageRefId());
+
+        $objUser->deleteObjectFromDatabase();
     }
 
     public function testUnreadCount()

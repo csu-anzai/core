@@ -40,7 +40,9 @@ class WorkflowMessageQueueTest extends Testbase
         $objSendDate2->setNextDay();
         $objSendDate2->setNextDay();
 
-        $objUser = UserUser::getAllUsersByName("user")[0];
+        $objUser = new UserUser();
+        $objUser->setStrUsername(generateSystemid());
+        $objUser->updateObjectToDb();
 
         $objMessageHandler = new MessagingMessagehandler();
         $objMessageHandler->sendMessageObject($objMessage1, $objUser, $objSendDate1);
@@ -67,6 +69,8 @@ class WorkflowMessageQueueTest extends Testbase
 
         $arrMessages = MessagingMessage::getMessagesByIdentifier($objMessage2->getStrInternalIdentifier());
         $this->assertEquals(0, count($arrMessages));
+
+        $objUser->deleteObjectFromDatabase();
     }
 
     private function newMessage()
