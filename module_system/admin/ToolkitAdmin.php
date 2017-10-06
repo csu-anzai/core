@@ -534,16 +534,17 @@ class ToolkitAdmin extends Toolkit
      * @param string $strValue
      * @param string $strRepositoryId
      * @param string $strClass
+     * @param bool $bitLinkAsDownload
      *
      * @return string
      * @since 3.3.4
      */
-    public function formInputFileSelector($strName, $strTitle = "", $strValue = "", $strRepositoryId = "", $strClass = "")
+    public function formInputFileSelector($strName, $strTitle = "", $strValue = "", $strRepositoryId = "", $strClass = "", $bitLinkAsDownload = true)
     {
         $strOpener = getLinkAdminDialog(
             "mediamanager",
             "folderContentFolderviewMode",
-            "&form_element=".$strName."&systemid=".$strRepositoryId,
+            "&form_element=".$strName."&systemid=".$strRepositoryId.($bitLinkAsDownload ? "&download=1" : ""),
             Carrier::getInstance()->getObjLang()->getLang("filebrowser", "system"),
             Carrier::getInstance()->getObjLang()->getLang("filebrowser", "system"),
             "icon_externalBrowser",
@@ -613,7 +614,7 @@ class ToolkitAdmin extends Toolkit
      *
      * @return string
      */
-    public function formInputTextArea($strName, $strTitle = "", $strValue = "", $strClass = "", $bitReadonly = false, $numberOfRows = 4)
+    public function formInputTextArea($strName, $strTitle = "", $strValue = "", $strClass = "", $bitReadonly = false, $numberOfRows = 4, $strOpener = "")
     {
         $arrTemplate = array();
         $arrTemplate["name"] = $strName;
@@ -622,6 +623,7 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["class"] = $strClass;
         $arrTemplate["readonly"] = ($bitReadonly ? " readonly=\"readonly\" " : "");
         $arrTemplate["numberOfRows"] = $numberOfRows;
+        $arrTemplate["opener"] = $strOpener;
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_textarea");
     }
 
@@ -839,6 +841,7 @@ class ToolkitAdmin extends Toolkit
         $objLang = Lang::getInstance();
         $arrKeyValues = [
             "D" => $objLang->getLang("interval_day", "elements"),
+            "W" => $objLang->getLang("interval_week", "elements"),
             "M" => $objLang->getLang("interval_month", "elements"),
             "Y" => $objLang->getLang("interval_year", "elements"),
         ];
@@ -847,8 +850,13 @@ class ToolkitAdmin extends Toolkit
         $strValue = "";
         if ($objValue !== null) {
             if ($objValue->d > 0) {
-                $strKeySelected = "D";
-                $strValue = $objValue->d;
+                if ($objValue->d % 7 == 0) {
+                    $strKeySelected = "W";
+                    $strValue = $objValue->d / 7;
+                } else {
+                    $strKeySelected = "D";
+                    $strValue = $objValue->d;
+                }
             } elseif ($objValue->m > 0) {
                 $strKeySelected = "M";
                 $strValue = $objValue->m;
@@ -2806,6 +2814,20 @@ HTML;
         }
 
         return $this->objTemplate->fillTemplateFile(array("text" => $strText, "tooltip" => $strTooltip), "/elements.tpl", "tooltip_text");
+    }
+
+    /**
+     * Generates a bootstrap popover
+     * @param $strText
+     * @param $strPopoverTitle
+     * @param $strPopoverContent
+     * @param string $strTrigger one of click | hover | focus | manual
+     * @return string
+     * @since 6.5
+     */
+    public function getPopoverText($strText, $strPopoverTitle, $strPopoverContent, $strTrigger = "hover")
+    {
+        return $this->objTemplate->fillTemplateFile(array("title" => $strPopoverTitle, "content" => $strPopoverContent, "link" => $strText, "trigger" => $strTrigger, "id" => generateSystemid()), "/elements.tpl", "popover_text");
     }
 
     // --- Calendar Fields ----------------------------------------------------------------------------------

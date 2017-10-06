@@ -108,8 +108,9 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
          * @param objDoneCallback
          * @param objErrorCallback
          * @param strMethod default is POST
+         * @param dataType
          */
-        genericAjaxCall : function(module, action, systemid, objCallback, objDoneCallback, objErrorCallback, strMethod) {
+        genericAjaxCall : function(module, action, systemid, objCallback, objDoneCallback, objErrorCallback, strMethod, dataType) {
             var postTarget = KAJONA_WEBPATH + '/xml.php?admin=1&module='+module+'&action='+action;
             var data;
             if(systemid) {
@@ -123,7 +124,7 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
                 data: data,
                 error: objCallback,
                 success: objCallback,
-                dataType: 'text'
+                dataType: dataType ? dataType : 'text'
             }).always(
                 function() {
                     workingIndicator.stop();

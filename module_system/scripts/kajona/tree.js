@@ -108,40 +108,126 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
                 strInsertPosition = more.pos; //"b"=>before, "a"=>after, "i"=inside
 
 
-            //user can only move node if he has right on the dragged node and the parent node
+            //1. user can only move node if he has right on the dragged node and the parent node
             if(!node.data.rightedit && !node_parent.data.rightedit) {
                 return false;
             }
 
-            //check if custom types are set. If yes check if the type of the current node can be moved to the target node
-            if(node.data.customtypes) {
-                var curType = node.data.customtypes.type;
-                var arrValidChildrenTarget = targetNode.data.customtypes.valid_children;
-
-                //now check if the currenty type can be placed to the target node by checking the valid children
-                if($.inArray(curType, arrValidChildrenTarget) === -1) {
-                    return false;
-                }
-            }
-
-            //dragged node already direct childnode of target?
+            //2. dragged node already direct childnode of target?
             var arrTargetChildren = targetNode.children;
             if ($.inArray(strDragId, arrTargetChildren) > -1) {
                 return false;
             }
 
-            //dragged node is parent of target?
+            //3. dragged node is parent of target?
             var arrTargetParents = targetNode.parents;
             if ($.inArray(strDragId, arrTargetParents) > -1) {
                 return false;//TODO maybe not needed, already check by jstree it self
             }
 
-            //dragged node same as target node?
+            //4. dragged node same as target node?
             if (strDragId == strTargetId) {
                 return false;//TODO maybe not needed, already check by jstree it self
             }
 
+            //5. Check if node is valid child of node_parent
+            if(!isValidChildNodeForParent(node, node_parent)) {
+                return false;
+            }
+
+            //6. Check node_parent is valid parent for node
+            if (!isValidParentNodeForChild(node, node_parent)) {
+                return false;
+            }
+
             return true;
+        }
+
+
+        /**
+         * Checks if given node is a valid child node for the given parent
+         *
+         * @param node
+         * @param node_parent
+         * @returns {boolean}
+         */
+        function isValidChildNodeForParent(node, node_parent) {
+            if(node.data.customtypes) {
+                var curType = node.data.customtypes.type;
+                var arrValidChildrenTargetParent = node_parent.data.customtypes.valid_children;
+
+                if(arrValidChildrenTargetParent === null) {
+                    return true;
+                }
+
+                //now check if the current type can be placed to the target node by checking the valid children
+                if($.inArray(curType, arrValidChildrenTargetParent) === -1) {//-1 == curType not in array
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /*
+         * Check node_parent is valid parent for node
+         *
+         * Determines if one of the parent nodes of the given node 'node' has check_parent_id_active set to true.
+         *  If this is not the case, everything is ok -> return true
+         *  If this is case it will checked, if the the new parent node 'node_parent' is somewhere within the path of the found node
+         */
+        function isValidParentNodeForChild(node, node_parent) {
+            var nodeWithDataAttribute = getNodeWithDataAttribute(node, 'check_parent_id_active', true);
+            if(nodeWithDataAttribute !== null) {
+                var idToCheck = nodeWithDataAttribute.id;
+                var arrParents = node_parent.parents;
+                arrParents.unshift(node_parent.id);
+
+                if ($.inArray(idToCheck, arrParents) === -1) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+
+        /**
+         * Checks if the current node has the given data attribute.
+         * If 'bitCheckParentNodesOnly' is set to true the first parent node which have the 'strAttribute' set will be returned.
+         *
+         * Returns the node which has the given data attribute or null
+         *
+         * @param node
+         * @param strAttribute
+         * @param bitCheckParentNodesOnly - set to true if only parant nodes should be checked
+         * @returns Returns the node which has the given data attribute or null
+         */
+        function getNodeWithDataAttribute(node, strAttribute, bitCheckParentNodesOnly) {
+
+            //Check parent nodes
+            if(bitCheckParentNodesOnly === true) {
+                var tree = kajonatree.helper.getTreeInstance();
+                var arrParents = node.parents;
+
+                for (var i = 0, len = arrParents.length; i < len; i++) {
+                    var parentNode = tree.get_node(arrParents[i]);
+                    if (parentNode.id == "#") {//skip internal root node
+                        return null;
+                    }
+                    if (parentNode.data.hasOwnProperty(strAttribute)) {
+                        return parentNode
+                    }
+                }
+            }
+            else {
+                //Check node directly
+                if(node.data.hasOwnProperty(strAttribute)){
+                    return node;
+                }
+            }
+
+            return null;
         }
 
 
@@ -251,7 +337,17 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
                     'animation': false
                 },
                 'dnd': {
-                    'check_while_dragging': true
+                    'check_while_dragging': true,
+                    'is_draggable': function(arrArguments, event) {
+
+                        var node = arrArguments[0];
+                        var nodeDataAttribute = getNodeWithDataAttribute(node, 'is_not_draggable');
+                        if(nodeDataAttribute !== null){
+                            return false;
+                        }
+
+                        return true;
+                    }
                 },
                 'checkbox': {},
                 'types': {},
@@ -290,8 +386,8 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
                 });
 
             $jsTree
-                .on('move_node.jstree', function (e, data) {
-                    moveNode(data);
+                .on('move_node.jstree', function (e, dataEvent) {
+                    moveNode(dataEvent);
                 });
 
             $jsTree

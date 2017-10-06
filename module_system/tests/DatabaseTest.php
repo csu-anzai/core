@@ -169,6 +169,14 @@ class DatabaseTest extends Testbase
         $this->assertTrue(in_array("temp_new_col4", $arrColumnNames));
     }
 
+    public function testHasColumn()
+    {
+        $objDb = Carrier::getInstance()->getObjDB();
+        $this->createTable();
+
+        $this->assertTrue($objDb->hasColumn("temp_autotest", "temp_id"));
+        $this->assertFalse($objDb->hasColumn("temp_autotest", "temp_foo"));
+    }
 
     public function testRemoveColumn()
     {

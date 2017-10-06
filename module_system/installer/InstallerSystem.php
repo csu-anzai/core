@@ -22,6 +22,7 @@ use Kajona\System\System\Logger;
 use Kajona\System\System\MessagingAlert;
 use Kajona\System\System\MessagingConfig;
 use Kajona\System\System\MessagingMessage;
+use Kajona\System\System\MessagingQueue;
 use Kajona\System\System\OrmBase;
 use Kajona\System\System\OrmSchemamanager;
 use Kajona\System\System\Resourceloader;
@@ -35,6 +36,8 @@ use Kajona\System\System\SystemPwchangehistory;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserUser;
+use Kajona\System\System\Workflows\WorkflowMessageQueue;
+use Kajona\Workflows\System\WorkflowsWorkflow;
 
 /**
  * Installer for the system-module
@@ -241,6 +244,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $objManager->createTable(MessagingMessage::class);
         $objManager->createTable(MessagingConfig::class);
         $objManager->createTable(MessagingAlert::class);
+        $objManager->createTable(MessagingQueue::class);
 
         // password change history
         $strReturn .= "Installing password reset history...\n";
@@ -310,6 +314,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $this->registerConstant("_system_changehistory_enabled_", "false", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
 
         $this->registerConstant("_system_timezone_", "", SystemSetting::$int_TYPE_STRING, _system_modul_id_);
+        $this->registerConstant("_system_session_ipfixation_", "true", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
 
 
         //Creating the admin & guest groups
@@ -611,7 +616,22 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "6.2.4") {
-            $strReturn .= $this->update_624_65();
+            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2.5");
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.2.5") {
+            $strReturn .= $this->update_625_65();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.5") {
+            $strReturn .= $this->update_65_651();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.5.1") {
+            $strReturn .= $this->update_651_652();
         }
 
         return $strReturn."\n\n";
@@ -1028,7 +1048,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
     }
 
 
-    private function update_624_65()
+    private function update_625_65()
     {
         $strReturn = "Updating 6.2.4 to 6.5...\n";
         $strReturn .= "Adding alert table\n";
@@ -1041,6 +1061,42 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5");
+        return $strReturn;
+    }
+
+    private function update_65_651()
+    {
+        $strReturn = "Updating 6.5 to 6.5.1...\n";
+        $strReturn .= "Adding session setting\n";
+
+        $this->registerConstant("_system_session_ipfixation_", "true", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.1");
+        return $strReturn;
+    }
+
+
+    private function update_651_652()
+    {
+        $strReturn = "Updating 6.5.1 to 6.5.2...\n";
+        $strReturn .= "Install message queue\n";
+
+        $objManager = new OrmSchemamanager();
+        $objManager->createTable(MessagingQueue::class);
+
+        // add workflow
+        $strReturn .= "Registering message queue workflow...\n";
+        if (SystemModule::getModuleByName("workflows") !== null) {
+            if (WorkflowsWorkflow::getWorkflowsForClassCount(WorkflowMessageQueue::class, false) == 0) {
+                $objWorkflow = new WorkflowsWorkflow();
+                $objWorkflow->setStrClass(WorkflowMessageQueue::class);
+                $objWorkflow->updateObjectToDb();
+            }
+        }
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.2");
         return $strReturn;
     }
 

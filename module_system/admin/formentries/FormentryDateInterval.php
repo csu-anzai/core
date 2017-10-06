@@ -68,7 +68,7 @@ class FormentryDateInterval extends FormentryBase implements FormentryPrintableI
         $strUnit = isset($arrParams[$strName . "_unit"]) ? $arrParams[$strName . "_unit"] : null;
         $strValue = isset($arrParams[$strName]) ? (int) $arrParams[$strName] : 0;
 
-        if (in_array($strUnit, ["D", "M", "Y"]) && $strValue > 0) {
+        if (in_array($strUnit, ["D", "W", "M", "Y"]) && $strValue > 0) {
             $strDuration = "P" . $strValue . $strUnit;
             $this->setStrValue($strDuration);
         } else {
@@ -90,20 +90,38 @@ class FormentryDateInterval extends FormentryBase implements FormentryPrintableI
         }
 
         if ($objInterval !== null) {
-            $objLang = Lang::getInstance();
-            $arrFormat = [];
-            if ($objInterval->y > 0) {
-                $arrFormat[] = "%y " . $objLang->getLang(($objInterval->y > 1 ? "interval_years" : "interval_year"), "elements");
-            }
-            if ($objInterval->m > 0) {
-                $arrFormat[] = "%m " . $objLang->getLang(($objInterval->m > 1 ? "interval_months" : "interval_month"), "elements");
-            }
-            if ($objInterval->d > 0) {
+            return self::toString($objInterval);
+        }
+
+        return "-";
+    }
+
+    /**
+     * Transforms a date interval to string
+     *
+     * @param \DateInterval $objInterval
+     * @return string
+     */
+    public static function toString(\DateInterval $objInterval)
+    {
+        $objLang = Lang::getInstance();
+        $arrFormat = [];
+        if ($objInterval->y > 0) {
+            $arrFormat[] = "%y " . $objLang->getLang(($objInterval->y > 1 ? "interval_years" : "interval_year"), "elements");
+        }
+        if ($objInterval->m > 0) {
+            $arrFormat[] = "%m " . $objLang->getLang(($objInterval->m > 1 ? "interval_months" : "interval_month"), "elements");
+        }
+        if ($objInterval->d > 0) {
+            if ($objInterval->d % 7 == 0) {
+                $intWeeks = $objInterval->d / 7;
+                $arrFormat[] = "{$intWeeks} " . $objLang->getLang(($intWeeks > 1 ? "interval_weeks" : "interval_week"), "elements");
+            } else {
                 $arrFormat[] = "%d " . $objLang->getLang(($objInterval->d > 1 ? "interval_days" : "interval_day"), "elements");
             }
-            if (count($arrFormat) > 0) {
-                return $objInterval->format(implode(", ", $arrFormat));
-            }
+        }
+        if (count($arrFormat) > 0) {
+            return $objInterval->format(implode(", ", $arrFormat));
         }
 
         return "-";

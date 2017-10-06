@@ -100,21 +100,21 @@ class SamplecontentInstallerHelper
     {
 
         $strReturn = "Installer found: ".get_class($objInstaller)."\n";
-        if($objInstaller->isInstalled()) {
-            return "\t... is already installed\n";
-        }
+
         $strModule = $objInstaller->getCorrespondingModule();
         $strReturn .= "Module ".$strModule."...\n";
         $objModule = SystemModule::getModuleByName($strModule);
 
-
         if ($objModule == null) {
-            $strReturn .= "\t... not installed!\n";
+            return $strReturn."\t... not installed!\n";
         }
-        else {
-            $strReturn .= "\t... installed.\n";
-            $strReturn .= $objInstaller->install();
+
+        if($objInstaller->isInstalled()) {
+            return $strReturn."\t... is already installed\n";
         }
+
+        $strReturn .= "\t... installed.\n";
+        $strReturn .= $objInstaller->install();
 
         Carrier::getInstance()->getObjDB()->flushQueryCache();
 

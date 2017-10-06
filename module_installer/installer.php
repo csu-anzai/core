@@ -718,6 +718,15 @@ class Installer
     {
 
         foreach (SamplecontentInstallerHelper::getSamplecontentInstallers() as $objOneInstaller) {
+
+            $strModule = $objOneInstaller->getCorrespondingModule();
+            $objModule = SystemModule::getModuleByName($strModule);
+
+            if ($objModule == null) {
+                // module not installed
+                continue;
+            }
+
             if (!$objOneInstaller->isInstalled()) {
 
                 $objManager = new PackagemanagerManager();

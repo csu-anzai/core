@@ -1292,43 +1292,35 @@ footer {
                 padding:0;
             }
 
-            tbody:hover {
-                tr td,
-                tr th {
-                    background-color:#fff;
-                }
-            }
-
             tbody {
                 border-bottom:none;
             }
-        }
 
-        &.bulkedit > tbody > tr.table-row-form {
-            border-bottom:2px solid #222;
+            tr.table-row-form {
+                border-bottom: 2px solid #222;
 
-            label {
-                display:inline-block!important;
-                padding-top:0;
-            }
+                label {
+                    display: block;
+                }
 
-            .form-group {
-                clear:both;
-            }
+                .form-group {
+                    clear: both;
+                }
 
-            .form-opener {
-                display:none;
-            }
+                .col-sm-6 {
+                    width: 50%;
+                }
 
-            .col-sm-6 {
-                width:50%!important;
-                padding:0;
-            }
+                td {
+                    border-top: none;
+                }
 
-            td {
-                border-top:none;
+                .form-opener {
+                    display: block;
+                }
             }
         }
+
     }
 
     .divPageTarget {
@@ -1761,7 +1753,6 @@ table.form-control {
 }
 
 .popover {
-    border-width: 2px;
     max-width: 600px;
 }
 

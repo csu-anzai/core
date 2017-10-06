@@ -19,7 +19,7 @@ namespace Kajona\System\System;
 final class Session
 {
 
-    private $strKey;
+    private $strKey = null;
 
     private $arrRequestArray;
 
@@ -65,8 +65,22 @@ final class Session
     private function __construct()
     {
         //Generating a session-key using a few characteristic values
-        $this->strKey = md5(_realpath_.getServer("REMOTE_ADDR"));
+
         $this->arrRequestArray = array();
+    }
+
+    /**
+     * Builds the internal session key - on first access
+     * @return string
+     */
+    private function getSessionKey()
+    {
+        if ($this->strKey === null) {
+            $strAddon = SystemSetting::getConfigValue("_system_session_ipfixation_") === "false" ? "" : getServer("REMOTE_ADDR");
+            $this->strKey = md5(_realpath_.$strAddon);
+        }
+
+        return $this->strKey;
     }
 
     /**
@@ -152,7 +166,7 @@ final class Session
 
             $this->sessionStart();
             //yes, it is wanted to have only one =. The condition checks the assignment.
-            if ($_SESSION[$this->strKey][$strKey] = $strValue) {
+            if ($_SESSION[$this->getSessionKey()][$strKey] = $strValue) {
                 return true;
             } else {
                 return false;
@@ -209,10 +223,10 @@ final class Session
             }
         } else {
             $this->sessionStart();
-            if (!isset($_SESSION[$this->strKey][$strKey])) {
+            if (!isset($_SESSION[$this->getSessionKey()][$strKey])) {
                 return false;
             } else {
-                return $_SESSION[$this->strKey][$strKey];
+                return $_SESSION[$this->getSessionKey()][$strKey];
             }
         }
     }
@@ -227,7 +241,7 @@ final class Session
     public function sessionIsset($strKey)
     {
         $this->sessionStart();
-        if (isset($_SESSION[$this->strKey][$strKey])) {
+        if (isset($_SESSION[$this->getSessionKey()][$strKey])) {
             return true;
         } else {
             return false;
@@ -245,7 +259,7 @@ final class Session
     {
         $this->sessionStart();
         if ($this->sessionIsset($strKey)) {
-            unset($_SESSION[$this->strKey][$strKey]);
+            unset($_SESSION[$this->getSessionKey()][$strKey]);
         }
     }
 

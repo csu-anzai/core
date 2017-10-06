@@ -19,6 +19,7 @@ use Kajona\System\System\MessagingMessagehandler;
 use Kajona\System\System\Model;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\RedirectException;
+use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Session;
 use Kajona\System\Xml;
 
@@ -361,8 +362,14 @@ HTML;
 
                             $objAlert = new MessagingAlert();
                             $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
-                            $objAlert->setStrBody($this->getLang("action_status_change_success", "flow"), "alert-success");
+                            $objAlert->setStrBody($this->getLang("action_status_change_success", "flow"));
                             $objAlert->setObjAlertAction(new MessagingAlertActionVoid());
+
+                            $strRedirectUrl = ResponseObject::getInstance()->getStrRedirectUrl();
+                            if (!empty($strRedirectUrl)) {
+                                $objAlert->setObjAlertAction(new MessagingAlertActionRedirect($strRedirectUrl));
+                                ResponseObject::getInstance()->setStrRedirectUrl("");
+                            }
                         }
 
                     } catch (RedirectException $e) {
