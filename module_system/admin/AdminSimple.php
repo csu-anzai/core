@@ -64,6 +64,7 @@ abstract class AdminSimple extends AdminController
      * @param array &$arrContent
      *
      * @return void
+     * @deprecated
      */
     protected function onRenderOutput(&$arrContent)
     {
@@ -75,7 +76,7 @@ abstract class AdminSimple extends AdminController
      *
      * @return string
      */
-    protected function getContentActionToolbar()
+    public function getContentActionToolbar()
     {
         if (StringUtil::indexOf($this->getAction(), "list") !== false || StringUtil::indexOf($this->getAction(), "new") !== false || StringUtil::indexOf($this->getAction(), "save") !== false) {
             return "";
@@ -85,7 +86,7 @@ abstract class AdminSimple extends AdminController
             $objRecord = $this->objFactory->getObject($this->getSystemid());
 
             if ($objRecord instanceof AdminListableInterface) {
-                return $this->getActionIcons($objRecord);
+                return $this->objToolkit->getContentActionToolbar($this->getActionIcons($objRecord));
             }
         }
 

@@ -259,6 +259,7 @@ abstract class AdminController extends AbstractController
      * @param array &$arrContent
      *
      * @return void
+     * @deprecated
      */
     protected function onRenderOutput(&$arrContent)
     {
