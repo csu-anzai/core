@@ -51,6 +51,7 @@ define("toc", ['jquery', 'util', 'bootstrap'], function ($, util, bootstrap) {
          * @param selector
          */
         render: function(selector){
+
             if(!$('.sidebar-nav').length) {
                 return;
             }
@@ -69,7 +70,7 @@ define("toc", ['jquery', 'util', 'bootstrap'], function ($, util, bootstrap) {
             });
 
             // append the element only if it is not already appended
-            $('.sidebar-nav').append($('<div id="toc-navigation" class="toc-navigation-panel" role="navigation">').append($('<ul class="nav">').html(html)));
+            $('#moduleNavigation.sidebar-nav').append($('<div id="toc-navigation" class="toc-navigation-panel" role="navigation">').append($('<ul class="nav">').html(html)));
 
             // affix toc navigation
             $('#toc-navigation').affix({
@@ -99,6 +100,13 @@ define("toc", ['jquery', 'util', 'bootstrap'], function ($, util, bootstrap) {
          */
         removeEntry : function(id) {
             $("a[href=#"+id+"]").parent("li").remove();
+        },
+
+        /**
+         * Remves the whole toc
+         */
+        resetToc : function() {
+            $('#toc-navigation').remove();
         }
     };
 

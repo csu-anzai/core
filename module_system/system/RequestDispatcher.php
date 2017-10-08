@@ -9,6 +9,8 @@
 
 namespace Kajona\System\System;
 
+use Kajona\System\Admin\AdminController;
+use Kajona\System\Admin\AdminSimple;
 use Kajona\System\Admin\LoginAdmin;
 use Kajona\System\Xml;
 use Kajona\V4skin\Admin\SkinAdminController;
@@ -197,6 +199,9 @@ class RequestDispatcher
                                     if ($strReturn != "") {
                                         $strReturn .= $objHelper->actionGetPathNavigation($objConcreteModule);
                                         $strReturn .= $objHelper->actionGetQuickHelp($objConcreteModule);
+                                        if ($objConcreteModule instanceof AdminSimple) {
+                                            $strReturn .= $objConcreteModule->getContentActionToolbar();
+                                        }
                                         $strReturn = "<script type=\"text/javascript\"> require(['contentToolbar'], function(contentToolbar) { contentToolbar.resetBar()}); </script>".$strReturn; //TODO: das muss hier raus, falsche stelle?
                                     }
                                 }

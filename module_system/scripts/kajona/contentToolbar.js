@@ -8,6 +8,7 @@
 define('contentToolbar', ['jquery'], function ($) {
 
     var $objToolbarContainer = $(".contentToolbar");
+    var $objActionToolbarContainer = $(".contentToolbar .navbar-inner");
     var $objToolbarList = $(".contentToolbar ul:first");
 
     return /** @alias module:contentToolbar */ {
@@ -65,6 +66,15 @@ define('contentToolbar', ['jquery'], function ($) {
         },
 
         /**
+         *
+         * @param $objContainer
+         */
+        registerRecordActions: function($objContainer) {
+            var $objNode = $('<div>').attr('class', 'actionToolbar pull-right').append($objContainer.children());
+            $objActionToolbarContainer.append($objNode);
+        },
+
+        /**
          * Removes a sinvle entry
          * @param strIdentifier
          */
@@ -83,6 +93,7 @@ define('contentToolbar', ['jquery'], function ($) {
          */
         resetBar : function() {
             $objToolbarList.empty();
+            $objToolbarContainer.find(".actionToolbar").remove();
             $objToolbarContainer.addClass('hidden');
         },
 
