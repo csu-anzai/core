@@ -16,6 +16,7 @@ use Kajona\System\System\Logger;
 use Kajona\System\System\RequestEntrypointEnum;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Session;
+use Kajona\System\System\StringUtil;
 use Kajona\System\System\UserUser;
 use Kajona\System\System\Wadlgenerator;
 
@@ -82,6 +83,12 @@ class LoginAdmin extends AdminController implements AdminInterface
                 //Store some of the last requests' data
                 $this->objSession->setSession(self::SESSION_REFERER, getServer("QUERY_STRING"));
                 $this->objSession->setSession(self::SESSION_PARAMS, getArrayPost());
+
+                if ($this->getParam("contentFill") == "1") {
+                    //redirect to a "real" login page
+                    return "<script type='text/javascript'>if(window.opener) { window.opener.location.reload(); window.close(); } else { parent.location.reload(); }</script>";
+//                    return "";
+                }
             }
 
             //Loading a small login-form
@@ -254,7 +261,8 @@ class LoginAdmin extends AdminController implements AdminInterface
     {
         //any url to redirect?
         if ($this->objSession->getSession(self::SESSION_REFERER) != "" && $this->objSession->getSession(self::SESSION_REFERER) != "admin=1") {
-            ResponseObject::getInstance()->setStrRedirectUrl(_indexpath_."?".$this->objSession->getSession(self::SESSION_REFERER));
+            $strUrl = StringUtil::replace("&contentFill=1", "", $this->objSession->getSession(self::SESSION_REFERER));
+            ResponseObject::getInstance()->setStrRedirectUrl(_indexpath_."?".$strUrl);
             $this->objSession->sessionUnset(self::SESSION_REFERER);
             $this->objSession->setSession(self::SESSION_LOAD_FROM_PARAMS, "true");
         } else {

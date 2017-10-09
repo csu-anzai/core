@@ -279,7 +279,10 @@ class RequestDispatcher
             $objHelper = new SkinAdminController();
             $objLogin = $this->objBuilder->factory(LoginAdmin::class);
             $strReturn = $objLogin->action($strAction);
-            $strReturn = $objHelper->actionGenerateLoginTemplate($strReturn);
+
+            if (Carrier::getInstance()->getParam("contentFill") != "1") {
+                $strReturn = $objHelper->actionGenerateLoginTemplate($strReturn);
+            }
 
         }
 
