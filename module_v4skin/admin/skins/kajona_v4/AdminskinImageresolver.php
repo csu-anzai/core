@@ -222,6 +222,7 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_userswitch"             => "<span class='kj-icon fa-stack'><i class='fa fa-user'></i><i class='fa fa-play fa-stack-1x kj-stack'></i></span>",
         "icon_warning"                => "<i class='kj-icon fa fa-exclamation-triangle'></i>",
         "icon_warning_red"            => "<i class='kj-icon fa fa-exclamation-triangle' style='color: red;'></i>",
+        "icon_warning_orange"         => "<i class='kj-icon fa fa-exclamation-triangle' style='color: orange;'></i>",
         "icon_word"                   => "<i class='kj-icon fa fa-ms-word'></i>",
         "icon_workflow"               => "<i class='kj-icon fa fa-cog'></i>",
         "icon_workflowExecuted"       => "<span class='kj-icon fa-stack'><i class='fa fa-cog'></i><i class='fa fa-check fa-stack-1x kj-stack' style='color: green'></i></span>",
