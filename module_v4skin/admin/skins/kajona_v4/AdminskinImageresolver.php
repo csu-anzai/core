@@ -164,7 +164,7 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_group"                  => "<i class='kj-icon fa fa-users'></i>",
         "icon_archive"                => "<i class='kj-icon fa fa-archive'></i>",
         "icon_history"                => "<i class='kj-icon fa fa-clock-o'></i>",
-        "icon_hourglass"              => "<i class='kj-icon fa fa-hourglass-o'></i>",
+        "icon_wait"                   => "<i class='kj-icon fa fa-hourglass'></i>",
         "icon_image"                  => "<i class='kj-icon fa fa-picture-o'></i>",
         "icon_install"                => "<i class='kj-icon fa fa-download'></i>",
         "icon_installDisabled"        => "<span class='kj-icon fa-stack'><i class='fa fa-download'></i><i class='fa fa-ban fa-stack-1x kj-stack' style='color: red'></i></span>",
