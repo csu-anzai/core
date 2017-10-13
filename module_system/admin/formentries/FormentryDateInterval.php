@@ -107,17 +107,17 @@ class FormentryDateInterval extends FormentryBase implements FormentryPrintableI
         $objLang = Lang::getInstance();
         $arrFormat = [];
         if ($objInterval->y > 0) {
-            $arrFormat[] = "%y " . $objLang->getLang(($objInterval->y > 1 ? "interval_years" : "interval_year"), "elements");
+            $arrFormat[] = "%y " . $objLang->getLang(($objInterval->y > 1 ? "commons_interval_years" : "commons_interval_year"), "system");
         }
         if ($objInterval->m > 0) {
-            $arrFormat[] = "%m " . $objLang->getLang(($objInterval->m > 1 ? "interval_months" : "interval_month"), "elements");
+            $arrFormat[] = "%m " . $objLang->getLang(($objInterval->m > 1 ? "commons_interval_months" : "commons_interval_month"), "system");
         }
         if ($objInterval->d > 0) {
             if ($objInterval->d % 7 == 0) {
                 $intWeeks = $objInterval->d / 7;
-                $arrFormat[] = "{$intWeeks} " . $objLang->getLang(($intWeeks > 1 ? "interval_weeks" : "interval_week"), "elements");
+                $arrFormat[] = "{$intWeeks} " . $objLang->getLang(($intWeeks > 1 ? "commons_interval_weeks" : "commons_interval_week"), "system");
             } else {
-                $arrFormat[] = "%d " . $objLang->getLang(($objInterval->d > 1 ? "interval_days" : "interval_day"), "elements");
+                $arrFormat[] = "%d " . $objLang->getLang(($objInterval->d > 1 ? "commons_interval_days" : "commons_interval_day"), "system");
             }
         }
         if (count($arrFormat) > 0) {
