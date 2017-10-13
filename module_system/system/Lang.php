@@ -235,11 +235,10 @@ class Lang
      */
     private function loadText($strModule)
     {
-        //following steps:
-
         $arrCommons = Resourceloader::getInstance()->getLanguageFiles("module_".$this->strCommonsName);
         $arrModuleFiles = Resourceloader::getInstance()->getLanguageFiles("module_".$strModule);
 
+        //following steps:
         // 1. commons fallback language
         foreach (array_keys($arrCommons, "lang_".$this->strCommonsName."_".$this->strFallbackLanguage.".php") as $strPath) {
             $this->loadAndMergeTextfile($strModule, $strPath, $this->strLanguage, $this->arrTexts);
@@ -247,10 +246,8 @@ class Lang
 
         // 2. entries fallback language
         foreach ($arrModuleFiles as $strPath => $strFilename) {
-
             $arrFilename = explode("_", StringUtil::substring($strFilename, 0, -4));
             if (end($arrFilename) == $this->strFallbackLanguage) {
-
                 $this->loadAndMergeTextfile($strModule, $strPath, $this->strLanguage, $this->arrTexts);
             }
         }
@@ -262,14 +259,11 @@ class Lang
 
         // 4. entries current language
         foreach ($arrModuleFiles as $strPath => $strFilename) {
-
             $arrFilename = explode("_", StringUtil::substring($strFilename, 0, -4));
             if (end($arrFilename) == $this->strLanguage) {
                 $this->loadAndMergeTextfile($strModule, $strPath, $this->strLanguage, $this->arrTexts);
             }
         }
-
-
     }
 
     /**
@@ -331,6 +325,4 @@ class Lang
     {
         return $this->strFallbackLanguage;
     }
-
-
 }
