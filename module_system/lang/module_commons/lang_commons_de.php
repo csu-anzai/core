@@ -133,3 +133,12 @@ $lang["commons_record_enddate"] = "Enddatum";
 $lang["commons_record_specialdate"] = "Sonder-Datum";
 
 $lang["commons_error_move_hierarchy"] = "Das Verschieben unterhalb des angegeben Objektes ist nicht möglich";
+
+$lang["commons_interval_day"]                    = "Tag";
+$lang["commons_interval_days"]                   = "Tage";
+$lang["commons_interval_week"]                   = "Woche";
+$lang["commons_interval_weeks"]                  = "Wochen";
+$lang["commons_interval_month"]                  = "Monat";
+$lang["commons_interval_months"]                 = "Monate";
+$lang["commons_interval_year"]                   = "Jahr";
+$lang["commons_interval_years"]                  = "Jahre";

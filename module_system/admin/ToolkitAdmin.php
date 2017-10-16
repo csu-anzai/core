@@ -840,10 +840,10 @@ class ToolkitAdmin extends Toolkit
     {
         $objLang = Lang::getInstance();
         $arrKeyValues = [
-            "D" => $objLang->getLang("interval_day", "elements"),
-            "W" => $objLang->getLang("interval_week", "elements"),
-            "M" => $objLang->getLang("interval_month", "elements"),
-            "Y" => $objLang->getLang("interval_year", "elements"),
+            "D" => $objLang->getLang("commons_interval_day", "system"),
+            "W" => $objLang->getLang("commons_interval_week", "system"),
+            "M" => $objLang->getLang("commons_interval_month", "system"),
+            "Y" => $objLang->getLang("commons_interval_year", "system"),
         ];
 
         $strKeySelected = "";

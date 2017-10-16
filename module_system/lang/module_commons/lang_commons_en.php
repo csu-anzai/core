@@ -133,3 +133,13 @@ $lang["commons_record_enddate"] = "End date";
 $lang["commons_record_specialdate"] = "Special date";
 
 $lang["commons_error_move_hierarchy"] = "Moving this object below the given object is not possible";
+
+
+$lang["commons_interval_day"]                    = "Day";
+$lang["commons_interval_days"]                   = "Days";
+$lang["commons_interval_week"]                   = "Week";
+$lang["commons_interval_weeks"]                  = "Weeks";
+$lang["commons_interval_month"]                  = "Month";
+$lang["commons_interval_months"]                 = "Months";
+$lang["commons_interval_year"]                   = "Year";
+$lang["commons_interval_years"]                  = "Years";
