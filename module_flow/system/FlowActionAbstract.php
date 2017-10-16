@@ -39,7 +39,7 @@ abstract class FlowActionAbstract extends Model implements ModelInterface, Admin
     /**
      * @return string
      */
-    public function getStrParams()//: string TODO in PHP 7.1 add nullable tpye hint
+    public function getStrParams()
     {
         return $this->strParams;
     }
@@ -88,7 +88,7 @@ abstract class FlowActionAbstract extends Model implements ModelInterface, Admin
 
     public function getStrAdditionalInfo()
     {
-        return $this->getStrParams();
+        return chunk_split($this->getStrParams(), 50);
     }
 
     public function getStrLongDescription()
