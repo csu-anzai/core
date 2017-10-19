@@ -25,7 +25,13 @@ class FlowGraphWriter
      */
     public static function write(FlowConfig $objFlow, $objHighlite = null)
     {
-        return self::writeCytoscape($objFlow, $objHighlite);
+        //TODO: starting with mermaid 7.1, at least ms edge seems to be supported. should render using mermaid by default since IE and Tridnet are IE <= 11
+        $strUA = htmlentities($_SERVER['HTTP_USER_AGENT'], ENT_QUOTES, 'UTF-8');
+        if (preg_match('~MSIE|Internet Explorer~i', $strUA) || (strpos($strUA, 'Trident/7.0; rv:11.0') !== false)) {
+            return self::writeCytoscape($objFlow, $objHighlite);
+        } else {
+            return self::writeMermaid($objFlow, $objHighlite);
+        }
     }
 
     /**
@@ -38,7 +44,7 @@ class FlowGraphWriter
         $arrStatus = $objFlow->getArrStatus();
 
         // sort status
-        usort($arrStatus, function(FlowStatus $objA, FlowStatus $objB){
+        usort($arrStatus, function (FlowStatus $objA, FlowStatus $objB) {
             if ($objA->getIntIndex() == 1) {
                 return 1;
             }
@@ -186,7 +192,7 @@ HTML;
         $arrStatus = $objFlow->getArrStatus();
 
         // sort status
-        usort($arrStatus, function(FlowStatus $objA, FlowStatus $objB){
+        usort($arrStatus, function (FlowStatus $objA, FlowStatus $objB) {
             if ($objA->getIntIndex() == 1) {
                 return 1;
             }
