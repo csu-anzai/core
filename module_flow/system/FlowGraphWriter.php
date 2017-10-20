@@ -16,6 +16,9 @@ use Kajona\System\System\Link;
  */
 class FlowGraphWriter
 {
+
+    private static $bitIsIe = false;
+
     /**
      * Generates a mermaid graph definition of the flow object
      *
@@ -25,13 +28,13 @@ class FlowGraphWriter
      */
     public static function write(FlowConfig $objFlow, $objHighlite = null)
     {
-        //TODO: starting with mermaid 7.1, at least ms edge seems to be supported. should render using mermaid by default since IE and Tridnet are IE <= 11
+        //ugly hack to fetch old IE versions. used to inject some special options and css definitions
         $strUA = htmlentities($_SERVER['HTTP_USER_AGENT'], ENT_QUOTES, 'UTF-8');
         if (preg_match('~MSIE|Internet Explorer~i', $strUA) || (strpos($strUA, 'Trident/7.0; rv:11.0') !== false)) {
-            return self::writeCytoscape($objFlow, $objHighlite);
-        } else {
-            return self::writeMermaid($objFlow, $objHighlite);
+            self::$bitIsIe = true;
         }
+        //return self::writeCytoscape($objFlow, $objHighlite);
+        return self::writeMermaid($objFlow, $objHighlite);
     }
 
     /**
@@ -208,12 +211,21 @@ HTML;
             /** @var FlowStatus $objStatus */
             $arrTransitions = $objStatus->getArrTransitions();
             foreach ($arrTransitions as $objTransition) {
+                if (!$objTransition->isVisible()) {
+                    continue; //TODO: add option to show / hide invisivle edges
+                }
+
                 /** @var $objTransition FlowTransition */
                 $objTargetStatus = $objTransition->getTargetStatus();
                 if ($objTargetStatus instanceof FlowStatus) {
                     $strLineStart = $objTransition->isVisible() ? "--" : "-.";
                     $strLineEnd = $objTransition->isVisible() ? "--" : ".-";
-                    $arrList[] = $objStatus->getStrSystemid() . "[" . $objStatus->getStrName() . "]{$strLineStart} <span data-" . $objTransition->getSystemid() . ">______</span> {$strLineEnd}>" . $objTargetStatus->getSystemid() . "[" . $objTargetStatus->getStrName() . "];";
+                    if (self::$bitIsIe) {
+                        //IE doesn't render html labels, so no need to replace them later on --> regular edge
+                        $arrList[] = $objStatus->getStrSystemid() . "[" . $objStatus->getStrName() . "]{$strLineEnd}>" . $objTargetStatus->getSystemid() . "[" . $objTargetStatus->getStrName() . "];";
+                    } else {
+                        $arrList[] = $objStatus->getStrSystemid() . "[" . $objStatus->getStrName() . "]{$strLineStart} <span data-" . $objTransition->getSystemid() . ">______</span> {$strLineEnd}>" . $objTargetStatus->getSystemid() . "[" . $objTargetStatus->getStrName() . "];";
+                    }
                 }
             }
             $arrList["style ".$objStatus->getSystemid()] = "style {$objStatus->getSystemid()} fill:#f9f9f9,stroke:{$objStatus->getStrIconColor()},stroke-width:1px;";
@@ -232,8 +244,20 @@ HTML;
         $strLinkTransitionAction = Link::getLinkAdminHref("flow", "listTransitionAction", "&systemid=" . $strTmpSystemId);
         $strLinkTransitionCondition = Link::getLinkAdminHref("flow", "listTransitionCondition", "&systemid=" . $strTmpSystemId);
 
+
+        $strInit = "{}";
+        $strHeight = "";
+        if (self::$bitIsIe) {
+            $strInit = '{flowchart:{
+                htmlLabels:false,
+                useMaxWidth:true
+            }}';
+            $strHeight = "height: 900px;";
+        }
+
+
         return <<<HTML
-<div id='flow-graph' class='mermaid' style='color:#fff;'>{$strGraph}</div>
+<div id='flow-graph' class='mermaid' style='color:#fff; {$strHeight} '>{$strGraph}</div>
 <script type="text/javascript">
     var callback = function(statusId) {
         location.href = "{$strLinkTransition}".replace('{$strTmpSystemId}', statusId);
@@ -241,6 +265,7 @@ HTML;
 
     require(['mermaid', 'loader', 'jquery'], function(mermaid, loader, $){
         loader.loadFile(["/core/module_flow/scripts/mermaid/mermaid.forest.css"], function(){
+            mermaid.initialize({$strInit});
             mermaid.init(undefined, $("#flow-graph"));
 
             $('div > span.edgeLabel > span').each(function(){
