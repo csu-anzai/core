@@ -903,7 +903,7 @@ have a surrounding div with class "ac_container" and a div with id "%%name%%_con
 </div>
 </input_userselector>
 
-A list of checkbox or radio input elements
+A list of checkbox input elements
 <input_checkboxarray>
     <div class="form-group form-list">
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
@@ -941,6 +941,27 @@ $("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
         <label><input type="%%type%%" name="%%name%%" value="%%value%%" %%checked%% %%readonly%% /> %%title%%</label>
     </div>
 </input_checkboxarray_checkbox>
+
+
+A list of radio input elements
+<input_radioarray>
+    <div class="form-group form-list">
+        <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
+
+        <div class="col-sm-6 inputText">
+            <div id="%%name%%" class="inputContainer %%class%%">
+                %%elements%%
+            </div>
+        </div>
+    </div>
+</input_radioarray>
+
+<input_radioarray_radio>
+    <div class="%%type%%%%inline%%">
+        <label><input type="%%type%%" name="%%name%%" value="%%value%%" %%checked%% %%readonly%% /> %%title%%</label>
+    </div>
+</input_radioarray_radio>
+
 
 A list of checkbox for object elements
 <input_checkboxarrayobjectlist>

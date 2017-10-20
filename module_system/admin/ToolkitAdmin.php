@@ -1100,6 +1100,13 @@ class ToolkitAdmin extends Toolkit
      */
     public function formInputCheckboxArray($strName, $strTitle, $intType, array $arrValues, array $arrSelected, $bitInline = false, $bitReadonly = false, $strOpener = "")
     {
+        $strElement = "input_checkboxarray";
+        $strElementRow = "input_checkboxarray_checkbox";
+        if ($intType == FormentryCheckboxarray::TYPE_RADIO) {
+            $strElement = "input_radioarray";
+            $strElementRow = "input_radioarray_radio";
+        }
+
         $arrTemplate = array();
         $arrTemplate["name"] = $strName;
         $arrTemplate["title"] = $strTitle;
@@ -1109,8 +1116,6 @@ class ToolkitAdmin extends Toolkit
         foreach ($arrValues as $strKey => $strValue) {
             $arrTemplateRow = array(
                 'key'      => $strKey,
-                'name'     => $intType == FormentryCheckboxarray::TYPE_RADIO ? $strName : $strName.'['.$strKey.']',
-                'value'    => $intType == FormentryCheckboxarray::TYPE_RADIO ? $strKey : 'checked',
                 'title'    => $strValue,
                 'checked'  => in_array($strKey, $arrSelected) ? 'checked' : '',
                 'inline'   => $bitInline ? '-inline' : '',
@@ -1120,20 +1125,22 @@ class ToolkitAdmin extends Toolkit
             switch ($intType) {
                 case FormentryCheckboxarray::TYPE_RADIO:
                     $arrTemplateRow['type'] = 'radio';
-                    $strElements .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/elements.tpl", "input_checkboxarray_checkbox", true);
+                    $arrTemplateRow['name'] = $strName;
+                    $arrTemplateRow['value'] = $strKey;
                     break;
-
-                default:
                 case FormentryCheckboxarray::TYPE_CHECKBOX:
                     $arrTemplateRow['type'] = 'checkbox';
-                    $strElements .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/elements.tpl", "input_checkboxarray_checkbox", true);
+                    $arrTemplateRow['name'] = $strName.'['.$strKey.']';
+                    $arrTemplateRow['value'] = 'checked';
                     break;
             }
+
+            $strElements .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/elements.tpl", $strElementRow, true);
         }
 
         $arrTemplate["elements"] = $strElements;
 
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_checkboxarray", true);
+        return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", $strElement, true);
     }
 
     /**
