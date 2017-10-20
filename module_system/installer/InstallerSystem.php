@@ -279,7 +279,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $this->registerConstant("_system_portal_disablepage_", "", SystemSetting::$int_TYPE_PAGE, _system_modul_id_);
 
         //New in 3.0: Number of db-dumps to hold
-        $this->registerConstant("_system_dbdump_amount_", 5, SystemSetting::$int_TYPE_INT, _system_modul_id_);
+        $this->registerConstant("_system_dbdump_amount_", 15, SystemSetting::$int_TYPE_INT, _system_modul_id_);
         //new in 3.0: mod-rewrite on / off
         $this->registerConstant("_system_mod_rewrite_", "false", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
         $this->registerConstant("_system_mod_rewrite_admin_only_", "false", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
