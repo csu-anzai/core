@@ -3,7 +3,6 @@
 namespace Kajona\System\Tests;
 
 use Kajona\System\Admin\AdminInterface;
-use Kajona\System\Portal\PortalInterface;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Classloader;
@@ -42,38 +41,8 @@ class GeneralActionTest extends Testbase
 
     }
 
-
-    public function testPortalModules()
-    {
-
-
-        Carrier::getInstance()->getObjRights()->setBitTestMode(true);
-
-        //load all admin-classes
-        $arrFiles = Resourceloader::getInstance()->getFolderContent("/portal", array(".php"), false, null,
-            function (&$strOneFile, $strPath) {
-                if($strOneFile == "global_includes.php") {
-                    $strOneFile = null;
-                    return;
-                }
-                $strOneFile = Classloader::getInstance()->getInstanceFromFilename($strPath, "Kajona\\System\\Portal\\PortalController", null, array(), true);
-            });
-
-        foreach ($arrFiles as $objPortalInstance) {
-            if ($objPortalInstance !== null) {
-                $this->runSingleFile($objPortalInstance);
-            }
-        }
-
-        Carrier::getInstance()->getObjRights()->setBitTestMode(false);
-
-        $this->assertTrue(true);//dummy assertion to make test not risky. Until here no exception should have occurred
-
-    }
-
-
     /**
-     * @param AdminInterface|PortalInterface $objViewInstance
+     * @param AdminInterface $objViewInstance
      */
     private function runSingleFile($objViewInstance)
     {

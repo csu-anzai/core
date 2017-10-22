@@ -16,11 +16,15 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
 use Kajona\System\System\GraphFactory;
+use Kajona\System\System\HttpStatuscodes;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 use Kajona\System\System\Objectfactory;
+use Kajona\System\System\ResponseObject;
+use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserUser;
+use Kajona\Workflows\System\WorkflowsController;
 use Kajona\Workflows\System\WorkflowsHandler;
 use Kajona\Workflows\System\WorkflowsStats;
 use Kajona\Workflows\System\WorkflowsWorkflow;
@@ -628,6 +632,26 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
         $this->adminReload(getLinkAdminHref($this->getArrModule("modul"), "list"));
 
         return $strReturn;
+    }
+
+    /**
+     * Triggers the workflow engine
+     *
+     * @return string
+     * @permissions anonymous
+     */
+    protected function actionTrigger()
+    {
+        Carrier::getInstance()->getObjSession()->setBitBlockDbUpdate(true);
+        if ($this->getParam("authkey") == SystemSetting::getConfigValue("_workflows_trigger_authkey_")) {
+            $objWorkflowController = new WorkflowsController();
+            $objWorkflowController->processWorkflows();
+            return "<message>Execution successful</message>";
+        }
+
+
+        ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
+        return "<message><error>Not authorized</error></message>";
     }
 
 }

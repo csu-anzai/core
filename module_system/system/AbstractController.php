@@ -24,6 +24,8 @@ abstract class AbstractController
     const STR_MODULEID_ANNOTATION = "@moduleId";
     const STR_PERMISSION_ANNOTATION = "@permissions";
 
+    const PERMISSION_ANONYMOUS = "anonymous";
+
     /**
      * May be used at an action method to define the return type.
      * Please note, that the return type stated by the action is set up before the action itself is being executed,
@@ -221,28 +223,35 @@ abstract class AbstractController
 
         $strPermissions = $objReflection->getMethodAnnotationValue($strMethodName, self::STR_PERMISSION_ANNOTATION);
         if ($strPermissions !== false) {
-            //fetch the object to validate, either the module or a directly referenced object
-            if (validateSystemid($this->getSystemid()) && $this->objFactory->getObject($this->getSystemid()) != null) {
-                $objObjectToCheck = $this->objFactory->getObject($this->getSystemid());
+            if ($strPermissions == self::PERMISSION_ANONYMOUS) {
+                // we can access the action without authorization so do nothing
             } else {
-                $objObjectToCheck = $this->getObjModule();
-            }
-
-            if (!$this->objRights->validatePermissionString($strPermissions, $objObjectToCheck)) {
-                ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
-                $this->strOutput = Carrier::getInstance()->getObjToolkit("admin")->warningBox($this->getLang("commons_error_permissions"));
-                $objException = new AuthenticationException("you are not authorized/authenticated to call this action", Exception::$level_ERROR);
-
-                if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::XML())) {
-                    throw $objException;
+                //fetch the object to validate, either the module or a directly referenced object
+                if (validateSystemid($this->getSystemid()) && $this->objFactory->getObject($this->getSystemid()) != null) {
+                    $objObjectToCheck = $this->objFactory->getObject($this->getSystemid());
                 } else {
-                    //todo: throw exception, too?
-                    $objException->setIntDebuglevel(0);
-                    $objException->processException();
-                    return $this->strOutput;
+                    $objObjectToCheck = $this->getObjModule();
+                }
+
+                if (!$this->objRights->validatePermissionString($strPermissions, $objObjectToCheck)) {
+                    ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
+                    $this->strOutput = Carrier::getInstance()->getObjToolkit("admin")->warningBox($this->getLang("commons_error_permissions"));
+                    $objException = new AuthenticationException("you are not authorized/authenticated to call this action", Exception::$level_ERROR);
+
+                    if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::XML())) {
+                        throw $objException;
+                    } else {
+                        //todo: throw exception, too?
+                        $objException->setIntDebuglevel(0);
+                        $objException->processException();
+                        return $this->strOutput;
+                    }
                 }
             }
+        } else {
+            throw new \RuntimeException("Permission annotation is required for a controller action");
         }
+
 
         $strReturnType = $objReflection->getMethodAnnotationValue($strMethodName, self::STR_RESPONSETYPE_ANNOTATION);
         if ($strReturnType !== false) {

@@ -340,8 +340,8 @@ JS;
         if ($this->getObjModule()->rightDelete()) {
             $arrDefault[] = new AdminBatchaction(AdminskinHelper::getAdminImage("icon_delete"), Link::getLinkAdminXml("system", "delete", "&systemid=%systemid%"), $this->getLang("commons_batchaction_delete"));
         }
-        $arrDefault[] = new AdminBatchaction(AdminskinHelper::getAdminImage("icon_mail"), Link::getLinkAdminXml("messaging", "setRead", "&systemid=%systemid%"), $this->getLang("batchaction_read"));
-        $arrDefault[] = new AdminBatchaction(AdminskinHelper::getAdminImage("icon_mailNew"), Link::getLinkAdminXml("messaging", "setUnread", "&systemid=%systemid%"), $this->getLang("batchaction_unread"));
+        $arrDefault[] = new AdminBatchaction(AdminskinHelper::getAdminImage("icon_mail"), Link::getLinkAdminXml("messaging", "apiSetRead", "&systemid=%systemid%"), $this->getLang("batchaction_read"));
+        $arrDefault[] = new AdminBatchaction(AdminskinHelper::getAdminImage("icon_mailNew"), Link::getLinkAdminXml("messaging", "apiSetUnread", "&systemid=%systemid%"), $this->getLang("batchaction_unread"));
         return $arrDefault;
     }
 
@@ -384,7 +384,7 @@ JS;
      * @return string
      * @permissions view
      */
-    protected function actionSetRead()
+    protected function actionApiSetRead()
     {
         $objMessage = Objectfactory::getInstance()->getObject($this->getSystemid());
         if ($objMessage instanceof MessagingMessage) {
@@ -403,7 +403,7 @@ JS;
      * @return string
      * @permissions view
      */
-    protected function actionSetUnread()
+    protected function actionApiSetUnread()
     {
         $objMessage = Objectfactory::getInstance()->getObject($this->getSystemid());
         if ($objMessage instanceof MessagingMessage) {
@@ -614,5 +614,26 @@ JS;
         }
         throw new AuthenticationException("User is not allowed to delete action", Exception::$level_ERROR);
     }
+
+
+    /**
+     * Marks a message as read and returns a 1x1px transparent gif as a "read indicator"
+     *
+     * @return string
+     * @responseType gif
+     * @permissions anonymous
+     */
+    protected function actionSetRead()
+    {
+        $objMessage = Objectfactory::getInstance()->getObject($this->getSystemid());
+
+        if ($objMessage !== null && $objMessage instanceof MessagingMessage && $objMessage->getBitRead() == 0) {
+            $objMessage->setBitRead(1);
+            $objMessage->updateObjectToDb();
+        }
+
+        return base64_decode("R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
+    }
+
 
 }

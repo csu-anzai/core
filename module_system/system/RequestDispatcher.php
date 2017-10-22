@@ -289,66 +289,6 @@ class RequestDispatcher
         return $strReturn;
     }
 
-
-    /**
-     * Processes a portal-request
-     *
-     * @param string $strModule
-     * @param string $strAction
-     * @param string $strLanguageParam
-     *
-     * @throws Exception
-     * @return string
-     */
-    private function processPortalRequest($strModule, $strAction, $strLanguageParam)
-    {
-        $strReturn = "";
-
-        //process language-param
-        if (SystemModule::getModuleByName("languages") != null) {
-            $objLanguage = new LanguagesLanguage();
-            $objLanguage->setStrPortalLanguage($strLanguageParam);
-        }
-
-
-        //Load the portal parts
-        $objModule = SystemModule::getModuleByName($strModule);
-        if ($objModule != null) {
-            if ($strModule == "pages") {
-                $strAction = "";
-            }
-
-            //fill the history array to track actions
-            if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::INDEX())) {
-                $objHistory = new History();
-                $objHistory->setPortalHistory();
-            }
-
-            $objModuleRequested = $objModule->getPortalInstanceOfConcreteModule();
-
-            //catch problems on top level
-            try {
-                $strReturn = $objModuleRequested->action($strAction);
-            } catch (ActionNotFoundException $objException) {
-                $strReturn = Exception::renderException($objException);
-            }
-
-
-        } else {
-            if (!ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::XML())) {
-                if (count(Carrier::getInstance()->getObjDB()->getTables()) == 0 && file_exists(_realpath_."installer.php")) {
-                    ResponseObject::getInstance()->setStrRedirectUrl(_webpath_."/installer.php");
-                    return "";
-                }
-            }
-
-            throw new Exception("module ".$strModule." not installed!", Exception::$level_FATALERROR);
-        }
-
-
-        return $strReturn;
-    }
-
     /**
      * Strips unused contents from the generated output, e.g. placeholders
      *
@@ -392,7 +332,6 @@ class RequestDispatcher
     {
         $strDebug = "";
         if (_timedebug_ || _dbnumber_ || _templatenr_ || _memory_) {
-
             //Maybe we need the time used to generate this page
             if (_timedebug_ === true) {
                 $arrTimestampEnde = gettimeofday();
@@ -435,4 +374,3 @@ class RequestDispatcher
     }
 
 }
-

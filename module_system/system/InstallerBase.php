@@ -87,7 +87,7 @@ abstract class InstallerBase implements InstallerInterface {
 	 *
 	 * @param string $strName
 	 * @param int $intModuleNr
-	 * @param string $strFilePortal
+	 * @internal string $strFilePortal
 	 * @param string $strFileAdmin
 	 * @param string $strVersion
 	 * @param bool $bitNavi
@@ -105,7 +105,6 @@ abstract class InstallerBase implements InstallerInterface {
         $objModule = new SystemModule();
         $objModule->setStrName($strName);
         $objModule->setIntNr($intModuleNr);
-        $objModule->setStrNamePortal($strFilePortal);
         $objModule->setStrNameAdmin($strFileAdmin);
         $objModule->setStrVersion($strVersion);
         $objModule->setIntNavigation($bitNavi ? 1 : 0);
