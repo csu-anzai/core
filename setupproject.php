@@ -49,10 +49,6 @@ class class_project_setup {
             }
         }
 
-
-        self::checkDir("/admin");
-        self::createAdminRedirect();
-
         self::checkDir("/project");
         self::checkDir("/project/log");
         self::makeWritable("/project/log");
@@ -64,8 +60,6 @@ class class_project_setup {
         self::makeWritable("/project/module_system/system/config");
         self::checkDir("/project/temp");
         self::makeWritable("/project/temp");
-        self::checkDir("/templates");
-        self::makeWritable("/templates");
         self::checkDir("/files");
         self::checkDir("/files/cache");
         self::makeWritable("/files/cache");
@@ -78,11 +72,7 @@ class class_project_setup {
         self::checkDir("/files/extract");
         self::makeWritable("/files/extract");
 
-        self::checkDir("/templates");
-
         self::createLangProjectEntry();
-        self::createDefaultTemplateEntry();
-
 
         echo "searching for files on root-path...\n";
         foreach($arrModules as $strSingleModule) {
@@ -100,9 +90,6 @@ class class_project_setup {
             if(is_dir(self::$strRealPath."/".$strSingleModule."/files"))
                 self::copyFolder(self::$strRealPath."/".$strSingleModule."/files", self::$strRealPath."/files");
         }
-
-
-
 
 
 
@@ -154,53 +141,8 @@ TXT;
         file_put_contents(self::$strRealPath."/project/lang_readme.txt", $strContent);
     }
 
-    private static function createDefaultTemplateEntry() {
-        $strContent = <<<TXT
-
-Kajona V5 default template-pack.
-
-The template default is based on plain vanilla Bootstrap V4.
-
-Please don't change anything within this folder, updates may break your changes
-and overwrite them without further warning.
-
-If you want to adjust or change anything, create a new template pack using the
-backend (module package-management, list templates, create new template) and
-select the templates to redefine.
-
-Afterwards change the files in your new templatepack and activate the pack
-in the backend via the package-management.
-
-If you wonder why the folder tpl is empty: The default template-pack loads all templates
-directly aut of the core-packages. If you want to modify the default template tr if you
-want to create a new template, just follow the steps written above:
-
-- Open the backend and click packagemanagement => installed Templates
-- Create a new template-pack and select the templates you want to modify
-  (you are able to add additional templates afterwards)
-- Activate the template pack afterwards
-- The new templatepack is available under /templates, start to browse and modify the files
-  there
-
-Have fun!
 
 
-TXT;
-        file_put_contents(self::$strRealPath."/templates/readme.txt", $strContent);
-    }
-
-
-    private static function createAdminRedirect() {
-        $strContent  = "<html>\n";
-        $strContent .= " <head>\n";
-        $strContent .= "  <title>Loading</title>\n";
-        $strContent .= "  <meta http-equiv='refresh' content='0; URL=../index.php?admin=1'>\n";
-        $strContent .= " </head>\n";
-        $strContent .= " <body>Loading...</body>\n";
-        $strContent .= "</html>\n";
-
-        file_put_contents(self::$strRealPath."/admin/index.html", $strContent);
-    }
 
     private static function checkDir($strFolder) {
         echo "checking dir ".self::$strRealPath.$strFolder."\n";

@@ -2315,41 +2315,7 @@ HTML;
         return $this->objTemplate->fillTemplateFile(array("pretext" => $strRows), "/elements.tpl", "preformatted");
     }
 
-    // --- Language handling --------------------------------------------------------------------------------
 
-    /**
-     * Creates the sourrounding code of a language switch, places the buttons
-     *
-     * @param string $strLanguageButtons
-     * @param $strOnChangeHandler
-     *
-     * @return string
-     */
-    public function getLanguageSwitch($strLanguageButtons, $strOnChangeHandler)
-    {
-        $arrTemplate = array();
-        $arrTemplate["languagebuttons"] = $strLanguageButtons;
-        $arrTemplate["onchangehandler"] = $strOnChangeHandler;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "language_switch");
-    }
-
-    /**
-     * Creates the code for one button for a specified language, part of a language switch
-     *
-     * @param string $strKey
-     * @param string $strLanguageName The full name of the language
-     * @param bool $bitActive
-     *
-     * @return string
-     */
-    public function getLanguageButton($strKey, $strLanguageName, $bitActive = false)
-    {
-        //active language?
-        $arrTemplate = array();
-        $arrTemplate["languageKey"] = $strKey;
-        $arrTemplate["languageName"] = $strLanguageName;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", $bitActive ? "language_switch_button_active" : "language_switch_button");
-    }
 
 
     // --- Pageview mechanism ------------------------------------------------------------------------------

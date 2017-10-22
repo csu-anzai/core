@@ -195,11 +195,8 @@ class Installer
             "/files/images",
             "/files/public",
             "/files/downloads",
-            "/templates"
         );
-        $arrFilesAndFolders = array_merge($arrFilesAndFolders, array_map(function ($strValue) {
-            return "/".$strValue;
-        }, Classloader::getInstance()->getCoreDirectories()));
+
 
         $arrModules = array(
             "mbstring",
@@ -952,10 +949,6 @@ class Installer
         return false;
     }
 }
-
-
-//set admin to false
-define("_admin_", false);
 
 //Creating the Installer-Object
 $objInstaller = new Installer();

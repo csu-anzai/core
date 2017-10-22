@@ -56,10 +56,10 @@ Description</th>
 		</tr>
 		<tr>
 			<td>Arguments</td>
-			<td>bool $bitAdmin<br />
+			<td>
 			string $strModule<br />
 			string $strAction<br />
-			string $strLanguageParam</td>
+			</td>
 		</tr>
 		<tr>
 			<td>Description</td>
@@ -72,10 +72,10 @@ Description</th>
 		</tr>
 		<tr>
 			<td>Arguments</td>
-			<td>bool $bitAdmin<br />
+			<td>
 			string $strModule<br />
 			string $strAction<br />
-			string $strLanguageParam</td>
+			</td>
 		</tr>
 		<tr>
 			<td>Description</td>

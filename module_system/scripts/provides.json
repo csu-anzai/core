@@ -32,7 +32,6 @@
     "quickhelp": "kajona/quickhelp",
     "router": "kajona/router",
     "statusDisplay": "kajona/statusDisplay",
-    "switchLanguage": "kajona/switchLanguage",
     "systemTask": "kajona/systemTask",
     "toc": "kajona/toc",
     "tooltip": "kajona/tooltip",

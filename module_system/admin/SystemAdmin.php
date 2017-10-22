@@ -794,29 +794,11 @@ JS;
             }
             $strActivity = "";
 
-            if (StringUtil::indexOf($strLastUrl, "admin=1") !== false) {
-                $strActivity .= $this->getLang("session_admin");
-                foreach (explode("&amp;", $strLastUrl) as $strOneParam) {
-                    $arrUrlParam = explode("=", $strOneParam);
-                    if ($arrUrlParam[0] == "module") {
-                        $strActivity .= $arrUrlParam[1];
-                    }
-                }
-            } else {
-                $strActivity .= $this->getLang("session_portal");
-                if ($strLastUrl == "") {
-                    $strActivity .= SystemSetting::getConfigValue("_pages_indexpage_") != "" ? SystemSetting::getConfigValue("_pages_indexpage_") : "";
-                } else {
-                    foreach (explode("&amp;", $strLastUrl) as $strOneParam) {
-                        $arrUrlParam = explode("=", $strOneParam);
-                        if ($arrUrlParam[0] == "page") {
-                            $strActivity .= $arrUrlParam[1];
-                        }
-                    }
-
-                    if ($strActivity == $this->getLang("session_portal") && StringUtil::substring($strLastUrl, 0, 5) == "image") {
-                        $strActivity .= $this->getLang("session_portal_imagegeneration");
-                    }
+            $strActivity .= $this->getLang("session_admin");
+            foreach (explode("&amp;", $strLastUrl) as $strOneParam) {
+                $arrUrlParam = explode("=", $strOneParam);
+                if ($arrUrlParam[0] == "module") {
+                    $strActivity .= $arrUrlParam[1];
                 }
             }
 

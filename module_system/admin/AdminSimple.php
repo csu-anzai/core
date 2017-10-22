@@ -139,23 +139,18 @@ abstract class AdminSimple extends AdminController
             $strTargetUrl = urldecode($this->getParam("reloadUrl"));
 
             if ($strTargetUrl == "" || StringUtil::indexOf($strTargetUrl, $this->getSystemid()) !== false) {
-                 $strTargetUrl = "admin=1&module=".$this->getArrModule("modul");
+                 $strTargetUrl = "module=".$this->getArrModule("modul");
 
                 $intI = 1;
                 while ($this->getHistory($intI) !== null) {
                     $strTargetUrl = $this->getHistory($intI++);
 
                     if (StringUtil::indexOf($strTargetUrl, $this->getSystemid()) === false) {
-                        if (StringUtil::indexOf($strTargetUrl, "admin=1") === false) {
-                            $strTargetUrl = "admin=1&module=".$this->getArrModule("modul");
-                        }
-
                         break;
                     }
                 }
 
                 $strTargetUrl = Link::plainUrlToHashUrl($strTargetUrl);
-                $strTargetUrl = StringUtil::replace(array(_indexpath_."?admin=1", ""), "", $strTargetUrl);
             }
             return "<script type='text/javascript'>require('router').loadUrl('{$strTargetUrl}')</script>";
         }

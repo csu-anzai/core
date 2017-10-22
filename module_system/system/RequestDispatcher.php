@@ -59,32 +59,25 @@ class RequestDispatcher
     /**
      * Global controller entry, triggers all further actions, splits up admin- and portal loading
      *
-     * @param bool $bitAdmin
      * @param string $strModule
      * @param string $strAction
      * @param string $strLanguageParam
      *
      */
-    public function processRequest($bitAdmin, $strModule, $strAction, $strLanguageParam)
+    public function processRequest($strModule, $strAction)
     {
+        $bitAdmin = true;
+        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_STARTPROCESSING, array($strModule, $strAction));
 
-        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_STARTPROCESSING, array($bitAdmin, $strModule, $strAction, $strLanguageParam));
-
-        if ($bitAdmin) {
-            $strReturn = $this->processAdminRequest($strModule, $strAction, $strLanguageParam);
-            $strReturn = $this->callScriptlets($strReturn, ScriptletInterface::BIT_CONTEXT_ADMIN);
-        } else {
-            $strReturn = $this->processPortalRequest($strModule, $strAction, $strLanguageParam);
-            $strReturn = $this->callScriptlets($strReturn, ScriptletInterface::BIT_CONTEXT_PORTAL_PAGE);
-        }
-
+        $strReturn = $this->processAdminRequest($strModule, $strAction);
+        $strReturn = $this->callScriptlets($strReturn, ScriptletInterface::BIT_CONTEXT_ADMIN);
 
         $strReturn = $this->cleanupOutput($strReturn);
         $strReturn = $this->getDebugInfo($strReturn);
 
         $this->objResponse->setStrContent($strReturn);
 
-        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_ENDPROCESSING, array($bitAdmin, $strModule, $strAction, $strLanguageParam));
+        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_ENDPROCESSING, array($strModule, $strAction));
 
         $this->objSession->sessionClose();
     }
@@ -94,12 +87,13 @@ class RequestDispatcher
      *
      * @param string $strModule
      * @param string $strAction
-     * @param string $strLanguageParam
      *
      * @throws Exception
      * @return string
+     *
+     * @todo refactor
      */
-    private function processAdminRequest($strModule, $strAction, $strLanguageParam)
+    private function processAdminRequest($strModule, $strAction)
     {
         $strReturn = "";
         $bitLogin = false;
@@ -132,128 +126,120 @@ class RequestDispatcher
 
         }
 
-        //process language-param
-        $objLanguage = new LanguagesLanguage();
-        $objLanguage->setStrAdminLanguageToWorkOn($strLanguageParam);
-
         //set the current backend skin. right here to do it only once.
         AdminskinHelper::defineSkinWebpath();
         $objHelper = new SkinAdminController();
 
         //validate login-status / process login-request
-        if ($strModule != "login" && $this->objSession->isLoggedin()) {
-            if ($this->objSession->isAdmin()) {
-                //try to load the module
-                $objModuleRequested = SystemModule::getModuleByName($strModule);
-                if (empty($strModule) || $objModuleRequested != null) {
-                    //see if there is data from a previous, failed request
-                    if (Carrier::getInstance()->getObjSession()->getSession(LoginAdmin::SESSION_LOAD_FROM_PARAMS) === "true") {
-                        foreach (Carrier::getInstance()->getObjSession()->getSession(LoginAdmin::SESSION_PARAMS) as $strOneKey => $strOneVal) {
-                            Carrier::getInstance()->setParam($strOneKey, $strOneVal);
-                        }
-
-                        Carrier::getInstance()->getObjSession()->sessionUnset(LoginAdmin::SESSION_LOAD_FROM_PARAMS);
-                        Carrier::getInstance()->getObjSession()->sessionUnset(LoginAdmin::SESSION_PARAMS);
+        if ($strModule != "login" /*&& $this->objSession->isLoggedin()*/) {
+            //try to load the module
+            $objModuleRequested = SystemModule::getModuleByName($strModule);
+            if (empty($strModule) || $objModuleRequested != null) {
+                //see if there is data from a previous, failed request
+                if (Carrier::getInstance()->getObjSession()->getSession(LoginAdmin::SESSION_LOAD_FROM_PARAMS) === "true") {
+                    foreach (Carrier::getInstance()->getObjSession()->getSession(LoginAdmin::SESSION_PARAMS) as $strOneKey => $strOneVal) {
+                        Carrier::getInstance()->setParam($strOneKey, $strOneVal);
                     }
 
-
-                    //fill the history array to track actions
-                    if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::INDEX()) && empty(Carrier::getInstance()->getParam("folderview"))) {
-                        $objHistory = new History();
-                        //Writing to the history
-                        $objHistory->setAdminHistory();
-                    }
+                    Carrier::getInstance()->getObjSession()->sessionUnset(LoginAdmin::SESSION_LOAD_FROM_PARAMS);
+                    Carrier::getInstance()->getObjSession()->sessionUnset(LoginAdmin::SESSION_PARAMS);
+                }
 
 
-                    $strReturn = "";
-
-                    //try to rewrite some redirect urls internally
-                    if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::INDEX()) && $_SERVER['REQUEST_METHOD'] != 'POST' && !empty($strModule) && empty(Carrier::getInstance()->getParam("contentFill"))) {
-                        $arrParams = Carrier::getAllParams();
-                        unset($arrParams["module"]);
-                        unset($arrParams["action"]);
-                        unset($arrParams["admin"]);
-
-                        $strUrl = Link::getLinkAdminHref($strModule, $strAction, $arrParams, false, true);
-                        $strUrl = StringUtil::replace(_webpath_."/index.php?admin=1", "", $strUrl);
-
-                        $strReturn = "<script type='text/javascript'>
-                            require('router').loadUrl('{$strUrl}');
-                        </script>";
+                //fill the history array to track actions
+                if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::INDEX()) && empty(Carrier::getInstance()->getParam("folderview"))) {
+                    $objHistory = new History();
+                    //Writing to the history
+                    $objHistory->setAdminHistory();
+                }
 
 
+                $strReturn = "";
 
+                //try to rewrite some redirect urls internally
+                if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::INDEX()) && $_SERVER['REQUEST_METHOD'] != 'POST' && !empty($strModule) && empty(Carrier::getInstance()->getParam("contentFill"))) {
+                    $arrParams = Carrier::getAllParams();
+                    unset($arrParams["module"]);
+                    unset($arrParams["action"]);
+                    unset($arrParams["admin"]);
 
-                        return "<html><head></head><body><script type='text/javascript'>document.location='".Link::getLinkAdminHref($strModule, $strAction, $arrParams, false, true)."';</script></body></html>";
-                    }
+                    return "<html><head></head><body><script type='text/javascript'>document.location='".Link::getLinkAdminHref($strModule, $strAction, $arrParams, false, true)."';</script></body></html>";
+                }
 
 
 
-                    if (Carrier::getInstance()->getParam("blockAction") != "1") {
-                        if (!empty($strModule)) {
-                            $objConcreteModule = $objModuleRequested->getAdminInstanceOfConcreteModule();
-                            try {
-                                //process e.g. in case of post requests
-                                $strReturn = $objConcreteModule->action();
-                                if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::INDEX())) {
-                                    if ($strReturn != "") {
-                                        $strReturn .= $objHelper->actionGetPathNavigation($objConcreteModule);
-                                        $strReturn .= $objHelper->actionGetQuickHelp($objConcreteModule);
-                                        if ($objConcreteModule instanceof AdminSimple) {
-                                            $strReturn .= $objConcreteModule->getContentActionToolbar();
-                                        }
-                                        $strReturn = "<script type=\"text/javascript\"> require(['contentToolbar'], function(contentToolbar) { contentToolbar.resetBar()}); </script>".$strReturn; //TODO: das muss hier raus, falsche stelle?
+                if (Carrier::getInstance()->getParam("blockAction") != "1") {
+                    if (!empty($strModule)) {
+                        $objConcreteModule = $objModuleRequested->getAdminInstanceOfConcreteModule();
+                        try {
+                            //process e.g. in case of post requests
+                            $strReturn = $objConcreteModule->action();
+                            if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::INDEX())) {
+                                if ($strReturn != "") {
+                                    $strReturn .= $objHelper->actionGetPathNavigation($objConcreteModule);
+                                    $strReturn .= $objHelper->actionGetQuickHelp($objConcreteModule);
+                                    if ($objConcreteModule instanceof AdminSimple) {
+                                        $strReturn .= $objConcreteModule->getContentActionToolbar();
                                     }
+                                    $strReturn = "<script type=\"text/javascript\"> require(['contentToolbar'], function(contentToolbar) { contentToolbar.resetBar()}); </script>".$strReturn; //TODO: das muss hier raus, falsche stelle?
                                 }
-                            } catch (ActionNotFoundException $objEx) {
-                                $strReturn = $objEx->getMessage();
-                            } catch (RedirectException $objEx) {
-                                ResponseObject::getInstance()->setStrRedirectUrl($objEx->getHref());
-                                $strReturn = "";
                             }
-
-                            //if we resulted in a redirect, rewrite it to a js based on and force the redirect on "root" level
-                            //TODO: this currently kills the folderview param
-                            if (ResponseObject::getInstance()->getStrRedirectUrl() != "") {
-                                //TODO: move following to external helper
-                                $strUrl = ResponseObject::getInstance()->getStrRedirectUrl();
-                                ResponseObject::getInstance()->setStrRedirectUrl("");
-
-
-                                $strRoutieRedirect = StringUtil::replace(_webpath_."/index.php?admin=1", "", $strUrl);
-                                $strReturn = "<script type='text/javascript'>
-                                        require('router').loadUrl('{$strRoutieRedirect}');
-                                    </script>";
-
+                        } catch (ActionNotFoundException $objEx) {
+                            $strReturn = $objEx->getMessage();
+                        } catch (RedirectException $objEx) {
+                            ResponseObject::getInstance()->setStrRedirectUrl($objEx->getHref());
+                            $strReturn = "";
+                        } catch (AuthenticationException $objEx) {
+                            if (!$this->objSession->isLoggedin()) {
+                                //login page required
+                                $bitLogin = true;
                             }
                         }
 
-                        if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::INDEX())
-                            && (empty(Carrier::getInstance()->getParam("contentFill"))
-                                || !empty(Carrier::getInstance()->getParam("combinedLoad")))
-                        ) {
+                        //if we resulted in a redirect, rewrite it to a js based on and force the redirect on "root" level
+                        //TODO: this currently kills the folderview param
+                        if (ResponseObject::getInstance()->getStrRedirectUrl() != "") {
+                            //TODO: move following to external helper
+                            $strUrl = ResponseObject::getInstance()->getStrRedirectUrl();
+                            ResponseObject::getInstance()->setStrRedirectUrl("");
+
+
+                            $strRoutieRedirect = StringUtil::replace(_webpath_."/index.php?", "", $strUrl);
+                            $strReturn = "<script type='text/javascript'>
+                                    require('router').loadUrl('{$strRoutieRedirect}');
+                                </script>";
+
+                        }
+                    }
+
+                    if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::INDEX())
+                        && (empty(Carrier::getInstance()->getParam("contentFill"))
+                            || !empty(Carrier::getInstance()->getParam("combinedLoad")))
+                    ) {
+                        if ($this->objSession->isLoggedin()) {
                             $objHelper = new SkinAdminController();
                             $strReturn = $objHelper->actionGenerateMainTemplate($strReturn);
-                        }
-
-                    }
-
-                    //React, if admin was opened by the portaleditor
-                    if (Carrier::getInstance()->getParam("peClose") == "1") {
-                        if (getGet("peRefreshPage") != "") {
-                            $strReloadUrl = xssSafeString(getGet("peRefreshPage"));
-                            $strReturn = "<html><head></head><body><script type='text/javascript'>if(window.opener) { window.opener.location = '".$strReloadUrl."'; window.close(); } else { parent.location = '".$strReloadUrl."'; }</script></body></html>";
                         } else {
-                            $strReturn = "<html><head></head><body><script type='text/javascript'>if(window.opener) { window.opener.location.reload(); window.close(); } else { parent.location.reload(); }</script></body></html>";
+                            $bitLogin = true;
                         }
                     }
 
-                } else {
-                    throw new Exception("Requested module ".$strModule." not existing", Exception::$level_FATALERROR);
                 }
+
+                //React, if admin was opened by the portaleditor
+                if (Carrier::getInstance()->getParam("peClose") == "1") {
+                    if (getGet("peRefreshPage") != "") {
+                        $strReloadUrl = xssSafeString(getGet("peRefreshPage"));
+                        $strReturn = "<html><head></head><body><script type='text/javascript'>if(window.opener) { window.opener.location = '".$strReloadUrl."'; window.close(); } else { parent.location = '".$strReloadUrl."'; }</script></body></html>";
+                    } else {
+                        $strReturn = "<html><head></head><body><script type='text/javascript'>if(window.opener) { window.opener.location.reload(); window.close(); } else { parent.location.reload(); }</script></body></html>";
+                    }
+                }
+
             } else {
-                throw new Exception("Sorry, but you don't have the needed permissions to access the admin-area", Exception::$level_FATALERROR);
+                throw new Exception("Requested module ".$strModule." not existing", Exception::$level_FATALERROR);
             }
+
         } else {
             $bitLogin = true;
 

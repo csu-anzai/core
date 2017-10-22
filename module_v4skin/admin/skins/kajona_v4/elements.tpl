@@ -1413,28 +1413,6 @@ pe_iconbar, pe_disable
 
 </pe_toolbar>
 
-
-
-
----------------------------------------------------------------------------------------------------------
--- LANGUAGES --------------------------------------------------------------------------------------------
-
-A single button, represents one language. Put together in the language-switch
-<language_switch_button>
-    <option value="%%languageKey%%">%%languageName%%</option>
-</language_switch_button>
-
-A button for the active language
-<language_switch_button_active>
-    <option value="%%languageKey%%" selected="selected">%%languageName%%</option>
-</language_switch_button_active>
-
-The language switch surrounds the buttons
-<language_switch>
-    <select id="languageChooser" onchange="%%onchangehandler%%">%%languagebuttons%%</select>
-    <script type="text/javascript">require(['switchLanguage']);</script>
-</language_switch>
-
 ---------------------------------------------------------------------------------------------------------
 -- QUICK HELP -------------------------------------------------------------------------------------------
 
@@ -1774,7 +1752,7 @@ It containes a list of aspects and provides the possibility to switch the differ
 <sitemap_wrapper>
       <div class="nav-header">
             %%aspectToggle%%
-            Kajona V5
+            V7
       </div>
     %%level%%
 </sitemap_wrapper>

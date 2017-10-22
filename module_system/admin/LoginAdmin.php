@@ -260,7 +260,7 @@ class LoginAdmin extends AdminController implements AdminInterface
     private function loadPostLoginSite()
     {
         //any url to redirect?
-        if ($this->objSession->getSession(self::SESSION_REFERER) != "" && $this->objSession->getSession(self::SESSION_REFERER) != "admin=1") {
+        if ($this->objSession->getSession(self::SESSION_REFERER) != "" && $this->objSession->getSession(self::SESSION_REFERER) != "") {
             $strUrl = StringUtil::replace("&contentFill=1", "", $this->objSession->getSession(self::SESSION_REFERER));
             ResponseObject::getInstance()->setStrRedirectUrl(_indexpath_."?".$strUrl);
             $this->objSession->sessionUnset(self::SESSION_REFERER);

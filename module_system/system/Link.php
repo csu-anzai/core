@@ -155,7 +155,7 @@ class Link
                 $strLink = StringUtil::replace("&amp;", "&", $strLink);
             }
 
-            return _webpath_."/index.php?admin=1".$strLink;
+            return _webpath_."/".$strLink;
         }
 
 
@@ -184,7 +184,7 @@ class Link
 
         }
         else {
-            $strLink = ""._indexpath_."?admin=1&amp;module=".$strModule.
+            $strLink = ""._indexpath_."?module=".$strModule.
                 ($strAction != "" ? "&amp;action=".$strAction : "").
                 ($strSystemid != "" ? "&amp;systemid=".$strSystemid : "");
 
@@ -249,7 +249,7 @@ class Link
 
         }
         else {
-            $strLink = ""._webpath_."/xml.php?admin=1&amp;module=".$strModule.
+            $strLink = ""._webpath_."/xml.php?module=".$strModule.
                 ($strAction != "" ? "&amp;action=".$strAction : "").
                 ($strSystemid != "" ? "&amp;systemid=".$strSystemid : "");
 
@@ -586,7 +586,7 @@ class Link
 
 
         foreach ($arrFragments as $intPartKey => $strOnePart) {
-            if ($strOnePart == "admin=1") {
+            if ($strOnePart == "admin=1") { //TODO remove, only for backwards compat
                 unset($arrFragments[$intPartKey]);
                 continue;
             }
@@ -612,7 +612,7 @@ class Link
 
     public static function hashUrlToHashOnlyUrl($strUrl)
     {
-        return StringUtil::replace(_indexpath_."?admin=1", "", $strUrl);
+        return StringUtil::replace(_indexpath_, "", $strUrl); //TODO
     }
 
 

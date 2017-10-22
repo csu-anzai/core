@@ -285,20 +285,6 @@ define('util', ['jquery'], function ($) {
     };
 
     /**
-     * switches the edited language in admin
-     */
-    util.switchLanguage = function(strLanguageToLoad) {
-        var url = window.location.href;
-        url = url.replace(/(\?|&)language=([a-z]+)/, "");
-        if (url.indexOf('?') == -1) {
-            window.location.replace(url + '?language=' + strLanguageToLoad);
-        } else {
-            window.location.replace(url + '&language=' + strLanguageToLoad);
-        }
-    };
-
-
-    /**
      * Gets the jQuery object
      *
      * @param objElement - my be a jquery object or an id selector
