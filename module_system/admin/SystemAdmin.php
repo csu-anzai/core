@@ -956,7 +956,7 @@ JS;
                 $arrRowData[] = $objTarget != null ? $objTarget->getArrModule("modul") : "";
             }
             if ($strSystemid == "") {
-                $arrRowData[] = $objTarget != null ? $this->objToolkit->getTooltipText(StringUtil::truncate($objTarget->getVersionRecordName(), 20), $objTarget->getVersionRecordName()." ".$objOneEntry->getStrSystemid()) : "";
+                $arrRowData[] = $objTarget != null ? $objOneEntry->getStrClass()." ".$objOneEntry->getStrSystemid() : "";
             }
             $arrRowData[] = $objTarget != null ? $this->objToolkit->getTooltipText(StringUtil::truncate($objTarget->getVersionActionName($objOneEntry->getStrAction()), 15), $objTarget->getVersionActionName($objOneEntry->getStrAction())) : "";
             $arrRowData[] = $objTarget != null ? $this->objToolkit->getTooltipText(StringUtil::truncate($objTarget->getVersionPropertyName($objOneEntry->getStrProperty()), 20), $objTarget->getVersionPropertyName($objOneEntry->getStrProperty())) : "";
@@ -1169,7 +1169,7 @@ JS;
                 $arrRowData[] = $objTarget != null ? $objTarget->getArrModule("modul") : "";
             }
             if ($strSystemid == "") {
-                $arrRowData[] = $objTarget != null ? $objTarget->getVersionRecordName()." ".$objOneEntry->getStrSystemid() : "";
+                $arrRowData[] = $objTarget != null ? $objOneEntry->getStrClass()." ".$objOneEntry->getStrSystemid() : "";
             }
             $arrRowData[] = $objTarget != null ? $objTarget->getVersionActionName($objOneEntry->getStrAction()) : "";
             $arrRowData[] = $objTarget != null ? $objTarget->getVersionPropertyName($objOneEntry->getStrProperty()) : "";
