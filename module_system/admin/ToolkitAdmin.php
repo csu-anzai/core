@@ -115,10 +115,10 @@ class ToolkitAdmin extends Toolkit
      * @param string $strTitle
      * @param string $strContent
      * @param string $strToolbarset
-     *
+     * @param bool $bitReadonly
      * @return string
      */
-    public function formWysiwygEditor($strName = "inhalt", $strTitle = "", $strContent = "", $strToolbarset = "standard")
+    public function formWysiwygEditor($strName = "inhalt", $strTitle = "", $strContent = "", $strToolbarset = "standard", $bitReadonly = false)
     {
         $strReturn = "";
 
@@ -127,6 +127,7 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["name"] = $strName;
         $arrTemplate["title"] = $strTitle;
         $arrTemplate["editorid"] = generateSystemid();
+        $arrTemplate["readonly"] = ($bitReadonly ? " readonly=\"readonly\" " : "");
         $arrTemplate["content"] = htmlentities($strContent, ENT_COMPAT, "UTF-8");
         $strReturn .= $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "wysiwyg_ckeditor");
         //for the popups, we need the skinwebpath

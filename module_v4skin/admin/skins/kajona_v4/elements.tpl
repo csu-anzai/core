@@ -929,7 +929,7 @@ A list of checkbox or radio input elements
     <script type='text/javascript'>
 require(["jquery"], function($) {
 $("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
-    var checkBoxes = $("input:checkbox[name^='%%name%%']");
+    var checkBoxes = $("input:checkbox[name^='%%name%%']").not("[disabled]");
     checkBoxes.prop('checked', $("input:checkbox[name='checkAll_%%name%%']").prop('checked'));
 });
 });
@@ -971,7 +971,7 @@ A list of checkbox for object elements
     <script type='text/javascript'>
         require(["jquery"], function($) {
             $("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
-                var checkBoxes = $("input:checkbox[name^='%%name%%']");
+                var checkBoxes = $("input:checkbox[name^='%%name%%']").not("[disabled]");
                 checkBoxes.prop('checked', $("input:checkbox[name='checkAll_%%name%%']").prop('checked'));
             });
         });
@@ -1291,7 +1291,7 @@ The textarea field to replace by the editor. If the editor can't be loaded, a pl
 <div class="form-group">
     <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
     <div class="col-sm-6">
-        <textarea name="%%name%%" id="%%name%%" class="form-control inputWysiwyg" data-kajona-editorid="%%editorid%%">%%content%%</textarea></div><br />
+        <textarea name="%%name%%" id="%%name%%" class="form-control inputWysiwyg" data-kajona-editorid="%%editorid%%" %%readonly%%>%%content%%</textarea></div><br />
     </div>
 </wysiwyg_ckeditor>
 
