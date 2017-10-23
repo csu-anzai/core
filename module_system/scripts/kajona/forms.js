@@ -129,7 +129,6 @@ define('forms', ['jquery', 'tooltip', 'util'], function ($, tooltip, util) {
      * @param bitConfirmChange
      */
     forms.addChangelistener = function(strElementId, bitConfirmChange) {
-
         $('#'+strElementId).on('change', function(objEvent) {
             if($(this).val() != $(this).attr("data-kajona-initval")) {
                 if($(this).closest(".form-group").find("div.changeHint").length == 0) {
@@ -143,19 +142,41 @@ define('forms', ['jquery', 'tooltip', 'util'], function ($, tooltip, util) {
                         }
                     }
 
-                    $(this).closest(".form-group").addClass("has-warning");
-                    $(this).closest(".form-group").children("div:first").append($('<div class="changeHint text-warning"><span class="glyphicon glyphicon-warning-sign"></span> ' + forms.changeLabel + '</div>'));
+                    forms.addHint(strElementId, forms.changeLabel);
                 }
             }
             else {
-                if($(this).closest(".form-group").find("div.changeHint"))
-                    $(this).closest(".form-group").find("div.changeHint").remove();
-
-                $(this).closest(".form-group").removeClass("has-warning");
+                forms.removeHint(strElementId);
             }
         });
 
     };
+
+    /**
+     * Renders a hint below an input field
+     * @param strElementId
+     * @param strHint
+     */
+    forms.addHint = function(strElementId, strHint) {
+        var $objTarget = $('#'+strElementId);
+        forms.removeHint(strElementId);
+        $objTarget.closest(".form-group").addClass("has-warning");
+        $objTarget.closest(".form-group").children("div:first").append($('<div class="changeHint text-warning"><span class="glyphicon glyphicon-warning-sign"></span> ' + strHint + '</div>'));
+    };
+
+    /**
+     * Removes a hint from an input field
+     * @param strElementId
+     */
+    forms.removeHint = function(strElementId) {
+        var $objTarget = $('#'+strElementId);
+        $objTarget.closest(".form-group").removeClass("has-warning");
+        if($objTarget.closest(".form-group").find("div.changeHint")) {
+            $objTarget.closest(".form-group").find("div.changeHint").remove();
+        }
+
+    };
+
 
 
     forms.renderMandatoryFields = function(arrFields) {

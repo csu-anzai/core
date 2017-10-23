@@ -10,6 +10,7 @@
 namespace Kajona\System\System;
 
 use Kajona\System\Admin\AdminskinImageresolverInterface;
+use Kajona\V4skin\Admin\Skins\Kajona_V4\AdminskinImageresolver;
 
 
 /**
@@ -102,13 +103,7 @@ class AdminskinHelper
         }
 
         if (self::$objAdminImageResolver == null) {
-
-            if (!is_file(self::getPathForSkin(Carrier::getInstance()->getObjSession()->getAdminSkin())."/AdminskinImageresolver.php")) {
-                return "<img src=\""._skinwebpath_."/pics/".$strName."\"  alt=\"".$strAlt."\"  ".(!$bitBlockTooltip ? "rel=\"tooltip\" title=\"".$strAlt."\" " : "")." ".($strEntryId != "" ? " id=\"".$strEntryId."\" " : "")."  />";
-            }
-
-            $strFile = self::getPathForSkin(Carrier::getInstance()->getObjSession()->getAdminSkin())."/AdminskinImageresolver.php";
-            self::$objAdminImageResolver = Classloader::getInstance()->getInstanceFromFilename($strFile);
+            self::$objAdminImageResolver = new AdminskinImageresolver();
         }
 
         return self::$objAdminImageResolver->getImage($strName, $strAlt, $bitBlockTooltip, $strEntryId);

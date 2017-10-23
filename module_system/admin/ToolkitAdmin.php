@@ -294,6 +294,29 @@ class ToolkitAdmin extends Toolkit
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_text");
     }
 
+
+    /**
+     * Returns a field to enter hex-color values using a color picker
+     *
+     * @param string $strName
+     * @param string $strTitle
+     * @param string $strValue
+     * @param bool $bitReadonly
+     *
+     * @return string
+     */
+    public function formInputColorPicker($strName, $strTitle = "", $strValue = "", $bitReadonly = false, $strInstantEditor = "")
+    {
+        $arrTemplate = array();
+        $arrTemplate["name"] = $strName;
+        $arrTemplate["value"] = htmlspecialchars($strValue, ENT_QUOTES, "UTF-8", false);
+        $arrTemplate["title"] = $strTitle;
+        $arrTemplate["instantEditor"] = $strInstantEditor;
+        $arrTemplate["readonly"] = ($bitReadonly ? "readonly=\"readonly\"" : "");
+
+        return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_colorpicker");
+    }
+
     /**
      * Returns a regular text-input field
      *
@@ -511,16 +534,17 @@ class ToolkitAdmin extends Toolkit
      * @param string $strValue
      * @param string $strRepositoryId
      * @param string $strClass
+     * @param bool $bitLinkAsDownload
      *
      * @return string
      * @since 3.3.4
      */
-    public function formInputFileSelector($strName, $strTitle = "", $strValue = "", $strRepositoryId = "", $strClass = "")
+    public function formInputFileSelector($strName, $strTitle = "", $strValue = "", $strRepositoryId = "", $strClass = "", $bitLinkAsDownload = true)
     {
         $strOpener = getLinkAdminDialog(
             "mediamanager",
             "folderContentFolderviewMode",
-            "&form_element=".$strName."&systemid=".$strRepositoryId,
+            "&form_element=".$strName."&systemid=".$strRepositoryId.($bitLinkAsDownload ? "&download=1" : ""),
             Carrier::getInstance()->getObjLang()->getLang("filebrowser", "system"),
             Carrier::getInstance()->getObjLang()->getLang("filebrowser", "system"),
             "icon_externalBrowser",
@@ -590,7 +614,7 @@ class ToolkitAdmin extends Toolkit
      *
      * @return string
      */
-    public function formInputTextArea($strName, $strTitle = "", $strValue = "", $strClass = "", $bitReadonly = false, $numberOfRows = 4)
+    public function formInputTextArea($strName, $strTitle = "", $strValue = "", $strClass = "", $bitReadonly = false, $numberOfRows = 4, $strOpener = "")
     {
         $arrTemplate = array();
         $arrTemplate["name"] = $strName;
@@ -599,6 +623,7 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["class"] = $strClass;
         $arrTemplate["readonly"] = ($bitReadonly ? " readonly=\"readonly\" " : "");
         $arrTemplate["numberOfRows"] = $numberOfRows;
+        $arrTemplate["opener"] = $strOpener;
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_textarea");
     }
 
@@ -815,17 +840,23 @@ class ToolkitAdmin extends Toolkit
     {
         $objLang = Lang::getInstance();
         $arrKeyValues = [
-            "D" => $objLang->getLang("interval_day", "elements"),
-            "M" => $objLang->getLang("interval_month", "elements"),
-            "Y" => $objLang->getLang("interval_year", "elements"),
+            "D" => $objLang->getLang("commons_interval_day", "system"),
+            "W" => $objLang->getLang("commons_interval_week", "system"),
+            "M" => $objLang->getLang("commons_interval_month", "system"),
+            "Y" => $objLang->getLang("commons_interval_year", "system"),
         ];
 
         $strKeySelected = "";
         $strValue = "";
         if ($objValue !== null) {
             if ($objValue->d > 0) {
-                $strKeySelected = "D";
-                $strValue = $objValue->d;
+                if ($objValue->d % 7 == 0) {
+                    $strKeySelected = "W";
+                    $strValue = $objValue->d / 7;
+                } else {
+                    $strKeySelected = "D";
+                    $strValue = $objValue->d;
+                }
             } elseif ($objValue->m > 0) {
                 $strKeySelected = "M";
                 $strValue = $objValue->m;
@@ -1069,6 +1100,13 @@ class ToolkitAdmin extends Toolkit
      */
     public function formInputCheckboxArray($strName, $strTitle, $intType, array $arrValues, array $arrSelected, $bitInline = false, $bitReadonly = false, $strOpener = "")
     {
+        $strElement = "input_checkboxarray";
+        $strElementRow = "input_checkboxarray_checkbox";
+        if ($intType == FormentryCheckboxarray::TYPE_RADIO) {
+            $strElement = "input_radioarray";
+            $strElementRow = "input_radioarray_radio";
+        }
+
         $arrTemplate = array();
         $arrTemplate["name"] = $strName;
         $arrTemplate["title"] = $strTitle;
@@ -1078,8 +1116,6 @@ class ToolkitAdmin extends Toolkit
         foreach ($arrValues as $strKey => $strValue) {
             $arrTemplateRow = array(
                 'key'      => $strKey,
-                'name'     => $intType == FormentryCheckboxarray::TYPE_RADIO ? $strName : $strName.'['.$strKey.']',
-                'value'    => $intType == FormentryCheckboxarray::TYPE_RADIO ? $strKey : 'checked',
                 'title'    => $strValue,
                 'checked'  => in_array($strKey, $arrSelected) ? 'checked' : '',
                 'inline'   => $bitInline ? '-inline' : '',
@@ -1089,20 +1125,22 @@ class ToolkitAdmin extends Toolkit
             switch ($intType) {
                 case FormentryCheckboxarray::TYPE_RADIO:
                     $arrTemplateRow['type'] = 'radio';
-                    $strElements .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/elements.tpl", "input_checkboxarray_checkbox", true);
+                    $arrTemplateRow['name'] = $strName;
+                    $arrTemplateRow['value'] = $strKey;
                     break;
-
-                default:
                 case FormentryCheckboxarray::TYPE_CHECKBOX:
                     $arrTemplateRow['type'] = 'checkbox';
-                    $strElements .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/elements.tpl", "input_checkboxarray_checkbox", true);
+                    $arrTemplateRow['name'] = $strName.'['.$strKey.']';
+                    $arrTemplateRow['value'] = 'checked';
                     break;
             }
+
+            $strElements .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/elements.tpl", $strElementRow, true);
         }
 
         $arrTemplate["elements"] = $strElements;
 
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_checkboxarray", true);
+        return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", $strElement, true);
     }
 
     /**
@@ -2746,6 +2784,20 @@ HTML;
         }
 
         return $this->objTemplate->fillTemplateFile(array("text" => $strText, "tooltip" => $strTooltip), "/elements.tpl", "tooltip_text");
+    }
+
+    /**
+     * Generates a bootstrap popover
+     * @param $strText
+     * @param $strPopoverTitle
+     * @param $strPopoverContent
+     * @param string $strTrigger one of click | hover | focus | manual
+     * @return string
+     * @since 6.5
+     */
+    public function getPopoverText($strText, $strPopoverTitle, $strPopoverContent, $strTrigger = "hover")
+    {
+        return $this->objTemplate->fillTemplateFile(array("title" => $strPopoverTitle, "content" => $strPopoverContent, "link" => $strText, "trigger" => $strTrigger, "id" => generateSystemid()), "/elements.tpl", "popover_text");
     }
 
     // --- Calendar Fields ----------------------------------------------------------------------------------

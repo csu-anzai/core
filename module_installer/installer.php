@@ -48,7 +48,7 @@ class Installer
     private $strForwardLink = "";
     private $strBackwardLink = "";
 
-    private $strVersion = "V 6.2";
+    private $strVersion = "V 6.5";
     private $strMinPhpVersion = "7.0";
 
     /**
@@ -718,6 +718,15 @@ class Installer
     {
 
         foreach (SamplecontentInstallerHelper::getSamplecontentInstallers() as $objOneInstaller) {
+
+            $strModule = $objOneInstaller->getCorrespondingModule();
+            $objModule = SystemModule::getModuleByName($strModule);
+
+            if ($objModule == null) {
+                // module not installed
+                continue;
+            }
+
             if (!$objOneInstaller->isInstalled()) {
 
                 $objManager = new PackagemanagerManager();

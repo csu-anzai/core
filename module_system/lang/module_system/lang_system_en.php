@@ -51,6 +51,8 @@ $lang["_system_email_forcesender_"]      = "Enforce default sender";
 $lang["_system_email_forcesender_hint"]  = "Some mail gateways require a special domain for a mails' from-address. Force all mails to make use of the default-sender by enabling the force-switch.";
 $lang["_system_email_defaultsender_"]    = "Default email from-address";
 $lang["_system_email_defaultsender_hint"]    = "If the mail misses a from-address, the address is used as a fallback.";
+$lang["_system_session_ipfixation_"]     = "Bind session to ip";
+$lang["_system_session_ipfixation_hint"] = "Normally, sessions are bound to the clients source ip. When using procy servers, this could lead to problems (logouts).";
 $lang["about_part1"]                     = "<h2>Kajona V6 - Open Source Content Management System</h2>Kajona V 6.2<br /><br /><a href=\"http://www.kajona.de\" target=\"_blank\">www.kajona.de</a><br /><a href=\"mailto:info@kajona.de\" target=\"_blank\">info@kajona.de</a><br /><br />For further information, support or proposals, please visit our website.<br />Additional support is provided using our <a href=\"http://board.kajona.de/\" target=\"_blank\">board</a>.";
 $lang["about_part2"]                     = "<ul><li><a href=\"https://www.xing.com/profile/Stefan_Idler\" target=\"_blank\">Stefan Idler</a>, <a href=\"mailto:sidler@kajona.de\">sidler@kajona.de</a> (project management, technical administration, development)</li></ul>";
 $lang["about_part2_header"]              = "<h2>Head developers</h2>";
@@ -324,3 +326,7 @@ $lang["cache_misses"]  = "Misses";
 $lang["cache_uptime"]  = "Uptime";
 $lang["cache_usage"]  = "Usage";
 $lang["cache_available"]  = "Available";
+
+$lang["workflow_messagequeue_title"]  = "Message-Queue sender";
+$lang["workflow_queue_sender_val1"]  = "Hours";
+$lang["workflow_queue_sender_val2"]  = "Minutes";

@@ -27,6 +27,16 @@ use Kajona\System\System\UserGroup;
  */
 class FlowStatus extends Model implements ModelInterface, AdminListableInterface
 {
+    const COLOR_BLACK = "#000000";
+    const COLOR_BLUE = "#0040b3";
+    const COLOR_BROWN = "#d47a0b";
+    const COLOR_GREEN = "#0e8500";
+    const COLOR_GREY = "#aeaeae";
+    const COLOR_ORANGE = "#ff5600";
+    const COLOR_PURPLE = "#e23bff";
+    const COLOR_RED = "#d42f00";
+    const COLOR_YELLOW = "#ffe211";
+
     /**
      * @var string
      * @tableColumn flow_step.step_name
@@ -47,11 +57,10 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
      * @var string
      * @tableColumn flow_step.step_icon
      * @tableColumnDatatype char20
-     * @fieldType Kajona\System\Admin\Formentries\FormentryDropdown
-     * @fieldDDValues [icon_flag_black => flow_step_icon_0],[icon_flag_blue => flow_step_icon_1],[icon_flag_brown => flow_step_icon_2],[icon_flag_green => flow_step_icon_3],[icon_flag_grey => flow_step_icon_4],[icon_flag_orange => flow_step_icon_5],[icon_flag_purple => flow_step_icon_6],[icon_flag_red => flow_step_icon_7],[icon_flag_yellow => flow_step_icon_8]
+     * @fieldType Kajona\System\Admin\Formentries\FormentryColorpicker
      * @fieldMandatory
      */
-    protected $strIcon;
+    protected $strIconColor;
 
     /**
      * @var UserGroup[]
@@ -97,44 +106,23 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
      */
     public function getStrIcon()
     {
-        return $this->strIcon;
-    }
-
-    /**
-     * @param string $strIcon
-     */
-    public function setStrIcon($strIcon)
-    {
-        $this->strIcon = $strIcon;
+        return "icon_flag_hex_".$this->strIconColor;
     }
 
     /**
      * @return string
      */
-    public function getStrColor()
+    public function getStrIconColor()
     {
-        switch ($this->strIcon) {
-            case 'icon_flag_black':
-                return '#000000';
-            case 'icon_flag_blue':
-                return '#0040b3';
-            case 'icon_flag_brown':
-                return '#d47a0b';
-            case 'icon_flag_green':
-                return '#0e8500';
-            case 'icon_flag_grey':
-                return '#aeaeae';
-            case 'icon_flag_orange':
-                return '#ff5600';
-            case 'icon_flag_purple':
-                return '#e23bff';
-            case 'icon_flag_red':
-                return '#d42f00';
-            case 'icon_flag_yellow':
-                return '#ffe211';
-        }
+        return $this->strIconColor;
+    }
 
-        return '#eee';
+    /**
+     * @param string $strIconColor
+     */
+    public function setStrIconColor($strIconColor)
+    {
+        $this->strIconColor = $strIconColor;
     }
 
     /**

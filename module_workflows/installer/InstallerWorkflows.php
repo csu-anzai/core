@@ -184,7 +184,7 @@ class InstallerWorkflows extends InstallerBase implements InstallerRemovableInte
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "6.2") {
-            $strReturn .= $this->update_62_70();
+            $strReturn .= $this->update_62_65();
         }
 
         return $strReturn."\n\n";
@@ -225,7 +225,7 @@ class InstallerWorkflows extends InstallerBase implements InstallerRemovableInte
         return $strReturn;
     }
 
-    private function update_62_70() {
+    private function update_62_65() {
         $strReturn = "Adding new tables\n";
 
         $arrFields = array();
@@ -247,7 +247,7 @@ class InstallerWorkflows extends InstallerBase implements InstallerRemovableInte
 
         $strReturn .= "Updating module-versions...\n";
         $this->objDB->flushQueryCache();
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5");
 
         return $strReturn;
     }

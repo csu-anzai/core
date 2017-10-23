@@ -325,3 +325,30 @@ The relevant object and the name of the changed property are passed, too.<br />R
 
 	</tbody>
 </table>
+
+
+##JavaScript Events
+There are certain java script modules which throw custom (jQuery) events.
+<table>
+	<tbody>
+		<tr>
+			<th>Identifier</th>
+			<th colspan="2" style="border-bottom: 1px solid #ccc;">
+Description</th>
+		</tr>
+		<tr>
+			<td rowspan="3" style="border-right: 1px solid #ccc; vertical-align: top;">kajona.instantsave.updated</td>
+			<td style="border-top: 1px solid #ccc;">Since</td>
+			<td style="border-top: 1px solid #ccc;">6.5</td>
+		</tr>
+		<tr>
+			<td>Arguments</td>
+			<td>result<br />
+			systemid<br />
+		</tr>
+		<tr>
+			<td>Description</td>
+			<td>Fired as soon as the instantsave manager finished updating a property at the backend. The result is either `success`or `error`, the second params is the records systemid.</td>
+		</tr>
+	</tbody>
+</table>

@@ -10,7 +10,6 @@
 namespace Kajona\System\Admin;
 
 use Kajona\Packagemanager\System\PackagemanagerManager;
-use Kajona\System\Admin\Formentries\FormentryHidden;
 use Kajona\System\Admin\Formentries\FormentryText;
 use Kajona\System\Admin\Formentries\FormentryTextarea;
 use Kajona\System\Admin\Formentries\FormentryUser;
@@ -25,7 +24,6 @@ use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Filesystem;
 use Kajona\System\System\Filters\DeletedRecordsFilter;
-use Kajona\System\System\HttpResponsetypes;
 use Kajona\System\System\HttpStatuscodes;
 use Kajona\System\System\Lang;
 use Kajona\System\System\Link;
@@ -52,7 +50,6 @@ use Kajona\System\System\SysteminfoInterface;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSession;
 use Kajona\System\System\SystemSetting;
-use Kajona\System\System\SystemWorker;
 use Kajona\System\System\Validators\EmailValidator;
 use Kajona\System\System\VersionableInterface;
 use PHPExcel;

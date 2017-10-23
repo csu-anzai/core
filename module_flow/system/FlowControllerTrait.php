@@ -19,6 +19,7 @@ use Kajona\System\System\MessagingMessagehandler;
 use Kajona\System\System\Model;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\RedirectException;
+use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Session;
 use Kajona\System\Xml;
 
@@ -244,7 +245,7 @@ require(["jquery", "ajax"], function($, ajax){
 
                 if (!empty($strValidation)) {
                     $arrMenu[] = array(
-                        "name" => AdminskinHelper::getAdminImage($objTargetStatus->getStrIcon() . "_disabled") . " " . $objTargetStatus->getStrDisplayName() . $strValidation,
+                        "name" => AdminskinHelper::getAdminImage("icon_flag_hex_disabled_" . $objTargetStatus->getStrIconColor()) . " " . $objTargetStatus->getStrDisplayName() . $strValidation,
                         "link" => "#",
                     );
                 } else {
@@ -331,7 +332,7 @@ HTML;
 
                     $objAlert = new MessagingAlert();
                     $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
-                    $objAlert->setStrBody($this->objToolkit->warningBox($this->getLang("action_status_change_redirect", "flow"), "alert-info"));
+                    $objAlert->setStrBody($this->getLang("action_status_change_redirect", "flow"));
                     $objAlert->setObjAlertAction(new MessagingAlertActionRedirect($strRedirect));
                 } else {
                     try {
@@ -361,14 +362,20 @@ HTML;
 
                             $objAlert = new MessagingAlert();
                             $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
-                            $objAlert->setStrBody($this->objToolkit->warningBox($this->getLang("action_status_change_success", "flow"), "alert-success"));
+                            $objAlert->setStrBody($this->getLang("action_status_change_success", "flow"));
                             $objAlert->setObjAlertAction(new MessagingAlertActionVoid());
+
+                            $strRedirectUrl = ResponseObject::getInstance()->getStrRedirectUrl();
+                            if (!empty($strRedirectUrl)) {
+                                $objAlert->setObjAlertAction(new MessagingAlertActionRedirect($strRedirectUrl));
+                                ResponseObject::getInstance()->setStrRedirectUrl("");
+                            }
                         }
 
                     } catch (RedirectException $e) {
                         $objAlert = new MessagingAlert();
                         $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
-                        $objAlert->setStrBody($this->objToolkit->warningBox($this->getLang("action_status_change_success", "flow"), "alert-info"));
+                        $objAlert->setStrBody($this->getLang("action_status_change_success", "flow"));
                         $objAlert->setObjAlertAction(new MessagingAlertActionRedirect($e->getHref()));
                     } catch (\Exception $e) {
                         $objAlert = new MessagingAlert();

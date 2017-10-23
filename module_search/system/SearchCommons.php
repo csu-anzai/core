@@ -26,7 +26,6 @@ use Kajona\System\System\SystemModule;
 class SearchCommons extends Model implements ModelInterface
 {
 
-
     /**
      * Returns the name to be used when rendering the current object, e.g. in admin-lists.
      *
@@ -35,43 +34,6 @@ class SearchCommons extends Model implements ModelInterface
     public function getStrDisplayName()
     {
         return "";
-    }
-
-    /**
-     * Calls the single search-functions, sorts the results and creates the output.
-     * Method for portal-searches.
-     *
-     * @param SearchSearch $objSearch
-     *
-     * @return SearchResult[]
-     */
-    public function doPortalSearch($objSearch, $intStart = 0, $intEnd = 50)
-    {
-        $objSearch->setStrQuery(trim(StringUtil::replace("%", "", $objSearch->getStrQuery())));
-        if (StringUtil::length($objSearch->getStrQuery()) == 0) {
-            return array();
-        }
-
-        //create a search object
-        $objSearch->setBitPortalObjectFilter(true);
-
-        $arrHits = $this->doIndexedSearch($objSearch, $intStart, $intEnd);
-
-        $arrReturn = array();
-        foreach ($arrHits as $objOneResult) {
-            $objInstance = $objOneResult->getObjObject();
-
-            $arrUpdatedResults = $objInstance->updateSearchResult($objOneResult);
-            if (is_array($arrUpdatedResults)) {
-                $arrReturn = array_merge($arrReturn, $arrUpdatedResults);
-            } elseif ($objOneResult != null && $objOneResult instanceof SearchResult) {
-                $arrReturn[] = $objOneResult;
-            }
-        }
-
-        $arrReturn = $this->mergeDuplicates($arrReturn);
-
-        return $arrReturn;
     }
 
     /**
@@ -99,30 +61,6 @@ class SearchCommons extends Model implements ModelInterface
         return $arrHits;
     }
 
-
-    /**
-     * Merges duplicates in the passed array.
-     *
-     * @param SearchResult[] $arrResults
-     *
-     * @return SearchResult[]
-     */
-    private function mergeDuplicates($arrResults)
-    {
-        /** @var $arrReturn SearchResult[] */
-        $arrReturn = array();
-
-        foreach ($arrResults as $objOneResult) {
-            if (isset($arrReturn[$objOneResult->getStrSortHash()])) {
-                $objResult = $arrReturn[$objOneResult->getStrSortHash()];
-                $objResult->setIntHits($objResult->getIntHits() + 1);
-            } else {
-                $arrReturn[$objOneResult->getStrSortHash()] = $objOneResult;
-            }
-        }
-
-        return $arrReturn;
-    }
 
     /**
      * @param SearchSearch $objSearch

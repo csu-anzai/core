@@ -320,7 +320,7 @@ Date interval
         <div class="col-sm-6">
             <div class="row">
                 <div class="col-md-8">
-                    <input type="number" name="%%name%%_value" id="%%name%%_value" value="%%value%%" class="form-control %%class%%" %%disabled%%>
+                    <input type="number" name="%%name%%" id="%%name%%" value="%%value%%" class="form-control %%class%%" %%disabled%%>
                 </div>
                 <div class="col-md-4">
                     <select name="%%name%%_unit" id="%%name%%_unit" class="form-control %%class%%" %%disabled%% %%addons%%>%%units%%</select>
@@ -435,12 +435,38 @@ Regular Text-Field
     </div>
 </input_text>
 
+Color Picker
+<input_colorpicker>
+    <div class="form-group colorpicker-component">
+        <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
+        <div class="col-sm-6">
+            <div class="input-group colorpicker-component" id="c_%%name%%">
+                <div class="input-group-addon"><i></i></div>
+                <input id="%%name%%" name="%%name%%" class="form-control" type="text" value="%%value%%" %%readonly%% data-kajona-instantsave="%%instantEditor%%">
+            </div>
+        </div>
+        <script type="text/javascript">
+        require(["bootstrap-colorpicker"], function(colorpicker) {
+            $('#c_%%name%%').colorpicker({component: '*'});
+
+//            if($('#%%name%%').is(':focus')) {
+//                $('#%%name%%').blur();
+//                $('#%%name%%').focus();
+//            }
+        });
+        </script>
+    </div>
+</input_colorpicker>
+
 Textarea
 <input_textarea>
     <div class="form-group">
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
         <div class="col-sm-6 %%class%%">
             <textarea name="%%name%%" id="%%name%%" class="form-control" rows="%%numberOfRows%%" %%readonly%%>%%value%%</textarea>
+        </div>
+        <div class="col-sm-2 form-opener">
+            %%opener%%
         </div>
     </div>
 </input_textarea>
@@ -877,7 +903,7 @@ have a surrounding div with class "ac_container" and a div with id "%%name%%_con
 </div>
 </input_userselector>
 
-A list of checkbox or radio input elements
+A list of checkbox input elements
 <input_checkboxarray>
     <div class="form-group form-list">
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
@@ -915,6 +941,27 @@ $("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
         <label><input type="%%type%%" name="%%name%%" value="%%value%%" %%checked%% %%readonly%% /> %%title%%</label>
     </div>
 </input_checkboxarray_checkbox>
+
+
+A list of radio input elements
+<input_radioarray>
+    <div class="form-group form-list">
+        <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
+
+        <div class="col-sm-6 inputText">
+            <div id="%%name%%" class="inputContainer %%class%%">
+                %%elements%%
+            </div>
+        </div>
+    </div>
+</input_radioarray>
+
+<input_radioarray_radio>
+    <div class="%%type%%%%inline%%">
+        <label><input type="%%type%%" name="%%name%%" value="%%value%%" %%checked%% %%readonly%% /> %%title%%</label>
+    </div>
+</input_radioarray_radio>
+
 
 A list of checkbox for object elements
 <input_checkboxarrayobjectlist>
@@ -1625,6 +1672,12 @@ It containes a list of aspects and provides the possibility to switch the differ
 <tooltip_text>
     <span title="%%tooltip%%" rel="tooltip">%%text%%</span>
 </tooltip_text>
+
+<popover_text>
+    <span href="#" title="%%title%%" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="%%trigger%%" id="%%id%%">%%link%%</span>
+    <div id="pc_%%id%%" class="hidden">%%content%%</div>
+    <script type="text/javascript">require(['jquery', 'bootstrap'], function($)  { $('#%%id%%').popover({ content: $('#pc_%%id%%').html()}); });</script>
+</popover_text>
 
 
 ---------------------------------------------------------------------------------------------------------

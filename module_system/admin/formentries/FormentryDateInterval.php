@@ -66,9 +66,9 @@ class FormentryDateInterval extends FormentryBase implements FormentryPrintableI
         $strName = $this->getStrEntryName();
 
         $strUnit = isset($arrParams[$strName . "_unit"]) ? $arrParams[$strName . "_unit"] : null;
-        $strValue = isset($arrParams[$strName . "_value"]) ? (int) $arrParams[$strName . "_value"] : 0;
+        $strValue = isset($arrParams[$strName]) ? (int) $arrParams[$strName] : 0;
 
-        if (in_array($strUnit, ["D", "M", "Y"]) && $strValue > 0) {
+        if (in_array($strUnit, ["D", "W", "M", "Y"]) && $strValue > 0) {
             $strDuration = "P" . $strValue . $strUnit;
             $this->setStrValue($strDuration);
         } else {
@@ -90,20 +90,38 @@ class FormentryDateInterval extends FormentryBase implements FormentryPrintableI
         }
 
         if ($objInterval !== null) {
-            $objLang = Lang::getInstance();
-            $arrFormat = [];
-            if ($objInterval->y > 0) {
-                $arrFormat[] = "%y " . $objLang->getLang(($objInterval->y > 1 ? "interval_years" : "interval_year"), "elements");
+            return self::toString($objInterval);
+        }
+
+        return "-";
+    }
+
+    /**
+     * Transforms a date interval to string
+     *
+     * @param \DateInterval $objInterval
+     * @return string
+     */
+    public static function toString(\DateInterval $objInterval)
+    {
+        $objLang = Lang::getInstance();
+        $arrFormat = [];
+        if ($objInterval->y > 0) {
+            $arrFormat[] = "%y " . $objLang->getLang(($objInterval->y > 1 ? "commons_interval_years" : "commons_interval_year"), "system");
+        }
+        if ($objInterval->m > 0) {
+            $arrFormat[] = "%m " . $objLang->getLang(($objInterval->m > 1 ? "commons_interval_months" : "commons_interval_month"), "system");
+        }
+        if ($objInterval->d > 0) {
+            if ($objInterval->d % 7 == 0) {
+                $intWeeks = $objInterval->d / 7;
+                $arrFormat[] = "{$intWeeks} " . $objLang->getLang(($intWeeks > 1 ? "commons_interval_weeks" : "commons_interval_week"), "system");
+            } else {
+                $arrFormat[] = "%d " . $objLang->getLang(($objInterval->d > 1 ? "commons_interval_days" : "commons_interval_day"), "system");
             }
-            if ($objInterval->m > 0) {
-                $arrFormat[] = "%m " . $objLang->getLang(($objInterval->m > 1 ? "interval_months" : "interval_month"), "elements");
-            }
-            if ($objInterval->d > 0) {
-                $arrFormat[] = "%d " . $objLang->getLang(($objInterval->d > 1 ? "interval_days" : "interval_day"), "elements");
-            }
-            if (count($arrFormat) > 0) {
-                return $objInterval->format(implode(", ", $arrFormat));
-            }
+        }
+        if (count($arrFormat) > 0) {
+            return $objInterval->format(implode(", ", $arrFormat));
         }
 
         return "-";

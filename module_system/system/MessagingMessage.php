@@ -24,7 +24,7 @@ use Kajona\System\System\Messageproviders\MessageproviderInterface;
  *
  * @formGenerator Kajona\System\Admin\MessagingMessageFormgenerator
  */
-class MessagingMessage extends Model implements ModelInterface, AdminListableInterface
+class MessagingMessage extends Model implements ModelInterface, AdminListableInterface, \JsonSerializable
 {
 
     /**
@@ -453,5 +453,39 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
         return $this->strMessageRefId;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            "message_title" => $this->strTitle,
+            "message_body" => $this->strBody,
+            "message_internalidentifier" => $this->strInternalIdentifier,
+            "message_provider" => $this->strMessageProvider,
+            "message_sender" => $this->strSenderId,
+            "message_messageref" => $this->strMessageRefId,
+        ];
+    }
 
+    /**
+     * Creates a message object based on a json encoded string
+     *
+     * @param string $strData
+     * @return static|null
+     */
+    public static function fromJson($strData)
+    {
+        $arrData = json_decode($strData, true);
+
+        $objMessage = new static();
+        $objMessage->setStrTitle(isset($arrData["message_title"]) ? $arrData["message_title"] : null);
+        $objMessage->setStrBody(isset($arrData["message_body"]) ? $arrData["message_body"] : null);
+        $objMessage->setStrInternalIdentifier(isset($arrData["message_internalidentifier"]) ? $arrData["message_internalidentifier"] : null);
+        $objMessage->setStrMessageProvider(isset($arrData["message_provider"]) ? $arrData["message_provider"] : null);
+        $objMessage->setStrSenderId(isset($arrData["message_sender"]) ? $arrData["message_sender"] : null);
+        $objMessage->setStrMessageRefId(isset($arrData["message_messageref"]) ? $arrData["message_messageref"] : null);
+
+        return $objMessage;
+    }
 }

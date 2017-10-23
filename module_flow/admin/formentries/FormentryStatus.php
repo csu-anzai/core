@@ -51,7 +51,7 @@ class FormentryStatus extends FormentryToggleButtonbar
                 $strModelClass = get_class($objSourceObject);
             }
 
-            $this->setArrKeyValues($objFlowManager->getPossibleStatusForClass($strModelClass));
+            $this->setArrKeyValues($objFlowManager->getArrStatusForClass($strModelClass));
         }
     }
 }
