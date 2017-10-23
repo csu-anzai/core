@@ -115,7 +115,7 @@ This folder contains the and PHPUnit and selenium tests
 The vendor folder is only used in case your module has a `composer.json` file. The folder
 contains then the external dependencies.
 
-
+----
 
 #HowTo: Your own module
 
