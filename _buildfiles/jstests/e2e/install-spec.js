@@ -5,7 +5,7 @@ const SeleniumUtil = requireHelper('/util/SeleniumUtil.js');
 describe('installation', function() {
 
     it('test installation', async function() {
-        let intTimeout = 1000 * 60 * 12;//12 Minutes
+        let intTimeout = 1000 * 60 * 12 * 10;//120 Minutes
 
         await SeleniumUtil.gotToUrl('installer.php');
 
