@@ -40,7 +40,7 @@ interface VersionableInterface
      * @return string the human readable name
      * @deprecated
      */
-    public function getVersionRecordName();
+    //public function getVersionRecordName();
 
     /**
      * Returns a human readable name of the property-name stored with the changeset.

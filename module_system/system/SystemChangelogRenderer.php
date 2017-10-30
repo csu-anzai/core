@@ -54,7 +54,7 @@ class SystemChangelogRenderer
      */
     private static $arrRenderer = array();
 
-    public function __construct(Reflection $objReflection)
+    private function __construct(Reflection $objReflection)
     {
         $this->objReflection = $objReflection;
         $this->objLang = Lang::getInstance();
@@ -69,19 +69,25 @@ class SystemChangelogRenderer
      * @param string $strProperty
      * @return string
      */
-    public function getVersionPropertyName($strProperty)
+    private function getVersionPropertyName($strProperty)
     {
-        $strLabel = $this->objReflection->getAnnotationValueForProperty($strProperty, AdminFormgenerator::STR_LABEL_ANNOTATION);
-        if (!empty($strLabel)) {
-            $strPropertyName = $this->objLang->getLang($strLabel, $this->strModule);
-            if (!empty($strPropertyName)) {
-                return $strPropertyName;
-            }
-        } else {
-            return $this->getFallbackName($strProperty);
+        $strKey = $this->objReflection->getAnnotationValueForProperty($strProperty, AdminFormgenerator::STR_LABEL_ANNOTATION);
+        $strModule = $this->objReflection->getParamValueForPropertyAndAnnotation($strProperty, AdminFormgenerator::STR_LABEL_ANNOTATION, "module");
+        if (empty($strModule)) {
+            $strModule = $this->strModule;
         }
 
-        return $strProperty;
+        $strPropertyLabel = Carrier::getInstance()->getObjLang()->getLang($strKey, $strModule);
+        if ($strPropertyLabel == "!{$strKey}!") {
+            $strKey = "form_".$this->strModule."_".Lang::getInstance()->propertyWithoutPrefix($strProperty);
+            $strPropertyLabel = Carrier::getInstance()->getObjLang()->getLang($strKey, $strModule);
+        }
+
+        if ($strPropertyLabel == "!{$strKey}!") {
+            $strPropertyLabel = $this->getFallbackName($strProperty);
+        }
+
+        return $strPropertyLabel;
     }
 
     /**
@@ -91,7 +97,7 @@ class SystemChangelogRenderer
      * @param mixed $strValue
      * @return string
      */
-    public function getVersionValue($strProperty, $strValue)
+    private function getVersionValue($strProperty, $strValue)
     {
         $strType = $this->objReflection->getAnnotationValueForProperty($strProperty, AdminFormgenerator::STR_TYPE_ANNOTATION);
         if (empty($strType)) {
@@ -210,7 +216,9 @@ class SystemChangelogRenderer
                 return FormentryDate::class;
 
             case "intRecordDeleted":
+            case "rightInherit":
                 return FormentryYesno::class;
+
 
             default:
                 return null;
@@ -273,6 +281,9 @@ class SystemChangelogRenderer
                 break;
 
             default:
+                if (validateSystemid($strValue)) {
+                    return SystemChangelogHelper::getStrValueForObjects($strValue);
+                }
                 return $strValue;
         }
     }

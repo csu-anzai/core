@@ -9,6 +9,7 @@
 
 namespace Kajona\System\Admin;
 
+use AGP\Phpexcel\System\PhpexcelDataTableExporter;
 use Kajona\Packagemanager\System\PackagemanagerManager;
 use Kajona\System\Admin\Formentries\FormentryText;
 use Kajona\System\Admin\Formentries\FormentryTextarea;
@@ -900,9 +901,8 @@ JS;
             return $strReturn;
         }
 
-        /** @var VersionableInterface $objObject */
+        /** @var VersionableInterface|Model $objObject */
         $objObject = Objectfactory::getInstance()->getObject($strSystemid);
-
         if (!$objObject instanceof VersionableInterface) {
             return $this->objToolkit->warningBox($this->getLang("generic_changelog_not_versionable"));
         }
@@ -912,59 +912,6 @@ JS;
         $objArraySectionIterator = new ArraySectionIterator(SystemChangelog::getLogEntriesCount($strSystemid));
         $objArraySectionIterator->setPageNumber((int)($this->getParam("pv") != "" ? $this->getParam("pv") : 1));
         $objArraySectionIterator->setArraySection(SystemChangelog::getLogEntries($strSystemid, $objArraySectionIterator->calculateStartPos(), $objArraySectionIterator->calculateEndPos()));
-
-        $arrData = array();
-        $arrHeader = array();
-        $arrHeader[] = $this->getLang("commons_date");
-        $arrHeader[] = $this->getLang("change_user");
-        if ($strSystemid == "") {
-            $arrHeader[] = $this->getLang("change_module");
-        }
-        if ($strSystemid == "") {
-            $arrHeader[] = $this->getLang("change_record");
-        }
-        $arrHeader[] = $this->getLang("change_action");
-        $arrHeader[] = $this->getLang("change_property");
-        $arrHeader[] = $this->getLang("change_oldvalue");
-        $arrHeader[] = $this->getLang("change_newvalue");
-
-        /** @var $objOneEntry ChangelogContainer */
-        foreach ($objArraySectionIterator as $objOneEntry) {
-            $arrRowData = array();
-
-            /** @var VersionableInterface|Model $objTarget */
-            $objTarget = $objOneEntry->getObjTarget();
-
-            $strOldValue = $objOneEntry->getStrOldValue();
-            $strNewValue = $objOneEntry->getStrNewValue();
-
-            //render some properties directly
-            if (in_array($objOneEntry->getStrProperty(), array("rightView", "rightEdit", "rightDelete", "rightRight", "rightRight1", "rightRight2", "rightRight3", "rightRight4", "rightRight5", "rightChangelog", "strPrevId", "strOwner"))) {
-                $strOldValue = SystemChangelogHelper::getStrValueForObjects($strOldValue);
-                $strNewValue = SystemChangelogHelper::getStrValueForObjects($strNewValue);
-            } elseif ($objTarget != null) {
-                $strOldValue = $objTarget->renderVersionValue($objOneEntry->getStrProperty(), $strOldValue);
-                $strNewValue = $objTarget->renderVersionValue($objOneEntry->getStrProperty(), $strNewValue);
-            }
-
-            $strOldValue = htmlStripTags($strOldValue);
-            $strNewValue = htmlStripTags($strNewValue);
-
-            $arrRowData[] = dateToString($objOneEntry->getObjDate());
-            $arrRowData[] = $this->objToolkit->getTooltipText(StringUtil::truncate($objOneEntry->getStrUsername(), 15), $objOneEntry->getStrUsername());
-            if ($strSystemid == "") {
-                $arrRowData[] = $objTarget != null ? $objTarget->getArrModule("modul") : "";
-            }
-            if ($strSystemid == "") {
-                $arrRowData[] = $objTarget != null ? $objOneEntry->getStrClass()." ".$objOneEntry->getStrSystemid() : "";
-            }
-            $arrRowData[] = $objTarget != null ? $this->objToolkit->getTooltipText(StringUtil::truncate($objTarget->getVersionActionName($objOneEntry->getStrAction()), 15), $objTarget->getVersionActionName($objOneEntry->getStrAction())) : "";
-            $arrRowData[] = $objTarget != null ? $this->objToolkit->getTooltipText(StringUtil::truncate($objTarget->getVersionPropertyName($objOneEntry->getStrProperty()), 20), $objTarget->getVersionPropertyName($objOneEntry->getStrProperty())) : "";
-            $arrRowData[] = $this->objToolkit->getTooltipText(StringUtil::truncate($strOldValue, 20), $strOldValue);
-            $arrRowData[] = $this->objToolkit->getTooltipText(StringUtil::truncate($strNewValue, 20), $strNewValue);
-
-            $arrData[] = $arrRowData;
-        }
 
         $objManager = new PackagemanagerManager();
         $arrToolbar = array();
@@ -976,11 +923,51 @@ JS;
 
         $strReturn .= $this->objToolkit->getContentToolbar($arrToolbar);
 
+        list($arrHeader, $arrData) = $this->buildChangelogDataTable($objObject, $objArraySectionIterator, true);
         $strReturn .= $this->objToolkit->dataTable($arrHeader, $arrData);
 
         $strReturn .= $this->objToolkit->getPageview($objArraySectionIterator, $strSourceModule, $strSourceAction, "&systemid=".$strSystemid."&bitBlockFolderview=".$this->getParam("bitBlockFolderview"));
 
         return $strReturn;
+    }
+
+    /**
+     * Internal helper to build a changelog array
+     *
+     * @param VersionableInterface $objVersionable
+     * @param ArraySectionIterator $objIterator
+     * @param bool $bitStripContent
+     * @return array
+     */
+    private function buildChangelogDataTable(VersionableInterface $objVersionable, ArraySectionIterator $objIterator, bool $bitStripContent)
+    {
+        $arrData = array();
+        $arrHeader = array();
+        $arrHeader[] = $this->getLang("commons_date");
+        $arrHeader[] = $this->getLang("change_user");
+        $arrHeader[] = $this->getLang("change_action");
+        $arrHeader[] = $this->getLang("change_property");
+        $arrHeader[] = $this->getLang("change_oldvalue");
+        $arrHeader[] = $this->getLang("change_newvalue");
+
+        /** @var $objOneEntry ChangelogContainer */
+        foreach ($objIterator as $objOneEntry) {
+            $arrRowData = array();
+
+            $strOldValue = htmlStripTags($objVersionable->renderVersionValue($objOneEntry->getStrProperty(), $objOneEntry->getStrOldValue()));
+            $strNewValue = htmlStripTags($objVersionable->renderVersionValue($objOneEntry->getStrProperty(), $objOneEntry->getStrNewValue()));
+
+            $arrRowData[] = dateToString($objOneEntry->getObjDate());
+            $arrRowData[] = $objOneEntry->getStrUsername();
+            $arrRowData[] = $objVersionable->getVersionActionName($objOneEntry->getStrAction());
+            $arrRowData[] = $objVersionable->getVersionPropertyName($objOneEntry->getStrProperty());
+            $arrRowData[] = $bitStripContent ? $this->objToolkit->getTooltipText(StringUtil::truncate($strOldValue, 40), $strOldValue) : $strOldValue;
+            $arrRowData[] = $bitStripContent ? $this->objToolkit->getTooltipText(StringUtil::truncate($strNewValue, 40), $strNewValue) : $strNewValue;
+
+            $arrData[] = $arrRowData;
+        }
+
+        return [$arrHeader, $arrData];
     }
 
     /**
@@ -1090,119 +1077,26 @@ JS;
         if ($objManager->getPackage("phpexcel") == null) {
             return $this->getLang("commons_error_permissions");
         }
-        // include phpexcel
-        require_once Resourceloader::getInstance()->getAbsolutePathForModule("module_phpexcel").'/vendor/autoload.php';
-        $objPHPExcel = new PHPExcel();
-
         // get system id
         if ($strSystemid == "") {
             $strSystemid = $this->getSystemid();
         }
 
-        // get data
-        $arrLogEntries = SystemChangelog::getLogEntries($strSystemid);
-
-        // create excel
-        $objPHPExcel->getProperties()->setCreator("Kajona")
-            ->setLastModifiedBy(Carrier::getInstance()->getObjSession()->getUsername())
-            ->setTitle($this->getLang("change_report_title"))
-            ->setSubject($this->getLang("change_report_title"));
-
-        $objDataSheet = $objPHPExcel->getActiveSheet();
-        $objDataSheet->setTitle($this->getLang("change_report_title"));
-        $objDataSheet->setAutoFilter('A1:F'.(count($arrLogEntries) + 1));
-
-        // style
-        $arrStyles = $this->getStylesArray();
-
-        $objDataSheet->getStyle("A1:F1")->applyFromArray($arrStyles["header_1"]);
-        $objDataSheet->getDefaultColumnDimension()->setWidth(24);
-
-        // add header
-        $arrHeader = array();
-        $arrHeader[] = $this->getLang("commons_date");
-        $arrHeader[] = $this->getLang("change_user");
-        if ($strSystemid == "") {
-            $arrHeader[] = $this->getLang("change_module");
-        }
-        if ($strSystemid == "") {
-            $arrHeader[] = $this->getLang("change_record");
-        }
-        $arrHeader[] = $this->getLang("change_action");
-        $arrHeader[] = $this->getLang("change_property");
-        $arrHeader[] = $this->getLang("change_oldvalue");
-        $arrHeader[] = $this->getLang("change_newvalue");
-
-        $intCol = 0;
-        $intRow = 1;
-
-        foreach ($arrHeader as $strHeader) {
-            $objDataSheet->setCellValueByColumnAndRow($intCol++, $intRow, $strHeader);
+        /** @var VersionableInterface|Model $objObject */
+        $objObject = Objectfactory::getInstance()->getObject($strSystemid);
+        if (!$objObject instanceof VersionableInterface) {
+            return $this->objToolkit->warningBox($this->getLang("generic_changelog_not_versionable"));
         }
 
-        $intRow++;
+        $intCount = SystemChangelog::getLogEntriesCount($strSystemid);
+        $objArraySectionIterator = new ArraySectionIterator($intCount);
+        $objArraySectionIterator->setPageNumber((int)($this->getParam("pv") != "" ? $this->getParam("pv") : 1));
+        $objArraySectionIterator->setArraySection(SystemChangelog::getLogEntries($strSystemid, 0, $intCount));
 
-        // add body
-        $arrData = array();
+        list($arrHeader, $arrData) = $this->buildChangelogDataTable($objObject, $objArraySectionIterator, false);
 
-        /** @var $objOneEntry ChangelogContainer */
-        foreach ($arrLogEntries as $objOneEntry) {
-            $arrRowData = array();
-
-            /** @var VersionableInterface|Model $objTarget */
-            $objTarget = $objOneEntry->getObjTarget();
-
-            $strOldValue = $objOneEntry->getStrOldValue();
-            $strNewValue = $objOneEntry->getStrNewValue();
-
-            if ($objTarget != null) {
-                $strOldValue = $objTarget->renderVersionValue($objOneEntry->getStrProperty(), $strOldValue);
-                $strNewValue = $objTarget->renderVersionValue($objOneEntry->getStrProperty(), $strNewValue);
-            }
-
-            $strOldValue = htmlStripTags($strOldValue);
-            $strNewValue = htmlStripTags($strNewValue);
-
-            $arrRowData[] = PHPExcel_Shared_Date::PHPToExcel($objOneEntry->getObjDate()->getTimeInOldStyle());
-            $arrRowData[] = $objOneEntry->getStrUsername();
-            if ($strSystemid == "") {
-                $arrRowData[] = $objTarget != null ? $objTarget->getArrModule("modul") : "";
-            }
-            if ($strSystemid == "") {
-                $arrRowData[] = $objTarget != null ? $objOneEntry->getStrClass()." ".$objOneEntry->getStrSystemid() : "";
-            }
-            $arrRowData[] = $objTarget != null ? $objTarget->getVersionActionName($objOneEntry->getStrAction()) : "";
-            $arrRowData[] = $objTarget != null ? $objTarget->getVersionPropertyName($objOneEntry->getStrProperty()) : "";
-            $arrRowData[] = $strOldValue;
-            $arrRowData[] = $strNewValue;
-
-            $arrData[] = $arrRowData;
-        }
-
-        foreach ($arrData as $arrRow) {
-            $intCol = 0;
-            foreach ($arrRow as $strValue) {
-                $objDataSheet->setCellValueByColumnAndRow($intCol++, $intRow, html_entity_decode(strip_tags($strValue), ENT_COMPAT, "UTF-8"));
-            }
-
-            // format first column as date
-            $objDataSheet->getStyle('A'.$intRow)->getNumberFormat()->setFormatCode('dd.mm.yyyy hh:mm');
-
-            $intRow++;
-        }
-
-        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
-        $objPHPExcel->setActiveSheetIndex(0);
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="'.createFilename($this->getLang("change_report_title").'.xlsx').'"');
-        header('Pragma: private');
-        header('Cache-control: private, must-revalidate');
-        //header('Cache-Control : No Store');
-        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-        //and pass everything back to the browser
-        $objWriter->save('php://output');
-        flush();
-        die();
+        $objExporter = new PhpexcelDataTableExporter();
+        $objExporter->exportDataTableToExcel($arrHeader, $arrData);
     }
 
 
@@ -1464,7 +1358,7 @@ JS;
     }
 
     /**
-     * Updates a single property of an obejct. used by the js-insite-editor.
+     * Updates a single property of an object. used by the js-insite-editor.
      * @permissions edit
      * @return string
      */

@@ -40,26 +40,7 @@ trait VersionableDefaultImplTrait
      */
     public function getVersionPropertyName($strProperty)
     {
-        //check if the property provides a matching annotation
-        $objReflection = new Reflection($this);
-        $strKey = $objReflection->getAnnotationValueForProperty($strProperty, AdminFormgenerator::STR_LABEL_ANNOTATION);
-        $strModule = $objReflection->getParamValueForPropertyAndAnnotation($strProperty, AdminFormgenerator::STR_LABEL_ANNOTATION, "module");
-        if (empty($strModule)) {
-            $strModule = $this->getArrModule('module');
-        }
-
-        $strPropertyLabel = Carrier::getInstance()->getObjLang()->getLang($strKey, $strModule);
-        if ($strPropertyLabel == "!{$strKey}!") {
-            $strKey = "form_".$this->getArrModule('module')."_".Lang::getInstance()->propertyWithoutPrefix($strProperty);
-            $strPropertyLabel = Carrier::getInstance()->getObjLang()->getLang($strKey, $strModule);
-        }
-
-        if ($strPropertyLabel == "!{$strKey}!") {
-            $strPropertyLabel = $strProperty;
-        }
-
-
-        return $strPropertyLabel;
+        return SystemChangelogRenderer::renderPropertyName($this, $strProperty);
     }
 
     /**
@@ -73,19 +54,6 @@ trait VersionableDefaultImplTrait
      */
     public function renderVersionValue($strProperty, $strValue)
     {
-        //first part: a systemid
-        if (validateSystemid($strValue)) {
-            $objObject = Objectfactory::getInstance()->getObject($strValue);
-            if ($objObject !== null) {
-                return $objObject->getStrDisplayName();
-            }
-        }
-
-        //maybe a date?
-        if (StringUtil::indexOf($strProperty, "date", false) !== false && Date::isDateValue($strValue)) {
-            return dateToString(new Date($strValue), false);
-        }
-
-        return $strValue;
+        return SystemChangelogRenderer::renderValue($this, $strProperty, $strValue);
     }
 }
