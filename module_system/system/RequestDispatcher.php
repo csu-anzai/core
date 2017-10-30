@@ -9,7 +9,6 @@
 
 namespace Kajona\System\System;
 
-use Kajona\System\Admin\AdminController;
 use Kajona\System\Admin\AdminSimple;
 use Kajona\System\Admin\LoginAdmin;
 use Kajona\System\Xml;
@@ -61,12 +60,9 @@ class RequestDispatcher
      *
      * @param string $strModule
      * @param string $strAction
-     * @param string $strLanguageParam
-     *
      */
     public function processRequest($strModule, $strAction)
     {
-        $bitAdmin = true;
         CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_STARTPROCESSING, array($strModule, $strAction));
 
         $strReturn = $this->processAdminRequest($strModule, $strAction);
