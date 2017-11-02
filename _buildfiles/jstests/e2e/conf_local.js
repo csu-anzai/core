@@ -11,7 +11,7 @@ exports.config = {
         // 'install-spec.js',
         './login-spec.js',
         // '../../../../core*/module_*/tests/selenium/*-spec.js',
-        '../../../../core_agp/module_prozessverwaltung/tests/selenium/unterdmimension_range-spec.js'
+        '../../../../core_agp/module_riskanalysis/tests/selenium/*-spec.js'
     ],
     capabilities: {
         browserName: 'chrome',
@@ -20,7 +20,7 @@ exports.config = {
         }
     },
     jasmineNodeOpts: {
-        defaultTimeoutInterval: 720000 // 12 minutes
+        defaultTimeoutInterval: 7200000 // 12 minutes
     },
     plugins: [
     {

@@ -5,7 +5,7 @@ const SeleniumUtil = requireHelper('/util/SeleniumUtil.js');
 describe('installation', function() {
 
     it('test installation', async function() {
-        let intTimeout = 1000 * 60 * 12;//12 Minutes
+        let intTimeout = 1000 * 60 * 12 * 10;//120 Minutes
 
         await SeleniumUtil.gotToUrl('installer.php');
 
@@ -18,17 +18,13 @@ describe('installation', function() {
         await webDriver.findElement(By.id('username')).sendKeys('kajona');
         await webDriver.findElement(By.id('password')).sendKeys('kajona');
         await webDriver.findElement(By.id('dbname')).sendKeys('autotest');
-        // default is "kajona_"
-        //webDriver.findElement(by.id('dbprefix')).sendKeys('');
         await webDriver.findElement(By.css('option[value="sqlite3"]')).click();
-
         await webDriver.findElement(By.css('.savechanges')).click();
 
         // create new admin user
         await webDriver.findElement(By.id('username')).sendKeys('test');
         await webDriver.findElement(By.id('password')).sendKeys('test123');
         await webDriver.findElement(By.id('email')).sendKeys('test@test.com');
-
         await webDriver.findElement(By.css('.savechanges')).click();
 
         // start the installation this takes some time
@@ -45,6 +41,7 @@ describe('installation', function() {
         // }, intTimeout);
 
         // now we must have a success message
-        expect(webDriver.findElement(By.css('.alert-success')).getText()).toMatch('Herzlichen Glückwunsch!');
+        let element = await webDriver.findElement(By.css('.alert-success'));
+        expect(element.getText()).toMatch('Herzlichen Glückwunsch!');
     });
 });
