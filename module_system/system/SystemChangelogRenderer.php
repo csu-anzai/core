@@ -14,8 +14,8 @@ use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\Formentries\FormentryDate;
 use Kajona\System\Admin\Formentries\FormentryDatetime;
 use Kajona\System\Admin\Formentries\FormentryDropdown;
+use Kajona\System\Admin\Formentries\FormentryMonthYearDropdown;
 use Kajona\System\Admin\Formentries\FormentryObjectlist;
-use Kajona\System\Admin\Formentries\FormentryObjecttags;
 use Kajona\System\Admin\Formentries\FormentryYesno;
 
 /**
@@ -101,7 +101,13 @@ class SystemChangelogRenderer
     {
         $strType = $this->objReflection->getAnnotationValueForProperty($strProperty, AdminFormgenerator::STR_TYPE_ANNOTATION);
         if (empty($strType)) {
-            $strType = $this->getFallbackType($strProperty);
+            if (validateSystemid($strValue)) {
+                $strType = FormentryObjectlist::class;
+            } elseif (StringUtil::indexOf($strProperty, "date", false) !== false && Date::isDateValue($strValue)) {
+                $strType = FormentryDate::class;
+            } else {
+                $strType = $this->getFallbackType($strProperty);
+            }
         }
 
         if (!empty($strType)) {
@@ -235,20 +241,19 @@ class SystemChangelogRenderer
      */
     private function renderData($strType, $strValue, $arrDDValues)
     {
-        if (empty($strType) && validateSystemid($strValue)) {
+        if (StringUtil::indexOf($strType, "object") !== false
+            || StringUtil::indexOf($strType, "objectlist", false) !== false) {
             $strType = FormentryObjectlist::class;
         }
 
         switch ($strType) {
             case FormentryDate::class:
             case FormentryDatetime::class:
-            case "date":
-            case "datetime":
+            case FormentryMonthYearDropdown::class:
                 return SystemChangelogHelper::getStrValueForDate($strValue);
                 break;
 
             case FormentryDropdown::class:
-            case "dropdown":
                 if (!empty($arrDDValues) && array_key_exists($strValue, $arrDDValues)) {
                     return $arrDDValues[$strValue];
                 } else {
@@ -256,14 +261,9 @@ class SystemChangelogRenderer
                 }
                 break;
 
-            case FormentryObjecttags::class:
             case FormentryObjectlist::class:
             case FormentryProzess::class:
             case FormentryOe::class:
-            case "objecttags":
-            case "objectlist":
-            case "prozess":
-            case "oe":
                 return SystemChangelogHelper::getStrValueForObjects($strValue);
                 break;
 

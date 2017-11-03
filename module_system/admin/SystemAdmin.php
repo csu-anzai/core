@@ -1549,9 +1549,6 @@ JS;
                 $strGetter = $objReflection->getGetter($strPropertyName);
                 if (!empty($strGetter)) {
                     $strValue = $objObject->$strGetter();
-                    if (is_array($strValue)) {
-                        $strValue = implode(", ", $strValue);
-                    }
                     $arrData[$strPropertyName] = strval($objObject->renderVersionValue($strPropertyName, $strValue));
                 }
             }
