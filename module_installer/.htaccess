@@ -6,8 +6,8 @@
 #	$Id$                                                    *
 #*******************************************************************************************************/
 
-Deny from all
+Require all denied
 
 <FilesMatch "\.js$|\.css$|\.png$|\.less$|\.ttf$|\.woff$|\.woff2$|\.eot$|\.svg$|\.ttf$" >
-  Allow from all
+  Require all granted
 </FilesMatch>
