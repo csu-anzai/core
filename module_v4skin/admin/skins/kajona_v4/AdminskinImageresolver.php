@@ -257,6 +257,7 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_oprisk_uebergreif" => "<span class='fa-stack kj-icon' style='text-align: center'><i class='fa fa-square' style='color:#DA0000'></i><i class='fa fa-stack-1x fa-inverse kj-text-icon' style='font-size: 0.5em; left: -0.1em; border-bottom:0; font-weight: normal;'>ÜR</i></span>",
         "icon_pdf" => "<i class='kj-icon fa fa-file-pdf-o'></i>",
         "icon_play" => "<i class='kj-icon fa fa-play-circle-o'></i>",
+        "icon_playNew" => "<span class='kj-icon fa-stack'><i class='kj-icon fa fa-play-circle-o'></i><i class='fa fa-star fa-stack-1x kj-stack' style='color: orange'></i></span>",
         "icon_preconfirmed" => "<i class='kj-icon fa fa-flag' style='color: orange;'></i>",
         "icon_preconfirmedLocked" => "<span class='kj-icon fa-stack'><i class='fa fa-flag'></i><i class='fa fa-lock fa-stack-1x kj-stack' style='color: red'></i></span>",
         "icon_project" => "<i class='kj-icon fa fa-tasks'></i>",
