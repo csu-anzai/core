@@ -36,6 +36,7 @@ use Kajona\System\System\Alert\MessagingAlertActionInterface;
  * @moduleId _messaging_module_id_
  *
  * @lifeCycleService system_life_cycle_messages_alert
+ * @sortManager Kajona\System\System\CommonSortmanager
  * @see MessagingMessagehandler::sendAlertToUser
  *
  */
