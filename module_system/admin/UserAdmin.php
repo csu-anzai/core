@@ -1238,11 +1238,15 @@ HTML;
         /** @var UserUser $objUser */
         $objUser = Objectfactory::getInstance()->getObject($this->getSystemid());
         $strReturn = $this->objToolkit->listHeader();
-        foreach ($objUser->getObjSourceUser()->getGroupIdsForUser() as $strOneId) {
+        $arrGroups = $objUser->getObjSourceUser()->getGroupIdsForUser();
+        foreach ($arrGroups as $strOneId) {
             $objGroup = new UserGroup($strOneId);
             $strReturn .= $this->objToolkit->genericAdminList($strOneId, $objGroup->getStrDisplayName(), AdminskinHelper::getAdminImage("icon_group"), "");
         }
         $strReturn .= $this->objToolkit->listFooter();
+        if (count($arrGroups) == 0) {
+            return $this->getLang("commons_list_empty");
+        }
         return $strReturn;
     }
 
