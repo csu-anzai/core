@@ -634,6 +634,11 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             $strReturn .= $this->update_651_652();
         }
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.5.2") {
+            $strReturn .= $this->update_652_653();
+        }
+
         return $strReturn."\n\n";
     }
 
@@ -1097,6 +1102,20 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.2");
+        return $strReturn;
+    }
+
+    private function update_652_653()
+    {
+        $strReturn = "Updating 6.5.2 to 6.5.3...\n";
+        $strReturn .= "Upgrade message queue\n";
+
+        if (!$this->objDB->hasColumn("messages_alert", "alert_priority")) {
+            $this->objDB->addColumn("messages_alert", "alert_priority", DbDatatypes::STR_TYPE_INT);
+        }
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.4");
         return $strReturn;
     }
 
