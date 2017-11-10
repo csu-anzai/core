@@ -27,9 +27,9 @@ interface FlowActionUserInputInterface
      *
      * @param Model $objObject
      * @param FlowTransition $objTransition
-     * @param array $arrData
+     * @param AdminFormgenerator $objForm
      */
-    public function handleUserInput(Model $objObject, FlowTransition $objTransition, array $arrData);
+    public function handleUserInput(Model $objObject, FlowTransition $objTransition, AdminFormgenerator $objForm);
 
     /**
      * @param AdminFormgenerator $objForm

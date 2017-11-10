@@ -129,14 +129,7 @@ require(["jquery", "ajax"], function($, ajax){
                             if ($objAction instanceof FlowActionUserInputInterface) {
                                 $objActionForm = new AdminFormgenerator("", null);
                                 $objAction->configureUserInputForm($objActionForm);
-                                $arrFields = $objActionForm->getArrFields();
-
-                                $arrData = [];
-                                foreach ($arrFields as $strName => $objField) {
-                                    $arrData[$strName] = $this->getParam($strName);
-                                }
-
-                                $objAction->handleUserInput($objObject, $objTransition, $arrData);
+                                $objAction->handleUserInput($objObject, $objTransition, $objActionForm);
                             }
                         }
                     }
