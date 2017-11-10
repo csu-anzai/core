@@ -51,7 +51,7 @@ class MessagingAlert extends Model implements ModelInterface, AdminListableInter
 
     /**
      * A general reference to a database record or a generated id
-     * 
+     *
      * @var string
      * @tableColumn messages_alert.alert_ref
      * @tableColumnDatatype char20
@@ -104,6 +104,13 @@ class MessagingAlert extends Model implements ModelInterface, AdminListableInter
     private $strConfirmLabel = "";
 
     /**
+     * @var int
+     * @tableColumn messages_alert.alert_priority
+     * @tableColumnDatatype int
+     */
+    private $intPriority = 1;
+
+    /**
      * MessagingAlert constructor.
      */
     public function __construct($strSystemid = "")
@@ -122,6 +129,7 @@ class MessagingAlert extends Model implements ModelInterface, AdminListableInter
     {
         $objOrm = new OrmObjectlist();
         $objOrm->addWhereRestriction(new OrmPropertyCondition("strUser", OrmComparatorEnum::Equal(), $strUserid));
+        $objOrm->addOrderBy(new OrmObjectlistOrderby("alert_priority DESC"));
         return $objOrm->getSingleObject(MessagingAlert::class);
     }
 
@@ -320,6 +328,22 @@ class MessagingAlert extends Model implements ModelInterface, AdminListableInter
     public function setStrConfirmLabel($strConfirmLabel)
     {
         $this->strConfirmLabel = $strConfirmLabel;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIntPriority()
+    {
+        return $this->intPriority;
+    }
+
+    /**
+     * @param int $intPriority
+     */
+    public function setIntPriority($intPriority)
+    {
+        $this->intPriority = $intPriority;
     }
 
 
