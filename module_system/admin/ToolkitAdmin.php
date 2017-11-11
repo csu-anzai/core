@@ -722,7 +722,7 @@ class ToolkitAdmin extends Toolkit
     }
 
     /**
-     * Returns a input-file element for uploading multiple files with progress bar. Only functionable in combination with
+     * Returns a input-file element for uploading multiple files with progress bar. Only functional in combination with
      * the mediamanager module
      *
      * @param string $strName
@@ -735,7 +735,7 @@ class ToolkitAdmin extends Toolkit
     {
 
         if (SystemModule::getModuleByName("mediamanager") === null) {
-            return ($this->warningBox("Module mediamanger is required for this multiple uploads"));
+            return ($this->warningBox("Module mediamanager is required for multiple uploads"));
         }
 
         $strUploadId = generateSystemid();

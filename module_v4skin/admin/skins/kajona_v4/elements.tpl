@@ -549,117 +549,115 @@ Upload-Field for multiple files with progress bar
     </div>
 
 <script type="text/javascript">
-    require(['tmpl'], function() {
-        require(['jquery', 'jquery.iframe-transport', 'jquery.fileupload', 'jquery.fileupload-process', 'jquery.fileupload-ui'], function($) {
-            var filesToUpload = 0;
-            $('#%%name%%').fileupload({
-                url: '_webpath_/xml.php?admin=1&module=mediamanager&action=fileUpload',
-                dataType: 'json',
-                dropZone: $('#%%name%%'),
-                pasteZone: $(document),
-                autoUpload: false,
-                paramName : '%%name%%',
-                filesContainer: $('#files-%%uploadId%%'),
-                formData: [
-                    {name: 'systemid', value: '%%mediamanagerRepoId%%'},
-                    {name: 'inputElement', value : '%%name%%'},
-                    {name: 'jsonResponse', value : 'true'}
-                ],
-                messages: {
-                    maxNumberOfFiles: 'Maximum number of files exceeded',
-                    acceptFileTypes: "[lang,upload_fehler_filter,mediamanager]",
-                    maxFileSize: "[lang,upload_multiple_errorFilesize,mediamanager]",
-                    minFileSize: 'File is too small'
-                },
-                maxFileSize: %%maxFileSize%%,
-                acceptFileTypes: %%acceptFileTypes%%,
-                uploadTemplateId: null,
-                downloadTemplateId: null,
-                uploadTemplate: function (o) {
-                    var rows = $();
-                    $.each(o.files, function (index, file) {
-                        var row = $('<tbody class="template-upload fade"><tr>' +
-                                    '<td><span class="preview"></span></td>' +
-                                    '<td><p class="name"></p>' +
-                                    '<div class="error"></div>' +
-                                    '</td>' +
-                                    '<td><p class="size"></p>' +
-                                    '<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>' +
-                                    '</td>' +
-                                    '<td>' +
-                                    (!index && !o.options.autoUpload ?
-                                            '<button class="btn start " disabled style="display: none;">Start</button>' : '') +
-                                    (!index ? '<button class="btn cancel ">[lang,upload_multiple_cancel,mediamanager]</button>' : '') +
-                                    '</td>' +
-                                    '</tr></tbody>');
-                        row.find('.name').text(file.name);
-                        row.find('.size').text(o.formatFileSize(file.size));
-                        if (file.error) {
-                            row.find('.error').text(file.error);
-                        }
-                        rows = rows.add(row);
-                    });
-                    return rows;
-                }
-            })
-            .bind('fileuploadadded', function (e, data) {
-                $(this).find('.fileupload-buttonbar button.start').css('display', '');
-                $(this).find('.fileupload-buttonbar button.cancel').css('display', '');
-                $(this).find('.fileupload-progress').css('display', '');
-                filesToUpload++;
-            })
-            .bind('fileuploadfail', function (e, data) {
-                filesToUpload--;
-                $(this).trigger('kajonahideelements');
-            })
-            .bind('fileuploaddone', function (e, data) {
-                filesToUpload--;
-                $(this).trigger('kajonahideelements');
-            })
-            .bind('fileuploadstop', function (e) {
-                $(this).trigger('kajonahideelements');
-                document.location.reload();
-            })
-            .bind('kajonahideelements', function() {
-                if(filesToUpload == 0) {
-                    $(this).find('.fileupload-buttonbar button.start').css('display', 'none');
-                    $(this).find('.fileupload-buttonbar button.cancel').css('display', 'none');
-                    $(this).find('.fileupload-progress').css('display', 'none');
-                }
-            });
-        });
-
-        $(document).bind('dragover', function (e) {
-            var dropZone = $('#%%name%%'),
-                timeout = window.dropZoneTimeout;
-            if (!timeout) {
-                dropZone.addClass('in');
-
-            } else {
-                clearTimeout(timeout);
+    require(['jquery', 'blueimp-tmpl', 'jquery-ui/ui/widget', 'jquery.iframe-transport', 'jquery.fileupload', 'jquery.fileupload-process', 'jquery.fileupload-ui'], function($) {
+        var filesToUpload = 0;
+        $('#%%name%%').fileupload({
+            url: '_webpath_/xml.php?admin=1&module=mediamanager&action=fileUpload',
+            dataType: 'json',
+            dropZone: $('#%%name%%'),
+            pasteZone: $(document),
+            autoUpload: false,
+            paramName : '%%name%%',
+            filesContainer: $('#files-%%uploadId%%'),
+            formData: [
+                {name: 'systemid', value: '%%mediamanagerRepoId%%'},
+                {name: 'inputElement', value : '%%name%%'},
+                {name: 'jsonResponse', value : 'true'}
+            ],
+            messages: {
+                maxNumberOfFiles: 'Maximum number of files exceeded',
+                acceptFileTypes: "[lang,upload_fehler_filter,mediamanager]",
+                maxFileSize: "[lang,upload_multiple_errorFilesize,mediamanager]",
+                minFileSize: 'File is too small'
+            },
+            maxFileSize: %%maxFileSize%%,
+            acceptFileTypes: %%acceptFileTypes%%,
+            uploadTemplateId: null,
+            downloadTemplateId: null,
+            uploadTemplate: function (o) {
+                var rows = $();
+                $.each(o.files, function (index, file) {
+                    var row = $('<tbody class="template-upload fade"><tr>' +
+                                '<td><span class="preview"></span></td>' +
+                                '<td><p class="name"></p>' +
+                                '<div class="error"></div>' +
+                                '</td>' +
+                                '<td><p class="size"></p>' +
+                                '<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>' +
+                                '</td>' +
+                                '<td>' +
+                                (!index && !o.options.autoUpload ?
+                                        '<button class="btn start " disabled style="display: none;">Start</button>' : '') +
+                                (!index ? '<button class="btn cancel ">[lang,upload_multiple_cancel,mediamanager]</button>' : '') +
+                                '</td>' +
+                                '</tr></tbody>');
+                    row.find('.name').text(file.name);
+                    row.find('.size').text(o.formatFileSize(file.size));
+                    if (file.error) {
+                        row.find('.error').text(file.error);
+                    }
+                    rows = rows.add(row);
+                });
+                return rows;
             }
-            var found = false,
-                node = e.target;
-            do {
-                if (node === dropZone[0]) {
-                    found = true;
-                    break;
-                }
-                node = node.parentNode;
-            } while (node != null);
-            if (found) {
-                dropZone.addClass('hover');
-                $('#drop-%%uploadId%%').removeClass('alert-info').addClass('alert-success');
-            } else {
-                dropZone.removeClass('hover');
-                $('#drop-%%uploadId%%').addClass('alert-info').removeClass('alert-success');
+        })
+        .bind('fileuploadadded', function (e, data) {
+            $(this).find('.fileupload-buttonbar button.start').css('display', '');
+            $(this).find('.fileupload-buttonbar button.cancel').css('display', '');
+            $(this).find('.fileupload-progress').css('display', '');
+            filesToUpload++;
+        })
+        .bind('fileuploadfail', function (e, data) {
+            filesToUpload--;
+            $(this).trigger('kajonahideelements');
+        })
+        .bind('fileuploaddone', function (e, data) {
+            filesToUpload--;
+            $(this).trigger('kajonahideelements');
+        })
+        .bind('fileuploadstop', function (e) {
+            $(this).trigger('kajonahideelements');
+            document.location.reload();
+        })
+        .bind('kajonahideelements', function() {
+            if(filesToUpload == 0) {
+                $(this).find('.fileupload-buttonbar button.start').css('display', 'none');
+                $(this).find('.fileupload-buttonbar button.cancel').css('display', 'none');
+                $(this).find('.fileupload-progress').css('display', 'none');
             }
-            window.dropZoneTimeout = setTimeout(function () {
-                window.dropZoneTimeout = null;
-                dropZone.removeClass('in hover');
-                $('#drop-%%uploadId%%').addClass('alert-info').removeClass('alert-success');
-            }, 100);
         });
+    });
+
+    $(document).bind('dragover', function (e) {
+        var dropZone = $('#%%name%%'),
+            timeout = window.dropZoneTimeout;
+        if (!timeout) {
+            dropZone.addClass('in');
+
+        } else {
+            clearTimeout(timeout);
+        }
+        var found = false,
+            node = e.target;
+        do {
+            if (node === dropZone[0]) {
+                found = true;
+                break;
+            }
+            node = node.parentNode;
+        } while (node != null);
+        if (found) {
+            dropZone.addClass('hover');
+            $('#drop-%%uploadId%%').removeClass('alert-info').addClass('alert-success');
+        } else {
+            dropZone.removeClass('hover');
+            $('#drop-%%uploadId%%').addClass('alert-info').removeClass('alert-success');
+        }
+        window.dropZoneTimeout = setTimeout(function () {
+            window.dropZoneTimeout = null;
+            dropZone.removeClass('in hover');
+            $('#drop-%%uploadId%%').addClass('alert-info').removeClass('alert-success');
+        }, 100);
     });
 </script>
 
