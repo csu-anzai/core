@@ -1072,6 +1072,42 @@ HTML;
     }
 
     /**
+     * Tries to save the passed file.
+     * Therefore, the following post-params should be given:
+     * action = fileUpload
+     * folder = the folder to store the file within
+     * systemid = the filemanagers' repo-id
+     * inputElement = name of the inputElement
+     *
+     * @return string
+     * @permissions view
+     * @responseType json
+     */
+    protected function actionFileuploadTemp()
+    {
+
+        return json_encode( [ "files" => [
+            [
+                "name" => "fileName.txt",
+                "size" => 775702,
+                "type" => "image/jpeg",
+                "url" => "http://mydomain.com/files/fileName.jpg",
+                "deleteUrl" => "http://mydomain.com/files/fileName.jpg",
+                "deleteType" => "DELETE"
+            ],
+            [
+                "name" => "file2.txt",
+                "size" => 68222,
+                "type" => "image/jpeg",
+                "url" => "http://mydomain.com/files/file2.jpg",
+                "deleteUrl" =>"http://mydomain.com/files/file2.jpg",
+                "deleteType" => "DELETE"
+            ]
+            ]
+        ]);
+    }
+
+    /**
      * Syncs the repo partially
      *
      * @return string

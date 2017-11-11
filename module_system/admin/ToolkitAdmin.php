@@ -9,6 +9,7 @@
 
 namespace Kajona\System\Admin;
 
+use Kajona\Mediamanager\System\MediamanagerRepo;
 use Kajona\System\Admin\Formentries\FormentryCheckboxarray;
 use Kajona\System\Admin\Formentries\FormentryObjectlist;
 use Kajona\System\System\AdminGridableInterface;
@@ -758,6 +759,48 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["upload_multiple_errorFilesize"] = $objText->getLang("upload_multiple_errorFilesize", "mediamanager")." ".bytesToString($objConfig->getPhpMaxUploadSize());
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_upload_multiple");
+    }
+
+    /**
+     * Creates a multi-upload field inline, so directly within a form.
+     * Only to be used in combination with FormentryMultiUpload.
+     * The dir-param is the directory in the filesystem. The Mediamanager-Backend takes
+     * care of validating permissions and creating the relevant MediamanagerFile entries on the fly.
+     *
+     * @param string $strName
+     * @param MediamanagerRepo $objRepo
+     * @param $strTargetDir
+     * @return string
+     *
+     * @see FormentryMultiUpload
+     */
+    public function formInputUploadInline($strName, MediamanagerRepo $objRepo, $strTargetDir)
+    {
+
+        if (SystemModule::getModuleByName("mediamanager") === null) {
+            return ($this->warningBox("Module mediamanager is required for multiple uploads"));
+        }
+
+        $strUploadId = generateSystemid();
+
+        $objConfig = Carrier::getInstance()->getObjConfig();
+        $objText = Carrier::getInstance()->getObjLang();
+
+        $arrTemplate = array();
+        $arrTemplate["name"] = $strName;
+        $arrTemplate["mediamanagerRepoId"] = $objRepo->getSystemid();
+        $arrTemplate["folder"] = $strTargetDir;
+        $arrTemplate["uploadId"] = $strUploadId;
+
+        $strAllowedFileRegex = StringUtil::replace(array(".", ","), array("", "|"), $objRepo->getStrUploadFilter());
+        $strAllowedFileTypes = StringUtil::replace(array(".", ","), array("", "', '"), $objRepo->getStrUploadFilter());
+
+        $arrTemplate["allowedExtensions"] = $strAllowedFileTypes != "" ? $objText->getLang("upload_allowed_extensions", "mediamanager").": '".$strAllowedFileTypes."'" : $strAllowedFileTypes;
+        $arrTemplate["maxFileSize"] = $objConfig->getPhpMaxUploadSize();
+        $arrTemplate["acceptFileTypes"] = $strAllowedFileRegex != "" ? "/(\.|\/)(".$strAllowedFileRegex.")$/i" : "''";
+        $arrTemplate["upload_multiple_errorFilesize"] = $objText->getLang("upload_multiple_errorFilesize", "mediamanager")." ".bytesToString($objConfig->getPhpMaxUploadSize());
+
+        return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_upload_inline");
     }
 
     /**

@@ -662,6 +662,196 @@ Upload-Field for multiple files with progress bar
 </script>
 </input_upload_multiple>
 
+
+
+
+Upload-Field for multiple files with progress bar
+<input_upload_inline>
+
+    <div id="%%name%%" class="fileupload-wrapper">
+        <div class="fileupload-buttonbar">
+
+                <span class="btn btn-default fileinput-button">
+                    <i class="fa fa-plus-square"></i>
+                    <span>[lang,mediamanager_upload,mediamanager]</span>
+                    <input type="file" name="%%name%%" multiple>
+                </span>
+
+            <button type="submit" class="btn btn-default start" style="display: none;">
+                <i class="fa fa-upload"></i>
+                <span>[lang,upload_multiple_uploadFiles,mediamanager]</span>
+            </button>
+
+            <button type="reset" class="btn btn-default cancel" style="display: none;">
+                <i class="fa fa-ban"></i>
+                <span>[lang,upload_multiple_cancel,mediamanager]</span>
+            </button>
+
+            <span class="fileupload-process"></span>
+            <div class="alert alert-info" id="drop-%%uploadId%%">
+                [lang,upload_dropArea,mediamanager]<br />
+                %%allowedExtensions%%
+            </div>
+        </div>
+
+        <div class="fileupload-progress" style="">
+
+            <div class="progress" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;"></div>
+            </div>
+
+            <div class="progress-extended">&nbsp;</div>
+        </div>
+
+        <table class="table admintable table-striped-tbody files" id="files-%%uploadId%%"></table>
+
+        <div class="hidden fileupload-list-template">
+            <table>
+            <tbody class="template-upload fade"><tr>
+                <td><span class="preview"></span></td>
+                <td><p class="name"></p>
+                    <div class="error"></div>
+                </td>
+                <td>
+                    <p class="size"></p>
+                </td>
+            </tr></tbody></table>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        require(['jquery', 'ajax', 'blueimp-tmpl', 'jquery-ui/ui/widget', 'jquery.iframe-transport', 'jquery.fileupload', 'jquery.fileupload-process', 'jquery.fileupload-ui'], function($, ajax) {
+
+            console.log('init fu');
+            var filesToUpload = 0;
+            var uploader = $('#%%name%%').fileupload({
+                url: '_webpath_/xml.php?admin=1&module=mediamanager&action=fileUploadTemp',
+                dataType: 'json',
+                dropZone: $('#%%name%%'),
+                pasteZone: $(document),
+                autoUpload: true,
+                paramName : '%%name%%',
+                filesContainer: $('#files-%%uploadId%%'),
+                formData: [
+                    {name: 'systemid', value: '%%mediamanagerRepoId%%'},
+                    {name: 'inputElement', value : '%%name%%'},
+                    {name: 'jsonResponse', value : 'true'},
+                    {name: 'folder', value : '%%folder%%'}
+                ],
+                messages: {
+                    maxNumberOfFiles: 'Maximum number of files exceeded',
+                    acceptFileTypes: "[lang,upload_fehler_filter,mediamanager]",
+                    maxFileSize: "[lang,upload_multiple_errorFilesize,mediamanager]",
+                    minFileSize: 'File is too small'
+                },
+                maxFileSize: %%maxFileSize%%,
+                acceptFileTypes: %%acceptFileTypes%%,
+                uploadTemplateId: null,
+                downloadTemplateId: null,
+                downloadTemplate: function (o) {
+                    var rows = $();
+                    console.debug('rendering dl');
+                    console.debug(o);
+                    $.each(o.files, function (index, file) {
+                        var row = $('#%%name%% .fileupload-list-template .template-upload').clone();
+                        row.find('.name').text(file.name);
+                        row.find('.size').text(o.formatFileSize(file.size));
+                        if (file.error) {
+                            row.find('.error').text(file.error);
+                        }
+                        rows = rows.add(row);
+                    });
+                    return rows;
+                },
+                uploadTemplate: function (o) {
+                    var rows = $();
+                    console.debug('rendering');
+                    $.each(o.files, function (index, file) {
+                        console.debug(file);
+                        var row = $('#%%name%% .fileupload-list-template .template-upload').clone();
+                        row.find('.name').text(file.name);
+                        row.find('.size').text(o.formatFileSize(file.size));
+                        if (file.error) {
+                            row.find('.error').text(file.error);
+                        }
+                        rows = rows.add(row);
+                    });
+                    return rows;
+                }
+            })
+//            .bind('fileuploaddone', function (e, data) {
+//                filesToUpload--;
+//                $(this).trigger('kajonahideelements');
+//            })
+            ;
+
+
+            var files = [
+                {
+                    "name":"fileName.jpg",
+                    "size":775702,
+                    "type":"image/jpeg",
+                    "url":"http://mydomain.com/files/fileName.jpg",
+                    "deleteUrl":"http://mydomain.com/files/fileName.jpg",
+                    "deleteType":"DELETE"
+                },
+                {
+                    "name":"file2.jpg",
+                    "size":68222,
+                    "type":"image/jpeg",
+                    "url":"http://mydomain.com/files/file2.jpg",
+                    "deleteUrl":"http://mydomain.com/files/file2.jpg",
+                    "deleteType":"DELETE"
+                }
+            ];
+
+            //load files from the backend
+            ajax.genericAjaxCall("mediamanager", "fileUploadTemp", "&sytemid=%%mediamanagerRepoId%%", function(data) {
+                uploader.fileupload('option', 'done').call(uploader, $.Event('done'), {result: data});
+            }, null, null, "post", "json");
+
+            //uploader.fileupload('option', 'done').call(uploader, $.Event('done'), {result: {files: files}});
+
+
+
+        });
+
+
+
+        $(document).bind('dragover', function (e) {
+            var dropZone = $('#%%name%%'),
+                timeout = window.dropZoneTimeout;
+            if (!timeout) {
+                dropZone.addClass('in');
+
+            } else {
+                clearTimeout(timeout);
+            }
+            var found = false,
+                node = e.target;
+            do {
+                if (node === dropZone[0]) {
+                    found = true;
+                    break;
+                }
+                node = node.parentNode;
+            } while (node != null);
+            if (found) {
+                dropZone.addClass('hover');
+                $('#drop-%%uploadId%%').removeClass('alert-info').addClass('alert-success');
+            } else {
+                dropZone.removeClass('hover');
+                $('#drop-%%uploadId%%').addClass('alert-info').removeClass('alert-success');
+            }
+            window.dropZoneTimeout = setTimeout(function () {
+                window.dropZoneTimeout = null;
+                dropZone.removeClass('in hover');
+                $('#drop-%%uploadId%%').addClass('alert-info').removeClass('alert-success');
+            }, 100);
+        });
+    </script>
+</input_upload_inline>
+
 Regular Submit-Button
 <input_submit>
         <button type="submit" class="btn btn-default savechanges %%class%%" name="%%name%%" value="%%value%%" %%disabled%% %%eventhandler%%>
