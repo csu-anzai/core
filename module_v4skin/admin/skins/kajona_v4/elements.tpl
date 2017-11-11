@@ -660,11 +660,6 @@ Upload-Field for multiple files with progress bar
         }, 100);
     });
 </script>
-
-
-    </style>
-
-
 </input_upload_multiple>
 
 Regular Submit-Button
