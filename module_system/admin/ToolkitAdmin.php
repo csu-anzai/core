@@ -774,7 +774,7 @@ class ToolkitAdmin extends Toolkit
      *
      * @see FormentryMultiUpload
      */
-    public function formInputUploadInline($strName, MediamanagerRepo $objRepo, $strTargetDir)
+    public function formInputUploadInline($strName, $strTitle, MediamanagerRepo $objRepo, $strTargetDir)
     {
 
         if (SystemModule::getModuleByName("mediamanager") === null) {
@@ -788,9 +788,12 @@ class ToolkitAdmin extends Toolkit
 
         $arrTemplate = array();
         $arrTemplate["name"] = $strName;
+        $arrTemplate["title"] = $strTitle;
         $arrTemplate["mediamanagerRepoId"] = $objRepo->getSystemid();
         $arrTemplate["folder"] = $strTargetDir;
         $arrTemplate["uploadId"] = $strUploadId;
+        $arrTemplate["addButton"] = "<i class='kj-icon fa fa-plus-circle'></i>";//AdminskinHelper::getAdminImage("icon_new", $objText->getLang("mediamanager_upload", "mediamanager"));
+//        $arrTemplate["addButton"] = AdminskinHelper::getAdminImage("icon_new", $objText->getLang("mediamanager_upload", "mediamanager"));
 
         $strAllowedFileRegex = StringUtil::replace(array(".", ","), array("", "|"), $objRepo->getStrUploadFilter());
         $strAllowedFileTypes = StringUtil::replace(array(".", ","), array("", "', '"), $objRepo->getStrUploadFilter());

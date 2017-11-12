@@ -61,7 +61,7 @@ class FormentryMultiUpload extends FormentryBase implements FormentryPrintableIn
             $strReturn .= $objToolkit->formTextRow($this->getStrHint());
         }
         //and render the multiupload fields
-        $strReturn .= $objToolkit->formInputUploadInline($this->getStrEntryName()."_ul", $objRepo, $this->getStrValue());
+        $strReturn .= $objToolkit->formInputUploadInline($this->getStrEntryName()."_ul", $this->getStrLabel(), $objRepo, $this->getStrValue());
 
         return $strReturn;
     }

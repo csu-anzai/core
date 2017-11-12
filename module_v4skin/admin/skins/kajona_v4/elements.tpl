@@ -668,61 +668,72 @@ Upload-Field for multiple files with progress bar
 Upload-Field for multiple files with progress bar
 <input_upload_inline>
 
-    <div id="%%name%%" class="fileupload-wrapper">
-        <div class="fileupload-buttonbar">
+    <div id="%%name%%" class="form-group fileupload-wrapper">
 
-                <span class="btn btn-default fileinput-button">
-                    <i class="fa fa-plus-square"></i>
-                    <span>[lang,mediamanager_upload,mediamanager]</span>
-                    <input type="file" name="%%name%%" multiple>
-                </span>
+        <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
 
-            <button type="submit" class="btn btn-default start" style="display: none;">
-                <i class="fa fa-upload"></i>
-                <span>[lang,upload_multiple_uploadFiles,mediamanager]</span>
-            </button>
+        <div  class="col-sm-6 inputText ">
+            <div class="filekjhupload-buttonbar">
 
-            <button type="reset" class="btn btn-default cancel" style="display: none;">
-                <i class="fa fa-ban"></i>
-                <span>[lang,upload_multiple_cancel,mediamanager]</span>
-            </button>
 
-            <span class="fileupload-process"></span>
-            <div class="alert alert-info" id="drop-%%uploadId%%">
-                [lang,upload_dropArea,mediamanager]<br />
-                %%allowedExtensions%%
-            </div>
-        </div>
 
-        <div class="fileupload-progress" style="">
-
-            <div class="progress" aria-valuemin="0" aria-valuemax="100">
-                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;"></div>
+                <span class="fileupload-process"></span>
+                <div class="alert alert-info" id="drop-%%uploadId%%">
+                    [lang,upload_dropArea,mediamanager]<br />
+                    %%allowedExtensions%%
+                </div>
             </div>
 
-            <div class="progress-extended">&nbsp;</div>
+            <div class="fileupload-progress" style="">
+                <div class="progress-extended">&nbsp;</div>
+                <div class="progress" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;"></div>
+                </div>
+            </div>
+
+            <table class="table admintable table-striped-tbody files" id="files-%%uploadId%%">
+
+            </table>
+
+            <div class="hidden fileupload-list-template">
+                <table>
+                <tbody class="template-upload">
+                    <tr class="progress-row">
+                        <td colspan="3">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="file-details">
+                        <td><span class="preview"></span></td>
+                        <td>
+                            <span class="name"></span><div class="error"></div>
+                        </td>
+                        <td>
+                            <span class="size"></span>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="col-sm-2 form-opener">
+            <span class=" fileinput-button">
+                <input type="file" name="%%name%%" multiple>
+                %%addButton%%
+            </span>
         </div>
 
-        <table class="table admintable table-striped-tbody files" id="files-%%uploadId%%"></table>
 
-        <div class="hidden fileupload-list-template">
-            <table>
-            <tbody class="template-upload fade"><tr>
-                <td><span class="preview"></span></td>
-                <td><p class="name"></p>
-                    <div class="error"></div>
-                </td>
-                <td>
-                    <p class="size"></p>
-                </td>
-            </tr></tbody></table>
-        </div>
+
+
     </div>
 
     <script type="text/javascript">
         require(['jquery', 'ajax', 'blueimp-tmpl', 'jquery-ui/ui/widget', 'jquery.iframe-transport', 'jquery.fileupload', 'jquery.fileupload-process', 'jquery.fileupload-ui'], function($, ajax) {
 
-            console.log('init fu');
             var filesToUpload = 0;
             var uploader = $('#%%name%%').fileupload({
                 url: '_webpath_/xml.php?admin=1&module=mediamanager&action=fileUploadTemp',
@@ -750,8 +761,6 @@ Upload-Field for multiple files with progress bar
                 downloadTemplateId: null,
                 downloadTemplate: function (o) {
                     var rows = $();
-                    console.debug('rendering dl');
-                    console.debug(o);
                     $.each(o.files, function (index, file) {
                         var row = $('#%%name%% .fileupload-list-template .template-upload').clone();
                         row.find('.name').text(file.name);
@@ -765,9 +774,7 @@ Upload-Field for multiple files with progress bar
                 },
                 uploadTemplate: function (o) {
                     var rows = $();
-                    console.debug('rendering');
                     $.each(o.files, function (index, file) {
-                        console.debug(file);
                         var row = $('#%%name%% .fileupload-list-template .template-upload').clone();
                         row.find('.name').text(file.name);
                         row.find('.size').text(o.formatFileSize(file.size));
@@ -778,12 +785,7 @@ Upload-Field for multiple files with progress bar
                     });
                     return rows;
                 }
-            })
-//            .bind('fileuploaddone', function (e, data) {
-//                filesToUpload--;
-//                $(this).trigger('kajonahideelements');
-//            })
-            ;
+            });
 
 
             var files = [
