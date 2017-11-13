@@ -27,6 +27,31 @@ namespace Kajona\System\System;
  */
 class SystemAspect extends Model implements ModelInterface, AdminListableInterface
 {
+    /**
+     * @var string
+     * @fieldType Kajona\System\Admin\Formentries\FormentryMultiUpload
+     * @tableColumn aspects.aspect_upload
+     * @tableColumnDatatype char20
+     */
+    private $strUpload = "";
+
+    /**
+     * @return string
+     */
+    public function getStrUpload()
+    {
+        return $this->strUpload;
+    }
+
+    /**
+     * @param string $strUpload
+     */
+    public function setStrUpload($strUpload)
+    {
+        $this->strUpload = $strUpload;
+    }
+
+
 
     /**
      * @var string

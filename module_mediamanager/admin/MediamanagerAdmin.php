@@ -1008,7 +1008,17 @@ HTML;
             $objFilesystem->folderCreate($strFullTargetFolder, true);
         }
 
-        if ($objFilesystem->isWritable($strFullTargetFolder)) {
+        if (is_file(_realpath_.$strTargetFile)) {
+            ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_BADREQUEST);
+            $arrReturn['error'] = $this->getLang("upload_multiple_errorExisting"); //TODO: muss anders in die response eingebaut weden
+        }
+
+        if (empty($arrReturn['error']) && !$objFilesystem->isWritable($strFullTargetFolder)) {
+            ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_INTERNAL_SERVER_ERROR);
+            $arrReturn['error'] = $this->getLang("xmlupload_error_notWritable");
+        }
+
+        if (empty($arrReturn['error'])) {
             //Check file for correct filters
             $arrAllowed = explode(",", $objRepo->getStrUploadFilter());
 
@@ -1076,12 +1086,18 @@ HTML;
      */
     private function mediamanagerFileToJqueryFileuploadArray(MediamanagerFile $objFile)
     {
+
+        $strDeleteButton = "";
+        if($objFile->rightDelete()) {
+            $strLink = "javascript:require(\'fileupload\').deleteFile(\'{$objFile->getSystemid()}\')";
+            $strDeleteButton = $this->objToolkit->listDeleteButton($objFile->getStrDisplayName(), $this->getLang("delete_file_question"), $strLink);
+        }
         return [
             "name" => $objFile->getStrName(),
             "size" => $objFile->getIntFileSize(),
-            "url" => _webpath_."/download.php?systemid=".$objFile->getSystemid(),
-            "deleteUrl" => $objFile->rightDelete() ?  Link::getLinkAdminHref("mediamanager", "delete", ["systemid" => $objFile->getSystemid()]) : "",
-            "deleteType" => "DELETE",
+            "url" => $objFile->rightRight2() ? _webpath_."/download.php?systemid=".$objFile->getSystemid() : "",
+            "systemid" => $objFile->getSystemid(),
+            "deleteButton" => $strDeleteButton
         ];
     }
 

@@ -696,9 +696,9 @@ Upload-Field for multiple files with progress bar
 
             <div class="hidden fileupload-list-template">
                 <table>
-                <tbody class="template-upload">
+                <tbody class="template-upload" data-uploadid="">
                     <tr class="progress-row">
-                        <td colspan="3">
+                        <td colspan="4">
                             <div class="progress">
                                 <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
                             </div>
@@ -711,6 +711,10 @@ Upload-Field for multiple files with progress bar
                         </td>
                         <td>
                             <span class="size"></span>
+                        </td>
+                        <td class="actions">
+                            <span class="dl-link hidden"><a href=""><i class="kj-icon fa fa-download"></i></a></span>
+                            <span class="del-button hidden"></span>
                         </td>
                     </tr>
                 </tbody>
@@ -731,7 +735,7 @@ Upload-Field for multiple files with progress bar
     </div>
 
     <script type="text/javascript">
-        require(['jquery', 'ajax', 'blueimp-tmpl', 'jquery-ui/ui/widget', 'jquery.iframe-transport', 'jquery.fileupload', 'jquery.fileupload-process', 'jquery.fileupload-ui'], function($, ajax) {
+        require(['jquery', 'ajax', 'blueimp-tmpl', 'jquery-ui/ui/widget', 'jquery.iframe-transport', 'jquery.fileupload', 'jquery.fileupload-process', 'jquery.fileupload-ui', "fileupload"], function($, ajax) {
 
             var filesToUpload = 0;
             var uploader = $('#%%name%%').fileupload({
@@ -766,6 +770,14 @@ Upload-Field for multiple files with progress bar
                         if (file.error) {
                             row.find('.error').text(file.error);
                         }
+                        if (file.url) {
+                            row.find(".dl-link a").attr('href', file.url);
+                            row.find(".dl-link").removeClass('hidden');
+                        }
+                        if (file.deleteButton) {
+                            row.find('.del-button').html(file.deleteButton).removeClass('hidden');
+                        }
+                        row.attr('data-uploadid', file.systemid);
                         rows = rows.add(row);
                     });
                     return rows;

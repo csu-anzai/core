@@ -29,7 +29,7 @@ $lang["cropWarningCrop"]                 = "Ja, zuschneiden";
 $lang["cropWarningDialogHeader"]         = "Zuschneiden bestätigen";
 $lang["cropWarningSaving"]               = "Bitte beachten: Das Zuschneiden betrifft alle Verwendungen des Bildes! Trotzdem forfahren?<br />";
 $lang["cropWarningUnsavedHint"]          = "Ihre Änderungen am Bild wurden noch nicht gespeichert!\\nMöchten Sie die Änderungen wirklich verwerfen?\\n\\nZum Speichern der Änderungen wählen Sie \"Abbrechen\" und machen Sie einen Doppelklick auf das Bild.";
-$lang["delete_file_question"]            = "Möchten Sie die Datei &quot;<b>%%element_name%%</b>&quot; wirklich löschen?<br />Dabei werden alle hinterlegten Daten gelöscht, auch in anderen Repositories.";
+$lang["delete_file_question"]            = "Möchten Sie die Datei &quot;<b>%%element_name%%</b>&quot; wirklich löschen?";
 $lang["delete_question_repo"]            = "Möchten Sie das Repository &quot;<b>%%element_name%%</b>&quot; wirklich löschen?<br />Dabei werden lediglich die hinterlegten Daten gelöscht, die Dateien im Dateisystem bleiben bestehen.";
 $lang["download_link"]                   = "Download";
 $lang["file_delete_error"]               = "Fehler beim Löschen der Datei";
@@ -82,6 +82,7 @@ $lang["upload_fehler_filter"]            = "Der hochgeladene Dateityp ist nicht 
 $lang["upload_multiple_cancel"]          = "Abbrechen";
 $lang["upload_multiple_dialogHeader"]    = "Dateien hochladen";
 $lang["upload_multiple_errorFilesize"]   = "Datei ist zu groß.";
+$lang["upload_multiple_errorExisting"]   = "Datei bereits vorhanden";
 $lang["upload_multiple_errorFlash"]      = "Bitte installieren Sie sich den <a href=\"http://get.adobe.com/de/flashplayer/\" target=\"_blank\">Adobe Flash Player</a> ab Version 9 um Dateien komfortabel hochladen zu können.";
 $lang["upload_multiple_pleaseWait"]      = "Bitte warten...";
 $lang["upload_multiple_totalFilesAndSize"] = "Datei(en) mit insgesamt";

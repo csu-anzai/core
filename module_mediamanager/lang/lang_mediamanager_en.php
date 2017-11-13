@@ -82,6 +82,7 @@ $lang["upload_fehler_filter"]            = "The uploaded file type is not allowe
 $lang["upload_multiple_cancel"]          = "Cancel";
 $lang["upload_multiple_dialogHeader"]    = "Upload files";
 $lang["upload_multiple_errorFilesize"]   = "File is too large";
+$lang["upload_multiple_errorExisting"]   = "File already existing";
 $lang["upload_multiple_errorFlash"]      = "Please install <a href=\"http://get.adobe.com/en/flashplayer/\" target=\"_blank\">Adobe Flash Player</a> >= Version 9 to use the comfortable file upload.";
 $lang["upload_multiple_pleaseWait"]      = "Please wait...";
 $lang["upload_multiple_totalFilesAndSize"] = "file(s) with a total of";
