@@ -206,6 +206,7 @@ HTML;
         });
 
         $arrList = array("graph TD;");
+        $arrUsed = [];
 
         foreach ($arrStatus as $objStatus) {
             /** @var FlowStatus $objStatus */
@@ -226,15 +227,27 @@ HTML;
                     } else {
                         $arrList[] = $objStatus->getStrSystemid() . "[" . $objStatus->getStrName() . "]{$strLineStart} <span data-" . $objTransition->getSystemid() . ">______</span> {$strLineEnd}>" . $objTargetStatus->getSystemid() . "[" . $objTargetStatus->getStrName() . "];";
                     }
+                    $arrUsed[$objStatus->getStrSystemid()] = $objStatus;
                 }
             }
-            $arrList["style ".$objStatus->getSystemid()] = "style {$objStatus->getSystemid()} fill:#f9f9f9,stroke:{$objStatus->getStrIconColor()},stroke-width:1px;";
         }
 
+        $strHighliteId = null;
+        $strHighliteColor = null;
         if ($objHighlite instanceof FlowStatus) {
-            $arrList["style ".$objHighlite->getSystemid()] = "style {$objHighlite->getSystemid()} fill:#f9f9f9,stroke:{$objHighlite->getStrIconColor()},stroke-width:3px;";
+            $strHighliteId = $objHighlite->getSystemid();
+            $strHighliteColor = $objHighlite->getStrIconColor();
         } elseif ($objHighlite instanceof FlowTransition) {
-            $arrList["style ".$objHighlite->getParentStatus()->getSystemid()] = "style {$objHighlite->getParentStatus()->getSystemid()} fill:#f9f9f9,stroke:{$objHighlite->getStrIconColor()},stroke-width:3px;";
+            $strHighliteId = $objHighlite->getParentStatus()->getSystemid();
+            $strHighliteColor = $objHighlite->getParentStatus()->getStrIconColor();
+        }
+
+        foreach ($arrUsed as $strSystemId => $objStatus) {
+            if ($strHighliteId !== null && $strSystemId == $strHighliteId) {
+                $arrList["style ".$strHighliteId] = "style {$strHighliteId} fill:#f9f9f9,stroke:{$strHighliteColor},stroke-width:3px;";
+            } else {
+                $arrList["style ".$strSystemId] = "style {$strSystemId} fill:#f9f9f9,stroke:{$objStatus->getStrIconColor()},stroke-width:1px;";
+            }
         }
 
         $strGraph = implode("\n", $arrList);
