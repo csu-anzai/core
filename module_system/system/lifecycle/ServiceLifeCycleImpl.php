@@ -3,6 +3,7 @@
 namespace Kajona\System\System\Lifecycle;
 
 use Kajona\System\System\Database;
+use Kajona\System\System\RedirectException;
 use Kajona\System\System\Root;
 
 /**
@@ -29,6 +30,10 @@ class ServiceLifeCycleImpl implements ServiceLifeCycleInterface
             }
 
             Database::getInstance()->transactionCommit();
+        } catch (RedirectException $objE) {
+            Database::getInstance()->transactionCommit();
+
+            throw $objE;
         } catch (\Exception $objE) {
             Database::getInstance()->transactionRollback();
 
