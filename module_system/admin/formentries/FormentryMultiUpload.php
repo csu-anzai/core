@@ -16,6 +16,7 @@ use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSession;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\Validators\DummyValidator;
+use Kajona\System\System\Validators\SystemidValidator;
 
 
 /**
@@ -29,7 +30,19 @@ class FormentryMultiUpload extends FormentryBase implements FormentryPrintableIn
 {
 
 
+
+
     private $strRepoId = "";
+
+    /**
+     * @inheritDoc
+     */
+    public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
+    {
+        parent::__construct($strFormName, $strSourceProperty, $objSourceObject);
+        $this->setObjValidator(new SystemidValidator());
+    }
+
 
     /**
      * Renders the field itself.

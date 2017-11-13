@@ -768,10 +768,10 @@ class ToolkitAdmin extends Toolkit
      * care of validating permissions and creating the relevant MediamanagerFile entries on the fly.
      *
      * @param string $strName
+     * @param $strTitle
      * @param MediamanagerRepo $objRepo
      * @param $strTargetDir
      * @return string
-     *
      * @see FormentryMultiUpload
      */
     public function formInputUploadInline($strName, $strTitle, MediamanagerRepo $objRepo, $strTargetDir)

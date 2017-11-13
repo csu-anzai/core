@@ -561,8 +561,7 @@ Upload-Field for multiple files with progress bar
             filesContainer: $('#files-%%uploadId%%'),
             formData: [
                 {name: 'systemid', value: '%%mediamanagerRepoId%%'},
-                {name: 'inputElement', value : '%%name%%'},
-                {name: 'jsonResponse', value : 'true'}
+                {name: 'inputElement', value : '%%name%%'}
             ],
             messages: {
                 maxNumberOfFiles: 'Maximum number of files exceeded',
@@ -736,7 +735,7 @@ Upload-Field for multiple files with progress bar
 
             var filesToUpload = 0;
             var uploader = $('#%%name%%').fileupload({
-                url: '_webpath_/xml.php?admin=1&module=mediamanager&action=fileUploadTemp',
+                url: '_webpath_/xml.php?admin=1&module=mediamanager&action=fileUpload',
                 dataType: 'json',
                 dropZone: $('#%%name%%'),
                 pasteZone: $(document),
@@ -746,7 +745,6 @@ Upload-Field for multiple files with progress bar
                 formData: [
                     {name: 'systemid', value: '%%mediamanagerRepoId%%'},
                     {name: 'inputElement', value : '%%name%%'},
-                    {name: 'jsonResponse', value : 'true'},
                     {name: 'folder', value : '%%folder%%'}
                 ],
                 messages: {
@@ -787,35 +785,10 @@ Upload-Field for multiple files with progress bar
                 }
             });
 
-
-            var files = [
-                {
-                    "name":"fileName.jpg",
-                    "size":775702,
-                    "type":"image/jpeg",
-                    "url":"http://mydomain.com/files/fileName.jpg",
-                    "deleteUrl":"http://mydomain.com/files/fileName.jpg",
-                    "deleteType":"DELETE"
-                },
-                {
-                    "name":"file2.jpg",
-                    "size":68222,
-                    "type":"image/jpeg",
-                    "url":"http://mydomain.com/files/file2.jpg",
-                    "deleteUrl":"http://mydomain.com/files/file2.jpg",
-                    "deleteType":"DELETE"
-                }
-            ];
-
             //load files from the backend
-            ajax.genericAjaxCall("mediamanager", "fileUploadTemp", "&sytemid=%%mediamanagerRepoId%%", function(data) {
+            ajax.genericAjaxCall("mediamanager", "fileUploadList", "&systemid=%%mediamanagerRepoId%%&folder=%%folder%%", function(data) {
                 uploader.fileupload('option', 'done').call(uploader, $.Event('done'), {result: data});
             }, null, null, "post", "json");
-
-            //uploader.fileupload('option', 'done').call(uploader, $.Event('done'), {result: {files: files}});
-
-
-
         });
 
 
