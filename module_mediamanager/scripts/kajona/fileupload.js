@@ -13,7 +13,7 @@
 define(["jquery", "ajax", 'blueimp-tmpl', 'jquery-ui/ui/widget', 'jquery.iframe-transport', 'jquery.fileupload', 'jquery.fileupload-process', 'jquery.fileupload-ui'], function($, ajax) {
 
 
-    UploadManager = function (options) {
+    var UploadManager = function (options) {
 
         var settings = $.extend({
             baseElement: null,
@@ -68,16 +68,15 @@ define(["jquery", "ajax", 'blueimp-tmpl', 'jquery-ui/ui/widget', 'jquery.iframe-
         }
 
         $(document).bind('dragover', function (e) {
-            var dropZone = $('div.fileupload-wrapper:not(.blueimp-fileupload-disabled) table.drop-zone'),
+            var dropZone = $('.fileupload-wrapper:not(.blueimp-fileupload-disabled) .drop-zone'),
                 timeout = window.dropZoneTimeout;
             if (!timeout) {
                 dropZone.addClass('active-dropzone');
-
             } else {
                 clearTimeout(timeout);
             }
 
-            var curDropZone = e.target.closest('div.fileupload-wrapper:not(.blueimp-fileupload-disabled) table.drop-zone');
+            var curDropZone = e.target.closest('.fileupload-wrapper:not(.blueimp-fileupload-disabled) .drop-zone');
             if (curDropZone) {
                 $(curDropZone).addClass('hover');
             } else {

@@ -4,7 +4,7 @@ Reference: Formentries
 
 | Name                                                              | Since      |  Description               |
 | ----------------------------------------------------------------- | ---------- | -------------------------- |
-| Kajona\Mediamanager\Admin\Formentries\FormentryMultiUpload        | 7.0        | Provides a multi-upload field for a single form. Multiple entries on a single form are supported.   |
+| Kajona\Mediamanager\Admin\Formentries\FormentryMultiUpload        | 6.5        | Provides a multi-upload field for a single form. Multiple entries on a single form are supported.   |
 | Kajona\System\Admin\Formentries\FormentryAutoheadline             | 4.5        | Generates a headline out of a properties' value   |
 | Kajona\System\Admin\Formentries\FormentryButton	                | 4.3        | A simple button element |
 | Kajona\System\Admin\Formentries\FormentryCheckbox	                | 4.0        | Simple checkbox element |

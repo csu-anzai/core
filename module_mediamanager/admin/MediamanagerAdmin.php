@@ -1114,12 +1114,12 @@ HTML;
     {
         $objRepo = Objectfactory::getInstance()->getObject($this->getSystemid());
         if (!$objRepo instanceof MediamanagerRepo) {
-            return json_encode("[]");
+            return json_encode([]);
         }
 
         $objFile = MediamanagerFile::getFileForPath($this->getSystemid(), $objRepo->getStrPath()."/".$this->getParam("folder"));
         if ($objFile == null || !$objFile->rightView()) {
-            return json_encode("[]");
+            return json_encode([]);
         }
 
 
