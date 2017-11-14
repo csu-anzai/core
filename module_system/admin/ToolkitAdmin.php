@@ -771,7 +771,7 @@ class ToolkitAdmin extends Toolkit
      * @return string
      * @see FormentryMultiUpload
      */
-    public function formInputUploadInline($strName, $strTitle, MediamanagerRepo $objRepo, $strTargetDir)
+    public function formInputUploadInline($strName, $strTitle, MediamanagerRepo $objRepo, $strTargetDir, $bitReadonly = false)
     {
 
         if (SystemModule::getModuleByName("mediamanager") === null) {
@@ -786,7 +786,8 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["title"] = $strTitle;
         $arrTemplate["mediamanagerRepoId"] = $objRepo->getSystemid();
         $arrTemplate["folder"] = $strTargetDir;
-        $arrTemplate["addButton"] = $this->listButton("<i class='kj-icon fa fa-plus-circle'></i>");//AdminskinHelper::getAdminImage("icon_new", $objText->getLang("mediamanager_upload", "mediamanager"));
+        $arrTemplate["readOnly"] = $bitReadonly ? 'true' : 'false';
+        $arrTemplate["addButton"] = $bitReadonly ? "" : $this->listButton("<i class='kj-icon fa fa-plus-circle'></i>");//AdminskinHelper::getAdminImage("icon_new", $objText->getLang("mediamanager_upload", "mediamanager"));
 
         $strAllowedFileRegex = StringUtil::replace(array(".", ","), array("", "|"), $objRepo->getStrUploadFilter());
         $strAllowedFileTypes = StringUtil::replace(array(".", ","), array("", "', '"), $objRepo->getStrUploadFilter());
@@ -796,7 +797,7 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["acceptFileTypes"] = $strAllowedFileRegex != "" ? "/(\.|\/)(".$strAllowedFileRegex.")$/i" : "''";
         $arrTemplate["upload_multiple_errorFilesize"] = $objText->getLang("upload_multiple_errorFilesize", "mediamanager")." ".bytesToString($objConfig->getPhpMaxUploadSize());
 
-        $arrTemplate["helpButton"] = $this->listButton(
+        $arrTemplate["helpButton"] = $bitReadonly ? "" : $this->listButton(
             $this->getPopoverText(
                 AdminskinHelper::getAdminImage("icon_question", "", true),
                 $objText->getLang("mediamanager_upload", "mediamanager"),

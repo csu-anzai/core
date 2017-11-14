@@ -21,6 +21,7 @@ define(["jquery", "ajax", 'blueimp-tmpl', 'jquery-ui/ui/widget', 'jquery.iframe-
             autoUpload: false,
             paramName: 'files',
             formData: [],
+            readOnly: false,
             maxFileSize: 0,
             acceptFileTypes: '',
             downloadTemplate: null,
@@ -38,12 +39,6 @@ define(["jquery", "ajax", 'blueimp-tmpl', 'jquery-ui/ui/widget', 'jquery.iframe-
             paramName : settings.paramName,
             filesContainer: settings.baseElement.find('.files'),
             formData: settings.formData,
-            // messages: {
-            //     maxNumberOfFiles: 'Maximum number of files exceeded',
-            //     acceptFileTypes: "[lang,upload_fehler_filter,mediamanager]",
-            //     maxFileSize: "[lang,upload_multiple_errorFilesize,mediamanager]",
-            //     minFileSize: 'File is too small'
-            // },
             maxFileSize: settings.maxFileSize,
             acceptFileTypes: settings.acceptFileTypes,
             uploadTemplateId: null,
@@ -51,6 +46,10 @@ define(["jquery", "ajax", 'blueimp-tmpl', 'jquery-ui/ui/widget', 'jquery.iframe-
             downloadTemplate: settings.downloadTemplate,
             uploadTemplate: settings.uploadTemplate
         });
+
+        if (settings.readOnly) {
+            settings.baseElement.fileupload('disable');
+        }
 
         return {
             getUploader : function() {
@@ -69,7 +68,7 @@ define(["jquery", "ajax", 'blueimp-tmpl', 'jquery-ui/ui/widget', 'jquery.iframe-
         }
 
         $(document).bind('dragover', function (e) {
-            var dropZone = $('.drop-zone'),
+            var dropZone = $('div.fileupload-wrapper:not(.blueimp-fileupload-disabled) table.drop-zone'),
                 timeout = window.dropZoneTimeout;
             if (!timeout) {
                 dropZone.addClass('active-dropzone');
@@ -77,17 +76,10 @@ define(["jquery", "ajax", 'blueimp-tmpl', 'jquery-ui/ui/widget', 'jquery.iframe-
             } else {
                 clearTimeout(timeout);
             }
-            var found = false,
-                node = e.target;
-            do {
-                if (node === dropZone[0]) {
-                    found = true;
-                    break;
-                }
-                node = node.parentNode;
-            } while (node != null);
-            if (found) {
-                dropZone.addClass('hover');
+
+            var curDropZone = e.target.closest('div.fileupload-wrapper:not(.blueimp-fileupload-disabled) table.drop-zone');
+            if (curDropZone) {
+                $(curDropZone).addClass('hover');
             } else {
                 dropZone.removeClass('hover');
             }

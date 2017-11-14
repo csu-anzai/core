@@ -635,11 +635,11 @@ Upload-Field for multiple files with progress bar
 
 Upload-Field for multiple files with progress bar
 <input_upload_inline>
-    <div id="%%name%%" class="form-group fileupload-wrapper">
+    <div id="%%name%%_upl" class="form-group fileupload-wrapper">
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
         <div  class="col-sm-6 inputText ">
 
-            <table class="table admintable table-striped-tbody files form-control drop-zone"></table>
+            <table class="table admintable table-striped-tbody files form-control drop-zone" id="%%name%%"></table>
 
             <div class="hidden fileupload-list-template">
                 <table>
@@ -682,12 +682,13 @@ Upload-Field for multiple files with progress bar
         require(["fileupload", "ajax"], function(fileupload, ajax) {
 
             var uploader = fileupload.initUploader({
-                baseElement: $('#%%name%%'),
+                baseElement: $('#%%name%%_upl'),
                 autoUpload: true,
-                paramName: '%%name%%',
+                readOnly: %%readOnly%%,
+                paramName: '%%name%%_upl',
                 formData: [
                     {name: 'systemid', value: '%%mediamanagerRepoId%%'},
-                    {name: 'inputElement', value : '%%name%%'},
+                    {name: 'inputElement', value : '%%name%%_upl'},
                     {name: 'folder', value : '%%folder%%'}
                 ],
                 maxFileSize: %%maxFileSize%%,
@@ -695,7 +696,7 @@ Upload-Field for multiple files with progress bar
                 downloadTemplate: function (o) {
                     var rows = $();
                     $.each(o.files, function (index, file) {
-                        var row = $('#%%name%% .fileupload-list-template .template-upload').clone();
+                        var row = $('#%%name%%_upl .fileupload-list-template .template-upload').clone();
                         row.find('.name').text(file.name);
                         row.find('.size').text(o.formatFileSize(file.size));
                         if (file.error) {
@@ -705,7 +706,7 @@ Upload-Field for multiple files with progress bar
                             row.find(".dl-link a").attr('href', file.url);
                             row.find(".dl-link").removeClass('hidden');
                         }
-                        if (file.deleteButton) {
+                        if (file.deleteButton && !%%readOnly%%) {
                             row.find('.del-button').html(file.deleteButton).removeClass('hidden');
                         }
                         row.attr('data-uploadid', file.systemid);
@@ -716,7 +717,7 @@ Upload-Field for multiple files with progress bar
                 uploadTemplate: function (o) {
                     var rows = $();
                     $.each(o.files, function (index, file) {
-                        var row = $('#%%name%% .fileupload-list-template .template-upload').clone();
+                        var row = $('#%%name%%_upl .fileupload-list-template .template-upload').clone();
                         row.find('.name').text(file.name);
                         row.find('.size').text(o.formatFileSize(file.size));
                         if (file.error) {

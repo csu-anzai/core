@@ -4,10 +4,12 @@
 *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
 ********************************************************************************************************/
 
-namespace Kajona\System\Admin\Formentries;
+namespace Kajona\Mediamanager\Admin\Formentries;
 
 use Kajona\Mediamanager\System\MediamanagerFile;
 use Kajona\Mediamanager\System\MediamanagerRepo;
+use Kajona\Mediamanager\System\Validators\MediamanagerUploadValidator;
+use Kajona\System\Admin\Formentries\FormentryBase;
 use Kajona\System\Admin\FormentryPrintableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Objectfactory;
@@ -24,23 +26,28 @@ use Kajona\System\System\Validators\SystemidValidator;
  * The mapped database-field is a systemid, so make sure to have at least a varchar20 field available.
  *
  * @author sidler@mulchprod.de
- * @since 7.0
+ * @since 6.5
  */
 class FormentryMultiUpload extends FormentryBase implements FormentryPrintableInterface
 {
-
-
-
-
     private $strRepoId = "";
+
 
     /**
      * @inheritDoc
      */
     public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
     {
+        $this->strRepoId = SystemSetting::getConfigValue("_mediamanager_default_filesrepoid_");
         parent::__construct($strFormName, $strSourceProperty, $objSourceObject);
-        $this->setObjValidator(new SystemidValidator());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getObjValidator()
+    {
+        return new MediamanagerUploadValidator($this->strRepoId);
     }
 
 
@@ -55,43 +62,68 @@ class FormentryMultiUpload extends FormentryBase implements FormentryPrintableIn
         $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
         $strReturn = "";
 
-
-
-
-        //$strReturn .= $objToolkit->formInputUpload($this->getStrEntryName(), $this->getStrLabel(), "", $strFile, $strFileHref, !$this->getBitReadonly());
-
         if (empty($this->getStrValue())) {
             $this->setStrValue(generateSystemid());
         }
 
         /** @var MediamanagerRepo $objRepo */
-        $objRepo = Objectfactory::getInstance()->getObject($this->strRepoId) ?? Objectfactory::getInstance()->getObject(SystemSetting::getConfigValue("_mediamanager_default_filesrepoid_"));
+        $objRepo = Objectfactory::getInstance()->getObject($this->strRepoId);
 
         //place the upload-repo id as a hidden form entry
-        $strReturn .= $objToolkit->formInputHidden($this->getStrEntryName(), $this->getStrValue());
+        $strReturn .= $objToolkit->formInputHidden($this->getStrEntryName()."_id", $this->getStrValue());
 
         if ($this->getStrHint() != null) {
             $strReturn .= $objToolkit->formTextRow($this->getStrHint());
         }
+
         //and render the multiupload fields
-        $strReturn .= $objToolkit->formInputUploadInline($this->getStrEntryName()."_ul", $this->getStrLabel(), $objRepo, $this->getStrValue());
+        $strReturn .= $objToolkit->formInputUploadInline($this->getStrEntryName(), $this->getStrLabel(), $objRepo, $this->getStrValue(), $this->getBitReadonly());
 
         return $strReturn;
     }
 
 
-
-    public function getValueAsText()
+    /**
+     * Overwritten base method, processes the hidden fields, too.
+     */
+    protected function updateValue()
     {
-        list($strFile, $strFileHref) = $this->getFileNameAndHref();
-
-        if (!empty($strFile)) {
-            return '<a href="' . $strFileHref . '">' . $strFile . '</a>';
+        $arrParams = Carrier::getAllParams();
+        if (isset($arrParams[$this->getStrEntryName()."_id"])) {
+            $this->setStrValue($arrParams[$this->getStrEntryName()."_id"]);
         } else {
-            return '-';
+            $this->setStrValue($this->getValueFromObject());
         }
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getValueAsText()
+    {
+
+        /** @var MediamanagerRepo $objRepo */
+        $objRepo = Objectfactory::getInstance()->getObject($this->strRepoId);
+        $objMMFile = MediamanagerFile::getFileForPath($this->strRepoId, $objRepo->getStrPath()."/".$this->getStrValue());
+
+        $arrLinks = [];
+        if ($objMMFile != null) {
+            /** @var MediamanagerFile $objFile */
+            foreach (MediamanagerFile::getObjectListFiltered(null, $objMMFile->getSystemid()) as $objFile) {
+                $arrLinks[] = "<a href='"._webpath_."/download.php?systemid=".$objMMFile->getSystemid()."'>".$objFile->getStrName()."</a>";
+            }
+        }
+
+        return implode("<br />", $arrLinks);
+    }
+
+    /**
+     * @param string $strRepoId
+     */
+    public function setStrRepoId(string $strRepoId)
+    {
+        $this->strRepoId = $strRepoId;
+    }
 
 
 }
