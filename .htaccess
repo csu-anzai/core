@@ -9,7 +9,3 @@ Require all denied
 <FilesMatch "setupproject\.php" >
   Require all granted
 </FilesMatch>
-
-<FilesMatch "V4toV5Migration\.php" >
-  Require all granted
-</FilesMatch>
