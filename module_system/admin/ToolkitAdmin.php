@@ -792,8 +792,8 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["mediamanagerRepoId"] = $objRepo->getSystemid();
         $arrTemplate["folder"] = $strTargetDir;
         $arrTemplate["uploadId"] = $strUploadId;
-        $arrTemplate["addButton"] = "<i class='kj-icon fa fa-plus-circle'></i>";//AdminskinHelper::getAdminImage("icon_new", $objText->getLang("mediamanager_upload", "mediamanager"));
-//        $arrTemplate["addButton"] = AdminskinHelper::getAdminImage("icon_new", $objText->getLang("mediamanager_upload", "mediamanager"));
+        $arrTemplate["addButton"] = $this->listButton("<i class='kj-icon fa fa-plus-circle'></i>");//AdminskinHelper::getAdminImage("icon_new", $objText->getLang("mediamanager_upload", "mediamanager"));
+
 
         $strAllowedFileRegex = StringUtil::replace(array(".", ","), array("", "|"), $objRepo->getStrUploadFilter());
         $strAllowedFileTypes = StringUtil::replace(array(".", ","), array("", "', '"), $objRepo->getStrUploadFilter());
@@ -802,6 +802,12 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["maxFileSize"] = $objConfig->getPhpMaxUploadSize();
         $arrTemplate["acceptFileTypes"] = $strAllowedFileRegex != "" ? "/(\.|\/)(".$strAllowedFileRegex.")$/i" : "''";
         $arrTemplate["upload_multiple_errorFilesize"] = $objText->getLang("upload_multiple_errorFilesize", "mediamanager")." ".bytesToString($objConfig->getPhpMaxUploadSize());
+
+        $arrTemplate["helpButton"] = $this->listButton(
+            $this->getPopoverText(AdminskinHelper::getAdminImage("icon_question", "", true),
+                $objText->getLang("mediamanager_upload", "mediamanager"),
+                $objText->getLang("upload_dropArea_extended", "mediamanager", ["'".$strAllowedFileTypes."'", bytesToString($objConfig->getPhpMaxUploadSize())])
+            ));
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_upload_inline");
     }

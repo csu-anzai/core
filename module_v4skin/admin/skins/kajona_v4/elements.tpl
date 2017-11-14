@@ -546,6 +546,26 @@ Upload-Field for multiple files with progress bar
             </div>
 
         <table class="table admintable table-striped-tbody files" id="files-%%uploadId%%"></table>
+
+        <div class="hidden fileupload-list-template">
+            <table>
+                <tbody class="template-upload fade">
+                <tr>
+                    <td><span class="preview"></span></td>
+                    <td><p class="name"></p>
+                    <div class="error"></div>
+                    </td>
+                    <td><p class="size"></p>
+                        <div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>
+                    </td>
+                <td>
+                    <button class="btn start " disabled style="display: none;">Start</button>
+                    <button class="btn cancel ">[lang,upload_multiple_cancel,mediamanager]</button>
+                </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
 <script type="text/javascript">
@@ -576,20 +596,7 @@ Upload-Field for multiple files with progress bar
             uploadTemplate: function (o) {
                 var rows = $();
                 $.each(o.files, function (index, file) {
-                    var row = $('<tbody class="template-upload fade"><tr>' +
-                                '<td><span class="preview"></span></td>' +
-                                '<td><p class="name"></p>' +
-                                '<div class="error"></div>' +
-                                '</td>' +
-                                '<td><p class="size"></p>' +
-                                '<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>' +
-                                '</td>' +
-                                '<td>' +
-                                (!index && !o.options.autoUpload ?
-                                        '<button class="btn start " disabled style="display: none;">Start</button>' : '') +
-                                (!index ? '<button class="btn cancel ">[lang,upload_multiple_cancel,mediamanager]</button>' : '') +
-                                '</td>' +
-                                '</tr></tbody>');
+                    var row = $('#%%name%% .fileupload-list-template .template-upload').clone();
                     row.find('.name').text(file.name);
                     row.find('.size').text(o.formatFileSize(file.size));
                     if (file.error) {
@@ -628,10 +635,10 @@ Upload-Field for multiple files with progress bar
     });
 
     $(document).bind('dragover', function (e) {
-        var dropZone = $('#%%name%%'),
+        var dropZone = $('#%%name%% .fileupload-buttonbar'),
             timeout = window.dropZoneTimeout;
         if (!timeout) {
-            dropZone.addClass('in');
+            dropZone.addClass('active-dropzone');
 
         } else {
             clearTimeout(timeout);
@@ -654,7 +661,7 @@ Upload-Field for multiple files with progress bar
         }
         window.dropZoneTimeout = setTimeout(function () {
             window.dropZoneTimeout = null;
-            dropZone.removeClass('in hover');
+            dropZone.removeClass('active-dropzone hover');
             $('#drop-%%uploadId%%').addClass('alert-info').removeClass('alert-success');
         }, 100);
     });
@@ -671,32 +678,16 @@ Upload-Field for multiple files with progress bar
 
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
 
-        <div  class="col-sm-6 inputText ">
-            <div class="filekjhupload-buttonbar">
+        <div  class="col-sm-6 inputText drop-zone">
 
 
-
-                <span class="fileupload-process"></span>
-                <div class="alert alert-info" id="drop-%%uploadId%%">
-                    [lang,upload_dropArea,mediamanager]<br />
-                    %%allowedExtensions%%
-                </div>
-            </div>
-
-            <div class="fileupload-progress" style="">
-                <div class="progress-extended">&nbsp;</div>
-                <div class="progress" aria-valuemin="0" aria-valuemax="100">
-                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;"></div>
-                </div>
-            </div>
-
-            <table class="table admintable table-striped-tbody files" id="files-%%uploadId%%">
+            <table class="table admintable table-striped-tbody files form-control" id="files-%%uploadId%%">
 
             </table>
 
             <div class="hidden fileupload-list-template">
                 <table>
-                <tbody class="template-upload" data-uploadid="">
+                <tbody class="template-upload fade" data-uploadid="">
                     <tr class="progress-row">
                         <td colspan="4">
                             <div class="progress">
@@ -727,11 +718,8 @@ Upload-Field for multiple files with progress bar
                 <input type="file" name="%%name%%" multiple>
                 %%addButton%%
             </span>
+            %%helpButton%%
         </div>
-
-
-
-
     </div>
 
     <script type="text/javascript">
@@ -806,10 +794,10 @@ Upload-Field for multiple files with progress bar
 
 
         $(document).bind('dragover', function (e) {
-            var dropZone = $('#%%name%%'),
+            var dropZone = $('#%%name%% .form-control'),
                 timeout = window.dropZoneTimeout;
             if (!timeout) {
-                dropZone.addClass('in');
+                dropZone.addClass('active-dropzone');
 
             } else {
                 clearTimeout(timeout);
@@ -832,7 +820,7 @@ Upload-Field for multiple files with progress bar
             }
             window.dropZoneTimeout = setTimeout(function () {
                 window.dropZoneTimeout = null;
-                dropZone.removeClass('in hover');
+                dropZone.removeClass('active-dropzone hover');
                 $('#drop-%%uploadId%%').addClass('alert-info').removeClass('alert-success');
             }, 100);
         });

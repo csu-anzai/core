@@ -76,6 +76,7 @@ $lang["sync_del"]                        = " Deleted: ";
 $lang["sync_end"]                        = "Synchronization finished successfully";
 $lang["upload_allowed_extensions"]       = "Allowed extensions";
 $lang["upload_dropArea"]                 = "Drop files inside the window";
+$lang["upload_dropArea_extended"]        = "Upload files by choosing them using the add-button, by dropping them right here or by using copy n paste.<br />Allowed filetypes: {0}<br />Max size per upload: {1}";
 $lang["upload_erfolg"]                   = "File was uploaded successfully";
 $lang["upload_fehler"]                   = "An error occurred while uploading file";
 $lang["upload_fehler_filter"]            = "The uploaded file type is not allowed";

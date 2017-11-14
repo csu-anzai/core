@@ -1009,8 +1009,8 @@ HTML;
         }
 
         if (is_file(_realpath_.$strTargetFile)) {
-            ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_BADREQUEST);
-            $arrReturn['error'] = $this->getLang("upload_multiple_errorExisting"); //TODO: muss anders in die response eingebaut weden
+            $arrReturn['error'] = $this->getLang("upload_multiple_errorExisting");
+            $arrReturn["files"][] = ["name" => createFilename($strFilename), "error" => $this->getLang("upload_multiple_errorExisting")];
         }
 
         if (empty($arrReturn['error']) && !$objFilesystem->isWritable($strFullTargetFolder)) {
@@ -1069,9 +1069,6 @@ HTML;
                 ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_BADREQUEST);
                 $arrReturn['error'] = $this->getLang("xmlupload_error_filter");
             }
-        } else {
-            ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_INTERNAL_SERVER_ERROR);
-            $arrReturn['error'] = $this->getLang("xmlupload_error_notWritable");
         }
 
         $strReturn = json_encode($arrReturn);

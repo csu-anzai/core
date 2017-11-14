@@ -1491,12 +1491,16 @@ footer {
     }
 
     /* upload styling */
-    .fileupload-wrapper.in {
-        outline: 3px dotted @gray;
+    .fileupload-wrapper {
+        .active-dropzone {
+            outline: 3px dotted @gray;
+        }
     }
 
-    .fileupload-wrapper.hover {
-        outline: 3px dotted @kajona-brand-color;
+    .fileupload-wrapper {
+        .hover {
+            outline: 3px solid @kajona-brand-color;
+        }
     }
 
 }
