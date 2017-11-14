@@ -8,6 +8,6 @@
 
 Require all denied
 
-<FilesMatch "\.js$|\.css$|\.png$|\.less$|\.ttf$|\.woff$|\.woff2$|\.eot$|\.svg$|\.ttf$" >
+<FilesMatch "\.js$|\.css$|\.png$|\.less$|\.ttf$|\.woff$|\.woff2$|\.eot$|\.svg$" >
   Require all granted
 </FilesMatch>
