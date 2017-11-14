@@ -324,6 +324,16 @@ abstract class FilterBase
     }
 
     /**
+     * Hook method to add order by conditions to the orm objectlist.
+     * By default empty, but may be overwritten in case it is required
+     * @param OrmObjectlist $objORM
+     */
+    public function addOrderByConditionToORM(OrmObjectlist $objORM)
+    {
+
+    }
+
+    /**
      * Gets OrmComparatorEnum by the given $strFilterCompareType
      *
      * @param string $strFilterCompareType

@@ -387,6 +387,7 @@ abstract class Root
 
         if ($objFilter !== null) {
             $objFilter->addWhereConditionToORM($objORM);
+            $objFilter->addOrderByConditionToORM($objORM);
         }
 
         return $objORM->getObjectList(get_called_class(), $strPrevid, $intStart, $intEnd);
