@@ -243,7 +243,7 @@ TXT;
             return;
 
         echo "placing deny htaccess in ".$strPath."\n";
-        $strContent = "\n\nDeny from all\n\n";
+        $strContent = "\n\nRequire all denied\n\n";
         file_put_contents(self::$strRealPath.$strPath, $strContent);
     }
 
@@ -252,7 +252,7 @@ TXT;
             return;
 
         echo "placing allow htaccess in ".$strPath."\n";
-        $strContent = "\n\nOrder allow,deny\n\nAllow from all\n\nSatisfy any\n\n";
+        $strContent = "\n\nRequire all granted\n\n";
         file_put_contents(self::$strRealPath.$strPath, $strContent);
     }
 
