@@ -947,7 +947,7 @@ HTML;
 
         if ($objFile instanceof MediamanagerFile) {
             $strTargetFolder = $objFile->getStrFilename();
-            if (!$objFile->getIntType() != MediamanagerFile::$INT_TYPE_FOLDER) {
+            if ($objFile->getIntType() != MediamanagerFile::$INT_TYPE_FOLDER) {
                 ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
                 return json_encode(['error' => $this->getLang("commons_error_permissions")]);
             }
@@ -956,7 +956,7 @@ HTML;
             while (!$objRepo instanceof MediamanagerRepo) {
                 $objRepo = Objectfactory::getInstance()->getObject($objRepo->getPrevId());
 
-                if (!$objRepo instanceof MediamanagerRepo || !$objRepo instanceof MediamanagerFile) {
+                if (!$objRepo instanceof MediamanagerRepo && !$objRepo instanceof MediamanagerFile) {
                     //wrong parent record, outta here
                     ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
                     return json_encode(['error' => $this->getLang("commons_error_permissions")]);
@@ -1085,7 +1085,7 @@ HTML;
     {
 
         $strDeleteButton = "";
-        if($objFile->rightDelete()) {
+        if ($objFile->rightDelete()) {
             $strLink = "javascript:require(\'fileupload\').deleteFile(\'{$objFile->getSystemid()}\')";
             $strDeleteButton = $this->objToolkit->listDeleteButton($objFile->getStrDisplayName(), $this->getLang("delete_file_question"), $strLink);
         }

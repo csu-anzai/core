@@ -511,7 +511,7 @@ Upload-Field for multiple files with progress bar
 <input_upload_multiple>
 
     <div id="%%name%%" class="fileupload-wrapper">
-            <div class="fileupload-buttonbar">
+            <div class="fileupload-buttonbar drop-zone">
 
                 <span class="btn btn-default fileinput-button">
                     <i class="fa fa-plus-square"></i>
@@ -530,7 +530,7 @@ Upload-Field for multiple files with progress bar
                 </button>
 
                 <span class="fileupload-process"></span>
-                <div class="alert alert-info" id="drop-%%uploadId%%">
+                <div class="alert alert-info">
                     [lang,upload_dropArea,mediamanager]<br />
                      %%allowedExtensions%%
                 </div>
@@ -545,7 +545,7 @@ Upload-Field for multiple files with progress bar
                 <div class="progress-extended">&nbsp;</div>
             </div>
 
-        <table class="table admintable table-striped-tbody files" id="files-%%uploadId%%"></table>
+        <table class="table admintable table-striped-tbody files"></table>
 
         <div class="hidden fileupload-list-template">
             <table>
@@ -569,30 +569,19 @@ Upload-Field for multiple files with progress bar
     </div>
 
 <script type="text/javascript">
-    require(['jquery', 'blueimp-tmpl', 'jquery-ui/ui/widget', 'jquery.iframe-transport', 'jquery.fileupload', 'jquery.fileupload-process', 'jquery.fileupload-ui'], function($) {
+    require(["fileupload", "ajax"], function(fileupload, ajax) {
         var filesToUpload = 0;
-        $('#%%name%%').fileupload({
-            url: '_webpath_/xml.php?admin=1&module=mediamanager&action=fileUpload',
-            dataType: 'json',
-            dropZone: $('#%%name%%'),
-            pasteZone: $(document),
-            autoUpload: false,
-            paramName : '%%name%%',
-            filesContainer: $('#files-%%uploadId%%'),
+
+
+        var uploader = fileupload.initUploader({
+            baseElement: $('#%%name%%'),
+            paramName: '%%name%%',
             formData: [
                 {name: 'systemid', value: '%%mediamanagerRepoId%%'},
                 {name: 'inputElement', value : '%%name%%'}
             ],
-            messages: {
-                maxNumberOfFiles: 'Maximum number of files exceeded',
-                acceptFileTypes: "[lang,upload_fehler_filter,mediamanager]",
-                maxFileSize: "[lang,upload_multiple_errorFilesize,mediamanager]",
-                minFileSize: 'File is too small'
-            },
             maxFileSize: %%maxFileSize%%,
             acceptFileTypes: %%acceptFileTypes%%,
-            uploadTemplateId: null,
-            downloadTemplateId: null,
             uploadTemplate: function (o) {
                 var rows = $();
                 $.each(o.files, function (index, file) {
@@ -606,65 +595,38 @@ Upload-Field for multiple files with progress bar
                 });
                 return rows;
             }
-        })
-        .bind('fileuploadadded', function (e, data) {
-            $(this).find('.fileupload-buttonbar button.start').css('display', '');
-            $(this).find('.fileupload-buttonbar button.cancel').css('display', '');
-            $(this).find('.fileupload-progress').css('display', '');
-            filesToUpload++;
-        })
-        .bind('fileuploadfail', function (e, data) {
-            filesToUpload--;
-            $(this).trigger('kajonahideelements');
-        })
-        .bind('fileuploaddone', function (e, data) {
-            filesToUpload--;
-            $(this).trigger('kajonahideelements');
-        })
-        .bind('fileuploadstop', function (e) {
-            $(this).trigger('kajonahideelements');
-            document.location.reload();
-        })
-        .bind('kajonahideelements', function() {
-            if(filesToUpload == 0) {
-                $(this).find('.fileupload-buttonbar button.start').css('display', 'none');
-                $(this).find('.fileupload-buttonbar button.cancel').css('display', 'none');
-                $(this).find('.fileupload-progress').css('display', 'none');
-            }
         });
+
+        uploader.getUploader()
+            .bind('fileuploadadded', function (e, data) {
+                $(this).find('.fileupload-buttonbar button.start').css('display', '');
+                $(this).find('.fileupload-buttonbar button.cancel').css('display', '');
+                $(this).find('.fileupload-progress').css('display', '');
+                filesToUpload++;
+            })
+            .bind('fileuploadfail', function (e, data) {
+                filesToUpload--;
+                $(this).trigger('kajonahideelements');
+            })
+            .bind('fileuploaddone', function (e, data) {
+                filesToUpload--;
+                $(this).trigger('kajonahideelements');
+            })
+            .bind('fileuploadstop', function (e) {
+                $(this).trigger('kajonahideelements');
+                document.location.reload();
+            })
+            .bind('kajonahideelements', function() {
+                if(filesToUpload == 0) {
+                    $(this).find('.fileupload-buttonbar button.start').css('display', 'none');
+                    $(this).find('.fileupload-buttonbar button.cancel').css('display', 'none');
+                    $(this).find('.fileupload-progress').css('display', 'none');
+                }
+            });
+
     });
 
-    $(document).bind('dragover', function (e) {
-        var dropZone = $('#%%name%% .fileupload-buttonbar'),
-            timeout = window.dropZoneTimeout;
-        if (!timeout) {
-            dropZone.addClass('active-dropzone');
 
-        } else {
-            clearTimeout(timeout);
-        }
-        var found = false,
-            node = e.target;
-        do {
-            if (node === dropZone[0]) {
-                found = true;
-                break;
-            }
-            node = node.parentNode;
-        } while (node != null);
-        if (found) {
-            dropZone.addClass('hover');
-            $('#drop-%%uploadId%%').removeClass('alert-info').addClass('alert-success');
-        } else {
-            dropZone.removeClass('hover');
-            $('#drop-%%uploadId%%').addClass('alert-info').removeClass('alert-success');
-        }
-        window.dropZoneTimeout = setTimeout(function () {
-            window.dropZoneTimeout = null;
-            dropZone.removeClass('active-dropzone hover');
-            $('#drop-%%uploadId%%').addClass('alert-info').removeClass('alert-success');
-        }, 100);
-    });
 </script>
 </input_upload_multiple>
 
@@ -673,17 +635,11 @@ Upload-Field for multiple files with progress bar
 
 Upload-Field for multiple files with progress bar
 <input_upload_inline>
-
     <div id="%%name%%" class="form-group fileupload-wrapper">
-
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
+        <div  class="col-sm-6 inputText ">
 
-        <div  class="col-sm-6 inputText drop-zone">
-
-
-            <table class="table admintable table-striped-tbody files form-control" id="files-%%uploadId%%">
-
-            </table>
+            <table class="table admintable table-striped-tbody files form-control drop-zone"></table>
 
             <div class="hidden fileupload-list-template">
                 <table>
@@ -723,32 +679,19 @@ Upload-Field for multiple files with progress bar
     </div>
 
     <script type="text/javascript">
-        require(['jquery', 'ajax', 'blueimp-tmpl', 'jquery-ui/ui/widget', 'jquery.iframe-transport', 'jquery.fileupload', 'jquery.fileupload-process', 'jquery.fileupload-ui', "fileupload"], function($, ajax) {
+        require(["fileupload", "ajax"], function(fileupload, ajax) {
 
-            var filesToUpload = 0;
-            var uploader = $('#%%name%%').fileupload({
-                url: '_webpath_/xml.php?admin=1&module=mediamanager&action=fileUpload',
-                dataType: 'json',
-                dropZone: $('#%%name%%'),
-                pasteZone: $(document),
+            var uploader = fileupload.initUploader({
+                baseElement: $('#%%name%%'),
                 autoUpload: true,
-                paramName : '%%name%%',
-                filesContainer: $('#files-%%uploadId%%'),
+                paramName: '%%name%%',
                 formData: [
                     {name: 'systemid', value: '%%mediamanagerRepoId%%'},
                     {name: 'inputElement', value : '%%name%%'},
                     {name: 'folder', value : '%%folder%%'}
                 ],
-                messages: {
-                    maxNumberOfFiles: 'Maximum number of files exceeded',
-                    acceptFileTypes: "[lang,upload_fehler_filter,mediamanager]",
-                    maxFileSize: "[lang,upload_multiple_errorFilesize,mediamanager]",
-                    minFileSize: 'File is too small'
-                },
                 maxFileSize: %%maxFileSize%%,
                 acceptFileTypes: %%acceptFileTypes%%,
-                uploadTemplateId: null,
-                downloadTemplateId: null,
                 downloadTemplate: function (o) {
                     var rows = $();
                     $.each(o.files, function (index, file) {
@@ -787,43 +730,11 @@ Upload-Field for multiple files with progress bar
 
             //load files from the backend
             ajax.genericAjaxCall("mediamanager", "fileUploadList", "&systemid=%%mediamanagerRepoId%%&folder=%%folder%%", function(data) {
-                uploader.fileupload('option', 'done').call(uploader, $.Event('done'), {result: data});
+                uploader.getUploader().fileupload('option', 'done').call(uploader.getUploader(), $.Event('done'), {result: data});
             }, null, null, "post", "json");
         });
 
 
-
-        $(document).bind('dragover', function (e) {
-            var dropZone = $('#%%name%% .form-control'),
-                timeout = window.dropZoneTimeout;
-            if (!timeout) {
-                dropZone.addClass('active-dropzone');
-
-            } else {
-                clearTimeout(timeout);
-            }
-            var found = false,
-                node = e.target;
-            do {
-                if (node === dropZone[0]) {
-                    found = true;
-                    break;
-                }
-                node = node.parentNode;
-            } while (node != null);
-            if (found) {
-                dropZone.addClass('hover');
-                $('#drop-%%uploadId%%').removeClass('alert-info').addClass('alert-success');
-            } else {
-                dropZone.removeClass('hover');
-                $('#drop-%%uploadId%%').addClass('alert-info').removeClass('alert-success');
-            }
-            window.dropZoneTimeout = setTimeout(function () {
-                window.dropZoneTimeout = null;
-                dropZone.removeClass('active-dropzone hover');
-                $('#drop-%%uploadId%%').addClass('alert-info').removeClass('alert-success');
-            }, 100);
-        });
     </script>
 </input_upload_inline>
 

@@ -739,15 +739,12 @@ class ToolkitAdmin extends Toolkit
             return ($this->warningBox("Module mediamanager is required for multiple uploads"));
         }
 
-        $strUploadId = generateSystemid();
-
         $objConfig = Carrier::getInstance()->getObjConfig();
         $objText = Carrier::getInstance()->getObjLang();
 
         $arrTemplate = array();
         $arrTemplate["name"] = $strName;
         $arrTemplate["mediamanagerRepoId"] = $strMediamangerRepoSystemId;
-        $arrTemplate["uploadId"] = $strUploadId;
 
         $strAllowedFileRegex = StringUtil::replace(array(".", ","), array("", "|"), $strAllowedFileTypes);
         $strAllowedFileTypes = StringUtil::replace(array(".", ","), array("", "', '"), $strAllowedFileTypes);
@@ -781,8 +778,6 @@ class ToolkitAdmin extends Toolkit
             return ($this->warningBox("Module mediamanager is required for multiple uploads"));
         }
 
-        $strUploadId = generateSystemid();
-
         $objConfig = Carrier::getInstance()->getObjConfig();
         $objText = Carrier::getInstance()->getObjLang();
 
@@ -791,9 +786,7 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["title"] = $strTitle;
         $arrTemplate["mediamanagerRepoId"] = $objRepo->getSystemid();
         $arrTemplate["folder"] = $strTargetDir;
-        $arrTemplate["uploadId"] = $strUploadId;
         $arrTemplate["addButton"] = $this->listButton("<i class='kj-icon fa fa-plus-circle'></i>");//AdminskinHelper::getAdminImage("icon_new", $objText->getLang("mediamanager_upload", "mediamanager"));
-
 
         $strAllowedFileRegex = StringUtil::replace(array(".", ","), array("", "|"), $objRepo->getStrUploadFilter());
         $strAllowedFileTypes = StringUtil::replace(array(".", ","), array("", "', '"), $objRepo->getStrUploadFilter());
@@ -804,10 +797,12 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["upload_multiple_errorFilesize"] = $objText->getLang("upload_multiple_errorFilesize", "mediamanager")." ".bytesToString($objConfig->getPhpMaxUploadSize());
 
         $arrTemplate["helpButton"] = $this->listButton(
-            $this->getPopoverText(AdminskinHelper::getAdminImage("icon_question", "", true),
+            $this->getPopoverText(
+                AdminskinHelper::getAdminImage("icon_question", "", true),
                 $objText->getLang("mediamanager_upload", "mediamanager"),
                 $objText->getLang("upload_dropArea_extended", "mediamanager", ["'".$strAllowedFileTypes."'", bytesToString($objConfig->getPhpMaxUploadSize())])
-            ));
+            )
+        );
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_upload_inline");
     }
