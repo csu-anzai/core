@@ -381,6 +381,7 @@ HTML;
         }
 
         if ($objAlert instanceof MessagingAlert) {
+            $objAlert->setIntPriority(9);
             $this->objMessageHandler->sendAlertToUser($objAlert, $this->objSession->getUser());
         }
 

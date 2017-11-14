@@ -2,6 +2,8 @@
 
 namespace Kajona\System\System\Lifecycle;
 
+use Kajona\System\System\Database;
+use Kajona\System\System\RedirectException;
 use Kajona\System\System\Root;
 
 /**
@@ -18,10 +20,24 @@ class ServiceLifeCycleImpl implements ServiceLifeCycleInterface
      */
     public function update(Root $objModel, $strPrevId = false)
     {
-        $bitReturn = $objModel->updateObjectToDb($strPrevId);
+        Database::getInstance()->transactionBegin();
 
-        if (!$bitReturn) {
-            throw new ServiceLifeCycleUpdateException("Error updating object ".strip_tags($objModel->getStrDisplayName()), $objModel->getSystemid());
+        try {
+            $bitReturn = $objModel->updateObjectToDb($strPrevId);
+
+            if (!$bitReturn) {
+                throw new ServiceLifeCycleUpdateException("Error updating object ".strip_tags($objModel->getStrDisplayName()), $objModel->getSystemid());
+            }
+
+            Database::getInstance()->transactionCommit();
+        } catch (RedirectException $objE) {
+            Database::getInstance()->transactionCommit();
+
+            throw $objE;
+        } catch (\Exception $objE) {
+            Database::getInstance()->transactionRollback();
+
+            throw $objE;
         }
     }
 

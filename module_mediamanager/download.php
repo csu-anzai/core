@@ -9,16 +9,16 @@ namespace Kajona\Mediamanager;
 
 use Kajona\Mediamanager\System\MediamanagerFile;
 use Kajona\Mediamanager\System\MediamanagerLogbook;
+use Kajona\System\System\AuthenticationException;
 use Kajona\System\System\CoreEventdispatcher;
+use Kajona\System\System\Exception;
 use Kajona\System\System\Filesystem;
 use Kajona\System\System\HttpStatuscodes;
-use Kajona\System\System\Link;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\RequestEntrypointEnum;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Root;
 use Kajona\System\System\SystemEventidentifier;
-use Kajona\System\System\SystemSetting;
 
 /**
  * Used to send a file to the user
@@ -26,8 +26,10 @@ use Kajona\System\System\SystemSetting;
  * @package module_mediamanager
  * @author sidler@mulchprod.de
  */
-class DownloadManager extends Root
+class DownloadManager
 {
+
+    private $strSystemid;
 
     /**
      * Constructor
@@ -36,14 +38,13 @@ class DownloadManager extends Root
      */
     public function __construct($strSystemid)
     {
-        parent::__construct($strSystemid);
+        $this->strSystemid = $strSystemid;
 
         //Increase max execution time
         if (@ini_get("max_execution_time") < 7200 && @ini_get("max_execution_time") > 0) {
             @ini_set("max_execution_time", "7200");
         }
-        
-        
+
         ResponseObject::getInstance()->setObjEntrypoint(RequestEntrypointEnum::DOWNLOAD());
     }
 
@@ -56,10 +57,10 @@ class DownloadManager extends Root
     {
         //Load filedetails
 
-        if (validateSystemid($this->getSystemid())) {
+        if (validateSystemid($this->strSystemid)) {
 
             /** @var $objFile MediamanagerFile */
-            $objFile = Objectfactory::getInstance()->getObject($this->getSystemid());
+            $objFile = Objectfactory::getInstance()->getObject($this->strSystemid);
             //Succeeded?
             if ($objFile instanceof MediamanagerFile && $objFile->getIntRecordStatus() == "1" && $objFile->getIntType() == MediamanagerFile::$INT_TYPE_FILE) {
                 //Check rights
@@ -70,23 +71,20 @@ class DownloadManager extends Root
                     $objFilesystem->streamFile($objFile->getStrFilename());
                     return "";
 
-                }
-                else {
+                } else {
                     ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_FORBIDDEN);
                 }
 
-            }
-            else {
+            } else {
                 ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_NOT_FOUND);
             }
 
-        }
-        else {
+        } else {
             ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_NOT_FOUND);
         }
 
         //if we reach up here, something gone wrong :/
-        ResponseObject::getInstance()->setStrRedirectUrl(str_replace(array("_indexpath_", "&amp;"), array(_indexpath_, "&"), Link::getLinkPortalHref(SystemSetting::getConfigValue("_pages_errorpage_"))));
+        ResponseObject::getInstance()->setStrContent(Exception::renderException(new AuthenticationException("Access forbidden, you are not allowed to access this resource", Exception::$level_ERROR)));
         ResponseObject::getInstance()->sendHeaders();
         ResponseObject::getInstance()->sendContent();
         return "";
@@ -97,5 +95,4 @@ class DownloadManager extends Root
 //Create a object
 $objDownload = new DownloadManager(getGet("systemid"));
 $objDownload->actionDownload();
-CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_AFTERCONTENTSEND, array(RequestEntrypointEnum::DOWNLOAD()));
-
+CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_AFTERCONTENTSEND, [RequestEntrypointEnum::DOWNLOAD()]);
