@@ -4,12 +4,8 @@
 #       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
 #*******************************************************************************************************/
 
-Deny from all
+Require all denied
 
 <FilesMatch "setupproject\.php" >
-  Allow from all
-</FilesMatch>
-
-<FilesMatch "V4toV5Migration\.php" >
-  Allow from all
+  Require all granted
 </FilesMatch>
