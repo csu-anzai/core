@@ -62,6 +62,9 @@ class ArraySectionIterator extends ArrayIterator
      */
     public function setPageNumber($intPageNumber)
     {
+        if (empty($intPageNumber)) {
+            $intPageNumber = 1;
+        }
         if ((int)$intPageNumber > 0) {
             $this->intPageNumber = $intPageNumber;
         }
@@ -154,6 +157,9 @@ class ArraySectionIterator extends ArrayIterator
      */
     public function getElementsOnPage($intPageNumber)
     {
+        if (empty($intPageNumber)) {
+            $intPageNumber = 1;
+        }
         $this->intPageNumber = $intPageNumber;
         return parent::getElementsOnPage($this->intPageNumber);
     }

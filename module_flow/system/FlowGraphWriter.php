@@ -16,6 +16,9 @@ use Kajona\System\System\Link;
  */
 class FlowGraphWriter
 {
+
+    private static $bitIsIe = false;
+
     /**
      * Generates a mermaid graph definition of the flow object
      *
@@ -25,7 +28,13 @@ class FlowGraphWriter
      */
     public static function write(FlowConfig $objFlow, $objHighlite = null)
     {
-        return self::writeCytoscape($objFlow, $objHighlite);
+        //ugly hack to fetch old IE versions. used to inject some special options and css definitions
+        $strUA = htmlentities($_SERVER['HTTP_USER_AGENT'], ENT_QUOTES, 'UTF-8');
+        if (preg_match('~MSIE|Internet Explorer~i', $strUA) || (strpos($strUA, 'Trident/7.0; rv:11.0') !== false)) {
+            self::$bitIsIe = true;
+        }
+        //return self::writeCytoscape($objFlow, $objHighlite);
+        return self::writeMermaid($objFlow, $objHighlite);
     }
 
     /**
@@ -38,7 +47,7 @@ class FlowGraphWriter
         $arrStatus = $objFlow->getArrStatus();
 
         // sort status
-        usort($arrStatus, function(FlowStatus $objA, FlowStatus $objB){
+        usort($arrStatus, function (FlowStatus $objA, FlowStatus $objB) {
             if ($objA->getIntIndex() == 1) {
                 return 1;
             }
@@ -186,7 +195,7 @@ HTML;
         $arrStatus = $objFlow->getArrStatus();
 
         // sort status
-        usort($arrStatus, function(FlowStatus $objA, FlowStatus $objB){
+        usort($arrStatus, function (FlowStatus $objA, FlowStatus $objB) {
             if ($objA->getIntIndex() == 1) {
                 return 1;
             }
@@ -197,26 +206,48 @@ HTML;
         });
 
         $arrList = array("graph TD;");
+        $arrUsed = [];
 
         foreach ($arrStatus as $objStatus) {
             /** @var FlowStatus $objStatus */
             $arrTransitions = $objStatus->getArrTransitions();
             foreach ($arrTransitions as $objTransition) {
+                if (!$objTransition->isVisible()) {
+                    continue; //TODO: add option to show / hide invisivle edges
+                }
+
                 /** @var $objTransition FlowTransition */
                 $objTargetStatus = $objTransition->getTargetStatus();
                 if ($objTargetStatus instanceof FlowStatus) {
                     $strLineStart = $objTransition->isVisible() ? "--" : "-.";
                     $strLineEnd = $objTransition->isVisible() ? "--" : ".-";
-                    $arrList[] = $objStatus->getStrSystemid() . "[" . $objStatus->getStrName() . "]{$strLineStart} <span data-" . $objTransition->getSystemid() . ">______</span> {$strLineEnd}>" . $objTargetStatus->getSystemid() . "[" . $objTargetStatus->getStrName() . "];";
+                    if (self::$bitIsIe) {
+                        //IE doesn't render html labels, so no need to replace them later on --> regular edge
+                        $arrList[] = $objStatus->getStrSystemid() . "[" . $objStatus->getStrName() . "]{$strLineEnd}>" . $objTargetStatus->getSystemid() . "[" . $objTargetStatus->getStrName() . "];";
+                    } else {
+                        $arrList[] = $objStatus->getStrSystemid() . "[" . $objStatus->getStrName() . "]{$strLineStart} <span data-" . $objTransition->getSystemid() . ">______</span> {$strLineEnd}>" . $objTargetStatus->getSystemid() . "[" . $objTargetStatus->getStrName() . "];";
+                    }
+                    $arrUsed[$objStatus->getStrSystemid()] = $objStatus;
                 }
             }
-            $arrList["style ".$objStatus->getSystemid()] = "style {$objStatus->getSystemid()} fill:#f9f9f9,stroke:{$objStatus->getStrIconColor()},stroke-width:1px;";
         }
 
+        $strHighliteId = null;
+        $strHighliteColor = null;
         if ($objHighlite instanceof FlowStatus) {
-            $arrList["style ".$objHighlite->getSystemid()] = "style {$objHighlite->getSystemid()} fill:#f9f9f9,stroke:{$objHighlite->getStrIconColor()},stroke-width:3px;";
+            $strHighliteId = $objHighlite->getSystemid();
+            $strHighliteColor = $objHighlite->getStrIconColor();
         } elseif ($objHighlite instanceof FlowTransition) {
-            $arrList["style ".$objHighlite->getParentStatus()->getSystemid()] = "style {$objHighlite->getParentStatus()->getSystemid()} fill:#f9f9f9,stroke:{$objHighlite->getStrIconColor()},stroke-width:3px;";
+            $strHighliteId = $objHighlite->getParentStatus()->getSystemid();
+            $strHighliteColor = $objHighlite->getParentStatus()->getStrIconColor();
+        }
+
+        foreach ($arrUsed as $strSystemId => $objStatus) {
+            if ($strHighliteId !== null && $strSystemId == $strHighliteId) {
+                $arrList["style ".$strHighliteId] = "style {$strHighliteId} fill:#f9f9f9,stroke:{$strHighliteColor},stroke-width:3px;";
+            } else {
+                $arrList["style ".$strSystemId] = "style {$strSystemId} fill:#f9f9f9,stroke:{$objStatus->getStrIconColor()},stroke-width:1px;";
+            }
         }
 
         $strGraph = implode("\n", $arrList);
@@ -226,8 +257,20 @@ HTML;
         $strLinkTransitionAction = Link::getLinkAdminHref("flow", "listTransitionAction", "&systemid=" . $strTmpSystemId);
         $strLinkTransitionCondition = Link::getLinkAdminHref("flow", "listTransitionCondition", "&systemid=" . $strTmpSystemId);
 
+
+        $strInit = "{}";
+        $strHeight = "";
+        if (self::$bitIsIe) {
+            $strInit = '{flowchart:{
+                htmlLabels:false,
+                useMaxWidth:true
+            }}';
+            $strHeight = "height: 900px;";
+        }
+
+
         return <<<HTML
-<div id='flow-graph' class='mermaid' style='color:#fff;'>{$strGraph}</div>
+<div id='flow-graph' class='mermaid' style='color:#fff; {$strHeight} '>{$strGraph}</div>
 <script type="text/javascript">
     var callback = function(statusId) {
         location.href = "{$strLinkTransition}".replace('{$strTmpSystemId}', statusId);
@@ -235,6 +278,7 @@ HTML;
 
     require(['mermaid', 'loader', 'jquery'], function(mermaid, loader, $){
         loader.loadFile(["/core/module_flow/scripts/mermaid/mermaid.forest.css"], function(){
+            mermaid.initialize({$strInit});
             mermaid.init(undefined, $("#flow-graph"));
 
             $('div > span.edgeLabel > span').each(function(){

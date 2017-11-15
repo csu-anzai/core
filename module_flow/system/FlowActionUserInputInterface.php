@@ -19,17 +19,16 @@ use Kajona\System\System\Model;
 interface FlowActionUserInputInterface
 {
     /**
-     * Handles the user input which was provided by the user on a status transition. Note this action
-     * should not include any complex logic (i.e. trigger another status transition). It should simply
-     * parse the provided user input and set the needed params on the FlowTransition::setParams method.
-     * Then the complex logic should be executed in the executeAction method which is also in the same
-     * transaction as the status change.
+     * Handles the user input which was provided by the user on a status transition. Note this action should not include
+     * any complex logic (i.e. trigger another status transition). It should simply parse the provided user input and
+     * set the needed params on the FlowTransition::setParams method. Then the complex logic should be executed in the
+     * executeAction method which is also in the same transaction as the status change.
      *
      * @param Model $objObject
      * @param FlowTransition $objTransition
-     * @param array $arrData
+     * @param AdminFormgenerator $objForm
      */
-    public function handleUserInput(Model $objObject, FlowTransition $objTransition, array $arrData);
+    public function handleUserInput(Model $objObject, FlowTransition $objTransition, AdminFormgenerator $objForm);
 
     /**
      * @param AdminFormgenerator $objForm

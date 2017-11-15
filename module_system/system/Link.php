@@ -75,7 +75,7 @@ class Link
         foreach ($arrAttr as $strAttrName => $strAttrValue) {
             if (!empty($strAttrValue)) {
                 if (is_scalar($strAttrValue)) {
-                    $arrParts[] = $strAttrName . "=\"" . htmlspecialchars($strAttrValue) . "\"";
+                    $arrParts[] = $strAttrName . "=\"" . htmlspecialchars($strAttrValue, ENT_COMPAT | ENT_HTML401, "UTF-8", false) . "\"";
                 } else {
                     throw new \InvalidArgumentException("Array must contain only scalar values");
                 }

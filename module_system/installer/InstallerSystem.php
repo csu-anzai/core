@@ -279,7 +279,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $this->registerConstant("_system_portal_disablepage_", "", SystemSetting::$int_TYPE_PAGE, _system_modul_id_);
 
         //New in 3.0: Number of db-dumps to hold
-        $this->registerConstant("_system_dbdump_amount_", 5, SystemSetting::$int_TYPE_INT, _system_modul_id_);
+        $this->registerConstant("_system_dbdump_amount_", 15, SystemSetting::$int_TYPE_INT, _system_modul_id_);
         //new in 3.0: mod-rewrite on / off
         $this->registerConstant("_system_mod_rewrite_", "false", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
         $this->registerConstant("_system_mod_rewrite_admin_only_", "false", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
@@ -632,6 +632,11 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "6.5.1") {
             $strReturn .= $this->update_651_652();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.5.2") {
+            $strReturn .= $this->update_652_653();
         }
 
         return $strReturn."\n\n";
@@ -1097,6 +1102,20 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.2");
+        return $strReturn;
+    }
+
+    private function update_652_653()
+    {
+        $strReturn = "Updating 6.5.2 to 6.5.3...\n";
+        $strReturn .= "Upgrade message queue\n";
+
+        if (!$this->objDB->hasColumn("messages_alert", "alert_priority")) {
+            $this->objDB->addColumn("messages_alert", "alert_priority", DbDatatypes::STR_TYPE_INT);
+        }
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.4");
         return $strReturn;
     }
 

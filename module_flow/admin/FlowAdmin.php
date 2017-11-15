@@ -174,6 +174,12 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
             return "";
         }
 
+        if ($objListEntry instanceof FlowActionAbstract || $objListEntry instanceof FlowConditionAbstract) {
+            // set the module hard to flow since the model has maybe another module annotation
+            $objListEntry = clone $objListEntry;
+            $objListEntry->setArrModuleEntry("modul", "flow");
+        }
+
         return parent::renderEditAction($objListEntry, $bitDialog);
     }
 
@@ -197,6 +203,12 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
 
         if ($objListEntry instanceof FlowStatus && ($objListEntry->getIntIndex() == FlowConfig::STATUS_START || $objListEntry->getIntIndex() == FlowConfig::STATUS_END)) {
             return $this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_deleteDisabled", $this->getLang("flow_step_no_delete")));
+        }
+
+        if ($objListEntry instanceof FlowActionAbstract || $objListEntry instanceof FlowConditionAbstract) {
+            // set the module hard to flow since the model has maybe another module annotation
+            $objListEntry = clone $objListEntry;
+            $objListEntry->setArrModuleEntry("modul", "flow");
         }
 
         return parent::renderDeleteAction($objListEntry);

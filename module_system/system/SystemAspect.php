@@ -6,7 +6,6 @@
 
 namespace Kajona\System\System;
 
-
 /**
  * Model for a single aspect. An aspect is a filter-type that can be applied to the backend.
  * E.g. there could be different dashboard for each aspect or a module may be visible only for given
@@ -27,7 +26,6 @@ namespace Kajona\System\System;
  */
 class SystemAspect extends Model implements ModelInterface, AdminListableInterface
 {
-
     /**
      * @var string
      * @tableColumn aspects.aspect_name

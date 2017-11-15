@@ -1,4 +1,122 @@
 
+# Module
+
+This chapter describes the structure of a module. In most cases each folder contains
+a specific type of class in order to structure the module and to simplify searching
+for a specific type. The following list describes each folder and which type it should
+contain.
+
+```
+1. /admin
+   1.1. /formentries
+   1.2. /systemtasks
+   1.3. /widgets
+2. /docs
+3. /event
+4. /installer
+5. /lang
+6. /scripts
+7. /system
+   7.1. /config
+   7.2. /filter
+   7.3. /flow
+        7.3.1. /action
+        7.3.2. /condition
+   7.4. /messageproviders
+   7.5. /models
+   7.6. /validators
+   7.7. /workflows
+8. /tests
+9. /vendor
+```
+
+# 1. admin
+
+Class: `Kajona\System\Admin\AdminEvensimpler`
+
+## 1.1. formentries
+
+Class: `Kajona\System\Admin\Formentries\FormentryBase`
+
+## 1.2. systemtasks
+
+Class: `Kajona\System\Admin\Systemtasks\SystemtaskBase`
+
+## 1.3. widgets
+
+Class: `Kajona\Dashboard\Admin\Widgets\Adminwidget`
+
+# 2. docs
+
+Contains general markdown documentation files.
+
+# 3. event
+
+Interface: `Kajona\System\System\GenericeventListenerInterface`
+
+# 4. installer
+
+Contains installer and sample content classes.
+
+Class: `Kajona\System\System\InstallerBase`
+Interface: `Kajona\System\System\SamplecontentInstallerInterface`
+
+# 5. lang
+
+Contains all lang properties
+
+# 6. scripts
+
+Contains all javascript files. Each javascript library must be registered in the 
+`provides.json` file.
+
+# 7. system
+
+## 7.1. config
+
+Contains the general config and module id file
+
+## 7.2. filter
+
+Class: `Kajona\System\System\FilterBase`
+
+## 7.3. flow
+
+### 7.3.1. action
+
+Interface: `Kajona\Flow\System\FlowActionInterface`
+
+### 7.3.2. condition
+
+Interface: `Kajona\Flow\System\FlowConditionInterface`
+
+## 7.4. messageproviders
+
+Interface: `Kajona\System\System\Messageproviders\MessageproviderInterface`
+
+## 7.5. models
+
+Class: `Kajona\System\System\Root`
+
+## 7.6. validators
+
+Class: `Kajona\System\System\Validators\ObjectvalidatorBase`
+
+## 7.7. workflows
+
+Class: `Kajona\Workflows\System\WorkflowsHandlerInterface`
+
+# 8. tests
+
+This folder contains the and PHPUnit and selenium tests
+
+# 9. vendor
+
+The vendor folder is only used in case your module has a `composer.json` file. The folder
+contains then the external dependencies.
+
+----
+
 #HowTo: Your own module
 
 This tutorial should describe the way to create a new module for Kajona.

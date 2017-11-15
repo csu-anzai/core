@@ -10,6 +10,7 @@ namespace Kajona\Flow\System;
 use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\Database;
 use Kajona\System\System\IdGenerator;
+use Kajona\System\System\Lang;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
@@ -189,7 +190,12 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
      */
     public function getStrDisplayName()
     {
-        return $this->strName;
+        $strName = Lang::getInstance()->getLang($this->strName, "flow");
+        if ($strName[0] == "!") {
+            $strName = $this->strName;
+        }
+
+        return $strName;
     }
 
     /**

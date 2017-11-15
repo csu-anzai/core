@@ -1072,6 +1072,60 @@ footer {
             }
         }
 
+        &.fileupload-wrapper {
+            .fileinput-button {
+                border: none;
+                position: relative;
+                overflow: hidden;
+                display: inline-block;
+
+                input {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    margin: 0;
+                    opacity: 0;
+                    -ms-filter: 'alpha(opacity=0)';
+                    font-size: 200px !important;
+                    direction: ltr;
+                    cursor: pointer;
+                }
+
+                i {
+                    color: @link-color;
+                }
+            }
+
+            .files {
+                tr.progress-row {
+                    td {
+                        padding: 0;
+                    }
+
+                    .progress {
+                        height: 3px;
+                        background-color: inherit;
+                        box-shadow: none;
+                    }
+                }
+
+                tr.file-details {
+                    td {
+                        border-top: none;
+                    }
+                }
+            }
+
+            .fileupload-progress {
+                .progress {
+                    height: 3px;
+                    background-color: inherit;
+                    box-shadow: none;
+                    margin-bottom: 0;
+                }
+            }
+        }
+
     }
 
     .pager {
@@ -1432,12 +1486,16 @@ footer {
     }
 
     /* upload styling */
-    .fileupload-wrapper.in {
-        outline: 3px dotted @gray;
+    .fileupload-wrapper {
+        .active-dropzone {
+            outline: 3px dotted @gray;
+        }
     }
 
-    .fileupload-wrapper.hover {
-        outline: 3px dotted @kajona-brand-color;
+    .fileupload-wrapper {
+        .hover {
+            outline: 3px solid @kajona-brand-color;
+        }
     }
 
 }

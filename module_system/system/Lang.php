@@ -47,7 +47,7 @@ class Lang
      *
      * @var array
      */
-    private $arrFallbackTextEntrys = array();
+    private $arrFallbackTextEntrys = [];
 
 
     private static $objLang = null;
@@ -61,20 +61,20 @@ class Lang
     {
         //load texts from session
         $this->arrTexts = CacheManager::getInstance()->getValue(__CLASS__."textSessionCache");
-        if($this->arrTexts === false) {
-            $this->arrTexts = array();
+        if ($this->arrTexts === false) {
+            $this->arrTexts = [];
         }
 
         $this->arrFallbackTextEntrys = CacheManager::getInstance()->getValue(__CLASS__."textSessionFallbackCache");
-        if($this->arrFallbackTextEntrys === false) {
-            $this->arrFallbackTextEntrys = array();
+        if ($this->arrFallbackTextEntrys === false) {
+            $this->arrFallbackTextEntrys = [];
         }
     }
 
     public function __destruct()
     {
         //save texts to session
-        if($this->bitSaveToCache) {
+        if ($this->bitSaveToCache) {
             CacheManager::getInstance()->addValue(__CLASS__."textSessionCache", $this->arrTexts, Config::getInstance()->getConfig("textcachetime"));
             CacheManager::getInstance()->addValue(__CLASS__."textSessionFallbackCache", $this->arrFallbackTextEntrys, Config::getInstance()->getConfig("textcachetime"));
         }
@@ -111,7 +111,7 @@ class Lang
      *
      * @return string
      */
-    public function getLang($strText, $strModule, $arrParameters = array())
+    public function getLang($strText, $strModule, $arrParameters = [])
     {
 
         //Did we already load this text?
@@ -122,8 +122,7 @@ class Lang
         //Searching for the text
         if (isset($this->arrTexts[$this->strLanguage][$strModule][$strText])) {
             $strReturn = $this->arrTexts[$this->strLanguage][$strModule][$strText];
-        }
-        else {
+        } else {
             $strReturn = "!".$strText."!";
         }
 
@@ -146,9 +145,8 @@ class Lang
 
         if (isset($this->arrTexts[$this->strLanguage][$strModule])) {
             return $this->arrTexts[$this->strLanguage][$strModule];
-        }
-        else {
-            return array();
+        } else {
+            return [];
         }
     }
 
@@ -180,17 +178,17 @@ class Lang
     public function propertyWithoutPrefix($strPropertyName)
     {
         $strStart = StringUtil::substring($strPropertyName, 0, 3);
-        if (in_array($strStart, array("int", "bit", "str", "arr", "obj"))) {
+        if (in_array($strStart, ["int", "bit", "str", "arr", "obj"])) {
             $strPropertyName = StringUtil::toLowerCase(StringUtil::substring($strPropertyName, 3));
         }
 
         $strStart = StringUtil::substring($strPropertyName, 0, 4);
-        if (in_array($strStart, array("long"))) {
+        if (in_array($strStart, ["long"])) {
             $strPropertyName = StringUtil::toLowerCase(StringUtil::substring($strPropertyName, 4));
         }
 
         $strStart = StringUtil::substring($strPropertyName, 0, 5);
-        if (in_array($strStart, array("float"))) {
+        if (in_array($strStart, ["float"])) {
             $strPropertyName = StringUtil::toLowerCase(StringUtil::substring($strPropertyName, 5));
         }
 
@@ -217,8 +215,7 @@ class Lang
 
             if ($i > 0 && $strChar != $strCharLower && $strLastChar != "_") {
                 $strReturn .= "_".$strCharLower;
-            }
-            else {
+            } else {
                 $strReturn .= $strCharLower;
             }
 
@@ -238,41 +235,35 @@ class Lang
      */
     private function loadText($strModule)
     {
-        //following steps:
-
         $arrCommons = Resourceloader::getInstance()->getLanguageFiles("module_".$this->strCommonsName);
         $arrModuleFiles = Resourceloader::getInstance()->getLanguageFiles("module_".$strModule);
 
+        //following steps:
         // 1. commons fallback language
-        foreach(array_keys($arrCommons, "lang_".$this->strCommonsName."_".$this->strFallbackLanguage.".php") as $strPath) {
+        foreach (array_keys($arrCommons, "lang_".$this->strCommonsName."_".$this->strFallbackLanguage.".php") as $strPath) {
             $this->loadAndMergeTextfile($strModule, $strPath, $this->strLanguage, $this->arrTexts);
         }
 
         // 2. entries fallback language
-        foreach($arrModuleFiles as $strPath => $strFilename) {
-
+        foreach ($arrModuleFiles as $strPath => $strFilename) {
             $arrFilename = explode("_", StringUtil::substring($strFilename, 0, -4));
-            if(end($arrFilename) == $this->strFallbackLanguage) {
-
+            if (end($arrFilename) == $this->strFallbackLanguage) {
                 $this->loadAndMergeTextfile($strModule, $strPath, $this->strLanguage, $this->arrTexts);
             }
         }
 
         // 3. commons current language
-        foreach(array_keys($arrCommons, "lang_".$this->strCommonsName."_".$this->strLanguage.".php") as $strPath) {
+        foreach (array_keys($arrCommons, "lang_".$this->strCommonsName."_".$this->strLanguage.".php") as $strPath) {
             $this->loadAndMergeTextfile($strModule, $strPath, $this->strLanguage, $this->arrTexts);
         }
 
         // 4. entries current language
-        foreach($arrModuleFiles as $strPath => $strFilename) {
-
+        foreach ($arrModuleFiles as $strPath => $strFilename) {
             $arrFilename = explode("_", StringUtil::substring($strFilename, 0, -4));
             if (end($arrFilename) == $this->strLanguage) {
                 $this->loadAndMergeTextfile($strModule, $strPath, $this->strLanguage, $this->arrTexts);
             }
         }
-
-
     }
 
     /**
@@ -286,19 +277,18 @@ class Lang
      */
     private function loadAndMergeTextfile($strModule, $strFilename, $strLanguage, &$arrTargetArray)
     {
-        $lang = array();
+        $lang = [];
         $this->bitSaveToCache = true;
 
         include $strFilename;
 
         if (!isset($arrTargetArray[$strLanguage])) {
-            $arrTargetArray[$strLanguage] = array();
+            $arrTargetArray[$strLanguage] = [];
         }
 
         if (isset($arrTargetArray[$strLanguage][$strModule])) {
             $arrTargetArray[$strLanguage][$strModule] = array_merge($arrTargetArray[$strLanguage][$strModule], $lang);
-        }
-        else {
+        } else {
             $arrTargetArray[$strLanguage][$strModule] = $lang;
         }
     }
@@ -335,6 +325,4 @@ class Lang
     {
         return $this->strFallbackLanguage;
     }
-
-
 }
