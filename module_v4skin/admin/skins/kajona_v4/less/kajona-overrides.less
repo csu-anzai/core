@@ -1102,23 +1102,30 @@ footer {
             }
 
             .files {
-                tr.progress-row {
-                    td {
-                        padding: 0;
+                tbody {
+
+                    //border-top: none;
+                    tr.progress-row {
+                        td {
+                            padding: 0;
+                        }
+
+                        .progress {
+                            height: 3px;
+                            background-color: inherit;
+                            box-shadow: none;
+                        }
                     }
 
-                    .progress {
-                        height: 3px;
-                        background-color: inherit;
-                        box-shadow: none;
+                    tr.file-details {
+                        td {
+                            border-top: none;
+                        }
                     }
+
                 }
 
-                tr.file-details {
-                    td {
-                        border-top: none;
-                    }
-                }
+
             }
 
             .fileupload-progress {
@@ -1529,11 +1536,22 @@ footer {
 table.form-control {
     display: table;
 
-     tfoot > tr > td {
-         border-top: none;
-         //min-height: 22px;
-         padding: 7px;
-     }
+    tfoot > tr > td {
+        border-top: none;
+        //min-height: 22px;
+        padding: 7px;
+    }
+
+    border-collapse: separate;
+    padding: 0;
+
+    tbody:first-of-type {
+
+        tr:first-of-type td {
+            border-top: none;
+        }
+    }
+
 }
 
 .mainnavi-container {

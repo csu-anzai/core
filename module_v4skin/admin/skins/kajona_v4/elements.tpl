@@ -639,7 +639,9 @@ Upload-Field for multiple files with progress bar
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
         <div  class="col-sm-6 inputText ">
 
-            <table class="table admintable table-striped-tbody files form-control drop-zone" id="%%name%%"></table>
+            <table class="table admintable table-striped-tbody files form-control drop-zone" id="%%name%%">
+
+            </table>
 
             <div class="hidden fileupload-list-template">
                 <table>
