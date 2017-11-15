@@ -4,14 +4,15 @@ Reference: Formentries
 
 | Name                                                              | Since      |  Description               |
 | ----------------------------------------------------------------- | ---------- | -------------------------- |
+| Kajona\Mediamanager\Admin\Formentries\FormentryMultiUpload        | 6.5        | Provides a multi-upload field for a single form. Multiple entries on a single form are supported.   |
 | Kajona\System\Admin\Formentries\FormentryAutoheadline             | 4.5        | Generates a headline out of a properties' value   |
 | Kajona\System\Admin\Formentries\FormentryButton	                | 4.3        | A simple button element |
 | Kajona\System\Admin\Formentries\FormentryCheckbox	                | 4.0        | Simple checkbox element |
 | Kajona\System\Admin\Formentries\FormentryCheckboxarray	        | 4.8        | Renders a list of objects as an array of checkboxes, e.g. assignments |
 | Kajona\System\Admin\Formentries\FormentryCheckboxarrayObjectList  | 5.1        | Renders a standard table containing a checkbox and the display name of the object |
-| Kajona\System\Admin\Formentries\FormentryColorpicker              | 7.0        | Input field with color-picker |
+| Kajona\System\Admin\Formentries\FormentryColorpicker              | 6.5        | Input field with color-picker |
 | Kajona\System\Admin\Formentries\FormentryDate                     | 4.1        | Date-Input with date-picker |
-| Kajona\System\Admin\Formentries\FormentryDateInterval             | 7.0        | Provides an input to enter a date interval |
+| Kajona\System\Admin\Formentries\FormentryDateInterval             | 6.5        | Provides an input to enter a date interval |
 | Kajona\System\Admin\Formentries\FormentryDatetime                 | 4.1        | Like Date but with two inputs to set a time (HH:MM), too |
 | Kajona\System\Admin\Formentries\FormentryDivider                  | 4.0        | Graphical element to separate form-entries from each other |
 | Kajona\System\Admin\Formentries\FormentryDropdown	                | 4.0        | Dropdown of values, one value is selectable |

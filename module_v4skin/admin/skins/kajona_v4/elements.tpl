@@ -511,7 +511,7 @@ Upload-Field for multiple files with progress bar
 <input_upload_multiple>
 
     <div id="%%name%%" class="fileupload-wrapper">
-            <div class="fileupload-buttonbar">
+            <div class="fileupload-buttonbar drop-zone">
 
                 <span class="btn btn-default fileinput-button">
                     <i class="fa fa-plus-square"></i>
@@ -530,7 +530,7 @@ Upload-Field for multiple files with progress bar
                 </button>
 
                 <span class="fileupload-process"></span>
-                <div class="alert alert-info" id="drop-%%uploadId%%">
+                <div class="alert alert-info">
                     [lang,upload_dropArea,mediamanager]<br />
                      %%allowedExtensions%%
                 </div>
@@ -545,63 +545,59 @@ Upload-Field for multiple files with progress bar
                 <div class="progress-extended">&nbsp;</div>
             </div>
 
-        <table class="table admintable table-striped-tbody files" id="files-%%uploadId%%"></table>
+        <table class="table admintable table-striped-tbody files"></table>
+
+        <div class="hidden fileupload-list-template">
+            <table>
+                <tbody class="template-upload fade">
+                <tr>
+                    <td><span class="preview"></span></td>
+                    <td><p class="name"></p>
+                    <div class="error"></div>
+                    </td>
+                    <td><p class="size"></p>
+                        <div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>
+                    </td>
+                <td>
+                    <button class="btn start " disabled style="display: none;">Start</button>
+                    <button class="btn cancel ">[lang,upload_multiple_cancel,mediamanager]</button>
+                </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
 <script type="text/javascript">
-    require(['tmpl'], function() {
-        require(['jquery', 'jquery.iframe-transport', 'jquery.fileupload', 'jquery.fileupload-process', 'jquery.fileupload-ui'], function($) {
-            var filesToUpload = 0;
-            $('#%%name%%').fileupload({
-                url: '_webpath_/xml.php?admin=1&module=mediamanager&action=fileUpload',
-                dataType: 'json',
-                dropZone: $('#%%name%%'),
-                pasteZone: $(document),
-                autoUpload: false,
-                paramName : '%%name%%',
-                filesContainer: $('#files-%%uploadId%%'),
-                formData: [
-                    {name: 'systemid', value: '%%mediamanagerRepoId%%'},
-                    {name: 'inputElement', value : '%%name%%'},
-                    {name: 'jsonResponse', value : 'true'}
-                ],
-                messages: {
-                    maxNumberOfFiles: 'Maximum number of files exceeded',
-                    acceptFileTypes: "[lang,upload_fehler_filter,mediamanager]",
-                    maxFileSize: "[lang,upload_multiple_errorFilesize,mediamanager]",
-                    minFileSize: 'File is too small'
-                },
-                maxFileSize: %%maxFileSize%%,
-                acceptFileTypes: %%acceptFileTypes%%,
-                uploadTemplateId: null,
-                downloadTemplateId: null,
-                uploadTemplate: function (o) {
-                    var rows = $();
-                    $.each(o.files, function (index, file) {
-                        var row = $('<tbody class="template-upload fade"><tr>' +
-                                    '<td><span class="preview"></span></td>' +
-                                    '<td><p class="name"></p>' +
-                                    '<div class="error"></div>' +
-                                    '</td>' +
-                                    '<td><p class="size"></p>' +
-                                    '<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>' +
-                                    '</td>' +
-                                    '<td>' +
-                                    (!index && !o.options.autoUpload ?
-                                            '<button class="btn start " disabled style="display: none;">Start</button>' : '') +
-                                    (!index ? '<button class="btn cancel ">[lang,upload_multiple_cancel,mediamanager]</button>' : '') +
-                                    '</td>' +
-                                    '</tr></tbody>');
-                        row.find('.name').text(file.name);
-                        row.find('.size').text(o.formatFileSize(file.size));
-                        if (file.error) {
-                            row.find('.error').text(file.error);
-                        }
-                        rows = rows.add(row);
-                    });
-                    return rows;
-                }
-            })
+    require(["fileupload", "ajax"], function(fileupload, ajax) {
+        var filesToUpload = 0;
+
+
+        var uploader = fileupload.initUploader({
+            baseElement: $('#%%name%%'),
+            paramName: '%%name%%',
+            formData: [
+                {name: 'systemid', value: '%%mediamanagerRepoId%%'},
+                {name: 'inputElement', value : '%%name%%'}
+            ],
+            maxFileSize: %%maxFileSize%%,
+            acceptFileTypes: %%acceptFileTypes%%,
+            uploadTemplate: function (o) {
+                var rows = $();
+                $.each(o.files, function (index, file) {
+                    var row = $('#%%name%% .fileupload-list-template .template-upload').clone();
+                    row.find('.name').text(file.name);
+                    row.find('.size').text(o.formatFileSize(file.size));
+                    if (file.error) {
+                        row.find('.error').text(file.error);
+                    }
+                    rows = rows.add(row);
+                });
+                return rows;
+            }
+        });
+
+        uploader.getUploader()
             .bind('fileuploadadded', function (e, data) {
                 $(this).find('.fileupload-buttonbar button.start').css('display', '');
                 $(this).find('.fileupload-buttonbar button.cancel').css('display', '');
@@ -627,47 +623,121 @@ Upload-Field for multiple files with progress bar
                     $(this).find('.fileupload-progress').css('display', 'none');
                 }
             });
-        });
 
-        $(document).bind('dragover', function (e) {
-            var dropZone = $('#%%name%%'),
-                timeout = window.dropZoneTimeout;
-            if (!timeout) {
-                dropZone.addClass('in');
-
-            } else {
-                clearTimeout(timeout);
-            }
-            var found = false,
-                node = e.target;
-            do {
-                if (node === dropZone[0]) {
-                    found = true;
-                    break;
-                }
-                node = node.parentNode;
-            } while (node != null);
-            if (found) {
-                dropZone.addClass('hover');
-                $('#drop-%%uploadId%%').removeClass('alert-info').addClass('alert-success');
-            } else {
-                dropZone.removeClass('hover');
-                $('#drop-%%uploadId%%').addClass('alert-info').removeClass('alert-success');
-            }
-            window.dropZoneTimeout = setTimeout(function () {
-                window.dropZoneTimeout = null;
-                dropZone.removeClass('in hover');
-                $('#drop-%%uploadId%%').addClass('alert-info').removeClass('alert-success');
-            }, 100);
-        });
     });
+
+
 </script>
-
-
-    </style>
-
-
 </input_upload_multiple>
+
+
+
+
+Upload-Field for multiple files with progress bar
+<input_upload_inline>
+    <div id="%%name%%_upl" class="form-group fileupload-wrapper">
+        <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
+        <div  class="col-sm-6 inputText ">
+
+            <table class="table admintable table-striped-tbody files form-control drop-zone" id="%%name%%"></table>
+
+            <div class="hidden fileupload-list-template">
+                <table>
+                <tbody class="template-upload fade" data-uploadid="">
+                    <tr class="progress-row">
+                        <td colspan="4">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="file-details">
+                        <td><span class="preview"></span></td>
+                        <td>
+                            <span class="name"></span><div class="error"></div>
+                        </td>
+                        <td>
+                            <span class="size"></span>
+                        </td>
+                        <td class="actions">
+                            <span class="dl-link hidden"><a href=""><i class="kj-icon fa fa-download"></i></a></span>
+                            <span class="del-button hidden"></span>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="col-sm-2 form-opener">
+            <span class=" fileinput-button">
+                <input type="file" name="%%name%%" multiple>
+                %%addButton%%
+            </span>
+            %%helpButton%%
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        require(["fileupload", "ajax"], function(fileupload, ajax) {
+
+            var uploader = fileupload.initUploader({
+                baseElement: $('#%%name%%_upl'),
+                autoUpload: true,
+                readOnly: %%readOnly%%,
+                paramName: '%%name%%_upl',
+                formData: [
+                    {name: 'systemid', value: '%%mediamanagerRepoId%%'},
+                    {name: 'inputElement', value : '%%name%%_upl'},
+                    {name: 'folder', value : '%%folder%%'}
+                ],
+                maxFileSize: %%maxFileSize%%,
+                acceptFileTypes: %%acceptFileTypes%%,
+                downloadTemplate: function (o) {
+                    var rows = $();
+                    $.each(o.files, function (index, file) {
+                        var row = $('#%%name%%_upl .fileupload-list-template .template-upload').clone();
+                        row.find('.name').text(file.name);
+                        row.find('.size').text(o.formatFileSize(file.size));
+                        if (file.error) {
+                            row.find('.error').text(file.error);
+                        }
+                        if (file.url) {
+                            row.find(".dl-link a").attr('href', file.url);
+                            row.find(".dl-link").removeClass('hidden');
+                        }
+                        if (file.deleteButton && !%%readOnly%%) {
+                            row.find('.del-button').html(file.deleteButton).removeClass('hidden');
+                        }
+                        row.attr('data-uploadid', file.systemid);
+                        rows = rows.add(row);
+                    });
+                    return rows;
+                },
+                uploadTemplate: function (o) {
+                    var rows = $();
+                    $.each(o.files, function (index, file) {
+                        var row = $('#%%name%%_upl .fileupload-list-template .template-upload').clone();
+                        row.find('.name').text(file.name);
+                        row.find('.size').text(o.formatFileSize(file.size));
+                        if (file.error) {
+                            row.find('.error').text(file.error);
+                        }
+                        rows = rows.add(row);
+                    });
+                    return rows;
+                }
+            });
+
+            //load files from the backend
+            ajax.genericAjaxCall("mediamanager", "fileUploadList", "&systemid=%%mediamanagerRepoId%%&folder=%%folder%%", function(data) {
+                uploader.getUploader().fileupload('option', 'done').call(uploader.getUploader(), $.Event('done'), {result: data});
+            }, null, null, "post", "json");
+        });
+
+
+    </script>
+</input_upload_inline>
 
 Regular Submit-Button
 <input_submit>
