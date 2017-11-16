@@ -100,3 +100,4 @@ $lang["xmlupload_error_copyUpload"]      = "Error while copying the file on the 
 $lang["xmlupload_error_filter"]          = "File type not allowed in current filter";
 $lang["xmlupload_error_notWritable"]     = "Folder not writable";
 $lang["xmlupload_success"]               = "Upload successful";
+$lang["form_repo_searchindex"]           = "Index files";
