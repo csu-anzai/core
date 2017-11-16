@@ -8,6 +8,7 @@
 namespace Kajona\Mediamanager\System\Search;
 
 use Kajona\Mediamanager\System\MediamanagerFile;
+use Kajona\Mediamanager\System\MediamanagerFileFilter;
 use Kajona\Mediamanager\System\MediamanagerRepo;
 
 /**
@@ -73,7 +74,8 @@ class Indexer
      */
     public function index(MediamanagerRepo $objRepo)
     {
-        $objFilter = null; // get all files where search content is empty
+        $objFilter = new MediamanagerFileFilter();
+        $objFilter->setBitIndexPending(true);
         $arrFiles = MediamanagerFile::getObjectListFiltered($objFilter, $objRepo->getSystemid());
 
         foreach ($arrFiles as $objFile) {

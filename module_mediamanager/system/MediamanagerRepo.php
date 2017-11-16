@@ -73,7 +73,7 @@ class MediamanagerRepo extends \Kajona\System\System\Model implements \Kajona\Sy
 
     /**
      * @var int
-     * @tableColumn mediamanager_repo.repo_seach_index
+     * @tableColumn mediamanager_repo.repo_search_index
      * @tableColumnDatatype int
      * @fieldType Kajona\System\Admin\Formentries\FormentryYesno
      * @fieldLabel form_repo_searchindex

@@ -6,6 +6,7 @@
 namespace Kajona\Mediamanager\System\Workflows;
 
 use Kajona\Mediamanager\System\MediamanagerRepo;
+use Kajona\Mediamanager\System\MediamanagerRepoFilter;
 use Kajona\Mediamanager\System\Search\Indexer;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Date;
@@ -65,7 +66,8 @@ class WorkflowFileIndexer implements WorkflowsHandlerInterface
     {
         $objIndexer = new Indexer();
 
-        $objFilter = null; // get all repos where search index is 1
+        $objFilter = new MediamanagerRepoFilter();
+        $objFilter->setBitSearchIndex(true);
         $arrRepos = MediamanagerRepo::getObjectListFiltered($objFilter);
 
         foreach ($arrRepos as $objRepo) {
