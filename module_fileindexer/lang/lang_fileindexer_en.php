@@ -9,8 +9,4 @@
 //Edited with Kajona Language Editor GUI, see www.kajona.de and www.mulchprod.de for more information
 //Kajona Language Editor Core Build 398
 
-//non-editable entries
-$lang["permissions_header"]              = array(0 => "View", 1 => "Edit", 2 => "Delete", 3 => "Permissions", 4 => "Upload",  5 => "Download", 6 => "Voting", 7 => "", 8 => "");
-
-
 $lang["workflow_file_indexer"]           = "Workflow to index files";
