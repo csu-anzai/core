@@ -65,11 +65,6 @@ class InstallerSamplecontentMediamanager implements SamplecontentInstallerInterf
         $objSetting->setStrValue($objRepo->getSystemid());
         $objSetting->updateObjectToDb();
 
-        $strReturn .= "Creating file upload folder\n";
-        if (!is_dir(_realpath_._filespath_."/public")) {
-            mkdir(_realpath_._filespath_."/public", 0777, true);
-        }
-
         $strReturn .= "Creating new file repository\n";
         $objRepo = new MediamanagerRepo();
 
@@ -80,7 +75,7 @@ class InstallerSamplecontentMediamanager implements SamplecontentInstallerInterf
             $objRepo->setStrTitle("File uploads");
         }
 
-        $objRepo->setStrPath(_filespath_."/downloads");
+        $objRepo->setStrPath(_filespath_."/downloads/default");
         $objRepo->setStrUploadFilter(".zip,.pdf,.txt");
         $objRepo->setStrViewFilter(".zip,.pdf,.txt");
         $objRepo->updateObjectToDb();
