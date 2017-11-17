@@ -10,6 +10,7 @@ namespace Kajona\Fileindexer\System;
 use Kajona\Mediamanager\System\MediamanagerFile;
 use Kajona\Mediamanager\System\MediamanagerFileFilter;
 use Kajona\Mediamanager\System\MediamanagerRepo;
+use Kajona\Search\System\SearchStandardAnalyzer;
 
 /**
  * @package module_mediamanager
@@ -54,12 +55,20 @@ class Indexer
 
         foreach ($arrFiles as $objFile) {
             /** @var MediamanagerFile $objFile */
-            $strPath = _realpath_."/".$objFile->getStrFilename();
-            $strContent = $this->get($strPath);
+            $strPath = realpath(_realpath_."/".$objFile->getStrFilename());
+            if (!empty($strPath)) {
+                $strContent = $this->get($strPath);
 
-            if (!empty($strContent)) {
-                $objFile->setStrSearchContent($strContent);
-                $objFile->updateObjectToDb();
+                if (!empty($strContent)) {
+                    $objAnalyzer = new SearchStandardAnalyzer();
+                    $objAnalyzer->analyze($strContent);
+
+                    $arrResults = $objAnalyzer->getResults();
+                    $strContent = implode(" ", array_keys($arrResults));
+
+                    $objFile->setStrSearchContent($strContent);
+                    $objFile->updateObjectToDb();
+                }
             }
         }
     }
