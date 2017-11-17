@@ -11,6 +11,7 @@ use Kajona\Mediamanager\System\MediamanagerFile;
 use Kajona\Mediamanager\System\MediamanagerFileFilter;
 use Kajona\Mediamanager\System\MediamanagerRepo;
 use Kajona\Search\System\SearchStandardAnalyzer;
+use Psr\Log\LoggerInterface;
 
 /**
  * @package module_fileindexer
@@ -23,9 +24,15 @@ class Indexer
      */
     protected $objParser;
 
-    public function __construct(ParserInterface $objParser)
+    /**
+     * @var LoggerInterface
+     */
+    protected $objLogger;
+
+    public function __construct(ParserInterface $objParser, LoggerInterface $objLogger = null)
     {
         $this->objParser = $objParser;
+        $this->objLogger = $objLogger;
     }
 
     /**
@@ -38,6 +45,9 @@ class Indexer
             return $this->objParser->getText($strPath);
         } catch (\Throwable $objE) {
             // could not parse file
+            if ($this->objLogger !== null) {
+                $this->objLogger->error($objE->getMessage());
+            }
         }
 
         return null;
@@ -48,6 +58,9 @@ class Indexer
      */
     public function index(MediamanagerRepo $objRepo)
     {
+        // @TODO somehow get only files from the provided repo since the files are nested we need to use a nested set
+        // or write the repo_id directly to the file
+
         $objFilter = new MediamanagerFileFilter();
         $objFilter->setBitIndexPending(true);
         $objFilter->setIntFileType(MediamanagerFile::$INT_TYPE_FILE);

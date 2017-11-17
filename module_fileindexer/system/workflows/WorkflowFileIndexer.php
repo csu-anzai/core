@@ -6,11 +6,9 @@
 namespace Kajona\Fileindexer\System\Workflows;
 
 use Kajona\Fileindexer\System\Indexer;
-use Kajona\Fileindexer\System\Parser\Tika;
 use Kajona\Mediamanager\System\MediamanagerRepo;
 use Kajona\Mediamanager\System\MediamanagerRepoFilter;
 use Kajona\System\System\Carrier;
-use Kajona\System\System\Config;
 use Kajona\System\System\Date;
 use Kajona\Workflows\System\WorkflowsHandlerInterface;
 use Kajona\Workflows\System\WorkflowsWorkflow;
@@ -22,6 +20,12 @@ use Kajona\Workflows\System\WorkflowsWorkflow;
  */
 class WorkflowFileIndexer implements WorkflowsHandlerInterface
 {
+    /**
+     * @inject fileindexer_indexer
+     * @var Indexer
+     */
+    protected $objIndexer;
+
     /**
      * @var WorkflowsWorkflow
      */
@@ -66,16 +70,12 @@ class WorkflowFileIndexer implements WorkflowsHandlerInterface
 
     public function execute()
     {
-        $objConfig = Config::getInstance("module_fileindexer");
-        $objParser = new Tika($objConfig->getConfig("java_exec"), $objConfig->getConfig("tika_jar"));
-        $objIndexer = new Indexer($objParser);
-
         $objFilter = new MediamanagerRepoFilter();
         $objFilter->setBitSearchIndex(true);
         $arrRepos = MediamanagerRepo::getObjectListFiltered($objFilter);
 
         foreach ($arrRepos as $objRepo) {
-            $objIndexer->index($objRepo);
+            $this->objIndexer->index($objRepo);
         }
 
         //trigger again
