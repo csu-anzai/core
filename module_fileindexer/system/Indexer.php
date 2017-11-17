@@ -13,7 +13,7 @@ use Kajona\Mediamanager\System\MediamanagerRepo;
 use Kajona\Search\System\SearchStandardAnalyzer;
 
 /**
- * @package module_mediamanager
+ * @package module_fileindexer
  * @author christoph.kappestein@artemeon.de
  */
 class Indexer

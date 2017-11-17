@@ -8,7 +8,7 @@
 namespace Kajona\Fileindexer\System;
 
 /**
- * @package module_mediamanager
+ * @package module_fileindexer
  * @author christoph.kappestein@artemeon.de
  */
 interface ParserInterface

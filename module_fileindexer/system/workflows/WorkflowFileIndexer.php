@@ -18,7 +18,7 @@ use Kajona\Workflows\System\WorkflowsWorkflow;
 /**
  * WorkflowFileIndexer
  *
- * @package module_mediamanager
+ * @package module_fileindexer
  */
 class WorkflowFileIndexer implements WorkflowsHandlerInterface
 {

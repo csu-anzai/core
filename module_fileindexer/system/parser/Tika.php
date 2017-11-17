@@ -12,7 +12,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\ProcessBuilder;
 
 /**
- * @package module_mediamanager
+ * @package module_fileindexer
  * @author christoph.kappestein@artemeon.de
  */
 class Tika implements ParserInterface

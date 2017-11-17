@@ -8,21 +8,15 @@
 
 namespace Kajona\Fileindexer\Installer;
 
-use Kajona\Mediamanager\System\MediamanagerFile;
-use Kajona\Mediamanager\System\MediamanagerRepo;
 use Kajona\System\System\InstallerBase;
 use Kajona\System\System\InstallerInterface;
-use Kajona\System\System\OrmSchemamanager;
-use Kajona\System\System\Resourceloader;
 use Kajona\System\System\SystemModule;
-use Kajona\System\System\SystemSetting;
-
 
 /**
  * InstallerFileindexer
  *
  * @package module_fileindexer
- * @moduleId _mediamanager_module_id_
+ * @moduleId _fileindexer_module_id_
  */
 class InstallerFileindexer extends InstallerBase implements InstallerInterface
 {
