@@ -25,6 +25,12 @@ class MediamanagerFileFilter extends FilterBase
     private $bitIndexPending;
 
     /**
+     * @var int
+     * @tableColumn file_type
+     */
+    private $intFileType;
+
+    /**
      *@inheritdoc
      */
     protected function getSingleOrmCondition($strAttributeName, $strValue, $strTableColumn, OrmComparatorEnum $enumFilterCompareOperator = null)
@@ -32,9 +38,9 @@ class MediamanagerFileFilter extends FilterBase
         switch ($strAttributeName) {
             case "bitIndexPending":
                 if ($this->bitIndexPending === true) {
-                    return new OrmCondition(" file_search_content IS NULL OR file_search_content = '' ", []);
+                    return new OrmCondition(" file_search_content IS NULL OR file_search_content LIKE ? ", [""]);
                 } elseif ($this->bitIndexPending === false) {
-                    return new OrmCondition(" file_search_content IS NOT NULL AND file_search_content != '' ", []);
+                    return new OrmCondition(" file_search_content IS NOT NULL AND file_search_content NOT LIKE ? ", [""]);
                 } else {
                     return null;
                 }
@@ -58,5 +64,21 @@ class MediamanagerFileFilter extends FilterBase
     public function setBitIndexPending($bitIndexPending)
     {
         $this->bitIndexPending = $bitIndexPending;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIntFileType()
+    {
+        return $this->intFileType;
+    }
+
+    /**
+     * @param int $intFileType
+     */
+    public function setIntFileType($intFileType)
+    {
+        $this->intFileType = $intFileType;
     }
 }
