@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://apidocs.kajona.de/xsd/package.xsd"
+        >
+    <title>fileindexer</title>
+    <description>Tool to index file content.</description>
+    <version>6.5</version>
+    <author>Kajona Team</author>
+    <type>MODULE</type>
+    <providesInstaller>TRUE</providesInstaller>
+    <requiredModules>
+        <module name="mediamanager" version="6.5" />
+        <module name="search" version="6.5" />
+    </requiredModules>
+</package>
