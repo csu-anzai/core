@@ -36,7 +36,8 @@ class InstallerFileindexer extends InstallerBase implements InstallerInterface
             _fileindexer_module_id_,
             "",
             "",
-            $this->objMetadata->getStrVersion()
+            $this->objMetadata->getStrVersion(),
+            false
         );
 
         return $strReturn;
