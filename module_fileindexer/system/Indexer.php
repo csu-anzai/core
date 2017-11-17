@@ -58,6 +58,7 @@ class Indexer
             $strPath = realpath(_realpath_."/".$objFile->getStrFilename());
             if (!empty($strPath)) {
                 $strContent = $this->get($strPath);
+                $strContent = trim($strContent);
 
                 if (!empty($strContent)) {
                     $objAnalyzer = new SearchStandardAnalyzer();
@@ -67,6 +68,10 @@ class Indexer
                     $strContent = implode(" ", array_keys($arrResults));
 
                     $objFile->setStrSearchContent($strContent);
+                    $objFile->updateObjectToDb();
+                } else {
+                    // we need to mark that we have scanned the file
+                    $objFile->setStrSearchContent("-");
                     $objFile->updateObjectToDb();
                 }
             }
