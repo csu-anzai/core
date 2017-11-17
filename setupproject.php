@@ -108,7 +108,6 @@ class class_project_setup {
         echo "\n<b>Kajona V5 htaccess setup</b>\n";
         self::createAllowHtaccess("/files/cache/.htaccess");
         self::createAllowHtaccess("/files/images/.htaccess");
-        self::createAllowHtaccess("/files/public/.htaccess");
         self::createAllowHtaccess("/files/extract/.htaccess");
         self::createAllowHtaccess("/templates/.htaccess");
 

@@ -26,7 +26,7 @@ if (Carrier::getInstance()->issetParam("runs") && intval(Carrier::getInstance()-
 $strDBDriver = Carrier::getInstance()->getObjConfig()->getConfig("dbdriver");
 
 $strCsvFileName = "dbperf-multi-".$strDBDriver.".csv";
-$strCsvFile = _realpath_."/files/public/".$strCsvFileName;
+$strCsvFile = _realpath_."/files/downloads/default/public/".$strCsvFileName;
 @unlink($strCsvFile);
 
 $arrResultTable = array();
@@ -119,7 +119,7 @@ for ($intRun = 1; $intRun <= $intRuns2Do; $intRun++) {
 
 
 echo  "\n\n\n-----------------------------------------------------";
-echo  "\nDownload <a href=\""._webpath_."/files/public/".$strCsvFileName."\">CSV file with results</a>";
+echo  "\nDownload <a href=\""._webpath_."/files/downloads/default/".$strCsvFileName."\">CSV file with results</a>";
 echo  "\n-----------------------------------------------------";
 
 
