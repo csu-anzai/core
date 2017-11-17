@@ -798,11 +798,11 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["upload_multiple_errorFilesize"] = $objText->getLang("upload_multiple_errorFilesize", "mediamanager")." ".bytesToString($objConfig->getPhpMaxUploadSize());
 
         $arrTemplate["helpButton"] = $bitReadonly ? "" : $this->listButton(
-            $this->getPopoverText(
+            "<a>".$this->getPopoverText(
                 AdminskinHelper::getAdminImage("icon_question", "", true),
                 $objText->getLang("mediamanager_upload", "mediamanager"),
                 $objText->getLang("upload_dropArea_extended", "mediamanager", ["'".$strAllowedFileTypes."'", bytesToString($objConfig->getPhpMaxUploadSize())])
-            )
+            )."</a>"
         );
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_upload_inline");
