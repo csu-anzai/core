@@ -17,9 +17,20 @@ use Symfony\Component\Process\ProcessBuilder;
  */
 class Tika implements ParserInterface
 {
+    /**
+     * @var string
+     */
     protected $strJava;
+
+    /**
+     * @var string
+     */
     protected $strTika;
 
+    /**
+     * @param string $strJava
+     * @param string $strTika
+     */
     public function __construct($strJava, $strTika)
     {
         $this->strJava = $strJava;
