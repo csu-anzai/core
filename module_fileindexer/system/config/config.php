@@ -10,6 +10,11 @@
 $config = array();
 
 /**
- * Command to execute the Tika (https://tika.apache.org/) jar
+ * Path to the java executable
  */
-$config["tika_exec"] = "java -jar " . __DIR__ . "/../../../../bin/tika-app-1.16.jar";
+$config["java_exec"] = "java";
+
+/**
+ * Path to the Tika (https://tika.apache.org/) jar
+ */
+$config["tika_jar"] = __DIR__ . "/../../../../bin/tika-app-1.16.jar";

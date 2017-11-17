@@ -9,7 +9,7 @@ namespace Kajona\Fileindexer\System\Parser;
 
 use Kajona\Fileindexer\System\ParserInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
+use Symfony\Component\Process\ProcessBuilder;
 
 /**
  * @package module_mediamanager
@@ -17,11 +17,13 @@ use Symfony\Component\Process\Process;
  */
 class Tika implements ParserInterface
 {
-    protected $strCmd;
+    protected $strJava;
+    protected $strTika;
 
-    public function __construct($strCmd)
+    public function __construct($strJava, $strTika)
     {
-        $this->strCmd = $strCmd;
+        $this->strJava = $strJava;
+        $this->strTika = $strTika;
     }
 
     /**
@@ -29,7 +31,16 @@ class Tika implements ParserInterface
      */
     public function getText($strFile)
     {
-        $objProcess = new Process($this->strCmd . " --text " . $strFile);
+        require_once __DIR__ . "/../../vendor/autoload.php";
+
+        $objBuilder = new ProcessBuilder();
+        $objBuilder->setPrefix($this->strJava);
+        $objBuilder->add("-jar");
+        $objBuilder->add($this->strTika);
+        $objBuilder->add("--text");
+        $objBuilder->add($strFile);
+
+        $objProcess = $objBuilder->getProcess();
         $objProcess->run();
 
         if (!$objProcess->isSuccessful()) {
