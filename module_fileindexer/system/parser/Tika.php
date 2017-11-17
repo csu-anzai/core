@@ -49,6 +49,7 @@ class Tika implements ParserInterface
         $objBuilder->add("-jar");
         $objBuilder->add($this->strTika);
         $objBuilder->add("--text");
+        $objBuilder->add("--encoding=UTF-8");
         $objBuilder->add($strFile);
 
         $objProcess = $objBuilder->getProcess();
