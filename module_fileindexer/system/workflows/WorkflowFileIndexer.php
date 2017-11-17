@@ -66,7 +66,7 @@ class WorkflowFileIndexer implements WorkflowsHandlerInterface
 
     public function execute()
     {
-        $objParser = new Tika(Config::getInstance("module_fileindexer")->getConfig("tika_jar"));
+        $objParser = new Tika(Config::getInstance("module_fileindexer")->getConfig("tika_exec"));
         $objIndexer = new Indexer($objParser);
 
         $objFilter = new MediamanagerRepoFilter();

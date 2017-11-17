@@ -18,4 +18,4 @@
 
 $config = array();
 
-$config["tika_jar"] = __DIR__ . "/../../../../bin/tika-app-1.16.jar";
+$config["tika_exec"] = "java -jar " . __DIR__ . "/../../../../bin/tika-app-1.16.jar";
