@@ -8,6 +8,8 @@
 
 namespace Kajona\Mediamanager\Installer;
 
+use Kajona\Mediamanager\System\MediamanagerFile;
+use Kajona\Mediamanager\System\MediamanagerRepo;
 use Kajona\System\System\InstallerBase;
 use Kajona\System\System\InstallerInterface;
 use Kajona\System\System\OrmSchemamanager;
@@ -32,10 +34,10 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
         $objManager = new OrmSchemamanager();
 
         $strReturn .= "Installing table mediamanager_repo...\n";
-        $objManager->createTable("Kajona\\Mediamanager\\System\\MediamanagerRepo");
+        $objManager->createTable(MediamanagerRepo::class);
 
         $strReturn .= "Installing table mediamanager_file...\n";
-        $objManager->createTable("Kajona\\Mediamanager\\System\\MediamanagerFile");
+        $objManager->createTable(MediamanagerFile::class);
 
 
         $strReturn .= "Installing table mediamanager_dllog...\n";
