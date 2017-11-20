@@ -137,8 +137,8 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
         if ($arrModule["module_version"] == "6.5") {
             $strReturn = "Updating to 6.5.1...\n";
 
-            $this->objDB->addColumn("mediamanager_file", "strSearchContent", DbDatatypes::STR_TYPE_TEXT);
-            $this->objDB->addColumn("mediamanager_repo", "intSearchIndex", DbDatatypes::STR_TYPE_INT);
+            $this->objDB->addColumn("mediamanager_file", "file_search_content", DbDatatypes::STR_TYPE_TEXT);
+            $this->objDB->addColumn("mediamanager_repo", "repo_search_index", DbDatatypes::STR_TYPE_INT);
 
             $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.1");
             $this->updateModuleVersion("folderview", "6.5.1");
