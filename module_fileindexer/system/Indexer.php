@@ -64,6 +64,7 @@ class Indexer
         $objFilter->setIntFileType(MediamanagerFile::$INT_TYPE_FILE);
         $objFilter->setStrFilename($objRepo->getStrPath());
         $arrFiles = MediamanagerFile::getObjectListFiltered($objFilter);
+        $bitHasChanges = false;
 
         foreach ($arrFiles as $objFile) {
             /** @var MediamanagerFile $objFile */
@@ -81,6 +82,8 @@ class Indexer
 
                     $objFile->setStrSearchContent($strContent);
                     $objFile->updateObjectToDb();
+
+                    $bitHasChanges = true;
                 } else {
                     // we need to mark that we have scanned the file
                     $objFile->setStrSearchContent("-");
@@ -89,7 +92,9 @@ class Indexer
             }
         }
 
-        // fire event after repo was indexed
-        CoreEventdispatcher::getInstance()->notifyGenericListeners(FileIndexerEventIdentifier::EVENT_FILEINDEXER_INDEX_COMPLETED, [$objRepo]);
+        if ($bitHasChanges) {
+            // fire event after repo was indexed
+            CoreEventdispatcher::getInstance()->notifyGenericListeners(FileIndexerEventIdentifier::EVENT_FILEINDEXER_INDEX_COMPLETED, [$objRepo]);
+        }
     }
 }
