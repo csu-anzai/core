@@ -31,6 +31,13 @@ class MediamanagerFileFilter extends FilterBase
     private $intFileType;
 
     /**
+     * @var string
+     * @tableColumn mediamanager_file.file_filename
+     * @tableColumnDatatype char254
+     */
+    private $strFilename;
+
+    /**
      *@inheritdoc
      */
     protected function getSingleOrmCondition($strAttributeName, $strValue, $strTableColumn, OrmComparatorEnum $enumFilterCompareOperator = null)
@@ -43,6 +50,12 @@ class MediamanagerFileFilter extends FilterBase
                     return new OrmCondition(" file_search_content IS NOT NULL AND file_search_content NOT LIKE ? ", [""]);
                 } else {
                     return null;
+                }
+                break;
+
+            case "strFilename":
+                if (!empty($strValue)) {
+                    return new OrmCondition(" {$strTableColumn} LIKE ? ", ["{$strValue}/%"]);
                 }
                 break;
         }
@@ -80,5 +93,21 @@ class MediamanagerFileFilter extends FilterBase
     public function setIntFileType($intFileType)
     {
         $this->intFileType = $intFileType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStrFilename()
+    {
+        return $this->strFilename;
+    }
+
+    /**
+     * @param string $strFilename
+     */
+    public function setStrFilename($strFilename)
+    {
+        $this->strFilename = $strFilename;
     }
 }
