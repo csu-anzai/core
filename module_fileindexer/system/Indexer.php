@@ -11,6 +11,7 @@ use Kajona\Mediamanager\System\MediamanagerFile;
 use Kajona\Mediamanager\System\MediamanagerFileFilter;
 use Kajona\Mediamanager\System\MediamanagerRepo;
 use Kajona\Search\System\SearchStandardAnalyzer;
+use Kajona\System\System\CoreEventdispatcher;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -87,5 +88,8 @@ class Indexer
                 }
             }
         }
+
+        // fire event after repo was indexed
+        CoreEventdispatcher::getInstance()->notifyGenericListeners(FileIndexerEventIdentifier::EVENT_FILEINDEXER_INDEX_COMPLETED, [$objRepo]);
     }
 }
