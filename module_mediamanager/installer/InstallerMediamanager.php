@@ -10,6 +10,7 @@ namespace Kajona\Mediamanager\Installer;
 
 use Kajona\Mediamanager\System\MediamanagerFile;
 use Kajona\Mediamanager\System\MediamanagerRepo;
+use Kajona\System\System\DbDatatypes;
 use Kajona\System\System\InstallerBase;
 use Kajona\System\System\InstallerInterface;
 use Kajona\System\System\OrmSchemamanager;
@@ -130,6 +131,17 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
             $strReturn = "Updating to 6.5...\n";
             $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5");
             $this->updateModuleVersion("folderview", "6.5");
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if ($arrModule["module_version"] == "6.5") {
+            $strReturn = "Updating to 6.5.1...\n";
+
+            $this->objDB->addColumn("mediamanager_file", "strSearchContent", DbDatatypes::STR_TYPE_TEXT);
+            $this->objDB->addColumn("mediamanager_repo", "intSearchIndex", DbDatatypes::STR_TYPE_INT);
+
+            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.1");
+            $this->updateModuleVersion("folderview", "6.5.1");
         }
 
         return $strReturn."\n\n";
