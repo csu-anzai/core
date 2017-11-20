@@ -148,7 +148,6 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
      * @var string
      * @tableColumn mediamanager_file.file_search_content
      * @tableColumnDatatype text
-     * @addSearchIndex
      */
     private $strSearchContent = "";
 
