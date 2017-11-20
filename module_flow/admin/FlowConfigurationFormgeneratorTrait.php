@@ -9,11 +9,13 @@
 
 namespace Kajona\Flow\Admin;
 
+use Kajona\Flow\System\FlowActionAbstract;
 use Kajona\System\Admin\Formentries\FormentryHeadline;
 use Kajona\System\Admin\Formentries\FormentryHidden;
 use Kajona\System\Admin\Formentries\FormentryTextrow;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Lang;
+use Kajona\System\System\Objectfactory;
 
 /**
  * FlowConfigurationFormgeneratorTrait
@@ -30,6 +32,12 @@ trait FlowConfigurationFormgeneratorTrait
     public function generateFieldsFromObject()
     {
         parent::generateFieldsFromObject();
+
+        $strTransistionId = Carrier::getInstance()->getParam("systemid");
+        $objTransition = Objectfactory::getInstance()->getObject($strTransistionId);
+        if ($objTransition instanceof FlowActionAbstract) {
+            $objTransition = Objectfactory::getInstance()->getObject($objTransition->getStrPrevId());
+        }
 
         // add dynamic action fields
         $objSource = $this->getObjSourceobject();
@@ -62,7 +70,7 @@ trait FlowConfigurationFormgeneratorTrait
                 $this->addField(new FormentryHeadline("config_header"))
                     ->setStrValue(Lang::getInstance()->getLang("form_flow_config", "flow"));
 
-                $objType->configureForm($this);
+                $objType->configureForm($this, $objTransition);
             }
         }
     }
