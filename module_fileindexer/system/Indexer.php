@@ -58,12 +58,10 @@ class Indexer
      */
     public function index(MediamanagerRepo $objRepo)
     {
-        // @TODO somehow get only files from the provided repo since the files are nested we need to use a nested set
-        // or write the repo_id directly to the file
-
         $objFilter = new MediamanagerFileFilter();
         $objFilter->setBitIndexPending(true);
         $objFilter->setIntFileType(MediamanagerFile::$INT_TYPE_FILE);
+        $objFilter->setStrFilename($objRepo->getStrPath());
         $arrFiles = MediamanagerFile::getObjectListFiltered($objFilter);
 
         foreach ($arrFiles as $objFile) {
