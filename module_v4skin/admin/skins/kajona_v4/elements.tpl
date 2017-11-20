@@ -672,9 +672,11 @@ Upload-Field for multiple files with progress bar
 
         </div>
         <div class="col-sm-2 form-opener">
-            <span class=" fileinput-button">
-                <input type="file" name="%%name%%" multiple>
-                %%addButton%%
+            <span class="listButton">
+                <span class=" fileinput-button">
+                    <input type="file" name="%%name%%" multiple>
+                    %%addButton%%
+                </span>
             </span>
             %%helpButton%%
         </div>
