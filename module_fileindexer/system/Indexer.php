@@ -21,6 +21,11 @@ use Psr\Log\LoggerInterface;
 class Indexer
 {
     /**
+     * @var int
+     */
+    const MAX_INDEX_COUNT = 16;
+
+    /**
      * @var ParserInterface
      */
     protected $objParser;
@@ -63,7 +68,7 @@ class Indexer
         $objFilter->setBitIndexPending(true);
         $objFilter->setIntFileType(MediamanagerFile::$INT_TYPE_FILE);
         $objFilter->setStrFilename($objRepo->getStrPath());
-        $arrFiles = MediamanagerFile::getObjectListFiltered($objFilter);
+        $arrFiles = MediamanagerFile::getObjectListFiltered($objFilter, "", 0, self::MAX_INDEX_COUNT);
         $arrResult = [];
 
         foreach ($arrFiles as $objFile) {
