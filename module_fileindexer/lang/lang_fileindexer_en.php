@@ -10,3 +10,4 @@
 //Kajona Language Editor Core Build 398
 
 $lang["workflow_file_indexer"]           = "Workflow to index files";
+$lang["workflow_file_indexer_delay"]     = "Delay";

@@ -20,6 +20,8 @@ use Kajona\Workflows\System\WorkflowsWorkflow;
  */
 class WorkflowFileIndexer implements WorkflowsHandlerInterface
 {
+    private $intDelay = 3;
+
     /**
      * @inject fileindexer_indexer
      * @var Indexer
@@ -36,7 +38,9 @@ class WorkflowFileIndexer implements WorkflowsHandlerInterface
      */
     public function getConfigValueNames()
     {
-        return array();
+        return array(
+            Carrier::getInstance()->getObjLang()->getLang("workflow_file_indexer_delay", "fileindexer")
+        );
     }
 
     /**
@@ -48,6 +52,7 @@ class WorkflowFileIndexer implements WorkflowsHandlerInterface
      */
     public function setConfigValues($strVal1, $strVal2, $strVal3)
     {
+        $this->intDelay = (int)$strVal1;
     }
 
     /**
@@ -55,7 +60,7 @@ class WorkflowFileIndexer implements WorkflowsHandlerInterface
      */
     public function getDefaultValues()
     {
-        return array();
+        return array(3);
     }
 
     public function setObjWorkflow($objWorkflow)
@@ -88,9 +93,8 @@ class WorkflowFileIndexer implements WorkflowsHandlerInterface
 
     public function schedule()
     {
-        $objDate = new Date();
-        //$objDate->setNextDay();
-        $this->objWorkflow->setObjTriggerdate($objDate);
+        $objTriggerdate = new Date(time() + (60 * $this->intDelay));
+        $this->objWorkflow->setObjTriggerdate($objTriggerdate);
     }
 
     public function getUserInterface()
