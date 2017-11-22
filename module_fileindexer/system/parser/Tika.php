@@ -12,6 +12,9 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\ProcessBuilder;
 
 /**
+ * Parser which uses the tika java app to extract text from a file
+ * 
+ * @see https://tika.apache.org/
  * @package module_fileindexer
  * @author christoph.kappestein@artemeon.de
  */
