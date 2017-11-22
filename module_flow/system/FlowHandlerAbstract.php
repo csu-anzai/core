@@ -62,7 +62,7 @@ abstract class FlowHandlerAbstract implements FlowHandlerInterface
                 // check whether there are validation errors
                 $objResult = $this->validateStatusTransition($objObject, $objTransition);
                 if (!$objResult->isValid()) {
-                    throw new \RuntimeException("There are condition errors for this status transition");
+                    throw new \RuntimeException("There are condition errors for this status transition, errors: ".implode(", ", $objResult->getErrors()));
                 }
 
                 // check whether the transition is visible

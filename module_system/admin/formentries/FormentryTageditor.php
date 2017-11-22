@@ -9,6 +9,7 @@ namespace Kajona\System\Admin\Formentries;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Reflection;
+use Kajona\System\System\Validators\DummyValidator;
 
 
 /**
@@ -27,6 +28,13 @@ class FormentryTageditor extends FormentryMultiselect {
 
         return $this;
     }
+
+    public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
+    {
+        parent::__construct($strFormName, $strSourceProperty, $objSourceObject);
+        $this->setObjValidator(new DummyValidator());
+    }
+
 
     /**
      * Renders the field itself.
@@ -62,7 +70,7 @@ class FormentryTageditor extends FormentryMultiselect {
 
     public function validateValue()
     {
-        if ($this->getObjValidator() != null) {
+        if ($this->getObjValidator() != null && !$this->getObjValidator() instanceof DummyValidator) {
             return $this->getObjValidator()->validate(explode(",", $this->getStrValue()));
         }
         $arrValues = explode(",", $this->getStrValue());
