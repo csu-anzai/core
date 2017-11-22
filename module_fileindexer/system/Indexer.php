@@ -15,6 +15,9 @@ use Kajona\System\System\CoreEventdispatcher;
 use Psr\Log\LoggerInterface;
 
 /**
+ * The indexer is responsible to extract text content from different file formats i.e. pdf or docx. The default parser
+ * uses the "tika" java app but it is also possible to provide another parser
+ *
  * @package module_fileindexer
  * @author christoph.kappestein@artemeon.de
  */
@@ -35,6 +38,10 @@ class Indexer
      */
     protected $objLogger;
 
+    /**
+     * @param ParserInterface $objParser
+     * @param LoggerInterface|null $objLogger
+     */
     public function __construct(ParserInterface $objParser, LoggerInterface $objLogger = null)
     {
         $this->objParser = $objParser;
@@ -42,6 +49,9 @@ class Indexer
     }
 
     /**
+     * Tries to parse the content of the provided file path and returns the content as plain text or null in case the
+     * parser throws an exception
+     *
      * @param string $strPath
      * @return string
      */
@@ -60,6 +70,10 @@ class Indexer
     }
 
     /**
+     * Parses the first n files from the repository which are not indexed yet and extracts for each file the text
+     * content and writes the text into the "strSearchContent" property. n is specified through the constant
+     * MAX_INDEX_COUNT
+     *
      * @param MediamanagerRepo $objRepo
      */
     public function index(MediamanagerRepo $objRepo)
