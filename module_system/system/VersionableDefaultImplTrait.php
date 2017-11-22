@@ -6,7 +6,6 @@
 
 namespace Kajona\System\System;
 
-use Kajona\System\Admin\AdminFormgenerator;
 
 /**
  * Provides a default implementation of VersionableInterface.
@@ -55,5 +54,15 @@ trait VersionableDefaultImplTrait
     public function renderVersionValue($strProperty, $strValue)
     {
         return SystemChangelogRenderer::renderValue($this, $strProperty, $strValue);
+    }
+
+    /**
+     * Will be removed in future releases!
+     * @return string
+     * @deprecated
+     */
+    public function getVersionRecordName()
+    {
+        return "Method no longer supported";
     }
 }
