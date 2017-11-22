@@ -41,7 +41,9 @@ interface FlowActionInterface
 
     /**
      * @param AdminFormgenerator $objForm
+     * @param FlowTransition $objTransition
      * @return void
+     * @internal param FlowTransition $objTransition
      */
-    public function configureForm(AdminFormgenerator $objForm);
+    public function configureForm(AdminFormgenerator $objForm, FlowTransition $objTransition);
 }

@@ -12,7 +12,7 @@ class PdfTest extends Testbase
     {
 
         //test code
-        $strFile = "/files/public/testPdf.pdf";
+        $strFile = "/files/downloads/default/testPdf.pdf";
 
         $objPdf = new Pdf();
         $objPdf->setStrTitle("Kajona Test PDF ");

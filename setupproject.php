@@ -70,11 +70,10 @@ class class_project_setup {
         self::checkDir("/files/cache");
         self::makeWritable("/files/cache");
         self::checkDir("/files/downloads");
-        self::makeWritable("/files/downloads");
+        self::checkDir("/files/downloads/default");
+        self::makeWritable("/files/downloads/default");
         self::checkDir("/files/images");
         self::makeWritable("/files/images");
-        self::checkDir("/files/public");
-        self::makeWritable("/files/public");
         self::checkDir("/files/extract");
         self::makeWritable("/files/extract");
 
@@ -109,7 +108,6 @@ class class_project_setup {
         echo "\n<b>Kajona V5 htaccess setup</b>\n";
         self::createAllowHtaccess("/files/cache/.htaccess");
         self::createAllowHtaccess("/files/images/.htaccess");
-        self::createAllowHtaccess("/files/public/.htaccess");
         self::createAllowHtaccess("/files/extract/.htaccess");
         self::createAllowHtaccess("/templates/.htaccess");
 

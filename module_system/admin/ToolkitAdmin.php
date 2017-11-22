@@ -9,6 +9,7 @@
 
 namespace Kajona\System\Admin;
 
+use Kajona\Mediamanager\System\MediamanagerRepo;
 use Kajona\System\Admin\Formentries\FormentryCheckboxarray;
 use Kajona\System\Admin\Formentries\FormentryObjectlist;
 use Kajona\System\System\AdminGridableInterface;
@@ -722,7 +723,7 @@ class ToolkitAdmin extends Toolkit
     }
 
     /**
-     * Returns a input-file element for uploading multiple files with progress bar. Only functionable in combination with
+     * Returns a input-file element for uploading multiple files with progress bar. Only functional in combination with
      * the mediamanager module
      *
      * @param string $strName
@@ -735,10 +736,8 @@ class ToolkitAdmin extends Toolkit
     {
 
         if (SystemModule::getModuleByName("mediamanager") === null) {
-            return ($this->warningBox("Module mediamanger is required for this multiple uploads"));
+            return ($this->warningBox("Module mediamanager is required for multiple uploads"));
         }
-
-        $strUploadId = generateSystemid();
 
         $objConfig = Carrier::getInstance()->getObjConfig();
         $objText = Carrier::getInstance()->getObjLang();
@@ -746,7 +745,6 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate = array();
         $arrTemplate["name"] = $strName;
         $arrTemplate["mediamanagerRepoId"] = $strMediamangerRepoSystemId;
-        $arrTemplate["uploadId"] = $strUploadId;
 
         $strAllowedFileRegex = StringUtil::replace(array(".", ","), array("", "|"), $strAllowedFileTypes);
         $strAllowedFileTypes = StringUtil::replace(array(".", ","), array("", "', '"), $strAllowedFileTypes);
@@ -758,6 +756,56 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["upload_multiple_errorFilesize"] = $objText->getLang("upload_multiple_errorFilesize", "mediamanager")." ".bytesToString($objConfig->getPhpMaxUploadSize());
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_upload_multiple");
+    }
+
+    /**
+     * Creates a multi-upload field inline, so directly within a form.
+     * Only to be used in combination with FormentryMultiUpload.
+     * The dir-param is the directory in the filesystem. The Mediamanager-Backend takes
+     * care of validating permissions and creating the relevant MediamanagerFile entries on the fly.
+     *
+     * @param string $strName
+     * @param $strTitle
+     * @param MediamanagerRepo $objRepo
+     * @param $strTargetDir
+     * @return string
+     * @see FormentryMultiUpload
+     */
+    public function formInputUploadInline($strName, $strTitle, MediamanagerRepo $objRepo, $strTargetDir, $bitReadonly = false)
+    {
+
+        if (SystemModule::getModuleByName("mediamanager") === null) {
+            return ($this->warningBox("Module mediamanager is required for multiple uploads"));
+        }
+
+        $objConfig = Carrier::getInstance()->getObjConfig();
+        $objText = Carrier::getInstance()->getObjLang();
+
+        $arrTemplate = array();
+        $arrTemplate["name"] = $strName;
+        $arrTemplate["title"] = $strTitle;
+        $arrTemplate["mediamanagerRepoId"] = $objRepo->getSystemid();
+        $arrTemplate["folder"] = $strTargetDir;
+        $arrTemplate["readOnly"] = $bitReadonly ? 'true' : 'false';
+        $arrTemplate["addButton"] = $bitReadonly ? "" : $this->listButton("<i class='kj-icon fa fa-plus-circle'></i>");//AdminskinHelper::getAdminImage("icon_new", $objText->getLang("mediamanager_upload", "mediamanager"));
+
+        $strAllowedFileRegex = StringUtil::replace(array(".", ","), array("", "|"), $objRepo->getStrUploadFilter());
+        $strAllowedFileTypes = StringUtil::replace(array(".", ","), array("", "', '"), $objRepo->getStrUploadFilter());
+
+        $arrTemplate["allowedExtensions"] = $strAllowedFileTypes != "" ? $objText->getLang("upload_allowed_extensions", "mediamanager").": '".$strAllowedFileTypes."'" : $strAllowedFileTypes;
+        $arrTemplate["maxFileSize"] = $objConfig->getPhpMaxUploadSize();
+        $arrTemplate["acceptFileTypes"] = $strAllowedFileRegex != "" ? "/(\.|\/)(".$strAllowedFileRegex.")$/i" : "''";
+        $arrTemplate["upload_multiple_errorFilesize"] = $objText->getLang("upload_multiple_errorFilesize", "mediamanager")." ".bytesToString($objConfig->getPhpMaxUploadSize());
+
+        $arrTemplate["helpButton"] = $bitReadonly ? "" : $this->listButton(
+            "<a>".$this->getPopoverText(
+                AdminskinHelper::getAdminImage("icon_question", "", true),
+                $objText->getLang("mediamanager_upload", "mediamanager"),
+                $objText->getLang("upload_dropArea_extended", "mediamanager", ["'".$strAllowedFileTypes."'", bytesToString($objConfig->getPhpMaxUploadSize())])
+            )."</a>"
+        );
+
+        return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_upload_inline");
     }
 
     /**
