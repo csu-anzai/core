@@ -62,6 +62,9 @@ class FormentryTageditor extends FormentryMultiselect {
 
     public function validateValue()
     {
+        if ($this->getObjValidator() != null) {
+            return $this->getObjValidator()->validate(explode(",", $this->getStrValue()));
+        }
         $arrValues = explode(",", $this->getStrValue());
         foreach($arrValues as $strValue) {
             $strValue = trim($strValue);
