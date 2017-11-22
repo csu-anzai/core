@@ -49,27 +49,6 @@ class Indexer
     }
 
     /**
-     * Tries to parse the content of the provided file path and returns the content as plain text or null in case the
-     * parser throws an exception
-     *
-     * @param string $strPath
-     * @return string
-     */
-    public function get($strPath)
-    {
-        try {
-            return $this->objParser->getText($strPath);
-        } catch (\Throwable $objE) {
-            // could not parse file
-            if ($this->objLogger !== null) {
-                $this->objLogger->error($objE->getMessage());
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Parses the first n files from the repository which are not indexed yet and extracts for each file the text
      * content and writes the text into the "strSearchContent" property. n is specified through the constant
      * MAX_INDEX_COUNT
@@ -115,5 +94,26 @@ class Indexer
             // fire event after repo was indexed
             CoreEventdispatcher::getInstance()->notifyGenericListeners(FileIndexerEventIdentifier::EVENT_FILEINDEXER_INDEX_COMPLETED, [$objRepo, $arrResult]);
         }
+    }
+
+    /**
+     * Tries to parse the content of the provided file path and returns the content as plain text or null in case the
+     * parser throws an exception
+     *
+     * @param string $strPath
+     * @return string
+     */
+    private function get($strPath)
+    {
+        try {
+            return $this->objParser->getText($strPath);
+        } catch (\Throwable $objE) {
+            // could not parse file
+            if ($this->objLogger !== null) {
+                $this->objLogger->error($objE->getMessage());
+            }
+        }
+
+        return null;
     }
 }
