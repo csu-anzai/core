@@ -10,7 +10,7 @@
     <type>MODULE</type>
     <providesInstaller>FALSE</providesInstaller>
     <requiredModules>
-        <module name="mediamanager" version="6.5" />
+        <module name="mediamanager" version="6.5.1" />
         <module name="search" version="6.5" />
     </requiredModules>
 </package>
