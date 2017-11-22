@@ -8,7 +8,7 @@
     <version>6.5</version>
     <author>Kajona Team</author>
     <type>MODULE</type>
-    <providesInstaller>TRUE</providesInstaller>
+    <providesInstaller>FALSE</providesInstaller>
     <requiredModules>
         <module name="mediamanager" version="6.5" />
         <module name="search" version="6.5" />
