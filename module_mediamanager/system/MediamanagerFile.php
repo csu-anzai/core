@@ -145,6 +145,13 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
     private $strScreen3 = "";
 
     /**
+     * @var string
+     * @tableColumn mediamanager_file.file_search_content
+     * @tableColumnDatatype text
+     */
+    private $strSearchContent = "";
+
+    /**
      * Return an on-lick link for the passed object.
      * This link is used by the backend-search for the autocomplete-field
      *
@@ -810,5 +817,21 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
     public function getStrScreen3()
     {
         return $this->strScreen3;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStrSearchContent()
+    {
+        return $this->strSearchContent;
+    }
+
+    /**
+     * @param string $strSearchContent
+     */
+    public function setStrSearchContent($strSearchContent)
+    {
+        $this->strSearchContent = $strSearchContent;
     }
 }

@@ -53,6 +53,9 @@ class class_project_setup {
         self::checkDir("/admin");
         self::createAdminRedirect();
 
+        self::checkDir("/bin");
+        self::createBinReadme();
+
         self::checkDir("/project");
         self::checkDir("/project/log");
         self::makeWritable("/project/log");
@@ -198,6 +201,20 @@ TXT;
         $strContent .= "</html>\n";
 
         file_put_contents(self::$strRealPath."/admin/index.html", $strContent);
+    }
+
+    private static function createBinReadme()
+    {
+        $strContent = <<<TEXT
+
+This folder should contain the following external binaries:
+
+module_fileindexer
+* `tika-app-1.16.jar` (https://tika.apache.org/)
+
+TEXT;
+
+        file_put_contents(self::$strRealPath."/bin/README.md", $strContent);
     }
 
     private static function checkDir($strFolder) {
