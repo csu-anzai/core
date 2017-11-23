@@ -182,6 +182,10 @@ class UserGroup extends Model implements ModelInterface, AdminListableInterface,
         return $objOrm->getObjectCount(UserGroup::class);
     }
 
+    public function getVersionRecordName()
+    {
+        return $this->getLang("change_type_group");
+    }
 
     /**
      * Returns the number of members of the current group.
