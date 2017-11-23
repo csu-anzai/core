@@ -268,6 +268,7 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_sidebarClose" => "<i class='fa fa-expand'></i>",
         "icon_summary" => "<i class='kj-icon fa fa-file-text-o'></i>",
         "icon_servicer" => "<i class='kj-icon fa fa-building-o'></i>",
+        "icon_outsourcing" => "<i class='kj-icon fa fa-sign-out'></i>",
         "icon_suboutsourcing" => "<i class='kj-icon fa fa-building'></i>",
         "icon_szenario" => "<span class='fa-stack kj-icon' style='text-align: center'><i class='fa fa-square' style='color:#DA0000'></i><i class='fa fa-stack-1x fa-inverse kj-text-icon' style='border-bottom:0; font-weight: normal;'>S</i></span>",
         "icon_table" => "<i class='kj-icon fa fa-table'></i>",
