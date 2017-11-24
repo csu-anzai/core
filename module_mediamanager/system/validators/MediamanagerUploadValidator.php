@@ -22,14 +22,17 @@ use Kajona\System\System\ValidatorInterface;
 class MediamanagerUploadValidator implements ValidatorInterface
 {
     private $strRepoId = "";
+    private $bitMandatory = false;
 
     /**
      * MediamanagerUploadValidator constructor.
      * @param string $strRepoId
+     * @param $bitMandatory
      */
-    public function __construct($strRepoId)
+    public function __construct($strRepoId, $bitMandatory)
     {
         $this->strRepoId = $strRepoId;
+        $this->bitMandatory = $bitMandatory;
     }
 
 
@@ -42,6 +45,10 @@ class MediamanagerUploadValidator implements ValidatorInterface
      */
     public function validate($objValue)
     {
+        if (!$this->bitMandatory) {
+            return true;
+        }
+
         /** @var MediamanagerRepo $objRepo */
         $objRepo = Objectfactory::getInstance()->getObject($this->strRepoId);
         $objMMFile = MediamanagerFile::getFileForPath($this->strRepoId, $objRepo->getStrPath()."/".$objValue);
