@@ -309,18 +309,22 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
      * Loads all workflows related with a given class.
      * By default limited to those with a exceeded trigger-date, so valid to be run
      *
-     * @param $strClass
+     * @param string $strClass
      * @param bool $bitOnlyScheduled
-     *
+     * @param string|null $strText
      * @return WorkflowsWorkflow[]
      */
-    public static function getWorkflowsForClass($strClass, $bitOnlyScheduled = true)
+    public static function getWorkflowsForClass($strClass, $bitOnlyScheduled = true, $strText = null)
     {
         $objOrmMapper = new OrmObjectlist();
 
         if ($bitOnlyScheduled) {
             $objOrmMapper->addWhereRestriction(new OrmCondition("( workflows_state = ? OR workflows_state = ? )", array((int)self::$INT_STATE_SCHEDULED, (int)self::$INT_STATE_NEW)));
             $objOrmMapper->addWhereRestriction(new OrmCondition("( system_date_start > ? OR system_date_start = 0 )", array(\Kajona\System\System\Date::getCurrentTimestamp())));
+        }
+
+        if (!empty($strText)) {
+            $objOrmMapper->addWhereRestriction(new OrmCondition("( workflows_text LIKE ? )", ["%{$strText}%"]));
         }
 
         $objOrmMapper->addWhereRestriction(new OrmPropertyCondition("strClass", OrmComparatorEnum::Equal(), $strClass));
