@@ -1722,10 +1722,9 @@ class ToolkitAdmin extends Toolkit
     public function listConfirmationButton($strDialogContent, $strConfirmationLinkHref, $strButton, $strButtonTooltip, $strHeader = "", $strConfirmationButtonLabel = "")
     {
         //get the reload-url
-        $objHistory = new History();
         $strParam = "";
         if (StringUtil::indexOf($strConfirmationLinkHref, "javascript:") === false) {
-            $strParam = "?reloadUrl='+encodeURIComponent(document.location.hash.substr(1))+'";
+            $strParam = (StringUtil::indexOf($strConfirmationLinkHref, "?") ? "&" : "?") ."reloadUrl='+encodeURIComponent(document.location.hash.substr(1))+'";
         }
 
         if ($strConfirmationButtonLabel == "") {
