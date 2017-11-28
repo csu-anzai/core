@@ -369,11 +369,26 @@ class AdminFormgenerator
                     }
                 }
             } elseif ($this->intGroupStyle == self::GROUP_TYPE_TABS) {
+                // mark tabs which contain validation errors
                 $arrTabs = [];
                 foreach ($this->arrGroupSort as $strKey) {
                     $strHtml = $arrGroups[$strKey];
                     if (!empty($strHtml)) {
-                        $arrTabs[$this->getGroupTitleByKey($strKey)] = "<br>" . $strHtml;
+                        $arrEntries = isset($this->arrGroups[$strKey]["entries"]) ? $this->arrGroups[$strKey]["entries"] : [];
+                        $bitHasError = false;
+                        foreach ($arrEntries as $strEntry) {
+                            if (isset($this->arrValidationErrors[$strEntry])) {
+                                $bitHasError = true;
+                                break;
+                            }
+                        }
+
+                        $strTitle = $this->getGroupTitleByKey($strKey);
+                        if ($bitHasError) {
+                            $strTitle = "<span style='color:#a94442' class='glyphicon glyphicon-warning-sign'></span>&nbsp;&nbsp;{$strTitle}";
+                        }
+
+                        $arrTabs[$strTitle] = "<br>" . $strHtml;
                     }
                 }
 
