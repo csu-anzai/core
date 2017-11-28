@@ -113,7 +113,12 @@ class AdminFormgenerator
     /**
      * @var array
      */
-    private $arrGroups = array();
+    private $arrGroups = [];
+
+    /**
+     * @var array
+     */
+    private $arrGroupSort = ["default"];
 
     private $strFormEncoding = "";
 
@@ -356,21 +361,30 @@ class AdminFormgenerator
 
             if ($this->intGroupStyle == self::GROUP_TYPE_HIDDEN) {
                 $bitFirst = true;
-                foreach ($arrGroups as $strKey => $strHtml) {
-                    $strReturn .= $objToolkit->formOptionalElementsWrapper($strHtml, $this->getGroupTitleByKey($strKey), $bitFirst);
-                    $bitFirst = false;
+                foreach ($this->arrGroupSort as $strKey) {
+                    $strHtml = $arrGroups[$strKey];
+                    if (!empty($strHtml)) {
+                        $strReturn .= $objToolkit->formOptionalElementsWrapper($strHtml, $this->getGroupTitleByKey($strKey), $bitFirst);
+                        $bitFirst = false;
+                    }
                 }
             } elseif ($this->intGroupStyle == self::GROUP_TYPE_TABS) {
                 $arrTabs = [];
-                foreach ($arrGroups as $strKey => $strHtml) {
-                    $arrTabs[$this->getGroupTitleByKey($strKey)] = $strHtml;
+                foreach ($this->arrGroupSort as $strKey) {
+                    $strHtml = $arrGroups[$strKey];
+                    if (!empty($strHtml)) {
+                        $arrTabs[$this->getGroupTitleByKey($strKey)] = "<br>" . $strHtml;
+                    }
                 }
 
                 $strReturn .= $objToolkit->getTabbedContent($arrTabs);
             } elseif ($this->intGroupStyle == self::GROUP_TYPE_HEADLINE) {
-                foreach ($arrGroups as $strKey => $strHtml) {
-                    $strReturn .= $objToolkit->formHeadline($this->getGroupTitleByKey($strKey));
-                    $strReturn .= $strHtml;
+                foreach ($this->arrGroupSort as $strKey) {
+                    $strHtml = $arrGroups[$strKey];
+                    if (!empty($strHtml)) {
+                        $strReturn .= $objToolkit->formHeadline($this->getGroupTitleByKey($strKey));
+                        $strReturn .= $strHtml;
+                    }
                 }
             }
         } else {
@@ -926,6 +940,8 @@ class AdminFormgenerator
                 "title" => $strTitle,
                 "entries" => [],
             ];
+
+            $this->arrGroupSort[] = $strKey;
         } else {
             throw new \RuntimeException("Group already exists");
         }
