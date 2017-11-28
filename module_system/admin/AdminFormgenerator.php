@@ -74,6 +74,10 @@ class AdminFormgenerator
 
     const STR_FORM_ON_SAVE_RELOAD_PARAM = "onsavereloadaction";
 
+    const GROUP_TYPE_TABS = 0;
+    const GROUP_TYPE_HIDDEN = 1;
+    const GROUP_TYPE_HEADLINE = 2;
+
     /**
      * The list of form-entries
      *
@@ -100,6 +104,16 @@ class AdminFormgenerator
     private $arrHiddenElements = array();
     private $strHiddenGroupTitle = "additional fields";
     private $bitHiddenElementsVisible = false;
+
+    /**
+     * @var int
+     */
+    private $intGroupStyle = self::GROUP_TYPE_TABS;
+
+    /**
+     * @var array
+     */
+    private $arrGroups = array();
 
     private $strFormEncoding = "";
 
@@ -321,17 +335,58 @@ class AdminFormgenerator
         }
         $strReturn .= $objToolkit->getValidationErrors($this);
 
-        $strHidden = "";
-        foreach ($this->arrFields as $objOneField) {
-            if (in_array($objOneField->getStrEntryName(), $this->arrHiddenElements)) {
-                $strHidden .= $objOneField->renderField();
-            } else {
-                $strReturn .= $objOneField->renderField();
-            }
-        }
+        if (!empty($this->arrGroups)) {
+            $arrGroups = [
+                "default" => "",
+            ];
 
-        if ($strHidden != "") {
-            $strReturn .= $objToolkit->formOptionalElementsWrapper($strHidden, $this->strHiddenGroupTitle, $this->bitHiddenElementsVisible);
+            foreach ($this->arrFields as $objOneField) {
+                $strKey = $this->getGroupKeyForEntry($objOneField);
+                if (empty($strKey)) {
+                    // in case we have no key use the default key
+                    $strKey = "default";
+                }
+
+                if (!isset($arrGroups[$strKey])) {
+                    $arrGroups[$strKey] = "";
+                }
+
+                $arrGroups[$strKey] .= $objOneField->renderField();
+            }
+
+            if ($this->intGroupStyle == self::GROUP_TYPE_HIDDEN) {
+                $bitFirst = true;
+                foreach ($arrGroups as $strKey => $strHtml) {
+                    $strReturn .= $objToolkit->formOptionalElementsWrapper($strHtml, $this->getGroupTitleByKey($strKey), $bitFirst);
+                    $bitFirst = false;
+                }
+            } elseif ($this->intGroupStyle == self::GROUP_TYPE_TABS) {
+                $arrTabs = [];
+                foreach ($arrGroups as $strKey => $strHtml) {
+                    $arrTabs[$this->getGroupTitleByKey($strKey)] = $strHtml;
+                }
+
+                $strReturn .= $objToolkit->getTabbedContent($arrTabs);
+            } elseif ($this->intGroupStyle == self::GROUP_TYPE_HEADLINE) {
+                foreach ($arrGroups as $strKey => $strHtml) {
+                    $strReturn .= $objToolkit->formHeadline($this->getGroupTitleByKey($strKey));
+                    $strReturn .= $strHtml;
+                }
+            }
+        } else {
+            $strHidden = "";
+
+            foreach ($this->arrFields as $objOneField) {
+                if (in_array($objOneField->getStrEntryName(), $this->arrHiddenElements)) {
+                    $strHidden .= $objOneField->renderField();
+                } else {
+                    $strReturn .= $objOneField->renderField();
+                }
+            }
+
+            if ($strHidden != "") {
+                $strReturn .= $objToolkit->formOptionalElementsWrapper($strHidden, $this->strHiddenGroupTitle, $this->bitHiddenElementsVisible);
+            }
         }
 
         /*Render form buttons*/
@@ -439,6 +494,30 @@ class AdminFormgenerator
         }
 
         return false;
+    }
+
+    /**
+     * @param FormentryBase $objOneField
+     * @return string
+     */
+    private function getGroupKeyForEntry(FormentryBase $objOneField)
+    {
+        foreach ($this->arrGroups as $strKey => $arrGroup) {
+            if (in_array($objOneField->getStrEntryName(), $arrGroup["entries"])) {
+                return $strKey;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $strKey
+     * @return string
+     */
+    private function getGroupTitleByKey($strKey)
+    {
+        return isset($this->arrGroups[$strKey]["title"]) ? $this->arrGroups[$strKey]["title"] : $this->getLang("form_default_group_name", "system");
     }
 
     /**
@@ -822,6 +901,68 @@ class AdminFormgenerator
             $this->addField($objField);
         }
         return $objField;
+    }
+
+    /**
+     * Sets the style how groups fields are rendered
+     *
+     * @param int $intGroupStyle
+     */
+    public function setGroupStyle($intGroupStyle)
+    {
+        $this->intGroupStyle = $intGroupStyle;
+    }
+
+    /**
+     * Creates a new group
+     *
+     * @param string $strKey
+     * @param string $strTitle
+     */
+    public function createGroup($strKey, $strTitle)
+    {
+        if (!isset($this->arrGroups[$strKey])) {
+            $this->arrGroups[$strKey] = [
+                "title" => $strTitle,
+                "entries" => [],
+            ];
+        } else {
+            throw new \RuntimeException("Group already exists");
+        }
+    }
+
+    /**
+     * Adds a field to a group
+     *
+     * @param FormentryBase $objField
+     * @param string $strKey
+     */
+    public function addFieldToGroup(FormentryBase $objField, $strKey)
+    {
+        if (isset($this->arrGroups[$strKey])) {
+            $this->arrGroups[$strKey]["entries"][] = $objField->getStrEntryName();
+        } else {
+            throw new \RuntimeException("Group does not exist");
+        }
+    }
+
+    /**
+     * Add multiple fields to a group
+     *
+     * @param array $arrFields
+     * @param string $strKey
+     */
+    public function addFieldsToGroup($arrFields, $strKey)
+    {
+        foreach ($arrFields as $objField) {
+            if (is_string($objField)) {
+                $objField = $this->getField($objField);
+            }
+
+            if ($objField instanceof FormentryBase) {
+                $this->addFieldToGroup($objField, $strKey);
+            }
+        }
     }
 
     /**
