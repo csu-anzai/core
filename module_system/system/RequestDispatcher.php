@@ -193,14 +193,14 @@ class RequestDispatcher
                         }
 
                         //if we resulted in a redirect, rewrite it to a js based on and force the redirect on "root" level
-                        //TODO: this currently kills the folderview param
                         if (ResponseObject::getInstance()->getStrRedirectUrl() != "") {
                             //TODO: move following to external helper
                             $strUrl = ResponseObject::getInstance()->getStrRedirectUrl();
                             ResponseObject::getInstance()->setStrRedirectUrl("");
 
-
                             $strRoutieRedirect = StringUtil::replace(_webpath_."/index.php?", "", $strUrl);
+                            //and strip everything until the last #sign
+                            $strRoutieRedirect = StringUtil::substring($strRoutieRedirect, StringUtil::lastIndexOf($strRoutieRedirect, "#"));
                             $strReturn = "<script type='text/javascript'>
                                     require('router').loadUrl('{$strRoutieRedirect}');
                                 </script>";
