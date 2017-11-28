@@ -64,7 +64,7 @@ class FormentryMultiUpload extends FormentryBase implements FormentryPrintableIn
      */
     public function getObjValidator()
     {
-        return new MediamanagerUploadValidator($this->strRepoId);
+        return new MediamanagerUploadValidator($this->strRepoId, $this->getBitMandatory());
     }
 
 
