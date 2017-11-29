@@ -569,7 +569,7 @@ class AdminFormgenerator implements \Countable
                         $strTitle = "<span class='glyphicon glyphicon-warning-sign error-text'></span>&nbsp;&nbsp;{$strTitle}";
                     }
 
-                    $arrTabs[$strTitle] = "<br>" . $strHtml;
+                    $arrTabs[$strTitle] = $strHtml;
                 }
             }
 
