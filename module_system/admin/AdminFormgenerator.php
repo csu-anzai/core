@@ -28,7 +28,6 @@ use Kajona\System\System\ValidatorInterface;
 use Kajona\System\System\Validators\ObjectvalidatorBase;
 use Kajona\System\System\Validators\SystemidValidator;
 
-
 /**
  * The admin-form generator is used to create, validate and manage forms for the backend.
  * Those forms are created as automatically as possible, so the setup of the field-types, validators
@@ -42,32 +41,32 @@ use Kajona\System\System\Validators\SystemidValidator;
  * 3. addField(), pass a field to add it explicitly
  *
  * @author sidler@mulchprod.de
+ * @author christoph.kappestein@artemeon.de
  * @since  4.0
  * @module module_formgenerator
  */
-class AdminFormgenerator
+class AdminFormgenerator implements \Countable
 {
-
     const STR_METHOD_POST = "POST";
     const STR_METHOD_GET = "GET";
 
-    const  STR_TYPE_ANNOTATION = "@fieldType";
-    const  STR_VALIDATOR_ANNOTATION = "@fieldValidator";
-    const  STR_MANDATORY_ANNOTATION = "@fieldMandatory";
-    const  STR_LABEL_ANNOTATION = "@fieldLabel";
-    const  STR_HIDDEN_ANNOTATION = "@fieldHidden";
-    const  STR_READONLY_ANNOTATION = "@fieldReadonly";
-    const  STR_OBJECTVALIDATOR_ANNOTATION = "@objectValidator";
+    const STR_TYPE_ANNOTATION = "@fieldType";
+    const STR_VALIDATOR_ANNOTATION = "@fieldValidator";
+    const STR_MANDATORY_ANNOTATION = "@fieldMandatory";
+    const STR_LABEL_ANNOTATION = "@fieldLabel";
+    const STR_HIDDEN_ANNOTATION = "@fieldHidden";
+    const STR_READONLY_ANNOTATION = "@fieldReadonly";
+    const STR_OBJECTVALIDATOR_ANNOTATION = "@objectValidator";
 
-    const  BIT_BUTTON_SAVE = 2;
-    const  BIT_BUTTON_CLOSE = 4;
-    const  BIT_BUTTON_CANCEL = 8;
-    const  BIT_BUTTON_SUBMIT = 16;
-    const  BIT_BUTTON_DELETE = 32;
-    const  BIT_BUTTON_RESET = 64;
-    const  BIT_BUTTON_CONTINUE = 128;
-    const  BIT_BUTTON_BACK = 256;
-    const  BIT_BUTTON_SAVENEXT = 512;
+    const BIT_BUTTON_SAVE = 2;
+    const BIT_BUTTON_CLOSE = 4;
+    const BIT_BUTTON_CANCEL = 8;
+    const BIT_BUTTON_SUBMIT = 16;
+    const BIT_BUTTON_DELETE = 32;
+    const BIT_BUTTON_RESET = 64;
+    const BIT_BUTTON_CONTINUE = 128;
+    const BIT_BUTTON_BACK = 256;
+    const BIT_BUTTON_SAVENEXT = 512;
 
     const FORM_ENCTYPE_MULTIPART = "multipart/form-data";
     const FORM_ENCTYPE_TEXTPLAIN = "text/plain";
@@ -99,10 +98,24 @@ class AdminFormgenerator
      */
     private $objSourceobject = null;
 
+    /**
+     * @var array
+     */
     private $arrValidationErrors = array();
 
+    /**
+     * @var array
+     */
     private $arrHiddenElements = array();
+
+    /**
+     * @var string
+     */
     private $strHiddenGroupTitle = "additional fields";
+
+    /**
+     * @var bool
+     */
     private $bitHiddenElementsVisible = false;
 
     /**
@@ -120,12 +133,30 @@ class AdminFormgenerator
      */
     private $arrGroupSort = ["default"];
 
+    /**
+     * @var string
+     */
     private $strFormEncoding = "";
 
+    /**
+     * @var string
+     */
     private $strOnSubmit = "";
+
+    /**
+     * @var string
+     */
     private $strMethod = "POST";
+
+    /**
+     * @var Lang
+     */
     private $objLang;
 
+    /**
+     * @var ToolkitAdmin
+     */
+    private $objToolkit;
 
     /**
      * After save action is being called, this URL will used for the reload URL
@@ -155,6 +186,7 @@ class AdminFormgenerator
 
         $this->strOnSubmit = "$(this).on('submit', function() { return false; }); $(window).off('unload'); require('messaging').setPollingEnabled(false); require('forms').animateSubmit(this); return true;";
         $this->objLang = Lang::getInstance();
+        $this->objToolkit = Carrier::getInstance()->getObjToolkit("admin");
     }
 
     /**
@@ -208,8 +240,6 @@ class AdminFormgenerator
      */
     public function validateForm()
     {
-        $objLang = Carrier::getInstance()->getObjLang();
-
         //1. Validate fields
         foreach ($this->arrFields as $objOneField) {
 
@@ -219,7 +249,7 @@ class AdminFormgenerator
             if ($objOneField->getBitMandatory()) {
                 //if field is mandatory and empty -> validation error
                 if ($bitFieldIsEmpty) {
-                    $strErrorMesage = $objOneField->getStrLabel() != "" ? $objLang->getLang("commons_validator_field_empty", "system", array($objOneField->getStrLabel())) : "";
+                    $strErrorMesage = $objOneField->getStrLabel() != "" ? $this->objLang->getLang("commons_validator_field_empty", "system", array($objOneField->getStrLabel())) : "";
                     $this->addValidationError($objOneField->getStrEntryName(), $strErrorMesage);
                 }
             }
@@ -292,7 +322,6 @@ class AdminFormgenerator
     public function renderForm($strTargetURI, $intButtonConfig = 2)
     {
         $strReturn = "";
-        $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
 
         /*add a hidden systemid-field*/
         if ($this->objSourceobject != null && $this->objSourceobject instanceof Model) {
@@ -315,7 +344,7 @@ class AdminFormgenerator
 
             // add info box field
             $objField = new FormentryPlaintext($this->strFormname);
-            $objField->setStrValue($objToolkit->warningBox($strMessage, "alert-info"));
+            $objField->setStrValue($this->objToolkit->warningBox($strMessage, "alert-info"));
             $this->addField($objField, "lock_info");
             $this->setFieldToPosition("lock_info", 1);
 
@@ -336,88 +365,60 @@ class AdminFormgenerator
         }
 
         if ($strTargetURI !== null) {
-            $strReturn .= $objToolkit->formHeader($strTargetURI, $strGeneratedFormname, $this->strFormEncoding, $this->strOnSubmit, $this->strMethod);
+            $strReturn .= $this->objToolkit->formHeader($strTargetURI, $strGeneratedFormname, $this->strFormEncoding, $this->strOnSubmit, $this->strMethod);
         }
-        $strReturn .= $objToolkit->getValidationErrors($this);
 
+        $strReturn .= $this->objToolkit->getValidationErrors($this);
+        $strReturn .= $this->renderFields();
+        $strReturn .= $this->renderButtons($intButtonConfig);
+
+        if ($strTargetURI !== null) {
+            $strReturn .= $this->objToolkit->formClose();
+        }
+
+        if (count($this->arrFields) > 0) {
+            $strReturn .= $this->renderBrowserFocus();
+        }
+
+        //lock the record to avoid multiple edit-sessions - if in edit mode
+        if ($this->shouldAcquireLock()) {
+            $strReturn .= $this->renderLock();
+        }
+
+        return $strReturn;
+    }
+
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->arrFields);
+    }
+
+    /**
+     * Renders all fields of the form
+     *
+     * @return string
+     */
+    protected function renderFields()
+    {
         if (!empty($this->arrGroups)) {
-            $arrGroups = [
-                "default" => "",
-            ];
-
-            foreach ($this->arrFields as $objOneField) {
-                $strKey = $this->getGroupKeyForEntry($objOneField);
-                if (empty($strKey)) {
-                    // in case we have no key use the default key
-                    $strKey = "default";
-                }
-
-                if (!isset($arrGroups[$strKey])) {
-                    $arrGroups[$strKey] = "";
-                }
-
-                $arrGroups[$strKey] .= $objOneField->renderField();
-            }
-
-            if ($this->intGroupStyle == self::GROUP_TYPE_HIDDEN) {
-                $bitFirst = true;
-                foreach ($this->arrGroupSort as $strKey) {
-                    $strHtml = $arrGroups[$strKey];
-                    if (!empty($strHtml)) {
-                        $strReturn .= $objToolkit->formOptionalElementsWrapper($strHtml, $this->getGroupTitleByKey($strKey), $bitFirst);
-                        $bitFirst = false;
-                    }
-                }
-            } elseif ($this->intGroupStyle == self::GROUP_TYPE_TABS) {
-                $arrTabs = [];
-                foreach ($this->arrGroupSort as $strKey) {
-                    $strHtml = $arrGroups[$strKey];
-                    if (!empty($strHtml)) {
-                        // mark tabs which contain validation errors
-                        $arrEntries = isset($this->arrGroups[$strKey]["entries"]) ? $this->arrGroups[$strKey]["entries"] : [];
-                        $bitHasError = false;
-                        foreach ($arrEntries as $strEntry) {
-                            if (isset($this->arrValidationErrors[$strEntry])) {
-                                $bitHasError = true;
-                                break;
-                            }
-                        }
-
-                        // add tab
-                        $strTitle = $this->getGroupTitleByKey($strKey);
-                        if ($bitHasError) {
-                            $strTitle = "<span style='color:#a94442' class='glyphicon glyphicon-warning-sign'></span>&nbsp;&nbsp;{$strTitle}";
-                        }
-
-                        $arrTabs[$strTitle] = "<br>" . $strHtml;
-                    }
-                }
-
-                $strReturn .= $objToolkit->getTabbedContent($arrTabs);
-            } elseif ($this->intGroupStyle == self::GROUP_TYPE_HEADLINE) {
-                foreach ($this->arrGroupSort as $strKey) {
-                    $strHtml = $arrGroups[$strKey];
-                    if (!empty($strHtml)) {
-                        $strReturn .= $objToolkit->formHeadline($this->getGroupTitleByKey($strKey));
-                        $strReturn .= $strHtml;
-                    }
-                }
-            }
+            return $this->renderFieldsGrouped();
         } else {
-            $strHidden = "";
-
-            foreach ($this->arrFields as $objOneField) {
-                if (in_array($objOneField->getStrEntryName(), $this->arrHiddenElements)) {
-                    $strHidden .= $objOneField->renderField();
-                } else {
-                    $strReturn .= $objOneField->renderField();
-                }
-            }
-
-            if ($strHidden != "") {
-                $strReturn .= $objToolkit->formOptionalElementsWrapper($strHidden, $this->strHiddenGroupTitle, $this->bitHiddenElementsVisible);
-            }
+            return $this->renderFieldsDefault();
         }
+    }
+
+    /**
+     * Renders the form buttons
+     *
+     * @param int $intButtonConfig
+     * @return string
+     */
+    protected function renderButtons($intButtonConfig)
+    {
+        $strReturn = "";
 
         /*Render form buttons*/
         $strButtons = "";
@@ -428,74 +429,184 @@ class AdminFormgenerator
         }
 
         if ($intButtonConfig & self::BIT_BUTTON_BACK) {
-            $strButtons .= $objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_back", "system"), "backbtn", "", "", true, false);
+            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_back", "system"), "backbtn", "", "", true, false);
         }
 
         if ($intButtonConfig & self::BIT_BUTTON_SUBMIT) {
-            $strButtons .= $objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_submit", "system"), "submitbtn", "", "", true, false);
+            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_submit", "system"), "submitbtn", "", "", true, false);
         }
 
         if ($intButtonConfig & self::BIT_BUTTON_SAVE) {
-            $strButtons .= $objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_save", "system"), "submitbtn", "", "", true, false);
+            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_save", "system"), "submitbtn", "", "", true, false);
         }
 
         if ($intButtonConfig & self::BIT_BUTTON_CANCEL) {
-            $strButtons .= $objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_cancel", "system"), "cancelbtn", "", "", true, false);
+            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_cancel", "system"), "cancelbtn", "", "", true, false);
         }
 
         if ($intButtonConfig & self::BIT_BUTTON_CLOSE) {
-            $strButtons .= $objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_close", "system"), "closebtn", "", "", true, false);
+            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_close", "system"), "closebtn", "", "", true, false);
         }
 
         if ($intButtonConfig & self::BIT_BUTTON_DELETE) {
-            $strButtons .= $objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_delete", "system"), "deletebtn", "", "", true, false);
+            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_delete", "system"), "deletebtn", "", "", true, false);
         }
 
         if ($intButtonConfig & self::BIT_BUTTON_RESET) {
-            $strButtons .= $objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_reset", "system"), "reset", "", "cancelbutton", true, false);
+            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_reset", "system"), "reset", "", "cancelbutton", true, false);
         }
 
         if ($intButtonConfig & self::BIT_BUTTON_CONTINUE) {
-            $strButtons .= $objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_continue", "system"), "continuebtn", "", "", true, false);
+            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_continue", "system"), "continuebtn", "", "", true, false);
         }
 
         if ($intButtonConfig & self::BIT_BUTTON_SAVENEXT) {
-            $strButtons .= $objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_savenext", "system"), "savenextbtn", "", "", true, false);
+            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_savenext", "system"), "savenextbtn", "", "", true, false);
         }
 
-        $strReturn .= $objToolkit->formInputButtonWrapper($strButtons);
+        $strReturn .= $this->objToolkit->formInputButtonWrapper($strButtons);
 
-        if ($strTargetURI !== null) {
-            $strReturn .= $objToolkit->formClose();
-        }
+        return $strReturn;
+    }
 
-        if (count($this->arrFields) > 0) {
-            reset($this->arrFields);
+    /**
+     * Renders the javascript to focus the first form entry
+     *
+     * @return string
+     */
+    protected function renderBrowserFocus()
+    {
+        $strReturn = "";
 
-            do {
-                $objField = current($this->arrFields);
-                if (!$objField instanceof FormentryHidden
-                    && !$objField instanceof FormentryPlaintext
-                    && !$objField instanceof FormentryHeadline
-                    && !$objField instanceof FormentryDivider
-                ) {
-                    $strReturn .= $objToolkit->setBrowserFocus($objField->getStrEntryName());
-                    break;
-                }
-            } while (next($this->arrFields) !== false);
+        reset($this->arrFields);
 
-        }
+        do {
+            $objField = current($this->arrFields);
+            if (!$objField instanceof FormentryHidden
+                && !$objField instanceof FormentryPlaintext
+                && !$objField instanceof FormentryHeadline
+                && !$objField instanceof FormentryDivider
+            ) {
+                $strReturn .= $this->objToolkit->setBrowserFocus($objField->getStrEntryName());
+                break;
+            }
+        } while (next($this->arrFields) !== false);
 
-        //lock the record to avoid multiple edit-sessions - if in edit mode
-        if ($this->shouldAcquireLock()) {
-            if ($this->objSourceobject->getLockManager()->isAccessibleForCurrentUser()) {
-                $this->objSourceobject->getLockManager()->lockRecord();
+        return $strReturn;
+    }
 
-                //register a new unlock-handler
-                $strReturn .= "<script type='text/javascript'>
+    /**
+     * Renders the javascript to lock the record
+     *
+     * @return string
+     */
+    protected function renderLock()
+    {
+        $strReturn = "";
+        if ($this->objSourceobject->getLockManager()->isAccessibleForCurrentUser()) {
+            $this->objSourceobject->getLockManager()->lockRecord();
+
+            //register a new unlock-handler
+            $strReturn .= "<script type='text/javascript'>
                         $(window).on('unload', function() { $.ajax({url: KAJONA_WEBPATH + '/xml.php?admin=1&module=system&action=unlockRecord&systemid=" . $this->objSourceobject->getSystemid() . "', async:false}) ; });
                     </script>";
+        }
+
+        return $strReturn;
+    }
+
+    /**
+     * Renders the fields grouped in a specific style
+     *
+     * @return string
+     */
+    private function renderFieldsGrouped()
+    {
+        $strReturn = "";
+        $arrGroups = ["default" => ""];
+
+        foreach ($this->arrFields as $objOneField) {
+            $strKey = $this->getGroupKeyForEntry($objOneField);
+            if (empty($strKey)) {
+                // in case we have no key use the default key
+                $strKey = "default";
             }
+
+            if (!isset($arrGroups[$strKey])) {
+                $arrGroups[$strKey] = "";
+            }
+
+            $arrGroups[$strKey] .= $objOneField->renderField();
+        }
+
+        if ($this->intGroupStyle == self::GROUP_TYPE_HIDDEN) {
+            $bitFirst = true;
+            foreach ($this->arrGroupSort as $strKey) {
+                $strHtml = $arrGroups[$strKey];
+                if (!empty($strHtml)) {
+                    $strReturn .= $this->objToolkit->formOptionalElementsWrapper($strHtml, $this->getGroupTitleByKey($strKey), $bitFirst);
+                    $bitFirst = false;
+                }
+            }
+        } elseif ($this->intGroupStyle == self::GROUP_TYPE_TABS) {
+            $arrTabs = [];
+            foreach ($this->arrGroupSort as $strKey) {
+                $strHtml = $arrGroups[$strKey];
+                if (!empty($strHtml)) {
+                    // mark tabs which contain validation errors
+                    $arrEntries = isset($this->arrGroups[$strKey]["entries"]) ? $this->arrGroups[$strKey]["entries"] : [];
+                    $bitHasError = false;
+                    foreach ($arrEntries as $strEntry) {
+                        if (isset($this->arrValidationErrors[$strEntry])) {
+                            $bitHasError = true;
+                            break;
+                        }
+                    }
+
+                    // add tab
+                    $strTitle = $this->getGroupTitleByKey($strKey);
+                    if ($bitHasError) {
+                        $strTitle = "<span style='color:#a94442' class='glyphicon glyphicon-warning-sign'></span>&nbsp;&nbsp;{$strTitle}";
+                    }
+
+                    $arrTabs[$strTitle] = "<br>" . $strHtml;
+                }
+            }
+
+            $strReturn .= $this->objToolkit->getTabbedContent($arrTabs);
+        } elseif ($this->intGroupStyle == self::GROUP_TYPE_HEADLINE) {
+            foreach ($this->arrGroupSort as $strKey) {
+                $strHtml = $arrGroups[$strKey];
+                if (!empty($strHtml)) {
+                    $strReturn .= $this->objToolkit->formHeadline($this->getGroupTitleByKey($strKey));
+                    $strReturn .= $strHtml;
+                }
+            }
+        }
+
+        return $strReturn;
+    }
+
+    /**
+     * Renders the fields in a simple list
+     *
+     * @return string
+     */
+    private function renderFieldsDefault()
+    {
+        $strReturn = "";
+        $strHidden = "";
+
+        foreach ($this->arrFields as $objOneField) {
+            if (in_array($objOneField->getStrEntryName(), $this->arrHiddenElements)) {
+                $strHidden .= $objOneField->renderField();
+            } else {
+                $strReturn .= $objOneField->renderField();
+            }
+        }
+
+        if ($strHidden != "") {
+            $strReturn .= $this->objToolkit->formOptionalElementsWrapper($strHidden, $this->strHiddenGroupTitle, $this->bitHiddenElementsVisible);
         }
 
         return $strReturn;
