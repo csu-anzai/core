@@ -908,8 +908,8 @@ class AdminFormgenerator
      * Sets the name of the group of hidden elements
      *
      * @param string $strHiddenGroupTitle
-     *
      * @return $this
+     * @deprecated Please use the createGroup method
      */
     public function setStrHiddenGroupTitle($strHiddenGroupTitle)
     {
@@ -921,8 +921,8 @@ class AdminFormgenerator
      * Moves a single field to the list of hidden elements
      *
      * @param FormentryBase $objField
-     *
      * @return FormentryBase
+     * @deprecated Please use the addFieldToGroup method
      */
     public function addFieldToHiddenGroup(FormentryBase $objField)
     {
@@ -931,6 +931,18 @@ class AdminFormgenerator
             $this->addField($objField);
         }
         return $objField;
+    }
+
+    /**
+     * Makes the group of hidden elements visible or hides the content on page-load
+     *
+     * @param bool $bitHiddenElementsVisible
+     * @return void
+     * @deprecated Please use the addFieldToGroup method
+     */
+    public function setBitHiddenElementsVisible($bitHiddenElementsVisible)
+    {
+        $this->bitHiddenElementsVisible = $bitHiddenElementsVisible;
     }
 
     /**
@@ -995,18 +1007,6 @@ class AdminFormgenerator
                 $this->addFieldToGroup($objField, $strKey);
             }
         }
-    }
-
-    /**
-     * Makes the group of hidden elements visible or hides the content on page-load
-     *
-     * @param bool $bitHiddenElementsVisible
-     *
-     * @return void
-     */
-    public function setBitHiddenElementsVisible($bitHiddenElementsVisible)
-    {
-        $this->bitHiddenElementsVisible = $bitHiddenElementsVisible;
     }
 
     /**
