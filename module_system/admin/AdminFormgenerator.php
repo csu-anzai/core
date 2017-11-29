@@ -566,7 +566,7 @@ class AdminFormgenerator implements \Countable
                     // add tab
                     $strTitle = $this->getGroupTitleByKey($strKey);
                     if ($bitHasError) {
-                        $strTitle = "<span style='color:#a94442' class='glyphicon glyphicon-warning-sign'></span>&nbsp;&nbsp;{$strTitle}";
+                        $strTitle = "<span class='glyphicon glyphicon-warning-sign error-text'></span>&nbsp;&nbsp;{$strTitle}";
                     }
 
                     $arrTabs[$strTitle] = "<br>" . $strHtml;
