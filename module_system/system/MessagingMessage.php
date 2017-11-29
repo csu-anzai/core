@@ -257,6 +257,24 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
         return $objOrm->getObjectList(__CLASS__, $intStart, $intEnd);
     }
 
+    /**
+     * Returns an array of all messages matching the passed identifier
+     *
+     * @param string $strIdentifier
+     * @param $strMessageprovider
+     * @param bool|int $intStart
+     * @param bool|int $intEnd
+     *
+     * @return MessagingMessage[]
+     * @static
+     */
+    public static function getMessagesByIdentifierAndMessageprovider($strIdentifier, $strMessageprovider, $intStart = null, $intEnd = null)
+    {
+        $objOrm = new OrmObjectlist();
+        $objOrm->addWhereRestriction(new OrmPropertyCondition("strInternalIdentifier", OrmComparatorEnum::Equal(), $strIdentifier));
+        $objOrm->addWhereRestriction(new OrmPropertyCondition("strMessageProvider", OrmComparatorEnum::Equal(), $strMessageprovider));
+        return $objOrm->getObjectList(__CLASS__, $intStart, $intEnd);
+    }
 
     /**
      * Returns the number of messages for a single user - ignoring the messages states.
