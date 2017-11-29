@@ -919,6 +919,7 @@ class AdminFormgenerator implements \Countable
      * Returns an array of validation-errors
      *
      * @return array
+     * @deprecated Please use getValidationErrors
      */
     public function getArrValidationErrors()
     {
@@ -927,14 +928,12 @@ class AdminFormgenerator implements \Countable
 
     /**
      * Returns an array of validation-errors.
-     * Alias for getArrValidationErrors due to backwards compatibility.
      *
      * @return array
-     * @see getArrValidationErrors
      */
     public function getValidationErrors()
     {
-        return $this->getArrValidationErrors();
+        return $this->arrValidationErrors;
     }
 
     /**
