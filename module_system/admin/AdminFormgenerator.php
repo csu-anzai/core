@@ -554,14 +554,7 @@ class AdminFormgenerator implements \Countable
                 $strHtml = $arrGroups[$strKey];
                 if (!empty($strHtml)) {
                     // mark tabs which contain validation errors
-                    $arrEntries = isset($this->arrGroups[$strKey]["entries"]) ? $this->arrGroups[$strKey]["entries"] : [];
-                    $bitHasError = false;
-                    foreach ($arrEntries as $strEntry) {
-                        if (isset($this->arrValidationErrors[$strEntry])) {
-                            $bitHasError = true;
-                            break;
-                        }
-                    }
+                    $bitHasError = $this->hasGroupError($strKey);
 
                     // add tab
                     $strTitle = $this->getGroupTitleByKey($strKey);
@@ -659,6 +652,45 @@ class AdminFormgenerator implements \Countable
     private function getGroupTitleByKey($strKey)
     {
         return isset($this->arrGroups[$strKey]["title"]) ? $this->arrGroups[$strKey]["title"] : $this->getLang("form_default_group_name", "system");
+    }
+
+    /**
+     * Returns whether a group contains fields which have a validation error
+     *
+     * @param string $strKey
+     * @return boolean
+     */
+    private function hasGroupError($strKey)
+    {
+        if ($strKey == "default") {
+            $arrGroupedEntries = [];
+            foreach ($this->arrGroups as $strKey => $arrRow) {
+                $arrGroupedEntries = array_merge($arrGroupedEntries, isset($arrRow["entries"]) ? $arrRow["entries"] : []);
+            }
+
+            $arrAllEntries = [];
+            foreach ($this->arrFields as $objField) {
+                $arrAllEntries[] = $objField->getStrEntryName();
+            }
+
+            $arrDefaultEntries = array_diff($arrAllEntries, $arrGroupedEntries);
+            foreach ($arrDefaultEntries as $strEntry) {
+                if (isset($this->arrValidationErrors[$strEntry])) {
+                    return true;
+                }
+            }
+
+            return false;
+        } else {
+            $arrEntries = isset($this->arrGroups[$strKey]["entries"]) ? $this->arrGroups[$strKey]["entries"] : [];
+            foreach ($arrEntries as $strEntry) {
+                if (isset($this->arrValidationErrors[$strEntry])) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 
     /**
