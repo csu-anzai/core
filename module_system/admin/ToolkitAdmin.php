@@ -1866,7 +1866,7 @@ require(['ajax'], function(ajax){
     public function getLayoutFolder($strContent, $strLinkText, $bitVisible = false, $strCallbackVisible = "", $strCallbackInvisible = "")
     {
         $arrReturn = array();
-        $strID = str_replace(array(" ", "."), array("", ""), microtime());
+        $strID = generateSystemid();
         $arrTemplate = array();
         $arrTemplate["id"] = $strID;
         $arrTemplate["content"] = $strContent;
