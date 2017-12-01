@@ -63,8 +63,8 @@ class SearchBooleanQueryTest extends Testbase
     protected function tearDown()
     {
         //since the test cleared the index, we want a fresh index again :)
-        $objSearchIndexWriter = new SearchIndexwriter();
-        $objSearchIndexWriter->indexRebuild();
+//        $objSearchIndexWriter = new SearchIndexwriter();
+//        $objSearchIndexWriter->indexRebuild();
 
         foreach (self::$arrObjectIds as $intKey => $strId) {
             $objObject = Objectfactory::getInstance()->getObject($strId);
