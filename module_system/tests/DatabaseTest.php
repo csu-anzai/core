@@ -498,9 +498,10 @@ SQL;
     {
         $this->createTable();
 
-        $objLeftDate = new Date();
+        // note calculation does not work if we cross a year border
+        $objLeftDate = new Date(20170801000000);
         $objLeftDate->setNextMonth();
-        $objRightDate = new Date();
+        $objRightDate = new Date(20170801000000);
 
         $objDB = Database::getInstance();
         $objDB->multiInsert("temp_autotest",
