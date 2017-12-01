@@ -493,28 +493,45 @@ SQL;
 
     /**
      * This test checks whether we can use a long timestamp format in in an sql query
+     * @dataProvider testIntComparisonDataProvider
      */
-    public function testIntComparison()
+    public function testIntComparison($strId, $longDate, $longExpected)
     {
         $this->createTable();
 
         // note calculation does not work if we cross a year border
-        $objLeftDate = new Date(20170801000000);
+        $objLeftDate = new Date($longDate);
         $objLeftDate->setNextMonth();
-        $objRightDate = new Date(20170801000000);
+        $objRightDate = new Date($longDate);
 
         $objDB = Database::getInstance();
         $objDB->multiInsert("temp_autotest",
             ["temp_id", "temp_long"], [
-                [generateSystemid(), $objRightDate->getLongTimestamp()],
+                [$strId, $objRightDate->getLongTimestamp()],
             ]
         );
 
         $strPrefix = _dbprefix_;
-        $arrRow = $objDB->getPRow("SELECT " . $objLeftDate->getLongTimestamp() . " - " . $objRightDate->getLongTimestamp() . " AS result_1, " . $objLeftDate->getLongTimestamp() . " - temp_long AS result_2 FROM {$strPrefix}temp_autotest", []);
+        $strQuery = "SELECT ".$objLeftDate->getLongTimestamp()." - ".$objRightDate->getLongTimestamp()." AS result_1, ".$objLeftDate->getLongTimestamp()." - temp_long AS result_2 FROM {$strPrefix}temp_autotest";
+        echo $strQuery;
+        $arrRow = $objDB->getPRow($strQuery, []);
 
-        $this->assertEquals(100000000, $arrRow["result_1"]);
-        $this->assertEquals(100000000, $arrRow["result_2"]);
+        $this->assertEquals($longExpected, $objLeftDate->getLongTimestamp() - $objRightDate->getLongTimestamp());
+        $this->assertEquals($longExpected, $arrRow["result_1"]);
+        $this->assertEquals($longExpected, $arrRow["result_2"]);
+    }
+
+    public function testIntComparisonDataProvider()
+    {
+        return [
+            ["a111", 20170801000000, 20170901000000-20170801000000],
+            ["a112", 20171101000000, 20171201000000-20171101000000],
+            ["a113", 20171201000000, 20180101000000-20171201000000],
+            ["a113", 20171215000000, 20180115000000-20171215000000],
+            ["a113", 20171230000000, 20180130000000-20171230000000],
+            ["a113", 20171231000000, 20180131000000-20171231000000],
+            ["a113", 20170101000000, 20170201000000-20170101000000],
+        ];
     }
 }
 
