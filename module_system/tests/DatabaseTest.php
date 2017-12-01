@@ -513,7 +513,6 @@ SQL;
 
         $strPrefix = _dbprefix_;
         $strQuery = "SELECT ".$objLeftDate->getLongTimestamp()." - ".$objRightDate->getLongTimestamp()." AS result_1, ".$objLeftDate->getLongTimestamp()." - temp_long AS result_2 FROM {$strPrefix}temp_autotest";
-        echo $strQuery;
         $arrRow = $objDB->getPRow($strQuery, []);
 
         $this->assertEquals($longExpected, $objLeftDate->getLongTimestamp() - $objRightDate->getLongTimestamp());
