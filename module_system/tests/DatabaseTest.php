@@ -493,7 +493,7 @@ SQL;
 
     /**
      * This test checks whether we can use a long timestamp format in in an sql query
-     * @dataProvider testIntComparisonDataProvider
+     * @dataProvider intComparisonDataProvider
      */
     public function testIntComparison($strId, $longDate, $longExpected)
     {
@@ -521,7 +521,7 @@ SQL;
         $this->assertEquals($longExpected, $arrRow["result_2"]);
     }
 
-    public function testIntComparisonDataProvider()
+    public function intComparisonDataProvider()
     {
         return [
             ["a111", 20170801000000, 20170901000000-20170801000000],
