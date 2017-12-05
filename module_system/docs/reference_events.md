@@ -322,7 +322,26 @@ The relevant object and the name of the changed property are passed, too.<br />R
 			<td>Description</td>
 			<td>Event thrown as soon as a package was either installed or updated.</td>
 		</tr>
-
+		<tr>
+			<td rowspan="3" style="border-top: 1px solid #ccc; border-right: 1px solid #ccc;vertical-align: top;">fileindexer.system.index.completed</td>
+			<td style="border-top: 1px solid #ccc;">Since</td>
+			<td style="border-top: 1px solid #ccc;">6.5</td>
+		</tr>
+		<tr>
+			<td>Arguments</td>
+			<td>
+			    <dl>
+			        <dt><code>\Kajona\Mediamanager\System\MediamanagerRepo $objRepo</code></dt>
+			        <dd>The affected mediamaanger repository</dd>
+			        <dt><code>\Kajona\Mediamanager\System\MediamanagerFile[] $arrFiles</code></dt>
+			        <dd>Array of changed mediamanager files. The property <code>$strSearchContent</code> contains now the text content of the referenced file.</dd>
+			    </dl>
+			</td>
+		</tr>
+		<tr>
+			<td>Description</td>
+			<td>Event thrown if the fileindexer has updated files in a repository.</td>
+		</tr>
 	</tbody>
 </table>
 

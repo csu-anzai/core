@@ -71,6 +71,14 @@ class MediamanagerRepo extends \Kajona\System\System\Model implements \Kajona\Sy
      */
     private $strViewFilter = "";
 
+    /**
+     * @var int
+     * @tableColumn mediamanager_repo.repo_search_index
+     * @tableColumnDatatype int
+     * @fieldType Kajona\System\Admin\Formentries\FormentryYesno
+     * @fieldLabel form_repo_searchindex
+     */
+    private $intSearchIndex = "";
 
     /**
      * Returns the icon the be used in lists.
@@ -189,5 +197,20 @@ class MediamanagerRepo extends \Kajona\System\System\Model implements \Kajona\Sy
         return $this->strViewFilter;
     }
 
+    /**
+     * @return int
+     */
+    public function getIntSearchIndex()
+    {
+        return $this->intSearchIndex;
+    }
+
+    /**
+     * @param int $intSearchIndex
+     */
+    public function setIntSearchIndex($intSearchIndex)
+    {
+        $this->intSearchIndex = $intSearchIndex;
+    }
 }
 

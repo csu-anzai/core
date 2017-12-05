@@ -30,6 +30,9 @@ use Kajona\System\System\Validators\SystemidValidator;
  */
 class FormentryMultiUpload extends FormentryBase implements FormentryPrintableInterface
 {
+
+    const STR_MM_REPOID_ANNOTATION = "@fieldMMRepoIdConstant";
+
     private $strRepoId = "";
 
 
@@ -38,8 +41,22 @@ class FormentryMultiUpload extends FormentryBase implements FormentryPrintableIn
      */
     public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
     {
-        $this->strRepoId = SystemSetting::getConfigValue("_mediamanager_default_filesrepoid_");
         parent::__construct($strFormName, $strSourceProperty, $objSourceObject);
+        //default: files-repo-id
+        $this->strRepoId = SystemSetting::getConfigValue("_mediamanager_default_filesrepoid_");
+
+        //may be overwritten with a dedicated repo-id
+        if ($this->getObjSourceObject() != null && $this->getStrSourceProperty() != "") {
+            $objReflection = new Reflection($this->getObjSourceObject());
+            //try to find the matching source property
+            $strSourceProperty = $this->getCurrentProperty(self::STR_MM_REPOID_ANNOTATION);
+            if ($strSourceProperty != null) {
+                $strId = $objReflection->getAnnotationValueForProperty($strSourceProperty, self::STR_MM_REPOID_ANNOTATION);
+                if ($strId !== null) {
+                    $this->strRepoId = SystemSetting::getConfigValue($strId);
+                }
+            }
+        }
     }
 
     /**
@@ -47,7 +64,7 @@ class FormentryMultiUpload extends FormentryBase implements FormentryPrintableIn
      */
     public function getObjValidator()
     {
-        return new MediamanagerUploadValidator($this->strRepoId);
+        return new MediamanagerUploadValidator($this->strRepoId, $this->getBitMandatory());
     }
 
 
@@ -68,6 +85,10 @@ class FormentryMultiUpload extends FormentryBase implements FormentryPrintableIn
 
         /** @var MediamanagerRepo $objRepo */
         $objRepo = Objectfactory::getInstance()->getObject($this->strRepoId);
+
+        if ($objRepo === null) {
+            return $objToolkit->warningBox("No mediamanager repo set");
+        }
 
         //place the upload-repo id as a hidden form entry
         $strReturn .= $objToolkit->formInputHidden($this->getStrEntryName()."_id", $this->getStrValue());
@@ -110,11 +131,11 @@ class FormentryMultiUpload extends FormentryBase implements FormentryPrintableIn
         if ($objMMFile != null) {
             /** @var MediamanagerFile $objFile */
             foreach (MediamanagerFile::getObjectListFiltered(null, $objMMFile->getSystemid()) as $objFile) {
-                $arrLinks[] = "<a href='"._webpath_."/download.php?systemid=".$objMMFile->getSystemid()."'>".$objFile->getStrName()."</a>";
+                $arrLinks[] = "<a href='"._webpath_."/download.php?systemid=".$objFile->getSystemid()."'>".$objFile->getStrName()."</a>";
             }
         }
 
-        return implode("<br />", $arrLinks);
+        return implode("\r\n<br />", $arrLinks);
     }
 
     /**

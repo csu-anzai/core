@@ -193,7 +193,6 @@ class Installer
             "/project/temp",
             "/files/cache",
             "/files/images",
-            "/files/public",
             "/files/downloads",
         );
 

@@ -49,6 +49,8 @@ class class_project_setup {
             }
         }
 
+        self::checkDir("/bin");
+        self::createBinReadme();
         self::checkDir("/project");
         self::checkDir("/project/log");
         self::makeWritable("/project/log");
@@ -64,11 +66,10 @@ class class_project_setup {
         self::checkDir("/files/cache");
         self::makeWritable("/files/cache");
         self::checkDir("/files/downloads");
-        self::makeWritable("/files/downloads");
+        self::checkDir("/files/downloads/default");
+        self::makeWritable("/files/downloads/default");
         self::checkDir("/files/images");
         self::makeWritable("/files/images");
-        self::checkDir("/files/public");
-        self::makeWritable("/files/public");
         self::checkDir("/files/extract");
         self::makeWritable("/files/extract");
 
@@ -96,7 +97,6 @@ class class_project_setup {
         echo "\n<b>Kajona V5 htaccess setup</b>\n";
         self::createAllowHtaccess("/files/cache/.htaccess");
         self::createAllowHtaccess("/files/images/.htaccess");
-        self::createAllowHtaccess("/files/public/.htaccess");
         self::createAllowHtaccess("/files/extract/.htaccess");
         self::createAllowHtaccess("/templates/.htaccess");
 
@@ -143,6 +143,20 @@ TXT;
 
 
 
+
+    private static function createBinReadme()
+    {
+        $strContent = <<<TEXT
+
+This folder should contain the following external binaries:
+
+module_fileindexer
+* `tika-app-1.16.jar` (https://tika.apache.org/)
+
+TEXT;
+
+        file_put_contents(self::$strRealPath."/bin/README.md", $strContent);
+    }
 
     private static function checkDir($strFolder) {
         echo "checking dir ".self::$strRealPath.$strFolder."\n";

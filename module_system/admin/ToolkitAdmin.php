@@ -799,11 +799,11 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["upload_multiple_errorFilesize"] = $objText->getLang("upload_multiple_errorFilesize", "mediamanager")." ".bytesToString($objConfig->getPhpMaxUploadSize());
 
         $arrTemplate["helpButton"] = $bitReadonly ? "" : $this->listButton(
-            $this->getPopoverText(
+            "<a>".$this->getPopoverText(
                 AdminskinHelper::getAdminImage("icon_question", "", true),
                 $objText->getLang("mediamanager_upload", "mediamanager"),
                 $objText->getLang("upload_dropArea_extended", "mediamanager", ["'".$strAllowedFileTypes."'", bytesToString($objConfig->getPhpMaxUploadSize())])
-            )
+            )."</a>"
         );
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_upload_inline");
@@ -1066,6 +1066,7 @@ class ToolkitAdmin extends Toolkit
         }
 
         $arrTemplate = array();
+        $arrTemplate["name"] = $strName;
         $arrTemplate["title"] = $strTitle;
         $arrTemplate["options"] = $strOptions;
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_toggle_buttonbar", true);
@@ -1897,7 +1898,7 @@ require(['ajax'], function(ajax){
     public function getLayoutFolder($strContent, $strLinkText, $bitVisible = false, $strCallbackVisible = "", $strCallbackInvisible = "")
     {
         $arrReturn = array();
-        $strID = str_replace(array(" ", "."), array("", ""), microtime());
+        $strID = generateSystemid();
         $arrTemplate = array();
         $arrTemplate["id"] = $strID;
         $arrTemplate["content"] = $strContent;

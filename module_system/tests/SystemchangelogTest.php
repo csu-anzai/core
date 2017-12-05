@@ -11,6 +11,7 @@ use Kajona\System\System\SystemChangelog;
 use Kajona\System\System\SystemEventidentifier;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
+use Kajona\System\System\VersionableDefaultImplTrait;
 use Kajona\System\System\VersionableInterface;
 
 /**
@@ -354,6 +355,7 @@ class SystemchangelogTest extends Testbase
 
 class DummyObject implements VersionableInterface
 {
+    use VersionableDefaultImplTrait;
 
     /**
      * @var
@@ -389,30 +391,11 @@ class DummyObject implements VersionableInterface
         $this->strSystemid = $strSystemid;
     }
 
-    public function renderVersionValue($strProperty, $strValue)
-    {
-        return $strValue;
-    }
-
-    public function getVersionActionName($strAction)
-    {
-        return "dummy";
-    }
-
     public function getArrModule($strKey)
     {
         return "dummy";
     }
 
-    public function getVersionPropertyName($strProperty)
-    {
-        return $strProperty;
-    }
-
-    public function getVersionRecordName()
-    {
-        return "dummy";
-    }
 
     public function setStrSecondTest($strSecondTest)
     {
@@ -439,6 +422,8 @@ class DummyObject implements VersionableInterface
 
 class DummyObject2 implements VersionableInterface
 {
+
+    use VersionableDefaultImplTrait;
 
     /**
      * @var
@@ -468,27 +453,7 @@ class DummyObject2 implements VersionableInterface
         $this->strSystemid = $strSystemid;
     }
 
-    public function renderVersionValue($strProperty, $strValue)
-    {
-        return $strValue;
-    }
-
-    public function getVersionActionName($strAction)
-    {
-        return "dummy";
-    }
-
     public function getArrModule($strKey)
-    {
-        return "dummy";
-    }
-
-    public function getVersionPropertyName($strProperty)
-    {
-        return $strProperty;
-    }
-
-    public function getVersionRecordName()
     {
         return "dummy";
     }
