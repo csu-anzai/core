@@ -505,108 +505,106 @@ class AdminFormgenerator implements \Countable
     protected function renderLock()
     {
         $strReturn = "";
-        if ($this->shouldAcquireLock()) {
-            if ($this->objSourceobject->getLockManager()->isAccessibleForCurrentUser()) {
-                $this->objSourceobject->getLockManager()->lockRecord();
+        if ($this->objSourceobject->getLockManager()->isAccessibleForCurrentUser()) {
+            $this->objSourceobject->getLockManager()->lockRecord();
 
-                //register a new unlock-handler
-                $strReturn .= "<script type='text/javascript'>require(['forms'], function(forms) {forms.registerUnlockId('{$this->objSourceobject->getSystemid()}')});</script>";
-            }
+            //register a new unlock-handler
+            $strReturn .= "<script type='text/javascript'>require(['forms'], function(forms) {forms.registerUnlockId('{$this->objSourceobject->getSystemid()}')});</script>";
         }
 
         return $strReturn;
     }
 
 
-/**
- * Renders the fields grouped in a specific style
- *
- * @return string
- */
-private function renderFieldsGrouped()
-{
-    $strReturn = "";
-    $arrGroups = [self::DEFAULT_GROUP => ""];
+    /**
+     * Renders the fields grouped in a specific style
+     *
+     * @return string
+     */
+    private function renderFieldsGrouped()
+    {
+        $strReturn = "";
+        $arrGroups = [self::DEFAULT_GROUP => ""];
 
-    foreach ($this->arrFields as $objOneField) {
-        $strKey = $this->getGroupKeyForEntry($objOneField);
-        if (empty($strKey)) {
-            // in case we have no key use the default key
-            $strKey = self::DEFAULT_GROUP;
-        }
-
-        if (!isset($arrGroups[$strKey])) {
-            $arrGroups[$strKey] = "";
-        }
-
-        $arrGroups[$strKey] .= $objOneField->renderField();
-    }
-
-    if ($this->intGroupStyle == self::GROUP_TYPE_HIDDEN) {
-        $bitFirst = true;
-        foreach ($this->arrGroupSort as $strKey) {
-            $strHtml = $arrGroups[$strKey];
-            if (!empty($strHtml)) {
-                $strReturn .= $this->objToolkit->formOptionalElementsWrapper($strHtml, $this->getGroupTitleByKey($strKey), $bitFirst);
-                $bitFirst = false;
+        foreach ($this->arrFields as $objOneField) {
+            $strKey = $this->getGroupKeyForEntry($objOneField);
+            if (empty($strKey)) {
+                // in case we have no key use the default key
+                $strKey = self::DEFAULT_GROUP;
             }
-        }
-    } elseif ($this->intGroupStyle == self::GROUP_TYPE_TABS) {
-        $arrTabs = [];
-        foreach ($this->arrGroupSort as $strKey) {
-            $strHtml = $arrGroups[$strKey];
-            if (!empty($strHtml)) {
-                // mark tabs which contain validation errors
-                $bitHasError = $this->hasGroupError($strKey);
 
-                // add tab
-                $strTitle = $this->getGroupTitleByKey($strKey);
-                if ($bitHasError) {
-                    $strTitle = "<span class='glyphicon glyphicon-warning-sign error-text'></span>&nbsp;&nbsp;{$strTitle}";
+            if (!isset($arrGroups[$strKey])) {
+                $arrGroups[$strKey] = "";
+            }
+
+            $arrGroups[$strKey] .= $objOneField->renderField();
+        }
+
+        if ($this->intGroupStyle == self::GROUP_TYPE_HIDDEN) {
+            $bitFirst = true;
+            foreach ($this->arrGroupSort as $strKey) {
+                $strHtml = $arrGroups[$strKey];
+                if (!empty($strHtml)) {
+                    $strReturn .= $this->objToolkit->formOptionalElementsWrapper($strHtml, $this->getGroupTitleByKey($strKey), $bitFirst);
+                    $bitFirst = false;
                 }
+            }
+        } elseif ($this->intGroupStyle == self::GROUP_TYPE_TABS) {
+            $arrTabs = [];
+            foreach ($this->arrGroupSort as $strKey) {
+                $strHtml = $arrGroups[$strKey];
+                if (!empty($strHtml)) {
+                    // mark tabs which contain validation errors
+                    $bitHasError = $this->hasGroupError($strKey);
 
-                $arrTabs[$strTitle] = $strHtml;
+                    // add tab
+                    $strTitle = $this->getGroupTitleByKey($strKey);
+                    if ($bitHasError) {
+                        $strTitle = "<span class='glyphicon glyphicon-warning-sign error-text'></span>&nbsp;&nbsp;{$strTitle}";
+                    }
+
+                    $arrTabs[$strTitle] = $strHtml;
+                }
+            }
+
+            $strReturn .= $this->objToolkit->getTabbedContent($arrTabs);
+        } elseif ($this->intGroupStyle == self::GROUP_TYPE_HEADLINE) {
+            foreach ($this->arrGroupSort as $strKey) {
+                $strHtml = $arrGroups[$strKey];
+                if (!empty($strHtml)) {
+                    $strReturn .= $this->objToolkit->formHeadline($this->getGroupTitleByKey($strKey));
+                    $strReturn .= $strHtml;
+                }
             }
         }
 
-        $strReturn .= $this->objToolkit->getTabbedContent($arrTabs);
-    } elseif ($this->intGroupStyle == self::GROUP_TYPE_HEADLINE) {
-        foreach ($this->arrGroupSort as $strKey) {
-            $strHtml = $arrGroups[$strKey];
-            if (!empty($strHtml)) {
-                $strReturn .= $this->objToolkit->formHeadline($this->getGroupTitleByKey($strKey));
-                $strReturn .= $strHtml;
+        return $strReturn;
+    }
+
+    /**
+     * Renders the fields in a simple list
+     *
+     * @return string
+     */
+    private function renderFieldsDefault()
+    {
+        $strReturn = "";
+        $strHidden = "";
+
+        foreach ($this->arrFields as $objOneField) {
+            if (in_array($objOneField->getStrEntryName(), $this->arrHiddenElements)) {
+                $strHidden .= $objOneField->renderField();
+            } else {
+                $strReturn .= $objOneField->renderField();
             }
         }
-    }
 
-    return $strReturn;
-}
-
-/**
- * Renders the fields in a simple list
- *
- * @return string
- */
-private function renderFieldsDefault()
-{
-    $strReturn = "";
-    $strHidden = "";
-
-    foreach ($this->arrFields as $objOneField) {
-        if (in_array($objOneField->getStrEntryName(), $this->arrHiddenElements)) {
-            $strHidden .= $objOneField->renderField();
-        } else {
-            $strReturn .= $objOneField->renderField();
+        if ($strHidden != "") {
+            $strReturn .= $this->objToolkit->formOptionalElementsWrapper($strHidden, $this->strHiddenGroupTitle, $this->bitHiddenElementsVisible);
         }
-    }
 
-    if ($strHidden != "") {
-        $strReturn .= $this->objToolkit->formOptionalElementsWrapper($strHidden, $this->strHiddenGroupTitle, $this->bitHiddenElementsVisible);
+        return $strReturn;
     }
-
-    return $strReturn;
-}
 
     /**
      * Returns whether we want to acquire a lock for the source object
