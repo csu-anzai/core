@@ -63,7 +63,8 @@ class Pluginmanager
             $arrPluginClasses = [];
 
             foreach ($arrClasses as $strClass => $strFile) {
-                if (strpos($strFile, $this->strSearchPath) === false) {
+                if (strpos($strFile, $this->strSearchPath."/".basename($strFile)) === false) {
+                    //exact check on path and basename of file
                     continue;
                 }
 
