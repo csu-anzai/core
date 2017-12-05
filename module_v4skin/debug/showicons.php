@@ -10,6 +10,6 @@ $arrIcons = \Kajona\V4skin\Admin\Skins\Kajona_V4\AdminskinImageresolver::$arrFAI
 $objResolver = new \Kajona\V4skin\Admin\Skins\Kajona_V4\AdminskinImageresolver();
 
 foreach ($arrIcons as $strName => $strImage) {
-    echo $strName . " => " . $objResolver->getImage($strName) . "\n";
+    echo $objResolver->getImage($strName)  ." => ".$strName . PHP_EOL;
 }
 

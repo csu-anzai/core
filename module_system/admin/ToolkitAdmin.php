@@ -1065,6 +1065,7 @@ class ToolkitAdmin extends Toolkit
         }
 
         $arrTemplate = array();
+        $arrTemplate["name"] = $strName;
         $arrTemplate["title"] = $strTitle;
         $arrTemplate["options"] = $strOptions;
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_toggle_buttonbar", true);

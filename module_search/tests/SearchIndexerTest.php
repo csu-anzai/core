@@ -145,25 +145,25 @@ class SearchIndexerTest extends Testbase
     }
 
 
-    public function testFullIndexWriter()
-    {
-        if (@ini_get("max_execution_time") < 300 && @ini_get("max_execution_time") > 0) {
-            @ini_set("max_execution_time", 300);
-        }
-
-        $indexWriter = new SearchIndexwriter();
-
-        $intQueriesStart = Database::getInstance()->getNumber();
-        $intTimeStart = microtime(true);
-        $indexWriter->indexRebuild();
-        $intTimeEnd = microtime(true);
-        $time = $intTimeEnd - $intTimeStart;
-//        echo "Index erstellt in " . sprintf('%f', $time) . " sec.\n";
-//        echo "Index erstellt mit " . (Database::getInstance()->getNumber() - $intQueriesStart) . " queries.\n";
-
-        $this->assertTrue(true);//dummy assertion to make test not risky
-
-    }
+//    public function testFullIndexWriter()
+//    {
+//        if (@ini_get("max_execution_time") < 300 && @ini_get("max_execution_time") > 0) {
+//            @ini_set("max_execution_time", 300);
+//        }
+//
+//        $indexWriter = new SearchIndexwriter();
+//
+//        $intQueriesStart = Database::getInstance()->getNumber();
+//        $intTimeStart = microtime(true);
+//        $indexWriter->indexRebuild();
+//        $intTimeEnd = microtime(true);
+//        $time = $intTimeEnd - $intTimeStart;
+////        echo "Index erstellt in " . sprintf('%f', $time) . " sec.\n";
+////        echo "Index erstellt mit " . (Database::getInstance()->getNumber() - $intQueriesStart) . " queries.\n";
+//
+//        $this->assertTrue(true);//dummy assertion to make test not risky
+//
+//    }
 
 
     public function testObjectIndexerPerformance()
