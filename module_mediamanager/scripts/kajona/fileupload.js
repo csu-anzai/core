@@ -52,8 +52,23 @@ define(["jquery", "ajax", 'blueimp-tmpl', 'jquery-ui/ui/widget', 'jquery.iframe-
         }
 
         return {
+            /**
+             * Get the upload instance
+             */
             getUploader : function() {
                 return uploader;
+            },
+
+            /**
+             * Query the backend to version all files
+             */
+            fileVersioning : function() {
+                ajax.genericAjaxCall("mediamanager", "documentVersioning", "&systemid="+settings.formData[0].value+"&folder="+settings.formData[2].value, function(e) {
+                    if (e.status && e.status === "ok") {
+                        //in case of success, flush the list
+                        settings.baseElement.find('.files').empty();
+                    }
+                }, null, null, "post", "json");
             }
         }
 

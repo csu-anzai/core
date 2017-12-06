@@ -9,6 +9,7 @@
 namespace Kajona\Mediamanager\Admin;
 
 use Kajona\Mediamanager\System\MediamanagerFile;
+use Kajona\Mediamanager\System\MediamanagerFileFilter;
 use Kajona\Mediamanager\System\MediamanagerLogbook;
 use Kajona\Mediamanager\System\MediamanagerRepo;
 use Kajona\System\Admin\AdminEvensimpler;
@@ -934,6 +935,7 @@ HTML;
      * @return string
      * @permissions right1
      * @responseType json
+     * @throws Exception
      */
     protected function actionFileUpload()
     {
@@ -1094,8 +1096,61 @@ HTML;
             "size" => $objFile->getIntFileSize(),
             "url" => $objFile->rightRight2() ? _webpath_."/download.php?systemid=".$objFile->getSystemid() : "",
             "systemid" => $objFile->getSystemid(),
-            "deleteButton" => $strDeleteButton
+            "deleteButton" => $strDeleteButton,
         ];
+    }
+
+    /**
+     * Copies all top-level files
+     *
+     * folder = the folder to store the file within
+     * systemid = the filemanagers' repo-id
+     *
+     * @return string
+     * @responseType json
+     * @throws Exception
+     */
+    protected function actionDocumentVersioning()
+    {
+        $objRepo = Objectfactory::getInstance()->getObject($this->getSystemid());
+        if (!$objRepo instanceof MediamanagerRepo) {
+            return json_encode([]);
+        }
+
+        $objFile = MediamanagerFile::getFileForPath($this->getSystemid(), $objRepo->getStrPath()."/".$this->getParam("folder"));
+        if ($objFile == null || !$objFile->rightView()) {
+            return json_encode(["status" => "error", "error" => "permissions"]);
+        }
+
+        $objFilter = new MediamanagerFileFilter();
+        $objFilter->setIntFileType(MediamanagerFile::$INT_TYPE_FILE);
+        $arrFiles = MediamanagerFile::getObjectListFiltered($objFilter, $objFile->getSystemid());
+        if (count($arrFiles) == 0) {
+            return json_encode(["status" => "error", "error" => "no_files"]);
+        }
+        //create a new target folder
+        $objDate = new Date();
+        $strBaseTarget = $objFile->getStrFilename()."/".$objDate->getIntYear()."-".$objDate->getIntMonth()."-".$objDate->getIntDay();
+        $strTarget = $objFile->getStrFilename()."/".$objDate->getIntYear()."-".$objDate->getIntMonth()."-".$objDate->getIntDay();
+        $intI = 1;
+        while (file_exists(_realpath_.$strTarget)) {
+            $strTarget = $strBaseTarget."_".$intI++;
+        }
+
+        $objFilesystem = new Filesystem();
+        $objFilesystem->folderCreate($strTarget);
+
+        $arrSynced = [];
+        /** @var MediamanagerFile $objCurFile */
+        foreach ($arrFiles as $objCurFile) {
+            $objFilesystem->fileRename($objCurFile->getStrFilename(), $strTarget."/".basename($objCurFile->getStrFilename()));
+            $arrSynced[] = $objCurFile->getStrName();
+        }
+
+        //and sync
+        MediamanagerFile::syncRecursive($objFile->getSystemid(), $objFile->getStrFilename());
+        
+        return json_encode(["status" => "ok", "target" => $strTarget, "moved" => $arrSynced]);
     }
 
     /**

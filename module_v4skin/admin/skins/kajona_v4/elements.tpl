@@ -679,12 +679,16 @@ Upload-Field for multiple files with progress bar
                 </span>
             </span>
             %%helpButton%%
+            %%moveButton%%
         </div>
     </div>
 
     <script type="text/javascript">
         require(["fileupload", "ajax"], function(fileupload, ajax) {
-
+            /**
+             *
+             * @type {UploadManager}
+             */
             var uploader = fileupload.initUploader({
                 baseElement: $('#%%name%%_upl'),
                 autoUpload: true,
@@ -737,6 +741,10 @@ Upload-Field for multiple files with progress bar
             ajax.genericAjaxCall("mediamanager", "fileUploadList", "&systemid=%%mediamanagerRepoId%%&folder=%%folder%%", function(data) {
                 uploader.getUploader().fileupload('option', 'done').call(uploader.getUploader(), $.Event('done'), {result: data});
             }, null, null, "post", "json");
+
+            if ($('#version_%%name%%')) {
+                $('#version_%%name%%').on('click', function() {   uploader.fileVersioning() });
+            }
         });
 
 
