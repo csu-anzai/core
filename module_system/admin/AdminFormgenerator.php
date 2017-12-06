@@ -77,6 +77,8 @@ class AdminFormgenerator implements \Countable
     const GROUP_TYPE_HIDDEN = 1;
     const GROUP_TYPE_HEADLINE = 2;
 
+    const DEFAULT_GROUP = "default";
+
     /**
      * The list of form-entries
      *
@@ -131,7 +133,7 @@ class AdminFormgenerator implements \Countable
     /**
      * @var array
      */
-    private $arrGroupSort = ["default"];
+    private $arrGroupSort = [self::DEFAULT_GROUP];
 
     /**
      * @var string
@@ -523,13 +525,13 @@ class AdminFormgenerator implements \Countable
     private function renderFieldsGrouped()
     {
         $strReturn = "";
-        $arrGroups = ["default" => ""];
+        $arrGroups = [self::DEFAULT_GROUP => ""];
 
         foreach ($this->arrFields as $objOneField) {
             $strKey = $this->getGroupKeyForEntry($objOneField);
             if (empty($strKey)) {
                 // in case we have no key use the default key
-                $strKey = "default";
+                $strKey = self::DEFAULT_GROUP;
             }
 
             if (!isset($arrGroups[$strKey])) {
@@ -662,35 +664,14 @@ class AdminFormgenerator implements \Countable
      */
     private function hasGroupError($strKey)
     {
-        if ($strKey == "default") {
-            $arrGroupedEntries = [];
-            foreach ($this->arrGroups as $strKey => $arrRow) {
-                $arrGroupedEntries = array_merge($arrGroupedEntries, isset($arrRow["entries"]) ? $arrRow["entries"] : []);
+        $arrEntries = $this->getFieldsByGroup($strKey);
+        foreach ($arrEntries as $strEntry) {
+            if (isset($this->arrValidationErrors[$strEntry])) {
+                return true;
             }
-
-            $arrAllEntries = [];
-            foreach ($this->arrFields as $objField) {
-                $arrAllEntries[] = $objField->getStrEntryName();
-            }
-
-            $arrDefaultEntries = array_diff($arrAllEntries, $arrGroupedEntries);
-            foreach ($arrDefaultEntries as $strEntry) {
-                if (isset($this->arrValidationErrors[$strEntry])) {
-                    return true;
-                }
-            }
-
-            return false;
-        } else {
-            $arrEntries = isset($this->arrGroups[$strKey]["entries"]) ? $this->arrGroups[$strKey]["entries"] : [];
-            foreach ($arrEntries as $strEntry) {
-                if (isset($this->arrValidationErrors[$strEntry])) {
-                    return true;
-                }
-            }
-
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -1148,6 +1129,59 @@ class AdminFormgenerator implements \Countable
             if ($objField instanceof FormentryBase) {
                 $this->addFieldToGroup($objField, $strKey);
             }
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasGroups()
+    {
+        return !empty($this->arrGroups);
+    }
+
+    /**
+     * Returns a generator which you can use to iterate over all groups
+     *
+     * @return \Generator
+     */
+    public function getGroups()
+    {
+        foreach ($this->arrGroupSort as $strKey) {
+            $strTitle = $this->getGroupTitleByKey($strKey);
+
+            $arrFields = $this->getFieldsByGroup($strKey);
+            $arrFields = array_map(function($strField){
+                return $this->getField(substr($strField, strlen($this->getStrFormname()) + 1));
+            }, $arrFields);
+            $arrFields = array_filter($arrFields);
+
+            if (!empty($arrFields)) {
+                yield $strTitle => $arrFields;
+            }
+        }
+    }
+
+    /**
+     * @param string $strKey
+     * @return array
+     */
+    private function getFieldsByGroup($strKey)
+    {
+        if ($strKey == self::DEFAULT_GROUP) {
+            $arrGroupedEntries = [];
+            foreach ($this->arrGroups as $strKey => $arrRow) {
+                $arrGroupedEntries = array_merge($arrGroupedEntries, isset($arrRow["entries"]) ? $arrRow["entries"] : []);
+            }
+
+            $arrAllEntries = [];
+            foreach ($this->arrFields as $objField) {
+                $arrAllEntries[] = $objField->getStrEntryName();
+            }
+
+            return array_diff($arrAllEntries, $arrGroupedEntries);
+        } else {
+            return isset($this->arrGroups[$strKey]["entries"]) ? $this->arrGroups[$strKey]["entries"] : [];
         }
     }
 
