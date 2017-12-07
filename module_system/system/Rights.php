@@ -483,7 +483,10 @@ class Rights
                 if (empty($intOneShortId)) {
                     continue;
                 }
-                $arrConverted[] = UserGroup::getGroupIdForShortId((int)$intOneShortId);
+                $strFullGroupId = UserGroup::getGroupIdForShortId((int)$intOneShortId);
+                if (validateSystemid($strFullGroupId)) {
+                    $arrConverted[] = $strFullGroupId;
+                }
             }
 
             $arrReturn[$strPermission] = $arrConverted;
