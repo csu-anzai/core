@@ -17,6 +17,7 @@ use Kajona\System\Admin\AdminInterface;
 use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\ArraySectionIterator;
+use Kajona\System\System\Carrier;
 use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Filesystem;
@@ -32,6 +33,7 @@ use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\ResponseObject;
+use Kajona\System\System\Rights;
 use Kajona\System\System\StringUtil;
 
 /**
@@ -1109,6 +1111,7 @@ HTML;
      * @return string
      * @responseType json
      * @throws Exception
+     * @permissions right1
      */
     protected function actionDocumentVersioning()
     {
@@ -1149,6 +1152,19 @@ HTML;
 
         //and sync
         MediamanagerFile::syncRecursive($objFile->getSystemid(), $objFile->getStrFilename());
+        //reset permissions to read only
+        $objNewRoot = MediamanagerFile::getFileForPath($this->getSystemid(), $strTarget);
+        if ($objNewRoot !== null) {
+            $objRights = Carrier::getInstance()->getObjRights();
+            foreach ([Rights::$STR_RIGHT_EDIT, Rights::$STR_RIGHT_DELETE, Rights::$STR_RIGHT_RIGHT1] as $strRight) {
+                $arrGroups = $objRights->getArrayRights($objNewRoot, $strRight);
+                foreach ($arrGroups[$strRight] as $strGroup) {
+                    $objRights->removeGroupFromRight($strGroup, $objNewRoot->getSystemid(), $strRight);
+                }
+            }
+        }
+
+
         
         return json_encode(["status" => "ok", "target" => $strTarget, "moved" => $arrSynced]);
     }
