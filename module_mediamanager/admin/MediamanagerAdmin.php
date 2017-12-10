@@ -31,6 +31,7 @@ use Kajona\System\System\Logger;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
+use Kajona\System\System\OrmObjectlistOrderby;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Rights;
@@ -1103,7 +1104,57 @@ HTML;
     }
 
     /**
-     * Copies all top-level files
+     * Renders the list ob sub-ordinate folders, e.g. since
+     * created by a versioning run
+     *
+     * @return string
+     * @responseType html
+     * @permissions view
+     */
+    protected function actionGetArchiveList()
+    {
+        $objRepo = Objectfactory::getInstance()->getObject($this->getSystemid());
+        if (!$objRepo instanceof MediamanagerRepo) {
+            return "";
+        }
+
+        $objFile = MediamanagerFile::getFileForPath($this->getSystemid(), $objRepo->getStrPath()."/".$this->getParam("folder"));
+        if ($objFile == null || !$objFile->rightView()) {
+            return json_encode(["status" => "error", "error" => "permissions"]);
+        }
+
+        $strReturn = "";
+        $objFilter = new MediamanagerFileFilter();
+        $objFilter->setBitDateDescOrder(true);
+        $objFilter->setIntFileType(MediamanagerFile::$INT_TYPE_FOLDER);
+        /** @var MediamanagerFile $objFolder */
+        foreach (MediamanagerFile::getObjectListFiltered($objFilter, $objFile->getSystemid()) as $objFolder) {
+            $objFilter = new MediamanagerFileFilter();
+            $objFilter->setIntFileType(MediamanagerFile::$INT_TYPE_FILE);
+            $arrFiles = MediamanagerFile::getObjectListFiltered($objFilter, $objFolder->getSystemid());
+            if (count($arrFiles) > 0) {
+                $strReturn .= $this->objToolkit->formHeadline($objFolder->getStrDisplayName(), "", "h4");
+
+                $strReturn .= $this->objToolkit->listHeader();
+                /** @var MediamanagerFile $objSingleFile */
+                foreach ($arrFiles as $objSingleFile) {
+                    $strReturn .= $this->objToolkit->genericAdminList(
+                        $objSingleFile->getStrSystemid(),
+                        $objSingleFile->getStrDisplayName(),
+                        AdminskinHelper::getAdminImage($objSingleFile->getStrIcon()[0]),
+                        $objSingleFile->rightRight2() ? Link::getLinkAdminManual("href='"._webpath_."/download.php?systemid=".$objSingleFile->getSystemid()."'", $this->getLang("action_download"), $this->getLang("action_download"), "icon_downloads") : ""
+                    );
+                }
+
+                $strReturn .= $this->objToolkit->listFooter();
+            }
+        }
+
+        return $strReturn;
+    }
+
+    /**
+     * Copies all top-level files to a sub-folder named by the current date
      *
      * folder = the folder to store the file within
      * systemid = the filemanagers' repo-id
@@ -1157,7 +1208,7 @@ HTML;
         if ($objNewRoot !== null) {
             $objRights = Carrier::getInstance()->getObjRights();
             foreach ([Rights::$STR_RIGHT_EDIT, Rights::$STR_RIGHT_DELETE, Rights::$STR_RIGHT_RIGHT1] as $strRight) {
-                $arrGroups = $objRights->getArrayRights($objNewRoot, $strRight);
+                $arrGroups = $objRights->getArrayRights($objNewRoot->getSystemid(), $strRight);
                 foreach ($arrGroups[$strRight] as $strGroup) {
                     $objRights->removeGroupFromRight($strGroup, $objNewRoot->getSystemid(), $strRight);
                 }
