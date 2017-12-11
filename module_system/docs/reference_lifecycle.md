@@ -76,7 +76,7 @@ general complicates the program flow.
 ## Project specific life cycle
 
 You can also overwrite a defined lifecycle annotation for a specific model. Therefor you can use the
-`service_lifecycle` config key. This gives you the flexibility use a different service which may
+`service_lifecycle` config key. This gives you the flexibility to use a different service which may
 extend the old service.
 
     $config["service_lifecycle"] = [
