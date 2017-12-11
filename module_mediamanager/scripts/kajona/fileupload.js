@@ -52,8 +52,30 @@ define(["jquery", "ajax", 'blueimp-tmpl', 'jquery-ui/ui/widget', 'jquery.iframe-
         }
 
         return {
+            /**
+             * Get the upload instance
+             */
             getUploader : function() {
                 return uploader;
+            },
+
+            /**
+             * Query the backend to version all files
+             */
+            fileVersioning : function() {
+                var me = this;
+                ajax.genericAjaxCall("mediamanager", "documentVersioning", "&systemid="+settings.formData[0].value+"&folder="+settings.formData[2].value, function(e) {
+                    if (e.status && e.status === "ok") {
+                        //in case of success, flush the list
+                        settings.baseElement.find('.files').empty();
+                        me.renderArchiveList();
+                    }
+                }, null, null, "post", "json");
+            },
+
+            renderArchiveList : function() {
+                // debugger;
+                ajax.loadUrlToElement(settings.baseElement.find(".archive-list"), "/xml.php?admin=1&module=mediamanager&action=getArchiveList&systemid="+settings.formData[0].value+"&folder="+settings.formData[2].value);
             }
         }
 
@@ -103,6 +125,8 @@ define(["jquery", "ajax", 'blueimp-tmpl', 'jquery-ui/ui/widget', 'jquery.iframe-
                 $('tbody.template-upload[data-uploadid="'+strFileId+'"]').remove();
             });
         },
+
+
 
         /**
          * Inits the uploader and returns an instance.
