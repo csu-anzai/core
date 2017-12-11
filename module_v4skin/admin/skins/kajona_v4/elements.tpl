@@ -636,7 +636,6 @@ Upload-Field for multiple files with progress bar
 Upload-Field for multiple files with progress bar
 <input_upload_inline>
     <div id="%%name%%_upl" class="form-group fileupload-wrapper">
-        <div class="row">
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
         <div  class="col-sm-6 inputText ">
 
@@ -671,6 +670,7 @@ Upload-Field for multiple files with progress bar
                 </table>
             </div>
 
+            <div class="archive-list "></div>
         </div>
         <div class="col-sm-2 form-opener">
             <span class="listButton">
@@ -681,11 +681,6 @@ Upload-Field for multiple files with progress bar
             </span>
             %%helpButton%%
             %%moveButton%%
-        </div>
-        </div>
-        <div class="form-group">
-            <label  class="col-sm-3 control-label"></label>
-            <div class="archive-list col-sm-6"></div>
         </div>
     </div>
 

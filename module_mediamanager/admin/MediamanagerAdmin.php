@@ -1115,15 +1115,15 @@ HTML;
     {
         $objRepo = Objectfactory::getInstance()->getObject($this->getSystemid());
         if (!$objRepo instanceof MediamanagerRepo) {
-            return "";
+            return " ";
         }
 
         $objFile = MediamanagerFile::getFileForPath($this->getSystemid(), $objRepo->getStrPath()."/".$this->getParam("folder"));
         if ($objFile == null || !$objFile->rightView()) {
-            return json_encode(["status" => "error", "error" => "permissions"]);
+            return " ";
         }
 
-        $strReturn = "";
+        $strReturn = " ";
         $objFilter = new MediamanagerFileFilter();
         $objFilter->setBitDateDescOrder(true);
         $objFilter->setIntFileType(MediamanagerFile::$INT_TYPE_FOLDER);
