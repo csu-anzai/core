@@ -23,6 +23,7 @@ $lang["action_logbook_flush"]            = "Logbuch leeren";
 $lang["action_mass_sync"]                = "Alle synchronisieren";
 $lang["action_new"]                      = "Neues Repository";
 $lang["action_open_folder"]              = "Ordner anzeigen";
+$lang["version_files"]                   = "Dateien versionieren";
 $lang["cropImage"]                       = "Bild zuschneiden";
 $lang["cropImageAccept"]                 = "Zuschneiden speichern";
 $lang["cropWarningCrop"]                 = "Ja, zuschneiden";

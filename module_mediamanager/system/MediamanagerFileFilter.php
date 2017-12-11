@@ -9,6 +9,8 @@ namespace Kajona\Mediamanager\System;
 use Kajona\System\System\FilterBase;
 use Kajona\System\System\OrmComparatorEnum;
 use Kajona\System\System\OrmCondition;
+use Kajona\System\System\OrmObjectlist;
+use Kajona\System\System\OrmObjectlistOrderby;
 
 /**
  * @package module_mediamanager
@@ -37,6 +39,8 @@ class MediamanagerFileFilter extends FilterBase
      */
     private $strFilename;
 
+    private $bitDateDescOrder = false;
+
     /**
      *@inheritdoc
      */
@@ -62,6 +66,17 @@ class MediamanagerFileFilter extends FilterBase
 
         return parent::getSingleOrmCondition($strAttributeName, $strValue, $strTableColumn, $enumFilterCompareOperator);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function addOrderByConditionToORM(OrmObjectlist $objORM)
+    {
+        if ($this->bitDateDescOrder) {
+            $objORM->addOrderBy(new OrmObjectlistOrderby("system_create_date DESC"));
+        }
+    }
+
 
     /**
      * @return bool
@@ -110,4 +125,14 @@ class MediamanagerFileFilter extends FilterBase
     {
         $this->strFilename = $strFilename;
     }
+
+    /**
+     * @param bool $bitDateDescOrder
+     */
+    public function setBitDateDescOrder(bool $bitDateDescOrder)
+    {
+        $this->bitDateDescOrder = $bitDateDescOrder;
+    }
+
+
 }
