@@ -1152,7 +1152,11 @@ class AdminFormgenerator implements \Countable
 
             $arrFields = $this->getFieldsByGroup($strKey);
             $arrFields = array_map(function($strField){
-                return $this->getField(substr($strField, strlen($this->getStrFormname()) + 1));
+                if (substr($strField, 0, StringUtil::length($this->getStrFormname())) == $this->getStrFormname()) {
+                    $strField = substr($strField, StringUtil::length($this->getStrFormname()) + 1);
+                }
+
+                return $this->getField($strField);
             }, $arrFields);
             $arrFields = array_filter($arrFields);
 

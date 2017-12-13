@@ -9,6 +9,7 @@
 namespace Kajona\Mediamanager\Admin;
 
 use Kajona\Mediamanager\System\MediamanagerFile;
+use Kajona\Mediamanager\System\MediamanagerFileFilter;
 use Kajona\Mediamanager\System\MediamanagerLogbook;
 use Kajona\Mediamanager\System\MediamanagerRepo;
 use Kajona\System\Admin\AdminEvensimpler;
@@ -16,6 +17,7 @@ use Kajona\System\Admin\AdminInterface;
 use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\ArraySectionIterator;
+use Kajona\System\System\Carrier;
 use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Filesystem;
@@ -29,8 +31,10 @@ use Kajona\System\System\Logger;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
+use Kajona\System\System\OrmObjectlistOrderby;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\ResponseObject;
+use Kajona\System\System\Rights;
 use Kajona\System\System\StringUtil;
 
 /**
@@ -934,6 +938,7 @@ HTML;
      * @return string
      * @permissions right1
      * @responseType json
+     * @throws Exception
      */
     protected function actionFileUpload()
     {
@@ -1094,8 +1099,125 @@ HTML;
             "size" => $objFile->getIntFileSize(),
             "url" => $objFile->rightRight2() ? _webpath_."/download.php?systemid=".$objFile->getSystemid() : "",
             "systemid" => $objFile->getSystemid(),
-            "deleteButton" => $strDeleteButton
+            "deleteButton" => $strDeleteButton,
         ];
+    }
+
+    /**
+     * Renders the list ob sub-ordinate folders, e.g. since
+     * created by a versioning run
+     *
+     * @return string
+     * @responseType html
+     * @permissions view
+     */
+    protected function actionGetArchiveList()
+    {
+        $objRepo = Objectfactory::getInstance()->getObject($this->getSystemid());
+        if (!$objRepo instanceof MediamanagerRepo) {
+            return " ";
+        }
+
+        $objFile = MediamanagerFile::getFileForPath($this->getSystemid(), $objRepo->getStrPath()."/".$this->getParam("folder"));
+        if ($objFile == null || !$objFile->rightView()) {
+            return " ";
+        }
+
+        $strReturn = " ";
+        $objFilter = new MediamanagerFileFilter();
+        $objFilter->setBitDateDescOrder(true);
+        $objFilter->setIntFileType(MediamanagerFile::$INT_TYPE_FOLDER);
+        /** @var MediamanagerFile $objFolder */
+        foreach (MediamanagerFile::getObjectListFiltered($objFilter, $objFile->getSystemid()) as $objFolder) {
+            $objFilter = new MediamanagerFileFilter();
+            $objFilter->setIntFileType(MediamanagerFile::$INT_TYPE_FILE);
+            $arrFiles = MediamanagerFile::getObjectListFiltered($objFilter, $objFolder->getSystemid());
+            if (count($arrFiles) > 0) {
+                $strReturn .= $this->objToolkit->formHeadline($objFolder->getStrDisplayName(), "", "h4");
+
+                $strReturn .= $this->objToolkit->listHeader();
+                /** @var MediamanagerFile $objSingleFile */
+                foreach ($arrFiles as $objSingleFile) {
+                    $strReturn .= $this->objToolkit->genericAdminList(
+                        $objSingleFile->getStrSystemid(),
+                        $objSingleFile->getStrDisplayName(),
+                        AdminskinHelper::getAdminImage($objSingleFile->getStrIcon()[0]),
+                        $objSingleFile->rightRight2() ? Link::getLinkAdminManual("href='"._webpath_."/download.php?systemid=".$objSingleFile->getSystemid()."'", $this->getLang("action_download"), $this->getLang("action_download"), "icon_downloads") : ""
+                    );
+                }
+
+                $strReturn .= $this->objToolkit->listFooter();
+            }
+        }
+
+        return $strReturn;
+    }
+
+    /**
+     * Copies all top-level files to a sub-folder named by the current date
+     *
+     * folder = the folder to store the file within
+     * systemid = the filemanagers' repo-id
+     *
+     * @return string
+     * @responseType json
+     * @throws Exception
+     * @permissions right1
+     */
+    protected function actionDocumentVersioning()
+    {
+        $objRepo = Objectfactory::getInstance()->getObject($this->getSystemid());
+        if (!$objRepo instanceof MediamanagerRepo) {
+            return json_encode([]);
+        }
+
+        $objFile = MediamanagerFile::getFileForPath($this->getSystemid(), $objRepo->getStrPath()."/".$this->getParam("folder"));
+        if ($objFile == null || !$objFile->rightView()) {
+            return json_encode(["status" => "error", "error" => "permissions"]);
+        }
+
+        $objFilter = new MediamanagerFileFilter();
+        $objFilter->setIntFileType(MediamanagerFile::$INT_TYPE_FILE);
+        $arrFiles = MediamanagerFile::getObjectListFiltered($objFilter, $objFile->getSystemid());
+        if (count($arrFiles) == 0) {
+            return json_encode(["status" => "error", "error" => "no_files"]);
+        }
+        //create a new target folder
+        $objDate = new Date();
+        $strBaseTarget = $objFile->getStrFilename()."/".$objDate->getIntYear()."-".$objDate->getIntMonth()."-".$objDate->getIntDay();
+        $strTarget = $objFile->getStrFilename()."/".$objDate->getIntYear()."-".$objDate->getIntMonth()."-".$objDate->getIntDay();
+        $intI = 1;
+        while (file_exists(_realpath_.$strTarget)) {
+            $strTarget = $strBaseTarget."_".$intI++;
+        }
+
+        $objFilesystem = new Filesystem();
+        $objFilesystem->folderCreate($strTarget);
+
+        $arrSynced = [];
+        /** @var MediamanagerFile $objCurFile */
+        foreach ($arrFiles as $objCurFile) {
+            $objFilesystem->fileRename($objCurFile->getStrFilename(), $strTarget."/".basename($objCurFile->getStrFilename()));
+            $arrSynced[] = $objCurFile->getStrName();
+        }
+
+        //and sync
+        MediamanagerFile::syncRecursive($objFile->getSystemid(), $objFile->getStrFilename());
+        //reset permissions to read only
+        $objNewRoot = MediamanagerFile::getFileForPath($this->getSystemid(), $strTarget);
+        if ($objNewRoot !== null) {
+            $objRights = Carrier::getInstance()->getObjRights();
+            foreach ([Rights::$STR_RIGHT_EDIT, Rights::$STR_RIGHT_DELETE, Rights::$STR_RIGHT_RIGHT1] as $strRight) {
+                $arrGroups = $objRights->getArrayRights($objNewRoot->getSystemid(), $strRight);
+                foreach ($arrGroups[$strRight] as $strGroup) {
+                    $objRights->removeGroupFromRight($strGroup, $objNewRoot->getSystemid(), $strRight);
+                }
+            }
+        }
+
+
+        
+        return json_encode(["status" => "ok", "target" => $strTarget, "moved" => $arrSynced]);
     }
 
     /**
