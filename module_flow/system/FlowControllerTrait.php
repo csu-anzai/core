@@ -130,6 +130,12 @@ require(["jquery", "ajax"], function($, ajax){
                                 $objActionForm = new AdminFormgenerator("", $objObject);
                                 $objAction->configureUserInputForm($objActionForm);
                                 $objAction->handleUserInput($objObject, $objTransition, $objActionForm);
+
+                                // in case the handleUserInput added a validation error
+                                if (!$objActionForm->validateForm()) {
+                                    $strForm = $objActionForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "setStatus", "&systemid=" . $objObject->getStrSystemid() . "&transition_id=" . $strTransitionId));
+                                    return $strForm;
+                                }
                             }
                         }
                     }
@@ -137,22 +143,12 @@ require(["jquery", "ajax"], function($, ajax){
 
                 $objHandler = $objFlow->getHandler();
 
-                // validate form
-                /*
-                $objForm = $this->getAdminForm($objObject);
-                if (!$objForm->validateForm()) {
-                    throw new \RuntimeException("Validation failed");
-                }
-                */
-
-                try{
+                try {
                     $objHandler->handleStatusTransition($objObject, $objTransition);
                     $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "list", "&systemid=" . $objObject->getStrPrevId()));
-                }
-                catch(RedirectException $e) {
+                } catch (RedirectException $e) {
                     throw $e;
-                }
-                catch(\Exception $e) {
+                } catch (\Exception $e) {
                     $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
                     return $objToolkit->warningBox($e->getMessage());
                 }
