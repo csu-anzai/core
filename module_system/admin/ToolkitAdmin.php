@@ -802,7 +802,7 @@ class ToolkitAdmin extends Toolkit
             "<a>".$this->getPopoverText(
                 AdminskinHelper::getAdminImage("icon_question", "", true),
                 $objText->getLang("mediamanager_upload", "mediamanager"),
-                $objText->getLang("upload_dropArea_extended", "mediamanager", ["'".$strAllowedFileTypes."'", bytesToString($objConfig->getPhpMaxUploadSize())])
+                $objText->getLang("upload_dropArea_extended", "mediamanager", [$strAllowedFileTypes, bytesToString($objConfig->getPhpMaxUploadSize())])
             )."</a>"
         );
 
