@@ -136,37 +136,7 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
 	    $strReturn = "";
         //check installed version and to which version we can update
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-
         $strReturn .= "Version found:\n\t Module: ".$arrModule["module_name"].", Version: ".$arrModule["module_version"]."\n\n";
-
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "4.6") {
-            $strReturn .= $this->update_46_461();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "4.6.1") {
-            $strReturn .= "Updating to 4.7...\n";
-            $this->updateModuleVersion("search", "4.7");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "4.7") {
-            $strReturn .= "Updating to 5.0...\n";
-            $this->updateModuleVersion("search", "5.0");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "5.0") {
-            $strReturn .= $this->update_50_51();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "5.1") {
-            $strReturn .= "Updating to 6.2...\n";
-            $this->updateModuleVersion("search", "6.2");
-        }
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "6.2") {
@@ -219,46 +189,6 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
            $strReturn .= "An error occurred! ...\n";
 
         return $strReturn;
-    }
-
-
-    private function update_46_461() {
-        $strReturn = "Adding index queue functionality...\n";
-
-
-        //Table for the index queue
-        $strReturn .= "Installing search-queue table...\n";
-
-        $arrFields = array();
-        $arrFields["search_queue_id"] 	    = array("char20", false);
-        $arrFields["search_queue_systemid"] = array("char20", true);
-        $arrFields["search_queue_action"] 	= array("char20", true);
-
-        if(!$this->objDB->createTable("search_queue", $arrFields, array("search_queue_id")))
-            $strReturn .= "An error occurred! ...\n";
-
-        $strReturn .= "Registering config-values...\n";
-        $this->registerConstant("_search_deferred_indexer_", "false", SystemSetting::$int_TYPE_BOOL, _search_module_id_);
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion("search", "4.6.1");
-
-        return $strReturn;
-
-    }
-    private function update_50_51() {
-        $strReturn = "Updating to 5.1...\n";
-        $strReturn .= "Updating element table...";
-
-
-        if(!$this->objDB->addColumn("element_search", "search_query_append", DbDatatypes::STR_TYPE_CHAR254))
-            $strReturn .= "An error occurred! ...\n";
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion("search", "5.1");
-
-        return $strReturn;
-
     }
 
 }

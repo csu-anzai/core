@@ -47,40 +47,8 @@ class InstallerDashboard extends InstallerBase implements InstallerInterface {
 	    $strReturn = "";
         //check installed version and to which version we can update
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-
         $strReturn .= "Version found:\n\t Module: ".$arrModule["module_name"].", Version: ".$arrModule["module_version"]."\n\n";
 
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "4.6") {
-            $strReturn .= "Updating to 4.7...\n";
-            $strReturn .= "Updating module-versions...\n";
-            $this->updateModuleVersion("dashboard", "4.7");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "4.7") {
-            $strReturn .= $this->update_47_475();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "4.7.5") {
-            $strReturn .= "Updating to 5.0...\n";
-            $strReturn .= "Updating module-versions...\n";
-            $this->updateModuleVersion("dashboard", "5.0");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "5.0") {
-            $strReturn .= "Updating to 5.1...\n";
-            $this->updateModuleVersion("dashboard", "5.1");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "5.1") {
-            $strReturn .= "Updating to 6.2...\n";
-            $this->updateModuleVersion("dashboard", "6.2");
-        }
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "6.2") {
             $strReturn .= "Updating to 6.5...\n";
@@ -91,16 +59,4 @@ class InstallerDashboard extends InstallerBase implements InstallerInterface {
 	}
 
 
-    private function update_47_475() {
-        $strReturn = "Updating database indexes\n";
-
-        $this->objDB->_pQuery("ALTER TABLE ".$this->objDB->encloseTableName(_dbprefix_."dashboard")." ADD INDEX ( ".$this->objDB->encloseColumnName("dashboard_user")." ) ", array());
-        $this->objDB->_pQuery("ALTER TABLE ".$this->objDB->encloseTableName(_dbprefix_."dashboard")." ADD INDEX ( ".$this->objDB->encloseColumnName("dashboard_aspect")." ) ", array());
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->objDB->flushQueryCache();
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "4.7.5");
-
-        return $strReturn;
-    }
 }

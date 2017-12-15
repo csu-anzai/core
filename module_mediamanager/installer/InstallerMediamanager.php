@@ -88,43 +88,7 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
         $strReturn = "";
         //check installed version and to which version we can update
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-
         $strReturn .= "Version found:\n\t Module: ".$arrModule["module_name"].", Version: ".$arrModule["module_version"]."\n\n";
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "4.6") {
-            $strReturn = "Updating to 4.7...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "4.7");
-            $this->updateModuleVersion("folderview", "4.7");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "4.7") {
-            $strReturn = "Updating to 4.7.1...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "4.7.1");
-            $this->updateModuleVersion("folderview", "4.7.1");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "4.7.1" || $arrModule["module_version"] == "4.7.2") {
-            $strReturn = "Updating to 5.0...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "5.0");
-            $this->updateModuleVersion("folderview", "5.0");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "5.0") {
-            $strReturn = "Updating to 5.1...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "5.1");
-            $this->updateModuleVersion("folderview", "5.1");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "5.1") {
-            $strReturn = "Updating to 6.2...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2");
-            $this->updateModuleVersion("folderview", "6.2");
-        }
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if ($arrModule["module_version"] == "6.2") {
