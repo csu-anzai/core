@@ -127,25 +127,23 @@ class FormentryBase
     public function updateLabel($strKey = "")
     {
 
-        //check, if label is set as a property
-        if($strKey != "") {
-
-            //check if module param is set for @fieldLabel
-            $strModule = $this->getAnnotationParamValueForCurrentProperty("module", AdminFormgenerator::STR_LABEL_ANNOTATION);
-            if($strModule === null) {
-                $strModule = $this->objSourceObject->getArrModule("modul");
-            }
-
-            $this->strLabel = Carrier::getInstance()->getObjLang()->getLang($strKey, $strModule);
+        //check if module param is set for @fieldLabel
+        $strModule = $this->getAnnotationParamValueForCurrentProperty("module", AdminFormgenerator::STR_LABEL_ANNOTATION);
+        if ($strModule === null) {
+            $strModule = $this->objSourceObject->getArrModule("modul");
         }
-        else {
-            $this->strLabel = Carrier::getInstance()->getObjLang()->getLang("form_".$this->strFormName."_".$this->strSourceProperty, $this->objSourceObject->getArrModule("modul"));
+
+        //check, if label is set as a property
+        if ($strKey != "") {
+            $this->strLabel = Carrier::getInstance()->getObjLang()->getLang($strKey, $strModule);
+        } else {
+            $this->strLabel = Carrier::getInstance()->getObjLang()->getLang("form_".$this->strFormName."_".$this->strSourceProperty, $strModule);
             $strKey = "form_".$this->strFormName."_".$this->strSourceProperty;
         }
 
         $strHint = $strKey."_hint";
-        if(Carrier::getInstance()->getObjLang()->getLang($strHint, $this->objSourceObject->getArrModule("modul")) != "!".$strHint."!") {
-            $this->setStrHint(Carrier::getInstance()->getObjLang()->getLang($strHint, $this->objSourceObject->getArrModule("modul")));
+        if (Carrier::getInstance()->getObjLang()->getLang($strHint, $strModule) != "!".$strHint."!") {
+            $this->setStrHint(Carrier::getInstance()->getObjLang()->getLang($strHint, $strModule));
         }
     }
 

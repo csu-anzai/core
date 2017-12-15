@@ -12,7 +12,7 @@ class CsvTest extends Testbase
     {
 
         //test code
-        $strFile = "/files/public/testCsv.csv";
+        $strFile = "/files/downloads/default/testCsv.csv";
 
         $arrValues = array(
             array("v11", "v21", "v31"),

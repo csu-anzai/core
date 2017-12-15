@@ -24,10 +24,8 @@ class JsFilesTest extends Testbase
 //                $this->assertTrue(false, "console logging found " . $strOneFile . ": " . $arrMatches[0][0] . "\n");
 //            }
 
-            if (preg_match_all("/debugger;/i", $strFile, $arrMatches)) {
-                echo $strOneFile . ": " . $arrMatches[0][0] . "\n";
-                $this->assertTrue(false, "debugger breakpoint found " . $strOneFile . ": " . $arrMatches[0][0] . "\n");
-            }
+            $intNumberOfMatches = preg_match_all("/debugger;/i", $strFile, $arrMatches);
+            $this->assertEquals(0 , $intNumberOfMatches, "debugger breakpoint found " . $strOneFile . "\n");
         }
     }
 

@@ -73,4 +73,34 @@ class DatePeriodEnum extends EnumBase
         }
     }
 
+    /**
+     * Converts frequency DatePeriodEnum to integer
+     *
+     * @param DatePeriodEnum $enumFrequency
+     * @return int|null
+     */
+    public static function convertFrequencyEnumToInt(DatePeriodEnum $enumFrequency)
+    {
+        if($enumFrequency->equals(DatePeriodEnum::YEAR())) {
+            return self::$INT_FREQUENCY_YEAR;
+        }
+        elseif($enumFrequency->equals(DatePeriodEnum::HALFYEAR())) {
+            return self::$INT_FREQUENCY_HALFYEAR;
+        }
+        elseif($enumFrequency->equals(DatePeriodEnum::QUARTER())) {
+            return self::$INT_FREQUENCY_QUARTER;
+        }
+        elseif($enumFrequency->equals(DatePeriodEnum::MONTH())) {
+            return self::$INT_FREQUENCY_MONTH;
+        }
+        elseif($enumFrequency->equals(DatePeriodEnum::WEEK())) {
+            return self::$INT_FREQUENCY_WEEK;
+        }
+        elseif($enumFrequency->equals(DatePeriodEnum::DAY())) {
+            return self::$INT_FREQUENCY_DAY;
+        }
+
+        return null;
+    }
+
 }

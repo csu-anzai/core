@@ -128,12 +128,13 @@ abstract class FilterBase
      * Creates a new filter object or retrieves a filter object from the session.
      * If retrieved from session a clone is being returned.
      *
+     * @param string $strClass
      * @return self
      */
-    public static function getOrCreateFromSession()
+    public static function getOrCreateFromSession($strClass = null)
     {
         /** @var FilterBase $objFilter */
-        $strCalledClass = get_called_class();
+        $strCalledClass = $strClass === null ? get_called_class() : $strClass;
         $objFilter = new $strCalledClass();
         $strFilterId = $objFilter->getFilterId();
 
@@ -320,6 +321,16 @@ abstract class FilterBase
         foreach ($arrConditions as $objCondition) {
             $objORM->addWhereRestriction($objCondition);
         }
+    }
+
+    /**
+     * Hook method to add order by conditions to the orm objectlist.
+     * By default empty, but may be overwritten in case it is required
+     * @param OrmObjectlist $objORM
+     */
+    public function addOrderByConditionToORM(OrmObjectlist $objORM)
+    {
+
     }
 
     /**

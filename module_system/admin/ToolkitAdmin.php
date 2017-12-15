@@ -9,6 +9,7 @@
 
 namespace Kajona\System\Admin;
 
+use Kajona\Mediamanager\System\MediamanagerRepo;
 use Kajona\System\Admin\Formentries\FormentryCheckboxarray;
 use Kajona\System\Admin\Formentries\FormentryObjectlist;
 use Kajona\System\System\AdminGridableInterface;
@@ -294,6 +295,29 @@ class ToolkitAdmin extends Toolkit
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_text");
     }
 
+
+    /**
+     * Returns a field to enter hex-color values using a color picker
+     *
+     * @param string $strName
+     * @param string $strTitle
+     * @param string $strValue
+     * @param bool $bitReadonly
+     *
+     * @return string
+     */
+    public function formInputColorPicker($strName, $strTitle = "", $strValue = "", $bitReadonly = false, $strInstantEditor = "")
+    {
+        $arrTemplate = array();
+        $arrTemplate["name"] = $strName;
+        $arrTemplate["value"] = htmlspecialchars($strValue, ENT_QUOTES, "UTF-8", false);
+        $arrTemplate["title"] = $strTitle;
+        $arrTemplate["instantEditor"] = $strInstantEditor;
+        $arrTemplate["readonly"] = ($bitReadonly ? "readonly=\"readonly\"" : "");
+
+        return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_colorpicker");
+    }
+
     /**
      * Returns a regular text-input field
      *
@@ -511,16 +535,17 @@ class ToolkitAdmin extends Toolkit
      * @param string $strValue
      * @param string $strRepositoryId
      * @param string $strClass
+     * @param bool $bitLinkAsDownload
      *
      * @return string
      * @since 3.3.4
      */
-    public function formInputFileSelector($strName, $strTitle = "", $strValue = "", $strRepositoryId = "", $strClass = "")
+    public function formInputFileSelector($strName, $strTitle = "", $strValue = "", $strRepositoryId = "", $strClass = "", $bitLinkAsDownload = true)
     {
         $strOpener = getLinkAdminDialog(
             "mediamanager",
             "folderContentFolderviewMode",
-            "&form_element=".$strName."&systemid=".$strRepositoryId,
+            "&form_element=".$strName."&systemid=".$strRepositoryId.($bitLinkAsDownload ? "&download=1" : ""),
             Carrier::getInstance()->getObjLang()->getLang("filebrowser", "system"),
             Carrier::getInstance()->getObjLang()->getLang("filebrowser", "system"),
             "icon_externalBrowser",
@@ -590,7 +615,7 @@ class ToolkitAdmin extends Toolkit
      *
      * @return string
      */
-    public function formInputTextArea($strName, $strTitle = "", $strValue = "", $strClass = "", $bitReadonly = false, $numberOfRows = 4)
+    public function formInputTextArea($strName, $strTitle = "", $strValue = "", $strClass = "", $bitReadonly = false, $numberOfRows = 4, $strOpener = "")
     {
         $arrTemplate = array();
         $arrTemplate["name"] = $strName;
@@ -599,6 +624,7 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["class"] = $strClass;
         $arrTemplate["readonly"] = ($bitReadonly ? " readonly=\"readonly\" " : "");
         $arrTemplate["numberOfRows"] = $numberOfRows;
+        $arrTemplate["opener"] = $strOpener;
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_textarea");
     }
 
@@ -697,7 +723,7 @@ class ToolkitAdmin extends Toolkit
     }
 
     /**
-     * Returns a input-file element for uploading multiple files with progress bar. Only functionable in combination with
+     * Returns a input-file element for uploading multiple files with progress bar. Only functional in combination with
      * the mediamanager module
      *
      * @param string $strName
@@ -710,10 +736,8 @@ class ToolkitAdmin extends Toolkit
     {
 
         if (SystemModule::getModuleByName("mediamanager") === null) {
-            return ($this->warningBox("Module mediamanger is required for this multiple uploads"));
+            return ($this->warningBox("Module mediamanager is required for multiple uploads"));
         }
-
-        $strUploadId = generateSystemid();
 
         $objConfig = Carrier::getInstance()->getObjConfig();
         $objText = Carrier::getInstance()->getObjLang();
@@ -721,7 +745,6 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate = array();
         $arrTemplate["name"] = $strName;
         $arrTemplate["mediamanagerRepoId"] = $strMediamangerRepoSystemId;
-        $arrTemplate["uploadId"] = $strUploadId;
 
         $strAllowedFileRegex = StringUtil::replace(array(".", ","), array("", "|"), $strAllowedFileTypes);
         $strAllowedFileTypes = StringUtil::replace(array(".", ","), array("", "', '"), $strAllowedFileTypes);
@@ -733,6 +756,57 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["upload_multiple_errorFilesize"] = $objText->getLang("upload_multiple_errorFilesize", "mediamanager")." ".bytesToString($objConfig->getPhpMaxUploadSize());
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_upload_multiple");
+    }
+
+    /**
+     * Creates a multi-upload field inline, so directly within a form.
+     * Only to be used in combination with FormentryMultiUpload.
+     * The dir-param is the directory in the filesystem. The Mediamanager-Backend takes
+     * care of validating permissions and creating the relevant MediamanagerFile entries on the fly.
+     *
+     * @param string $strName
+     * @param $strTitle
+     * @param MediamanagerRepo $objRepo
+     * @param $strTargetDir
+     * @return string
+     * @see FormentryMultiUpload
+     */
+    public function formInputUploadInline($strName, $strTitle, MediamanagerRepo $objRepo, $strTargetDir, $bitReadonly = false)
+    {
+
+        if (SystemModule::getModuleByName("mediamanager") === null) {
+            return ($this->warningBox("Module mediamanager is required for multiple uploads"));
+        }
+
+        $objConfig = Carrier::getInstance()->getObjConfig();
+        $objText = Carrier::getInstance()->getObjLang();
+
+        $arrTemplate = array();
+        $arrTemplate["name"] = $strName;
+        $arrTemplate["title"] = $strTitle;
+        $arrTemplate["mediamanagerRepoId"] = $objRepo->getSystemid();
+        $arrTemplate["folder"] = $strTargetDir;
+        $arrTemplate["readOnly"] = $bitReadonly ? 'true' : 'false';
+        $arrTemplate["addButton"] = $bitReadonly ? "" : $this->listButton("<i class='kj-icon fa fa-plus-circle'></i>");//AdminskinHelper::getAdminImage("icon_new", $objText->getLang("mediamanager_upload", "mediamanager"));
+        $arrTemplate["moveButton"] = $bitReadonly ? "" : "<a id='version_{$strName}'>".$this->listButton(AdminskinHelper::getAdminImage("icon_archive", $objText->getLang("version_files", "mediamanager")))."</a>";
+
+        $strAllowedFileRegex = StringUtil::replace(array(".", ","), array("", "|"), $objRepo->getStrUploadFilter());
+        $strAllowedFileTypes = StringUtil::replace(array(".", ","), array("", "', '"), $objRepo->getStrUploadFilter());
+
+        $arrTemplate["allowedExtensions"] = $strAllowedFileTypes != "" ? $objText->getLang("upload_allowed_extensions", "mediamanager").": '".$strAllowedFileTypes."'" : $strAllowedFileTypes;
+        $arrTemplate["maxFileSize"] = $objConfig->getPhpMaxUploadSize();
+        $arrTemplate["acceptFileTypes"] = $strAllowedFileRegex != "" ? "/(\.|\/)(".$strAllowedFileRegex.")$/i" : "''";
+        $arrTemplate["upload_multiple_errorFilesize"] = $objText->getLang("upload_multiple_errorFilesize", "mediamanager")." ".bytesToString($objConfig->getPhpMaxUploadSize());
+
+        $arrTemplate["helpButton"] = $bitReadonly ? "" : $this->listButton(
+            "<a>".$this->getPopoverText(
+                AdminskinHelper::getAdminImage("icon_question", "", true),
+                $objText->getLang("mediamanager_upload", "mediamanager"),
+                $objText->getLang("upload_dropArea_extended", "mediamanager", [$strAllowedFileTypes, bytesToString($objConfig->getPhpMaxUploadSize())])
+            )."</a>"
+        );
+
+        return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_upload_inline");
     }
 
     /**
@@ -798,6 +872,74 @@ class ToolkitAdmin extends Toolkit
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_dropdown", true);
     }
 
+    /**
+     * Returns a regular text-input field
+     *
+     * @param string $strName
+     * @param string $strTitle
+     * @param string $strValue
+     * @param string $strClass
+     * @param string $strOpener
+     * @param bool $bitReadonly
+     *
+     * @param string $strInstantEditor
+     * @return string
+     */
+    public function formInputInterval($strName, $strTitle = "", \DateInterval $objValue = null, $strClass = "", $bitReadonly = false)
+    {
+        $objLang = Lang::getInstance();
+        $arrKeyValues = [
+            "D" => $objLang->getLang("commons_interval_day", "system"),
+            "W" => $objLang->getLang("commons_interval_week", "system"),
+            "M" => $objLang->getLang("commons_interval_month", "system"),
+            "Y" => $objLang->getLang("commons_interval_year", "system"),
+        ];
+
+        $strKeySelected = "";
+        $strValue = "";
+        if ($objValue !== null) {
+            if ($objValue->d > 0) {
+                if ($objValue->d % 7 == 0) {
+                    $strKeySelected = "W";
+                    $strValue = $objValue->d / 7;
+                } else {
+                    $strKeySelected = "D";
+                    $strValue = $objValue->d;
+                }
+            } elseif ($objValue->m > 0) {
+                $strKeySelected = "M";
+                $strValue = $objValue->m;
+            } elseif ($objValue->y > 0) {
+                $strKeySelected = "Y";
+                $strValue = $objValue->y;
+            }
+        }
+        if (empty($strKeySelected)) {
+            $strKeySelected = "D";
+        }
+
+        $strOptions = "";
+        foreach ($arrKeyValues as $strKey => $strVal) {
+            $arrTemplate = array();
+            $arrTemplate["key"] = $strKey;
+            $arrTemplate["value"] = $strVal;
+            if ((string)$strKey == (string)$strKeySelected) {
+                $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_dropdown_row_selected");
+            } else {
+                $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_dropdown_row");
+            }
+        }
+
+        $arrTemplate = array();
+        $arrTemplate["name"] = $strName;
+        $arrTemplate["value"] = $strValue;
+        $arrTemplate["title"] = $strTitle;
+        $arrTemplate["class"] = $strClass;
+        $arrTemplate["units"] = $strOptions;
+        $arrTemplate["readonly"] = ($bitReadonly ? "readonly=\"readonly\"" : "");
+
+        return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_date_interval");
+    }
 
     /**
      * Returning a complete dropdown but in multiselect-style
@@ -924,6 +1066,7 @@ class ToolkitAdmin extends Toolkit
         }
 
         $arrTemplate = array();
+        $arrTemplate["name"] = $strName;
         $arrTemplate["title"] = $strTitle;
         $arrTemplate["options"] = $strOptions;
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_toggle_buttonbar", true);
@@ -1007,6 +1150,13 @@ class ToolkitAdmin extends Toolkit
      */
     public function formInputCheckboxArray($strName, $strTitle, $intType, array $arrValues, array $arrSelected, $bitInline = false, $bitReadonly = false, $strOpener = "")
     {
+        $strElement = "input_checkboxarray";
+        $strElementRow = "input_checkboxarray_checkbox";
+        if ($intType == FormentryCheckboxarray::TYPE_RADIO) {
+            $strElement = "input_radioarray";
+            $strElementRow = "input_radioarray_radio";
+        }
+
         $arrTemplate = array();
         $arrTemplate["name"] = $strName;
         $arrTemplate["title"] = $strTitle;
@@ -1016,8 +1166,6 @@ class ToolkitAdmin extends Toolkit
         foreach ($arrValues as $strKey => $strValue) {
             $arrTemplateRow = array(
                 'key'      => $strKey,
-                'name'     => $intType == FormentryCheckboxarray::TYPE_RADIO ? $strName : $strName.'['.$strKey.']',
-                'value'    => $intType == FormentryCheckboxarray::TYPE_RADIO ? $strKey : 'checked',
                 'title'    => $strValue,
                 'checked'  => in_array($strKey, $arrSelected) ? 'checked' : '',
                 'inline'   => $bitInline ? '-inline' : '',
@@ -1027,20 +1175,22 @@ class ToolkitAdmin extends Toolkit
             switch ($intType) {
                 case FormentryCheckboxarray::TYPE_RADIO:
                     $arrTemplateRow['type'] = 'radio';
-                    $strElements .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/elements.tpl", "input_checkboxarray_checkbox", true);
+                    $arrTemplateRow['name'] = $strName;
+                    $arrTemplateRow['value'] = $strKey;
                     break;
-
-                default:
                 case FormentryCheckboxarray::TYPE_CHECKBOX:
                     $arrTemplateRow['type'] = 'checkbox';
-                    $strElements .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/elements.tpl", "input_checkboxarray_checkbox", true);
+                    $arrTemplateRow['name'] = $strName.'['.$strKey.']';
+                    $arrTemplateRow['value'] = 'checked';
                     break;
             }
+
+            $strElements .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/elements.tpl", $strElementRow, true);
         }
 
         $arrTemplate["elements"] = $strElements;
 
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "input_checkboxarray", true);
+        return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", $strElement, true);
     }
 
     /**
@@ -1718,7 +1868,7 @@ require(['ajax'], function(ajax){
     public function getLayoutFolder($strContent, $strLinkText, $bitVisible = false, $strCallbackVisible = "", $strCallbackInvisible = "")
     {
         $arrReturn = array();
-        $strID = str_replace(array(" ", "."), array("", ""), microtime());
+        $strID = generateSystemid();
         $arrTemplate = array();
         $arrTemplate["id"] = $strID;
         $arrTemplate["content"] = $strContent;
@@ -2684,6 +2834,20 @@ HTML;
         }
 
         return $this->objTemplate->fillTemplateFile(array("text" => $strText, "tooltip" => $strTooltip), "/elements.tpl", "tooltip_text");
+    }
+
+    /**
+     * Generates a bootstrap popover
+     * @param $strText
+     * @param $strPopoverTitle
+     * @param $strPopoverContent
+     * @param string $strTrigger one of click | hover | focus | manual
+     * @return string
+     * @since 6.5
+     */
+    public function getPopoverText($strText, $strPopoverTitle, $strPopoverContent, $strTrigger = "hover")
+    {
+        return $this->objTemplate->fillTemplateFile(array("title" => $strPopoverTitle, "content" => $strPopoverContent, "link" => $strText, "trigger" => $strTrigger, "id" => generateSystemid()), "/elements.tpl", "popover_text");
     }
 
     // --- Calendar Fields ----------------------------------------------------------------------------------

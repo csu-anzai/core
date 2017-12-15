@@ -1,7 +1,7 @@
 
-define(['jquery', 'bootstrap'], function ($, bootstrap) {
+define('dialog', ['jquery', 'bootstrap'], function ($, bootstrap) {
 
-    return function (strDialogId, intDialogType, bitDragging, bitResizing) {
+    return /** @alias module:dialog */ function (strDialogId, intDialogType, bitDragging, bitResizing) {
         this.dialog = null;
         this.containerId = strDialogId;
         this.iframeId = null;
@@ -21,12 +21,13 @@ define(['jquery', 'bootstrap'], function ($, bootstrap) {
             this.bitLarge = bitLarge
         };
 
-        this.setContent = function (strContent, strConfirmButton, strLinkHref) {
+        this.setContent = function (strContent, strConfirmButton, strLinkHref, blockHide) {
 
             if (intDialogType == 1) {
                 this.unbindEvents();
 
                 $('#' + this.containerId + '_content').html(strContent);
+                var self = this;
 
                 var $confirmButton = $('#' + this.containerId + '_confirmButton');
                 $confirmButton.html(strConfirmButton);
@@ -38,6 +39,10 @@ define(['jquery', 'bootstrap'], function ($, bootstrap) {
                     $confirmButton.click(function() {
                         var objReturn = strLinkHref();
 
+                        if(!blockHide) {
+                            self.hide();
+                        }
+
                         if(bitUnbind) {
                             $confirmButton.unbind();
                             $confirmButton.click(function() {
@@ -45,12 +50,16 @@ define(['jquery', 'bootstrap'], function ($, bootstrap) {
                             });
                         }
 
-                        return objReturn;
+                        return objReturn != undefined ? objReturn : false;
                     });
                 }
                 else {
                     $confirmButton.click(function() {
                         window.location = strLinkHref;
+
+                        if(!blockHide) {
+                            self.hide();
+                        }
 
                         if(bitUnbind) {
                             $confirmButton.unbind();

@@ -96,10 +96,12 @@ define("folderview", ["jquery", "util"], function($, util){
                 // add new elements
                 for(var i = 0; i < arrItems.length; i++) {
                     var strEscapedTitle = $('<div></div>').text(arrItems[i].strDisplayName).html();
+                    var strEscapedPath = $('<div></div>').text(arrItems[i].strPath).html();
+
                     var html = '';
                     html+= '<tr>';
-                    html+= '    <td>' + arrItems[i].strIcon + '</td>';
-                    html+= '    <td>' + strEscapedTitle + ' <input type="hidden" name="' + strElementName + '[]" value="' + arrItems[i].strSystemId + '" /></td>';
+                    html+= '    <td class="listimage">' + arrItems[i].strIcon + '</td>';
+                    html+= '    <td class="title"><div class="smaller">'+strEscapedPath+'</div>' + strEscapedTitle + ' <input type="hidden" name="' + strElementName + '[]" value="' + arrItems[i].strSystemId + '" /></td>';
                     html+= '    <td class="icon-cell">';
                     html+= '        <a href="#" onclick="require(\'v4skin\').removeObjectListItem(this);return false">' + strDeleteButton + '</a>';
                     html+= '    </td>';
@@ -107,7 +109,9 @@ define("folderview", ["jquery", "util"], function($, util){
 
                     tbody.append(html);
                 }
+                table.trigger('updated');
             }
+
 
             this.close();
         },
@@ -158,6 +162,7 @@ define("folderview", ["jquery", "util"], function($, util){
 
                     table.append(html);
                 }
+                form.trigger('updated');
             }
 
             this.close();

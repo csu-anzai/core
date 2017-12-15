@@ -6,12 +6,13 @@
 ********************************************************************************************************/
 
 namespace Kajona\Search\System;
-use Kajona\Pages\System\PagesPageelement;
+
+use Kajona\System\System\Model;
+use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\SearchResultobjectInterface;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemModule;
-
 
 /**
  * This class contains a few methods used by the search as little helpers
@@ -22,9 +23,8 @@ use Kajona\System\System\SystemModule;
  * @module search
  * @moduleId _search_module_id_
  */
-class SearchCommons extends \Kajona\System\System\Model implements \Kajona\System\System\ModelInterface
+class SearchCommons extends Model implements ModelInterface
 {
-
 
     /**
      * Returns the name to be used when rendering the current object, e.g. in admin-lists.
@@ -34,55 +34,6 @@ class SearchCommons extends \Kajona\System\System\Model implements \Kajona\Syste
     public function getStrDisplayName()
     {
         return "";
-    }
-
-    /**
-     * Calls the single search-functions, sorts the results and creates the output.
-     * Method for portal-searches.
-     *
-     * @param SearchSearch $objSearch
-     *
-     * @return SearchResult[]
-     */
-    public function doPortalSearch($objSearch, $intStart = 0, $intEnd = 50)
-    {
-        $objSearch->setStrQuery(trim(StringUtil::replace("%", "", $objSearch->getStrQuery())));
-        if (StringUtil::length($objSearch->getStrQuery()) == 0) {
-            return array();
-        }
-
-        //create a search object
-        $objSearch->setBitPortalObjectFilter(true);
-
-        $arrHits = $this->doIndexedSearch($objSearch, $intStart, $intEnd);
-
-        $arrReturn = array();
-        foreach ($arrHits as $objOneResult) {
-            $objInstance = $objOneResult->getObjObject();
-
-            if ($objInstance instanceof PagesPageelement) {
-                $objInstance = $objInstance->getConcreteAdminInstance();
-
-                if ($objInstance != null) {
-                    $objInstance->loadElementData();
-                }
-                else {
-                    continue;
-                }
-            }
-
-            $arrUpdatedResults = $objInstance->updateSearchResult($objOneResult);
-            if (is_array($arrUpdatedResults)) {
-                $arrReturn = array_merge($arrReturn, $arrUpdatedResults);
-            }
-            else if ($objOneResult != null && $objOneResult instanceof SearchResult) {
-                $arrReturn[] = $objOneResult;
-            }
-        }
-
-        $arrReturn = $this->mergeDuplicates($arrReturn);
-
-        return $arrReturn;
     }
 
     /**
@@ -110,33 +61,6 @@ class SearchCommons extends \Kajona\System\System\Model implements \Kajona\Syste
         return $arrHits;
     }
 
-
-    /**
-     * Merges duplicates in the passed array.
-     *
-     * @param SearchResult[] $arrResults
-     *
-     * @return SearchResult[]
-     */
-    private function mergeDuplicates($arrResults)
-    {
-        /** @var $arrReturn SearchResult[] */
-        $arrReturn = array();
-
-        foreach ($arrResults as $objOneResult) {
-
-            if (isset($arrReturn[$objOneResult->getStrSortHash()])) {
-                $objResult = $arrReturn[$objOneResult->getStrSortHash()];
-                $objResult->setIntHits($objResult->getIntHits() + 1);
-            }
-            else {
-                $arrReturn[$objOneResult->getStrSortHash()] = $objOneResult;
-            }
-        }
-
-        return $arrReturn;
-
-    }
 
     /**
      * @param SearchSearch $objSearch

@@ -75,7 +75,7 @@ class Link
         foreach ($arrAttr as $strAttrName => $strAttrValue) {
             if (!empty($strAttrValue)) {
                 if (is_scalar($strAttrValue)) {
-                    $arrParts[] = $strAttrName . "=\"" . htmlspecialchars($strAttrValue) . "\"";
+                    $arrParts[] = $strAttrName . "=\"" . htmlspecialchars($strAttrValue, ENT_COMPAT | ENT_HTML401, "UTF-8", false) . "\"";
                 } else {
                     throw new \InvalidArgumentException("Array must contain only scalar values");
                 }
@@ -472,38 +472,6 @@ class Link
             if (SystemSetting::getConfigValue("_system_mod_rewrite_") == "true") {
 
                 $strAddKeys = "";
-
-                //used later to add seo-relevant keywords
-                $objPage = \Kajona\Pages\System\PagesPage::getPageByName($strPageI);
-                if ($objPage !== null) {
-                    if ($strLanguage != "") {
-                        $objPage->setStrLanguage($strLanguage);
-                        $objPage->initObject();
-                    }
-
-                    $strAddKeys = $objPage->getStrSeostring().($strSeoAddon != "" && $objPage->getStrSeostring() != "" ? "-" : "").urlSafeString($strSeoAddon);
-                    if (StringUtil::length($strAddKeys) > 0 && StringUtil::length($strAddKeys) <= 2) {
-                        $strAddKeys .= "__";
-                    }
-
-                    //trim string
-                    $strAddKeys = StringUtil::truncate($strAddKeys, 100, "");
-
-                    if ($strLanguage != "") {
-                        $strHref .= $strLanguage."/";
-                    }
-
-                    $strPath = $objPage->getStrPath();
-                    if ($strPath == "") {
-                        $objPage->updatePath();
-                        $strPath = $objPage->getStrPath();
-                        $objPage->updateObjectToDb();
-                    }
-                    if ($strPath != "") {
-                        $strHref .= $strPath."/";
-                    }
-
-                }
 
                 //ok, here we go. schema for rewrite_links: pagename.addKeywords.action.systemid.language.html
                 //but: special case: just pagename & language

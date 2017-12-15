@@ -383,7 +383,7 @@ class PackagemanagerPackagemanagerModule implements PackagemanagerPackagemanager
         foreach ($arrInstaller as $strOneInstaller) {
 
             /** @var $objInstaller InstallerInterface */
-            $objInstaller = Classloader::getInstance()->getInstanceFromFilename(_realpath_.$objMetadata->getStrPath()."/installer/".$strOneInstaller);
+            $objInstaller = Classloader::getInstance()->getInstanceFromFilename(_realpath_.$objMetadata->getStrPath()."/installer/".$strOneInstaller, null, null, null, true);
             $arrReturn[] = $objInstaller;
         }
 

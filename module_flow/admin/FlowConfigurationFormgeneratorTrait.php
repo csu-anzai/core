@@ -9,11 +9,13 @@
 
 namespace Kajona\Flow\Admin;
 
+use Kajona\Flow\System\FlowActionAbstract;
 use Kajona\System\Admin\Formentries\FormentryHeadline;
 use Kajona\System\Admin\Formentries\FormentryHidden;
 use Kajona\System\Admin\Formentries\FormentryTextrow;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Lang;
+use Kajona\System\System\Objectfactory;
 
 /**
  * FlowConfigurationFormgeneratorTrait
@@ -31,10 +33,17 @@ trait FlowConfigurationFormgeneratorTrait
     {
         parent::generateFieldsFromObject();
 
+        $strTransistionId = Carrier::getInstance()->getParam("systemid");
+        $objTransition = Objectfactory::getInstance()->getObject($strTransistionId);
+        if ($objTransition instanceof FlowActionAbstract) {
+            $objTransition = Objectfactory::getInstance()->getObject($objTransition->getStrPrevId());
+        }
+
         // add dynamic action fields
         $objSource = $this->getObjSourceobject();
         $arrParameters = null;
         if ($this->isValidSourceObject($objSource)) {
+            $objType = $objSource;
             $strClass = $objSource->getStrRecordClass();
             $arrParameters = $objSource->getArrParameters();
 
@@ -48,20 +57,20 @@ trait FlowConfigurationFormgeneratorTrait
             }
         } else {
             $strClass = Carrier::getInstance()->getParam("class");
+            $objType = new $strClass();
         }
 
         if (class_exists($strClass)) {
             $this->addField(new FormentryHidden("", "class"))
                 ->setStrValue($strClass);
 
-            $objType = new $strClass();
             if ($this->isValidSourceObject($objType)) {
                 $this->addField(new FormentryTextrow("description"))
                     ->setStrValue($objType->getDescription());
                 $this->addField(new FormentryHeadline("config_header"))
                     ->setStrValue(Lang::getInstance()->getLang("form_flow_config", "flow"));
 
-                $objType->configureForm($this);
+                $objType->configureForm($this, $objTransition);
             }
         }
     }

@@ -4,6 +4,7 @@ namespace Kajona\System\Tests;
 
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Database;
+use Kajona\System\System\Date;
 use Kajona\System\System\Db\DbPostgres;
 use Kajona\System\System\DbDatatypes;
 
@@ -46,6 +47,38 @@ class DatabaseTest extends Testbase
         $this->assertTrue(in_array(_dbprefix_ . "temp_autotest_new", Carrier::getInstance()->getObjDB()->getTables()));
     }
 
+    public function testCreateIndex()
+    {
+        $objDb = Carrier::getInstance()->getObjDB();
+        $this->createTable();
+
+        $bitResult = $objDb->createIndex("temp_autotest", "foo_index", ["temp_char10", "temp_char20"]);
+
+        $this->assertTrue($bitResult);
+    }
+
+    public function testCreateUnqiueIndex()
+    {
+        $objDb = Carrier::getInstance()->getObjDB();
+        $this->createTable();
+
+        $bitResult = $objDb->createIndex("temp_autotest", "foo_index", ["temp_char10", "temp_char20"], true);
+
+        $this->assertTrue($bitResult);
+    }
+
+    public function testHasIndex()
+    {
+        $objDb = Carrier::getInstance()->getObjDB();
+        $this->createTable();
+
+        $this->assertFalse($objDb->hasIndex("temp_autotest", "foo_index"));
+
+        $bitResult = $objDb->createIndex("temp_autotest", "foo_index", ["temp_char10", "temp_char20"]);
+
+        $this->assertTrue($objDb->hasIndex("temp_autotest", "foo_index"));
+        $this->assertTrue($bitResult);
+    }
 
     public function testFloatHandling()
     {
@@ -136,6 +169,14 @@ class DatabaseTest extends Testbase
         $this->assertTrue(in_array("temp_new_col4", $arrColumnNames));
     }
 
+    public function testHasColumn()
+    {
+        $objDb = Carrier::getInstance()->getObjDB();
+        $this->createTable();
+
+        $this->assertTrue($objDb->hasColumn("temp_autotest", "temp_id"));
+        $this->assertFalse($objDb->hasColumn("temp_autotest", "temp_foo"));
+    }
 
     public function testRemoveColumn()
     {
@@ -380,7 +421,7 @@ SQL;
 
     /**
      * @dataProvider dataPostgresProcessQueryProvider
-     * @covers DbPostgres::processQuery()
+     * @covers \Kajona\System\System\Db\DbPostgres::processQuery
      */
     public function testPostgresProcessQuery($strExpect, $strQuery)
     {
@@ -448,6 +489,48 @@ SQL;
         $this->assertEquals(5, $j);
 
         $objDb->_pQuery("DROP TABLE " . $strTable, []);
+    }
+
+    /**
+     * This test checks whether we can use a long timestamp format in in an sql query
+     * @dataProvider intComparisonDataProvider
+     */
+    public function testIntComparison($strId, $longDate, $longExpected)
+    {
+        $this->createTable();
+
+        // note calculation does not work if we cross a year border
+        $objLeftDate = new Date($longDate);
+        $objLeftDate->setNextMonth();
+        $objRightDate = new Date($longDate);
+
+        $objDB = Database::getInstance();
+        $objDB->multiInsert("temp_autotest",
+            ["temp_id", "temp_long"], [
+                [$strId, $objRightDate->getLongTimestamp()],
+            ]
+        );
+
+        $strPrefix = _dbprefix_;
+        $strQuery = "SELECT ".$objLeftDate->getLongTimestamp()." - ".$objRightDate->getLongTimestamp()." AS result_1, ".$objLeftDate->getLongTimestamp()." - temp_long AS result_2 FROM {$strPrefix}temp_autotest";
+        $arrRow = $objDB->getPRow($strQuery, []);
+
+        $this->assertEquals($longExpected, $objLeftDate->getLongTimestamp() - $objRightDate->getLongTimestamp());
+        $this->assertEquals($longExpected, $arrRow["result_1"]);
+        $this->assertEquals($longExpected, $arrRow["result_2"]);
+    }
+
+    public function intComparisonDataProvider()
+    {
+        return [
+            ["a111", 20170801000000, 20170901000000-20170801000000],
+            ["a112", 20171101000000, 20171201000000-20171101000000],
+            ["a113", 20171201000000, 20180101000000-20171201000000],
+            ["a113", 20171215000000, 20180115000000-20171215000000],
+            ["a113", 20171230000000, 20180130000000-20171230000000],
+            ["a113", 20171231000000, 20180131000000-20171231000000],
+            ["a113", 20170101000000, 20170201000000-20170101000000],
+        ];
     }
 }
 

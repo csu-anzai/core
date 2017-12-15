@@ -47,26 +47,12 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
 
     var msg = {
 
-        bitFirstLoad : true,
-
         properties: null,
 
         pollMessages : function() {
-            var me = this;
-            messaging.getRecentMessages(function (objResponse) {
-                var $userNotificationsCount = $('#userNotificationsCount');
-                var oldCount = $userNotificationsCount.text();
-                $userNotificationsCount.text(objResponse.messageCount);
-                if (objResponse.messageCount > 0) {
-                    $userNotificationsCount.show();
-                    if (oldCount != objResponse.messageCount) {
-                        var strTitle = document.title.replace("(" + oldCount + ")", "");
-                        document.title = "(" + objResponse.messageCount + ") " + strTitle;
-                    }
 
-                } else {
-                    $userNotificationsCount.hide();
-                }
+            messaging.getRecentMessages(function (objResponse) {
+                messaging.updateCountInfo(objResponse.messageCount);
 
                 $('#messagingShortlist').empty();
                 $.each(objResponse.messages, function (index, item) {
@@ -77,10 +63,10 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
                 });
                 $('#messagingShortlist').append("<li class='divider'></li><li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1&module=messaging'><i class='fa fa-envelope'></i> " + msg.properties.show_all + "</a></li>");
 
-                window.setTimeout(msg.pollMessages, 20000);
-                messaging.bitFirstLoad = false;
             });
         }
+
+
     };
 
     $.widget('custom.catcomplete', $.ui.autocomplete, {
@@ -263,6 +249,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
             var me = this;
             ajax.genericAjaxCall("tags", "getFavoriteTags", "", function(data, status, jqXHR) {
                 if(status == 'success') {
+                    $('#tagsSubemenu').empty();
                     $.each($.parseJSON(data), function(index, item) {
                         $('#tagsSubemenu').append("<li><a href='"+item.url+"'><i class='fa fa-tag'></i> "+item.name+"</a></li>");
                     });

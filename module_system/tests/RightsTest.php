@@ -291,8 +291,8 @@ class RightsTest extends Testbase
         SystemAspect::getObjectListFiltered();
 
         $arrRow = Carrier::getInstance()->getObjDB()->getPRow("SELECT * FROM " . _dbprefix_ . "system WHERE system_id = ?", array($objAspect->getSystemid()), 0, false);
-        $this->assertTrue(!in_array($strGroupShortId, explode(",", $arrRow["right_view"])));
-        $this->assertTrue(!Carrier::getInstance()->getObjRights()->checkPermissionForGroup($strGroupId, Rights::$STR_RIGHT_VIEW, $objAspect->getSystemid()));
+        $this->assertFalse(in_array($strGroupShortId, explode(",", $arrRow["right_view"])));
+        $this->assertFalse(Carrier::getInstance()->getObjRights()->checkPermissionForGroup($strGroupId, Rights::$STR_RIGHT_VIEW, $objAspect->getSystemid()));
 
         Carrier::getInstance()->getObjRights()->addGroupToRight($strGroupId, $objAspect->getSystemid(), Rights::$STR_RIGHT_VIEW);
 

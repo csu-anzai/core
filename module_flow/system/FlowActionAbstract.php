@@ -39,7 +39,7 @@ abstract class FlowActionAbstract extends Model implements ModelInterface, Admin
     /**
      * @return string
      */
-    public function getStrParams(): string
+    public function getStrParams()
     {
         return $this->strParams;
     }
@@ -88,12 +88,7 @@ abstract class FlowActionAbstract extends Model implements ModelInterface, Admin
 
     public function getStrAdditionalInfo()
     {
-        $arrParams = $this->getArrParameters();
-        $arrParts = [];
-        foreach ($arrParams as $strKey => $strValue) {
-            $arrParts[] = $strKey . ": " . $strValue;
-        }
-        return implode(", ", $arrParts);
+        return chunk_split($this->getStrParams(), 50);
     }
 
     public function getStrLongDescription()

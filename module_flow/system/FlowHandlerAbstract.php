@@ -8,6 +8,7 @@
 namespace Kajona\Flow\System;
 
 use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\AdminFormgeneratorFactory;
 use Kajona\System\System\Database;
 use Kajona\System\System\Logger;
 use Kajona\System\System\Model;
@@ -50,13 +51,18 @@ abstract class FlowHandlerAbstract implements FlowHandlerInterface
         try {
             Database::getInstance()->transactionBegin();
 
+            // check whether the object has the correct status
+            if ($objObject->getIntRecordStatus() != $objTransition->getParentStatus()->getIntIndex()) {
+                throw new \RuntimeException("Object is not in status " . $objTransition->getParentStatus()->getStrName());
+            }
+
             $intNewStatus = $objTransition->getTargetStatus()->getIntStatus();
 
             if ($intNewStatus != $objObject->getIntRecordStatus()) {
                 // check whether there are validation errors
                 $objResult = $this->validateStatusTransition($objObject, $objTransition);
                 if (!$objResult->isValid()) {
-                    throw new \RuntimeException("There are condition errors for this status transition");
+                    throw new \RuntimeException("There are condition errors for this status transition, errors: ".implode(", ", $objResult->getErrors()));
                 }
 
                 // check whether the transition is visible
@@ -85,7 +91,7 @@ abstract class FlowHandlerAbstract implements FlowHandlerInterface
             Database::getInstance()->transactionRollback();
 
             Logger::getInstance(Logger::SYSTEMLOG)->addLogRow("Status-Transition error: " . $e->getMessage() . "\n" . $e->getTraceAsString(), Logger::$levelError);
-            return false;
+            throw $e;
         }
 
         return true;
@@ -97,6 +103,65 @@ abstract class FlowHandlerAbstract implements FlowHandlerInterface
      * @return FlowConditionResult
      */
     public function validateStatusTransition(Model $objObject, FlowTransition $objTransition) : FlowConditionResult
+    {
+        $objResult = new FlowConditionResult();
+
+        $objResultForms = $this->validateObjectForm($objObject, $objTransition);
+        $objResultCondition = $this->validateTransitionsConditions($objObject, $objTransition);
+
+        $objResult->merge($objResultForms);
+        $objResult->merge($objResultCondition);
+
+        return $objResult;
+    }
+
+    /**
+     * Validate the object itself by creating a form and validating it.
+     *
+     * 1. Validates the form of the given in the current status
+     * 2. if errors occur, additionally validate form of target status
+     *
+     * @param Model $objObject
+     * @param FlowTransition $objTransition
+     * @return FlowConditionResult
+     */
+    private function validateObjectForm(Model $objObject, FlowTransition $objTransition)
+    {
+        $objResult = new FlowConditionResult();
+
+        //validate if form is valid in current status
+        $objForm = AdminFormgeneratorFactory::createByModel($objObject);
+        $objForm->validateForm();
+        $arrErrors = $objForm->getArrValidationErrors();
+
+        if (!empty($arrErrors)) {
+            //validate if form is valid in target status
+            $intTargetStatus = $objTransition->getTargetStatus()->getIntIndex();
+            $objTmpObject = clone $objObject;
+            $objTmpObject->setIntRecordStatus($intTargetStatus);
+
+            $objForm = AdminFormgeneratorFactory::newFormGenerator($objTmpObject);
+            $objForm->validateForm();
+            $arrTargetErrors = $objForm->getArrValidationErrors();
+
+            foreach ($arrTargetErrors as $arrErr) {
+                foreach ($arrErr as $strError) {
+                    $objResult->addError($strError);
+                }
+            }
+        }
+
+        return $objResult;
+    }
+
+    /**
+     * Validate the conditions which are configured for the given FlowTransition
+     *
+     * @param Model $objObject
+     * @param FlowTransition $objTransition
+     * @return FlowConditionResult
+     */
+    private function validateTransitionsConditions(Model $objObject, FlowTransition $objTransition)
     {
         $objResult = new FlowConditionResult();
 

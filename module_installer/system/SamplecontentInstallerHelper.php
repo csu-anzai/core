@@ -27,7 +27,7 @@ class SamplecontentInstallerHelper
         //search for installers available
         $arrTempInstaller = Resourceloader::getInstance()->getFolderContent("/installer", array(".php"), false, null, function (&$strFilename, $strPath) {
             /** @var SamplecontentInstallerInterface $objInstance */
-            $objInstance = Classloader::getInstance()->getInstanceFromFilename($strPath, "Kajona\\System\\System\\SamplecontentInstallerInterface");
+            $objInstance = Classloader::getInstance()->getInstanceFromFilename($strPath, "Kajona\\System\\System\\SamplecontentInstallerInterface", null, null, true);
 
             //See if a legacy class was stored in the file
             if ($objInstance == null) {
@@ -84,7 +84,7 @@ class SamplecontentInstallerHelper
             if(StringUtil::indexOf($strPath, $objPackage->getStrPath()) !== false) {
 
                 /** @var SamplecontentInstallerInterface $objInstance */
-                $objInstance = Classloader::getInstance()->getInstanceFromFilename($strPath, null, "Kajona\\System\\System\\SamplecontentInstallerInterface");
+                $objInstance = Classloader::getInstance()->getInstanceFromFilename($strPath, null, "Kajona\\System\\System\\SamplecontentInstallerInterface", null, true);
                 if($objInstance != null) {
                     self::initInstaller($objInstance);
                     return $objInstance;
@@ -100,21 +100,21 @@ class SamplecontentInstallerHelper
     {
 
         $strReturn = "Installer found: ".get_class($objInstaller)."\n";
-        if($objInstaller->isInstalled()) {
-            return "\t... is already installed\n";
-        }
+
         $strModule = $objInstaller->getCorrespondingModule();
         $strReturn .= "Module ".$strModule."...\n";
         $objModule = SystemModule::getModuleByName($strModule);
 
-
         if ($objModule == null) {
-            $strReturn .= "\t... not installed!\n";
+            return $strReturn."\t... not installed!\n";
         }
-        else {
-            $strReturn .= "\t... installed.\n";
-            $strReturn .= $objInstaller->install();
+
+        if($objInstaller->isInstalled()) {
+            return $strReturn."\t... is already installed\n";
         }
+
+        $strReturn .= "\t... installed.\n";
+        $strReturn .= $objInstaller->install();
 
         Carrier::getInstance()->getObjDB()->flushQueryCache();
 

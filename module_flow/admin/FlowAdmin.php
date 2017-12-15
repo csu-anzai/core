@@ -10,16 +10,23 @@
 namespace Kajona\Flow\Admin;
 
 use Kajona\Flow\System\FlowActionAbstract;
+use Kajona\Flow\System\FlowActionUserInputInterface;
 use Kajona\Flow\System\FlowConditionAbstract;
 use Kajona\Flow\System\FlowConfig;
 use Kajona\Flow\System\FlowGraphWriter;
+use Kajona\Flow\System\FlowManager;
+use Kajona\Flow\System\FlowModelRightInterface;
 use Kajona\Flow\System\FlowStatus;
 use Kajona\Flow\System\FlowStatusFilter;
 use Kajona\Flow\System\FlowTransition;
 use Kajona\System\Admin\AdminEvensimpler;
+use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminInterface;
+use Kajona\System\Admin\Formentries\FormentryHeadline;
+use Kajona\System\Admin\Formentries\FormentryHidden;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\ArraySectionIterator;
+use Kajona\System\System\Lang;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
@@ -55,6 +62,12 @@ use Kajona\System\System\Objectfactory;
 class FlowAdmin extends AdminEvensimpler implements AdminInterface
 {
     /**
+     * @inject flow_manager
+     * @var FlowManager
+     */
+    protected $objFlowManager;
+
+    /**
      * @return array
      */
     public function getOutputModuleNavi()
@@ -69,7 +82,7 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
         $arrActions = parent::renderAdditionalActions($objListEntry);
 
         if ($objListEntry instanceof FlowConfig) {
-            $arrActions[] = $this->objToolkit->listButton(Link::getLinkAdmin($this->getArrModule("modul"), "listStep", "&systemid=" . $objListEntry->getSystemid(), "", $this->getLang("action_steps"), "icon_kriterium"));
+            $arrActions[] = $this->objToolkit->listButton(Link::getLinkAdmin($this->getArrModule("modul"), "listStep", "&systemid=" . $objListEntry->getSystemid(), "", $this->getLang("action_steps"), "icon_edit"));
         } elseif ($objListEntry instanceof FlowStatus) {
             $arrActions[] = $this->objToolkit->listButton(Link::getLinkAdmin($this->getArrModule("modul"), "listTransition", "&systemid=" . $objListEntry->getSystemid(), "", $this->getLang("action_transitions"), "icon_project"));
         } elseif ($objListEntry instanceof FlowTransition) {
@@ -161,6 +174,12 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
             return "";
         }
 
+        if ($objListEntry instanceof FlowActionAbstract || $objListEntry instanceof FlowConditionAbstract) {
+            // set the module hard to flow since the model has maybe another module annotation
+            $objListEntry = clone $objListEntry;
+            $objListEntry->setArrModuleEntry("modul", "flow");
+        }
+
         return parent::renderEditAction($objListEntry, $bitDialog);
     }
 
@@ -186,6 +205,12 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
             return $this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_deleteDisabled", $this->getLang("flow_step_no_delete")));
         }
 
+        if ($objListEntry instanceof FlowActionAbstract || $objListEntry instanceof FlowConditionAbstract) {
+            // set the module hard to flow since the model has maybe another module annotation
+            $objListEntry = clone $objListEntry;
+            $objListEntry->setArrModuleEntry("modul", "flow");
+        }
+
         return parent::renderDeleteAction($objListEntry);
     }
 
@@ -203,6 +228,15 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
             return Link::getLinkAdmin("flow", "listTransitionCondition", "&systemid=" . $objInstance->getPrevId(), $objInstance->getStrDisplayName());
         } else {
             return null;
+        }
+    }
+
+    public function getActionIcons($objOneIterable, $strListIdentifier = "")
+    {
+        if ($strListIdentifier == "") {
+            return "";
+        } else {
+            return parent::getActionIcons($objOneIterable, $strListIdentifier);
         }
     }
 
@@ -257,6 +291,33 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
         } else {
             return $strAction;
         }
+    }
+
+    /**
+     * @return string
+     * @permissions view
+     */
+    public function actionShowFlow()
+    {
+        $strSystemId = $this->getSystemid();
+
+        if (!validateSystemid($strSystemId)) {
+            throw new \RuntimeException("No systemid provided");
+        }
+
+        $objObject = Objectfactory::getInstance()->getObject($strSystemId);
+
+        /** @var FlowConfig $objFlow */
+        $objFlow = $this->objFlowManager->getFlowForModel($objObject);
+
+        if (!$objFlow instanceof FlowConfig) {
+            throw new \RuntimeException("No flow is assigned to the provided object");
+        }
+
+        $intCurrentStatus = $objObject->getIntRecordStatus();
+        $objStatus = $objFlow->getStatusByIndex($intCurrentStatus);
+
+        return FlowGraphWriter::write($objFlow, $objStatus);
     }
 
     /**

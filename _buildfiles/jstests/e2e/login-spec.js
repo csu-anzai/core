@@ -5,10 +5,8 @@ const LoginPage = requireHelper('/pageobject/LoginPage.js');
 
 describe('login', function () {
 
-    it('test login', function () {
-        LoginPage.getPage()
-            .then(function (loginPage) {
-                return loginPage.login("test", "test123");
-            });
+    it('test login', async function () {
+        let page = await LoginPage.getPage();
+        let adminLandingPage = await page.login("test", "test123");
     });
 });

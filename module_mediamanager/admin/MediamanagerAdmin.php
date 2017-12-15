@@ -9,6 +9,7 @@
 namespace Kajona\Mediamanager\Admin;
 
 use Kajona\Mediamanager\System\MediamanagerFile;
+use Kajona\Mediamanager\System\MediamanagerFileFilter;
 use Kajona\Mediamanager\System\MediamanagerLogbook;
 use Kajona\Mediamanager\System\MediamanagerRepo;
 use Kajona\System\Admin\AdminEvensimpler;
@@ -16,6 +17,7 @@ use Kajona\System\Admin\AdminInterface;
 use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\ArraySectionIterator;
+use Kajona\System\System\Carrier;
 use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Filesystem;
@@ -29,8 +31,10 @@ use Kajona\System\System\Logger;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
+use Kajona\System\System\OrmObjectlistOrderby;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\ResponseObject;
+use Kajona\System\System\Rights;
 use Kajona\System\System\StringUtil;
 
 /**
@@ -261,9 +265,8 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
                 throw new Exception("error deleting object ".$objRecord->getStrDisplayName(), Exception::$level_ERROR);
             }
 
-            $this->actionMassSync();
-
             if ($objRecord instanceof MediamanagerRepo) {
+                $this->actionMassSync();
                 $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "list"));
             } else {
                 $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "openFolder", "&systemid=".$strPrevid));
@@ -934,52 +937,50 @@ HTML;
      *
      * @return string
      * @permissions right1
+     * @responseType json
+     * @throws Exception
      */
-    protected function actionFileupload()
+    protected function actionFileUpload()
     {
-        $strReturn = "";
-
         /** @var MediamanagerRepo|MediamanagerFile $objFile */
         $objFile = Objectfactory::getInstance()->getObject($this->getSystemid());
 
-        /**
-         * @var MediamanagerRepo
-         */
+        $strUploadFolder = removeDirectoryTraversals($this->getParam("folder"));
+
+        /** @var MediamanagerRepo */
         $objRepo = null;
 
         if ($objFile instanceof MediamanagerFile) {
-            $strFolder = $objFile->getStrFilename();
-            if (!$objFile->rightEdit() || $objFile->getIntType() != MediamanagerFile::$INT_TYPE_FOLDER) {
+            $strTargetFolder = $objFile->getStrFilename();
+            if ($objFile->getIntType() != MediamanagerFile::$INT_TYPE_FOLDER) {
                 ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
-                $strReturn .= "<message><error>".xmlSafeString($this->getLang("commons_error_permissions"))."</error></message>";
-                return $strReturn;
+                return json_encode(['error' => $this->getLang("commons_error_permissions")]);
             }
 
             $objRepo = Objectfactory::getInstance()->getObject($objFile->getPrevId());
             while (!$objRepo instanceof MediamanagerRepo) {
                 $objRepo = Objectfactory::getInstance()->getObject($objRepo->getPrevId());
+
+                if (!$objRepo instanceof MediamanagerRepo && !$objRepo instanceof MediamanagerFile) {
+                    //wrong parent record, outta here
+                    ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
+                    return json_encode(['error' => $this->getLang("commons_error_permissions")]);
+                }
             }
         } elseif ($objFile instanceof MediamanagerRepo) {
             $objRepo = $objFile;
-            $strFolder = $objFile->getStrPath();
-            if (!$objFile->rightEdit()) {
-                ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
-                $strReturn .= "<message><error>".xmlSafeString($this->getLang("commons_error_permissions"))."</error></message>";
-                return $strReturn;
-            }
-
+            $strTargetFolder = $objFile->getStrPath();
         } else {
             ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
-            $strReturn .= "<message><error>".xmlSafeString($this->getLang("commons_error_permissions"))."</error></message>";
-            return $strReturn;
+            return json_encode(['error' => $this->getLang("commons_error_permissions")]);
         }
+
+
+
+        $arrReturn = [];
 
         //Handle the fileupload
         $arrSource = $this->getParam($this->getParam("inputElement"));
-
-
-        $bitJsonResponse = $this->getParam("jsonResponse") != "";
-
         $bitPostData = false;
         if (is_array($arrSource)) {
             $strFilename = $arrSource["name"];
@@ -1004,15 +1005,25 @@ HTML;
         }
 
 
-
-        $strTarget = $strFolder."/".createFilename($strFilename);
+        $strFullTargetFolder = $strTargetFolder.($strUploadFolder != "" ? "/".$strUploadFolder : "");
+        $strTargetFile = $strFullTargetFolder . "/" .createFilename($strFilename);
         $objFilesystem = new Filesystem();
 
-        if (!file_exists(_realpath_.$strFolder)) {
-            $objFilesystem->folderCreate($strFolder, true);
+        if (!file_exists(_realpath_.$strFullTargetFolder)) {
+            $objFilesystem->folderCreate($strFullTargetFolder, true);
         }
 
-        if ($objFilesystem->isWritable($strFolder)) {
+        if (is_file(_realpath_.$strTargetFile)) {
+            $arrReturn['error'] = $this->getLang("upload_multiple_errorExisting");
+            $arrReturn["files"][] = ["name" => createFilename($strFilename), "error" => $this->getLang("upload_multiple_errorExisting")];
+        }
+
+        if (empty($arrReturn['error']) && !$objFilesystem->isWritable($strFullTargetFolder)) {
+            ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_INTERNAL_SERVER_ERROR);
+            $arrReturn['error'] = $this->getLang("xmlupload_error_notWritable");
+        }
+
+        if (empty($arrReturn['error'])) {
             //Check file for correct filters
             $arrAllowed = explode(",", $objRepo->getStrUploadFilter());
 
@@ -1020,55 +1031,230 @@ HTML;
             if ($objRepo->getStrUploadFilter() == "" || in_array($strSuffix, $arrAllowed)) {
                 if ($bitPostData) {
                     $objFilesystem = new Filesystem();
-                    $objFilesystem->openFilePointer($strTarget);
+                    $objFilesystem->openFilePointer($strTargetFile);
                     $bitCopySuccess = $objFilesystem->writeToFile(getPostRawData());
                     $objFilesystem->closeFilePointer();
                 } else {
-                    $bitCopySuccess = $objFilesystem->copyUpload($strTarget, $arrSource["tmp_name"]);
+                    $bitCopySuccess = $objFilesystem->copyUpload($strTargetFile, $arrSource["tmp_name"]);
                 }
                 if ($bitCopySuccess) {
-                    if ($bitJsonResponse) {
-                        $strReturn = json_encode(array('success' => true));
-                    } else {
-                        $strReturn .= "<message>".$this->getLang("xmlupload_success")."</message>";
+                    //see if we need to add the parent dir directly - avoid a full repo-sync
+                    $objTargetMMFolder = MediamanagerFile::getFileForPath($objRepo->getSystemid(), $strFullTargetFolder);
+                    if ($objTargetMMFolder == null && $strUploadFolder != "" &&  StringUtil::indexOf($strUploadFolder, "/") === false) {
+                        $objTargetMMFolder = new MediamanagerFile();
+                        $objTargetMMFolder->setStrFilename($strFullTargetFolder);
+                        $objTargetMMFolder->setStrName($strUploadFolder);
+                        $objTargetMMFolder->setIntType(MediamanagerFile::$INT_TYPE_FOLDER);
+                        $objTargetMMFolder->updateObjectToDb($this->getSystemid());
                     }
 
-                    Logger::getInstance()->info("uploaded file ".$strTarget);
+                    $objFile = null;
+                    if ($objTargetMMFolder != null) {
+                        $objFile = new MediamanagerFile();
+                        $objFile->setStrFilename($strTargetFile);
+                        $objFile->setStrName(basename($strTargetFile));
+                        $objFile->setIntType(MediamanagerFile::$INT_TYPE_FILE);
+                        $objFile->updateObjectToDb($objTargetMMFolder->getSystemid());
+                    } else {
+                        //Oo. Need a full resync. Damn.
+                        $objRepo->syncRepo();
+                        $objFile = MediamanagerFile::getFileForPath($objRepo->getSystemid(), $strTargetFile);
+                    }
 
-                    $objRepo->syncRepo();
+                    $arrReturn['success'] = true;
+                    if ($objFile != null) {
+                        $arrReturn["files"][] = $this->mediamanagerFileToJqueryFileuploadArray($objFile);
+                    }
+                    Logger::getInstance()->info("uploaded file ".$strTargetFile);
+
                 } else {
-                    if ($bitJsonResponse) {
-                        $strReturn .= json_encode(array('error' => $this->getLang("xmlupload_error_copyUpload")));
-                    } else {
-                        $strReturn .= "<message><error>".$this->getLang("xmlupload_error_copyUpload")."</error></message>";
-                    }
+                    $arrReturn['error'] = $this->getLang("xmlupload_error_copyUpload");
                 }
             } else {
                 ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_BADREQUEST);
-
-                if ($bitJsonResponse) {
-                    $strReturn .= json_encode(array('error' => $this->getLang("xmlupload_error_filter")));
-                } else {
-                    $strReturn .= "<message><error>".$this->getLang("xmlupload_error_filter")."</error></message>";
-                }
-            }
-        } else {
-            ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_INTERNAL_SERVER_ERROR);
-
-            if ($bitJsonResponse) {
-                $strReturn .= json_encode(array('error' => $this->getLang("xmlupload_error_notWritable")));
-            } else {
-                $strReturn .= "<message><error>".xmlSafeString($this->getLang("xmlupload_error_notWritable"))."</error></message>";
+                $arrReturn['error'] = $this->getLang("xmlupload_error_filter");
             }
         }
 
-
-        if ($bitJsonResponse) {
-            //disabled for ie. otherwise the upload won't work due to the headers.
-            ResponseObject::getInstance()->setStrResponseType(HttpResponsetypes::STR_TYPE_HTML);
-        }
+        $strReturn = json_encode($arrReturn);
         @unlink($arrSource["tmp_name"]);
         return $strReturn;
+    }
+
+    /**
+     * Converts a mediamanager file to an array expected by the jquery fileupload plugin
+     * @param MediamanagerFile $objFile
+     * @return array
+     */
+    private function mediamanagerFileToJqueryFileuploadArray(MediamanagerFile $objFile)
+    {
+
+        $strDeleteButton = "";
+        if ($objFile->rightDelete()) {
+            $strLink = "javascript:require(\'fileupload\').deleteFile(\'{$objFile->getSystemid()}\')";
+            $strDeleteButton = $this->objToolkit->listDeleteButton($objFile->getStrDisplayName(), $this->getLang("delete_file_question"), $strLink);
+        }
+        return [
+            "name" => $objFile->getStrName(),
+            "size" => $objFile->getIntFileSize(),
+            "url" => $objFile->rightRight2() ? _webpath_."/download.php?systemid=".$objFile->getSystemid() : "",
+            "systemid" => $objFile->getSystemid(),
+            "deleteButton" => $strDeleteButton,
+        ];
+    }
+
+    /**
+     * Renders the list ob sub-ordinate folders, e.g. since
+     * created by a versioning run
+     *
+     * @return string
+     * @responseType html
+     * @permissions view
+     */
+    protected function actionGetArchiveList()
+    {
+        $objRepo = Objectfactory::getInstance()->getObject($this->getSystemid());
+        if (!$objRepo instanceof MediamanagerRepo) {
+            return " ";
+        }
+
+        $objFile = MediamanagerFile::getFileForPath($this->getSystemid(), $objRepo->getStrPath()."/".$this->getParam("folder"));
+        if ($objFile == null || !$objFile->rightView()) {
+            return " ";
+        }
+
+        $strReturn = " ";
+        $objFilter = new MediamanagerFileFilter();
+        $objFilter->setBitDateDescOrder(true);
+        $objFilter->setIntFileType(MediamanagerFile::$INT_TYPE_FOLDER);
+        /** @var MediamanagerFile $objFolder */
+        foreach (MediamanagerFile::getObjectListFiltered($objFilter, $objFile->getSystemid()) as $objFolder) {
+            $objFilter = new MediamanagerFileFilter();
+            $objFilter->setIntFileType(MediamanagerFile::$INT_TYPE_FILE);
+            $arrFiles = MediamanagerFile::getObjectListFiltered($objFilter, $objFolder->getSystemid());
+            if (count($arrFiles) > 0) {
+                $strReturn .= $this->objToolkit->formHeadline($objFolder->getStrDisplayName(), "", "h4");
+
+                $strReturn .= $this->objToolkit->listHeader();
+                /** @var MediamanagerFile $objSingleFile */
+                foreach ($arrFiles as $objSingleFile) {
+                    $strReturn .= $this->objToolkit->genericAdminList(
+                        $objSingleFile->getStrSystemid(),
+                        $objSingleFile->getStrDisplayName(),
+                        AdminskinHelper::getAdminImage($objSingleFile->getStrIcon()[0]),
+                        $objSingleFile->rightRight2() ? Link::getLinkAdminManual("href='"._webpath_."/download.php?systemid=".$objSingleFile->getSystemid()."'", $this->getLang("action_download"), $this->getLang("action_download"), "icon_downloads") : ""
+                    );
+                }
+
+                $strReturn .= $this->objToolkit->listFooter();
+            }
+        }
+
+        return $strReturn;
+    }
+
+    /**
+     * Copies all top-level files to a sub-folder named by the current date
+     *
+     * folder = the folder to store the file within
+     * systemid = the filemanagers' repo-id
+     *
+     * @return string
+     * @responseType json
+     * @throws Exception
+     * @permissions right1
+     */
+    protected function actionDocumentVersioning()
+    {
+        $objRepo = Objectfactory::getInstance()->getObject($this->getSystemid());
+        if (!$objRepo instanceof MediamanagerRepo) {
+            return json_encode([]);
+        }
+
+        $objFile = MediamanagerFile::getFileForPath($this->getSystemid(), $objRepo->getStrPath()."/".$this->getParam("folder"));
+        if ($objFile == null || !$objFile->rightView()) {
+            return json_encode(["status" => "error", "error" => "permissions"]);
+        }
+
+        $objFilter = new MediamanagerFileFilter();
+        $objFilter->setIntFileType(MediamanagerFile::$INT_TYPE_FILE);
+        $arrFiles = MediamanagerFile::getObjectListFiltered($objFilter, $objFile->getSystemid());
+        if (count($arrFiles) == 0) {
+            return json_encode(["status" => "error", "error" => "no_files"]);
+        }
+        //create a new target folder
+        $objDate = new Date();
+        $strBaseTarget = $objFile->getStrFilename()."/".$objDate->getIntYear()."-".$objDate->getIntMonth()."-".$objDate->getIntDay();
+        $strTarget = $objFile->getStrFilename()."/".$objDate->getIntYear()."-".$objDate->getIntMonth()."-".$objDate->getIntDay();
+        $intI = 1;
+        while (file_exists(_realpath_.$strTarget)) {
+            $strTarget = $strBaseTarget."_".$intI++;
+        }
+
+        $objFilesystem = new Filesystem();
+        $objFilesystem->folderCreate($strTarget);
+
+        $arrSynced = [];
+        /** @var MediamanagerFile $objCurFile */
+        foreach ($arrFiles as $objCurFile) {
+            $objFilesystem->fileRename($objCurFile->getStrFilename(), $strTarget."/".basename($objCurFile->getStrFilename()));
+            $arrSynced[] = $objCurFile->getStrName();
+        }
+
+        //and sync
+        MediamanagerFile::syncRecursive($objFile->getSystemid(), $objFile->getStrFilename());
+        //reset permissions to read only
+        $objNewRoot = MediamanagerFile::getFileForPath($this->getSystemid(), $strTarget);
+        if ($objNewRoot !== null) {
+            $objRights = Carrier::getInstance()->getObjRights();
+            foreach ([Rights::$STR_RIGHT_EDIT, Rights::$STR_RIGHT_DELETE, Rights::$STR_RIGHT_RIGHT1] as $strRight) {
+                $arrGroups = $objRights->getArrayRights($objNewRoot->getSystemid(), $strRight);
+                foreach ($arrGroups[$strRight] as $strGroup) {
+                    $objRights->removeGroupFromRight($strGroup, $objNewRoot->getSystemid(), $strRight);
+                }
+            }
+        }
+
+
+        
+        return json_encode(["status" => "ok", "target" => $strTarget, "moved" => $arrSynced]);
+    }
+
+    /**
+     * Tries to save the passed file.
+     * Therefore, the following post-params should be given:
+     * action = fileUpload
+     * folder = the folder to store the file within
+     * systemid = the filemanagers' repo-id
+     * inputElement = name of the inputElement
+     *
+     * @return string
+     * @permissions view
+     * @responseType json
+     */
+    protected function actionFileUploadList()
+    {
+        $objRepo = Objectfactory::getInstance()->getObject($this->getSystemid());
+        if (!$objRepo instanceof MediamanagerRepo) {
+            return json_encode([]);
+        }
+
+        $objFile = MediamanagerFile::getFileForPath($this->getSystemid(), $objRepo->getStrPath()."/".$this->getParam("folder"));
+        if ($objFile == null || !$objFile->rightView()) {
+            return json_encode([]);
+        }
+
+
+        $arrFiles = MediamanagerFile::getObjectListFiltered(null, $objFile->getSystemid());
+        $arrReturn = [];
+        /** @var MediamanagerFile $objFile */
+        foreach ($arrFiles as $objFile) {
+            if ($objFile->getIntType() == MediamanagerFile::$INT_TYPE_FILE && $objFile->rightView()) {
+                $arrReturn[] = $this->mediamanagerFileToJqueryFileuploadArray($objFile);
+            }
+        }
+
+        return json_encode(["files" => $arrReturn]);
     }
 
     /**

@@ -254,6 +254,9 @@ class RightAdmin extends AdminController implements AdminInterface
                     }
 
                     foreach ($arrRightsPerAction as $strOneGroupId) {
+                        if ($strOneGroupId === null) {
+                            continue;
+                        }
                         //place hidden field
                         $strReturn .= $this->objToolkit->formInputHidden("inherit,".$intRightCounter.",".UserGroup::getShortIdForGroupId($strOneGroupId), "1");
                     }

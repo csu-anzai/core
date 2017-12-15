@@ -59,35 +59,28 @@ class Pluginmanager
         $strKey = md5($this->strSearchPath.$this->strPluginPoint);
         if (!array_key_exists($strKey, self::$arrPluginClasses)) {
             $strPluginPoint = $this->strPluginPoint;
-            $arrClasses = Resourceloader::getInstance()->getFolderContent($this->strSearchPath, array(".php"), false, null,
-                function (&$strOneFile, $strPath) use ($strPluginPoint, $arrConstructorArguments) {
+            $arrClasses = BootstrapCache::getInstance()->getCacheContent(BootstrapCache::CACHE_CLASSES);
+            $arrPluginClasses = [];
 
-                    $strClassname = Classloader::getInstance()->getClassnameFromFilename($strPath);
+            foreach ($arrClasses as $strClass => $strFile) {
+                if (strpos($strFile, $this->strSearchPath."/".basename($strFile)) === false) {
+                    //exact check on path and basename of file
+                    continue;
+                }
 
-                    if ($strClassname == null) {
-                        $strOneFile = null;
-                        return;
+                if (empty($strClass)) {
+                    continue;
+                }
+
+                $objReflection = new ReflectionClass($strClass);
+                if ($objReflection->isInstantiable() && $objReflection->implementsInterface("Kajona\\System\\System\\GenericPluginInterface")) {
+                    if ($objReflection->hasMethod("getExtensionName") && $objReflection->getMethod("getExtensionName")->invoke(null) == $strPluginPoint) {
+                        $arrPluginClasses[] = $strClass;
                     }
+                }
+            }
 
-                    $objReflection = new ReflectionClass($strClassname);
-
-                    if ($objReflection->isInstantiable() && $objReflection->implementsInterface("Kajona\\System\\System\\GenericPluginInterface")) {
-                        if ($objReflection->hasMethod("getExtensionName") && $objReflection->getMethod("getExtensionName")->invoke(null) == $strPluginPoint) {
-                            $strOneFile = $strClassname;
-                            return;
-                        }
-                    }
-
-                    $strOneFile = null;
-
-                });
-
-
-            $arrClasses = array_filter($arrClasses, function ($strClass) {
-                return $strClass !== null;
-            });
-
-            self::$arrPluginClasses[$strKey] = $arrClasses;
+            self::$arrPluginClasses[$strKey] = $arrPluginClasses;
         }
 
         $arrReturn = array();

@@ -8,12 +8,13 @@ namespace Kajona\System\Tests;
 
 use Kajona\System\System\CacheManager;
 use Kajona\System\System\Exception;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author christoph.kappestein@gmail.com
  * @since 5.0
  */
-class CacheManagerTest extends \PHPUnit_Framework_TestCase
+class CacheManagerTest extends TestCase
 {
     public function testContains()
     {

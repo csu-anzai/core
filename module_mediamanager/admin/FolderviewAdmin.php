@@ -65,20 +65,6 @@ class FolderviewAdmin extends AdminController implements AdminInterface
 
         $strReturn .= $this->objToolkit->listHeader();
 
-        if (SystemModule::getModuleByName("pages") !== null) {
-            $strAction = $this->objToolkit->listButton(
-                Link::getLinkAdmin(
-                    "pages",
-                    "pagesFolderBrowser",
-                    "&pages=1&form_element=".$this->getParam("form_element")."&bit_link=1",
-                    $this->getLang("wysiwygPagesBrowser"),
-                    $this->getLang("wysiwygPagesBrowser"),
-                    "icon_folderActionOpen"
-                )
-            );
-            $strReturn .= $this->objToolkit->genericAdminList(generateSystemid(), $this->getLang("wysiwygPagesBrowser"), "", $strAction);
-        }
-
         $strRepoId = SystemSetting::getConfigValue("_mediamanager_default_filesrepoid_");
         if (validateSystemid($strRepoId) && SystemModule::getModuleByName("mediamanager") !== null && Objectfactory::getInstance()->getObject($strRepoId) !== null) {
             $strAction = $this->objToolkit->listButton(

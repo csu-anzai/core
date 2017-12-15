@@ -6,9 +6,9 @@
 
 namespace Kajona\System\System;
 
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Messageproviders\MessageproviderInterface;
 use Kajona\System\System\Validators\EmailValidator;
-
 
 /**
  * The messagehandler provides common methods to interact with the messaging-subsystem
@@ -19,6 +19,18 @@ use Kajona\System\System\Validators\EmailValidator;
  */
 class MessagingMessagehandler
 {
+    /**
+     * @var ServiceLifeCycleFactory
+     */
+    protected $objLifeCycleFactory;
+
+    /**
+     * @param ServiceLifeCycleFactory|null $objLifeCycleFactory
+     */
+    public function __construct(ServiceLifeCycleFactory $objLifeCycleFactory = null)
+    {
+        $this->objLifeCycleFactory = $objLifeCycleFactory === null ? Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_LIFE_CYCLE_FACTORY) : $objLifeCycleFactory;
+    }
 
     /**
      * @return MessageproviderInterface[]
@@ -32,11 +44,11 @@ class MessagingMessagehandler
 
                 if ($objInstance != null && $objInstance instanceof MessageproviderInterface) {
                     $strOneFile = $objInstance;
-                }
-                else {
+                } else {
                     $strOneFile = null;
                 }
-            });
+            }
+        );
 
         return array_filter($arrHandler, function ($objInstance) {
             return $objInstance != null;
@@ -72,18 +84,43 @@ class MessagingMessagehandler
 
 
     /**
-     * Sends a message.
-     * If the list of recipients contains a group, the message is duplicated for each member.
-     *
+     * Sends an alert to a single user.
+     * The alert is shown to the user directly, the user is forced to either accept or dismiss the alert
+     * @param MessagingAlert $objAlert
+     * @param UserUser $objUser
+     */
+    public function sendAlertToUser(MessagingAlert $objAlert, UserUser $objUser)
+    {
+        // is user currently active?
+        if ($objUser->getIntRecordStatus() != 1) {
+            return;
+        }
+
+        // check whether an alert exists already for the reference
+        if ($this->hasAlert($objAlert->getStrRef(), $objUser->getSystemid())) {
+            return;
+        }
+
+        $objAlert->setStrUser($objUser->getSystemid());
+        $objAlert->setObjSendDate(new Date());
+
+        $this->objLifeCycleFactory->factory(get_class($objAlert))->update($objAlert);
+    }
+
+    /**
+     * Sends a message. If the list of recipients contains a group, the message is duplicated for each member. In case
+     * a send date was provided we send the message at the provided date, if the date is now or in the past we send
+     * the message direct.
      *
      * @param MessagingMessage $objMessage
      * @param UserGroup[]|UserUser[]|UserGroup|UserUser $arrRecipients
-     *
-     * @return bool
+     * @param Date|null $objSendDate
      */
-    public function sendMessageObject(MessagingMessage $objMessage, $arrRecipients)
+    public function sendMessageObject(MessagingMessage $objMessage, $arrRecipients, Date $objSendDate = null)
     {
         $objValidator = new EmailValidator();
+        $objNowDate = new Date();
+        $objNowDate->setBeginningOfDay();
 
         if ($arrRecipients instanceof UserGroup || $arrRecipients instanceof UserUser) {
             $arrRecipients = array($arrRecipients);
@@ -92,7 +129,6 @@ class MessagingMessagehandler
         $arrRecipients = $this->getRecipientsFromArray($arrRecipients);
 
         foreach ($arrRecipients as $objOneUser) {
-
             //skip inactive users
             if ($objOneUser == null || $objOneUser->getIntRecordStatus() != 1) {
                 continue;
@@ -101,27 +137,56 @@ class MessagingMessagehandler
             $objConfig = MessagingConfig::getConfigForUserAndProvider($objOneUser->getSystemid(), $objMessage->getObjMessageProvider());
 
             if ($objConfig->getBitEnabled()) {
+                if ($objSendDate !== null) {
+                    $objSendDate->setBeginningOfDay();
+                }
 
-                //clone the message
-                $objCurrentMessage = new MessagingMessage();
-                $objCurrentMessage->setStrTitle($objMessage->getStrTitle());
-                $objCurrentMessage->setStrBody($objMessage->getStrBody());
-                $objCurrentMessage->setStrUser($objOneUser->getSystemid());
-                $objCurrentMessage->setStrInternalIdentifier($objMessage->getStrInternalIdentifier());
-                $objCurrentMessage->setStrMessageProvider($objMessage->getStrMessageProvider());
-                $objCurrentMessage->setStrMessageRefId($objMessage->getStrMessageRefId());
-                $objCurrentMessage->setStrSenderId(validateSystemid($objMessage->getStrSenderId()) ? $objMessage->getStrSenderId() : Carrier::getInstance()->getObjSession()->getUserID());
+                if ($objSendDate !== null && $objSendDate->getTimeInOldStyle() > $objNowDate->getTimeInOldStyle()) {
+                    // insert into queue
+                    $objMessageQueue = new MessagingQueue();
+                    $objMessageQueue->setStrRecipient($objOneUser->getSystemid());
+                    $objMessageQueue->setObjSendDate($objSendDate);
+                    $objMessageQueue->setMessage($objMessage);
+                    $objMessageQueue->updateObjectToDb();
+                } else {
+                    //clone the message
+                    $objCurrentMessage = new MessagingMessage();
+                    $objCurrentMessage->setStrTitle($objMessage->getStrTitle());
+                    $objCurrentMessage->setStrBody($objMessage->getStrBody());
+                    $objCurrentMessage->setStrUser($objOneUser->getSystemid());
+                    $objCurrentMessage->setStrInternalIdentifier($objMessage->getStrInternalIdentifier());
+                    $objCurrentMessage->setStrMessageProvider($objMessage->getStrMessageProvider());
+                    $objCurrentMessage->setStrMessageRefId($objMessage->getStrMessageRefId());
+                    $objCurrentMessage->setStrSenderId(validateSystemid($objMessage->getStrSenderId()) ? $objMessage->getStrSenderId() : Carrier::getInstance()->getObjSession()->getUserID());
 
-                $objCurrentMessage->updateObjectToDb();
+                    $objCurrentMessage->updateObjectToDb();
 
-                if ($objConfig->getBitBymail() && $objValidator->validate($objOneUser->getStrEmail())) {
-                    $this->sendMessageByMail($objCurrentMessage, $objOneUser);
+                    if ($objConfig->getBitBymail() && $objValidator->validate($objOneUser->getStrEmail())) {
+                        $this->sendMessageByMail($objCurrentMessage, $objOneUser);
+                    }
                 }
             }
         }
-
     }
 
+    /**
+     * Returns whether an alert exists for a specific reference id
+     *
+     * @param string $strRef
+     * @param $strUserId
+     * @return bool
+     */
+    protected function hasAlert($strRef, $strUserId)
+    {
+        if (empty($strRef)) {
+            return false;
+        }
+
+        $objOrm = new OrmObjectlist();
+        $objOrm->addWhereRestriction(new OrmPropertyCondition("strRef", OrmComparatorEnum::Equal(), $strRef));
+        $objOrm->addWhereRestriction(new OrmPropertyCondition("strUser", OrmComparatorEnum::Equal(), $strUserId));
+        return $objOrm->getSingleObject(MessagingAlert::class) !== null;
+    }
 
     /**
      * Sends a copy of the message to the user by mail
@@ -176,15 +241,14 @@ class MessagingMessagehandler
      *
      * @return UserUser[]
      */
-    private function getRecipientsFromArray($arrRecipients)
+    public function getRecipientsFromArray($arrRecipients)
     {
         $arrReturn = array();
 
         foreach ($arrRecipients as $objOneRecipient) {
             if ($objOneRecipient instanceof UserUser) {
                 $arrReturn[$objOneRecipient->getStrSystemid()] = $objOneRecipient;
-            }
-            elseif ($objOneRecipient instanceof UserGroup) {
+            } elseif ($objOneRecipient instanceof UserGroup) {
                 $objUsersources = new UserSourcefactory();
                 if ($objUsersources->getSourceGroup($objOneRecipient) != null) {
                     $arrMembers = $objUsersources->getSourceGroup($objOneRecipient)->getUserIdsForGroup();

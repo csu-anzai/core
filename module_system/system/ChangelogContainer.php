@@ -54,7 +54,7 @@ final class ChangelogContainer
     public function getObjTarget()
     {
         if (class_exists($this->strClass)) {
-            return new $this->strClass($this->strSystemid);
+            return Objectfactory::getInstance()->getObject($this->strSystemid);
         } else {
             return null;
         }

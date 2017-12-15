@@ -78,3 +78,16 @@ Inside a controller we can use the `@Inject` annotation to retrieve the logger i
             $this->logger->info("Something just happened!");
         }
     }
+
+## Project specific services
+
+It is also possible to define project specific services inside the project folder. Therefor you
+can use the `service_provider` config key in the module_system config. I.e. to provide a custom
+implementation for the `contracts_deploy_key_finder` service you could use the following config:
+
+    $config["service_provider"] = [
+        \AGP\Contracts\System\ServiceProvider::STR_DEPLOY_KEY_FINDER => function($c){
+            return new MyCustomImplementation();
+        }
+    ];
+

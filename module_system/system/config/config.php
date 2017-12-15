@@ -113,3 +113,15 @@
                                                                            // 1: Errors are logged
                                                                            // 2: Errors and warning
                                                                            // 3: Errors, warnings and information are logged
+
+
+//--services --------------------------------------------------------------------------------------------
+
+    $config["service_provider"] = [
+        /*
+        \AGP\Contracts\System\ServiceProvider::STR_DEPLOY_KEY_FINDER => function($c){
+            return new MyCustomImplementation();
+        }
+        */
+    ];
+

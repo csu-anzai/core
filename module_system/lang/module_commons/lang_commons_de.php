@@ -88,6 +88,7 @@ $lang["commons_text"]                    = "Text";
 $lang["commons_title"]                   = "Titel";
 $lang["commons_unlock"]                  = "Datensatz entsperren";
 $lang["commons_validator_date_validationmessage"] = "Das Feld muss ein Datumsformat im Format '{0}' enthalten";
+$lang["commons_validator_dateinterval_validationmessage"] = "Das Feld muss ein gültiges Interval Format enthalten";
 $lang["commons_validator_field_empty"]   = "'{0}' ist leer";
 $lang["commons_validator_int_validationmessage"] = "Das Feld muss Ganzzahlen enthalten";
 $lang["commons_validator_numeric_validationmessage"] = "Das Feld muss numerische Werte enthalten";
@@ -117,6 +118,8 @@ $lang["commons_object_validator_number_fieldcompare_less_than"] = "'{0}' muss < 
 $lang["commons_object_validator_number_fieldcompare_lessequals_than"] = "'{0}' muss <= '{1}' sein";
 
 $lang["commons_tree_contextmenu_loadallsubnodes"] = "Unterelemente aufklappen";
+$lang["commons_tree_error_invalid_drop_target_title"] = "Verschieben nicht möglich";
+$lang["commons_tree_error_invalid_drop_target_message"] = "Das Verschieben von '{0}' nach '{1}' ist nicht möglich";
 
 $lang["commons_from"] = "Von";
 $lang["commons_to"] = "Bis";
@@ -128,3 +131,14 @@ $lang["commons_record_owner"] = "Ersteller des Datensatzes";
 $lang["commons_record_startdate"] = "Startdatum";
 $lang["commons_record_enddate"] = "Enddatum";
 $lang["commons_record_specialdate"] = "Sonder-Datum";
+
+$lang["commons_error_move_hierarchy"] = "Das Verschieben unterhalb des angegeben Objektes ist nicht möglich";
+
+$lang["commons_interval_day"]                    = "Tag";
+$lang["commons_interval_days"]                   = "Tage";
+$lang["commons_interval_week"]                   = "Woche";
+$lang["commons_interval_weeks"]                  = "Wochen";
+$lang["commons_interval_month"]                  = "Monat";
+$lang["commons_interval_months"]                 = "Monate";
+$lang["commons_interval_year"]                   = "Jahr";
+$lang["commons_interval_years"]                  = "Jahre";

@@ -17,12 +17,11 @@ class AdminLandingPage extends AdminBasePage {
 
     /**
      *
-     * @returns {Promise<AdminLandingPage>}
+     * @returns {AdminLandingPage}
      */
-    static getPage() {
-        return SeleniumUtil.gotToUrl("index.php?admin=1").then(function () {
-            return new AdminLandingPage();
-        });
+    static async getPage() {
+        await SeleniumUtil.gotToUrl("index.php?admin=1");
+        return new AdminLandingPage();
     }
 }
 

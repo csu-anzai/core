@@ -38,6 +38,7 @@ interface VersionableInterface
      * Returns a human readable name of the record / object stored with the changeset.
      *
      * @return string the human readable name
+     * @deprecated
      */
     public function getVersionRecordName();
 

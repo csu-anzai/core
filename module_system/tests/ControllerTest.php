@@ -9,6 +9,7 @@ namespace Kajona\System\Tests;
 use Kajona\System\System\AbstractController;
 use Kajona\System\System\HttpResponsetypes;
 use Kajona\System\System\ResponseObject;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class CacheManagerTest
@@ -16,7 +17,7 @@ use Kajona\System\System\ResponseObject;
  * @author sidler@mulchprod.de
  * @since 6.2
  */
-class ControllerTest extends \PHPUnit_Framework_TestCase
+class ControllerTest extends TestCase
 {
 
     public function testResponseTypeParsing()

@@ -9,18 +9,13 @@
 
 namespace Kajona\Search\Installer;
 
-use Kajona\Packagemanager\System\PackagemanagerManager;
-use Kajona\Pages\System\PagesElement;
-use Kajona\Search\Admin\Elements\ElementSearchAdmin;
 use Kajona\Search\System\SearchIndexwriter;
 use Kajona\Search\System\SearchSearch;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\DbDatatypes;
-use Kajona\System\System\Filesystem;
 use Kajona\System\System\InstallerBase;
 use Kajona\System\System\InstallerRemovableInterface;
 use Kajona\System\System\OrmSchemamanager;
-use Kajona\System\System\Resourceloader;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
 
@@ -154,14 +149,12 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
         if($arrModule["module_version"] == "4.6.1") {
             $strReturn .= "Updating to 4.7...\n";
             $this->updateModuleVersion("search", "4.7");
-            $this->updateElementVersion("search", "4.7");
         }
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "4.7") {
             $strReturn .= "Updating to 5.0...\n";
             $this->updateModuleVersion("search", "5.0");
-            $this->updateElementVersion("search", "5.0");
         }
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
@@ -173,7 +166,12 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
         if($arrModule["module_version"] == "5.1") {
             $strReturn .= "Updating to 6.2...\n";
             $this->updateModuleVersion("search", "6.2");
-            $this->updateElementVersion("search", "6.2");
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.2") {
+            $strReturn .= "Updating to 6.5...\n";
+            $this->updateModuleVersion("search", "6.5");
         }
 
         if($this->bitIndexRebuild) {
@@ -244,7 +242,6 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion("search", "4.6.1");
-        $this->updateElementVersion("search", "4.6.1");
 
         return $strReturn;
 
@@ -259,7 +256,6 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion("search", "5.1");
-        $this->updateElementVersion("search", "5.1");
 
         return $strReturn;
 

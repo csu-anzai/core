@@ -4,20 +4,38 @@ namespace Kajona\Jsonapi\Tests;
 
 use Kajona\Jsonapi\Admin\JsonapiAdmin;
 use Kajona\System\System\Carrier;
+use Kajona\System\System\MessagingMessage;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Session;
-use Kajona\System\System\SystemModule;
 use Kajona\System\System\UserUser;
+use PHPUnit\Framework\TestCase;
 
-class JsonapiAdminTest extends \PHPUnit_Framework_TestCase
+class JsonapiAdminTest extends TestCase
 {
+
+
+
     public function testGet()
     {
-        $this->markTestSkipped("needs backend only refactoring");
+        $this->markAsRisky();
+        $this->markTestSkipped("Needs to be refactored");
+
+        $arrUsers = UserUser::getAllUsersByName("admin");
+
+        $objMessage = new MessagingMessage();
+        $objMessage->setStrUser($arrUsers[0]->getStrSystemid());
+        $objMessage->setStrTitle("unittest demo message title 1");
+        $objMessage->setStrBody("unittest demo message body 1");
+        $objMessage->updateObjectToDb();
+
+        $strSystemid = $objMessage->getStrSystemid();
+        $strAdditionalInfo = $objMessage->getStrAdditionalInfo();
+        $strDisplayName = $objMessage->getStrDisplayName();
+
 
         $objAdmin = $this->getAdminMock("GET");
 
-        Carrier::getInstance()->setParam("class", NewsNews::class);
+        Carrier::getInstance()->setParam("class", MessagingMessage::class);
 
         $strResult = $objAdmin->action("dispatch");
 
@@ -26,54 +44,35 @@ class JsonapiAdminTest extends \PHPUnit_Framework_TestCase
         $strResult = preg_replace("|[0-9]{2}\\\\/[0-9]{2}\\\\/[0-9]{4}|ims", "", $strResult);
         $strResult = preg_replace("|[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}|ims", "", $strResult);
 
-        $strExpect = <<<'JSON'
+        $strExpect = <<<"JSON"
 {
-    "totalCount": "2",
+    "totalCount": "23",
     "startIndex": 0,
     "filter": null,
     "entries": [
         {
-            "_id": "",
-            "_class": "Kajona\\News\\System\\NewsNews",
-            "_icon": "icon_news",
-            "_displayName": "Installation successful",
-            "_additionalInfo": "0 Hits",
-            "_longDescription": "S: ",
-            "strTitle": "Installation successful",
-            "strImage": "",
-            "intHits": "0",
-            "strIntro": "Kajona installed successfully...",
-            "strText": "Another installation of Kajona was successful. For further information, support or proposals, please visit our website: www.kajona.de",
-            "objDateStart": "",
-            "objDateEnd": null
-        },
-        {
-            "_id": "",
-            "_class": "Kajona\\News\\System\\NewsNews",
-            "_icon": "icon_news",
-            "_displayName": "Sed non enim est",
-            "_additionalInfo": "0 Hits",
-            "_longDescription": "S: ",
-            "strTitle": "Sed non enim est",
-            "strImage": "",
-            "intHits": "0",
-            "strIntro": "Quisque sagittis egestas tortor",
-            "strText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non enim est, id hendrerit metus. Sed tempor quam sed ante viverra porta. Quisque sagittis egestas tortor, in euismod sapien iaculis at. Nullam vitae nunc tortor. Mauris justo lectus, bibendum et rutrum id, fringilla eget ipsum. Nullam volutpat sodales mollis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Duis tempor ante eget justo blandit imperdiet. Praesent ut risus tempus metus sagittis fermentum eget eu elit. Mauris consequat ornare massa, a rhoncus enim sodales auctor. Duis lacinia dignissim eros vel mollis. Etiam metus tortor, pellentesque eu ultricies sit amet, elementum et dolor. Proin tincidunt nunc id magna volutpat lobortis. Vivamus metus quam, accumsan eget vestibulum vel, rutrum sit amet mauris. Phasellus lectus leo, vulputate eget molestie et, consectetur nec urna. ",
-            "objDateStart": "",
-            "objDateEnd": null
+            "_id": "{$strSystemid}",
+            "_class": "Kajona\\\\System\\\\System\\\\MessagingMessage",
+            "_icon": "icon_mailNew",
+            "_displayName": "{$strDisplayName}",
+            "_additionalInfo": "{$strAdditionalInfo}",
+            "_longDescription": "",
+            "strTitle": "unittest demo message title 1",
+            "strBody": "unittest demo message body 1",
+            "bitRead": "false"
         }
     ]
 }
 JSON;
 
-        $this->assertJsonStringEqualsJsonString($strExpect, $strResult, $strResult);
+        $this->assertJsonStringEqualsJsonString($strExpect, $strResult, "json different");
+
+        $objMessage->deleteObjectFromDatabase();
     }
 
     public function testGetNoClass()
     {
         Carrier::getInstance()->setParam("class", "");
-        Carrier::getInstance()->setParam("news_title", "");
-        Carrier::getInstance()->setParam("news_datestart", "");
 
         $objAdmin = $this->getAdminMock("GET");
 
@@ -91,18 +90,16 @@ JSON;
 
     public function testPost()
     {
-        $this->markTestSkipped("needs backend only refactoring");
-
         $arrUsers = UserUser::getAllUsersByName("admin");
         Session::getInstance()->loginUser($arrUsers[0]);
 
-        Carrier::getInstance()->setParam("class", NewsNews::class);
-        Carrier::getInstance()->setParam("news_title", "");
-        Carrier::getInstance()->setParam("news_datestart", "");
+        Carrier::getInstance()->setParam("class", MessagingMessage::class);
 
         $arrData = array(
-            "news_title" => "lorem ipsum",
-            "news_datestart" => date('m/d/Y'),
+            "messaging_user" => "admin",
+            "messaging_user_id" => $arrUsers[0]->getStrSystemid(),
+            "messaging_title" => "test title",
+            "messaging_body" => "test body",
         );
 
         $objAdmin = $this->getAdminMock("POST", $arrData);
@@ -123,14 +120,13 @@ JSON;
 
     public function testPostInvalidData()
     {
-        $this->markTestSkipped("needs backend only refactoring");
+        $this->markAsRisky();
+        $this->markTestSkipped("Needs to be refactored");
 
         $arrUsers = UserUser::getAllUsersByName("admin");
         Session::getInstance()->loginUser($arrUsers[0]);
 
-        Carrier::getInstance()->setParam("class", NewsNews::class);
-        Carrier::getInstance()->setParam("news_title", "");
-        Carrier::getInstance()->setParam("news_datestart", "");
+        Carrier::getInstance()->setParam("class", MessagingMessage::class);
 
         $arrData = array(
             "bar" => "foo"
@@ -143,11 +139,14 @@ JSON;
 {
     "success": false,
     "errors": {
-        "news_title": [
-            "'Title' is empty"
+        "messaging_user": [
+            "'An' ist leer"
         ],
-        "news_datestart": [
-            "'Start date' is empty"
+        "messaging_title": [
+            "'Betreff' ist leer"
+        ],
+        "messaging_body": [
+            "'Nachricht' ist leer"
         ]
     }
 }

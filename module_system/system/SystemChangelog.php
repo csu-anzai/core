@@ -10,7 +10,6 @@ namespace Kajona\System\System;
 
 use ArrayAccess;
 
-
 /**
  * The changelog is a global wrapper to the gui-based logging.
  * Changes should reflect user-changes and not internal system-logs.
@@ -92,7 +91,10 @@ class SystemChangelog
      */
     public function readOldValues(VersionableInterface $objCurrentObject)
     {
-        self::$arrOldInstances[$objCurrentObject->getSystemid()] = clone $objCurrentObject;
+        //add only once to avoid stale entries, e.g. due to subsequent object instantiations
+        if (!isset(self::$arrOldInstances[$objCurrentObject->getSystemid()])) {
+            self::$arrOldInstances[$objCurrentObject->getSystemid()] = clone $objCurrentObject;
+        }
         return null;
     }
 
@@ -518,7 +520,6 @@ class SystemChangelog
             //add entry right here
             $arrReturn[] = $arrChangeSet;
         }
-
     }
 
 
@@ -924,7 +925,7 @@ class SystemChangelog
 
         if ($arrAllowedSystemIds !== null) {
             $objRestriction = new OrmInCondition("change_systemid", $arrAllowedSystemIds);
-            if($objRestriction->getStrWhere() !== "") {
+            if ($objRestriction->getStrWhere() !== "") {
                 $strQuery .= " AND " . $objRestriction->getStrWhere();
                 $arrParameters = array_merge($arrParameters, $objRestriction->getArrParams());
             }
@@ -952,7 +953,7 @@ class SystemChangelog
 
         //system id filter
         $objRestriction = new OrmInCondition("log.change_systemid", $arrAllowedSystemIds);
-        if($objRestriction->getStrWhere() !== "") {
+        if ($objRestriction->getStrWhere() !== "") {
             $strQueryCondition .= " AND " . $objRestriction->getStrWhere();
             $arrParams = array_merge($arrParams, $objRestriction->getArrParams());
         }

@@ -9,6 +9,7 @@
 
 namespace Kajona\Workflows\Installer;
 
+use Kajona\System\System\DbDatatypes;
 use Kajona\System\System\Filesystem;
 use Kajona\System\System\InstallerBase;
 use Kajona\System\System\InstallerRemovableInterface;
@@ -37,6 +38,23 @@ class InstallerWorkflows extends InstallerBase implements InstallerRemovableInte
 
         $strReturn .= "Installing table workflows_handler...\n";
         $objManager->createTable("Kajona\\Workflows\\System\\WorkflowsHandler");
+
+        $arrFields = array();
+        $arrFields["wfc_id"]                     = array("char20", false);
+        $arrFields["wfc_start"]                  = array("long", false);
+        $arrFields["wfc_end"]                    = array("long", true);
+        if(!$this->objDB->createTable("workflows_stat_wfc", $arrFields, array("wfc_id"), array("wfc_start")))
+            $strReturn .= "An error occured! ...\n";
+
+        $arrFields = array();
+        $arrFields["wfh_id"]                     = array("char20", false);
+        $arrFields["wfh_wfc"]                    = array("char20", false);
+        $arrFields["wfh_start"]                  = array("long", false);
+        $arrFields["wfh_end"]                    = array("long", true);
+        $arrFields["wfh_class"]                  = array("char254", false);
+        $arrFields["wfh_result"]                 = array("char254", true);
+        if(!$this->objDB->createTable("workflows_stat_wfh", $arrFields, array("wfh_id"), array('wfh_start', 'wfh_result')))
+            $strReturn .= "An error occured! ...\n";
 
 		//register the module
 		$this->registerModule(
@@ -165,6 +183,16 @@ class InstallerWorkflows extends InstallerBase implements InstallerRemovableInte
             $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2");
         }
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.2") {
+            $strReturn .= $this->update_62_65();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.5") {
+            $strReturn .= $this->update_65_651();
+        }
+
         return $strReturn."\n\n";
 	}
 
@@ -199,6 +227,46 @@ class InstallerWorkflows extends InstallerBase implements InstallerRemovableInte
         $strReturn .= "Updating module-versions...\n";
         $this->objDB->flushQueryCache();
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "4.7.6");
+
+        return $strReturn;
+    }
+
+    private function update_62_65() {
+        $strReturn = "Adding new tables\n";
+
+        $arrFields = array();
+        $arrFields["wfc_id"]                     = array("char20", false);
+        $arrFields["wfc_start"]                  = array("long", false);
+        $arrFields["wfc_end"]                    = array("long", true);
+        if(!$this->objDB->createTable("workflows_stat_wfc", $arrFields, array("wfc_id"), array("wfc_start")))
+            $strReturn .= "An error occured! ...\n";
+
+        $arrFields = array();
+        $arrFields["wfh_id"]                     = array("char20", false);
+        $arrFields["wfh_wfc"]                    = array("char20", false);
+        $arrFields["wfh_start"]                  = array("long", false);
+        $arrFields["wfh_end"]                    = array("long", true);
+        $arrFields["wfh_class"]                  = array("char254", false);
+        $arrFields["wfh_result"]                 = array("char254", true);
+        if(!$this->objDB->createTable("workflows_stat_wfh", $arrFields, array("wfh_id"), array('wfh_start', 'wfh_result')))
+            $strReturn .= "An error occured! ...\n";
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->objDB->flushQueryCache();
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5");
+
+        return $strReturn;
+    }
+
+    private function update_65_651() {
+        $strReturn = "Changing stats schema\n";
+        $this->objDB->changeColumn("workflows_stat_wfc", "wfh_result", "wfh_result", DbDatatypes::STR_TYPE_CHAR254);
+
+            $strReturn .= "An error occured! ...\n";
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->objDB->flushQueryCache();
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.1");
 
         return $strReturn;
     }

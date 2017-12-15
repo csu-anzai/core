@@ -88,6 +88,7 @@ $lang["commons_text"]                    = "Text";
 $lang["commons_title"]                   = "Title";
 $lang["commons_unlock"]                  = "Unlock record";
 $lang["commons_validator_date_validationmessage"] = "The field must contain a date format '{0}'";
+$lang["commons_validator_dateinterval_validationmessage"] = "The field must contain a valid interval format";
 $lang["commons_validator_field_empty"]   = "'{0}' is empty";
 $lang["commons_validator_int_validationmessage"] = "The field must contain integer values";
 $lang["commons_validator_numeric_validationmessage"] = "The field must contain numeric values";
@@ -117,6 +118,8 @@ $lang["commons_object_validator_number_fieldcompare_less_than"] = "'{0}' must be
 $lang["commons_object_validator_number_fieldcompare_lessequals_than"] = "'{0}' must be <= '{1}'.";
 
 $lang["commons_tree_contextmenu_loadallsubnodes"] = "Expand all";
+$lang["commons_tree_error_invalid_drop_target_title"] = "Moving not possible";
+$lang["commons_tree_error_invalid_drop_target_message"] = "Moving '{0}' to '{1}' is not possible";
 
 $lang["commons_from"] = "From";
 $lang["commons_to"] = "To";
@@ -128,3 +131,15 @@ $lang["commons_record_owner"] = "Record creator";
 $lang["commons_record_startdate"] = "Start date";
 $lang["commons_record_enddate"] = "End date";
 $lang["commons_record_specialdate"] = "Special date";
+
+$lang["commons_error_move_hierarchy"] = "Moving this object below the given object is not possible";
+
+
+$lang["commons_interval_day"]                    = "Day";
+$lang["commons_interval_days"]                   = "Days";
+$lang["commons_interval_week"]                   = "Week";
+$lang["commons_interval_weeks"]                  = "Weeks";
+$lang["commons_interval_month"]                  = "Month";
+$lang["commons_interval_months"]                 = "Months";
+$lang["commons_interval_year"]                   = "Year";
+$lang["commons_interval_years"]                  = "Years";
