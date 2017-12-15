@@ -260,6 +260,8 @@ class OrmObjectlist extends OrmBase
             $arrOrderByCriteria[] = " system_create_date DESC ";
         }
 
+        $arrOrderByCriteria = array_unique($arrOrderByCriteria);
+
         $strOrderBy = "";
         if (count($arrOrderByCriteria) > 0) {
             $strOrderBy = "ORDER BY ".implode(" , ", $arrOrderByCriteria)." ";
