@@ -39,6 +39,10 @@ class CommonSortmanager implements SortmanagerInterface
      */
     public function fixSortOnPrevIdChange($strOldPrevid, $strNewPrevid, $arrRestrictionModules = false)
     {
+        if ($this->objSource->getIntRecordDeleted() == 1) {
+            return;
+        }
+
         $this->objDB->flushQueryCache();
 
         $arrParams = array($strOldPrevid);
