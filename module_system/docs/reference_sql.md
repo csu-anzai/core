@@ -16,6 +16,8 @@ postgres, oracle, mssql.
 * Mssql: `DISTINCT` kann nicht benutzt werden wenn das `SELECT` eine `TEXT` Spalte 
   enthält
 * Mssql: TEXT column is deprecated use VARCHAR(MAX) instead
+* Mssql: If you insert a float its not safe that exactly the same value is returned. I.e.
+  you insert `16.8` the next select returns `16.799999237061`
 
 ##Generators
 The Database-class support Generators to iterate over larget sets of data. Internally,
