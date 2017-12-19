@@ -56,6 +56,7 @@ class RightAdmin extends AdminController implements AdminInterface
      *
      * @return string
      * @permissions right
+     * @throws Exception
      */
     protected function actionChange()
     {
@@ -104,24 +105,26 @@ class RightAdmin extends AdminController implements AdminInterface
                 $strModule = "system";
             } elseif ($objTargetRecord instanceof SystemModule) {
                 $strModule = $objTargetRecord->getStrName();
-            } elseif (defined("_pages_folder_id_") && $objTargetRecord->getIntModuleNr() == _pages_folder_id_) {
-                $strModule = "pages";
             } else {
                 $strModule = $objTargetRecord->getArrModule("modul");
             }
 
-
-            $arrHeaderRow = $this->getLang("permissions_header", $strModule);
-            $arrDefaultHeader = $this->getLang("permissions_default_header", "system");
-
+            if ($objTargetRecord instanceof SystemModule) {
+                //try to find a module base header
+                $arrHeaderRow = $this->getLang("permissions_header_module", $strModule);
+                if ($arrHeaderRow == "!permissions_header_module!") {
+                    $arrHeaderRow = $this->getLang("permissions_header", $strModule);
+                }
+            } elseif ($strSystemID == "0") {
+                $arrHeaderRow = $this->getLang("permissions_root_header", "system");
+            } else {
+                $arrHeaderRow = $this->getLang("permissions_header", $strModule);
+            }
 
             if ($arrHeaderRow == "!permissions_header!") {
-                $arrHeaderRow = $arrDefaultHeader;
+                $arrHeaderRow = $this->getLang("permissions_default_header", "system");
             }
 
-            if ($strSystemID == "0") {
-                $arrHeaderRow = $this->getLang("permissions_root_header", "system");
-            }
 
             $arrTitles = $arrHeaderRow;
             $arrTemplateTotal = array();
@@ -135,11 +138,6 @@ class RightAdmin extends AdminController implements AdminInterface
             $arrTemplateTotal["title7"] = $arrTitles[7];
             $arrTemplateTotal["title8"] = $arrTitles[8];
             if (SystemSetting::getConfigValue("_system_changehistory_enabled_") == "true") {
-                if (!isset($arrTitles[9])) {
-                    //fallback for pre 4.3.2 systems
-                    $arrTitles[9] = $arrDefaultHeader[9];
-                }
-
                 $arrTemplateTotal["title9"] = $arrTitles[9];
             }
 
