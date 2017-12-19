@@ -15,6 +15,7 @@ postgres, oracle, mssql.
 * Mssql: Spalten in einer `ORDER BY`-Liste dürfen nicht doppelt angegeben werden
 * Mssql: `DISTINCT` kann nicht benutzt werden wenn das `SELECT` eine `TEXT` Spalte 
   enthält
+* Mssql: TEXT column is deprecated use VARCHAR(MAX) instead
 
 ##Generators
 The Database-class support Generators to iterate over larget sets of data. Internally,
