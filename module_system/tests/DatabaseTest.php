@@ -91,12 +91,13 @@ class DatabaseTest extends Testbase
         $objDb->_pQuery($strQuery, array("id2", 1000.8));
 
         $arrRow = $objDb->getPRow("SELECT * FROM " . _dbprefix_ . "temp_autotest where temp_id = ?", array("id1"));
-        $this->assertEquals($arrRow["temp_double"], 16.8);
-        $this->assertEquals($arrRow["temp_double"], "16.8");
+        // MSSQL returns 16.799999237061 instead of 16.8
+        $this->assertEquals(16.8, round($arrRow["temp_double"], 1));
+        $this->assertEquals("16.8", round($arrRow["temp_double"], 1));
 
         $arrRow = $objDb->getPRow("SELECT * FROM " . _dbprefix_ . "temp_autotest where temp_id = ?", array("id2"));
-        $this->assertEquals($arrRow["temp_double"], 1000.8);
-        $this->assertEquals($arrRow["temp_double"], "1000.8");
+        $this->assertEquals(1000.8, round($arrRow["temp_double"], 1));
+        $this->assertEquals("1000.8", round($arrRow["temp_double"], 1));
     }
 
 
@@ -254,14 +255,14 @@ class DatabaseTest extends Testbase
         $arrRow = $objDB->getPRow($strQuery, array());
         $this->assertTrue(count($arrRow) >= 9, "testDataBase getRow count");
         
-        $this->assertEquals($arrRow["temp_long"], "1234561", "testDataBase getRow content");
-        $this->assertEquals($arrRow["temp_double"], "23.451", "testDataBase getRow content");
-        $this->assertEquals($arrRow["temp_char10"], "1", "testDataBase getRow content");
-        $this->assertEquals($arrRow["temp_char20"], "char201", "testDataBase getRow content");
-        $this->assertEquals($arrRow["temp_char100"], "char1001", "testDataBase getRow content");
-        $this->assertEquals($arrRow["temp_char254"], "char2541", "testDataBase getRow content");
-        $this->assertEquals($arrRow["temp_char500"], "char5001", "testDataBase getRow content");
-        $this->assertEquals($arrRow["temp_text"], "text1", "testDataBase getRow content");
+        $this->assertEquals("1234561", $arrRow["temp_long"], "testDataBase getRow content");
+        $this->assertEquals("23.451", round($arrRow["temp_double"], 3), "testDataBase getRow content");
+        $this->assertEquals("1", $arrRow["temp_char10"], "testDataBase getRow content");
+        $this->assertEquals("char201", $arrRow["temp_char20"], "testDataBase getRow content");
+        $this->assertEquals("char1001", $arrRow["temp_char100"], "testDataBase getRow content");
+        $this->assertEquals("char2541", $arrRow["temp_char254"], "testDataBase getRow content");
+        $this->assertEquals("char5001", $arrRow["temp_char500"], "testDataBase getRow content");
+        $this->assertEquals("text1", $arrRow["temp_text"], "testDataBase getRow content");
 
         $strQuery = "SELECT * FROM " . _dbprefix_ . "temp_autotest ORDER BY temp_long ASC";
         $arrRow = $objDB->getPArray($strQuery, array());
