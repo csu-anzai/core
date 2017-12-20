@@ -146,14 +146,14 @@ General commit message format, based on the [AngularJS] commit message guide:
 
 **type:**
 
-* feat (new feature)
-* fix (bug fix)
-* docs (changes to documentation / update PHP docs)
-* lang (update lang properties)
-* style (adjust code according to our coding style)
-* refactor (refactoring production code)
-* test (adding missing tests, refactoring tests; no production code change)
-* chore (updating grunt tasks etc; no production code change)
+* feat: new feature
+* fix: bug fix
+* docs: changes to documentation / update PHP docs
+* lang: update lang properties
+* style: adjust code according to our coding style
+* refactor: refactoring production code
+* test: adding missing tests, refactoring tests; no production code change
+* chore: updating grunt tasks etc; no production code change
 
 **module:**
 
