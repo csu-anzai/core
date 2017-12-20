@@ -8,10 +8,9 @@
 
 namespace Kajona\Mediamanager\Admin;
 
+use Kajona\Mediamanager\System\MediamanagerFile;
 use Kajona\System\Admin\AdminFormgenerator;
-use Kajona\System\Admin\Formentries\FormentryHeadline;
-use Kajona\System\System\Carrier;
-
+use Kajona\System\Admin\Formentries\FormentryTextarea;
 
 /**
  * The formgenerator for a mediamanager repo
@@ -25,10 +24,19 @@ class MediamanagerFileFormgenerator extends AdminFormgenerator {
     /**
      * @inheritDoc
      */
-    public function generateFieldsFromObject() {
+    public function generateFieldsFromObject()
+    {
         parent::generateFieldsFromObject();
 
-        $this->addField(new FormentryHeadline("", "source"))->setStrValue(Carrier::getInstance()->getParam("source"));
+
+        /** @var MediamanagerFile $objFile */
+        $objFile = $this->getObjSourceobject();
+        if ($objFile->getRepository()->getIntSearchIndex() == 1) {
+            $this->addField(new FormentryTextarea("mediamanager", "strSearchContent"))
+                ->setStrValue($objFile->getStrSearchContent())
+                ->setBitReadonly(true)
+                ->setStrLabel($this->getLang("form_mediamanager_content"));
+        }
     }
 
 }
