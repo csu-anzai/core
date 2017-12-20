@@ -108,6 +108,10 @@ require(["jquery", "ajax"], function($, ajax){
             $objTransition = Objectfactory::getInstance()->getObject($strTransitionId);
 
             if ($objTransition instanceof FlowTransition) {
+                if (!$objFlow->hasTransition($objObject->getIntRecordStatus(), $objTransition)) {
+                    throw new \RuntimeException("It is not possible to trigger the provided transition in this state");
+                }
+
                 $arrActions = $objTransition->getArrActions();
                 $objForm = new AdminFormgenerator("", $objObject);
                 $bitInputRequired = false;
