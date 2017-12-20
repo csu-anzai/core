@@ -17,4 +17,4 @@ $config["java_exec"] = "java";
 /**
  * Path to the Tika (https://tika.apache.org/) jar
  */
-$config["tika_jar"] = __DIR__ . "/../../../../bin/tika-app-1.16.jar";
+$config["tika_jar"] = __DIR__ . "/../../../../bin/tika-app-1.17.jar";
