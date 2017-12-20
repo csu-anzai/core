@@ -67,15 +67,16 @@ class UserSourcefactory
      * Returns a list of groups matching the passed query-term.
      *
      * @param string $strName
-     *
+     * @param int|null $intStart
+     * @param int|null $intEnd
      * @return UserGroup[]
      */
-    public function getGrouplistByQuery($strName)
+    public function getGrouplistByQuery($strName, $intStart = null, $intEnd = null)
     {
 
         //validate if a group with the given name is available
         $strQuery = "SELECT group_id, group_subsystem FROM "._dbprefix_."user_group where group_name LIKE ?";
-        $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, array($strName."%"));
+        $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, array($strName."%"), $intStart, $intEnd);
 
         $arrReturn = array();
         foreach ($arrRows as $arrOneRow) {
@@ -125,10 +126,11 @@ class UserSourcefactory
      * Only active users may be returned!
      *
      * @param string $strParam
-     *
+     * @param int|null $intStart
+     * @param int|null $intEnd
      * @return UserUser[]
      */
-    public function getUserlistByUserquery($strParam)
+    public function getUserlistByUserquery($strParam, $intStart = null, $intEnd = null)
     {
 
         $strDbPrefix = _dbprefix_;
@@ -146,7 +148,7 @@ class UserSourcefactory
         $arrParams = array("%".$strParam."%", "%".$strParam."%", "%".$strParam."%");
         
 
-        $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, $arrParams);
+        $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, $arrParams, $intStart, $intEnd);
 
         $arrReturn = array();
         foreach ($arrRows as $arrOneRow) {
