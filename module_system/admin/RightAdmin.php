@@ -125,8 +125,10 @@ class RightAdmin extends AdminController implements AdminInterface
                 $arrHeaderRow = $this->getLang("permissions_default_header", "system");
             }
 
-
             $arrTitles = $arrHeaderRow;
+
+            $arrTitles[9] = $arrTitles[9] ?? $this->getLang("permissions_default_header", "system")[9];
+
             $arrTemplateTotal = array();
             $arrTemplateTotal["title0"] = $arrTitles[0];
             $arrTemplateTotal["title1"] = $arrTitles[1];
@@ -137,9 +139,7 @@ class RightAdmin extends AdminController implements AdminInterface
             $arrTemplateTotal["title6"] = $arrTitles[6];
             $arrTemplateTotal["title7"] = $arrTitles[7];
             $arrTemplateTotal["title8"] = $arrTitles[8];
-            if (SystemSetting::getConfigValue("_system_changehistory_enabled_") == "true") {
-                $arrTemplateTotal["title9"] = $arrTitles[9];
-            }
+            $arrTemplateTotal["title9"] = $arrTitles[9];
 
             //Read the template
             $arrTemplateTotal["rows"] = "";
@@ -156,7 +156,6 @@ class RightAdmin extends AdminController implements AdminInterface
                     continue;
                 }
 
-
                 //Building Checkboxes
                 $arrTemplateRow["box0"] = "<input title=\"".$arrTitles[0]."\" rel=\"tooltip\" type=\"checkbox\" name=\"1,".$arrSingleGroup["group_id"]."\" id=\"1,".$arrSingleGroup["group_id"]."\" value=\"1\" ".(in_array($arrSingleGroup["group_systemid"], $arrRights["view"]) ? " checked=\"checked\" " : "")." />";
                 $arrTemplateRow["box1"] = "<input title=\"".$arrTitles[1]."\" rel=\"tooltip\" type=\"checkbox\" name=\"2,".$arrSingleGroup["group_id"]."\" id=\"2,".$arrSingleGroup["group_id"]."\" value=\"1\" ".(in_array($arrSingleGroup["group_systemid"], $arrRights["edit"]) ? " checked=\"checked\" " : "")." />";
@@ -172,11 +171,7 @@ class RightAdmin extends AdminController implements AdminInterface
                     }
                 }
 
-
-                if (SystemSetting::getConfigValue("_system_changehistory_enabled_") == "true") {
-                    $arrTemplateRow["box9"] = "<input title=\"".$arrTitles[9]."\" rel=\"tooltip\" type=\"checkbox\" name=\"10,".$arrSingleGroup["group_id"]."\" id=\"10,".$arrSingleGroup["group_id"]."\" value=\"1\" ".(in_array($arrSingleGroup["group_systemid"], $arrRights["changelog"]) ? " checked=\"checked\" " : "")." />";
-                }
-
+                $arrTemplateRow["box9"] = "<input title=\"".$arrTitles[9]."\" rel=\"tooltip\" type=\"checkbox\" name=\"10,".$arrSingleGroup["group_id"]."\" id=\"10,".$arrSingleGroup["group_id"]."\" value=\"1\" ".(in_array($arrSingleGroup["group_systemid"], $arrRights["changelog"]) ? " checked=\"checked\" " : "")." />";
 
                 //And Print it to template
                 $arrTemplateTotal["rows"] .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/elements.tpl", "rights_form_row");
