@@ -148,6 +148,7 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
      * @var string
      * @tableColumn mediamanager_file.file_search_content
      * @tableColumnDatatype text
+     * @blockEscaping
      */
     private $strSearchContent = "";
 
@@ -534,23 +535,19 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
 
 
     /**
-     * Searches the repository-id for the current file.
-     *
-     * @return string
+     * Returns the mediamanager repository for this mediamanager file
+     * @return MediamanagerRepo|null
      */
-    public function getRepositoryId()
+    public function getRepository()
     {
-
-        $strPrevid = $this->getPrevId();
-        $arrRow = $this->objDB->getPRow("SELECT COUNT(*) AS cnt FROM "._dbprefix_."mediamanager_repo WHERE repo_id = ?", array($strPrevid));
-        while ($arrRow["cnt"] == 0 && $strPrevid != "" && $strPrevid != "0") {
-            /** @var MediamanagerFile $objFile */
-            $objFile = Objectfactory::getInstance()->getObject($strPrevid);
-            $strPrevid = $objFile->getPrevId();
-            $arrRow = $this->objDB->getPRow("SELECT COUNT(*) AS cnt FROM "._dbprefix_."mediamanager_repo WHERE repo_id = ?", array($strPrevid));
+        foreach ($this->getPathArray() as $strId) {
+            $objObj = Objectfactory::getInstance()->getObject($strId);
+            if ($objObj instanceof MediamanagerRepo) {
+                return $objObj;
+            }
         }
 
-        return $strPrevid;
+        return null;
     }
 
 

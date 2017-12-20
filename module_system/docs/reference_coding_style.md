@@ -136,6 +136,41 @@ In case you return directly an object you have to use the `@alias` annotation:
     });
 
 
+# Commit messages
+
+General commit message format, based on the [AngularJS] commit message guide:
+
+```
+<type>(<module>): <subject>
+```
+
+**type:**
+
+* feat: new feature
+* fix: bug fix
+* docs: changes to documentation / update PHP docs
+* lang: update lang properties
+* style: adjust code according to our coding style
+* refactor: refactoring production code
+* test: adding missing tests, refactoring tests; no production code change
+* chore: updating grunt tasks etc; no production code change
+
+**module:**
+
+Name of the module without the `module_` prefix. You can use * if there isn't a more fitting scope.
+
+**subject:**
+
+This is a short description of the change.
+
+## Examples
+
+```
+feat(system): Added new features
+docs(prozessverwaltung): Improved calculateNextMepCall php doc
+```
+
+[AngularJS]: https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit
 [PSR-2]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md
 [JSDoc]: http://usejsdoc.org/
 
