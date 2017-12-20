@@ -538,7 +538,7 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
      * Returns the mediamanager repository for this mediamanager file
      * @return MediamanagerRepo|null
      */
-    public function getRepository(): MediamanagerRepo
+    public function getRepository()
     {
         foreach ($this->getPathArray() as $strId) {
             $objObj = Objectfactory::getInstance()->getObject($strId);

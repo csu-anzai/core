@@ -31,7 +31,7 @@ class MediamanagerFileFormgenerator extends AdminFormgenerator {
 
         /** @var MediamanagerFile $objFile */
         $objFile = $this->getObjSourceobject();
-        if ($objFile->getRepository()->getIntSearchIndex() == 1) {
+        if ($objFile->getRepository() != null && $objFile->getRepository()->getIntSearchIndex() == 1) {
             $this->addField(new FormentryTextarea("mediamanager", "strSearchContent"))
                 ->setStrValue($objFile->getStrSearchContent())
                 ->setBitReadonly(true)
