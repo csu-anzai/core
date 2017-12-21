@@ -193,6 +193,7 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
     /**
      * Returns all transitions which are assigned to a specific status
      *
+     * @param int $intIndex
      * @return FlowTransition[]
      */
     public function getTransitionsByIndex($intIndex)
@@ -203,6 +204,25 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
         } else {
             return [];
         }
+    }
+
+    /**
+     * Returns whether a specific status has the provided transition
+     *
+     * @param int $intIndex
+     * @param FlowTransition $objTransition
+     * @return bool
+     */
+    public function hasTransition($intIndex, FlowTransition $objTransition)
+    {
+        $arrTransitions = $this->getTransitionsByIndex($intIndex);
+        foreach ($arrTransitions as $objTran) {
+            if ($objTran->getSystemid() == $objTransition->getSystemid()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
