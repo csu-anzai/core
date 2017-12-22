@@ -192,7 +192,7 @@ Finally, a commented example making use of all annotations:
 	
 	}
 
-##ORM Objectlist
+## ORM Objectlist
 To fetch a list of objects from the database, the OR object-list class is the way to go.
 Basically, fetching a list of objects (e.g. of type BasicObject) is as easy as the following:
 
@@ -266,7 +266,8 @@ So, just for the sake of completeness, this are the lines triggered internally:
 	$objORM->initObjectFromDb();
 	
 This results in a fully initialized object. The queries to load all relevant data are generated internally (or they are even skipped if the data is already in the internal cache).	
-##ORM Object Update
+
+## ORM Object Update
 
 When it comes to writing an objects’ property-values back to the database, the object-update mapper will step in. Basically, the mapper works internally and there’s no need to call it directly.
 In common scenarios, you will call updateObjectToDb() on the source-object itself:
@@ -403,7 +404,7 @@ On MySQL, this results in a table based on the following DDL:
 	KEY `custnr` (`custnr`)
 	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 	
-If @targetTableTxSafe would be missing, the default (InnoDB) would be set as the table engine:
+If `@targetTableTxSafe` would be missing, the default (InnoDB) would be set as the table engine:
 
 	CREATE TABLE IF NOT EXISTS `kajona_object` (
 	`object_id` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
