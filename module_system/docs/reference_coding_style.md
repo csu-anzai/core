@@ -32,7 +32,7 @@ The class `NewsAdminController` has the `News` prefix since `AdminController` is
 module has an `AdminController`. The class `LockManager` has no prefix because it is very unlikely that we have many 
 lock managers.
 
-Every class must have also a php block containing at least the `@author` annotation. The doc block must 
+Every class must have also a php block containing at least the `@author` and `@since` annotation. The doc block must 
 have also a general description of the class. In the following an example class doc block:
 
 ```
@@ -40,6 +40,7 @@ have also a general description of the class. In the following an example class 
  * My class description
  *
  * @author foo.bar@kajona.de
+ * @since 7.0
  */
 ```
 
@@ -51,6 +52,12 @@ boolean value it is recommended to use the is/has prefix to indicate the respons
 In case a class implements an interface it is possible to use the `@inheritdoc` annotation to indicate that the 
 description of the interface is also valid for this method. If the method has a special behaviour you should avoid the 
 `@inheritdoc` annotation and describe this behaviour in a separate php doc block.
+
+#### Controller
+
+In general the controller contains methods which are accessible through an url. These methods must be prefixed with 
+`action*` i.e. `actionList`. All actions which return a specific data format i.e. JSON or XML should have also the 
+prefix `api` i.e. `actionApiList` to indicate that the action is used as API.
 
 ### Constants
 
@@ -129,6 +136,41 @@ In case you return directly an object you have to use the `@alias` annotation:
     });
 
 
+# Commit messages
+
+General commit message format, based on the [AngularJS] commit message guide:
+
+```
+<type>(<module>): <subject>
+```
+
+**type:**
+
+* feat: new feature
+* fix: bug fix
+* docs: changes to documentation / update PHP docs
+* lang: update lang properties
+* style: adjust code according to our coding style
+* refactor: refactoring production code
+* test: adding missing tests, refactoring tests; no production code change
+* chore: updating grunt tasks etc; no production code change
+
+**module:**
+
+Name of the module without the `module_` prefix. You can use * if there isn't a more fitting scope.
+
+**subject:**
+
+This is a short description of the change.
+
+## Examples
+
+```
+feat(system): Added new features
+docs(prozessverwaltung): Improved calculateNextMepCall php doc
+```
+
+[AngularJS]: https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit
 [PSR-2]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md
 [JSDoc]: http://usejsdoc.org/
 

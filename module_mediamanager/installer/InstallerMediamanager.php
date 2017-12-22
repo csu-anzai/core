@@ -8,6 +8,9 @@
 
 namespace Kajona\Mediamanager\Installer;
 
+use Kajona\Mediamanager\System\MediamanagerFile;
+use Kajona\Mediamanager\System\MediamanagerRepo;
+use Kajona\System\System\DbDatatypes;
 use Kajona\System\System\InstallerBase;
 use Kajona\System\System\InstallerInterface;
 use Kajona\System\System\OrmSchemamanager;
@@ -32,10 +35,10 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
         $objManager = new OrmSchemamanager();
 
         $strReturn .= "Installing table mediamanager_repo...\n";
-        $objManager->createTable("Kajona\\Mediamanager\\System\\MediamanagerRepo");
+        $objManager->createTable(MediamanagerRepo::class);
 
         $strReturn .= "Installing table mediamanager_file...\n";
-        $objManager->createTable("Kajona\\Mediamanager\\System\\MediamanagerFile");
+        $objManager->createTable(MediamanagerFile::class);
 
 
         $strReturn .= "Installing table mediamanager_dllog...\n";
@@ -85,42 +88,24 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
         $strReturn = "";
         //check installed version and to which version we can update
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-
         $strReturn .= "Version found:\n\t Module: ".$arrModule["module_name"].", Version: ".$arrModule["module_version"]."\n\n";
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "4.6") {
-            $strReturn = "Updating to 4.7...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "4.7");
-            $this->updateModuleVersion("folderview", "4.7");
+        if ($arrModule["module_version"] == "6.2") {
+            $strReturn = "Updating to 6.5...\n";
+            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5");
+            $this->updateModuleVersion("folderview", "6.5");
         }
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "4.7") {
-            $strReturn = "Updating to 4.7.1...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "4.7.1");
-            $this->updateModuleVersion("folderview", "4.7.1");
-        }
+        if ($arrModule["module_version"] == "6.5") {
+            $strReturn = "Updating to 6.5.1...\n";
 
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "4.7.1" || $arrModule["module_version"] == "4.7.2") {
-            $strReturn = "Updating to 5.0...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "5.0");
-            $this->updateModuleVersion("folderview", "5.0");
-        }
+            $this->objDB->addColumn("mediamanager_file", "file_search_content", DbDatatypes::STR_TYPE_TEXT);
+            $this->objDB->addColumn("mediamanager_repo", "repo_search_index", DbDatatypes::STR_TYPE_INT);
 
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "5.0") {
-            $strReturn = "Updating to 5.1...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "5.1");
-            $this->updateModuleVersion("folderview", "5.1");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "5.1") {
-            $strReturn = "Updating to 6.2...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2");
-            $this->updateModuleVersion("folderview", "6.2");
+            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.1");
+            $this->updateModuleVersion("folderview", "6.5.1");
         }
 
         return $strReturn."\n\n";

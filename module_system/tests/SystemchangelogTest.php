@@ -3,8 +3,15 @@
 namespace Kajona\System\Tests;
 
 use Kajona\System\System\Carrier;
+use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\Date;
+use Kajona\System\System\GenericeventListenerInterface;
+use Kajona\System\System\Rights;
 use Kajona\System\System\SystemChangelog;
+use Kajona\System\System\SystemEventidentifier;
+use Kajona\System\System\SystemSetting;
+use Kajona\System\System\UserGroup;
+use Kajona\System\System\VersionableDefaultImplTrait;
 use Kajona\System\System\VersionableInterface;
 
 /**
@@ -26,6 +33,61 @@ class SystemchangelogTest extends Testbase
     {
         parent::tearDown();
         SystemChangelog::$bitChangelogEnabled = null;
+    }
+
+
+    public function testChangelogOnRightsChange()
+    {
+        $objRecord = new SystemSetting();
+        $objRecord->setStrValue("start");
+        $objRecord->setStrName(generateSystemid());
+        $objRecord->setIntModule(_system_modul_id_);
+        $objRecord->updateObjectToDb();
+
+        $objCL = new SystemChangelog();
+        $objCL->processCachedInserts();
+
+        $arrChangesInDb = SystemChangelog::getLogEntries($objRecord->getSystemid());
+        $intChangesInDbCount = SystemChangelog::getLogEntriesCount($objRecord->getSystemid());
+        $this->assertTrue(count($arrChangesInDb) > 0);
+        $this->assertTrue($intChangesInDbCount > 0);
+
+
+        CoreEventdispatcher::getInstance()->addListener(SystemEventidentifier::EVENT_SYSTEM_RECORDUPDATED, (new class($objRecord) implements GenericeventListenerInterface {
+
+            /**
+             * @var SystemSetting
+             */
+            private $objRecord = null;
+
+            public function __construct($objRecord)
+            {
+                $this->objRecord = $objRecord;
+            }
+
+            public function handleEvent($strEventIdentifier, array $arrArguments)
+            {
+                list($objObject, $bitRecordCreated) = $arrArguments;
+                if ($objObject->getSystemid() == $this->objRecord->getSystemid()) {
+                    Carrier::getInstance()->getObjRights()->addGroupToRight(UserGroup::getObjectListFiltered()[0]->getSystemid(), $objObject->getSystemid(), Rights::$STR_RIGHT_EDIT);
+                }
+            }
+
+        }));
+
+        $objRecord->setStrValue("start 2");
+        $objRecord->updateObjectToDb();
+
+        $objCL = new SystemChangelog();
+        $objCL->processCachedInserts();
+
+        $arrChangesInDbAfter = SystemChangelog::getLogEntries($objRecord->getSystemid());
+        $intChangesInDbCountAfter = SystemChangelog::getLogEntriesCount($objRecord->getSystemid());
+
+        $this->assertTrue($intChangesInDbCountAfter - $intChangesInDbCount > 1);
+
+
+        $objRecord->deleteObjectFromDatabase();
     }
 
 
@@ -63,6 +125,34 @@ class SystemchangelogTest extends Testbase
             }
         }
     }
+
+    public function testArrayHandling()
+    {
+        $objChangelog = new SystemChangelog();
+
+        $objOne = new DummyObject2(generateSystemid());
+        $objChangelog->readOldValues($objOne);
+
+        $arrChanges = array();
+        $this->assertTrue(!$objChangelog->isObjectChanged($objOne, $arrChanges));
+        $this->assertTrue(count($arrChanges) == 0);
+
+        $objOne->setArrValues(array("a", "c", "d"));
+        $arrChanges = array();
+        $this->assertTrue($objChangelog->isObjectChanged($objOne, $arrChanges));
+        $this->assertTrue(count($arrChanges) == 1);
+        $this->assertEquals($arrChanges[0]["property"], "arrValues");
+        $this->assertEquals($arrChanges[0]["oldvalue"], "b,c,d");
+        $this->assertEquals($arrChanges[0]["newvalue"], "a,c,d");
+
+        $objChangelog->readOldValues($objOne);
+        $objOne->setArrValues(array("a", "d", "c"));
+        $arrChanges = array();
+        $this->assertTrue(!$objChangelog->isObjectChanged($objOne, $arrChanges));
+        $this->assertTrue(count($arrChanges) == 0);
+
+    }
+
 
     public function testChangelog()
     {
@@ -259,37 +349,13 @@ class SystemchangelogTest extends Testbase
 
     }
 
-    public function testArrayHandling()
-    {
-        $objChangelog = new SystemChangelog();
 
-        $objOne = new DummyObject2(generateSystemid());
-        $objChangelog->readOldValues($objOne);
-
-        $arrChanges = array();
-        $this->assertTrue(!$objChangelog->isObjectChanged($objOne, $arrChanges));
-        $this->assertTrue(count($arrChanges) == 0);
-
-        $objOne->setArrValues(array("a", "c", "d"));
-        $arrChanges = array();
-        $this->assertTrue($objChangelog->isObjectChanged($objOne, $arrChanges));
-        $this->assertTrue(count($arrChanges) == 1);
-        $this->assertEquals($arrChanges[0]["property"], "arrValues");
-        $this->assertEquals($arrChanges[0]["oldvalue"], "b,c,d");
-        $this->assertEquals($arrChanges[0]["newvalue"], "a,c,d");
-
-        $objChangelog->readOldValues($objOne);
-        $objOne->setArrValues(array("a", "d", "c"));
-        $arrChanges = array();
-        $this->assertTrue(!$objChangelog->isObjectChanged($objOne, $arrChanges));
-        $this->assertTrue(count($arrChanges) == 0);
-
-    }
 }
 
 
 class DummyObject implements VersionableInterface
 {
+    use VersionableDefaultImplTrait;
 
     /**
      * @var
@@ -325,30 +391,11 @@ class DummyObject implements VersionableInterface
         $this->strSystemid = $strSystemid;
     }
 
-    public function renderVersionValue($strProperty, $strValue)
-    {
-        return $strValue;
-    }
-
-    public function getVersionActionName($strAction)
-    {
-        return "dummy";
-    }
-
     public function getArrModule($strKey)
     {
         return "dummy";
     }
 
-    public function getVersionPropertyName($strProperty)
-    {
-        return $strProperty;
-    }
-
-    public function getVersionRecordName()
-    {
-        return "dummy";
-    }
 
     public function setStrSecondTest($strSecondTest)
     {
@@ -375,6 +422,8 @@ class DummyObject implements VersionableInterface
 
 class DummyObject2 implements VersionableInterface
 {
+
+    use VersionableDefaultImplTrait;
 
     /**
      * @var
@@ -404,27 +453,7 @@ class DummyObject2 implements VersionableInterface
         $this->strSystemid = $strSystemid;
     }
 
-    public function renderVersionValue($strProperty, $strValue)
-    {
-        return $strValue;
-    }
-
-    public function getVersionActionName($strAction)
-    {
-        return "dummy";
-    }
-
     public function getArrModule($strKey)
-    {
-        return "dummy";
-    }
-
-    public function getVersionPropertyName($strProperty)
-    {
-        return $strProperty;
-    }
-
-    public function getVersionRecordName()
     {
         return "dummy";
     }

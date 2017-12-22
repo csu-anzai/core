@@ -72,6 +72,14 @@ class WorkflowsHandler extends \Kajona\System\System\Model implements \Kajona\Sy
      */
     private $strConfigVal3 = "";
 
+    /**
+     * @inheritDoc
+     */
+    public function rightEdit()
+    {
+        return parent::rightEdit() && parent::rightRight1();
+    }
+
 
     /**
      * Returns the icon the be used in lists.

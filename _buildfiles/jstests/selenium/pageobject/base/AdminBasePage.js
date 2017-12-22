@@ -1,7 +1,5 @@
 "use strict";
 
-let defaultPageObjectPath = browser.params.defaultPageObjectPath;
-
 /**
  * require statements
  */

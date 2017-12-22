@@ -313,6 +313,23 @@ Multiselect
     <option value="%%key%%" selected="selected">%%value%%</option>
 </input_multiselect_row_selected>
 
+Date interval
+<input_date_interval>
+    <div class="form-group">
+        <label for="%%name%%_unit" class="col-sm-3 control-label">%%title%%</label>
+        <div class="col-sm-6">
+            <div class="row">
+                <div class="col-md-8">
+                    <input type="number" name="%%name%%" id="%%name%%" value="%%value%%" class="form-control %%class%%" %%disabled%%>
+                </div>
+                <div class="col-md-4">
+                    <select name="%%name%%_unit" id="%%name%%_unit" class="form-control %%class%%" %%disabled%% %%addons%%>%%units%%</select>
+                </div>
+            </div>
+        </div>
+    </div>
+</input_date_interval>
+
 Toggle Button-Bar
 <input_toggle_buttonbar>
     <div class="form-group">
@@ -418,12 +435,38 @@ Regular Text-Field
     </div>
 </input_text>
 
+Color Picker
+<input_colorpicker>
+    <div class="form-group colorpicker-component">
+        <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
+        <div class="col-sm-6">
+            <div class="input-group colorpicker-component" id="c_%%name%%">
+                <div class="input-group-addon"><i></i></div>
+                <input id="%%name%%" name="%%name%%" class="form-control" type="text" value="%%value%%" %%readonly%% data-kajona-instantsave="%%instantEditor%%">
+            </div>
+        </div>
+        <script type="text/javascript">
+        require(["bootstrap-colorpicker"], function(colorpicker) {
+            $('#c_%%name%%').colorpicker({component: '*'});
+
+//            if($('#%%name%%').is(':focus')) {
+//                $('#%%name%%').blur();
+//                $('#%%name%%').focus();
+//            }
+        });
+        </script>
+    </div>
+</input_colorpicker>
+
 Textarea
 <input_textarea>
     <div class="form-group">
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
         <div class="col-sm-6 %%class%%">
             <textarea name="%%name%%" id="%%name%%" class="form-control" rows="%%numberOfRows%%" %%readonly%%>%%value%%</textarea>
+        </div>
+        <div class="col-sm-2 form-opener">
+            %%opener%%
         </div>
     </div>
 </input_textarea>
@@ -468,7 +511,7 @@ Upload-Field for multiple files with progress bar
 <input_upload_multiple>
 
     <div id="%%name%%" class="fileupload-wrapper">
-            <div class="fileupload-buttonbar">
+            <div class="fileupload-buttonbar drop-zone">
 
                 <span class="btn btn-default fileinput-button">
                     <i class="fa fa-plus-square"></i>
@@ -487,7 +530,7 @@ Upload-Field for multiple files with progress bar
                 </button>
 
                 <span class="fileupload-process"></span>
-                <div class="alert alert-info" id="drop-%%uploadId%%">
+                <div class="alert alert-info">
                     [lang,upload_dropArea,mediamanager]<br />
                      %%allowedExtensions%%
                 </div>
@@ -502,63 +545,59 @@ Upload-Field for multiple files with progress bar
                 <div class="progress-extended">&nbsp;</div>
             </div>
 
-        <table class="table admintable table-striped-tbody files" id="files-%%uploadId%%"></table>
+        <table class="table admintable table-striped-tbody files"></table>
+
+        <div class="hidden fileupload-list-template">
+            <table>
+                <tbody class="template-upload fade">
+                <tr>
+                    <td><span class="preview"></span></td>
+                    <td><p class="name"></p>
+                    <div class="error"></div>
+                    </td>
+                    <td><p class="size"></p>
+                        <div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>
+                    </td>
+                <td>
+                    <button class="btn start " disabled style="display: none;">Start</button>
+                    <button class="btn cancel ">[lang,upload_multiple_cancel,mediamanager]</button>
+                </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
 <script type="text/javascript">
-    require(['tmpl'], function() {
-        require(['jquery', 'jquery.iframe-transport', 'jquery.fileupload', 'jquery.fileupload-process', 'jquery.fileupload-ui'], function($) {
-            var filesToUpload = 0;
-            $('#%%name%%').fileupload({
-                url: '_webpath_/xml.php?admin=1&module=mediamanager&action=fileUpload',
-                dataType: 'json',
-                dropZone: $('#%%name%%'),
-                pasteZone: $(document),
-                autoUpload: false,
-                paramName : '%%name%%',
-                filesContainer: $('#files-%%uploadId%%'),
-                formData: [
-                    {name: 'systemid', value: '%%mediamanagerRepoId%%'},
-                    {name: 'inputElement', value : '%%name%%'},
-                    {name: 'jsonResponse', value : 'true'}
-                ],
-                messages: {
-                    maxNumberOfFiles: 'Maximum number of files exceeded',
-                    acceptFileTypes: "[lang,upload_fehler_filter,mediamanager]",
-                    maxFileSize: "[lang,upload_multiple_errorFilesize,mediamanager]",
-                    minFileSize: 'File is too small'
-                },
-                maxFileSize: %%maxFileSize%%,
-                acceptFileTypes: %%acceptFileTypes%%,
-                uploadTemplateId: null,
-                downloadTemplateId: null,
-                uploadTemplate: function (o) {
-                    var rows = $();
-                    $.each(o.files, function (index, file) {
-                        var row = $('<tbody class="template-upload fade"><tr>' +
-                                    '<td><span class="preview"></span></td>' +
-                                    '<td><p class="name"></p>' +
-                                    '<div class="error"></div>' +
-                                    '</td>' +
-                                    '<td><p class="size"></p>' +
-                                    '<div class="progress"><div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>' +
-                                    '</td>' +
-                                    '<td>' +
-                                    (!index && !o.options.autoUpload ?
-                                            '<button class="btn start " disabled style="display: none;">Start</button>' : '') +
-                                    (!index ? '<button class="btn cancel ">[lang,upload_multiple_cancel,mediamanager]</button>' : '') +
-                                    '</td>' +
-                                    '</tr></tbody>');
-                        row.find('.name').text(file.name);
-                        row.find('.size').text(o.formatFileSize(file.size));
-                        if (file.error) {
-                            row.find('.error').text(file.error);
-                        }
-                        rows = rows.add(row);
-                    });
-                    return rows;
-                }
-            })
+    require(["fileupload", "ajax"], function(fileupload, ajax) {
+        var filesToUpload = 0;
+
+
+        var uploader = fileupload.initUploader({
+            baseElement: $('#%%name%%'),
+            paramName: '%%name%%',
+            formData: [
+                {name: 'systemid', value: '%%mediamanagerRepoId%%'},
+                {name: 'inputElement', value : '%%name%%'}
+            ],
+            maxFileSize: %%maxFileSize%%,
+            acceptFileTypes: %%acceptFileTypes%%,
+            uploadTemplate: function (o) {
+                var rows = $();
+                $.each(o.files, function (index, file) {
+                    var row = $('#%%name%% .fileupload-list-template .template-upload').clone();
+                    row.find('.name').text(file.name);
+                    row.find('.size').text(o.formatFileSize(file.size));
+                    if (file.error) {
+                        row.find('.error').text(file.error);
+                    }
+                    rows = rows.add(row);
+                });
+                return rows;
+            }
+        });
+
+        uploader.getUploader()
             .bind('fileuploadadded', function (e, data) {
                 $(this).find('.fileupload-buttonbar button.start').css('display', '');
                 $(this).find('.fileupload-buttonbar button.cancel').css('display', '');
@@ -584,47 +623,136 @@ Upload-Field for multiple files with progress bar
                     $(this).find('.fileupload-progress').css('display', 'none');
                 }
             });
-        });
 
-        $(document).bind('dragover', function (e) {
-            var dropZone = $('#%%name%%'),
-                timeout = window.dropZoneTimeout;
-            if (!timeout) {
-                dropZone.addClass('in');
-
-            } else {
-                clearTimeout(timeout);
-            }
-            var found = false,
-                node = e.target;
-            do {
-                if (node === dropZone[0]) {
-                    found = true;
-                    break;
-                }
-                node = node.parentNode;
-            } while (node != null);
-            if (found) {
-                dropZone.addClass('hover');
-                $('#drop-%%uploadId%%').removeClass('alert-info').addClass('alert-success');
-            } else {
-                dropZone.removeClass('hover');
-                $('#drop-%%uploadId%%').addClass('alert-info').removeClass('alert-success');
-            }
-            window.dropZoneTimeout = setTimeout(function () {
-                window.dropZoneTimeout = null;
-                dropZone.removeClass('in hover');
-                $('#drop-%%uploadId%%').addClass('alert-info').removeClass('alert-success');
-            }, 100);
-        });
     });
+
+
 </script>
-
-
-    </style>
-
-
 </input_upload_multiple>
+
+
+
+
+Upload-Field for multiple files with progress bar
+<input_upload_inline>
+    <div id="%%name%%_upl" class="form-group fileupload-wrapper">
+        <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
+        <div  class="col-sm-6 inputText ">
+
+            <table class="table admintable table-striped-tbody files form-control drop-zone" id="%%name%%">
+
+            </table>
+
+            <div class="hidden fileupload-list-template">
+                <table>
+                <tbody class="template-upload fade" data-uploadid="">
+                    <tr class="progress-row">
+                        <td colspan="4">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="file-details">
+                        <td><span class="preview"></span></td>
+                        <td>
+                            <span class="name"></span><div class="error"></div>
+                        </td>
+                        <td>
+                            <span class="size"></span>
+                        </td>
+                        <td class="actions">
+                            <span class="dl-link hidden"><a href=""><i class="kj-icon fa fa-download"></i></a></span>
+                            <span class="del-button hidden"></span>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+
+            <div class="archive-list "></div>
+        </div>
+        <div class="col-sm-2 form-opener">
+            <span class="listButton">
+                <span class=" fileinput-button">
+                    <input type="file" name="%%name%%" multiple>
+                    %%addButton%%
+                </span>
+            </span>
+            %%helpButton%%
+            %%moveButton%%
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        require(["fileupload", "ajax"], function(fileupload, ajax) {
+            /**
+             *
+             * @type {UploadManager}
+             */
+            var uploader = fileupload.initUploader({
+                baseElement: $('#%%name%%_upl'),
+                autoUpload: true,
+                readOnly: %%readOnly%%,
+                paramName: '%%name%%_upl',
+                formData: [
+                    {name: 'systemid', value: '%%mediamanagerRepoId%%'},
+                    {name: 'inputElement', value : '%%name%%_upl'},
+                    {name: 'folder', value : '%%folder%%'}
+                ],
+                maxFileSize: %%maxFileSize%%,
+                acceptFileTypes: %%acceptFileTypes%%,
+                downloadTemplate: function (o) {
+                    var rows = $();
+                    $.each(o.files, function (index, file) {
+                        var row = $('#%%name%%_upl .fileupload-list-template .template-upload').clone();
+                        row.find('.name').text(file.name);
+                        row.find('.size').text(o.formatFileSize(file.size));
+                        if (file.error) {
+                            row.find('.error').text(file.error);
+                        }
+                        if (file.url) {
+                            row.find(".dl-link a").attr('href', file.url);
+                            row.find(".dl-link").removeClass('hidden');
+                        }
+                        if (file.deleteButton && !%%readOnly%%) {
+                            row.find('.del-button').html(file.deleteButton).removeClass('hidden');
+                        }
+                        row.attr('data-uploadid', file.systemid);
+                        rows = rows.add(row);
+                    });
+                    return rows;
+                },
+                uploadTemplate: function (o) {
+                    var rows = $();
+                    $.each(o.files, function (index, file) {
+                        var row = $('#%%name%%_upl .fileupload-list-template .template-upload').clone();
+                        row.find('.name').text(file.name);
+                        row.find('.size').text(o.formatFileSize(file.size));
+                        if (file.error) {
+                            row.find('.error').text(file.error);
+                        }
+                        rows = rows.add(row);
+                    });
+                    return rows;
+                }
+            });
+
+            //load files from the backend
+            ajax.genericAjaxCall("mediamanager", "fileUploadList", "&systemid=%%mediamanagerRepoId%%&folder=%%folder%%", function(data) {
+                uploader.getUploader().fileupload('option', 'done').call(uploader.getUploader(), $.Event('done'), {result: data});
+            }, null, null, "post", "json");
+
+            if ($('#version_%%name%%')) {
+                $('#version_%%name%%').on('click', function() {   uploader.fileVersioning() });
+            }
+
+            uploader.renderArchiveList();
+        });
+
+
+    </script>
+</input_upload_inline>
 
 Regular Submit-Button
 <input_submit>
@@ -763,7 +891,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
 <input_objectlist_row>
     <tr>
         <td class="listimage">%%icon%%</td>
-        <td><div class="smaller">%%path%%</div> %%displayName%% <input type="hidden" name="%%name%%[]" value="%%value%%" /></td>
+        <td class="title"><div class="smaller">%%path%%</div> %%displayName%% <input type="hidden" name="%%name%%[]" value="%%value%%" /></td>
         <td class="icon-cell">%%removeLink%%</td>
     </tr>
 </input_objectlist_row>
@@ -860,7 +988,7 @@ have a surrounding div with class "ac_container" and a div with id "%%name%%_con
 </div>
 </input_userselector>
 
-A list of checkbox or radio input elements
+A list of checkbox input elements
 <input_checkboxarray>
     <div class="form-group form-list">
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
@@ -898,6 +1026,27 @@ $("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
         <label><input type="%%type%%" name="%%name%%" value="%%value%%" %%checked%% %%readonly%% /> %%title%%</label>
     </div>
 </input_checkboxarray_checkbox>
+
+
+A list of radio input elements
+<input_radioarray>
+    <div class="form-group form-list">
+        <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
+
+        <div class="col-sm-6 inputText">
+            <div id="%%name%%" class="inputContainer %%class%%">
+                %%elements%%
+            </div>
+        </div>
+    </div>
+</input_radioarray>
+
+<input_radioarray_radio>
+    <div class="%%type%%%%inline%%">
+        <label><input type="%%type%%" name="%%name%%" value="%%value%%" %%checked%% %%readonly%% /> %%title%%</label>
+    </div>
+</input_radioarray_radio>
+
 
 A list of checkbox for object elements
 <input_checkboxarrayobjectlist>
@@ -1056,14 +1205,22 @@ Part to display the login status, user is logged in
     <ul class="dropdown-menu generalContextMenu" role="menu">
         <li class="dropdown-submenu">
             <a tabindex="-1" href="#"><i class='fa fa-envelope'></i> [lang,modul_titel,messaging]</a>
-            <ul class="dropdown-menu sub-menu" id="messagingShortlist"></ul>
+            <ul class="dropdown-menu sub-menu" id="messagingShortlist">
+                <li><a>Loading...</a></li>
+                <li class="divider"></li>
+                <li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1&module=messaging'><i class='fa fa-envelope'></i> [lang,action_show_all,messaging]</a></li>
+            </ul>
         </li>
 
         <!-- messages will be inserted here -->
         <li class="divider"></li>
         <li class="dropdown-submenu">
             <a tabindex="-1" href="#"><i class='fa fa-tag'></i> [lang,modul_titel,tags]</a>
-            <ul class="dropdown-menu sub-menu" id="tagsSubemenu"></ul>
+            <ul class="dropdown-menu sub-menu" id="tagsSubemenu">
+                <li><a>Loading...</a></li>
+                <li class="divider"></li>
+                <li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1&module=tags'><i class='fa fa-tag'></i> [lang,action_show_all,tags]</a></li>
+            </ul>
         </li>
         <li class="divider"></li>
         <li><a href="%%dashboard%%"><i class='fa fa-home'></i> %%dashboardTitle%%</a></li>
@@ -1076,7 +1233,7 @@ Part to display the login status, user is logged in
     </ul>
 </div>
 <script type="text/javascript">
-    require(['jquery', 'v4skin'], function($, v4skin){
+    require(['jquery', 'v4skin', 'messaging'], function($, v4skin, messaging){
         if(%%renderMessages%%) {
             $(function() {
                 v4skin.messaging.properties = {
@@ -1084,7 +1241,14 @@ Part to display the login status, user is logged in
                     notification_body : '[lang,messaging_notification_body,messaging]',
                     show_all : '[lang,action_show_all,messaging]'
                 };
-                v4skin.messaging.pollMessages()
+
+                $('#messagingShortlist').parent().on('mouseover', function(e) {
+                    v4skin.messaging.pollMessages();
+                    $('#messagingShortlist').parent().unbind('mouseover');
+
+                });
+
+                window.setTimeout(function() { messaging.setPollingEnabled(true); }, 1000);
             });
         }
         else {
@@ -1094,7 +1258,11 @@ Part to display the login status, user is logged in
         if(%%renderTags%%) {
             $(function() {
                 v4skin.properties.tags.show_all = '[lang,action_show_all,tags]';
-                v4skin.initTagMenu();
+
+                $('#tagsSubemenu').parent().on('mouseover', function(e) {
+                    v4skin.initTagMenu();
+                    $('#tagsSubemenu').parent().unbind('mouseover');
+                });
             });
         }
         else {
@@ -1589,6 +1757,12 @@ It containes a list of aspects and provides the possibility to switch the differ
 <tooltip_text>
     <span title="%%tooltip%%" rel="tooltip">%%text%%</span>
 </tooltip_text>
+
+<popover_text>
+    <span href="#" title="%%title%%" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="%%trigger%%" id="%%id%%">%%link%%</span>
+    <div id="pc_%%id%%" class="hidden">%%content%%</div>
+    <script type="text/javascript">require(['jquery', 'bootstrap'], function($)  { $('#%%id%%').popover({ content: $('#pc_%%id%%').html()}); });</script>
+</popover_text>
 
 
 ---------------------------------------------------------------------------------------------------------

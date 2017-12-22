@@ -21,7 +21,7 @@ define('util', ['jquery'], function ($) {
         if (window.opener) {
             return $('#' + strElementId, window.opener.document);
         } else if (parent){
-            return $('#' + strElementId, parent.document);
+            return parent.$('#' + strElementId);
         }
         else {
             return $('#' + strElementId);
@@ -286,6 +286,22 @@ define('util', ['jquery'], function ($) {
             window.location.replace(url + '?language=' + strLanguageToLoad);
         } else {
             window.location.replace(url + '&language=' + strLanguageToLoad);
+        }
+    };
+
+
+    /**
+     * Gets the jQuery object
+     *
+     * @param objElement - my be a jquery object or an id selector
+     */
+    util.getElement = function (objElement) {
+        // If objElement is already a jQuery object
+        if(objElement instanceof jQuery) {
+            return objElement
+        } else {
+            // Convert to jQuery object
+            return $(objElement);
         }
     };
 

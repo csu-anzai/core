@@ -51,6 +51,8 @@ $lang["_system_email_forcesender_"]      = "Default Absender erzwingen";
 $lang["_system_email_forcesender_hint"]  = "Manche E-Mail Gateways stellen nur E-Mails einer bestimmten Abender-Adresse zu. Der Versand aller Mails von der Default-Absender-Adresse kann hiermit erzwungen werden.";
 $lang["_system_email_defaultsender_"]    = "Standard E-Mail Absender";
 $lang["_system_email_defaultsender_hint"]    = "Sofern eine Mail keine Von-Adresse eingetragen hat wird die hier genannte Adresse verwendet.";
+$lang["_system_session_ipfixation_"]     = "Session an IP binden";
+$lang["_system_session_ipfixation_hint"] = "Normalerweise wird die Sesion an die IP des Clients gebunden. Bspw. beim Einsatz von Proxy Servern kann dies aber zu Problem (Logouts) führen.";
 $lang["about_part1"]                     = "<h2>Kajona V6 - Open Source Content Management System</h2>Kajona V 6.2<br /><br /><a href=\"http://www.kajona.de\" target=\"_blank\">www.kajona.de</a><br /><a href=\"mailto:info@kajona.de\" target=\"_blank\">info@kajona.de</a><br /><br />Für weitere Infomationen, Support oder bei Anregungen besuchen Sie einfach unsere Webseite.<br />Support erhalten Sie auch in unserem <a href=\"http://board.kajona.de/\" target=\"_blank\">Forum</a>.";
 $lang["about_part2_header"]              = "<h2>Entwicklungsleitung</h2>";
 $lang["about_part2a_header"]             = "<h2>Contributors / Entwickler</h2>";
@@ -122,6 +124,7 @@ $lang["form_aspect_name_hint"]           = "Der Name wird als interner Titel ver
 $lang["form_deletedrecordsfilter_systemid"] = "Systemid";
 $lang["form_deletedrecordsfilter_class"] = "Klasse";
 $lang["form_deletedrecordsfilter_comment"] = "Record Comment";
+$lang["form_default_group_name"]         = "Basisdaten";
 $lang["gd"]                              = "GD-Lib";
 $lang["geladeneerweiterungen"]           = "Geladene Erweiterungen";
 $lang["gifread"]                         = "GIF Read Support";
@@ -162,7 +165,7 @@ $lang["pageview_total"]                  = "Gesamt: ";
 $lang["php"]                             = "PHP";
 $lang["png"]                             = "PNG Support";
 $lang["postmaxsize"]                     = "Post Max Size";
-$lang["quickhelp_change"]                = "Mit Hilfe dieses Formulares können die Rechte eines Datensatzes angepasst werden.<br />Je nach dem, welchem Modul der Datensatz zugeordnet wurde, kann die Anzahl der möglichen zu konfigurierenden Rechte variieren.";
+$lang["quickhelp_change"]                = "Mit Hilfe dieses Formulares können die Rechte eines Datensatzes angepasst werden.";
 $lang["quickhelp_list"]                  = "Die Liste der Module gibt eine schnelle Übersicht über die aktuell im System installierten Module.<br />Zusätzlich werden die aktuell installierten Versionen der installierten Module genannt, ebenso das ursprüngliche Installationsdatum des Moduls.<br />Über die Rechte des Moduls kann der Modul-Rechte-Knoten bearbeitet werden, von welchem die Inhalte bei aktivierter Rechtevererbung ihre Einstellungen erben.<br />Durch Verschieben der Module in der Liste lässt sich die Reihenfolge in der Modulnavigation anpassen.";
 $lang["quickhelp_module_list"]           = "Die Liste der Module gibt eine schnelle Übersicht über die aktuell im System installierten Module.<br />Zusätzlich werden die aktuell installierten Versionen der installierten Module genannt, ebenso das ursprüngliche Installationsdatum des Moduls.<br />Über den Rechte-Button der Module können die jeweiligen Modul-Root-Rechte bearbeitet werden, welche an einzelne Datensätze des Moduls vererbt werden (solange die Rechteerbung des Datensatzes aktiviert ist).<br />Durch Verschieben der Module in der Liste lässt sich die Reihenfolge in der Modulnavigation anpassen.";
 $lang["quickhelp_system_info"]           = "Kajona versucht an dieser Stelle, ein paar Informationen über das System heraus zu finden, auf welchem sich die Installation befindet.";
@@ -317,3 +320,8 @@ $lang["cache_misses"]  = "Misses";
 $lang["cache_uptime"]  = "Uptime";
 $lang["cache_usage"]  = "Usage";
 $lang["cache_available"]  = "Available";
+
+
+$lang["workflow_messagequeue_title"]  = "Message-Queue Abarbeitung";
+$lang["workflow_queue_sender_val1"]  = "Stunden";
+$lang["workflow_queue_sender_val2"]  = "Minuten";

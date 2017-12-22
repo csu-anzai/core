@@ -7,13 +7,13 @@
 namespace Kajona\Mediamanager\System;
 
 use Kajona\Packagemanager\System\PackagemanagerMetadata;
-use Kajona\Pages\System\PagesPage;
 use Kajona\Search\System\SearchResult;
 use Kajona\System\System\AdminGridableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Filesystem;
-use Kajona\System\System\LanguagesLanguage;
 use Kajona\System\System\Link;
+use Kajona\System\System\Model;
+use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\OrmComparatorEnum;
 use Kajona\System\System\OrmCondition;
@@ -21,9 +21,7 @@ use Kajona\System\System\OrmObjectlist;
 use Kajona\System\System\OrmObjectlistOrderby;
 use Kajona\System\System\OrmPropertyCondition;
 use Kajona\System\System\Resourceloader;
-use Kajona\System\System\SearchPortalobjectInterface;
 use Kajona\System\System\StringUtil;
-use Kajona\System\System\SystemModule;
 use Kajona\System\System\Zip;
 
 
@@ -40,7 +38,7 @@ use Kajona\System\System\Zip;
  *
  * @formGenerator Kajona\Mediamanager\Admin\MediamanagerFileFormgenerator
  */
-class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\System\System\ModelInterface, AdminGridableInterface, SearchPortalobjectInterface
+class MediamanagerFile extends Model implements ModelInterface, AdminGridableInterface
 {
 
 
@@ -147,6 +145,14 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
     private $strScreen3 = "";
 
     /**
+     * @var string
+     * @tableColumn mediamanager_file.file_search_content
+     * @tableColumnDatatype text
+     * @blockEscaping
+     */
+    private $strSearchContent = "";
+
+    /**
      * Return an on-lick link for the passed object.
      * This link is used by the backend-search for the autocomplete-field
      *
@@ -157,91 +163,6 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
     {
         return Link::getLinkAdminHref("mediamanager", "edit", "&systemid=".$this->getSystemid()."&source=search");
     }
-
-    /**
-     * Return an on-lick link for the passed object.
-     * This link is rendered by the portal search result generator, so
-     * make sure the link is a valid portal page.
-     * If you want to suppress the entry from the result, return an empty string instead.
-     * If you want to add additional entries to the result set, clone the result and modify
-     * the new instance to your needs. Pack them in an array and they'll be merged
-     * into the result set afterwards.
-     * Make sure to return the passed result-object in this array, too.
-     *
-     * @param SearchResult $objResult
-     *
-     * @see getLinkPortalHref()
-     * @return mixed
-     */
-    public function updateSearchResult(SearchResult $objResult)
-    {
-        $objLanguages = new LanguagesLanguage();
-        $objORM = new OrmObjectlist();
-
-        $strQuery = "SELECT system_id
-                       FROM "._dbprefix_."element_downloads,
-                            "._dbprefix_."page_element,
-                            "._dbprefix_."system
-                      WHERE download_id = ?
-                        AND content_id = page_element_id
-                        AND content_id = system_id
-                        AND system_status = 1
-                        ".$objORM->getDeletedWhereRestriction()."
-                        AND page_element_ph_language = ? ";
-
-        $arrRows = $this->objDB->getPArray($strQuery, array($this->getRepositoryId(), $objResult->getObjSearch()->getStrPortalLangFilter()));
-
-        $strQuery = "SELECT system_id
-                       FROM "._dbprefix_."element_gallery,
-                            "._dbprefix_."page_element,
-                            "._dbprefix_."system
-                      WHERE gallery_id = ?
-                        AND content_id = page_element_id
-                        AND content_id = system_id
-                        AND system_status = 1
-                        ".$objORM->getDeletedWhereRestriction()."
-                        AND page_element_ph_language = ? ";
-
-        $arrRows = array_merge($arrRows, $this->objDB->getPArray($strQuery, array($this->getRepositoryId(), $objResult->getObjSearch()->getStrPortalLangFilter())));
-        $arrReturn = array();
-
-        foreach ($arrRows as $arrOneElement) {
-
-
-            $objCur = Objectfactory::getInstance()->getObject($arrOneElement["system_id"]);
-            while($objCur != null && !$objCur instanceof PagesPage && !$objCur instanceof SystemModule) {
-                $objCur = Objectfactory::getInstance()->getObject($objCur->getStrPrevId());
-            }
-
-            if ($objCur instanceof PagesPage && $objCur->getStrName() != 'master') {
-                $objCurResult = clone($objResult);
-                $objCurResult->setStrPagelink(Link::getLinkPortal($objCur->getStrName(), "", "_self", $this->getStrDisplayName(), "mediaFolder", "&highlight=".urlencode(html_entity_decode($objResult->getObjSearch()->getStrQuery(), ENT_QUOTES, "UTF-8")), $this->getPrevId(), "", "", $this->getStrDisplayName()));
-                $objCurResult->setStrPagename($objCur->getStrName());
-                $objCurResult->setStrAdditionalTitle($this->getStrName());
-                $objCurResult->setStrDescription($this->getStrDescription());
-                $arrReturn[] = $objCurResult;
-
-            }
-
-
-        }
-
-        return $arrReturn;
-    }
-
-    /**
-     * Since the portal may be split in different languages,
-     * return the content lang of the current record using the common
-     * abbreviation such as "de" or "en".
-     * If the content is not assigned to any language, return "" instead (e.g. a single image).
-     *
-     * @return mixed
-     */
-    public function getContentLang()
-    {
-        return "";
-    }
-
 
     /**
      * Returns the icon the be used in lists.
@@ -346,8 +267,7 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
             $objFilesystem = new Filesystem();
             if ($this->getIntType() == self::$INT_TYPE_FILE) {
                 $objFilesystem->fileDelete($this->getStrFilename());
-            }
-            else {
+            } else {
                 $objFilesystem->folderDelete($this->getStrFilename());
             }
         }
@@ -401,8 +321,7 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
             $this->setStrName($objMetadata->getStrTitle());
             $this->setStrDescription(nl2br($objMetadata->getStrDescription(). "<br />Version: ".$objMetadata->getStrVersion()));
             $this->setStrCat($objMetadata->getStrType());
-        }
-        else {
+        } else {
             $this->setBitIspackage(0);
         }
     }
@@ -514,8 +433,7 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
                 }
 
                 $strWhere = "( ".implode(" OR ", $arrWhere)." )";
-            }
-            else {
+            } else {
                 $arrParams[] = $strNameFilter."%";
                 $strWhere = "file_name LIKE ?";
             }
@@ -525,7 +443,6 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
         $objORM->addWhereRestriction(new OrmPropertyCondition("bitIspackage", OrmComparatorEnum::Equal(), 1));
         $objORM->addOrderBy(new OrmObjectlistOrderby("file_name ASC"));
         return $objORM->getObjectList(get_called_class(), "", $intStart, $intEnd);
-
     }
 
     /**
@@ -559,8 +476,7 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
                 }
 
                 $strWhere = "( ".implode(" OR ", $arrWhere)." )";
-            }
-            else {
+            } else {
                 $arrParams[] = $strNameFilter."%";
                 $strWhere = "file_name LIKE ?";
             }
@@ -604,7 +520,6 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
         $arrFiles = $objORM->getObjectList(get_called_class());
 
         foreach ($arrFiles as $objFile) {
-
             $objTemp = Objectfactory::getInstance()->getObject($objFile->getStrPrevId());
             while (validateSystemid($objTemp->getSystemid())) {
                 if ($objTemp->getSystemid() == $strRepoId) {
@@ -620,23 +535,19 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
 
 
     /**
-     * Searches the repository-id for the current file.
-     *
-     * @return string
+     * Returns the mediamanager repository for this mediamanager file
+     * @return MediamanagerRepo|null
      */
-    public function getRepositoryId()
+    public function getRepository()
     {
-
-        $strPrevid = $this->getPrevId();
-        $arrRow = $this->objDB->getPRow("SELECT COUNT(*) AS cnt FROM "._dbprefix_."mediamanager_repo WHERE repo_id = ?", array($strPrevid));
-        while ($arrRow["cnt"] == 0 && $strPrevid != "" && $strPrevid != "0") {
-            /** @var MediamanagerFile $objFile */
-            $objFile = Objectfactory::getInstance()->getObject($strPrevid);
-            $strPrevid = $objFile->getPrevId();
-            $arrRow = $this->objDB->getPRow("SELECT COUNT(*) AS cnt FROM "._dbprefix_."mediamanager_repo WHERE repo_id = ?", array($strPrevid));
+        foreach ($this->getPathArray() as $strId) {
+            $objObj = Objectfactory::getInstance()->getObject($strId);
+            if ($objObj instanceof MediamanagerRepo) {
+                return $objObj;
+            }
         }
 
-        return $strPrevid;
+        return null;
     }
 
 
@@ -905,6 +816,19 @@ class MediamanagerFile extends \Kajona\System\System\Model implements \Kajona\Sy
         return $this->strScreen3;
     }
 
+    /**
+     * @return string
+     */
+    public function getStrSearchContent()
+    {
+        return $this->strSearchContent;
+    }
 
+    /**
+     * @param string $strSearchContent
+     */
+    public function setStrSearchContent($strSearchContent)
+    {
+        $this->strSearchContent = $strSearchContent;
+    }
 }
-

@@ -118,6 +118,8 @@ class DatabasePreparedTest extends Testbase
 
         $this->assertTrue($objDB->createTable("temp_autotest_float", $arrFields, array("temp_id")), "testDataBase createTable");
 
+        $objDB->_pQuery("DELETE FROM " . _dbprefix_ . "temp_autotest_float WHERE 1 = 1", array());
+
         $objDB->multiInsert(
             "temp_autotest_float",
             array("temp_id", "temp_long", "temp_double"),
@@ -126,13 +128,13 @@ class DatabasePreparedTest extends Testbase
 
         $arrRow = $objDB->getPRow("SELECT * FROM " . _dbprefix_ . "temp_autotest_float WHERE temp_id = ?", array("id1"));
 
-        $this->assertEquals($arrRow["temp_long"], 123456);
-        $this->assertEquals($arrRow["temp_double"], 1.7);
+        $this->assertEquals(123456, $arrRow["temp_long"]);
+        $this->assertEquals(1.7, round($arrRow["temp_double"], 1));
 
         $arrRow = $objDB->getPRow("SELECT * FROM " . _dbprefix_ . "temp_autotest_float WHERE temp_id = ?", array("id2"));
 
-        $this->assertEquals($arrRow["temp_long"], 123456);
-        $this->assertEquals($arrRow["temp_double"], 1.7);
+        $this->assertEquals(123456, $arrRow["temp_long"]);
+        $this->assertEquals(1.7, round($arrRow["temp_double"], 1));
 
         $strQuery = "DROP TABLE " . _dbprefix_ . "temp_autotest_float";
         $this->assertTrue($objDB->_pQuery($strQuery, array()), "testDataBase dropTable");

@@ -22,7 +22,7 @@
     },
     {
         "name" : "Fontawesome",
-        "version" : "4.5.0",
+        "version" : "4.7.0",
         "source" : "http://fortawesome.github.io/Font-Awesome/",
         "license" : "OFL 1.1, MIT",
         "licenseurl" : "http://fortawesome.github.io/Font-Awesome/license/"
@@ -40,5 +40,12 @@
         "source" : "http://mkoryak.github.io/floatThead",
         "license" : "MIT",
         "licenseurl" : "http://opensource.org/licenses/MIT"
-    }
+    },
+    {
+        "name" : "bootstrap-colorpicker",
+        "version" : "2.5.1",
+        "source" : "https://github.com/farbelous/bootstrap-colorpicker",
+        "license" : "Apache License v2",
+        "licenseurl" : "http://www.apache.org/licenses/LICENSE-2.0"
+    },
 ]

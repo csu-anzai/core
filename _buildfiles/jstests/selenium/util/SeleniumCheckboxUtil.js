@@ -11,45 +11,41 @@ class SeleniumCheckboxUtil {
      *
      * @param {webdriver.WebElement} elementChkBox - The checkbox element
      *
-     * @returns {webdriver.promise.Promise<boolean>}
+     * @returns {boolean}
      */
-    static isChecked(elementChkBox) {
-        return elementChkBox.getAttribute("checked").then(function(value) {
-            return value == "true";
-        });
+    static async isChecked(elementChkBox) {
+        let strValue = await elementChkBox.getAttribute("checked");
+        return strValue == "true";
+
     }
 
     /**
      * Checks a checkbox
      *
      * @param elementChkBox
-     * @returns {Promise<void>|Promise<null>}
+     * @returns {void|null}
      */
-    static checkCheckbox(elementChkBox) {
-
-        return SeleniumCheckboxUtil.isChecked(elementChkBox).then(function(isChecked) {
-            if(isChecked) {
-                return null;
-            }
-            return elementChkBox.click();
-        });
-
-
+    static async checkCheckbox(elementChkBox) {
+        let isChecked = await SeleniumCheckboxUtil.isChecked(elementChkBox);
+        if(isChecked) {
+            return null;
+        }
+        return await elementChkBox.click();
     }
 
     /**
      * Unchecks a checkbox
      *
      * @param elementChkBox
-     * @returns {Promise<void>|Promise<null>}
+     * @returns {void|null}
      */
-    static uncheckCheckbox(elementChkBox) {
-        return SeleniumCheckboxUtil.isChecked(elementChkBox).then(function(isChecked) {
-            if(isChecked) {
-                return elementChkBox.click();
-            }
-            return null;
-        });
+    static async uncheckCheckbox(elementChkBox) {
+        let isChecked = await SeleniumCheckboxUtil.isChecked(elementChkBox);
+        if(isChecked) {
+            return await elementChkBox.click();
+        }
+
+        return null;
     }
 }
 

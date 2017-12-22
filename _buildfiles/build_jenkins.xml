@@ -118,6 +118,11 @@
 					    					buildProject, installProjectPostgres,
 					    					phpunitFast,jasmine" />
 
+    <target name="buildMssql" depends="
+		    								init,
+					    					buildProject, installProjectMssql,
+					    					phpunitFast,jasmine" />
+
     <target name="buildAllInOneZipOnly" depends="
                                             init,
                                             buildProject, buildAllInOneZip" />
@@ -454,6 +459,14 @@
         <echo>Creating full Kajona installation</echo>
         <exec executable="php" dir="${basedir}"  failonerror="on" >
             <arg line="-f buildProject.php ${projectPath} false config_postgres.php"/>
+        </exec>
+    </target>
+
+    <!-- mssql config file -->
+    <target name="installProjectMssql">
+        <echo>Creating full Kajona installation</echo>
+        <exec executable="php" dir="${basedir}"  failonerror="on" >
+            <arg line="-f buildProject.php ${projectPath} false config_mssql.php"/>
         </exec>
     </target>
 

@@ -10,9 +10,9 @@ const AdminLandingPage = requireHelper('/pageobject/AdminLandingPage.js');
 
 
 /** Constants */
-const USERNAME = by.id("name");
-const PASSWORD = by.id("passwort");
-const LOGINBUTTON = by.css("button");
+const USERNAME = By.id("name");
+const PASSWORD = By.id("passwort");
+const LOGINBUTTON = By.css("button");
 
 /**
  *
@@ -49,12 +49,11 @@ class LoginPage extends BasePage {
 
     /**
      *
-     * @returns {Promise<LoginPage>}
+     * @returns {LoginPage}
      */
-    static getPage() {
-        return SeleniumUtil.gotToUrl("index.php?admin=1").then(function () {
-            return new LoginPage();
-        });
+    static async getPage() {
+        await SeleniumUtil.gotToUrl("index.php?admin=1");
+        return new LoginPage();
     }
 
     /**
@@ -62,16 +61,15 @@ class LoginPage extends BasePage {
      * 
      * @param {string} strUserName
      * @param {string} strPassword
-     * @returns {Promise<AdminLandingPage>}
+     * @returns {AdminLandingPage}
      */
-    login(strUserName, strPassword) {
+    async login(strUserName, strPassword) {
 
-        this.element_userName.sendKeys(strUserName);
-        this.element_password.sendKeys(strPassword);
-        return this.element_loginBtn.click()
-            .then(function () {
-                return new AdminLandingPage();
-            });
+        await this.element_userName.sendKeys(strUserName);
+        await this.element_password.sendKeys(strPassword);
+        await this.element_loginBtn.click();
+
+        return new AdminLandingPage();
     };
 }
 

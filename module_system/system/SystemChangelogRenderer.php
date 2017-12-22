@@ -14,8 +14,8 @@ use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\Formentries\FormentryDate;
 use Kajona\System\Admin\Formentries\FormentryDatetime;
 use Kajona\System\Admin\Formentries\FormentryDropdown;
+use Kajona\System\Admin\Formentries\FormentryMonthYearDropdown;
 use Kajona\System\Admin\Formentries\FormentryObjectlist;
-use Kajona\System\Admin\Formentries\FormentryObjecttags;
 use Kajona\System\Admin\Formentries\FormentryYesno;
 
 /**
@@ -54,7 +54,7 @@ class SystemChangelogRenderer
      */
     private static $arrRenderer = array();
 
-    public function __construct(Reflection $objReflection)
+    private function __construct(Reflection $objReflection)
     {
         $this->objReflection = $objReflection;
         $this->objLang = Lang::getInstance();
@@ -69,19 +69,25 @@ class SystemChangelogRenderer
      * @param string $strProperty
      * @return string
      */
-    public function getVersionPropertyName($strProperty)
+    private function getVersionPropertyName($strProperty)
     {
-        $strLabel = $this->objReflection->getAnnotationValueForProperty($strProperty, AdminFormgenerator::STR_LABEL_ANNOTATION);
-        if (!empty($strLabel)) {
-            $strPropertyName = $this->objLang->getLang($strLabel, $this->strModule);
-            if (!empty($strPropertyName)) {
-                return $strPropertyName;
-            }
-        } else {
-            return $this->getFallbackName($strProperty);
+        $strKey = $this->objReflection->getAnnotationValueForProperty($strProperty, AdminFormgenerator::STR_LABEL_ANNOTATION);
+        $strModule = $this->objReflection->getParamValueForPropertyAndAnnotation($strProperty, AdminFormgenerator::STR_LABEL_ANNOTATION, "module");
+        if (empty($strModule)) {
+            $strModule = $this->strModule;
         }
 
-        return $strProperty;
+        $strPropertyLabel = Carrier::getInstance()->getObjLang()->getLang($strKey, $strModule);
+        if ($strPropertyLabel == "!{$strKey}!") {
+            $strKey = "form_".$this->strModule."_".Lang::getInstance()->propertyWithoutPrefix($strProperty);
+            $strPropertyLabel = Carrier::getInstance()->getObjLang()->getLang($strKey, $strModule);
+        }
+
+        if ($strPropertyLabel == "!{$strKey}!") {
+            $strPropertyLabel = $this->getFallbackName($strProperty);
+        }
+
+        return $strPropertyLabel;
     }
 
     /**
@@ -91,11 +97,17 @@ class SystemChangelogRenderer
      * @param mixed $strValue
      * @return string
      */
-    public function getVersionValue($strProperty, $strValue)
+    private function getVersionValue($strProperty, $strValue)
     {
         $strType = $this->objReflection->getAnnotationValueForProperty($strProperty, AdminFormgenerator::STR_TYPE_ANNOTATION);
         if (empty($strType)) {
-            $strType = $this->getFallbackType($strProperty);
+            if (validateSystemid($strValue)) {
+                $strType = FormentryObjectlist::class;
+            } elseif (StringUtil::indexOf($strProperty, "date", false) !== false && Date::isDateValue($strValue)) {
+                $strType = FormentryDate::class;
+            } else {
+                $strType = $this->getFallbackType($strProperty);
+            }
         }
 
         if (!empty($strType)) {
@@ -210,7 +222,9 @@ class SystemChangelogRenderer
                 return FormentryDate::class;
 
             case "intRecordDeleted":
+            case "rightInherit":
                 return FormentryYesno::class;
+
 
             default:
                 return null;
@@ -227,20 +241,19 @@ class SystemChangelogRenderer
      */
     private function renderData($strType, $strValue, $arrDDValues)
     {
-        if (empty($strType) && validateSystemid($strValue)) {
+        if (StringUtil::indexOf($strType, "object") !== false
+            || StringUtil::indexOf($strType, "objectlist", false) !== false) {
             $strType = FormentryObjectlist::class;
         }
 
         switch ($strType) {
             case FormentryDate::class:
             case FormentryDatetime::class:
-            case "date":
-            case "datetime":
-                return SystemChangelogHelper::getStrValueForDate($strValue);
+            case FormentryMonthYearDropdown::class:
+                return $this->getStrValueForDate($strValue);
                 break;
 
             case FormentryDropdown::class:
-            case "dropdown":
                 if (!empty($arrDDValues) && array_key_exists($strValue, $arrDDValues)) {
                     return $arrDDValues[$strValue];
                 } else {
@@ -248,15 +261,10 @@ class SystemChangelogRenderer
                 }
                 break;
 
-            case FormentryObjecttags::class:
             case FormentryObjectlist::class:
             case FormentryProzess::class:
             case FormentryOe::class:
-            case "objecttags":
-            case "objectlist":
-            case "prozess":
-            case "oe":
-                return SystemChangelogHelper::getStrValueForObjects($strValue);
+                return $this->getStrValueForObjects($strValue);
                 break;
 
             case FormentryYesno::class:
@@ -273,6 +281,9 @@ class SystemChangelogRenderer
                 break;
 
             default:
+                if (validateSystemid($strValue)) {
+                    return $this->getStrValueForObjects($strValue);
+                }
                 return $strValue;
         }
     }
@@ -310,5 +321,70 @@ class SystemChangelogRenderer
         }
 
         return self::$arrRenderer[$strClass]->getVersionValue($strProperty, $strValue);
+    }
+
+
+    /**
+     * Gets the string representation of a date
+     *
+     * @param string|Date $strDate
+     * @return string
+     */
+    private function getStrValueForDate($strDate)
+    {
+        if ($strDate instanceof Date) {
+            $objDate = $strDate;
+        } else {
+            // empty includes "", 0, 0.0, "0", null, false and array()
+            if (empty($strDate)) {
+                return "";
+            }
+
+            $objDate = new Date($strDate);
+        }
+
+        return dateToString($objDate, false);
+    }
+
+    /**
+     * Gets a string representation for a given object id.
+     * If the given param $strObjectIds contains a comma separated value of system id's, all display name of the objects
+     * will be returned. Does also work with  an array of objects or system ids
+     *
+     * @param string|array $strObjectIds
+     * @return string
+     */
+    private function getStrValueForObjects($strObjectIds)
+    {
+        $arrSystemIds = array();
+
+        if (is_string($strObjectIds)) {
+            $arrSystemIds = array_filter(explode(",", $strObjectIds), function ($strSystemId) {
+                return validateSystemid($strSystemId);
+            });
+        } elseif (is_array($strObjectIds)) {
+            $arrSystemIds = array_filter(array_map(function($objValue){
+                if (is_string($objValue)) {
+                    return validateSystemid($objValue) ? $objValue : null;
+                } elseif ($objValue instanceof Model) {
+                    return $objValue->getSystemid();
+                } else {
+                    return null;
+                }
+            }, $strObjectIds));
+        }
+
+        $arrNames = array();
+        foreach ($arrSystemIds as $strSystemId) {
+            $objObject = Objectfactory::getInstance()->getObject($strSystemId);
+            if ($objObject instanceof ModelInterface) {
+                $arrNames[] = $objObject->getStrDisplayName();
+            }
+            else {
+                $arrNames[] = $strSystemId;
+            }
+        }
+
+        return implode(", ", $arrNames);
     }
 }

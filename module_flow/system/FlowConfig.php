@@ -54,11 +54,6 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
     private $objHandler;
 
     /**
-     * @var FlowStatus[]
-     */
-    private $arrStatus;
-
-    /**
      * @var FlowManager
      */
     private $objFlowManager;
@@ -151,7 +146,7 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
      */
     public function getArrStatus()
     {
-        return $this->arrStatus === null ? $this->arrStatus = FlowStatus::getObjectListFiltered(null, $this->getStrSystemid()) : $this->arrStatus;
+        return FlowStatus::getObjectListFiltered(null, $this->getStrSystemid());
     }
 
     /**
@@ -176,6 +171,58 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
             }
         }
         return null;
+    }
+
+    /**
+     * Returns all available transitions for this flow
+     *
+     * @return FlowTransition[]
+     */
+    public function getAllTransitions()
+    {
+        $arrTransitions = [];
+        $arrStatus = $this->getArrStatus();
+        foreach ($arrStatus as $objStatus) {
+            /** @var FlowStatus $objStatus */
+            $arrTransitions = array_merge($arrTransitions, $objStatus->getArrTransitions());
+        }
+
+        return $arrTransitions;
+    }
+
+    /**
+     * Returns all transitions which are assigned to a specific status
+     *
+     * @param int $intIndex
+     * @return FlowTransition[]
+     */
+    public function getTransitionsByIndex($intIndex)
+    {
+        $objStatus = $this->getStatusByIndex($intIndex);
+        if ($objStatus instanceof FlowStatus) {
+            return $objStatus->getArrTransitions();
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * Returns whether a specific status has the provided transition
+     *
+     * @param int $intIndex
+     * @param FlowTransition $objTransition
+     * @return bool
+     */
+    public function hasTransition($intIndex, FlowTransition $objTransition)
+    {
+        $arrTransitions = $this->getTransitionsByIndex($intIndex);
+        foreach ($arrTransitions as $objTran) {
+            if ($objTran->getSystemid() == $objTransition->getSystemid()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -360,8 +407,6 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
 
         $bitReturn = parent::copyObject($strNewPrevid, $bitChangeTitle, $bitCopyChilds);
 
-        $this->arrStatus = null;
-
         $arrNameSystemId = [];
         $arrStatus = $this->getArrStatus();
         foreach ($arrStatus as $objStatus) {
@@ -425,12 +470,14 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
                 // we create automatically the start and end status
                 $objRedStatus = new FlowStatus();
                 $objRedStatus->setStrName("In Bearbeitung");
-                $objRedStatus->setStrIcon("icon_flag_red");
+                $objRedStatus->setStrIconColor("#FF0000");
+                $objRedStatus->setIntIndex(0);
                 $objRedStatus->updateObjectToDb($objFlow->getSystemid());
 
                 $objGreenStatus = new FlowStatus();
                 $objGreenStatus->setStrName("Freigegeben");
-                $objGreenStatus->setStrIcon("icon_flag_green");
+                $objGreenStatus->setStrIconColor("#00893d");
+                $objGreenStatus->setIntIndex(1);
                 $objGreenStatus->updateObjectToDb($objFlow->getSystemid());
 
                 $objTransition = new FlowTransition();

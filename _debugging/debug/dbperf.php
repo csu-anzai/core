@@ -18,7 +18,7 @@ echo "|                                                                         
 echo "+-------------------------------------------------------------------------------+\n";
 
 
-$strCsvFile = _realpath_."/files/public/dbperf.csv";
+$strCsvFile = _realpath_."/files/downloads/default/dbperf.csv";
 @unlink($strCsvFile);
 $arrTimeSteps=array();
 
@@ -120,7 +120,7 @@ file_put_contents($strCsvFile, $arrTimeSteps[1].";".$arrTimeSteps[2].";".$arrTim
 
 echo "\n-----------------------------------------------------";
 
-echo "\n\nDownload <a href=\""._webpath_."/files/public/dbperf.csv\">CSV file with results</a>";
+echo "\n\nDownload <a href=\""._webpath_."/files/downloads/default/dbperf.csv\">CSV file with results</a>";
 
 echo "\n-----------------------------------------------------";
 

@@ -19,8 +19,10 @@ use Kajona\System\System\InstallerBase;
 use Kajona\System\System\InstallerInterface;
 use Kajona\System\System\LanguagesLanguage;
 use Kajona\System\System\Logger;
+use Kajona\System\System\MessagingAlert;
 use Kajona\System\System\MessagingConfig;
 use Kajona\System\System\MessagingMessage;
+use Kajona\System\System\MessagingQueue;
 use Kajona\System\System\OrmBase;
 use Kajona\System\System\OrmSchemamanager;
 use Kajona\System\System\Resourceloader;
@@ -34,6 +36,8 @@ use Kajona\System\System\SystemPwchangehistory;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserUser;
+use Kajona\System\System\Workflows\WorkflowMessageQueue;
+use Kajona\Workflows\System\WorkflowsWorkflow;
 
 /**
  * Installer for the system-module
@@ -45,11 +49,17 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
     private $strContentLanguage;
 
+    /**
+     * @var Session
+     * @inject system_session
+     */
+    private $objSession;
+
     public function __construct() {
         parent::__construct();
 
         //set the correct language
-        $this->strContentLanguage = Carrier::getInstance()->getObjSession()->getAdminLanguage(true, true);
+        $this->strContentLanguage = $this->objSession->getAdminLanguage(true, true);
     }
 
     public function install() {
@@ -233,6 +243,8 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $strReturn .= "Installing table messages...\n";
         $objManager->createTable(MessagingMessage::class);
         $objManager->createTable(MessagingConfig::class);
+        $objManager->createTable(MessagingAlert::class);
+        $objManager->createTable(MessagingQueue::class);
 
         // password change history
         $strReturn .= "Installing password reset history...\n";
@@ -267,7 +279,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $this->registerConstant("_system_portal_disablepage_", "", SystemSetting::$int_TYPE_PAGE, _system_modul_id_);
 
         //New in 3.0: Number of db-dumps to hold
-        $this->registerConstant("_system_dbdump_amount_", 5, SystemSetting::$int_TYPE_INT, _system_modul_id_);
+        $this->registerConstant("_system_dbdump_amount_", 15, SystemSetting::$int_TYPE_INT, _system_modul_id_);
         //new in 3.0: mod-rewrite on / off
         $this->registerConstant("_system_mod_rewrite_", "false", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
         $this->registerConstant("_system_mod_rewrite_admin_only_", "false", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
@@ -302,6 +314,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $this->registerConstant("_system_changehistory_enabled_", "false", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
 
         $this->registerConstant("_system_timezone_", "", SystemSetting::$int_TYPE_STRING, _system_modul_id_);
+        $this->registerConstant("_system_session_ipfixation_", "true", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
 
 
         //Creating the admin & guest groups
@@ -493,94 +506,6 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         $strReturn .= "Version found:\n\t Module: ".$arrModule["module_name"].", Version: ".$arrModule["module_version"]."\n\n";
 
-       
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "4.6") {
-            $strReturn .= "Updating 4.6 to 4.6.1...\n";
-            $this->updateModuleVersion("", "4.6.1");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "4.6.1") {
-            $strReturn .= "Updating 4.6.1 to 4.6.2...\n";
-            $this->updateModuleVersion("", "4.6.2");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "4.6.2") {
-            $strReturn .= "Updating 4.6.2 to 4.6.3...\n";
-            $this->updateModuleVersion("", "4.6.3");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "4.6.3") {
-            $strReturn .= $this->update_463_464();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "4.6.4") {
-            $strReturn .= $this->update_464_465();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "4.6.5") {
-            $strReturn .= $this->update_465_47();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "4.7" || $arrModule["module_version"] == "4.7.1" || $arrModule["module_version"] == "4.7.2") {
-            $strReturn .= $this->update_47_475();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "4.7.5") {
-            $strReturn .= $this->update_475_476();
-        }
-
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "4.7.6") {
-            $strReturn .= $this->update_476_50();
-        }
-        
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "5.0" || $arrModule["module_version"] == "5.0.1") {
-            $strReturn .= "Updating 5.0 to 5.1...\n";
-            $this->updateModuleVersion("", "5.1");
-        }
-
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "5.1") {
-            $strReturn .= $this->update_51_511();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "5.1.1") {
-            $strReturn .= $this->update_511_512();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "5.1.2") {
-            $strReturn .= $this->update_512_513();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "5.1.3") {
-            $strReturn .= $this->update_513_514();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "5.1.4") {
-            $strReturn .= $this->update_514_62();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "5.1.5") {
-            $strReturn .= "Updating 5.1.5 to 6.2...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2");
-        }
-
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "6.2") {
             $strReturn .= $this->update_62_621();
@@ -601,274 +526,32 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             $strReturn .= $this->update_623_624();
         }
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.2.4") {
+            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2.5");
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.2.5") {
+            $strReturn .= $this->update_625_65();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.5") {
+            $strReturn .= $this->update_65_651();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.5.1") {
+            $strReturn .= $this->update_651_652();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.5.2") {
+            $strReturn .= $this->update_652_653();
+        }
+
         return $strReturn."\n\n";
-    }
-
-
-
-    private function update_463_464() {
-        $strReturn = "Updating 4.6.3 to 4.6.4...\n";
-
-        $strReturn .= "Adding mail-config settings...\n";
-
-        $this->registerConstant("_system_email_defaultsender_", SystemSetting::getConfigValue("_system_admin_email_"), SystemSetting::$int_TYPE_STRING, _system_modul_id_);
-        $this->registerConstant("_system_email_forcesender_", "false", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
-
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "4.6.4");
-        return $strReturn;
-    }
-
-    private function update_464_465() {
-        $strReturn = "Updating 4.6.4 to 4.6.5...\n";
-
-        $strReturn .= "Updating user table...\n";
-        $this->objDB->addColumn("user", "user_items_per_page", DbDatatypes::STR_TYPE_INT);
-
-        $strReturn .= "Removing setting _user_log_nrofrecords_...\n";
-        SystemSetting::getConfigByName("_user_log_nrofrecords_")->deleteObjectFromDatabase();
-        $strReturn .= "Removing setting _system_use_dbcache_...\n";
-        SystemSetting::getConfigByName("_system_use_dbcache_")->deleteObjectFromDatabase();
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "4.6.5");
-        return $strReturn;
-    }
-
-
-    private function update_465_47() {
-
-        $strReturn = "Updating 4.6.5 to 4.7...\n";
-
-        $strReturn .= "Patching bootstrap.php < 4.7\n";
-        if(is_file(_realpath_."core/bootstrap.php")) {
-            $objFileystem = new Filesystem();
-            if(!$objFileystem->isWritable("/core/bootstrap.php")) {
-                $strReturn .= "Error! /core/bootstrap.php is not writable. Please set up write permissions for the update-procedure.\nAborting update.";
-                return $strReturn;
-            }
-            $objFileystem->fileCopy(Resourceloader::getInstance()->getCorePathForModule("module_system")."/module_system/installer/bootstrap.php_47", "/core/bootstrap.php", true);
-        }
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "4.7");
-        return $strReturn;
-    }
-
-    private function update_47_475() {
-
-        $strReturn = "Updating 4.7 to 4.7.5...\n";
-
-        $strReturn .= "Updating system table\n";
-        $this->objDB->addColumn("system", "system_deleted", DbDatatypes::STR_TYPE_INT);
-        $strQuery = "UPDATE "._dbprefix_."system SET system_deleted = 0";
-        $this->objDB->_pQuery($strQuery, array());
-
-        $strReturn .= "Updating database indexes\n";
-        $this->objDB->_pQuery("ALTER TABLE ".$this->objDB->encloseTableName(_dbprefix_."system")." ADD INDEX ( ".$this->objDB->encloseColumnName("system_deleted")." ) ", array());
-        $this->objDB->_pQuery("ALTER TABLE ".$this->objDB->encloseTableName(_dbprefix_."system")." ADD INDEX ( ".$this->objDB->encloseColumnName("system_lock_time")." ) ", array());
-
-        $this->objDB->_pQuery("ALTER TABLE ".$this->objDB->encloseTableName(_dbprefix_."user")." ADD INDEX ( ".$this->objDB->encloseColumnName("user_username")." ) ", array());
-        $this->objDB->_pQuery("ALTER TABLE ".$this->objDB->encloseTableName(_dbprefix_."user")." ADD INDEX ( ".$this->objDB->encloseColumnName("user_subsystem")." ) ", array());
-        $this->objDB->_pQuery("ALTER TABLE ".$this->objDB->encloseTableName(_dbprefix_."user")." ADD INDEX ( ".$this->objDB->encloseColumnName("user_active")." ) ", array());
-        $this->objDB->_pQuery("ALTER TABLE ".$this->objDB->encloseTableName(_dbprefix_."user")." ADD INDEX ( ".$this->objDB->encloseColumnName("user_deleted")." ) ", array());
-
-        $this->objDB->_pQuery("ALTER TABLE ".$this->objDB->encloseTableName(_dbprefix_."user_group")." ADD INDEX ( ".$this->objDB->encloseColumnName("group_name")." ) ", array());
-        $this->objDB->_pQuery("ALTER TABLE ".$this->objDB->encloseTableName(_dbprefix_."user_group")." ADD INDEX ( ".$this->objDB->encloseColumnName("group_subsystem")." ) ", array());
-
-
-        Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBTABLES | Carrier::INT_CACHE_TYPE_DBSTATEMENTS);
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "4.7.5");
-        return $strReturn;
-    }
-
-    private function update_475_476() {
-
-        $strReturn = "Updating 4.7.5 to 4.7.6...\n";
-
-        // password change history
-        $strReturn .= "Installing password reset history...\n";
-
-        $objManager = new OrmSchemamanager();
-        $objManager->createTable("Kajona\\System\\System\\SystemPwchangehistory");
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "4.7.6");
-        return $strReturn;
-    }
-
-
-    private function update_476_50() {
-        $strReturn = "Updating 4.7.6 to 5.0...\n";
-        $strReturn .= "Registering new constant...\n";
-        $this->registerConstant("_system_mod_rewrite_admin_only_", "false", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "5.0");
-        return $strReturn;
-    }
-
-    private function update_51_511() {
-        $strReturn = "Updating 5.1.1 to 5.1.2...\n";
-
-
-
-        $strReturn .= "Updating users and groups\n";
-        $arrRightsRow = $this->objDB->getPRow("SELECT * FROM "._dbprefix_."system_right WHERE right_id = ?", array(SystemModule::getModuleIdByNr(_user_modul_id_)));
-
-        foreach($this->objDB->getPArray("SELECT * FROM "._dbprefix_."user", array()) as $arrOneRow) {
-            //fire two inserts
-            $this->objDB->_pQuery(
-                "INSERT INTO "._dbprefix_."system (system_id, system_prev_id, system_module_nr, system_sort, system_status, system_class, system_deleted) VALUES (?, ?, ?, -1, ?, ?, ?)",
-                array(
-                    $arrOneRow["user_id"],
-                    SystemModule::getModuleIdByNr(_user_modul_id_),
-                    _user_modul_id_,
-                    $arrOneRow["user_active"],
-                    UserUser::class,
-                    $arrOneRow["user_deleted"]
-                )
-            );
-
-            $this->objDB->_pQuery(
-                "INSERT INTO "._dbprefix_."system_right (right_id, right_inherit, right_view, right_edit, right_delete, right_right, right_right1, right_right2, right_right3, right_right4, right_right5, right_changelog) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                array(
-                    $arrOneRow["user_id"],
-                    1,
-                    implode(",", $arrRightsRow[Rights::$STR_RIGHT_VIEW]),
-                    implode(",", $arrRightsRow[Rights::$STR_RIGHT_EDIT]),
-                    implode(",", $arrRightsRow[Rights::$STR_RIGHT_DELETE]),
-                    implode(",", $arrRightsRow[Rights::$STR_RIGHT_RIGHT]),
-                    implode(",", $arrRightsRow[Rights::$STR_RIGHT_RIGHT1]),
-                    implode(",", $arrRightsRow[Rights::$STR_RIGHT_RIGHT2]),
-                    implode(",", $arrRightsRow[Rights::$STR_RIGHT_RIGHT3]),
-                    implode(",", $arrRightsRow[Rights::$STR_RIGHT_RIGHT4]),
-                    implode(",", $arrRightsRow[Rights::$STR_RIGHT_RIGHT5]),
-                    implode(",", $arrRightsRow[Rights::$STR_RIGHT_CHANGELOG])
-                )
-            );
-        }
-
-        foreach($this->objDB->getPArray("SELECT * FROM "._dbprefix_."user_group", array()) as $arrOneRow) {
-            //fire two inserts
-            $this->objDB->_pQuery(
-                "INSERT INTO "._dbprefix_."system (system_id, system_prev_id, system_module_nr, system_sort, system_status, system_class, system_deleted) VALUES (?, ?, ?, -1, ?, ?, ?)",
-                array($arrOneRow["group_id"], SystemModule::getModuleIdByNr(_user_modul_id_), _user_modul_id_, 1, UserGroup::class, 0)
-            );
-
-            $this->objDB->_pQuery(
-                "INSERT INTO "._dbprefix_."system_right (right_id, right_inherit, right_view, right_edit, right_delete, right_right, right_right1, right_right2, right_right3, right_right4, right_right5, right_changelog) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                array(
-                    $arrOneRow["group_id"],
-                    1,
-                    implode(",", $arrRightsRow[Rights::$STR_RIGHT_VIEW]),
-                    implode(",", $arrRightsRow[Rights::$STR_RIGHT_EDIT]),
-                    implode(",", $arrRightsRow[Rights::$STR_RIGHT_DELETE]),
-                    implode(",", $arrRightsRow[Rights::$STR_RIGHT_RIGHT]),
-                    implode(",", $arrRightsRow[Rights::$STR_RIGHT_RIGHT1]),
-                    implode(",", $arrRightsRow[Rights::$STR_RIGHT_RIGHT2]),
-                    implode(",", $arrRightsRow[Rights::$STR_RIGHT_RIGHT3]),
-                    implode(",", $arrRightsRow[Rights::$STR_RIGHT_RIGHT4]),
-                    implode(",", $arrRightsRow[Rights::$STR_RIGHT_RIGHT5]),
-                    implode(",", $arrRightsRow[Rights::$STR_RIGHT_CHANGELOG])
-                )
-            );
-        }
-
-        $this->objDB->removeColumn("user", "user_active");
-        $this->objDB->removeColumn("user", "user_deleted");
-
-        // alter session last url column
-        $this->objDB->changeColumn("session", "session_lasturl", "session_lasturl", DbDatatypes::STR_TYPE_TEXT);
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "5.1.1");
-        return $strReturn;
-    }
-
-    private function update_511_512()
-    {
-        $strReturn = "Updating 5.1.1 to 5.1.2...\n";
-
-        $strReturn .= "Checking postacomment / guestbook cross-dependencies...\n";
-        if(SystemModule::getModuleByName("guestbook") !== null && SystemModule::getModuleByName("postacomment") === null) {
-            $strReturn .= "ERROR\n";
-            $strReturn .= "Module guestbook is replaced by module postacomment.\n";
-            $strReturn .= "Please install module postacomment in order to avoid a loss of guestbook data.\n";
-            $strReturn .= "Aborting update sequence.\n";
-            return $strReturn;
-        }
-
-        $strReturn .= "Removing legacy samplecontent module...\n";
-
-        $objFilesystem = new Filesystem();
-        if(is_file(_realpath_."core/module_samplecontent.phar")) {
-            $objFilesystem->fileDelete("/core/module_samplecontent.phar");
-        }
-        elseif(is_dir(_realpath_."core/module_samplecontent")) {
-            $objFilesystem->folderDeleteRecursive("/core/module_samplecontent");
-        }
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "5.1.2");
-        return $strReturn;
-    }
-
-    private function update_512_513()
-    {
-        $strReturn = "Updating 5.1.2 to 5.1.3...\n";
-
-        $strReturn .= "Registering messaging portal controller\n";
-        $objModule = SystemModule::getModuleByName("messaging");
-        $objModule->setStrNamePortal("MessagingPortal.php");
-        $objModule->updateObjectToDb();
-
-        $strReturn .= "Removing xml controller entries...\n";
-
-        $this->objDB->removeColumn("system_module", "module_xmlfilenameportal");
-        $this->objDB->removeColumn("system_module", "module_xmlfilenameadmin");
-
-        Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBSTATEMENTS | Carrier::INT_CACHE_TYPE_DBQUERIES | Carrier::INT_CACHE_TYPE_MODULES | Carrier::INT_CACHE_TYPE_DBTABLES);
-        Classloader::getInstance()->flushCache();
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "5.1.3");
-        return $strReturn;
-    }
-
-    private function update_513_514()
-    {
-        $strReturn = "Updating 5.1.3 to 5.1.4...\n";
-        $strReturn .= "Updating session table\n";
-
-        //save some user metadata, if available, for future requests
-        $objUser = Session::getInstance()->getUser();
-        if ($objUser !== null) {
-            $strGroups = implode(",", $objUser->getArrGroupIds());
-            Session::getInstance()->setSession(Session::STR_SESSION_USERID, $objUser->getSystemid());
-            Session::getInstance()->setSession(Session::STR_SESSION_GROUPIDS, $strGroups);
-            Session::getInstance()->setSession(Session::STR_SESSION_ISADMIN, $objUser->getIntAdmin());
-        }
-
-        //remove columns
-        $this->objDB->removeColumn("session", "session_groupids");
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "5.1.4");
-        return $strReturn;
-    }
-
-    private function update_514_62()
-    {
-        $strReturn = "Updating 5.1.4 to 6.2...\n";
-
-        $strReturn .= "Updating user table\n";
-        $this->objDB->addColumn("user_kajona", "user_specialconfig", DbDatatypes::STR_TYPE_TEXT, true);
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2");
-        return $strReturn;
     }
 
     private function update_62_621()
@@ -1011,6 +694,73 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2.4");
+        return $strReturn;
+    }
+
+
+    private function update_625_65()
+    {
+        $strReturn = "Updating 6.2.4 to 6.5...\n";
+        $strReturn .= "Adding alert table\n";
+
+        $objManager = new OrmSchemamanager();
+        $objManager->createTable(MessagingAlert::class);
+
+        $strReturn .= "Adding user group flag\n";
+        $this->objDB->addColumn("user_group", "group_system_group", DbDatatypes::STR_TYPE_INT);
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5");
+        return $strReturn;
+    }
+
+    private function update_65_651()
+    {
+        $strReturn = "Updating 6.5 to 6.5.1...\n";
+        $strReturn .= "Adding session setting\n";
+
+        $this->registerConstant("_system_session_ipfixation_", "true", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.1");
+        return $strReturn;
+    }
+
+
+    private function update_651_652()
+    {
+        $strReturn = "Updating 6.5.1 to 6.5.2...\n";
+        $strReturn .= "Install message queue\n";
+
+        $objManager = new OrmSchemamanager();
+        $objManager->createTable(MessagingQueue::class);
+
+        // add workflow
+        $strReturn .= "Registering message queue workflow...\n";
+        if (SystemModule::getModuleByName("workflows") !== null) {
+            if (WorkflowsWorkflow::getWorkflowsForClassCount(WorkflowMessageQueue::class, false) == 0) {
+                $objWorkflow = new WorkflowsWorkflow();
+                $objWorkflow->setStrClass(WorkflowMessageQueue::class);
+                $objWorkflow->updateObjectToDb();
+            }
+        }
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.2");
+        return $strReturn;
+    }
+
+    private function update_652_653()
+    {
+        $strReturn = "Updating 6.5.2 to 6.5.3...\n";
+        $strReturn .= "Upgrade message queue\n";
+
+        if (!$this->objDB->hasColumn("messages_alert", "alert_priority")) {
+            $this->objDB->addColumn("messages_alert", "alert_priority", DbDatatypes::STR_TYPE_INT);
+        }
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.4");
         return $strReturn;
     }
 

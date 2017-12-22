@@ -9,9 +9,9 @@ const SeleniumWaitHelper = requireHelper('/util/SeleniumWaitHelper.js');
 
 
 /** Constants */
-const SEARCHBOX_INPUT = by.xpath("//*[@id='globalSearchInput']");
+const SEARCHBOX_INPUT = By.xpath("//*[@id='globalSearchInput']");
 const USERMENU = By.xpath("//*[@class='dropdown userNotificationsDropdown']");
-const USERMENU_LOGOUT_LNK = by.xpath("//*[@class='dropdown userNotificationsDropdown']"+"/ul/li[last()]/a");
+const USERMENU_LOGOUT_LNK = By.xpath("//*[@class='dropdown userNotificationsDropdown']"+"/ul/li[last()]/a");
 
 /**
  *
@@ -51,36 +51,30 @@ class TopMenu extends BasePage {
      *
      * @param {string} strSearchTerm
      *
-     * @returns {WebElementPromise|!webdriver.WebElement}
+     * @returns {webdriver.WebElement}
      */
-    search(strSearchTerm) {
-        return this.element_searchBox.sendKeys(strSearchTerm);
-        // SeleniumWaitHelper.waitForElementUntilPresent(driver, By.xpath(Constants.TOPMENU_SEARCHBOX_LNK_SEARCHRESULTS), 10);
-        // lnkShowAllSearchResults.click();
+    async search(strSearchTerm) {
+        return await this.element_searchBox.sendKeys(strSearchTerm);
     };
 
     /**
      * Logs out.
      *
-     * @returns {Promise<void>}
+     * @returns {void}
      */
-    logout() {
-        var context = this;
-
-        return this.showUserMenu().then(function () {
-            return context.element_lnkUserMenuLogOut.click();
-        });
+    async logout() {
+        await this.showUserMenu();
+        return await this.element_lnkUserMenuLogOut.click();
     }
 
     /**
      * Displays the user menu.
      *
-     * @returns {webdriver.promise.Promise.<void>}
+     * @returns {void}
      */
-    showUserMenu() {
-        return this.element_lnkUserMenu.then(function (element) {
-            return SeleniumUtil.moveToElement(element);
-        });
+    async showUserMenu() {
+        let element = await this.element_lnkUserMenu;
+        return await SeleniumUtil.moveToElement(element);
     }
 }
 

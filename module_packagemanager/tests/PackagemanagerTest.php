@@ -19,6 +19,7 @@ class PackagemanagerTest extends Testbase
         $objReader = new PackagemanagerMetadata();
         $objReader->autoInit(Resourceloader::getInstance()->getCorePathForModule("module_packagemanager") . "/module_packagemanager");
 
+        $this->assertTrue(true);//dummy assertion to make test not risky. Until here no exception should have occurred
         //echo $objReader . "\n\n";
     }
 
@@ -28,6 +29,7 @@ class PackagemanagerTest extends Testbase
 
         $objManager = new PackagemanagerManager();
         $arrModules = $objManager->getAvailablePackages();
+        $this->assertNotEmpty($arrModules);
 
         foreach ($arrModules as $intKey => $objOneModule) {
             //echo "#" . $intKey . ": " . $objOneModule . "\n";

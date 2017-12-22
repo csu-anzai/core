@@ -24,19 +24,29 @@ use JsonSerializable;
  */
 class SystemJSTreeNode implements JsonSerializable
 {
+    //general attributes
     const STR_NODE_ID = "id";
     const STR_NODE_TEXT = "text";
     const STR_NODE_CHILDREN = "children";
     const STR_NODE_TYPE = "type";
 
+    //data attributes
     const STR_NODE_DATA = "data";
     const STR_NODE_DATA_RIGHTEDIT = "rightedit";
+    const STR_NODE_DATA_DND_CHECK_PARENT_ID_ACTIVE = "check_parent_id_active";
+    const STR_NODE_DATA_DND_IS_NOT_DRAGGABLE = "is_not_draggable";
+    const STR_NODE_DATA_CUSTOMTYPES = "customtypes"; //use this for custom nesting rules
+    const STR_NODE_DATA_CUSTOMTYPES_TYPE = "type";
+    const STR_NODE_DATA_CUSTOMTYPES_VALIDCHILDREN = "valid_children";
 
+    //attr atrributes
     const STR_NODE_AATTR = "a_attr";
     const STR_NODE_AATTR_HREF = "href";
 
+    //attr atrributes
     const STR_NODE_LIATTR = "li_attr";
 
+    //state attributes
     const STR_NODE_STATE = "state";
     const STR_NODE_STATE_OPENED = "opened";
     const STR_NODE_STATE_DISABLED = "disabled";

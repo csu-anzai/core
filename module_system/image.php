@@ -7,7 +7,6 @@
 namespace Kajona\System;
 
 use Kajona\Mediamanager\System\MediamanagerFile;
-use Kajona\Pages\System\PagesPageelement;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\HttpStatuscodes;
@@ -53,7 +52,6 @@ class Flyimage
 
     private $intQuality;
 
-    private $strElementId;
     private $strSystemid;
 
     /**
@@ -93,8 +91,7 @@ class Flyimage
 
 
         $this->strSystemid = getGet("systemid");
-        $this->strElementId = getGet("elementid");
-        
+
         ResponseObject::getInstance()->setObjEntrypoint(RequestEntrypointEnum::IMAGE());
 
     }
@@ -106,62 +103,11 @@ class Flyimage
      */
     public function generateImage()
     {
-
         //switch the different modes - may be want to generate a detailed image-view
-        if (validateSystemid($this->strSystemid) && validateSystemid($this->strElementId)) {
-            Carrier::getInstance()->getObjConfig()->loadConfigsDatabase(Carrier::getInstance()->getObjDB());
-            $this->generateMediamanagerImage();
-        }
-        else {
-            Carrier::getInstance()->getObjSession()->sessionClose();
-            $this->resizeImage();
-        }
+        Carrier::getInstance()->getObjSession()->sessionClose();
+        $this->resizeImage();
     }
 
-    /**
-     * Wrapper to load a single element and generate the image
-     *
-     * @return void
-     */
-    private function generateMediamanagerImage()
-    {
-        if (SystemModule::getModuleByName("mediamanager") !== null) {
-
-            $objElement = new PagesPageelement($this->strElementId);
-            $objPortalElement = $objElement->getConcretePortalInstance();
-
-            $objFile = new MediamanagerFile($this->strSystemid);
-
-            if (!$objFile->rightView()) {
-                ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_FORBIDDEN);
-                ResponseObject::getInstance()->sendHeaders();
-                return;
-            }
-
-            $arrElementData = $objPortalElement->getElementContent($objElement->getSystemid());
-
-            Session::getInstance()->sessionClose();
-            if (is_file(_realpath_.$objFile->getStrFilename())) {
-                $objImage = new Image2();
-                $objImage->load($objFile->getStrFilename());
-                $objImage->addOperation(new ImageScale($arrElementData["gallery_maxw_d"], $arrElementData["gallery_maxh_d"]));
-                $objImage->addOperation(new ImageText($arrElementData["gallery_text"], $arrElementData["gallery_text_x"], $arrElementData["gallery_text_y"], 10, "#ffffff"));
-
-                if (is_file(_realpath_.$arrElementData["gallery_overlay"])) {
-                    $objImageOverlay = new Image2();
-                    $objImageOverlay->load($arrElementData["gallery_overlay"]);
-                    $objImage->addOperation(new ImageOverlay($arrElementData["gallery_overlay"], $arrElementData["gallery_text_x"], $arrElementData["gallery_text_y"]));
-                }
-                $objImage->setJpegQuality((int)$this->intQuality);
-                $objImage->sendToBrowser();
-                return;
-            }
-
-        }
-
-        ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_NOT_FOUND);
-        ResponseObject::getInstance()->sendHeaders();
-    }
 
     /**
      * Wrapper to the real, fast resizing
@@ -170,9 +116,8 @@ class Flyimage
      */
     private function resizeImage()
     {
-        //Load the image-dimensions
         if (is_file(_realpath_.$this->strFilename) && (StringUtil::indexOf($this->strFilename, "files") !== false || StringUtil::indexOf($this->strFilename, "templates") !== false)) {
-
+            //Load the image-dimensions
             $strConditionalGetChecksum = md5(_realpath_.$this->strFilename.$this->intMaxWidth.$this->intMaxHeight.$this->intFixedWidth.$this->intFixedHeight);
             //check headers, maybe execution could be terminated right here  - done f
             if(ResponseObject::getInstance()->processConditionalGetHeaders($strConditionalGetChecksum)) {

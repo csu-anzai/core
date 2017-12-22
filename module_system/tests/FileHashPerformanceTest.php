@@ -65,6 +65,8 @@ class FileHashPerformanceTest extends Testbase
 //        echo $intTimeUsedUserFunc . " sec\n";
 
 
+        $this->assertTrue(true);//dummy assertion to make test not risky. Until here no exception should have occurred
+
     }
 
 }

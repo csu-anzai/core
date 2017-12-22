@@ -4,6 +4,7 @@ namespace Kajona\System\Tests;
 
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Database;
+use Kajona\System\System\Date;
 use Kajona\System\System\Db\DbPostgres;
 use Kajona\System\System\DbDatatypes;
 
@@ -46,6 +47,38 @@ class DatabaseTest extends Testbase
         $this->assertTrue(in_array(_dbprefix_ . "temp_autotest_new", Carrier::getInstance()->getObjDB()->getTables()));
     }
 
+    public function testCreateIndex()
+    {
+        $objDb = Carrier::getInstance()->getObjDB();
+        $this->createTable();
+
+        $bitResult = $objDb->createIndex("temp_autotest", "foo_index", ["temp_char10", "temp_char20"]);
+
+        $this->assertTrue($bitResult);
+    }
+
+    public function testCreateUnqiueIndex()
+    {
+        $objDb = Carrier::getInstance()->getObjDB();
+        $this->createTable();
+
+        $bitResult = $objDb->createIndex("temp_autotest", "foo_index", ["temp_char10", "temp_char20"], true);
+
+        $this->assertTrue($bitResult);
+    }
+
+    public function testHasIndex()
+    {
+        $objDb = Carrier::getInstance()->getObjDB();
+        $this->createTable();
+
+        $this->assertFalse($objDb->hasIndex("temp_autotest", "foo_index"));
+
+        $bitResult = $objDb->createIndex("temp_autotest", "foo_index", ["temp_char10", "temp_char20"]);
+
+        $this->assertTrue($objDb->hasIndex("temp_autotest", "foo_index"));
+        $this->assertTrue($bitResult);
+    }
 
     public function testFloatHandling()
     {
@@ -58,12 +91,13 @@ class DatabaseTest extends Testbase
         $objDb->_pQuery($strQuery, array("id2", 1000.8));
 
         $arrRow = $objDb->getPRow("SELECT * FROM " . _dbprefix_ . "temp_autotest where temp_id = ?", array("id1"));
-        $this->assertEquals($arrRow["temp_double"], 16.8);
-        $this->assertEquals($arrRow["temp_double"], "16.8");
+        // MSSQL returns 16.799999237061 instead of 16.8
+        $this->assertEquals(16.8, round($arrRow["temp_double"], 1));
+        $this->assertEquals("16.8", round($arrRow["temp_double"], 1));
 
         $arrRow = $objDb->getPRow("SELECT * FROM " . _dbprefix_ . "temp_autotest where temp_id = ?", array("id2"));
-        $this->assertEquals($arrRow["temp_double"], 1000.8);
-        $this->assertEquals($arrRow["temp_double"], "1000.8");
+        $this->assertEquals(1000.8, round($arrRow["temp_double"], 1));
+        $this->assertEquals("1000.8", round($arrRow["temp_double"], 1));
     }
 
 
@@ -136,6 +170,14 @@ class DatabaseTest extends Testbase
         $this->assertTrue(in_array("temp_new_col4", $arrColumnNames));
     }
 
+    public function testHasColumn()
+    {
+        $objDb = Carrier::getInstance()->getObjDB();
+        $this->createTable();
+
+        $this->assertTrue($objDb->hasColumn("temp_autotest", "temp_id"));
+        $this->assertFalse($objDb->hasColumn("temp_autotest", "temp_foo"));
+    }
 
     public function testRemoveColumn()
     {
@@ -213,14 +255,14 @@ class DatabaseTest extends Testbase
         $arrRow = $objDB->getPRow($strQuery, array());
         $this->assertTrue(count($arrRow) >= 9, "testDataBase getRow count");
         
-        $this->assertEquals($arrRow["temp_long"], "1234561", "testDataBase getRow content");
-        $this->assertEquals($arrRow["temp_double"], "23.451", "testDataBase getRow content");
-        $this->assertEquals($arrRow["temp_char10"], "1", "testDataBase getRow content");
-        $this->assertEquals($arrRow["temp_char20"], "char201", "testDataBase getRow content");
-        $this->assertEquals($arrRow["temp_char100"], "char1001", "testDataBase getRow content");
-        $this->assertEquals($arrRow["temp_char254"], "char2541", "testDataBase getRow content");
-        $this->assertEquals($arrRow["temp_char500"], "char5001", "testDataBase getRow content");
-        $this->assertEquals($arrRow["temp_text"], "text1", "testDataBase getRow content");
+        $this->assertEquals("1234561", $arrRow["temp_long"], "testDataBase getRow content");
+        $this->assertEquals("23.451", round($arrRow["temp_double"], 3), "testDataBase getRow content");
+        $this->assertEquals("1", $arrRow["temp_char10"], "testDataBase getRow content");
+        $this->assertEquals("char201", $arrRow["temp_char20"], "testDataBase getRow content");
+        $this->assertEquals("char1001", $arrRow["temp_char100"], "testDataBase getRow content");
+        $this->assertEquals("char2541", $arrRow["temp_char254"], "testDataBase getRow content");
+        $this->assertEquals("char5001", $arrRow["temp_char500"], "testDataBase getRow content");
+        $this->assertEquals("text1", $arrRow["temp_text"], "testDataBase getRow content");
 
         $strQuery = "SELECT * FROM " . _dbprefix_ . "temp_autotest ORDER BY temp_long ASC";
         $arrRow = $objDB->getPArray($strQuery, array());
@@ -380,7 +422,7 @@ SQL;
 
     /**
      * @dataProvider dataPostgresProcessQueryProvider
-     * @covers DbPostgres::processQuery()
+     * @covers \Kajona\System\System\Db\DbPostgres::processQuery
      */
     public function testPostgresProcessQuery($strExpect, $strQuery)
     {
@@ -448,6 +490,48 @@ SQL;
         $this->assertEquals(5, $j);
 
         $objDb->_pQuery("DROP TABLE " . $strTable, []);
+    }
+
+    /**
+     * This test checks whether we can use a long timestamp format in in an sql query
+     * @dataProvider intComparisonDataProvider
+     */
+    public function testIntComparison($strId, $longDate, $longExpected)
+    {
+        $this->createTable();
+
+        // note calculation does not work if we cross a year border
+        $objLeftDate = new Date($longDate);
+        $objLeftDate->setNextMonth();
+        $objRightDate = new Date($longDate);
+
+        $objDB = Database::getInstance();
+        $objDB->multiInsert("temp_autotest",
+            ["temp_id", "temp_long"], [
+                [$strId, $objRightDate->getLongTimestamp()],
+            ]
+        );
+
+        $strPrefix = _dbprefix_;
+        $strQuery = "SELECT ".$objLeftDate->getLongTimestamp()." - ".$objRightDate->getLongTimestamp()." AS result_1, ".$objLeftDate->getLongTimestamp()." - temp_long AS result_2 FROM {$strPrefix}temp_autotest";
+        $arrRow = $objDB->getPRow($strQuery, []);
+
+        $this->assertEquals($longExpected, $objLeftDate->getLongTimestamp() - $objRightDate->getLongTimestamp());
+        $this->assertEquals($longExpected, $arrRow["result_1"]);
+        $this->assertEquals($longExpected, $arrRow["result_2"]);
+    }
+
+    public function intComparisonDataProvider()
+    {
+        return [
+            ["a111", 20170801000000, 20170901000000-20170801000000],
+            ["a112", 20171101000000, 20171201000000-20171101000000],
+            ["a113", 20171201000000, 20180101000000-20171201000000],
+            ["a113", 20171215000000, 20180115000000-20171215000000],
+            ["a113", 20171230000000, 20180130000000-20171230000000],
+            ["a113", 20171231000000, 20180131000000-20171231000000],
+            ["a113", 20170101000000, 20170201000000-20170101000000],
+        ];
     }
 }
 

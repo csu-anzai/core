@@ -6,7 +6,7 @@
 const BasePage = requireHelper('/pageobject/base/BasePage.js');
 
 /** Constants */
-const BATCHACTIONROW = by.css("tbody > tr[data-systemid='batchActionSwitch']");
+const BATCHACTIONROW = By.css("tbody > tr[data-systemid='batchActionSwitch']");
 
 /**
  *
@@ -30,10 +30,10 @@ class ListBatchActionRow extends BasePage {
     /**
      * Presses the (+) Button at the end of a list
      *
-     * @returns {webdriver.promise.Promise<void>|!webdriver.promise.Promise.<void>}
+     * @returns {void}
      */
-    createObject() {
-        return this.elementBatchActionRow.findElement(By.css("td.actions a")).click();
+    async createObject() {
+        return await this.elementBatchActionRow.findElement(By.css("td.actions a")).click();
     }
 }
 

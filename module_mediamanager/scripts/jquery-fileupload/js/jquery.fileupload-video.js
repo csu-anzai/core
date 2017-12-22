@@ -6,7 +6,7 @@
  * https://blueimp.net
  *
  * Licensed under the MIT license:
- * http://www.opensource.org/licenses/MIT
+ * https://opensource.org/licenses/MIT
  */
 
 /* jshint nomen:false */
@@ -19,13 +19,14 @@
         define([
             'jquery',
             'load-image',
-            'jquery.fileupload-process'
+            './jquery.fileupload-process'
         ], factory);
     } else if (typeof exports === 'object') {
         // Node/CommonJS:
         factory(
             require('jquery'),
-            require('load-image')
+            require('blueimp-load-image/js/load-image'),
+            require('./jquery.fileupload-process')
         );
     } else {
         // Browser globals:

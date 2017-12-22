@@ -17,9 +17,13 @@ namespace Kajona\Pdf\System;
  * @package module_pdf
  * @since 3.3.0
  */
-class PdfFooter implements PdfFooterInterface {
+class PdfFooter implements PdfFooterInterface
+{
 
     private $strFooterAddon = "";
+
+    private $bitSkipFirstPage = false;
+
 
     /**
      * Writes the footer for a single page.
@@ -28,7 +32,12 @@ class PdfFooter implements PdfFooterInterface {
      * @param PdfTcpdf $objPdf
      * @return void
      */
-    public function writeFooter($objPdf) {
+    public function writeFooter($objPdf)
+    {
+
+        if ($this->bitSkipFirstPage && $objPdf->getPage() == 1) {
+            return;
+        }
 
         // Position at 1.5 cm from bottom
         $objPdf->SetY(-10);
@@ -48,17 +57,34 @@ class PdfFooter implements PdfFooterInterface {
      * @param string $strFooterAddon
      * @return void
      */
-    public function setStrFooterAddon($strFooterAddon) {
+    public function setStrFooterAddon($strFooterAddon)
+    {
         $this->strFooterAddon = $strFooterAddon;
     }
 
     /**
      * @return string
      */
-    public function getStrFooterAddon() {
+    public function getStrFooterAddon()
+    {
         return $this->strFooterAddon;
     }
 
+    /**
+     * @return bool
+     */
+    public function getBitSkipFirstPage(): bool
+    {
+        return $this->bitSkipFirstPage;
+    }
+
+    /**
+     * @param bool $bitSkipFirstPage
+     */
+    public function setBitSkipFirstPage(bool $bitSkipFirstPage)
+    {
+        $this->bitSkipFirstPage = $bitSkipFirstPage;
+    }
 
 
 }

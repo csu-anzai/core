@@ -73,4 +73,14 @@ You should use a life cycle service only in a controller or in another life cycl
 recommended to call a life cycle service from a model. This could create circular references and in
 general complicates the program flow.
 
+## Project specific life cycle
+
+You can also overwrite a defined lifecycle annotation for a specific model. Therefor you can use the
+`service_lifecycle` config key. This gives you the flexibility to use a different service which may
+extend the old service.
+
+    $config["service_lifecycle"] = [
+        \AGP\Contracts\System\ContractsMasteragreement::class => "foo_life_cycle_service"
+    ];
+
 [life_cycle_design]: img/life_cycle_design.png
