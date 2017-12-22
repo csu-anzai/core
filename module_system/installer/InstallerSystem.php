@@ -766,7 +766,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         }
 
         $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.4");
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.3");
         return $strReturn;
     }
 
