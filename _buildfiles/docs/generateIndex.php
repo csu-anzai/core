@@ -24,7 +24,7 @@ foreach ($arrModules as $strModule) {
             foreach ($arrDocs as $strFile) {
                 $strPath = $strDocPath."/".$strFile;
                 $strName = pathinfo($strFile, PATHINFO_FILENAME);
-                $strIndex .= "* [{$strName}](../{$strModule}/docs/{$strFile})\n";
+                $strIndex .= "* [{$strName}](../../{$strModule}/docs/{$strFile})\n";
 //            copy($strPath, __DIR__ . "/{$strModule}/{$strFile}");
             }
             $strIndex.= "\n";
