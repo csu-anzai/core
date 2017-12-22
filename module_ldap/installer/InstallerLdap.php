@@ -147,56 +147,18 @@ class InstallerLdap extends InstallerBase implements InstallerRemovableInterface
         $strReturn .= "Version found:\n\t Module: ".$arrModule["module_name"].", Version: ".$arrModule["module_version"]."\n\n";
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "4.6") {
-            $strReturn .= "Updating to 4.7...\n";
-            $this->updateModuleVersion("ldap", "4.7");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "4.7") {
-            $strReturn .= $this->update_47_471();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "4.7.1") {
-            $strReturn .= "Updating to 5.0...\n";
-            $this->updateModuleVersion("ldap", "5.0");
-        }
-        
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "5.0") {
-            $strReturn .= "Updating to 5.1...\n";
-            $this->updateModuleVersion("ldap", "5.1");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "5.1") {
-            $strReturn .= "Updating to 6.2...\n";
-            $this->updateModuleVersion("ldap", "6.2");
-        }
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if ($arrModule["module_version"] == "6.2") {
             $strReturn .= "Updating to 6.5...\n";
             $this->updateModuleVersion("ldap", "6.5");
         }
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.5") {
+            $strReturn .= "Updating to 6.6...\n";
+            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6");
+        }
+
         return $strReturn."\n\n";
-    }
-
-    private function update_47_471()
-    {
-        $strReturn = "Updating to 4.7.1...\n";
-
-        $strReturn .= "Updating schema\n";
-        $this->objDB->addColumn("user_group_ldap", "group_ldap_cfg", DbDatatypes::STR_TYPE_INT);
-        $this->objDB->addColumn("user_ldap", "user_ldap_cfg", DbDatatypes::STR_TYPE_INT);
-
-        $strReturn .= "Updating existing entries...\n";
-        $this->objDB->_pQuery("UPDATE ".$this->objDB->encloseTableName(_dbprefix_."user_group_ldap")." SET group_ldap_cfg = 0", array());
-        $this->objDB->_pQuery("UPDATE ".$this->objDB->encloseTableName(_dbprefix_."user_ldap")." SET user_ldap_cfg = 0", array());
-
-        $this->updateModuleVersion("ldap", "4.7.1");
-        return $strReturn;
     }
 
 }

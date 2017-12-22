@@ -72,12 +72,13 @@ class Indexer
                 $strContent = trim($strContent);
 
                 if (!empty($strContent)) {
+                    /* TODO: tbd: do we need to run it against the analyzer?
                     $objAnalyzer = new SearchStandardAnalyzer();
                     $objAnalyzer->analyze($strContent);
 
                     $arrResults = $objAnalyzer->getResults();
                     $strContent = implode(" ", array_keys($arrResults));
-
+                    */
                     $objFile->setStrSearchContent($strContent);
                     $objFile->updateObjectToDb();
 

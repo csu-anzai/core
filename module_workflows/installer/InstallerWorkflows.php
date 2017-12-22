@@ -147,42 +147,6 @@ class InstallerWorkflows extends InstallerBase implements InstallerRemovableInte
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         $strReturn .= "Version found:\n\t Module: ".$arrModule["module_name"].", Version: ".$arrModule["module_version"]."\n\n";
 
-
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "4.6") {
-            $strReturn .= "Updating to 4.7...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "4.7");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "4.7" || $arrModule["module_version"] == "4.7.1") {
-            $strReturn .= $this->update_47_475();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "4.7.5") {
-            $strReturn .= $this->update_475_476();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "4.7.6") {
-            $strReturn .= "Updating to 5.0...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "5.0");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "5.0") {
-            $strReturn .= "Updating to 5.1...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "5.1");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "5.1") {
-            $strReturn .= "Updating to 6.2...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2");
-        }
-
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "6.2") {
             $strReturn .= $this->update_62_65();
@@ -193,43 +157,14 @@ class InstallerWorkflows extends InstallerBase implements InstallerRemovableInte
             $strReturn .= $this->update_65_651();
         }
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.5.1") {
+            $strReturn .= "Updating to 6.6...\n";
+            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6");
+        }
+
         return $strReturn."\n\n";
 	}
-
-
-    private function update_47_475() {
-        $strReturn = "Updating 4.7 to 4.7.5...\n";
-
-        $strReturn .= "Removing messagesummary login-listeners...\n";
-
-        $objFilesystem = new Filesystem();
-        if(is_file(_realpath_."core/module_workflows/system/class_module_messagesummary_firstloginlistener.php")) {
-            $objFilesystem->fileDelete("/core/module_workflows/system/class_module_messagesummary_firstloginlistener.php");
-        }
-
-        if(is_file(_realpath_."project/system/class_module_messagesummary_firstloginlistener.php")) {
-            $objFilesystem->fileDelete("/project/system/class_module_messagesummary_firstloginlistener.php");
-        }
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "4.7.5");
-        return $strReturn;
-    }
-
-
-    private function update_475_476() {
-        $strReturn = "Updating database indexes\n";
-
-        $this->objDB->_pQuery("ALTER TABLE ".$this->objDB->encloseTableName(_dbprefix_."workflows")." ADD INDEX ( ".$this->objDB->encloseColumnName("workflows_class")." ) ", array());
-        $this->objDB->_pQuery("ALTER TABLE ".$this->objDB->encloseTableName(_dbprefix_."workflows")." ADD INDEX ( ".$this->objDB->encloseColumnName("workflows_responsible")." ) ", array());
-
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->objDB->flushQueryCache();
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "4.7.6");
-
-        return $strReturn;
-    }
 
     private function update_62_65() {
         $strReturn = "Adding new tables\n";

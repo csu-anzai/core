@@ -66,27 +66,15 @@ class InstallerJsonapi extends InstallerBase implements InstallerRemovableInterf
         $strReturn .= "Version found:\n\t Module: ".$arrModule["module_name"].", Version: ".$arrModule["module_version"]."\n\n";
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "0.1") {
-            $strReturn .= "Updating to 5.0...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "5.0");
-        }
-        
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "5.0") {
-            $strReturn .= "Updating to 5.1...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "5.1");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "5.1") {
-            $strReturn .= "Updating to 6.2...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if ($arrModule["module_version"] == "6.2") {
             $strReturn .= "Updating to 6.5...\n";
             $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5");
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.5") {
+            $strReturn .= "Updating to 6.6...\n";
+            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6");
         }
 
         return $strReturn."\n\n";

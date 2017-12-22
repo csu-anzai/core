@@ -1423,7 +1423,7 @@ abstract class Root
                      WHERE system_prev_id=?
                        AND system_id != '0'
                        ".$objORM->getDeletedWhereRestriction()."
-                     ORDER BY system_sort ASC";
+                     ORDER BY CASE WHEN system_sort < 0 THEN 9999999 ELSE system_sort END ASC";
 
         $arrReturn = array();
         $arrTemp = $this->objDB->getPArray($strQuery, array($strSystemid));

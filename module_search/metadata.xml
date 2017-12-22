@@ -5,12 +5,12 @@
         >
     <title>search</title>
     <description>The module search provides a full-text search for both, backend and portal. It respects permissions and status of all records.</description>
-    <version>6.5</version>
+    <version>6.6</version>
     <author>Kajona Team</author>
     <type>MODULE</type>
     <providesInstaller>TRUE</providesInstaller>
     <requiredModules>
-        <module name="system" version="6.5" />
-        <module name="packagemanager" version="6.5" />
+        <module name="system" version="6.6" />
+        <module name="packagemanager" version="6.6" />
     </requiredModules>
 </package>

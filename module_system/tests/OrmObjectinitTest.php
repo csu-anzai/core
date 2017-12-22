@@ -73,7 +73,7 @@ class OrmObjectinitTest extends Testbase
         $this->assertSame("longtext", $objObj->getStrLongtext());
         $this->assertSame(12345, $objObj->getIntInteger());
         $this->assertSame(20161223120000, $objObj->getIntBigint());
-        $this->assertSame(123.45, $objObj->getFloatDouble());
+        $this->assertSame(123.45, round($objObj->getFloatDouble(), 2));
         $this->assertEquals(false, $objObj->getBitBoolean());
 
         $objObj->setBitBoolean(true);

@@ -48,7 +48,7 @@ class Installer
     private $strForwardLink = "";
     private $strBackwardLink = "";
 
-    private $strVersion = "V 6.5";
+    private $strVersion = "V 6.6";
     private $strMinPhpVersion = "7.0";
 
     /**
@@ -308,6 +308,7 @@ class Installer
         //check for available modules
         $strMysqliInfo = "";
         $strSqlite3Info = "";
+        $strSqlsrvInfo = "";
         $strPostgresInfo = "";
         $strOci8Info = "";
         if (!in_array("mysqli", get_loaded_extensions())) {
@@ -315,6 +316,9 @@ class Installer
         }
         if (!in_array("pgsql", get_loaded_extensions())) {
             $strPostgresInfo = "<div class=\"alert alert-danger\">".$this->getLang("installer_dbdriver_na")." postgres</div>";
+        }
+        if (!in_array("sqlsrv", get_loaded_extensions())) {
+            $strSqlsrvInfo = "<div class=\"alert alert-danger\">".$this->getLang("installer_dbdriver_na")." postgres</div>";
         }
         if (in_array("sqlite3", get_loaded_extensions())) {
             $strSqlite3Info = "<div class=\"alert alert-info\">".$this->getLang("installer_dbdriver_sqlite3")."</div>";
@@ -340,6 +344,7 @@ class Installer
                 "mysqliInfo"   => $strMysqliInfo,
                 "sqlite3Info"  => $strSqlite3Info,
                 "postgresInfo" => $strPostgresInfo,
+                "sqlsrvInfo"   => $strSqlsrvInfo,
                 "oci8Info"     => $strOci8Info,
                 "cxWarning"    => $strCxWarning,
                 "postHostname" => isset($_POST["hostname"]) ? $_POST["hostname"] : "",

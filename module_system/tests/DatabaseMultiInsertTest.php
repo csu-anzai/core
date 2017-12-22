@@ -73,7 +73,7 @@ class DatabaseMultiInsertTest extends Testbase
 
             $this->assertEquals(10, $arrRow["temp_int"]);
             $this->assertEquals(13, $arrRow["temp_long"]);
-            $this->assertEquals(13.37, $arrRow["temp_double"]);
+            $this->assertEquals(13.37, round($arrRow["temp_double"], 2));
             $this->assertEquals("char10", $arrRow["temp_char10"]);
             $this->assertEquals("char20", $arrRow["temp_char20"]);
             $this->assertEquals("char100", $arrRow["temp_char100"]);

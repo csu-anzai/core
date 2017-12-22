@@ -21,7 +21,7 @@ define('util', ['jquery'], function ($) {
         if (window.opener) {
             return $('#' + strElementId, window.opener.document);
         } else if (parent){
-            return $('#' + strElementId, parent.document);
+            return parent.$('#' + strElementId);
         }
         else {
             return $('#' + strElementId);

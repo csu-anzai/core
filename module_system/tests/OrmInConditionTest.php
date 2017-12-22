@@ -68,7 +68,7 @@ class OrmInConditionTest extends Testbase
         $objDB = Carrier::getInstance()->getObjDB();
 
         $arrFields = array();
-        $arrFields["temp_systemid"] = array("char40", true);
+        $arrFields["temp_systemid"] = array("char40", false);
         $arrFields["temp_name"] = array("char254", true);
 
         $this->assertTrue($objDB->createTable("temp_propertyintest", $arrFields, array("temp_systemid")), "testDataBase createTable");

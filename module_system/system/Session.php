@@ -649,14 +649,19 @@ final class Session
     }
 
     /**
-     * Resets the internal reference to the current user, e.g. to load new values from the database
+     * Resets the internal reference to the current user, e.g. to load new values from the database.
+     * Reloads the group-assignment of a user
      *
      * @return void
+     * @throws Exception
      */
     public function resetUser()
     {
         if ($this->getUserID() != "") {
-            $this->objUser = Objectfactory::getInstance()->getObject($this->getUserID());
+            $this->objUser = Objectfactory::getInstance()->getObject($this->getUserID(), true);
+            //reload group-ids to the session
+            $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $this->objUser->getArrGroupIds()));
+            $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $this->objUser->getArrShortGroupIds()));
         }
     }
 
@@ -782,14 +787,6 @@ final class Session
         }
 
         return $this->objInternalSession;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getBitLazyLoaded()
-    {
-        return $this->bitLazyLoaded;
     }
 
     /**
