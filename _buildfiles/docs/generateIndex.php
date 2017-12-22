@@ -1,6 +1,6 @@
 <?php
 
-$strBasePath = __DIR__ . "/../";
+$strBasePath = __DIR__ . "/../../";
 $arrModules = scandir($strBasePath);
 $strIndex = "# Index\n";
 
@@ -32,4 +32,4 @@ foreach ($arrModules as $strModule) {
     }
 }
 
-file_put_contents(__DIR__ . "/index.md", $strIndex);
+file_put_contents(__DIR__."/overview.md", $strIndex);
