@@ -48,7 +48,7 @@ class Installer
     private $strForwardLink = "";
     private $strBackwardLink = "";
 
-    private $strVersion = "V 6.5";
+    private $strVersion = "V 6.6";
     private $strMinPhpVersion = "7.0";
 
     /**

@@ -27,7 +27,6 @@ use Kajona\System\System\SystemSetting;
  */
 class InstallerSearch extends InstallerBase implements InstallerRemovableInterface {
 
-    private $bitIndexRebuild = false;
     private $bitIndexTablesUpToDate = false;
 
     public function install() {
@@ -144,9 +143,10 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
             $this->updateModuleVersion("search", "6.5");
         }
 
-        if($this->bitIndexRebuild) {
-            $strReturn .= "Rebuilding search index...\n";
-            $this->updateIndex();
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.5") {
+            $strReturn .= "Updating to 6.6...\n";
+            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6");
         }
 
 
