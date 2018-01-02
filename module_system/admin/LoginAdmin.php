@@ -15,11 +15,12 @@ use Kajona\System\System\Link;
 use Kajona\System\System\Logger;
 use Kajona\System\System\RequestEntrypointEnum;
 use Kajona\System\System\ResponseObject;
+use Kajona\System\System\Security\PasswordValidatorInterface;
+use Kajona\System\System\Security\ValidationException;
 use Kajona\System\System\Session;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\UserUser;
 use Kajona\System\System\Wadlgenerator;
-
 
 /**
  * This class shows a little LoginScreen if the user is net yet logged in
@@ -32,10 +33,15 @@ use Kajona\System\System\Wadlgenerator;
  */
 class LoginAdmin extends AdminController implements AdminInterface
 {
-
     const SESSION_REFERER = "LOGIN_SESSION_REFERER";
     const SESSION_PARAMS = "LOGIN_SESSION_PARAMS";
     const SESSION_LOAD_FROM_PARAMS = "LOGIN_SESSION_LOAD_FROM_PARAMS";
+
+    /**
+     * @inject system_password_validator
+     * @var PasswordValidatorInterface
+     */
+    protected $objPasswordValidator;
 
     public function __construct()
     {
@@ -160,16 +166,25 @@ class LoginAdmin extends AdminController implements AdminInterface
                 $strPass1 = trim($this->getParam("password1"));
                 $strPass2 = trim($this->getParam("password2"));
 
-                if ($strPass1 == $strPass2 && checkText($strPass1, 3, 200) && $objUser->getStrUsername() == $this->getParam("username")) {
-                    if ($objUser->getObjSourceUser()->isPasswordResettable() && method_exists($objUser->getObjSourceUser(), "setStrPass")) {
-                        $objUser->getObjSourceUser()->setStrPass($strPass1);
-                        $objUser->getObjSourceUser()->updateObjectToDb();
-                    }
-                    $objUser->setStrAuthcode("");
-                    $objUser->updateObjectToDb();
-                    Logger::getInstance()->info("changed password of user ".$objUser->getStrUsername());
+                if ($strPass1 == $strPass2 && $objUser->getStrUsername() == $this->getParam("username")) {
+                    try {
+                        $bitReturn = $this->objPasswordValidator->validate($strPass1, $objUser);
+                        if ($bitReturn) {
+                            if ($objUser->getObjSourceUser()->isPasswordResettable() && method_exists($objUser->getObjSourceUser(), "setStrPass")) {
+                                $objUser->getObjSourceUser()->setStrPass($strPass1);
+                                $objUser->getObjSourceUser()->updateObjectToDb();
+                            }
+                            $objUser->setStrAuthcode("");
+                            $objUser->updateObjectToDb();
+                            Logger::getInstance()->info("changed password of user ".$objUser->getStrUsername());
 
-                    $strReturn .= $this->getLang("login_change_success", "user");
+                            $strReturn .= $this->getLang("login_change_success", "user");
+                        } else {
+                            $strReturn .= $this->getLang("login_change_error", "user");
+                        }
+                    } catch (ValidationException $objE) {
+                        $strReturn .= $objE->getMessage();
+                    }
                 } else {
                     $strReturn .= $this->getLang("login_change_error", "user");
                 }
