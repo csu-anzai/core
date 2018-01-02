@@ -32,6 +32,8 @@ use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\ResponseObject;
+use Kajona\System\System\Security\PasswordValidatorInterface;
+use Kajona\System\System\Security\ValidationException;
 use Kajona\System\System\Session;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemAspect;
@@ -57,9 +59,14 @@ use Kajona\System\System\Validators\EmailValidator;
  */
 class UserAdmin extends AdminEvensimpler implements AdminInterface
 {
-
     private $STR_USERFILTER_SESSION_KEY = "USERLIST_FILTER_SESSION_KEY";
     private $STR_GROUPFILTER_SESSION_KEY = "GROUPLIST_FILTER_SESSION_KEY";
+
+    /**
+     * @inject system_password_validator
+     * @var PasswordValidatorInterface
+     */
+    protected $objPasswordValidator;
 
     //languages, the admin area could display (texts)
     protected $arrLanguages = [];
@@ -672,6 +679,8 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
             $objSubsystem = $objUsersources->getUsersource($this->getParam("usersource"));
             $objBlankUser = $objSubsystem->getNewUser();
             $objForm = $this->getUserForm($objBlankUser, false, "new");
+
+            $this->checkAdditionalNewData($objForm);
         } else {
             if (!$this->getObjModule()->rightEdit()) {
                 if ($this->getSystemid() == $this->objSession->getUserID() && SystemSetting::getConfigValue("_user_selfedit_") == "true") {
@@ -685,13 +694,11 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
             $objUser = Objectfactory::getInstance()->getObject($this->getSystemid());
             $objSourceUser = $objUsersources->getSourceUser($objUser);
             $objForm = $this->getUserForm($objSourceUser, $bitSelfedit, "edit");
+
+            $this->checkAdditionalEditData($objForm, $objUser);
         }
 
-
-        if (($this->getParam("mode") == "new" && !$this->checkAdditionalNewData($objForm))
-            | ($this->getParam("mode") == "edit" && !$this->checkAdditionalEditData($objForm))
-            | !$objForm->validateForm()
-        ) {
+        if (!$objForm->validateForm()) {
             return $this->actionNewUser($this->getParam("mode"), $objForm);
         }
 
@@ -1520,14 +1527,10 @@ HTML;
 
     /**
      * @param AdminFormgenerator $objForm
-     *
-     * @return bool
      */
     protected function checkAdditionalNewData(AdminFormgenerator $objForm)
     {
-
         $arrParams = Carrier::getAllParams();
-        $bitPass = true;
         if (isset($arrParams["user_pass"])) {
             $bitPass = $this->checkPasswords($this->getParam("user_pass"), $this->getParam("user_pass2"));
             if (!$bitPass) {
@@ -1540,19 +1543,20 @@ HTML;
             $objForm->addValidationError("user_username", $this->getLang("required_user_existing"));
         }
 
-        return $bitPass && $bitUsername;
+        try {
+            $this->objPasswordValidator->validate($this->getParam("user_pass"));
+        } catch (ValidationException $objE) {
+            $objForm->addValidationError("user_password", $objE->getMessage());
+        }
     }
 
     /**
      * @param AdminFormgenerator $objForm
-     *
-     * @return bool
+     * @param UserUser $objUser
      */
-    protected function checkAdditionalEditData(AdminFormgenerator $objForm)
+    protected function checkAdditionalEditData(AdminFormgenerator $objForm, UserUser $objUser)
     {
-
         $arrParams = Carrier::getAllParams();
-        $bitPass = true;
         if (isset($arrParams["user_pass"])) {
             $bitPass = $this->checkPasswords($this->getParam("user_pass"), $this->getParam("user_pass2"));
             if (!$bitPass) {
@@ -1565,11 +1569,14 @@ HTML;
             $objUser = $arrUsers[0];
             if ($objUser->getSystemid() != $this->getSystemid()) {
                 $objForm->addValidationError("user_username", $this->getLang("required_user_existing"));
-                $bitPass = false;
             }
         }
 
-        return $bitPass;
+        try {
+            $this->objPasswordValidator->validate($this->getParam("user_pass"), $objUser);
+        } catch (ValidationException $objE) {
+            $objForm->addValidationError("password", $objE->getMessage());
+        }
     }
 
     /**
