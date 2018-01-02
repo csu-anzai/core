@@ -11,7 +11,7 @@ namespace Kajona\System\System\Security;
 use Kajona\System\System\UserUser;
 
 /**
- * PolicyInterface
+ * A policy represents a specific constraint which can be used to validate a password
  *
  * @package module_system
  * @author christoph.kappestein@artemeon.de

@@ -11,7 +11,8 @@ namespace Kajona\System\System\Security;
 use Kajona\System\System\UserUser;
 
 /**
- * PasswordValidatorInterface
+ * The password validator checks whether the password of a user follows specific rules. It gets used every time a user
+ * wants to update or create a password
  *
  * @package module_system
  * @author christoph.kappestein@artemeon.de
@@ -20,11 +21,14 @@ use Kajona\System\System\UserUser;
 interface PasswordValidatorInterface
 {
     /**
-     * Validates whether the provided password follows the rules
+     * Validates whether the provided password follows the rules. MUST throw an ValidationException in case the password
+     * does not met the requirements. The method returns basically only true since in an error case it MUST throw an
+     * exception
      *
      * @param string $strPassword
      * @param UserUser|null $objUser
      * @return bool
+     * @throws ValidationException
      */
     public function validate($strPassword, UserUser $objUser = null);
 }

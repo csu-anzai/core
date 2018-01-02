@@ -12,7 +12,7 @@ use Kajona\System\System\Lang;
 use Kajona\System\System\UserUser;
 
 /**
- * PasswordValidator
+ * Default password validator implementation. You can add different kind of policies to alter the behaviour
  *
  * @package module_system
  * @author christoph.kappestein@artemeon.de
@@ -49,10 +49,7 @@ class PasswordValidator implements PasswordValidatorInterface
     }
 
     /**
-     * @param string $strPassword
-     * @param UserUser|null $objUser
-     * @return bool
-     * @throws ValidationException
+     * @inheritdoc
      */
     public function validate($strPassword, UserUser $objUser = null)
     {
