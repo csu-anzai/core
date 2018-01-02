@@ -32,6 +32,7 @@ use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\ResponseObject;
+use Kajona\System\System\Security\PasswordRotator;
 use Kajona\System\System\Security\PasswordValidatorInterface;
 use Kajona\System\System\Security\ValidationException;
 use Kajona\System\System\Session;
@@ -67,6 +68,12 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * @var PasswordValidatorInterface
      */
     protected $objPasswordValidator;
+
+    /**
+     * @inject system_password_rotator
+     * @var PasswordRotator
+     */
+    protected $objPasswordRotator;
 
     //languages, the admin area could display (texts)
     protected $arrLanguages = [];
@@ -375,33 +382,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
         /** @var UserUser $objUser */
         $objUser = Objectfactory::getInstance()->getObject($this->getSystemid());
 
-        //add a one-time token and reset the password
-        $strToken = generateSystemid();
-        $objUser->setStrAuthcode($strToken);
-        $objUser->updateObjectToDb();
-
-        $strActivationLink = Link::getLinkAdminHref("login", "pwdReset", "&systemid=".$objUser->getSystemid()."&authcode=".$strToken, false);
-
-        Carrier::getInstance()->getObjLang()->setStrTextLanguage($objUser->getStrAdminlanguage());
-
-        $objMail = new Mail();
-        $objMail->addTo($objUser->getStrEmail());
-        $objMail->setSubject($this->getLang("user_password_resend_subj"));
-        $objMail->setText($this->getLang("user_password_resend_body", [$strActivationLink]));
-
-        if ($this->getParam("form_user_sendusername") != "") {
-            $objMail->setText($this->getLang("user_password_resend_body_username", [$objUser->getStrUsername(), $strActivationLink]));
-        }
-
-        $objMail->sendMail();
-
-        // insert log entry
-        $objNow = new Date();
-        $objPwChange = new SystemPwchangehistory();
-        $objPwChange->setStrTargetUser($objUser->getStrSystemid());
-        $objPwChange->setStrActivationLink($strActivationLink);
-        $objPwChange->setStrChangeDate($objNow->getLongTimestamp());
-        $objPwChange->updateObjectToDb();
+        $this->objPasswordRotator->sendResetPassword($objUser, $this->getParam("form_user_sendusername") != "");
 
         $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul")));
         return $strReturn;
