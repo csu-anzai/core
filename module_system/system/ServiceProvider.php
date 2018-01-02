@@ -2,6 +2,7 @@
 
 namespace Kajona\System\System;
 
+use Kajona\System\System\Security\PasswordRotator;
 use Kajona\System\System\Security\PasswordValidator;
 use Kajona\System\System\Security\Policy;
 use Pimple\Container;
@@ -100,6 +101,11 @@ class ServiceProvider implements ServiceProviderInterface
      * @see \Kajona\System\System\MessagingMessagehandler
      */
     const STR_MESSAGE_HANDLER = "system_message_handler";
+
+    /**
+     * @see \Kajona\System\System\Security\PasswordRotator
+     */
+    const STR_PASSWORD_ROTATOR = "system_password_rotator";
 
     /**
      * @see \Kajona\System\System\Security\PasswordValidatorInterface
@@ -205,5 +211,13 @@ class ServiceProvider implements ServiceProviderInterface
 
             return $objValidator;
         };
+
+        $objContainer[self::STR_PASSWORD_ROTATOR] = function ($c) {
+            return new PasswordRotator(
+                $c[self::STR_LANG],
+                $c[self::STR_CONFIG]->getConfig("password_rotation_days")
+            );
+        };
+
     }
 }
