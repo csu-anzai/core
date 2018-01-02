@@ -33,6 +33,7 @@ use Kajona\System\System\SystemChangelog;
 use Kajona\System\System\SystemCommon;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemPwchangehistory;
+use Kajona\System\System\SystemPwHistory;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserUser;
@@ -253,6 +254,10 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         // idgenerator
         $strReturn .= "Installing idgenerator table...\n";
         $objManager->createTable(IdGenerator::class);
+
+        // password history
+        $strReturn .= "Installing password history...\n";
+        $objManager->createTable(SystemPwHistory::class);
 
         //Now we have to register module by module
 
