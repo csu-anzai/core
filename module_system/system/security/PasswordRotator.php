@@ -17,7 +17,7 @@ use Kajona\System\System\SystemPwHistory;
 use Kajona\System\System\UserUser;
 
 /**
- * PasswordRotator
+ * Service which sends a reminder to users to change the password after a specific amount of days
  *
  * @package module_system
  * @author christoph.kappestein@artemeon.de
