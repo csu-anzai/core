@@ -55,9 +55,7 @@ class PasswordRotator
             return;
         }
 
-        $intDay = 1000000;
-        $intOffset = $this->intDays * $intDay;
-        $arrUsers = SystemPwHistory::getPendingUsers($intOffset);
+        $arrUsers = SystemPwHistory::getPendingUsers($this->intDays);
 
         foreach ($arrUsers as $objUser) {
             $this->sendResetPassword($objUser);
