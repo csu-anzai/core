@@ -562,6 +562,11 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6");
         }
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.6") {
+            $strReturn .= $this->update_66_661();
+        }
+
         return $strReturn."\n\n";
     }
 
@@ -772,6 +777,20 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.3");
+        return $strReturn;
+    }
+
+    private function update_66_661()
+    {
+        $strReturn = "Updating 6.6 to 6.6.1...\n";
+
+        // password history
+        $strReturn .= "Installing password history...\n";
+        $objManager = new OrmSchemamanager();
+        $objManager->createTable(SystemPwHistory::class);
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6.1");
         return $strReturn;
     }
 
