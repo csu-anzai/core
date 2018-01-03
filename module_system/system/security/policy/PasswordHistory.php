@@ -44,7 +44,7 @@ class PasswordHistory extends PolicyAbstract
             return true;
         }
 
-        return SystemPwHistory::isPasswordInHistory($objUser, $strPassword, $this->intLength);
+        return !SystemPwHistory::isPasswordInHistory($objUser, $strPassword, $this->intLength);
     }
 
     /**

@@ -123,18 +123,16 @@ class SystemPwHistory extends Model implements ModelInterface, AdminListableInte
      */
     public static function isPasswordInHistory(UserUser $objUser, $strPassword, $intLength)
     {
-        $objORM = new OrmObjectlist();
-        $objORM->addWhereRestriction(new OrmPropertyCondition("strTargetUser", OrmComparatorEnum::Equal(), $objUser->getSystemid()));
-        $objORM->addOrderBy(new OrmObjectlistOrderby("history_changedate DESC"));
-
-        $arrPwHistory = $objORM->getObjectList(get_called_class(), "", 0, $intLength);
         $objInteralUser = $objUser->getObjSourceUser();
-
         if ($objInteralUser instanceof UsersourcesUserKajona) {
-            foreach ($arrPwHistory as $objPwHistory) {
+            $strPrefix = _dbprefix_;
+            $strQuery = "SELECT history_pass FROM {$strPrefix}user_pwhistory WHERE history_targetuser = ? ORDER BY history_changedate DESC";
+            $arrPwHistory = Database::getInstance()->getPArray($strQuery, [$objUser->getSystemid()], 0, $intLength);
+
+            foreach ($arrPwHistory as $arrRow) {
                 /** @var SystemPwHistory $objPwHistory */
                 $strPass = UsersourcesSourceKajona::encryptPassword($strPassword, $objInteralUser->getStrSalt());
-                if ($strPass == $objPwHistory->getStrPass()) {
+                if ($strPass == $arrRow["history_pass"]) {
                     return true;
                 }
             }
