@@ -125,6 +125,7 @@ class LoginAdmin extends AdminController implements AdminInterface
      * Creates a form in order to change the password - if the authcode is valid
      *
      * @return string
+     * @permissions anonymous
      */
     protected function actionPwdReset()
     {
@@ -137,31 +138,7 @@ class LoginAdmin extends AdminController implements AdminInterface
         $objUser = new UserUser($this->getParam("systemid"));
 
         if ($objUser->getStrAuthcode() != "" && $this->getParam("authcode") == $objUser->getStrAuthcode() && $objUser->getStrUsername() != "") {
-            if ($this->getParam("reset") == "") {
-                //Loading a small form to change the password
-                $arrTemplate = array();
-                $strForm = "";
-                $strForm .= $this->objToolkit->getTextRow($this->getLang("login_password_form_intro", "user"));
-                $strForm .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "pwdReset"));
-                $strForm .= $this->objToolkit->formInputText("username", $this->getLang("login_loginUser", "user"), "", "inputTextShort");
-                $strForm .= $this->objToolkit->formInputPassword("password1", $this->getLang("login_loginPass", "user"), "", "inputTextShort");
-                $strForm .= $this->objToolkit->formInputPassword("password2", $this->getLang("login_loginPass2", "user"), "", "inputTextShort");
-                $strForm .= $this->objToolkit->formInputSubmit($this->getLang("login_changeButton", "user"), "", "", "inputSubmitShort");
-                $strForm .= $this->objToolkit->formInputHidden("reset", "reset");
-                $strForm .= $this->objToolkit->formInputHidden("authcode", $this->getParam("authcode"));
-                $strForm .= $this->objToolkit->formInputHidden("systemid", $this->getParam("systemid"));
-                $strForm .= $this->objToolkit->formClose();
-                $arrTemplate["form"] = $strForm;
-                $arrTemplate["loginTitle"] = $this->getLang("login_loginTitle", "user");
-                $arrTemplate["loginJsInfo"] = $this->getLang("login_loginJsInfo", "user");
-                $arrTemplate["loginCookiesInfo"] = $this->getLang("login_loginCookiesInfo", "user");
-                //An error occurred?
-                if ($this->getParam("loginerror") == 1) {
-                    $arrTemplate["error"] = $this->getLang("login_loginError", "user");
-                }
-
-                $strReturn = $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "login_form");
-            } else {
+            if ($this->getParam("reset") != "") {
                 //check the submitted passwords.
                 $strPass1 = trim($this->getParam("password1"));
                 $strPass2 = trim($this->getParam("password2"));
@@ -178,23 +155,52 @@ class LoginAdmin extends AdminController implements AdminInterface
                             $objUser->updateObjectToDb();
                             Logger::getInstance()->info("changed password of user ".$objUser->getStrUsername());
 
-                            $strReturn .= $this->getLang("login_change_success", "user");
+                            return $this->objToolkit->warningBox($this->getLang("login_change_success", "user"));
                         } else {
-                            $strReturn .= $this->getLang("login_change_error", "user");
+                            $strReturn .= $this->objToolkit->warningBox($this->getLang("login_change_error", "user"));
                         }
                     } catch (ValidationException $objE) {
-                        $strReturn .= $objE->getMessage();
+                        $strReturn .= $this->objToolkit->warningBox($objE->getMessage());
                     }
                 } else {
-                    $strReturn .= $this->getLang("login_change_error", "user");
+                    $strReturn .= $this->objToolkit->warningBox($this->getLang("login_change_error", "user"));
                 }
             }
+
+            $strReturn .= $this->getPwdResetForm();
         } else {
-            $strReturn .= $this->getLang("login_change_error", "user");
+            $strReturn .= $this->objToolkit->warningBox($this->getLang("login_change_error", "user"));
         }
 
 
         return $strReturn;
+    }
+
+    private function getPwdResetForm()
+    {
+        //Loading a small form to change the password
+        $arrTemplate = array();
+        $strForm = "";
+        $strForm .= $this->objToolkit->getTextRow($this->getLang("login_password_form_intro", "user"));
+        $strForm .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "pwdReset"));
+        $strForm .= $this->objToolkit->formInputText("username", $this->getLang("login_loginUser", "user"), "", "inputTextShort");
+        $strForm .= $this->objToolkit->formInputPassword("password1", $this->getLang("login_loginPass", "user"), "", "inputTextShort");
+        $strForm .= $this->objToolkit->formInputPassword("password2", $this->getLang("login_loginPass2", "user"), "", "inputTextShort");
+        $strForm .= $this->objToolkit->formInputSubmit($this->getLang("login_changeButton", "user"), "", "", "inputSubmitShort");
+        $strForm .= $this->objToolkit->formInputHidden("reset", "reset");
+        $strForm .= $this->objToolkit->formInputHidden("authcode", $this->getParam("authcode"));
+        $strForm .= $this->objToolkit->formInputHidden("systemid", $this->getParam("systemid"));
+        $strForm .= $this->objToolkit->formClose();
+        $arrTemplate["form"] = $strForm;
+        $arrTemplate["loginTitle"] = $this->getLang("login_loginTitle", "user");
+        $arrTemplate["loginJsInfo"] = $this->getLang("login_loginJsInfo", "user");
+        $arrTemplate["loginCookiesInfo"] = $this->getLang("login_loginCookiesInfo", "user");
+        //An error occurred?
+        if ($this->getParam("loginerror") == 1) {
+            $arrTemplate["error"] = $this->getLang("login_loginError", "user");
+        }
+
+        return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "login_form");
     }
 
     /**
