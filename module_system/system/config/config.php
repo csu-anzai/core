@@ -58,6 +58,12 @@
     $config['loginproviders']       = "kajona";                        //A chain of login-providers, each implementing a single usersource. The providers
                                                                        //are queried in the order of appearance. The list is comma-separated, no blanks allowed.
 
+    $config['password_validator']   = [
+        'minlength'  => [6],
+        'complexity' => [1, 0, 1, 0],
+        'blacklist'  => [],
+    ];
+
 //--caching ---------------------------------------------------------------------------------------------
 
     $config['textcachetime']        = 1;                               //Number of seconds language-files are cached. Cached entries are shared between sessions. Reduce this amount during
