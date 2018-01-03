@@ -116,6 +116,9 @@ class SystemPwHistory extends Model implements ModelInterface, AdminListableInte
     }
 
     /**
+     * Returns whether the provided password was already used by the user in the past. The length parameter specifies
+     * the last x used password which are checked
+     *
      * @param UserUser $objUser
      * @param string $strPassword
      * @param int $intLength
@@ -145,6 +148,7 @@ class SystemPwHistory extends Model implements ModelInterface, AdminListableInte
      * Returns all users which need to change the password
      *
      * @param int $intOffset
+     * @return UserUser[]
      */
     public static function getPendingUsers(int $intOffset)
     {
