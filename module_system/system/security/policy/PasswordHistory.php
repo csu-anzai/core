@@ -44,7 +44,7 @@ class PasswordHistory extends PolicyAbstract
             return true;
         }
 
-        return !SystemPwHistory::isPasswordInHistory($objUser, $strPassword, $this->intLength);
+        return $this->hasPasswordNotUsed($strPassword, $objUser);
     }
 
     /**
@@ -55,5 +55,15 @@ class PasswordHistory extends PolicyAbstract
         return ["user_password_validate_passwordhistory", "user", [
             $this->intLength
         ]];
+    }
+
+    /**
+     * @param string $strPassword
+     * @param UserUser $objUser
+     * @return bool
+     */
+    protected function hasPasswordNotUsed($strPassword, UserUser $objUser)
+    {
+        return !SystemPwHistory::isPasswordInHistory($objUser, $strPassword, $this->intLength);
     }
 }
