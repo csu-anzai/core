@@ -123,6 +123,10 @@
 
 //--services --------------------------------------------------------------------------------------------
 
+    //Example how to override a specific service implementation in the project config. This can be used to change the
+    //the behaviour of a service according to the needs of a customer. Because you use a different FQCN for the service
+    //you may also extend the standard service and change only specific methods. This helps to reuse existing code and
+    //simplifies updating project specific code
     $config["service_provider"] = [
         /*
         \AGP\Contracts\System\ServiceProvider::STR_DEPLOY_KEY_FINDER => function($c){
