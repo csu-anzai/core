@@ -59,9 +59,9 @@
                                                                        //are queried in the order of appearance. The list is comma-separated, no blanks allowed.
 
     $config['password_validator']   = [
-        'minlength'  => [6],
-        'complexity' => [1, 0, 1, 0],
-        'blacklist'  => [],
+        'minlength'  => [6],                                           //Minimum length of the provided password
+        'complexity' => [1, 0, 1, 0],                                  //Password must contain the following char types (alpha-lower, alpha-upper, digit, special)
+        'blacklist'  => [],                                            //Blacklist of specific words which are forbidden in the password
     ];
 
 //--caching ---------------------------------------------------------------------------------------------
