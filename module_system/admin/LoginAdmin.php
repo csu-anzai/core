@@ -320,6 +320,9 @@ class LoginAdmin extends AdminController implements AdminInterface
                 }
             }
 
+            // at the moment it is required to use the "old" url style since otherwise it could happen that the
+            // location.href call does not trigger a redirect (in case only the url hash has changed) and thus we would
+            // not load a different template and see the main content inside the login template
             return Link::clientRedirectManual(_indexpath_."?admin=1&module=".$strModule);
         }
     }
