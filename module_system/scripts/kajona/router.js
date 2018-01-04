@@ -53,10 +53,9 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
             url = url.substr(url.indexOf("#")+1);
         }
 
-        if(url.trim() === '') {
-            if($('#loginContainer')) {
-                return;
-            }
+        if ($('#loginContainer').length > 0 && url.trim() === '') {
+            url = "login/login";
+        } else if (url.trim() === '') {
             url = "dashboard";
         }
 
