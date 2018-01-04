@@ -145,6 +145,22 @@ class SystemPwHistory extends Model implements ModelInterface, AdminListableInte
     }
 
     /**
+     * @param UserUser $objUser
+     * @return Date|null
+     */
+    public static function getLastChangeDate(UserUser $objUser)
+    {
+        $strPrefix = _dbprefix_;
+        $strQuery = "SELECT history_changedate FROM {$strPrefix}user_pwhistory WHERE history_targetuser = ? ORDER BY history_changedate DESC";
+        $arrRow = Database::getInstance()->getPRow($strQuery, [$objUser->getSystemid()]);
+        if (isset($arrRow["history_changedate"])) {
+            return new Date($arrRow["history_changedate"]);
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Returns all users which need to change the password. The days argument specifies the amount of days after which
      * a user needs to change the password
      *
@@ -167,22 +183,6 @@ class SystemPwHistory extends Model implements ModelInterface, AdminListableInte
             $objUser = Objectfactory::getInstance()->getObject($arrRow["history_targetuser"]);
 
             if ($objUser instanceof UserUser) {
-                // ignore deleted users
-                if ($objUser->getIntRecordDeleted() == 1) {
-                    continue;
-                }
-
-                // only active users
-                if ($objUser->getIntRecordStatus() != 1) {
-                    continue;
-                }
-
-                // check whether source is still kajona
-                $objInteralUser = $objUser->getObjSourceUser();
-                if (!$objInteralUser instanceof UsersourcesUserKajona) {
-                    continue;
-                }
-
                 $arrUsers[] = $objUser;
             }
         }
