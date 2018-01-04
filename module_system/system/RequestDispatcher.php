@@ -127,7 +127,7 @@ class RequestDispatcher
         $objHelper = new SkinAdminController();
 
         //validate login-status / process login-request
-        if ($strModule != "login" /*&& $this->objSession->isLoggedin()*/) {
+        if ($strModule != "login" && $this->objSession->isLoggedin()) {
             //try to load the module
             $objModuleRequested = SystemModule::getModuleByName($strModule);
             if (empty($strModule) || $objModuleRequested != null) {
@@ -254,8 +254,7 @@ class RequestDispatcher
             }
 
             if (count(Carrier::getInstance()->getObjDB()->getTables()) == 0 && file_exists(_realpath_."installer.php")) {
-                ResponseObject::getInstance()->setStrRedirectUrl(_webpath_."/installer.php");
-                return "";
+                return Link::clientRedirectManual(_webpath_."/installer.php");
             }
 
             $objHelper = new SkinAdminController();
@@ -263,9 +262,8 @@ class RequestDispatcher
             $strReturn = $objLogin->action($strAction);
 
             if (Carrier::getInstance()->getParam("contentFill") != "1") {
-                $strReturn = $objHelper->actionGenerateLoginTemplate($strReturn);
+                $strReturn = $objHelper->actionGenerateLoginTemplate("<div class='loadingContainer'></div>");
             }
-
         }
 
         return $strReturn;
