@@ -72,6 +72,11 @@ class PasswordRotator
      */
     public function isPasswordExpired(UserUser $objUser)
     {
+        // in case we have no days from the config we never expire
+        if (empty($this->intDays)) {
+            return false;
+        }
+
         // ignore deleted users
         if ($objUser->getIntRecordDeleted() == 1) {
             return false;
