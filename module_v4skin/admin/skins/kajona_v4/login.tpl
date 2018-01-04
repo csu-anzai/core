@@ -57,9 +57,5 @@
     </div>
 </div>
 
-<script type="text/javascript">
-    document.getElementById('name').focus();
-</script>
-
 </body>
 </html>
