@@ -172,3 +172,5 @@ $lang["user_password_validate_complexity"] = "The password must include the foll
 $lang["user_password_validate_minlength"] = "The password must be at least {0} characters long";
 $lang["user_password_validate_passwordhistory"] = "The password was previously used";
 $lang["user_password_validate_username"] = "The password must not contain characters from the username";
+
+$lang["reset_reason_expired"] = "Your password is expired. Please choose a new password along with providing your username.";

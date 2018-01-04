@@ -171,3 +171,5 @@ $lang["user_password_validate_complexity"] = "Das Passwort muss mindestens folge
 $lang["user_password_validate_minlength"] = "Das Passwort muss mindestens {0} Zeichen lang sein";
 $lang["user_password_validate_passwordhistory"] = "Das Passwort wurde bereits verwendet";
 $lang["user_password_validate_username"] = "Das Passwort darf keine Zeichen aus dem Benutzernamen enthalten";
+
+$lang["reset_reason_expired"] = "Ihr Passwort is abgelaufen. Bitte vergeben Sie ein neues Passwort unter Angabe des zugehörigen Benutzernamens.";
