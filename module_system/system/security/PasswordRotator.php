@@ -14,6 +14,7 @@ use Kajona\System\System\Link;
 use Kajona\System\System\Mail;
 use Kajona\System\System\SystemPwchangehistory;
 use Kajona\System\System\SystemPwHistory;
+use Kajona\System\System\Usersources\UsersourcesUserKajona;
 use Kajona\System\System\UserUser;
 
 /**
@@ -58,8 +59,40 @@ class PasswordRotator
         $arrUsers = SystemPwHistory::getPendingUsers($this->intDays);
 
         foreach ($arrUsers as $objUser) {
-            $this->sendResetPassword($objUser);
+            if ($this->isPasswordExpired($objUser)) {
+                $this->sendResetPassword($objUser);
+            }
         }
+    }
+
+    /**
+     * @param UserUser $objUser
+     * @param int $intDays
+     * @return bool
+     */
+    public function isPasswordExpired(UserUser $objUser)
+    {
+        // ignore deleted users
+        if ($objUser->getIntRecordDeleted() == 1) {
+            return false;
+        }
+
+        // ignore non-active users
+        if ($objUser->getIntRecordStatus() != 1) {
+            return false;
+        }
+
+        $objInternalUser = $objUser->getObjSourceUser();
+        if ($objInternalUser instanceof UsersourcesUserKajona) {
+            $objNow = new Date();
+            $objChangeDate = SystemPwHistory::getLastChangeDate($objUser);
+            if ($objChangeDate instanceof Date) {
+                $intDiff = $objNow->getTimeInOldStyle() - $objChangeDate->getTimeInOldStyle();
+                return $intDiff > ((60 * 60 * 24) * $this->intDays);
+            }
+        }
+
+        return false;
     }
 
     /**
