@@ -127,7 +127,7 @@ class RequestDispatcher
         $objHelper = new SkinAdminController();
 
         //validate login-status / process login-request
-        if ($strModule != "login" /*&& $this->objSession->isLoggedin()*/) {
+        if ($strModule != "login") {
             //try to load the module
             $objModuleRequested = SystemModule::getModuleByName($strModule);
             if (empty($strModule) || $objModuleRequested != null) {
