@@ -30,7 +30,7 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
 {
     /**
      * @param AdminController $objAdminModule
-     * @permissions anonymous
+     * @permissions view
      * @return string
      */
     public function actionGetPathNavigation(AdminController $objAdminModule)
@@ -40,7 +40,7 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
 
     /**
      * @param AdminController $objAdminModule
-     * @permissions anonymous
+     * @permissions view
      * @return string
      */
     public function actionGetQuickHelp(AdminController $objAdminModule)
@@ -50,7 +50,7 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
 
     /**
      * @param $strContent
-     * @permissions anonymous
+     * @permissions view
      * @return string
      */
     public function actionGenerateMainTemplate($strContent)
@@ -83,7 +83,7 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
 
     /**
      * @param $strContent
-     * @permissions anonymous
+     * @permissions view
      * @return string
      */
     public function actionGenerateFolderviewTemplate($strContent)
@@ -100,7 +100,7 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
 
     /**
      * @param $strContent
-     * @permissions anonymous
+     * @permissions view
      * @return string
      */
     public function actionGenerateLoginTemplate($strContent)
@@ -117,7 +117,7 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
     }
 
     /**
-     * @permissions anonymous
+     * @permissions view
      * @responseType html
      */
     protected function actionGetBackendNavi()
@@ -126,7 +126,7 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
     }
 
     /**
-     * @permissions anonymous
+     * @permissions view
      * @responseType html
      */
     protected function actionGetLanguageswitch()
