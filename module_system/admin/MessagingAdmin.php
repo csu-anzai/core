@@ -426,7 +426,7 @@ JS;
     }
 
     /**
-     * @permissions view
+     * @permissions edit
      * @return string
      */
     protected function actionNew()
