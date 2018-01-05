@@ -32,6 +32,9 @@
     $config['dbprefix']             = "%%defaultprefix%%";             //table-prefix
     $config['dbport']               = "%%defaultport%%";               //Database port, default: ""
 
+    $config['dbexport']             = "default";                       //the way to import / export database dumps
+                                                                       //default: binaries provided by the driver
+                                                                       //internal: requires the module 'dbdump' to be present, uses a core-internal dump import / export routine
 
 
 
