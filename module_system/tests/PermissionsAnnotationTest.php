@@ -21,8 +21,6 @@ class PermissionsAnnotationTest extends TestCase
 {
     public function permissionDataProvider()
     {
-        $this->markTestSkipped("Pending until Kajona 7.0");
-
         $arrReturn = [];
 
         //load all admin-classes
@@ -70,7 +68,6 @@ class PermissionsAnnotationTest extends TestCase
      */
     public function testPermissionsAnnotation($strClass, $strMethod)
     {
-        $this->markTestSkipped("Pending until Kajona 7.0");
         $objKajonaReflection = new Reflection($strClass);
         $strPermissions = $objKajonaReflection->getMethodAnnotationValue($strMethod, AbstractController::STR_PERMISSION_ANNOTATION);
         $this->assertNotEmpty($strPermissions, $strClass."::".$strMethod);
