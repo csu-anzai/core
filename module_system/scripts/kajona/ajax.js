@@ -46,9 +46,20 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
                 url: KAJONA_WEBPATH+strUrl,
                 data: strData
             }).done(
-                function(data) {
-                    objElement.html(data);
-                    tooltip.initTooltip();
+                function(data, status, xhr) {
+                    // detect file download
+                    var disposition = xhr.getResponseHeader('Content-Disposition');
+                    if (disposition && disposition.indexOf('filename') !== -1) {
+                        // @TODO workaround to fix old file downloads. In case the ajax request returns a
+                        // Content-Disposition header we redirect the client to the url to trigger the file download
+                        // through the browser. Note you need to update the url of your download to point the user
+                        // directly to the file instead of using a hash route. With this workaround the user downloads
+                        // the file twice, once through the ajax call and then through the redirect.
+                        location.href = KAJONA_WEBPATH+strUrl;
+                    } else {
+                        objElement.html(data);
+                        tooltip.initTooltip();
+                    }
                 }
             ).always(
                 function(response) {
