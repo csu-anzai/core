@@ -28,18 +28,31 @@ use Kajona\System\System\SystemSetting;
  */
 class SkinAdminController extends AdminEvensimpler implements AdminInterface
 {
-
+    /**
+     * @param AdminController $objAdminModule
+     * @permissions anonymous
+     * @return string
+     */
     public function actionGetPathNavigation(AdminController $objAdminModule)
     {
         return Carrier::getInstance()->getObjToolkit("admin")->getPathNavigation($objAdminModule->getArrOutputNaviEntries());
     }
 
+    /**
+     * @param AdminController $objAdminModule
+     * @permissions anonymous
+     * @return string
+     */
     public function actionGetQuickHelp(AdminController $objAdminModule)
     {
         return $objAdminModule->getQuickHelp();
     }
 
-
+    /**
+     * @param $strContent
+     * @permissions anonymous
+     * @return string
+     */
     public function actionGenerateMainTemplate($strContent)
     {
         $arrTemplate = ["content" => $strContent];
@@ -68,6 +81,11 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
         return $this->objTemplate->fillTemplateFile($arrTemplate, $strTemplate);
     }
 
+    /**
+     * @param $strContent
+     * @permissions anonymous
+     * @return string
+     */
     public function actionGenerateFolderviewTemplate($strContent)
     {
         $arrTemplate = ["content" => $strContent];
@@ -80,7 +98,11 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
         return $this->objTemplate->fillTemplateFile($arrTemplate, $strTemplate);
     }
 
-
+    /**
+     * @param $strContent
+     * @permissions anonymous
+     * @return string
+     */
     public function actionGenerateLoginTemplate($strContent)
     {
         $arrTemplate = ["content" => $strContent];
@@ -95,6 +117,7 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
     }
 
     /**
+     * @permissions anonymous
      * @responseType html
      */
     protected function actionGetBackendNavi()
@@ -103,6 +126,7 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
     }
 
     /**
+     * @permissions anonymous
      * @responseType html
      */
     protected function actionGetLanguageswitch()
