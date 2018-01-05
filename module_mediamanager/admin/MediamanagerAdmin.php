@@ -390,6 +390,8 @@ HTML;
     /**
      * Uploads or shows the form to upload a file
      *
+     * @TODO check whether method is used
+     * @permissions right1
      * @return string
      */
     private function actionUploadFileInternal()
@@ -418,7 +420,7 @@ HTML;
      * Synchronizes all repos available
      *
      * @return string
-     * @permission edit
+     * @permissions edit
      * @autoTestable
      */
     protected function actionMassSync()
@@ -471,6 +473,7 @@ HTML;
     /**
      * Returns details and additional functions handling the current image.
      *
+     * @permissions view
      * @return string
      */
     protected function actionImageDetails()
@@ -719,6 +722,7 @@ HTML;
      * By default, the methods takes two params into account: folder and form_element
      *
      * @return string
+     * @permissions view
      * @autoTestable
      */
     protected function actionFolderListFolderview()

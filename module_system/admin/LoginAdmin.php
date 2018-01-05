@@ -66,6 +66,7 @@ class LoginAdmin extends AdminController implements AdminInterface
     /**
      * Creates a small login-field
      *
+     * @permissions anonymous
      * @return string
      */
     protected function actionLogin()
@@ -107,6 +108,7 @@ class LoginAdmin extends AdminController implements AdminInterface
     /**
      * Creates a form in order to change the password - if the authcode is valid
      *
+     * @permissions anonymous
      * @return string
      * @permissions anonymous
      */
@@ -242,6 +244,7 @@ class LoginAdmin extends AdminController implements AdminInterface
     /**
      * Generates the form to fetch the credentials required to authenticate a user
      *
+     * @permissions anonymous
      * @return string
      */
     protected function actionAdminLogin()
@@ -280,6 +283,7 @@ class LoginAdmin extends AdminController implements AdminInterface
     /**
      * Ends the session of the current user
      *
+     * @permissions anonymous
      * @return string
      */
     protected function actionLogout()
@@ -292,6 +296,8 @@ class LoginAdmin extends AdminController implements AdminInterface
     /**
      * Ends the session of the current user and
      * redirects back to the login-screen
+     *
+     * @permissions anonymous
      */
     protected function actionAdminlogout()
     {
@@ -333,8 +339,8 @@ class LoginAdmin extends AdminController implements AdminInterface
      * fetch the number of messages for the user. Since the user is "logged out" by the server,
      * an "not authorized" exception is called - what is correct, but not really required right here.
      *
+     * @permissions anonymous
      * @return string
-     *
      */
     protected function actionGetRecentMessages()
     {
@@ -345,6 +351,7 @@ class LoginAdmin extends AdminController implements AdminInterface
     /**
      * Generates the wadl file for the current module
      *
+     * @permissions anonymous
      * @return string
      */
     protected function actionWADL()

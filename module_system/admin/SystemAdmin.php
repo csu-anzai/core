@@ -121,6 +121,7 @@ class SystemAdmin extends AdminEvensimpler implements AdminInterface
     /**
      * Renders the form to edit an existing entry
      *
+     * @permissions edit
      * @return string
      */
     protected function actionEdit()
@@ -1257,6 +1258,7 @@ JS;
     /**
      * Unlocks a record if currently locked by the current user
      *
+     * @permissions edit
      * @return string
      */
     protected function actionUnlockRecord()
@@ -1438,6 +1440,7 @@ JS;
      * custom xml-structure:
      * <statusinfo></statusinfo><reloadurl></reloadurl>
      *
+     * @permissions right2
      * @return string
      */
     protected function actionExecuteSystemTask()
@@ -1490,6 +1493,7 @@ JS;
     /**
      * Returns all properties for the given module
      *
+     * @permissions view
      * @return string
      * @responseType json
      */

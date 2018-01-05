@@ -40,6 +40,8 @@ class JsonapiAdmin extends AdminEvensimpler implements AdminInterface
     /**
      * Handles the incoming request. Catches all exceptions so that we return
      * a clean json response with a fitting status code if an error occured
+     *
+     * @permissions view
      * @responseType json
      */
     protected function actionDispatch()

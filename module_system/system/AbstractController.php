@@ -249,7 +249,7 @@ abstract class AbstractController
                 }
             }
         } else {
-            //throw new \RuntimeException("Permission annotation is required for a controller action"); //TODO: reenable
+            throw new \RuntimeException("Permission annotation is required for a controller action");
         }
 
 

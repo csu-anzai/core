@@ -390,6 +390,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
 
 
     /**
+     * @permissions edit
      * @return string
      */
     protected function actionEditUser()
@@ -403,6 +404,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * @param string $strAction
      * @param AdminFormgenerator|null $objForm
      *
+     * @permissions edit
      * @return string
      * @autoTestable
      */
@@ -644,6 +646,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
     /**
      * Stores the submitted data to the backend / the loginprovider
      *
+     * @permissions edit
      * @return string
      */
     protected function actionSaveUser()
@@ -813,6 +816,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
     }
 
     /**
+     * @permissions edit
      * @return string
      */
     protected function actionGroupEdit()
@@ -1401,6 +1405,7 @@ HTML;
     /**
      * Creates a browser-like view of the users available
      *
+     * @permissions view
      * @return string
      */
     protected function actionUserBrowser()
@@ -1593,6 +1598,7 @@ HTML;
     /**
      * Returns a list of users and/or groups matching the passed query.
      *
+     * @permissions view
      * @return string
      * @responseType json
      */
