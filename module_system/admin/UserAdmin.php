@@ -757,8 +757,6 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
             //flush the db-cache
             Carrier::getInstance()->getObjDB()->flushQueryCache();
             $this->objSession->resetUser();
-            //and update the cookie
-            $objCookie->setCookie("adminskin", $this->objSession->getAdminSkin(false, true));
             //update language set before
             $objCookie->setCookie("adminlanguage", $this->objSession->getAdminLanguage(false, true));
         }

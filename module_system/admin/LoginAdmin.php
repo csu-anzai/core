@@ -224,7 +224,6 @@ class LoginAdmin extends AdminController implements AdminInterface
             }
             //save the current skin as a cookie
             $objCookie = new Cookie();
-            $objCookie->setCookie("adminskin", $this->objSession->getAdminSkin(false, true));
             $objCookie->setCookie("adminlanguage", $this->objSession->getAdminLanguage(false, true));
 
             $this->loadPostLoginSite();

@@ -36,7 +36,7 @@
 
             <div class="panel panelDefault" id="loginContainer">
                 <div class="panel-header">
-                    <h3>Kajona V6</h3>
+                    <h3>[lang,commons_skin_header,commons]</h3>
                 </div>
                 <div class="panel-body">
                     <!--[if lt IE 9]>
@@ -49,7 +49,7 @@
                     <div id="loginContainer_content">%%content%%</div>
                 </div>
                 <div class="panel-footer">
-                    <a href="http://www.kajona.de" target="_blank">Kajona - empowering your content</a>
+                    [lang,commons_login_footer,commons]
                 </div>
             </div>
         </div>
