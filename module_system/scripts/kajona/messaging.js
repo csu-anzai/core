@@ -142,10 +142,12 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util'], function ($, aja
             if (intCount > 0) {
                 $userNotificationsCount.show();
                 if (oldCount != intCount) {
-                    var strTitle = document.title.replace("(" + oldCount + ")", "");
-                    document.title = "(" + intCount + ") " + strTitle;
+                    if (document.title.match(/\(\d\)/)) {
+                        document.title = document.title.replace(/\(\d\)/, "(" + intCount + ")");
+                    } else {
+                        document.title = "(" + intCount + ") " + document.title;
+                    }
                 }
-
             } else {
                 $userNotificationsCount.hide();
             }
