@@ -47,25 +47,6 @@ class PasswordRotator
     }
 
     /**
-     * @throws \Kajona\System\System\Exception
-     */
-    public function rotate()
-    {
-        // in case we have no days from the config we dont rotate passwords
-        if (empty($this->intDays)) {
-            return;
-        }
-
-        $arrUsers = SystemPwHistory::getPendingUsers($this->intDays);
-
-        foreach ($arrUsers as $objUser) {
-            if ($this->isPasswordExpired($objUser)) {
-                $this->sendResetPassword($objUser);
-            }
-        }
-    }
-
-    /**
      * @param UserUser $objUser
      * @param int $intDays
      * @return bool

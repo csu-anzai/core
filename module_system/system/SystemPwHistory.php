@@ -159,34 +159,4 @@ class SystemPwHistory extends Model implements ModelInterface, AdminListableInte
             return null;
         }
     }
-
-    /**
-     * Returns all users which need to change the password. The days argument specifies the amount of days after which
-     * a user needs to change the password
-     *
-     * @param int $intDays
-     * @return UserUser[]
-     */
-    public static function getPendingUsers(int $intDays)
-    {
-        $objDateHelper = new DateHelper();
-        $objPast = $objDateHelper->calcDateRelativeFormatString(new Date(), "-{$intDays} days");
-        $objPast->setEndOfDay();
-
-        $strPrefix = _dbprefix_;
-        $strQuery = "SELECT history_targetuser FROM {$strPrefix}user_pwhistory WHERE history_changedate < ? GROUP BY history_targetuser";
-        $arrPwHistory = Database::getInstance()->getPArray($strQuery, [$objPast->getLongTimestamp()]);
-        $arrUsers = [];
-
-        foreach ($arrPwHistory as $arrRow) {
-            /** @var SystemPwHistory $objPwHistory */
-            $objUser = Objectfactory::getInstance()->getObject($arrRow["history_targetuser"]);
-
-            if ($objUser instanceof UserUser) {
-                $arrUsers[] = $objUser;
-            }
-        }
-
-        return $arrUsers;
-    }
 }
