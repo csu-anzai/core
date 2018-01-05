@@ -1440,7 +1440,7 @@ JS;
      * custom xml-structure:
      * <statusinfo></statusinfo><reloadurl></reloadurl>
      *
-     * @permissions edit
+     * @permissions right2
      * @return string
      */
     protected function actionExecuteSystemTask()
