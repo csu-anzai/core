@@ -238,13 +238,13 @@ class RequestDispatcher
 
         } else {
             $bitLogin = true;
-
-            if ($strModule != "login") {
-                $strAction = "";
-            }
         }
 
         if ($bitLogin) {
+            if ($strModule != "login") {
+                $strAction = "";
+            }
+
             //skip in case of xml requests
             if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::XML())) {
                 ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
