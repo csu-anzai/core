@@ -390,7 +390,8 @@ HTML;
     /**
      * Uploads or shows the form to upload a file
      *
-     * @permissions view
+     * @TODO check whether method is used
+     * @permissions right1
      * @return string
      */
     private function actionUploadFileInternal()
