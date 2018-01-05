@@ -210,6 +210,7 @@ class LoginAdmin extends AdminController implements AdminInterface
     /**
      * Generates the form to fetch the credentials required to authenticate a user
      *
+     * @permissions anonymous
      * @return string
      */
     protected function actionAdminLogin()
