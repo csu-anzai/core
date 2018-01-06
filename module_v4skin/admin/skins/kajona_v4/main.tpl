@@ -9,12 +9,7 @@
 
     <link rel="stylesheet" href="_webpath_/[webpath,module_system]/scripts/jqueryui/css/smoothness/jquery-ui.custom.css?_system_browser_cachebuster_" type="text/css" />
     <link rel="stylesheet" href="_webpath_/[webpath,module_system]/scripts/qtip2/jquery.qtip.min.css?_system_browser_cachebuster_" type="text/css" />
-
-    <!-- KAJONA_BUILD_LESS_START -->
-    <link href="_webpath_/[webpath,module_v4skin]/admin/skins/kajona_v4/less/bootstrap.less?_system_browser_cachebuster_" rel="stylesheet/less">
-    <script> less = { env:'production' }; </script>
-    <script src="_webpath_/[webpath,module_v4skin]/admin/skins/kajona_v4/less/less.min.js"></script>
-    <!-- KAJONA_BUILD_LESS_END -->
+    <link rel="stylesheet" href="_webpath_/[webpath,module_v4skin]/admin/skins/kajona_v4/less/styles.min.css?_system_browser_cachebuster_" type="text/css" />
 
     <script src="_webpath_/[webpath,module_system]/scripts/jquery/jquery.min.js?_system_browser_cachebuster_"></script>
     <script src="_webpath_/[webpath,module_system]/scripts/routie/routie.js?_system_browser_cachebuster_"></script>
