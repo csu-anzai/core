@@ -8,6 +8,8 @@
 
 namespace Kajona\System\System\Security;
 
+use Kajona\System\System\StringUtil;
+
 /**
  * PolicyAbstract
  *
@@ -23,6 +25,6 @@ abstract class PolicyAbstract implements PolicyInterface
     public function getError()
     {
         $objReflection = new \ReflectionClass($this);
-        return ["user_password_validate_" . strtolower($objReflection->getShortName()), "user"];
+        return ["user_password_validate_" . StringUtil::toLowerCase($objReflection->getShortName()), "user"];
     }
 }
