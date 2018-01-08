@@ -253,16 +253,7 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
 
         router.removeLoadCallback("form_unlock");
 
-        // extract url hash
-        var parser = document.createElement('a');
-        parser.href = objForm.action;
-        var actionHash = parser.hash;
-
-        if (actionHash === location.hash) {
-            routie.reload();
-        } else {
-            routie(actionHash);
-        }
+        router.loadUrl(objForm.action);
 
         return false;
     };
