@@ -9,6 +9,7 @@
 namespace Kajona\System\System\Security\Policy;
 
 use Kajona\System\System\Security\PolicyAbstract;
+use Kajona\System\System\StringUtil;
 use Kajona\System\System\UserUser;
 
 /**
@@ -31,14 +32,14 @@ class UserName extends PolicyAbstract
             return true;
         }
 
-        if (strcasecmp($objUser->getStrName(), $strPassword) === 0) {
+        if (StringUtil::equals($objUser->getStrName(), $strPassword) === 0) {
             return false;
         }
 
-        $intLength = strlen($strPassword);
+        $intLength = StringUtil::length($strPassword);
         for ($intI = 0; $intI < $intLength; $intI++) {
-            $strPair = substr($strPassword, $intI, 2);
-            if (strlen($strPair) == 2 && stripos($objUser->getStrUsername(), $strPair) !== false) {
+            $strPair = StringUtil::substring($strPassword, $intI, 2);
+            if (StringUtil::length($strPair) == 2 && StringUtil::indexOf($objUser->getStrUsername(), $strPair, false) !== false) {
                 return false;
             }
         }
