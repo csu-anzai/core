@@ -10,6 +10,7 @@ namespace Kajona\System\System\Security\Policy;
 
 use Kajona\System\System\Security\PolicyAbstract;
 use Kajona\System\System\SystemPwHistory;
+use Kajona\System\System\Usersources\UsersourcesSourceKajona;
 use Kajona\System\System\UserUser;
 
 /**
@@ -64,6 +65,11 @@ class PasswordHistory extends PolicyAbstract
      */
     protected function hasPasswordNotUsed($strPassword, UserUser $objUser)
     {
-        return !SystemPwHistory::isPasswordInHistory($objUser, $strPassword, $this->intLength);
+        $objSourceUser = $objUser->getObjSourceUser();
+        if ($objSourceUser instanceof UsersourcesSourceKajona) {
+            return !SystemPwHistory::isPasswordInHistory($objSourceUser, $strPassword, $this->intLength);
+        } else {
+            return true;
+        }
     }
 }

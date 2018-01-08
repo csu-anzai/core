@@ -119,25 +119,22 @@ class SystemPwHistory extends Model implements ModelInterface, AdminListableInte
      * Returns whether the provided password was already used by the user in the past. The length parameter specifies
      * the last x used password which are checked
      *
-     * @param UserUser $objUser
+     * @param UsersourcesUserKajona $objUser
      * @param string $strPassword
      * @param int $intLength
      * @return bool
      */
-    public static function isPasswordInHistory(UserUser $objUser, $strPassword, $intLength)
+    public static function isPasswordInHistory(UsersourcesUserKajona $objUser, $strPassword, $intLength)
     {
-        $objInteralUser = $objUser->getObjSourceUser();
-        if ($objInteralUser instanceof UsersourcesUserKajona) {
-            $strPrefix = _dbprefix_;
-            $strQuery = "SELECT history_pass FROM {$strPrefix}user_pwhistory WHERE history_targetuser = ? ORDER BY history_changedate DESC";
-            $arrPwHistory = Database::getInstance()->getPArray($strQuery, [$objUser->getSystemid()], 0, $intLength);
+        $strPrefix = _dbprefix_;
+        $strQuery = "SELECT history_pass FROM {$strPrefix}user_pwhistory WHERE history_targetuser = ? ORDER BY history_changedate DESC";
+        $arrPwHistory = Database::getInstance()->getPArray($strQuery, [$objUser->getSystemid()], 0, $intLength);
 
-            foreach ($arrPwHistory as $arrRow) {
-                /** @var SystemPwHistory $objPwHistory */
-                $strPass = UsersourcesSourceKajona::encryptPassword($strPassword, $objInteralUser->getStrSalt());
-                if ($strPass == $arrRow["history_pass"]) {
-                    return true;
-                }
+        foreach ($arrPwHistory as $arrRow) {
+            /** @var SystemPwHistory $objPwHistory */
+            $strPass = UsersourcesSourceKajona::encryptPassword($strPassword, $objUser->getStrSalt());
+            if ($strPass == $arrRow["history_pass"]) {
+                return true;
             }
         }
 
@@ -145,10 +142,10 @@ class SystemPwHistory extends Model implements ModelInterface, AdminListableInte
     }
 
     /**
-     * @param UserUser $objUser
+     * @param UsersourcesUserKajona $objUser
      * @return Date|null
      */
-    public static function getLastChangeDate(UserUser $objUser)
+    public static function getLastChangeDate(UsersourcesUserKajona $objUser)
     {
         $strPrefix = _dbprefix_;
         $strQuery = "SELECT history_changedate FROM {$strPrefix}user_pwhistory WHERE history_targetuser = ? ORDER BY history_changedate DESC";
