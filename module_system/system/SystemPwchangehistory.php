@@ -33,7 +33,7 @@ class SystemPwchangehistory extends Model implements ModelInterface, AdminListab
     protected $strActivationLink;
 
     /**
-     * @var string
+     * @var Date
      * @tableColumn user_pwchangehistory.history_changedate
      * @tableColumnDatatype long
      * @tableColumnIndex
