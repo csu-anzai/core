@@ -246,7 +246,6 @@ require(["jquery", "ajax"], function($, ajax){
                     $arrMenu[] = array(
                         "name" => AdminskinHelper::getAdminImage($objTargetStatus->getStrIcon()) . " " . $objTargetStatus->getStrDisplayName(),
                         "link" => Link::getLinkAdminHref($this->getArrModule("modul"), "setStatus", "&systemid=" . $objObject->getStrSystemid() . "&transition_id=" . $objTransition->getSystemid()),
-                        "onclick" => "return false;",
                     );
                 }
             }
