@@ -1,10 +1,10 @@
 <?php 
 
 //database-settings
-define("DB_HOST",				                "localhost");
-define("DB_USER",                               "kajona");
-define("DB_PASS",                               "kajona");
-define("DB_DB",                                 "kajona");
+define("DB_HOST",				                "192.168.60.220");
+define("DB_USER",                               "kajonabuild");
+define("DB_PASS",                               "kajonabuild");
+define("DB_DB",                                 "kajonabuild");
 define("DB_DRIVER",                             "sqlsrv");
 
 
