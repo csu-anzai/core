@@ -5,7 +5,7 @@
  *
  * @module contentToolbar
  */
-define('contentToolbar', ['jquery'], function ($) {
+define('contentToolbar', ['jquery', 'util'], function ($, util) {
 
     var $objToolbarContainer = $(".contentToolbar");
     var $objActionToolbarContainer = $(".contentToolbar .navbar-inner");
@@ -70,8 +70,12 @@ define('contentToolbar', ['jquery'], function ($) {
          * @param $objContainer
          */
         registerRecordActions: function($objContainer) {
-            var $objNode = $('<div>').attr('class', 'actionToolbar pull-right').append($objContainer.children());
-            $objActionToolbarContainer.append($objNode);
+            if (!util.isStackedDialog()) {
+                var $objNode = $('<div>').attr('class', 'actionToolbar pull-right').append($objContainer.children());
+                $objActionToolbarContainer.append($objNode);
+
+                this.showBar();
+            }
         },
 
         /**

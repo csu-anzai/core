@@ -1436,7 +1436,7 @@ Toolbar, prominent in the layout. Rendered to switch between action.
 Toolbar for the current record, rendered to quick-access the actions of the current record.
 <contentActionToolbar_wrapper>
 <div class="hidden toolbarContentContainer">%%content%%</div>
-<script type="text/javascript"> require(['contentToolbar'], function(contentToolbar) { contentToolbar.registerRecordActions($('.toolbarContentContainer')); contentToolbar.showBar(); }); </script>
+<script type="text/javascript"> require(['contentToolbar'], function(contentToolbar) { contentToolbar.registerRecordActions($('.toolbarContentContainer')); }); </script>
 </contentActionToolbar_wrapper>
 
 ---------------------------------------------------------------------------------------------------------
