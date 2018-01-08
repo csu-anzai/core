@@ -8,7 +8,7 @@
  *
  * @module router
  */
-define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNavigation', 'quickhelp', 'ajax', 'toc'], function ($, contentToolbar, tooltip, breadcrumb, moduleNavigation, quickhelp, ajax, toc) {
+define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNavigation', 'quickhelp', 'ajax'], function ($, contentToolbar, tooltip, breadcrumb, moduleNavigation, quickhelp, ajax) {
 
     /**
      * An array / list of callbacks to be fired as soon as a url is being loaded.
@@ -110,7 +110,6 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
         //breadcrumb.resetBar();
         quickhelp.resetQuickhelp();
         tooltip.removeTooltip($('*[rel=tooltip]'));
-        toc.resetToc();
     };
 
     var applyCallbacks = function() {
