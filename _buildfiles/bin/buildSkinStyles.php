@@ -18,18 +18,37 @@ $objIterator = new RecursiveIteratorIterator(
     RecursiveIteratorIterator::CATCH_GET_CHILD // Ignore "Permission denied"
 );
 
+$arrIncludedModules = [];
+if (is_file($strRoot."/project/packageconfig.php")) {
+    include $strRoot."/project/packageconfig.php";
+}
+if (!isset($arrExcludedModules["core"])) {
+    $arrExcludedModules["core"] = [];
+}
+$arrExcludedModules["core"][] = "_buildfiles";
+$arrExcludedModules["core"][] = "module_installer";
+$arrExcludedModules["core"][] = "module_v4skin";
+
 $arrFolders = [];
 foreach ($objIterator as $strPath => $objDir) {
+    $strTestPath = str_replace([$strRoot."/", "\\"], ["", "/"], $strPath);
+    $arrPath = explode("/", $strTestPath);
 
-    if (strpos($strPath, "core/_buildfiles") !== false) {
-        continue;
-    }
+    if (count($arrPath) > 2) {
+        //defined as included?
+        if (array_key_exists($arrPath[0], $arrIncludedModules)) {
+            if (!in_array($arrPath[1], $arrIncludedModules[$arrPath[0]])) {
+                continue;
+            }
+        }
 
-    if (strpos($strPath, "core/module_installer") !== false) {
-        continue;
-    }
-
-    if (strpos($strPath, "core/module_v4skin") !== false) {
+        //defined as excluded?
+        if (array_key_exists($arrPath[0], $arrExcludedModules)) {
+            if (in_array($arrPath[1], $arrExcludedModules[$arrPath[0]])) {
+                continue;
+            }
+        }
+    } else {
         continue;
     }
 
