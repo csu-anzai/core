@@ -49,10 +49,6 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
     var generateUrl = function(url) {
         console.log('processing url '+url);
 
-        if (url.indexOf("#") > 0) {
-            url = url.substr(url.indexOf("#")+1);
-        }
-
         // detect where the page was loaded from an iframe and thus is displayed in a dialog
         var isStackedDialog = window.frameElement && window.frameElement.nodeName && window.frameElement.nodeName.toLowerCase() === 'iframe';
 
