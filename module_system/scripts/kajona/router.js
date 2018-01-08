@@ -53,19 +53,27 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
             url = url.substr(url.indexOf("#")+1);
         }
 
-        if(url.trim() === '') {
-            if($('#loginContainer')) {
+        // detect where the page was loaded from an iframe and thus is displayed in a dialog
+        var isStackedDialog = window.frameElement && window.frameElement.nodeName && window.frameElement.nodeName.toLowerCase() === 'iframe';
+
+        if (url.trim() === '') {
+            if ($('#loginContainer').length > 0) {
+                // in case we are on the login template redirect to login action
+                url = "login/login";
+            } else if (isStackedDialog) {
+                // in case we are inside a dialog and the url is empty we dont need to load a route
                 return;
+            } else {
+                // otherwise we load the dashboard
+                url = "dashboard";
             }
-            url = "dashboard";
         }
 
         if(url.charAt(0) == "/") {
             url = url.substr(1);
         }
 
-        var isStackedDialog = !!(window.frameElement && window.frameElement.nodeName && window.frameElement.nodeName.toLowerCase() == 'iframe');
-        if(isStackedDialog && url.indexOf('peClose=1') != -1) {
+        if (isStackedDialog && url.indexOf('peClose=1') != -1) {
             //react on peClose statements by reloading the parent view
             parent.KAJONA.admin.folderview.dialog.hide();
             parent.routie.reload();
@@ -119,12 +127,15 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
     return {
 
         loadUrl : function(strUrl) {
-            if(strUrl == document.location.hash) {
+            var parser = document.createElement('a');
+            parser.href = strUrl;
+            var actionHash = parser.hash;
+
+            if (actionHash === location.hash) {
                 routie.reload();
             } else {
-                routie(strUrl);
+                routie(actionHash);
             }
-
         },
 
         reload : function() {

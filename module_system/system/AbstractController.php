@@ -226,6 +226,12 @@ abstract class AbstractController
             if ($strPermissions == self::PERMISSION_ANONYMOUS) {
                 // we can access the action without authorization so do nothing
             } else {
+                // if we are not anonymous the user must be logged in since otherwise the user could get rights through
+                // the anonymous group
+                if (!$this->objSession->isLoggedin()) {
+                    throw new AuthenticationException("User is not logged in", Exception::$level_ERROR);
+                }
+
                 //fetch the object to validate, either the module or a directly referenced object
                 if (validateSystemid($this->getSystemid()) && $this->objFactory->getObject($this->getSystemid()) != null) {
                     $objObjectToCheck = $this->objFactory->getObject($this->getSystemid());

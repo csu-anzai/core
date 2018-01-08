@@ -165,3 +165,11 @@ $lang["usersource_kajona_name"]          = "Kajona intern";
 $lang["user_copy_info"]                  = "Die Gruppeneinstellungen werden von dem Benutzer {0} kopiert. Im nächsten Schritt ist es möglich diese weiter anzupassen.";
 $lang["user_last_pwchanges_info"]        = "Benutzer welche das Passwort zurückgesetzt haben:";
 $lang["change_type_group"]               = "Gruppe";
+
+$lang["user_password_validate_blacklist"] = "Das Passwort enthält gesperrte Begriffe";
+$lang["user_password_validate_complexity"] = "Das Passwort muss mindestens folgende Zeichen enthalten: {0} Großbuchstaben, {1} Kleinbuchstaben, {2} Zahlen, {3} Sonderzeichen (z.B. !,$,#,%)";
+$lang["user_password_validate_minlength"] = "Das Passwort muss mindestens {0} Zeichen lang sein";
+$lang["user_password_validate_passwordhistory"] = "Das Passwort wurde bereits verwendet";
+$lang["user_password_validate_username"] = "Das Passwort darf keine Zeichen aus dem Benutzernamen enthalten";
+
+$lang["reset_reason_expired"] = "Ihr Passwort is abgelaufen. Bitte vergeben Sie ein neues Passwort unter Angabe des zugehörigen Benutzernamens.";

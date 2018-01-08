@@ -11,6 +11,9 @@ namespace Kajona\System\System\Usersources;
 
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Logger;
+use Kajona\System\System\Security\PasswordExpiredException;
+use Kajona\System\System\Security\PasswordRotator;
+use Kajona\System\System\ServiceProvider;
 use Kajona\System\System\StringUtil;
 
 
@@ -23,11 +26,17 @@ use Kajona\System\System\StringUtil;
  */
 class UsersourcesSourceKajona implements UsersourcesUsersourceInterface
 {
-
-
     private static $arrUserCache = array();
 
+    /**
+     * @var \Kajona\System\System\Database
+     */
     private $objDB;
+
+    /**
+     * @var PasswordRotator
+     */
+    private $objPasswordRotator;
 
     /**
      * Default constructor
@@ -35,6 +44,7 @@ class UsersourcesSourceKajona implements UsersourcesUsersourceInterface
     public function __construct()
     {
         $this->objDB = Carrier::getInstance()->getObjDB();
+        $this->objPasswordRotator = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_PASSWORD_ROTATOR);
     }
 
     /**
@@ -65,6 +75,11 @@ class UsersourcesSourceKajona implements UsersourcesUsersourceInterface
                 $bitMD5Encryption = true;
             }
             if ($objUser->getStrFinalPass() == self::encryptPassword($strPassword, $objUser->getStrSalt(), $bitMD5Encryption)) {
+                // check whether password is expired
+                if ($this->objPasswordRotator->isPasswordExpired($objUser)) {
+                    throw new PasswordExpiredException($objUser->getSystemid(), "Password is expired");
+                }
+
                 return true;
             }
         }
