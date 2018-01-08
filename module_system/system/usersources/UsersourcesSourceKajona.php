@@ -77,7 +77,7 @@ class UsersourcesSourceKajona implements UsersourcesUsersourceInterface
             if ($objUser->getStrFinalPass() == self::encryptPassword($strPassword, $objUser->getStrSalt(), $bitMD5Encryption)) {
                 // check whether password is expired
                 if ($this->objPasswordRotator->isPasswordExpired($objUser)) {
-                    throw new PasswordExpiredException("Password is expired");
+                    throw new PasswordExpiredException($objUser->getSystemid(), "Password is expired");
                 }
 
                 return true;
