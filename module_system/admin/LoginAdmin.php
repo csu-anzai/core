@@ -112,7 +112,6 @@ class LoginAdmin extends AdminController implements AdminInterface
      *
      * @permissions anonymous
      * @return string
-     * @permissions anonymous
      */
     protected function actionPwdReset()
     {
