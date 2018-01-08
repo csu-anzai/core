@@ -14,6 +14,7 @@ use Kajona\System\System\Link;
 use Kajona\System\System\Mail;
 use Kajona\System\System\SystemPwchangehistory;
 use Kajona\System\System\SystemPwHistory;
+use Kajona\System\System\Usersources\UsersourcesUserInterface;
 use Kajona\System\System\Usersources\UsersourcesUserKajona;
 use Kajona\System\System\UserUser;
 
@@ -47,12 +48,16 @@ class PasswordRotator
     }
 
     /**
-     * @param UserUser $objUser
+     * @param UsersourcesUserInterface $objUser
      * @param int $intDays
      * @return bool
      */
-    public function isPasswordExpired(UserUser $objUser)
+    public function isPasswordExpired(UsersourcesUserInterface $objUser)
     {
+        if (!$objUser instanceof UsersourcesUserKajona) {
+            return false;
+        }
+
         // in case we have no days from the config we never expire
         if (empty($this->intDays)) {
             return false;
@@ -68,14 +73,11 @@ class PasswordRotator
             return false;
         }
 
-        $objInternalUser = $objUser->getObjSourceUser();
-        if ($objInternalUser instanceof UsersourcesUserKajona) {
-            $objNow = new Date();
-            $objChangeDate = SystemPwHistory::getLastChangeDate($objUser);
-            if ($objChangeDate instanceof Date) {
-                $intDiff = $objNow->getTimeInOldStyle() - $objChangeDate->getTimeInOldStyle();
-                return $intDiff > ((60 * 60 * 24) * $this->intDays);
-            }
+        $objNow = new Date();
+        $objChangeDate = SystemPwHistory::getLastChangeDate($objUser);
+        if ($objChangeDate instanceof Date) {
+            $intDiff = $objNow->getTimeInOldStyle() - $objChangeDate->getTimeInOldStyle();
+            return $intDiff > ((60 * 60 * 24) * $this->intDays);
         }
 
         return false;
