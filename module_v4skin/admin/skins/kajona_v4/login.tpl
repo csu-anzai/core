@@ -40,8 +40,8 @@
                         Sie verwenden eine veraltete Version des Internet Explorers. Bitte verwenden Sie einen modernen Webbrowser wie Mozilla Firefox oder Google Chrome oder aktualisieren Sie Ihre Internet Explorer Installation um auf diese Anwendung zuzugreifen.
                     </div>
                     <![endif]-->
-                    <!--[if lt IE 9]><style type="text/css"> #loginContainer_content {display: none;} </style><![endif]-->
-                    <div id="loginContainer_content">%%content%%</div>
+                    <!--[if lt IE 9]><style type="text/css"> #moduleOutput {display: none;} </style><![endif]-->
+                    <div id="moduleOutput">%%content%%</div>
                 </div>
                 <div class="panel-footer">
                     [lang,commons_login_footer,commons]
@@ -51,10 +51,6 @@
 
     </div>
 </div>
-
-<script type="text/javascript">
-    document.getElementById('name').focus();
-</script>
 
 </body>
 </html>

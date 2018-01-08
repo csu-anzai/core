@@ -9,6 +9,7 @@
 
 namespace Kajona\System\System;
 
+use Kajona\System\System\Security\PasswordExpiredException;
 
 /**
  * Manages all those session stuff as logins or logouts and access to session vars
@@ -408,6 +409,8 @@ final class Session
      * @param string $strPassword
      *
      * @return bool
+     * @throws PasswordExpiredException
+     * @throws AuthenticationException
      */
     public function login($strName, $strPassword)
     {
@@ -420,13 +423,15 @@ final class Session
                 $bitReturn = $this->internalLoginHelper($objUser);
             }
         } catch (AuthenticationException $objEx) {
-            $bitReturn = false;
-        }
-
-
-        if ($bitReturn === false) {
             Logger::getInstance()->info("Unsuccessful login attempt by user ".$strName);
             UserLog::generateLog(0, $strName);
+
+            throw $objEx;
+        } catch (PasswordExpiredException $objEx) {
+            Logger::getInstance()->info("Unsuccessful login attempt by user ".$strName." password is expired");
+            UserLog::generateLog(0, $strName);
+
+            throw $objEx;
         }
 
         return $bitReturn;

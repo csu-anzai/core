@@ -240,6 +240,7 @@ require(["jquery", "ajax"], function($, ajax){
                     $arrMenu[] = array(
                         "name" => AdminskinHelper::getAdminImage("icon_flag_hex_disabled_" . $objTargetStatus->getStrIconColor()) . " " . $objTargetStatus->getStrDisplayName() . $strValidation,
                         "link" => "#",
+                        "onclick" => "return false;",
                     );
                 } else {
                     $arrMenu[] = array(

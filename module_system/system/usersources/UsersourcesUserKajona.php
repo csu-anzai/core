@@ -9,12 +9,14 @@
 
 namespace Kajona\System\System\Usersources;
 
+use Kajona\System\System\Date;
 use Kajona\System\System\Logger;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\SystemEventidentifier;
+use Kajona\System\System\SystemPwHistory;
 
 
 /**
@@ -201,7 +203,7 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
 
             Logger::getInstance(Logger::USERSOURCES)->info("new kajona user: ".$this->getStrEmail());
 
-            return $this->objDB->_pQuery($strQuery, array(
+            $bitReturn = $this->objDB->_pQuery($strQuery, array(
                 $this->getStrSpecialConfig(),
                 $strUserid,
                 $this->getStrPass(),
@@ -246,8 +248,19 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
 
             Logger::getInstance(Logger::USERSOURCES)->info("updated user ".$this->getStrEmail());
 
-            return $this->objDB->_pQuery($strQuery, $arrParams, array(false));
+            $bitReturn = $this->objDB->_pQuery($strQuery, $arrParams, array(false));
         }
+
+        $strPass = $this->getStrPass();
+        if ($bitReturn && !empty($strPass)) {
+            $objHistory = new SystemPwHistory();
+            $objHistory->setStrTargetUser($this->getSystemid());
+            $objHistory->setStrPass($strPass);
+            $objHistory->setStrChangeDate(new Date());
+            $objHistory->updateObjectToDb();
+        }
+
+        return $bitReturn;
     }
 
     /**

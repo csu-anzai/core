@@ -2,6 +2,9 @@
 
 namespace Kajona\System\System;
 
+use Kajona\System\System\Security\PasswordRotator;
+use Kajona\System\System\Security\PasswordValidator;
+use Kajona\System\System\Security\Policy;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
@@ -99,6 +102,16 @@ class ServiceProvider implements ServiceProviderInterface
      */
     const STR_MESSAGE_HANDLER = "system_message_handler";
 
+    /**
+     * @see \Kajona\System\System\Security\PasswordRotator
+     */
+    const STR_PASSWORD_ROTATOR = "system_password_rotator";
+
+    /**
+     * @see \Kajona\System\System\Security\PasswordValidatorInterface
+     */
+    const STR_PASSWORD_VALIDATOR = "system_password_validator";
+
     public function register(Container $objContainer)
     {
         $objContainer[self::STR_DB] = function ($c) {
@@ -180,5 +193,31 @@ class ServiceProvider implements ServiceProviderInterface
         $objContainer[self::STR_LIFE_CYCLE_MESSAGES_ALERT] = function ($c) {
             return new MessagingAlertLifeCycle();
         };
+
+        $objContainer[self::STR_PASSWORD_VALIDATOR] = function ($c) {
+            $arrConfig = $c[self::STR_CONFIG]->getConfig("password_validator");
+
+            $arrMinLength = $arrConfig["minlength"] ?? [];
+            $arrComplexity = $arrConfig["complexity"] ?? [];
+            $arrPasswordHistory = $arrConfig["passwordhistory"] ?? [];
+            $arrBlacklist = $arrConfig["blacklist"] ?? [];
+
+            $objValidator = new PasswordValidator($c[self::STR_LANG]);
+            $objValidator->addPolicy(new Policy\UserName());
+            $objValidator->addPolicy(new Policy\MinLength(...$arrMinLength));
+            $objValidator->addPolicy(new Policy\Complexity(...$arrComplexity));
+            $objValidator->addPolicy(new Policy\PasswordHistory(...$arrPasswordHistory));
+            $objValidator->addPolicy(new Policy\Blacklist($arrBlacklist));
+
+            return $objValidator;
+        };
+
+        $objContainer[self::STR_PASSWORD_ROTATOR] = function ($c) {
+            return new PasswordRotator(
+                $c[self::STR_LANG],
+                $c[self::STR_CONFIG]->getConfig("password_rotation_days")
+            );
+        };
+
     }
 }

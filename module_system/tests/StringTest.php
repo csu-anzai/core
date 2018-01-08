@@ -7,6 +7,53 @@ use Kajona\System\System\StringUtil;
 
 class StringTest extends Testbase
 {
+    /**
+     * @dataProvider equalsProvider
+     */
+    public function testEquals($strLeft, $strRight)
+    {
+        $this->assertTrue(StringUtil::equals($strLeft, $strRight));
+    }
+
+    public function equalsProvider()
+    {
+        return [
+            ["foo", "foo"],
+            ["tèst", "tèst"],
+        ];
+    }
+
+    /**
+     * @dataProvider equalsProviderFalse
+     */
+    public function testEqualsFalse($strLeft, $strRight)
+    {
+        $this->assertFalse(StringUtil::equals($strLeft, $strRight));
+    }
+
+    public function equalsProviderFalse()
+    {
+        return [
+            ["test", "tèst"],
+            ["tèst", "tést"],
+        ];
+    }
+
+    /**
+     * @dataProvider equalsLength
+     */
+    public function testLength($intExpect, $strString)
+    {
+        $this->assertEquals($intExpect, StringUtil::length($strString));
+    }
+
+    public function equalsLength()
+    {
+        return [
+            [4, "tèst"],
+            [4, "test"],
+        ];
+    }
 
     public function testStrToDate()
     {

@@ -247,17 +247,13 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
             $btn.is('[name]')
             ) {
                 //name, value
-                $(objForm).append($('<input>').attr('name', $btn.attr('name')).attr('value', $btn.val()));
+                $(objForm).append($('<input type="hidden">').attr('name', $btn.attr('name')).attr('value', $btn.val()));
                 /* access $btn.attr("name") and $btn.val() for data */
         }
 
         router.removeLoadCallback("form_unlock");
 
-        if(objForm.action == document.location) {
-            routie.reload();
-        } else {
-            routie(objForm.action.substr(objForm.action.indexOf('#')));
-        }
+        router.loadUrl(objForm.action);
 
         return false;
     };
