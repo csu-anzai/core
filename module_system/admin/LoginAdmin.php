@@ -9,12 +9,14 @@
 
 namespace Kajona\System\Admin;
 
+use Kajona\System\System\AuthenticationException;
 use Kajona\System\System\Cookie;
 use Kajona\System\System\HttpStatuscodes;
 use Kajona\System\System\Link;
 use Kajona\System\System\Logger;
 use Kajona\System\System\RequestEntrypointEnum;
 use Kajona\System\System\ResponseObject;
+use Kajona\System\System\Security\PasswordExpiredException;
 use Kajona\System\System\Security\PasswordRotator;
 use Kajona\System\System\Security\PasswordValidatorInterface;
 use Kajona\System\System\Security\ValidationException;
@@ -249,34 +251,34 @@ class LoginAdmin extends AdminController implements AdminInterface
      */
     protected function actionAdminLogin()
     {
-        if ($this->objSession->login($this->getParam("name"), $this->getParam("passwort"))) {
-            //user allowed to access admin?
-            if (!$this->objSession->isAdmin()) {
-                //no, reset session
-                $this->objSession->logout();
+        try {
+            if ($this->objSession->login($this->getParam("name"), $this->getParam("passwort"))) {
+                // user allowed to access admin?
+                if (!$this->objSession->isAdmin()) {
+                    // no, reset session
+                    $this->objSession->logout();
+                }
+
+                // save the current skin as a cookie
+                $objCookie = new Cookie();
+                $objCookie->setCookie("adminskin", $this->objSession->getAdminSkin(false, true));
+                $objCookie->setCookie("adminlanguage", $this->objSession->getAdminLanguage(false, true));
+
+                return $this->loadPostLoginSite();
+            } else {
+                return $this->getLoginForm(true);
             }
-
-            //save the current skin as a cookie
-            $objCookie = new Cookie();
-            $objCookie->setCookie("adminskin", $this->objSession->getAdminSkin(false, true));
-            $objCookie->setCookie("adminlanguage", $this->objSession->getAdminLanguage(false, true));
-
-            // check whether the password of the user is expired
-            $objUser = $this->objSession->getUser();
-            if ($objUser instanceof UserUser && $this->objPasswordRotator->isPasswordExpired($objUser)) {
-                // if expired logout and redirect to reset password form
-                $this->objSession->logout();
-
-                $strToken = generateSystemid();
-                $objUser->setStrAuthcode($strToken);
-                $objUser->updateObjectToDb();
-
-                return Link::clientRedirectHref("login", "pwdReset", ["systemid" => $objUser->getSystemid(), "authcode" => $strToken, "reason" => "expired"]);
-            }
-
-            return $this->loadPostLoginSite();
-        } else {
+        } catch (AuthenticationException $objEx) {
             return $this->getLoginForm(true);
+        } catch (PasswordExpiredException $objEx) {
+            // if expired redirect to reset password form
+            $strToken = generateSystemid();
+
+            $objUser = $this->objFactory->getObject($objEx->getStrUserId());
+            $objUser->setStrAuthcode($strToken);
+            $objUser->updateObjectToDb();
+
+            return Link::clientRedirectHref("login", "pwdReset", ["systemid" => $objUser->getSystemid(), "authcode" => $strToken, "reason" => "expired"]);
         }
     }
 
