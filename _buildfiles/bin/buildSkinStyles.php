@@ -31,7 +31,7 @@ $arrExcludedModules["core"][] = "module_v4skin";
 
 $arrFolders = [];
 foreach ($objIterator as $strPath => $objDir) {
-    $strTestPath = str_replace([$strRoot."/", "\\"], ["", "/"], $strPath);
+    $strTestPath = str_replace([$strRoot.DIRECTORY_SEPARATOR, "\\"], ["", "/"], $strPath);
     $arrPath = explode("/", $strTestPath);
 
     if (count($arrPath) > 2) {
@@ -57,7 +57,7 @@ foreach ($objIterator as $strPath => $objDir) {
         //fetch all less files inside
         foreach (scandir($strPath) as $strFile) {
             if (substr($strFile, -5) == ".less") {
-                $arrFiles[] = $strPath."/".$strFile;
+                $arrFiles[] = $strPath.DIRECTORY_SEPARATOR.$strFile;
             }
         }
 
@@ -68,7 +68,7 @@ foreach ($objIterator as $strPath => $objDir) {
 $strFile = "";
 foreach ($arrFiles as $strLess) {
     //make it relative
-    $strLess = str_replace($strRoot."/", "", $strLess);
+    $strLess = str_replace([$strRoot."/", $strRoot.DIRECTORY_SEPARATOR, "\\"], ["", "", "/"], $strLess);
     $strLess = "../../../../../../".$strLess;
     $strFile .= "  @import \"".$strLess."\";".PHP_EOL;
 }
@@ -89,7 +89,7 @@ foreach ($arrFilesToCompile as $strSourceFile => $strTargetFile) {
         system($strLessBin . " --verbose " . escapeshellarg($strSourceFile) . " " . escapeshellarg($strTargetFile));
 
         echo "Minifiying ".$strTargetFile.PHP_EOL;
-        $strMinifyBin = "node " . __DIR__ . "/../jstests/node_modules/.bin/cleancss";
+        $strMinifyBin = "node " . __DIR__ . "/../jstests/node_modules/clean-css/bin/cleancss";
         system($strMinifyBin . " -o ". escapeshellarg($strTargetFile)." ". escapeshellarg($strTargetFile));
 
     } else {
