@@ -8,7 +8,7 @@
  *
  * @module router
  */
-define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNavigation', 'quickhelp', 'ajax', 'toc'], function ($, contentToolbar, tooltip, breadcrumb, moduleNavigation, quickhelp, ajax, toc) {
+define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNavigation', 'quickhelp', 'ajax', 'toc', 'util'], function ($, contentToolbar, tooltip, breadcrumb, moduleNavigation, quickhelp, ajax, toc, util) {
 
     /**
      * An array / list of callbacks to be fired as soon as a url is being loaded.
@@ -50,7 +50,10 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
         console.log('processing url '+url);
 
         // detect where the page was loaded from an iframe and thus is displayed in a dialog
-        var isStackedDialog = window.frameElement && window.frameElement.nodeName && window.frameElement.nodeName.toLowerCase() === 'iframe';
+        var isStackedDialog = util.isStackedDialog();
+
+        //strip webpaths injected into the url
+        url = url.replace(KAJONA_WEBPATH+"/#", '');
 
         if (url.trim() === '') {
             if ($('#loginContainer').length > 0) {
