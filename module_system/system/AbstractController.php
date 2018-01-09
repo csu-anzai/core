@@ -498,17 +498,4 @@ abstract class AbstractController
         $this->strLangBase = $strLangbase;
     }
 
-
-
-    // --- PageCache Features -------------------------------------------------------------------------------
-
-    /**
-     * Deletes the complete Pages-Cache
-     */
-    public function flushCompletePagesCache()
-    {
-        /** @var CacheManager $objCache */
-        $objCache = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_CACHE_MANAGER);
-        $objCache->flushCache();
-    }
 }
