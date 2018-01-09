@@ -126,9 +126,12 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
     return {
 
         loadUrl : function(strUrl) {
-            var parser = document.createElement('a');
-            parser.href = strUrl;
-            var actionHash = parser.hash;
+            var actionHash = strUrl;
+            if (strUrl.indexOf('#') > 0) {
+                var parser = document.createElement('a');
+                parser.href = strUrl;
+                actionHash = parser.hash;
+            }
 
             if (actionHash === location.hash) {
                 routie.reload();
