@@ -21,13 +21,14 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
          * Possible usage:
          * ajax.loadUrlToElement('#report_container', '/xml.php?admin=1&module=stats&action=getReport', '&plugin=general');
          *
-         * @param strElementSelector (may be selector or a jquery object)
-         * @param strUrl
-         * @param strData
-         * @param bitBlockLoadingContainer
-         * @param strMethod default is GET
+         * @param {String} strElementSelector (may be selector or a jquery object)
+         * @param {String} strUrl
+         * @param {String} strData
+         * @param {Boolean} bitBlockLoadingContainer
+         * @param {String} strMethod default is GET
+         * @param {Function} objCallback
          */
-        loadUrlToElement: function(strElementSelector, strUrl, strData, bitBlockLoadingContainer, strMethod) {
+        loadUrlToElement: function(strElementSelector, strUrl, strData, bitBlockLoadingContainer, strMethod, objCallback) {
             workingIndicator.start();
 
             var objElement = util.getElement(strElementSelector);
@@ -59,6 +60,10 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
                     } else {
                         objElement.html(data);
                         tooltip.initTooltip();
+
+                        if (typeof objCallback === 'function') {
+                            objCallback();
+                        }
                     }
                 }
             ).always(
