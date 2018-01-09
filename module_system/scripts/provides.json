@@ -33,7 +33,6 @@
     "router": "kajona/router",
     "statusDisplay": "kajona/statusDisplay",
     "systemTask": "kajona/systemTask",
-    "toc": "kajona/toc",
     "tooltip": "kajona/tooltip",
     "tree": "kajona/tree",
     "util": "kajona/util",

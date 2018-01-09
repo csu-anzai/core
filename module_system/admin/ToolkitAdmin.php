@@ -1853,21 +1853,6 @@ require(['ajax'], function(ajax){
     }
 
     /**
-     * Returns the javascript code which renders a table of contents sub navigation under the main navigation. The
-     * navigation contains all points which match the given selector
-     *
-     * @param string $strSelector
-     *
-     * @return string
-     */
-    public function getTableOfContents($strSelector)
-    {
-        $arrTemplate = array();
-        $arrTemplate["selector"] = $strSelector;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "toc_navigation");
-    }
-
-    /**
      * Returns a single TextRow
      *
      * @param string $strText
