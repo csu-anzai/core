@@ -82,6 +82,11 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util'], function ($, aja
          * @param objCallback
          */
         getUnreadCount : function(objCallback) {
+            // in case we are on the login page dont poll
+            if ($('#loginContainer').length > 0) {
+                return;
+            }
+
             ajax.genericAjaxCall("messaging", "getUnreadMessagesCount", "", function(data, status, jqXHR) {
                 if(status == 'success') {
                     var $objResult = $.parseJSON(data);
