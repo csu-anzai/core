@@ -13,9 +13,19 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
     /**
      * An array / list of callbacks to be fired as soon as a url is being loaded.
      * There's no indication on whether loading finished or not.
-     * @type {{}}
+     *
+     * @type {Object<string, Function>}
      */
     var arrLoadCallbacks = {};
+
+    /**
+     * An array of callbacks which is called after the url content was loaded.
+     * At this point the html was already inserted into the main content. Gets only
+     * called on form submits.
+     *
+     * @type {Object<string, Function>}
+     */
+    var arrFormCallbacks = {};
 
     var initRouter = function() {
 
@@ -29,14 +39,15 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
             cleanPage();
             moduleNavigation.setModuleActive(objUrl.module);
 
-            applyCallbacks();
+            applyLoadCallbacks();
 
             //split between post and get
-            if(KAJONA.admin.forms.submittedEl != null) {
+            if (KAJONA.admin.forms.submittedEl != null) {
                 var data = $(KAJONA.admin.forms.submittedEl).serialize();
                 KAJONA.admin.forms.submittedEl = null;
-                ajax.loadUrlToElement('#moduleOutput', objUrl.url, data, false, 'POST');
-
+                ajax.loadUrlToElement('#moduleOutput', objUrl.url, data, false, 'POST', function(){
+                    applyFormCallbacks();
+                });
             } else {
                 ajax.loadUrlToElement('#moduleOutput', objUrl.url, null, true);
             }
@@ -47,8 +58,6 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
 
 
     var generateUrl = function(url) {
-        console.log('processing url '+url);
-
         if (url.indexOf("#") > 0) {
             url = url.substr(url.indexOf("#")+1);
         }
@@ -99,9 +108,8 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
         }
 
         strUrlToLoad += "&"+strParams;
-
         strUrlToLoad += "&contentFill=1";
-        console.log('Loading url '+strUrlToLoad);
+
         return { url: strUrlToLoad, module: arrSections[0]};
     };
 
@@ -112,15 +120,27 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
         tooltip.removeTooltip($('*[rel=tooltip]'));
     };
 
-    var applyCallbacks = function() {
+    var applyLoadCallbacks = function() {
         var key;
-        for(key in arrLoadCallbacks) {
-            if(typeof arrLoadCallbacks[key] === 'function') {
+        for (key in arrLoadCallbacks) {
+            if (typeof arrLoadCallbacks[key] === 'function') {
                 arrLoadCallbacks[key]();
+                // we always delete the callback after it was executed
+                delete arrLoadCallbacks[key];
             }
         }
     };
 
+    var applyFormCallbacks = function() {
+        var key;
+        for (key in arrFormCallbacks) {
+            if (typeof arrFormCallbacks[key] === 'function') {
+                arrFormCallbacks[key]();
+                // we always delete the callback after it was executed
+                delete arrFormCallbacks[key];
+            }
+        }
+    };
 
     /** @alias module:router */
     return {
@@ -151,8 +171,9 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
 
         /**
          * Adds a new callback fired as soon as a new url-request is fired
-         * @param strName
-         * @param objCallback
+         *
+         * @param {String} strName
+         * @param {Function} objCallback
          */
         registerLoadCallback : function (strName, objCallback) {
             arrLoadCallbacks[strName] = objCallback;
@@ -160,12 +181,31 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
 
         /**
          * Removes a registered load-callback
+         *
          * @param strName
          */
         removeLoadCallback : function (strName) {
             delete arrLoadCallbacks[strName];
-        }
+        },
 
+        /**
+         * Adds a new callback after a form was submitted
+         *
+         * @param {String} strName
+         * @param {Function} objCallback
+         */
+        registerFormCallback: function (strName, objCallback) {
+            arrFormCallbacks[strName] = objCallback;
+        },
+
+        /**
+         * Removes a registered form-callback
+         *
+         * @param strName
+         */
+        removeFormCallback: function (strName) {
+            delete arrFormCallbacks[strName];
+        }
 
     };
 
