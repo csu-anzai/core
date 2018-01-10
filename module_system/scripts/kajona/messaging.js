@@ -95,6 +95,11 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util'], function ($, aja
                     if($objResult.alert) {
                         renderAlert($objResult.alert);
                     }
+                } else {
+                    // in case the API returns a 401 the user has logged out so reload the page to show the login page
+                    if (data.status == 401 && $('#loginContainer').length == 0) {
+                        location.reload();
+                    }
                 }
             });
         },
