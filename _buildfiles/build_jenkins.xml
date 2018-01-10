@@ -279,6 +279,7 @@
                 <include name="core*/module_*/*/**"/>
                 <include name="core*/template_*/*/**"/>
                 <include name="core*/_debugging/*/**"/>
+                <include name="core*/_buildfiles/*/**"/>
                 <include name="core*/*.php"/>
                 <include name="core*/*.htaccess"/>
             </fileset>
