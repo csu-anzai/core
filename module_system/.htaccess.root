@@ -27,7 +27,7 @@ RewriteEngine on
 
 # Enable rewrite rules for html and rss suffixes as well as for requests containing xml/admin, but skip
 # rewriting for .js files
-#RewriteRule (!\.html|!\.rss|!xml/admin(.*)|\.js)$ - [L]
+RewriteRule (!\.html|!\.rss|!xml/admin(.*)|\.js)$ - [L]
 
 
 ######################################## ADMIN REWRITING ##################################################
@@ -47,18 +47,18 @@ RewriteRule ^([a-z\_]+)\.html  index.php?module=$1 [QSA,L]
 
 ## Backwards Compatibility
 # xml rewriting. source: /xml/admin/module/action/systemid/
-#RewriteRule !^xml/admin/ - [S=3]
-#RewriteRule ^xml/admin/([a-z\_]+)/([a-zA-Z]*)/([0-9a-z]*) xml.php?module=$1&action=$2&systemid=$3 [QSA,L]
-#RewriteRule ^xml/admin/([a-z\_]+)/([a-zA-Z]*)  xml.php?module=$1&action=$2 [QSA,L]
-#RewriteRule ^xml/admin/([a-z\_]+)  xml.php?module=$1 [QSA,L]
+RewriteRule !^xml/admin/ - [S=3]
+RewriteRule ^xml/admin/([a-z\_]+)/([a-zA-Z]*)/([0-9a-z]*) xml.php?module=$1&action=$2&systemid=$3 [QSA,L]
+RewriteRule ^xml/admin/([a-z\_]+)/([a-zA-Z]*)  xml.php?module=$1&action=$2 [QSA,L]
+RewriteRule ^xml/admin/([a-z\_]+)  xml.php?module=$1 [QSA,L]
 
 ## Backwards Compatibility
 # source: /admin/module/action/systemid
-#RewriteRule !^admin/  - [S=4]
-#RewriteRule ^admin/index.html index.php
-#RewriteRule ^admin/([a-z\_]+)/([a-zA-Z]*)/([0-9a-z]*)\.html  index.php?module=$1&action=$2&systemid=$3 [QSA,L]
-#RewriteRule ^admin/([a-z\_]+)/([a-zA-Z]*)\.html  index.php?module=$1&action=$2 [QSA,L]
-#RewriteRule ^admin/([a-z\_]+)\.html  index.php?module=$1 [QSA,L]
+RewriteRule !^admin/  - [S=4]
+RewriteRule ^admin/index.html index.php
+RewriteRule ^admin/([a-z\_]+)/([a-zA-Z]*)/([0-9a-z]*)\.html  index.php?module=$1&action=$2&systemid=$3 [QSA,L]
+RewriteRule ^admin/([a-z\_]+)/([a-zA-Z]*)\.html  index.php?module=$1&action=$2 [QSA,L]
+RewriteRule ^admin/([a-z\_]+)\.html  index.php?module=$1 [QSA,L]
 
 
 ######################################## PHP ##############################################################
