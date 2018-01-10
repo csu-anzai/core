@@ -188,6 +188,13 @@ TEXT;
     private static function loadNpmDependencies()
     {
         echo "Installing node dependencies" . PHP_EOL;
+
+        //only if required
+        if (is_dir(self::$strRealPath."/core/_buildfiles/jstests/node_modules/clean-css") && is_dir(self::$strRealPath."/core/_buildfiles/jstests/node_modules/less")) {
+            echo "  not required".PHP_EOL;
+            return;
+        }
+
         $arrOutput = array();
         exec("ant -f ".escapeshellarg(self::$strRealPath."/core/_buildfiles/build_jenkins.xml")." installNpmBuildDependencies ", $arrOutput);
         echo "   " . implode("\n   ", $arrOutput);
