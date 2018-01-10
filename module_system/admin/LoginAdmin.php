@@ -250,18 +250,16 @@ class LoginAdmin extends AdminController implements AdminInterface
      */
     protected function actionAdminLogin()
     {
-        try {
-            if ($this->objSession->login($this->getParam("name"), $this->getParam("passwort"))) {
-                // user allowed to access admin?
-                if (!$this->objSession->isAdmin()) {
-                    // no, reset session
-                    $this->objSession->logout();
-                }
+try {
+        if ($this->objSession->login($this->getParam("name"), $this->getParam("passwort"))) {
+            //user allowed to access admin?
+            if (!$this->objSession->isAdmin()) {
+                //no, reset session
+                $this->objSession->logout();}
 
-                // save the current skin as a cookie
-                $objCookie = new Cookie();
-                $objCookie->setCookie("adminskin", $this->objSession->getAdminSkin(false, true));
-                $objCookie->setCookie("adminlanguage", $this->objSession->getAdminLanguage(false, true));
+            //save the current skin as a cookie
+            $objCookie = new Cookie();
+            $objCookie->setCookie("adminlanguage", $this->objSession->getAdminLanguage(false, true));
 
                 return $this->loadPostLoginSite();
             } else {

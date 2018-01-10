@@ -96,9 +96,9 @@ abstract class AdminController extends AbstractController
             $this->setArrModuleEntry("template", "/main.tpl");
         }
 
-        if ($this->getParam("folderview") != "") {
-            $this->setArrModuleEntry("template", "/folderview.tpl");
-        }
+//        if ($this->getParam("folderview") != "") {
+//            $this->setArrModuleEntry("template", "/folderview.tpl");
+//        }
 
         //set the correct language to the text-object
         $this->getObjLang()->setStrTextLanguage($this->objSession->getAdminLanguage(true));
@@ -242,7 +242,7 @@ abstract class AdminController extends AbstractController
 
         //Loading the desired Template
         //if requested the pe, load different template
-        $strTemplate = AdminskinHelper::getPathForSkin($this->objSession->getAdminSkin()).$this->getArrModule("template");
+        $strTemplate = AdminskinHelper::getPathForSkin().$this->getArrModule("template");
         if ($this->getParam("peClose") == 1 || $this->getParam("pe") == 1) {
 //            $strTemplate = "/folderview.tpl";
         }

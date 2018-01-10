@@ -8,18 +8,11 @@ echo "compiling skin css files...\n";
 $arrFilesToCompile = array(
     __DIR__."/../temp/kajona/core/module_v4skin/admin/skins/kajona_v4/less/bootstrap.less" => __DIR__."/../temp/kajona/core/module_v4skin/admin/skins/kajona_v4/less/styles.css",
     __DIR__."/../temp/kajona/core/module_v4skin/admin/skins/kajona_v4/less/bootstrap_pe.less" => __DIR__."/../temp/kajona/core/module_v4skin/admin/skins/kajona_v4/less/styles_pe.css",
-
-    __DIR__."/../temp/kajona/core/module_installer/less/bootstrap.less" => __DIR__."/../temp/kajona/core/module_installer/less/styles.css"
 );
 
 $strSkinReplacement = "";
 $strSkinReplacement = <<<TXT
     <link rel="stylesheet" href="_webpath_/[webpath,module_v4skin]/admin/skins/kajona_v4/less/styles.css?_system_browser_cachebuster_" type="text/css" />
-TXT;
-
-$strInstallerReplacement = "";
-$strInstallerReplacement = <<<TXT
-    <link rel="stylesheet" href="_webpath_/[webpath,module_installer]/less/styles.css?_system_browser_cachebuster_" type="text/css" />
 TXT;
 
 
@@ -33,7 +26,6 @@ $arrFilesToUpdate = array(
     __DIR__."/../temp/kajona/core/module_v4skin/admin/skins/kajona_v4/folderview.tpl" => $strSkinReplacement,
     __DIR__."/../temp/kajona/core/module_v4skin/admin/skins/kajona_v4/login.tpl" => $strSkinReplacement,
     __DIR__."/../temp/kajona/core/module_v4skin/admin/skins/kajona_v4/elements.tpl" => $strPeReplacement,
-    __DIR__."/../temp/kajona/core/module_installer/templates/installer.tpl" => $strInstallerReplacement
 );
 
 
