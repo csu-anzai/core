@@ -33,8 +33,10 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
 
             var objElement = util.getElement(strElementSelector);
 
-            if(!bitBlockLoadingContainer) {
+            if (!bitBlockLoadingContainer) {
                 objElement.html('<div class="loadingContainer"></div>');
+            } else {
+                objElement.css('opacity', '0.4');
             }
 
             if(!strMethod) {
@@ -59,6 +61,8 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
                         location.href = KAJONA_WEBPATH+strUrl;
                     } else {
                         objElement.html(data);
+                        objElement.css('opacity', '1');
+
                         tooltip.initTooltip();
 
                         if (typeof objCallback === 'function') {
@@ -74,6 +78,7 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
 
                 if (data.status === 500 && KAJONA_DEBUG === 1) {
                     objElement.html(data.responseText);
+                    objElement.css('opacity', '1');
                 }
 
                 //maybe it was xml, so strip
