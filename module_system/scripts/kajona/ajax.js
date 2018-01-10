@@ -26,7 +26,7 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
          * @param {String} strData
          * @param {Boolean} bitBlockLoadingContainer
          * @param {String} strMethod default is GET
-         * @param {Function} objCallback
+         * @param {Function} objCallback - is called if the request was successful
          */
         loadUrlToElement: function(strElementSelector, strUrl, strData, bitBlockLoadingContainer, strMethod, objCallback) {
             workingIndicator.start();
