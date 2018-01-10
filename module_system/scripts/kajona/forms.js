@@ -229,8 +229,8 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
 
         this.animateSubmit(objForm);
 
-        //TODO: not required anymore?
-        //messaging.setPollingEnabled(false);
+        // disable polling on form submit
+        messaging.setPollingEnabled(false);
 
         var $btn = $(document.activeElement);
         if (
@@ -251,7 +251,10 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
                 /* access $btn.attr("name") and $btn.val() for data */
         }
 
-        router.removeLoadCallback("form_unlock");
+        router.registerFormCallback("activate_polling", function(){
+            // enable polling after we receive the response of the form
+            messaging.setPollingEnabled(true);
+        });
 
         router.loadUrl(objForm.action);
 
@@ -262,7 +265,6 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
     forms.registerUnlockId = function (strId) {
         router.registerLoadCallback("form_unlock", function() {
             $.ajax({url: KAJONA_WEBPATH + '/xml.php?admin=1&module=system&action=unlockRecord&systemid='+strId});
-            router.removeLoadCallback("form_unlock");
         });
     };
 

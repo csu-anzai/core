@@ -21,19 +21,22 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
          * Possible usage:
          * ajax.loadUrlToElement('#report_container', '/xml.php?admin=1&module=stats&action=getReport', '&plugin=general');
          *
-         * @param strElementSelector (may be selector or a jquery object)
-         * @param strUrl
-         * @param strData
-         * @param bitBlockLoadingContainer
-         * @param strMethod default is GET
+         * @param {String} strElementSelector (may be selector or a jquery object)
+         * @param {String} strUrl
+         * @param {String} strData
+         * @param {Boolean} bitBlockLoadingContainer
+         * @param {String} strMethod default is GET
+         * @param {Function} objCallback - is called if the request was successful
          */
-        loadUrlToElement: function(strElementSelector, strUrl, strData, bitBlockLoadingContainer, strMethod) {
+        loadUrlToElement: function(strElementSelector, strUrl, strData, bitBlockLoadingContainer, strMethod, objCallback) {
             workingIndicator.start();
 
             var objElement = util.getElement(strElementSelector);
 
-            if(!bitBlockLoadingContainer) {
+            if (!bitBlockLoadingContainer) {
                 objElement.html('<div class="loadingContainer"></div>');
+            } else {
+                objElement.css('opacity', '0.4');
             }
 
             if(!strMethod) {
@@ -58,7 +61,13 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
                         location.href = KAJONA_WEBPATH+strUrl;
                     } else {
                         objElement.html(data);
+                        objElement.css('opacity', '1');
+
                         tooltip.initTooltip();
+
+                        if (typeof objCallback === 'function') {
+                            objCallback();
+                        }
                     }
                 }
             ).always(
@@ -69,6 +78,7 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
 
                 if (data.status === 500 && KAJONA_DEBUG === 1) {
                     objElement.html(data.responseText);
+                    objElement.css('opacity', '1');
                 }
 
                 //maybe it was xml, so strip
