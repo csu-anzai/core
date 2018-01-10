@@ -189,7 +189,7 @@ TEXT;
     {
         echo "Installing node dependencies" . PHP_EOL;
         $arrOutput = array();
-        exec("ant -f _buildfiles/build_jenkins.xml installNpmBuildDependencies ", $arrOutput);
+        exec("ant -f ".escapeshellarg(self::$strRealPath."/core/_buildfiles/build_jenkins.xml")." installNpmBuildDependencies ", $arrOutput);
         echo "   " . implode("\n   ", $arrOutput);
     }
 
@@ -198,7 +198,7 @@ TEXT;
         if (is_file(__DIR__ . "/_buildfiles/bin/buildSkinStyles.php")) {
             echo "Building sking css styles" . PHP_EOL;
             $arrOutput = array();
-            exec("php -f " . escapeshellarg(__DIR__ . "/_buildfiles/bin/buildSkinStyles.php"), $arrOutput);
+            exec("php -f " . escapeshellarg(self::$strRealPath . "/core/_buildfiles/bin/buildSkinStyles.php"), $arrOutput);
             echo "   " . implode("\n   ", $arrOutput);
         } else {
             echo "<span style='color: red;'>Missing buildSkinStyles.php helper</span>";

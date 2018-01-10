@@ -276,7 +276,6 @@
         <copy todir="${basedir}${projectPath}" overwrite="true"  includeEmptyDirs="true" >
             <fileset id="sources.dirs" dir="${basedir}${sourcesPath}">
                 <exclude name=".git"/>
-                <exclude name="core/_buildfiles/"/>
                 <include name="core*/module_*/*/**"/>
                 <include name="core*/template_*/*/**"/>
                 <include name="core*/_debugging/*/**"/>
@@ -292,7 +291,6 @@
         <copy todir="${basedir}${tempPath}" overwrite="true"  includeEmptyDirs="true" >
             <fileset id="sources.dirs" dir="${basedir}${sourcesPath}">
                 <exclude name=".git"/>
-                <exclude name="core/_buildfiles/"/>
                 <exclude name="core*/module_pchart/" />
                 <exclude name="core*/module_flotchart/" />
 
@@ -484,7 +482,7 @@
             <fileset dir="${basedir}${tempPath}" includes="**/setupproject.php"/>
             <fileset dir="${basedir}${tempPath}" includes="**/V4toV5Migration.php"/>
             <fileset dir="${basedir}${tempPath}" includes="**/.git"/>
-            <fileset dir="${basedir}${tempPath}" includes="**/core/_buildfiles/jstests/selenium/**"/>
+            <fileset dir="${basedir}${tempPath}" includes="**/core/_buildfiles/**"/>
         </delete>
     </target>
 
@@ -529,6 +527,7 @@
                 <exclude name="**/ckeditor/**/*.js" />
                 <exclude name="core*/module_*/tests/**/*.js" />
                 <exclude name="core*/*/scripts/spec/*.js" />
+                <exclude name="core*/_buildfiles/**/*.js" />
             </fileset>
             <globmapper from="*.js" to="*-full.js"/>
         </copy>
