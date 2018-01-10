@@ -53,7 +53,9 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
         var isStackedDialog = util.isStackedDialog();
 
         //strip webpaths injected into the url
-        url = url.replace(KAJONA_WEBPATH+"/#", '');
+        if (url.indexOf(KAJONA_WEBPATH) === 0) {
+            url = url.replace(KAJONA_WEBPATH + "/#", '');
+        }
 
         if (url.trim() === '') {
             if ($('#loginContainer').length > 0) {
