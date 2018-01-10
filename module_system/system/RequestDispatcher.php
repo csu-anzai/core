@@ -238,13 +238,13 @@ class RequestDispatcher
 
         } else {
             $bitLogin = true;
-
-            if ($strModule != "login") {
-                $strAction = "";
-            }
         }
 
         if ($bitLogin) {
+            if ($strModule != "login") {
+                $strAction = "";
+            }
+
             //skip in case of xml requests
             if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::XML())) {
                 ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
@@ -254,8 +254,7 @@ class RequestDispatcher
             }
 
             if (count(Carrier::getInstance()->getObjDB()->getTables()) == 0 && file_exists(_realpath_."installer.php")) {
-                ResponseObject::getInstance()->setStrRedirectUrl(_webpath_."/installer.php");
-                return "";
+                return Link::clientRedirectManual(_webpath_."/installer.php");
             }
 
             $objHelper = new SkinAdminController();
@@ -263,9 +262,8 @@ class RequestDispatcher
             $strReturn = $objLogin->action($strAction);
 
             if (Carrier::getInstance()->getParam("contentFill") != "1") {
-                $strReturn = $objHelper->actionGenerateLoginTemplate($strReturn);
+                $strReturn = $objHelper->actionGenerateLoginTemplate("<div class='loadingContainer'></div>");
             }
-
         }
 
         return $strReturn;

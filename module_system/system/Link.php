@@ -575,6 +575,27 @@ class Link
         return $strLink;
     }
 
+    /**
+     * @param string $strModule
+     * @param string $strAction
+     * @param array $strParams
+     * @return string
+     */
+    public static function clientRedirectHref($strModule, $strAction = "", array $strParams = [])
+    {
+        return self::clientRedirectManual(self::getLinkAdminHref($strModule, $strAction, $strParams));
+    }
+
+    /**
+     * @param string $strLink
+     * @return string
+     */
+    public static function clientRedirectManual($strLink)
+    {
+        $strLink = json_encode($strLink);
+        return "<script type='text/javascript'>location.href={$strLink};</script>";
+    }
+
     public static function plainUrlToHashUrl($strUrl)
     {
         $strUrl = StringUtil::replace(array(_indexpath_, _webpath_, "?"), "", $strUrl);

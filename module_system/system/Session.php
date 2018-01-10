@@ -9,6 +9,7 @@
 
 namespace Kajona\System\System;
 
+use Kajona\System\System\Security\PasswordExpiredException;
 
 /**
  * Manages all those session stuff as logins or logouts and access to session vars
@@ -50,7 +51,6 @@ final class Session
 
     private $bitClosed = false;
 
-    const STR_SESSION_ADMIN_SKIN_KEY = "STR_SESSION_ADMIN_SKIN_KEY";
     const STR_SESSION_ADMIN_LANG_KEY = "STR_SESSION_ADMIN_LANG_KEY";
 
     const STR_SESSION_USERID = "STR_SESSION_USERID";
@@ -314,42 +314,6 @@ final class Session
     }
 
     /**
-     * Returns the name of the current skin, if the user is logged in and admin
-     *
-     * @param bool $bitUseCookie
-     * @param bool $bitSkipSessionEntry
-     *
-     * @return string
-     */
-    public function getAdminSkin($bitUseCookie = true, $bitSkipSessionEntry = false)
-    {
-
-        if (!$bitSkipSessionEntry && $this->getSession(self::STR_SESSION_ADMIN_SKIN_KEY) != "") {
-            return $this->getSession(self::STR_SESSION_ADMIN_SKIN_KEY);
-        }
-
-        //Maybe we can load the skin from the cookie
-        $objCookie = new Cookie();
-        $strSkin = $objCookie->getCookie("adminskin");
-        if ($strSkin != "" && $bitUseCookie) {
-            return $strSkin;
-        }
-
-        if ($this->isLoggedin()) {
-            if ($this->isAdmin()) {
-                if ($this->getUser() != null && $this->getUser()->getStrAdminskin() != "") {
-                    $strSkin = $this->getUser()->getStrAdminskin();
-                    $this->setSession(self::STR_SESSION_ADMIN_SKIN_KEY, $strSkin);
-                    return $strSkin;
-                }
-            }
-        }
-
-        $this->setSession(self::STR_SESSION_ADMIN_SKIN_KEY, SystemSetting::getConfigValue("_admin_skin_default_"));
-        return SystemSetting::getConfigValue("_admin_skin_default_");
-    }
-
-    /**
      * Returns the language the user set for the administration
      * NOTE: THIS IS FOR THE TEXTS, NOT THE CONTENTS
      *
@@ -400,25 +364,6 @@ final class Session
     }
 
     /**
-     * Checks if a user is allowed in portal or not
-     *
-     * @return bool
-     */
-    public function isPortal()
-    {
-        if ($this->isLoggedin()) {
-            if ($this->getUser() != null && $this->getUser()->getIntPortal() == 1) {
-                return true;
-            } else {
-                return false;
-            }
-
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * Checks if a user is set active or not
      *
      * @return bool
@@ -464,6 +409,8 @@ final class Session
      * @param string $strPassword
      *
      * @return bool
+     * @throws PasswordExpiredException
+     * @throws AuthenticationException
      */
     public function login($strName, $strPassword)
     {
@@ -476,13 +423,15 @@ final class Session
                 $bitReturn = $this->internalLoginHelper($objUser);
             }
         } catch (AuthenticationException $objEx) {
-            $bitReturn = false;
-        }
-
-
-        if ($bitReturn === false) {
             Logger::getInstance()->info("Unsuccessful login attempt by user ".$strName);
             UserLog::generateLog(0, $strName);
+
+            throw $objEx;
+        } catch (PasswordExpiredException $objEx) {
+            Logger::getInstance()->info("Unsuccessful login attempt by user ".$strName." password is expired");
+            UserLog::generateLog(0, $strName);
+
+            throw $objEx;
         }
 
         return $bitReturn;

@@ -121,6 +121,7 @@ class SystemAdmin extends AdminEvensimpler implements AdminInterface
     /**
      * Renders the form to edit an existing entry
      *
+     * @permissions edit
      * @return string
      */
     protected function actionEdit()
@@ -1257,6 +1258,7 @@ JS;
     /**
      * Unlocks a record if currently locked by the current user
      *
+     * @permissions edit
      * @return string
      */
     protected function actionUnlockRecord()
@@ -1292,7 +1294,6 @@ JS;
             $objObject->updateObjectToDb();
             $objObject->setAbsolutePosition($intNewPos);
             $strReturn .= "<message>".$objObject->getStrDisplayName()." - ".$this->getLang("setAbsolutePosOk")."</message>";
-            $this->flushCompletePagesCache();
         } else {
             ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
             $strReturn .= "<message><error>".xmlSafeString($this->getLang("commons_error_permissions"))."</error></message>";
@@ -1321,7 +1322,6 @@ JS;
                 $objCommon->setIntRecordStatus($intNewStatus);
                 $objCommon->updateObjectToDb();
                 $strReturn .= "<message>".$objCommon->getStrDisplayName()." - ".$this->getLang("setStatusOk")."<newstatus>".$intNewStatus."</newstatus></message>";
-                $this->flushCompletePagesCache();
             } catch (\Exception $objE) {
                 ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_INTERNAL_SERVER_ERROR);
                 $strReturn .= "<message><error>".xmlSafeString($objE->getMessage())."</error></message>";
@@ -1387,7 +1387,6 @@ JS;
                 $strName = $objCommon->getStrDisplayName();
                 if ($objCommon->deleteObject()) {
                     $strReturn .= "<message>".$strName." - ".$this->getLang("commons_delete_ok")."</message>";
-                    $this->flushCompletePagesCache();
                 } else {
                     $strReturn .= "<error>".$strName." - ".$this->getLang("commons_delete_error")."</error>";
                 }
@@ -1423,7 +1422,6 @@ JS;
             }
 
             $strReturn .= "<message>".$objRecord->getStrDisplayName()." - ".$this->getLang("setPrevIdOk")."</message>";
-            $this->flushCompletePagesCache();
         } else {
             ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_FORBIDDEN);
             $strReturn .= "<message><error>".xmlSafeString($this->getLang("commons_error_permissions"))."</error></message>";
@@ -1438,6 +1436,7 @@ JS;
      * custom xml-structure:
      * <statusinfo></statusinfo><reloadurl></reloadurl>
      *
+     * @permissions right2
      * @return string
      */
     protected function actionExecuteSystemTask()
@@ -1490,6 +1489,7 @@ JS;
     /**
      * Returns all properties for the given module
      *
+     * @permissions view
      * @return string
      * @responseType json
      */

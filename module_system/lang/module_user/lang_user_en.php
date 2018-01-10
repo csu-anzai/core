@@ -166,3 +166,11 @@ $lang["usersource_kajona_name"]          = "Kajona internal";
 $lang["user_copy_info"]                  = "The group settings are inherited from the user {0}. In the next step it is possible to adjust the group settings.";
 $lang["user_last_pwchanges_info"]        = "User history:";
 $lang["change_type_group"]               = "Group";
+
+$lang["user_password_validate_blacklist"] = "The password contains blocked keywords";
+$lang["user_password_validate_complexity"] = "The password must include the following characters: {0} upper-case letters, {1} lower-case letters, {2} digits, {3} special-characters (i.e. !,$,#,%)";
+$lang["user_password_validate_minlength"] = "The password must be at least {0} characters long";
+$lang["user_password_validate_passwordhistory"] = "The password was previously used";
+$lang["user_password_validate_username"] = "The password must not contain characters from the username";
+
+$lang["reset_reason_expired"] = "Your password is expired. Please choose a new password along with providing your username.";

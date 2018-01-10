@@ -57,14 +57,15 @@ class AdminskinHelper
      *
      * @static
      *
-     * @param string $strSkin
+     * @internal string $strSkin
      *
      * @return string
+     * @deprecated
      */
-    public static function getPathForSkin($strSkin)
+    public static function getPathForSkin($strSkin = "")
     {
         if (self::$strSkinPath == null) {
-            self::$strSkinPath = Resourceloader::getInstance()->getPathForFolder("/admin/skins/".$strSkin);
+            self::$strSkinPath = Resourceloader::getInstance()->getPathForFolder("/admin/skins/kajona_v4");
         }
 
         return self::$strSkinPath;
@@ -79,7 +80,7 @@ class AdminskinHelper
     public static function defineSkinWebpath()
     {
         if (!defined("_skinwebpath_")) {
-            define("_skinwebpath_", _webpath_.self::getPathForSkin(Carrier::getInstance()->getObjSession()->getAdminSkin()));
+            define("_skinwebpath_", _webpath_.self::getPathForSkin());
         }
     }
 

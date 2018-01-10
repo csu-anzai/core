@@ -82,6 +82,11 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util'], function ($, aja
          * @param objCallback
          */
         getUnreadCount : function(objCallback) {
+            // in case we are on the login page dont poll
+            if ($('#loginContainer').length > 0) {
+                return;
+            }
+
             ajax.genericAjaxCall("messaging", "getUnreadMessagesCount", "", function(data, status, jqXHR) {
                 if(status == 'success') {
                     var $objResult = $.parseJSON(data);
@@ -89,6 +94,11 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util'], function ($, aja
 
                     if($objResult.alert) {
                         renderAlert($objResult.alert);
+                    }
+                } else {
+                    // in case the API returns a 401 the user has logged out so reload the page to show the login page
+                    if (data.status == 401 && $('#loginContainer').length == 0) {
+                        location.reload();
                     }
                 }
             });
@@ -142,10 +152,12 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util'], function ($, aja
             if (intCount > 0) {
                 $userNotificationsCount.show();
                 if (oldCount != intCount) {
-                    var strTitle = document.title.replace("(" + oldCount + ")", "");
-                    document.title = "(" + intCount + ") " + strTitle;
+                    if (document.title.match(/\(\d\)/)) {
+                        document.title = document.title.replace(/\(\d\)/, "(" + intCount + ")");
+                    } else {
+                        document.title = "(" + intCount + ") " + document.title;
+                    }
                 }
-
             } else {
                 $userNotificationsCount.hide();
             }

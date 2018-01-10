@@ -417,6 +417,7 @@ JS;
     }
 
     /**
+     * @permissions view
      * @return string
      */
     protected function actionEdit()
@@ -425,6 +426,7 @@ JS;
     }
 
     /**
+     * @permissions edit
      * @return string
      */
     protected function actionNew()
@@ -437,6 +439,7 @@ JS;
 
 
     /**
+     * @permissions edit
      * @return string
      */
     protected function actionSave()
@@ -473,6 +476,7 @@ JS;
     /**
      * Creates a summary of the message
      *
+     * @permissions view
      * @return string
      */
     protected function actionView()

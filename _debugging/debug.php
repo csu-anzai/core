@@ -32,7 +32,7 @@ class DebugHelper
     public function debugHelper()
     {
         echo "<pre>";
-        echo "<b>Kajona V5 Debug Subsystem</b>\n\n";
+        echo "<b>Kajona Core V7 Debug Subsystem</b>\n\n";
 
         if (getGet("debugfile") != "") {
 

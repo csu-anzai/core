@@ -1280,17 +1280,6 @@ Shown, wherever the attention of the user is needed
     </div>
 </warning_box>
 
-Renders a toc navigation
-<toc_navigation>
-    <script type="text/javascript">
-        require(['jquery', 'toc'], function($, toc) {
-            $(document).ready(function(){
-                toc.render("%%selector%%");
-            });
-        });
-    </script>
-</toc_navigation>
-
 Used to print plain text
 <text_row>
 <p class="%%class%%">%%text%%</p>
@@ -1436,7 +1425,7 @@ Toolbar, prominent in the layout. Rendered to switch between action.
 Toolbar for the current record, rendered to quick-access the actions of the current record.
 <contentActionToolbar_wrapper>
 <div class="hidden toolbarContentContainer">%%content%%</div>
-<script type="text/javascript"> require(['contentToolbar'], function(contentToolbar) { contentToolbar.registerRecordActions($('.toolbarContentContainer')); contentToolbar.showBar(); }); </script>
+<script type="text/javascript"> require(['contentToolbar'], function(contentToolbar) { contentToolbar.registerRecordActions($('.toolbarContentContainer')); }); </script>
 </contentActionToolbar_wrapper>
 
 ---------------------------------------------------------------------------------------------------------

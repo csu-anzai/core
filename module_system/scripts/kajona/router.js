@@ -8,14 +8,24 @@
  *
  * @module router
  */
-define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNavigation', 'quickhelp', 'ajax', 'toc'], function ($, contentToolbar, tooltip, breadcrumb, moduleNavigation, quickhelp, ajax, toc) {
+define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNavigation', 'quickhelp', 'ajax', 'util'], function ($, contentToolbar, tooltip, breadcrumb, moduleNavigation, quickhelp, ajax, util) {
 
     /**
      * An array / list of callbacks to be fired as soon as a url is being loaded.
      * There's no indication on whether loading finished or not.
-     * @type {{}}
+     *
+     * @type {Object<string, Function>}
      */
     var arrLoadCallbacks = {};
+
+    /**
+     * An array of callbacks which is called after the url content was loaded.
+     * At this point the html was already inserted into the main content. Gets only
+     * called on form submits.
+     *
+     * @type {Object<string, Function>}
+     */
+    var arrFormCallbacks = {};
 
     var initRouter = function() {
 
@@ -29,14 +39,15 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
             cleanPage();
             moduleNavigation.setModuleActive(objUrl.module);
 
-            applyCallbacks();
+            applyLoadCallbacks();
 
             //split between post and get
-            if(KAJONA.admin.forms.submittedEl != null) {
+            if (KAJONA.admin.forms.submittedEl != null) {
                 var data = $(KAJONA.admin.forms.submittedEl).serialize();
                 KAJONA.admin.forms.submittedEl = null;
-                ajax.loadUrlToElement('#moduleOutput', objUrl.url, data, false, 'POST');
-
+                ajax.loadUrlToElement('#moduleOutput', objUrl.url, data, false, 'POST', function(){
+                    applyFormCallbacks();
+                });
             } else {
                 ajax.loadUrlToElement('#moduleOutput', objUrl.url, null, true);
             }
@@ -47,25 +58,33 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
 
 
     var generateUrl = function(url) {
-        console.log('processing url '+url);
 
-        if (url.indexOf("#") > 0) {
-            url = url.substr(url.indexOf("#")+1);
+        // detect where the page was loaded from an iframe and thus is displayed in a dialog
+        var isStackedDialog = util.isStackedDialog();
+
+        //strip webpaths injected into the url
+        if (url.indexOf(KAJONA_WEBPATH) === 0) {
+            url = url.replace(KAJONA_WEBPATH + "/#", '');
         }
 
-        if(url.trim() === '') {
-            if($('#loginContainer')) {
+        if (url.trim() === '') {
+            if ($('#loginContainer').length > 0) {
+                // in case we are on the login template redirect to login action
+                url = "login/login";
+            } else if (isStackedDialog) {
+                // in case we are inside a dialog and the url is empty we dont need to load a route
                 return;
+            } else {
+                // otherwise we load the dashboard
+                url = "dashboard";
             }
-            url = "dashboard";
         }
 
         if(url.charAt(0) == "/") {
             url = url.substr(1);
         }
 
-        var isStackedDialog = !!(window.frameElement && window.frameElement.nodeName && window.frameElement.nodeName.toLowerCase() == 'iframe');
-        if(isStackedDialog && url.indexOf('peClose=1') != -1) {
+        if (isStackedDialog && url.indexOf('peClose=1') != -1) {
             //react on peClose statements by reloading the parent view
             parent.KAJONA.admin.folderview.dialog.hide();
             parent.routie.reload();
@@ -91,9 +110,8 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
         }
 
         strUrlToLoad += "&"+strParams;
-
         strUrlToLoad += "&contentFill=1";
-        console.log('Loading url '+strUrlToLoad);
+
         return { url: strUrlToLoad, module: arrSections[0]};
     };
 
@@ -102,29 +120,46 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
         //breadcrumb.resetBar();
         quickhelp.resetQuickhelp();
         tooltip.removeTooltip($('*[rel=tooltip]'));
-        toc.resetToc();
     };
 
-    var applyCallbacks = function() {
+    var applyLoadCallbacks = function() {
         var key;
-        for(key in arrLoadCallbacks) {
-            if(typeof arrLoadCallbacks[key] === 'function') {
+        for (key in arrLoadCallbacks) {
+            if (typeof arrLoadCallbacks[key] === 'function') {
                 arrLoadCallbacks[key]();
+                // we always delete the callback after it was executed
+                delete arrLoadCallbacks[key];
             }
         }
     };
 
+    var applyFormCallbacks = function() {
+        var key;
+        for (key in arrFormCallbacks) {
+            if (typeof arrFormCallbacks[key] === 'function') {
+                arrFormCallbacks[key]();
+                // we always delete the callback after it was executed
+                delete arrFormCallbacks[key];
+            }
+        }
+    };
 
     /** @alias module:router */
     return {
 
         loadUrl : function(strUrl) {
-            if(strUrl == document.location.hash) {
-                routie.reload();
-            } else {
-                routie(strUrl);
+            var actionHash = strUrl;
+            if (strUrl.indexOf('#') > 0) {
+                var parser = document.createElement('a');
+                parser.href = strUrl;
+                actionHash = parser.hash;
             }
 
+            if (actionHash === location.hash) {
+                routie.reload();
+            } else {
+                routie(actionHash);
+            }
         },
 
         reload : function() {
@@ -141,8 +176,9 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
 
         /**
          * Adds a new callback fired as soon as a new url-request is fired
-         * @param strName
-         * @param objCallback
+         *
+         * @param {String} strName
+         * @param {Function} objCallback
          */
         registerLoadCallback : function (strName, objCallback) {
             arrLoadCallbacks[strName] = objCallback;
@@ -150,12 +186,31 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
 
         /**
          * Removes a registered load-callback
+         *
          * @param strName
          */
         removeLoadCallback : function (strName) {
             delete arrLoadCallbacks[strName];
-        }
+        },
 
+        /**
+         * Adds a new callback after a form was submitted
+         *
+         * @param {String} strName
+         * @param {Function} objCallback
+         */
+        registerFormCallback: function (strName, objCallback) {
+            arrFormCallbacks[strName] = objCallback;
+        },
+
+        /**
+         * Removes a registered form-callback
+         *
+         * @param strName
+         */
+        removeFormCallback: function (strName) {
+            delete arrFormCallbacks[strName];
+        }
 
     };
 

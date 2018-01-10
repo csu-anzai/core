@@ -5,47 +5,48 @@
 ********************************************************************************************************/
 
 
-class class_project_setup {
-    
-    private static $strRealPath = "";
-    
-    public static function setUp() {
-        
-        self::$strRealPath = __DIR__."/../";
+class class_project_setup
+{
 
-        echo "<b>Kajona V5 project setup.</b>\nCreates the folder-structure required to build a new project.\n\n";
+    private static $strRealPath = "";
+
+    public static function setUp()
+    {
+
+        self::$strRealPath = __DIR__ . "/../";
+
+        echo "<b>Kajona V7 project setup.</b>\nCreates the folder-structure required to build a new project.\n\n";
 
         $strCurFolder = __DIR__;
 
-        echo "core-path: ".$strCurFolder.", folder found: ".substr($strCurFolder, -4)."\n";
+        echo "core-path: " . $strCurFolder . ", folder found: " . substr($strCurFolder, -4) . "\n";
 
-        if(substr($strCurFolder, -4) != "core") {
+        if (substr($strCurFolder, -4) != "core") {
             echo "current folder must be named core!";
             return;
         }
 
 
         $arrExcludedModules = array();
-        if(is_file(self::$strRealPath."project/packageconfig.php")) {
-            include self::$strRealPath."project/packageconfig.php";
+        if (is_file(self::$strRealPath . "project/packageconfig.php")) {
+            include self::$strRealPath . "project/packageconfig.php";
         }
 
         //Module-Constants
         $arrModules = array();
-        foreach(scandir(self::$strRealPath) as $strRootFolder) {
-
-            if(!isset($arrExcludedModules[$strRootFolder]))
+        foreach (scandir(self::$strRealPath) as $strRootFolder) {
+            if (!isset($arrExcludedModules[$strRootFolder])) {
                 $arrExcludedModules[$strRootFolder] = array();
+            }
 
-            if(strpos($strRootFolder, "core") === false)
+            if (strpos($strRootFolder, "core") === false) {
                 continue;
+            }
 
-            foreach(scandir(self::$strRealPath."/".$strRootFolder) as $strOneModule) {
-
-                if(preg_match("/^(module|element|_)+.*/i", $strOneModule) && !in_array($strOneModule, $arrExcludedModules[$strRootFolder])) {
-                    $arrModules[] = $strRootFolder."/".$strOneModule;
+            foreach (scandir(self::$strRealPath . "/" . $strRootFolder) as $strOneModule) {
+                if (preg_match("/^(module|element|_)+.*/i", $strOneModule) && !in_array($strOneModule, $arrExcludedModules[$strRootFolder])) {
+                    $arrModules[] = $strRootFolder . "/" . $strOneModule;
                 }
-
             }
         }
 
@@ -73,75 +74,40 @@ class class_project_setup {
         self::checkDir("/files/extract");
         self::makeWritable("/files/extract");
 
-        self::createLangProjectEntry();
-
         echo "searching for files on root-path...\n";
-        foreach($arrModules as $strSingleModule) {
-            if(!is_dir(self::$strRealPath."/".$strSingleModule))
+        foreach ($arrModules as $strSingleModule) {
+            if (!is_dir(self::$strRealPath . "/" . $strSingleModule)) {
                 continue;
+            }
 
-            $arrContent = scandir(self::$strRealPath."/".$strSingleModule);
-            foreach($arrContent as $strSingleEntry) {
-                if(substr($strSingleEntry, -5) == ".root" && !is_file(self::$strRealPath."/".substr($strSingleEntry, 0, -5))) {
+            $arrContent = scandir(self::$strRealPath . "/" . $strSingleModule);
+            foreach ($arrContent as $strSingleEntry) {
+                if (substr($strSingleEntry, -5) == ".root" && !is_file(self::$strRealPath . "/" . substr($strSingleEntry, 0, -5))) {
                     //echo "copy ".$strSingleEntry." to ".self::$strRealPath."/".substr($strSingleEntry, 0, -5)."\n";
-                    copy(self::$strRealPath."/".$strSingleModule."/".$strSingleEntry, self::$strRealPath."/".substr($strSingleEntry, 0, -5));
+                    copy(self::$strRealPath . "/" . $strSingleModule . "/" . $strSingleEntry, self::$strRealPath . "/" . substr($strSingleEntry, 0, -5));
                 }
             }
 
-            if(is_dir(self::$strRealPath."/".$strSingleModule."/files"))
-                self::copyFolder(self::$strRealPath."/".$strSingleModule."/files", self::$strRealPath."/files");
+            if (is_dir(self::$strRealPath . "/" . $strSingleModule . "/files")) {
+                self::copyFolder(self::$strRealPath . "/" . $strSingleModule . "/files", self::$strRealPath . "/files");
+            }
         }
 
 
-
-        echo "\n<b>Kajona V5 htaccess setup</b>\n";
+        echo "\n<b>htaccess setup</b>\n";
         self::createAllowHtaccess("/files/cache/.htaccess");
         self::createAllowHtaccess("/files/images/.htaccess");
         self::createAllowHtaccess("/files/extract/.htaccess");
-        self::createAllowHtaccess("/templates/.htaccess");
 
         self::createDenyHtaccess("/project/.htaccess");
         self::createDenyHtaccess("/files/.htaccess");
 
+        self::loadNpmDependencies();
         self::scanComposer();
+        self::buildSkinStyles();
 
         echo "\n<b>Done.</b>\nIf everything went well, <a href=\"../installer.php\">open the installer</a>\n";
-
     }
-
-
-    private static function createLangProjectEntry() {
-        $strContent = <<<TXT
-
-Kajona V5 lang subsystem.
-
-    Since Kajona V4, it is possible to change the default-lang files by deploying them inside the projects'
-    lang-folder.
-    This provides a way to change texts and labels without breaking them during the next system-update.
-
-    Example: By default, the Template-Manager is titled "Packagemanagement".
-    The entry is created by the file
-
-    /core/module_packagemanager/lang/module_packagemanager/lang_packagemanager_en.php -> \$lang["modul_titel"].
-
-    To change the entry to "Packages" or "Modules" create a blank php-file into the matching folder
-    under the project root. Using the example above, that would be:
-
-    /project/module_packagemanager/lang/module_packagemanager/lang_packagemanager_en.php
-
-    Now change the entry
-    \$lang["modul_titel"] = "Packagemanagement";
-    to
-    \$lang["modul_titel"] = "Packages";
-
-    Reload your browser and enjoy the relabeled interface.
-
-
-TXT;
-        file_put_contents(self::$strRealPath."/project/lang_readme.txt", $strContent);
-    }
-
-
 
 
     private static function createBinReadme()
@@ -151,68 +117,96 @@ TXT;
 This folder should contain the following external binaries:
 
 module_fileindexer
-* `tika-app-1.16.jar` (https://tika.apache.org/)
+* `tika-app-1.17.jar` (https://tika.apache.org/)
 
 TEXT;
 
-        file_put_contents(self::$strRealPath."/bin/README.md", $strContent);
+        file_put_contents(self::$strRealPath . "/bin/README.md", $strContent);
     }
 
-    private static function checkDir($strFolder) {
-        echo "checking dir ".self::$strRealPath.$strFolder."\n";
-        if(!is_dir(self::$strRealPath.$strFolder)) {
-            mkdir(self::$strRealPath.$strFolder, 0777);
+    private static function checkDir($strFolder)
+    {
+        echo "checking dir " . self::$strRealPath . $strFolder . "\n";
+        if (!is_dir(self::$strRealPath . $strFolder)) {
+            mkdir(self::$strRealPath . $strFolder, 0777);
             echo " \t\t... directory created\n";
-        }
-        else {
+        } else {
             echo " \t\t... already existing.\n";
         }
     }
 
-    private static function makeWritable($strFolder) {
-        chmod(self::$strRealPath.$strFolder, 0777);
+    private static function makeWritable($strFolder)
+    {
+        chmod(self::$strRealPath . $strFolder, 0777);
     }
 
 
-    private static function copyFolder($strSourceFolder, $strTargetFolder, $arrExcludeSuffix = array()) {
+    private static function copyFolder($strSourceFolder, $strTargetFolder, $arrExcludeSuffix = array())
+    {
         $arrEntries = scandir($strSourceFolder);
-        foreach($arrEntries as $strOneEntry) {
-            if($strOneEntry == "." || $strOneEntry == ".." || $strOneEntry == ".svn" || in_array(substr($strOneEntry, strrpos($strOneEntry, ".")), $arrExcludeSuffix))
+        foreach ($arrEntries as $strOneEntry) {
+            if ($strOneEntry == "." || $strOneEntry == ".." || $strOneEntry == ".svn" || in_array(substr($strOneEntry, strrpos($strOneEntry, ".")), $arrExcludeSuffix)) {
                 continue;
-
-            if(is_file($strSourceFolder."/".$strOneEntry) && !is_file($strTargetFolder."/".$strOneEntry)) {
-                //echo "copying file ".$strSourceFolder."/".$strOneEntry." to ".$strTargetFolder."/".$strOneEntry."\n";
-                if(!is_dir($strTargetFolder))
-                    mkdir($strTargetFolder, 0777, true);
-
-                copy($strSourceFolder."/".$strOneEntry, $strTargetFolder."/".$strOneEntry);
-                chmod($strTargetFolder."/".$strOneEntry, 0777);
             }
-            elseif(is_dir($strSourceFolder."/".$strOneEntry)) {
-                self::copyFolder($strSourceFolder."/".$strOneEntry, $strTargetFolder."/".$strOneEntry, $arrExcludeSuffix);
+
+            if (is_file($strSourceFolder . "/" . $strOneEntry) && !is_file($strTargetFolder . "/" . $strOneEntry)) {
+                //echo "copying file ".$strSourceFolder."/".$strOneEntry." to ".$strTargetFolder."/".$strOneEntry."\n";
+                if (!is_dir($strTargetFolder)) {
+                    mkdir($strTargetFolder, 0777, true);
+                }
+
+                copy($strSourceFolder . "/" . $strOneEntry, $strTargetFolder . "/" . $strOneEntry);
+                chmod($strTargetFolder . "/" . $strOneEntry, 0777);
+            } elseif (is_dir($strSourceFolder . "/" . $strOneEntry)) {
+                self::copyFolder($strSourceFolder . "/" . $strOneEntry, $strTargetFolder . "/" . $strOneEntry, $arrExcludeSuffix);
             }
         }
     }
 
-    private static function createDenyHtaccess($strPath) {
-        if(is_file(self::$strRealPath.$strPath))
+    private static function createDenyHtaccess($strPath)
+    {
+        if (is_file(self::$strRealPath . $strPath)) {
             return;
+        }
 
-        echo "placing deny htaccess in ".$strPath."\n";
+        echo "placing deny htaccess in " . $strPath . "\n";
         $strContent = "\n\nRequire all denied\n\n";
-        file_put_contents(self::$strRealPath.$strPath, $strContent);
+        file_put_contents(self::$strRealPath . $strPath, $strContent);
     }
 
-    private static function createAllowHtaccess($strPath) {
-        if(is_file(self::$strRealPath.$strPath))
+    private static function createAllowHtaccess($strPath)
+    {
+        if (is_file(self::$strRealPath . $strPath)) {
             return;
+        }
 
-        echo "placing allow htaccess in ".$strPath."\n";
+        echo "placing allow htaccess in " . $strPath . "\n";
         $strContent = "\n\nRequire all granted\n\n";
-        file_put_contents(self::$strRealPath.$strPath, $strContent);
+        file_put_contents(self::$strRealPath . $strPath, $strContent);
     }
 
-    private static function scanComposer() {
+    private static function loadNpmDependencies()
+    {
+        echo "Installing node dependencies" . PHP_EOL;
+        $arrOutput = array();
+        exec("ant -f _buildfiles/build_jenkins.xml installNpmBuildDependencies ", $arrOutput);
+        echo "   " . implode("\n   ", $arrOutput);
+    }
+
+    private static function buildSkinStyles()
+    {
+        if (is_file(__DIR__ . "/_buildfiles/bin/buildSkinStyles.php")) {
+            echo "Building sking css styles" . PHP_EOL;
+            $arrOutput = array();
+            exec("php -f " . escapeshellarg(__DIR__ . "/_buildfiles/bin/buildSkinStyles.php"), $arrOutput);
+            echo "   " . implode("\n   ", $arrOutput);
+        } else {
+            echo "<span style='color: red;'>Missing buildSkinStyles.php helper</span>";
+        }
+    }
+
+    private static function scanComposer()
+    {
         $objCoreDirs = new DirectoryIterator(__DIR__ . "/../");
         foreach ($objCoreDirs as $objCoreDir) {
             if ($objCoreDir->isDir() && substr($objCoreDir->getFilename(), 0, 4) == 'core') {
@@ -223,22 +217,22 @@ TEXT;
                         if (is_file($composerFile)) {
                             $arrOutput = array();
                             $intReturn = 0;
-                            exec('composer install --prefer-dist --quiet --working-dir  '.dirname($composerFile), $arrOutput, $intReturn);
-                            if($intReturn == 127) {
-                                echo "<span style='color: red;'>composer was not found. please run 'composer install --prefer-dist --working-dir ".dirname($composerFile)."' manually</span>\n";
+                            exec('composer install --prefer-dist --quiet --working-dir  ' . dirname($composerFile), $arrOutput, $intReturn);
+                            if ($intReturn == 127) {
+                                echo "<span style='color: red;'>composer was not found. please run 'composer install --prefer-dist --working-dir " . dirname($composerFile) . "' manually</span>\n";
                                 continue;
                             }
-                            if($intReturn == 1) {
-                                echo "<span style='color: red;'>composer error. please run 'composer install --prefer-dist --working-dir ".dirname($composerFile)."' manually</span>\n";
+                            if ($intReturn == 1) {
+                                echo "<span style='color: red;'>composer error. please run 'composer install --prefer-dist --working-dir " . dirname($composerFile) . "' manually</span>\n";
 
-                                if(!is_writable(dirname($composerFile))) {
-                                    echo "<span style='color: red;'>    target folder ".dirname($composerFile)." is not writable</span>\n";
+                                if (!is_writable(dirname($composerFile))) {
+                                    echo "<span style='color: red;'>    target folder " . dirname($composerFile) . " is not writable</span>\n";
                                 }
                                 continue;
                             }
-                            echo "Composer install finished for ".$composerFile.": \n";
+                            echo "Composer install finished for " . $composerFile . ": \n";
 
-                            echo "   ".implode("\n   ", $arrOutput);
+                            echo "   " . implode("\n   ", $arrOutput);
                         }
                     }
                 }

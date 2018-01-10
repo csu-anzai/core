@@ -5,16 +5,11 @@
     <title>Kajona admin [%%webpathTitle%%]</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow" />
-    <meta name="generator" content="Kajona, www.kajona.de" />
+    <meta name="generator" content="Kajona Core, https://github.com/artemeon/core" />
 
     <link rel="stylesheet" href="_webpath_/[webpath,module_system]/scripts/jqueryui/css/smoothness/jquery-ui.custom.css?_system_browser_cachebuster_" type="text/css" />
     <link rel="stylesheet" href="_webpath_/[webpath,module_system]/scripts/qtip2/jquery.qtip.min.css?_system_browser_cachebuster_" type="text/css" />
-
-    <!-- KAJONA_BUILD_LESS_START -->
-    <link href="_webpath_/[webpath,module_v4skin]/admin/skins/kajona_v4/less/bootstrap.less?_system_browser_cachebuster_" rel="stylesheet/less">
-    <script> less = { env:'production' }; </script>
-    <script src="_webpath_/[webpath,module_v4skin]/admin/skins/kajona_v4/less/less.min.js"></script>
-    <!-- KAJONA_BUILD_LESS_END -->
+    <link rel="stylesheet" href="_webpath_/[webpath,module_v4skin]/admin/skins/kajona_v4/less/styles.min.css?_system_browser_cachebuster_" type="text/css" />
 
     <script src="_webpath_/[webpath,module_system]/scripts/jquery/jquery.min.js?_system_browser_cachebuster_"></script>
     <script src="_webpath_/[webpath,module_system]/scripts/routie/routie.js?_system_browser_cachebuster_"></script>
@@ -56,9 +51,6 @@
                 <div class="col-md-5 col-sm-6 col-xs-7 navbar-dropdown-section pull-right">
                     <span class="languageSwitchContainer">%%languageswitch%%</span>
                     <script type="text/javascript">
-//                        require(['ajax'], function(ajax) {
-//                            ajax.loadUrlToElement(".languageSwitchContainer", '/xml.php?admin=1&module=v4skin&action=getLanguageswitch');
-//                        });
                     </script>
                 </div>
             </div>
@@ -114,7 +106,7 @@
     </div>
 
     <footer>
-        <p>powered by <a href="http://www.kajona.de/" target="_blank" title="Kajona - empowering your content">Kajona</a></p>
+        [lang,commons_skin_footer,commons]
     </footer>
 
 </div>
