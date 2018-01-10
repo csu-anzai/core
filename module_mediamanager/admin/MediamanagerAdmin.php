@@ -439,9 +439,6 @@ HTML;
         $strReturn = $this->getLang("sync_end");
         $strReturn .= $this->objToolkit->getTextRow($this->getLang("sync_add").$arrSyncs["insert"].$this->getLang("sync_del").$arrSyncs["delete"]);
 
-        //Flush cache
-        $this->flushCompletePagesCache();
-
         return $strReturn;
     }
 
@@ -459,7 +456,6 @@ HTML;
 
         $objFile = Objectfactory::getInstance()->getObject($this->getSystemid());
 
-        $this->flushCompletePagesCache();
         if ($this->getParam("source") != "") {
             $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "openFolder", "&systemid=".$objFile->getPrevId()));
         } else {

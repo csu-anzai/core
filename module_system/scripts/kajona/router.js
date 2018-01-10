@@ -8,7 +8,7 @@
  *
  * @module router
  */
-define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNavigation', 'quickhelp', 'ajax'], function ($, contentToolbar, tooltip, breadcrumb, moduleNavigation, quickhelp, ajax) {
+define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNavigation', 'quickhelp', 'ajax', 'util'], function ($, contentToolbar, tooltip, breadcrumb, moduleNavigation, quickhelp, ajax, util) {
 
     /**
      * An array / list of callbacks to be fired as soon as a url is being loaded.
@@ -49,12 +49,13 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
     var generateUrl = function(url) {
         console.log('processing url '+url);
 
-        if (url.indexOf("#") > 0) {
-            url = url.substr(url.indexOf("#")+1);
-        }
-
         // detect where the page was loaded from an iframe and thus is displayed in a dialog
-        var isStackedDialog = window.frameElement && window.frameElement.nodeName && window.frameElement.nodeName.toLowerCase() === 'iframe';
+        var isStackedDialog = util.isStackedDialog();
+
+        //strip webpaths injected into the url
+        if (url.indexOf(KAJONA_WEBPATH) === 0) {
+            url = url.replace(KAJONA_WEBPATH + "/#", '');
+        }
 
         if (url.trim() === '') {
             if ($('#loginContainer').length > 0) {
@@ -126,9 +127,12 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
     return {
 
         loadUrl : function(strUrl) {
-            var parser = document.createElement('a');
-            parser.href = strUrl;
-            var actionHash = parser.hash;
+            var actionHash = strUrl;
+            if (strUrl.indexOf('#') > 0) {
+                var parser = document.createElement('a');
+                parser.href = strUrl;
+                actionHash = parser.hash;
+            }
 
             if (actionHash === location.hash) {
                 routie.reload();
