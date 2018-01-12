@@ -998,18 +998,20 @@ A list of checkbox input elements
                 %%elements%%
             </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label class="col-sm-3 control-label"></label>
-        <div class="col-sm-6">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" name="checkAll_%%name%%" id="checkAll_%%name%%" %%readonly%%> [lang,commons_select_all,system]
-                </label>
+        <div class="col-sm-12">
+            <label class="col-sm-3 control-label"></label>
+            <div class="col-sm-6">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="checkAll_%%name%%" id="checkAll_%%name%%" %%readonly%%> [lang,commons_select_all,system]
+                    </label>
+                </div>
             </div>
         </div>
     </div>
+
+
 
     <script type='text/javascript'>
 require(["jquery"], function($) {
