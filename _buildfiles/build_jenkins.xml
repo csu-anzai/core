@@ -389,7 +389,6 @@
         <exec executable="php" dir="${basedir}"  failonerror="on" >
             <arg line="-f buildProject.php ${tempPath} onlySetup"/>
         </exec>
-        <antcall target="compileLess" />
         <antcall target="compressCss" />
         <antcall target="compressJs" />
         <antcall target="cleanZipContent" />
@@ -399,7 +398,6 @@
         <exec executable="php" dir="${basedir}"  failonerror="on" >
             <arg line="-f buildProject.php ${tempPath} onlySetup"/>
         </exec>
-        <antcall target="compileLess" />
         <antcall target="compressCss" />
         <antcall target="compressJs" />
         <antcall target="cleanZipContent" />
@@ -409,7 +407,6 @@
         <exec executable="php" dir="${basedir}"  failonerror="on" >
             <arg line="-f buildProject.php ${tempPath} onlySetup"/>
         </exec>
-        <antcall target="compileLess" />
         <!--<antcall target="compressCss" />-->
         <!--<antcall target="compressJs" />-->
         <delete includeemptydirs="true">
@@ -486,15 +483,6 @@
             <fileset dir="${basedir}${tempPath}" includes="**/core/_buildfiles/**"/>
         </delete>
     </target>
-
-
-    <target name="compileLess" description="Compiles the less files and inserts them into to tpl files">
-        <echo>Compiling less files</echo>
-        <exec executable="php" dir="${basedir}"  failonerror="on" >
-            <arg line="-f lessc/v4setup.php "/>
-        </exec>
-    </target>
-
 
 
     <target name="compressCss" description="Minifies the css files using the cleancss compressor">
