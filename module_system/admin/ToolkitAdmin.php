@@ -36,6 +36,7 @@ use Kajona\System\System\SystemSetting;
 use Kajona\System\System\Toolkit;
 use Kajona\Tags\System\TagsFavorite;
 use Kajona\Tags\System\TagsTag;
+use Kajona\View\Components\Datatable\Datatable;
 
 /**
  * Admin-Part of the toolkit-classes
@@ -1616,57 +1617,10 @@ class ToolkitAdmin extends Toolkit
      */
     public function dataTable(array $arrHeader, array $arrValues, $strTableCssAddon = "", $bitWithTbody = false)
     {
-        $strReturn = "";
-        //The Table header & the templates
-        $strReturn .= $this->objTemplate->fillTemplateFile(array("cssaddon" => $strTableCssAddon), "/admin/skins/kajona_v4/elements.tpl", "datalist_header".($bitWithTbody ? "_tbody" : ""));
-
-        //Iterating over the rows
-
-        //Starting with the header, column by column
-        if (is_array($arrHeader) && !empty($arrHeader)) {
-            $strReturn .= $this->objTemplate->fillTemplateFile(array(), "/admin/skins/kajona_v4/elements.tpl", "datalist_column_head_header");
-
-            $bitNrToSkip = 0;
-            foreach ($arrHeader as $strCssClass => $strHeader) {
-                $bitSkipPrint = 0;
-                $strAddon = "";
-                if (StringUtil::indexOf($strCssClass, "colspan-2") !== false) {
-                    $strAddon = " colspan='2' ";
-                    $bitSkipPrint = 1;
-                    $strCssClass = StringUtil::replace("colspan-2", "", $strCssClass);
-                } elseif (StringUtil::indexOf($strCssClass, "colspan-3") !== false) {
-                    $strAddon = " colspan='3' ";
-                    $bitSkipPrint = 2;
-                    $strCssClass = StringUtil::replace("colspan-3", "", $strCssClass);
-                }
-
-                if ($bitNrToSkip-- <= 0) {
-                    $strReturn .= $this->objTemplate->fillTemplateFile(array("value" => $strHeader, "class" => $strCssClass, "addons" => $strAddon), "/admin/skins/kajona_v4/elements.tpl", "datalist_column_head");
-                }
-
-                if ($bitSkipPrint > 0) {
-                    $bitNrToSkip = $bitSkipPrint;
-                }
-
-            }
-
-            $strReturn .= $this->objTemplate->fillTemplateFile(array(), "/admin/skins/kajona_v4/elements.tpl", "datalist_column_head_footer");
-        }
-
-        //And the content, row by row, column by column
-        foreach ($arrValues as $strKey => $arrValueRow) {
-            $strReturn .= $this->objTemplate->fillTemplateFile(array("systemid" => $strKey), "/admin/skins/kajona_v4/elements.tpl", "datalist_column_header".($bitWithTbody ? "_tbody" : ""));
-
-            foreach ($arrValueRow as $strCssClass => $strValue) {
-                $strReturn .= $this->objTemplate->fillTemplateFile(array("value" => $strValue, "class" => $strCssClass), "/admin/skins/kajona_v4/elements.tpl", "datalist_column");
-            }
-
-            $strReturn .= $this->objTemplate->fillTemplateFile(array(), "/admin/skins/kajona_v4/elements.tpl", "datalist_column_footer".($bitWithTbody ? "_tbody" : ""));
-        }
-
-        //And the footer
-        $strReturn .= $this->objTemplate->fillTemplateFile(array(), "/admin/skins/kajona_v4/elements.tpl", "datalist_footer");
-        return $strReturn;
+        $objTable = new Datatable($arrHeader, $arrValues);
+        $objTable->setStrTableCssAddon($strTableCssAddon);
+        $objTable->setBitWithTbody($bitWithTbody);
+        return $objTable->renderComponent();
     }
 
 
