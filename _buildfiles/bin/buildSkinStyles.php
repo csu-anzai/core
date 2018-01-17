@@ -64,6 +64,8 @@ foreach ($objIterator as $strPath => $objDir) {
     }
 }
 
+natsort($arrFiles);
+
 //create a temp less file
 $strFile = "";
 foreach ($arrFiles as $strLess) {
