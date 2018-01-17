@@ -497,7 +497,7 @@
             <globmapper from="*.css" to="*-full.css"/>
         </copy>
 
-        <apply executable="node ${basedir}${jsPath}/node_modules/clean-css-cli/bin/cleancss" parallel="false" dest="${basedir}${tempPath}" verbose="false" failonerror="true">
+        <apply executable="${basedir}${jsPath}/node_modules/.bin/cleancss${script-suffix-cmd}" parallel="false" dest="${basedir}${tempPath}" verbose="false" failonerror="true">
             <fileset dir="${basedir}${tempPath}" includes="**/*-full.css"/>
             <arg line="--output"/>
             <mapper type="glob" from="*-full.css" to="*.css"/>
