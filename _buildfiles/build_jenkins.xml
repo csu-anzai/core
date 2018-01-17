@@ -493,6 +493,7 @@
                 <include name="**/*.css"/>
                 <exclude name="**/build/**/*.css"/>
                 <exclude name="**/composer/**/*.css"/>
+                <exclude name="**/jstests/**/*.css"/>
             </fileset>
             <globmapper from="*.css" to="*-full.css"/>
         </copy>
