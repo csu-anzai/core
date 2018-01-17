@@ -503,6 +503,7 @@
         <copy todir="${basedir}${tempPath}">
             <fileset dir="${basedir}${tempPath}">
                 <include name="**/*.css"/>
+                <exclude name="**/build/**/*.css"/>
             </fileset>
             <globmapper from="*.css" to="*-full.css"/>
         </copy>
