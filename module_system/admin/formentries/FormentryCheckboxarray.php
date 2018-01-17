@@ -10,6 +10,7 @@ use ArrayObject;
 use Kajona\System\Admin\FormentryPrintableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Objectfactory;
+use Kajona\System\System\Reflection;
 use Kajona\System\System\Validators\DummyValidator;
 
 /**
@@ -29,6 +30,11 @@ class FormentryCheckboxarray extends FormentryBase implements FormentryPrintable
     private $intType = 1;
     private $bitInline = false;
     private $arrKeyValues = array();
+
+    /**
+     * a list of [key=>value],[key=>value] pairs, resolved from the language-files
+     */
+    const STR_VALUES_ANNOTATION = "@fieldValues";
 
     public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
     {
@@ -110,6 +116,28 @@ class FormentryCheckboxarray extends FormentryBase implements FormentryPrintable
             $this->setStrValue(array());
         } else {
             $this->setStrValue($this->getValueFromObject());
+        }
+
+
+        //try to find the matching source property
+        $strSourceProperty = $this->getCurrentProperty(self::STR_VALUES_ANNOTATION);
+        if ($strSourceProperty == null) {
+            return;
+        }
+
+        //set dd values
+        if ($this->getObjSourceObject() != null && $this->getStrSourceProperty() != "") {
+            $objReflection = new Reflection($this->getObjSourceObject());
+            $strDDValues = $objReflection->getAnnotationValueForProperty($strSourceProperty, self::STR_VALUES_ANNOTATION);
+            $strModule = $this->getAnnotationParamValueForCurrentProperty("module", self::STR_VALUES_ANNOTATION);
+            if ($strModule === null) {
+                $strModule = $this->getObjSourceObject()->getArrModule("modul");
+            }
+
+            $arrDDValues = FormentryDropdown::convertDDValueStringToArray($strDDValues, $strModule);
+            if ($arrDDValues !== null) {
+                $this->setArrKeyValues($arrDDValues);
+            }
         }
     }
 
