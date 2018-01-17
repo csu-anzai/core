@@ -15,7 +15,7 @@ foreach($arrFilesToCompile as $strSourceFile => $strTargetFile) {
         system($strLessBin . " --verbose " . escapeshellarg($strSourceFile) . " " . escapeshellarg($strTargetFile));
 
         echo "Minifiying ".$strTargetFile.PHP_EOL;
-        $strMinifyBin = "node " . __DIR__ . "/../jstests/node_modules/clean-css/bin/cleancss";
+        $strMinifyBin = "node " . __DIR__ . "/../jstests/node_modules/clean-css-cli/bin/cleancss";
         system($strMinifyBin . " -o ". escapeshellarg($strTargetFile)." ". escapeshellarg($strTargetFile));
 
     } else {

@@ -17,6 +17,6 @@
     "less": "^2.5.3",
     "requirejs": "^2.3.2",
     "uglify-js": "^2.7.5",
-    "clean-css": "^3.4.22"
+    "clean-css-cli": "^4.1"
   }
 }
