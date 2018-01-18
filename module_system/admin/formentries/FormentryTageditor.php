@@ -103,7 +103,7 @@ class FormentryTageditor extends FormentryMultiselect
         $arrValues = explode(",", $this->getStrValue());
         foreach ($arrValues as $strValue) {
             $strValue = trim($strValue);
-            if (empty($strValue)) {
+            if ($strValue === "") {
                 return false;
             }
         }
