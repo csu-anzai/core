@@ -910,6 +910,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
             $("#%%name%%").tagEditor({
                 initialTags: %%values%%,
                 forceLowercase: false,
+                delimiter: %%delimiter%%,
                 onChange: onChange
             });
 
