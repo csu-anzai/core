@@ -28,7 +28,7 @@ class FormentryTageditor extends FormentryMultiselect
     /**
      * @var string
      */
-    protected $strDelimter;
+    protected $strDelimiter;
 
     public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
     {
@@ -75,7 +75,7 @@ class FormentryTageditor extends FormentryMultiselect
             $strReturn .= $objToolkit->formTextRow($this->getStrHint());
         }
 
-        $strReturn .= $objToolkit->formInputTagEditor($this->getStrEntryName(), $this->getStrLabel(), $this->arrKeyValues, $this->strOnChangeCallback, $this->strDelimter);
+        $strReturn .= $objToolkit->formInputTagEditor($this->getStrEntryName(), $this->getStrLabel(), $this->arrKeyValues, $this->strOnChangeCallback, $this->strDelimiter);
         return $strReturn;
     }
 
