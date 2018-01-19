@@ -1026,7 +1026,7 @@ $("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
 
 <input_checkboxarray_checkbox>
     <div class="%%type%%%%inline%%">
-        <label><input type="%%type%%" name="%%name%%" value="%%value%%" %%checked%% %%readonly%% /> %%title%%</label>
+        <label><input type="%%type%%" name="%%name%%"  id="%%name%%" value="%%value%%" %%checked%% %%readonly%% /> %%title%%</label>
     </div>
 </input_checkboxarray_checkbox>
 

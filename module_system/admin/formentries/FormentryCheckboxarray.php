@@ -87,6 +87,11 @@ class FormentryCheckboxarray extends FormentryBase implements FormentryPrintable
      */
     public function setStrValue($strValue)
     {
+
+        if (is_string($strValue)) {
+            return parent::setStrValue(explode(",", $strValue));
+        }
+
         $arrTargetValues = array();
 
         if ((is_array($strValue) || $strValue instanceof ArrayObject) && count($strValue) > 0) {
