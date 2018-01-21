@@ -2,11 +2,11 @@
 
 data list header. Used to open a table to print data. use css fencing
 <datalist_header>
-    <table class="kajona-component-datatable table table-striped table-condensed kajona-data-table %%cssaddon%%">
+    <table class="core-component-datatable table table-striped table-condensed kajona-data-table %%cssaddon%%">
 </datalist_header>
 
 <datalist_header_tbody>
-    <table class="kajona-component-datatable table table-striped-tbody table-condensed kajona-data-table %%cssaddon%%">
+    <table class="core-component-datatable table table-striped-tbody table-condensed kajona-data-table %%cssaddon%%">
 </datalist_header_tbody>
 
 data list footer. at the bottom of the datatable
@@ -14,7 +14,7 @@ data list footer. at the bottom of the datatable
     </table>
     <script type="text/javascript">
         require(["jquery-floatThread"], function() {
-            $('table.kajona-data-table:not(.kajona-data-table-ignore-floatthread)').floatThead({
+            $('table.core-component-datatable:not(.kajona-data-table-ignore-floatthread)').floatThead({
                 scrollingTop: $("body.dialogBody").size() > 0 ? 0 : 70,
                 useAbsolutePositioning: true
             });
