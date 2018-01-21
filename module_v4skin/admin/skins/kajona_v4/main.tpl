@@ -25,7 +25,7 @@
 
 <body>
 
-<div class="navbar-nav navbar-fixed-top hidden-print">
+<div class="navbar-nav navbar-fixed-top hidden-print hidden">
     <div class="navbar-topbar">
         <div class="container-fluid">
             <div class="row">

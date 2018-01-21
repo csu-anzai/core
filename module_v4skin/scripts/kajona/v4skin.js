@@ -136,6 +136,11 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
         $('.row-offcanvas').toggleClass('active')
     });
 
+    //enable the top navigation
+    if (!util.isStackedDialog()) {
+        $('div.navbar-fixed-top').removeClass('hidden');
+    }
+
 
     return {
 

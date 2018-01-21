@@ -853,6 +853,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
             $("#%%name%%").tagEditor({
                 initialTags: %%values%%,
                 forceLowercase: false,
+                delimiter: %%delimiter%%,
                 onChange: onChange
             });
 
@@ -941,24 +942,26 @@ A list of checkbox input elements
                 %%elements%%
             </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label class="col-sm-3 control-label"></label>
-        <div class="col-sm-6">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" name="checkAll_%%name%%" id="checkAll_%%name%%" %%readonly%%> [lang,commons_select_all,system]
-                </label>
+        <div class="col-sm-12">
+            <label class="col-sm-3 control-label"></label>
+            <div class="col-sm-6">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="checkAll_%%name%%" id="checkAll_%%name%%" %%readonly%%> [lang,commons_select_all,system]
+                    </label>
+                </div>
             </div>
         </div>
     </div>
+
+
 
     <script type='text/javascript'>
 require(["jquery"], function($) {
 $("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
     var checkBoxes = $("input:checkbox[name^='%%name%%']").not("[disabled]");
-    checkBoxes.prop('checked', $("input:checkbox[name='checkAll_%%name%%']").prop('checked'));
+    checkBoxes.prop('checked', $("input:checkbox[name='checkAll_%%name%%']").prop('checked')).trigger('change');
 });
 });
     </script>
@@ -966,7 +969,7 @@ $("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
 
 <input_checkboxarray_checkbox>
     <div class="%%type%%%%inline%%">
-        <label><input type="%%type%%" name="%%name%%" value="%%value%%" %%checked%% %%readonly%% /> %%title%%</label>
+        <label><input type="%%type%%" name="%%name%%"  id="%%name%%" value="%%value%%" %%checked%% %%readonly%% /> %%title%%</label>
     </div>
 </input_checkboxarray_checkbox>
 
@@ -1021,7 +1024,7 @@ A list of checkbox for object elements
         require(["jquery"], function($) {
             $("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
                 var checkBoxes = $("input:checkbox[name^='%%name%%']").not("[disabled]");
-                checkBoxes.prop('checked', $("input:checkbox[name='checkAll_%%name%%']").prop('checked'));
+                checkBoxes.prop('checked', $("input:checkbox[name='checkAll_%%name%%']")).trigger('change');
             });
         });
     </script>

@@ -1023,6 +1023,10 @@ class AdminFormgenerator implements \Countable
     public function removeField($strName)
     {
         unset($this->arrFields[$strName]);
+        if (in_array($this->strFormname."_".$strName, $this->arrHiddenElements)) {
+            unset($this->arrHiddenElements[array_flip($this->arrHiddenElements)[$this->strFormname."_".$strName]]);
+        }
+
         return $this;
     }
 

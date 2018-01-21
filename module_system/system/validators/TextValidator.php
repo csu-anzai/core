@@ -20,7 +20,8 @@ use Kajona\System\System\ValidatorInterface;
  * @since 4.0
  * @package module_system
  */
-class TextValidator implements ValidatorInterface {
+class TextValidator implements ValidatorInterface
+{
 
     /**
      * Validates the passed chunk of data.
@@ -29,22 +30,25 @@ class TextValidator implements ValidatorInterface {
      * @param string $objValue
      * @return bool
      */
-    public function validate($objValue) {
+    public function validate($objValue)
+    {
 
-        if(!is_string($objValue))
+        if (!is_string($objValue) && !is_numeric($objValue)) {
             return false;
+        }
 
         $intMin = 1;
         $intMax = 0;//todo does not makes sense here as the else part will never be reached?extract intMax to class variable?
 
         $intLen = StringUtil::length($objValue);
-        if($intMax == 0) {
-            if($intLen >= $intMin)
+        if ($intMax == 0) {
+            if ($intLen >= $intMin) {
                 return true;
-        }
-        else {
-            if($intLen >= $intMin && $intLen <= $intMax)
+            }
+        } else {
+            if ($intLen >= $intMin && $intLen <= $intMax) {
                 return true;
+            }
         }
         return false;
     }

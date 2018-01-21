@@ -11,7 +11,6 @@ use Kajona\System\System\Exception;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\Validators\DummyValidator;
 
-
 /**
  * An list of tags which can be added or removed.
  *
@@ -19,22 +18,48 @@ use Kajona\System\System\Validators\DummyValidator;
  * @since 4.7
  * @package module_formgenerator
  */
-class FormentryTageditor extends FormentryMultiselect {
-
+class FormentryTageditor extends FormentryMultiselect
+{
+    /**
+     * @var string
+     */
     protected $strOnChangeCallback;
 
-    public function setOnChangeCallback($strOnChangeCallback) {
+    /**
+     * @var string
+     */
+    protected $strDelimiter;
+
+    public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
+    {
+        parent::__construct($strFormName, $strSourceProperty, $objSourceObject);
+
+        $this->setObjValidator(new DummyValidator());
+    }
+
+    /**
+     * @param string $strOnChangeCallback
+     *
+     * @return $this
+     */
+    public function setOnChangeCallback($strOnChangeCallback)
+    {
         $this->strOnChangeCallback = $strOnChangeCallback;
 
         return $this;
     }
 
-    public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
+    /**
+     * @param string $strDelimiter
+     *
+     * @return $this
+     */
+    public function setDelimter($strDelimiter)
     {
-        parent::__construct($strFormName, $strSourceProperty, $objSourceObject);
-        $this->setObjValidator(new DummyValidator());
-    }
+        $this->strDelimiter = $strDelimiter;
 
+        return $this;
+    }
 
     /**
      * Renders the field itself.
@@ -46,24 +71,26 @@ class FormentryTageditor extends FormentryMultiselect {
     {
         $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
         $strReturn = "";
-        if($this->getStrHint() != null) {
+        if ($this->getStrHint() != null) {
             $strReturn .= $objToolkit->formTextRow($this->getStrHint());
         }
 
-        $strReturn.= $objToolkit->formInputTagEditor($this->getStrEntryName(), $this->getStrLabel(), $this->arrKeyValues, $this->strOnChangeCallback);
+        $strReturn .= $objToolkit->formInputTagEditor($this->getStrEntryName(), $this->getStrLabel(), $this->arrKeyValues, $this->strOnChangeCallback, $this->strDelimiter);
         return $strReturn;
     }
 
     public function setValueToObject()
     {
         $objSourceObject = $this->getObjSourceObject();
-        if($objSourceObject == null)
+        if ($objSourceObject == null) {
             return "";
+        }
 
         $objReflection = new Reflection($objSourceObject);
         $strSetter = $objReflection->getSetter($this->getStrSourceProperty());
-        if($strSetter === null)
+        if ($strSetter === null) {
             throw new Exception("unable to find setter for value-property ".$this->getStrSourceProperty()."@".get_class($objSourceObject), Exception::$level_ERROR);
+        }
 
         return $objSourceObject->{$strSetter}(json_encode(explode(",", $this->getStrValue())));
     }
@@ -74,9 +101,9 @@ class FormentryTageditor extends FormentryMultiselect {
             return $this->getObjValidator()->validate(explode(",", $this->getStrValue()));
         }
         $arrValues = explode(",", $this->getStrValue());
-        foreach($arrValues as $strValue) {
+        foreach ($arrValues as $strValue) {
             $strValue = trim($strValue);
-            if(empty($strValue)) {
+            if ($strValue === "") {
                 return false;
             }
         }
@@ -84,7 +111,8 @@ class FormentryTageditor extends FormentryMultiselect {
         return true;
     }
 
-    public function getValueAsText() {
+    public function getValueAsText()
+    {
         return implode(", ", $this->arrKeyValues);
     }
 }

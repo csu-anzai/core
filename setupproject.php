@@ -74,7 +74,7 @@ class class_project_setup
         self::checkDir("/files/extract");
         self::makeWritable("/files/extract");
 
-        echo "searching for files on root-path...\n";
+        echo "searching for files on root/project-path...\n";
         foreach ($arrModules as $strSingleModule) {
             if (!is_dir(self::$strRealPath . "/" . $strSingleModule)) {
                 continue;
@@ -85,6 +85,11 @@ class class_project_setup
                 if (substr($strSingleEntry, -5) == ".root" && !is_file(self::$strRealPath . "/" . substr($strSingleEntry, 0, -5))) {
                     //echo "copy ".$strSingleEntry." to ".self::$strRealPath."/".substr($strSingleEntry, 0, -5)."\n";
                     copy(self::$strRealPath . "/" . $strSingleModule . "/" . $strSingleEntry, self::$strRealPath . "/" . substr($strSingleEntry, 0, -5));
+                }
+
+                if (substr($strSingleEntry, -8) == ".project" && !is_file(self::$strRealPath . "/project/" . substr($strSingleEntry, 0, -8))) {
+                    //echo "copy ".$strSingleEntry." to ".self::$strRealPath."/".substr($strSingleEntry, 0, -5)."\n";
+                    copy(self::$strRealPath . "/" . $strSingleModule . "/" . $strSingleEntry, self::$strRealPath . "/project/" . substr($strSingleEntry, 0, -8));
                 }
             }
 

@@ -987,16 +987,23 @@ class ToolkitAdmin extends Toolkit
      * @param $strName
      * @param string $strTitle
      * @param array $arrValues
-     * @param null $strOnChange
-     *
+     * @param string|null $strOnChange
+     * @param string|null $strDelimiter
      * @return string
      */
-    public function formInputTagEditor($strName, $strTitle = "", array $arrValues = array(), $strOnChange = null)
+    public function formInputTagEditor($strName, $strTitle = "", array $arrValues = array(), $strOnChange = null, $strDelimiter = null)
     {
+        // set default delimiter
+        // @see https://goodies.pixabay.com/jquery/tag-editor/demo.html
+        if (empty($strDelimiter)) {
+            $strDelimiter = ',;';
+        }
+
         $arrTemplate = array();
         $arrTemplate["name"] = $strName;
         $arrTemplate["title"] = $strTitle;
         $arrTemplate["values"] = json_encode(array_values($arrValues));
+        $arrTemplate["delimiter"] = json_encode($strDelimiter);
         $arrTemplate["onChange"] = empty($strOnChange) ? "function(field, editor, tags){ $(field).attr('name', $(field).data('name')); $(field).val(tags.join(',')); }" : (string)$strOnChange;
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_tageditor", true);
