@@ -30,6 +30,12 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
     var initRouter = function() {
 
         routie('*', function(url) {
+            // in case we receive an absolute url redirect the user to this url
+            if (url.indexOf("https://") === 0 || url.indexOf("http://") === 0) {
+                location.href = url;
+                return;
+            }
+
             var objUrl = generateUrl(url);
 
             if(!objUrl) {
