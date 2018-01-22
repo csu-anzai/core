@@ -164,7 +164,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
                 var $objCur = $(this);
                 if(!$objCur.is('[readonly]')) {
                     if($('#'+$objCur.attr('id')+'_id')) {
-                        $( '#'+$objCur.attr('id')+'_id' ).val( "" );
+                        $( '#'+$objCur.attr('id')+'_id' ).val( "" ).trigger('change');
                     }
                 }
 
@@ -191,7 +191,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
                     var $objCur = $(this);
                     $objCur.val( ui.item.title );
                     if($('#'+$objCur.attr('id')+'_id')) {
-                        $( '#'+$objCur.attr('id')+'_id' ).val( ui.item.systemid);
+                        $( '#'+$objCur.attr('id')+'_id' ).val( ui.item.systemid).trigger('change');
                     }
                     $objCur.trigger('change');
                 }
