@@ -179,7 +179,7 @@ class FormentryCheckboxarray extends FormentryBase implements FormentryPrintable
         foreach ($this->getStrValue() as $strOneId) {
             if (validateSystemid($strOneId)) {
                 $arrNew[] = Objectfactory::getInstance()->getObject($strOneId)->getStrDisplayName();
-            } else {
+            } elseif (isset($this->arrKeyValues[$strOneId])) {
                 $arrNew[] = $this->arrKeyValues[$strOneId];
             }
         }
