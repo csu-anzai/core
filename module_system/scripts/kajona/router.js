@@ -30,8 +30,9 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
     var initRouter = function() {
 
         routie('*', function(url) {
-            // in case we receive an absolute url redirect the user to this url
-            if (url.indexOf("https://") === 0 || url.indexOf("http://") === 0) {
+            // in case we receive an absolute url with no hash redirect the user to this url
+            // since we cant resolve this url to a hash route
+            if (url.indexOf(KAJONA_WEBPATH) === 0 && url.indexOf("/#") === -1) {
                 location.href = url;
                 return;
             }
