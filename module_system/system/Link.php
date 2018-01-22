@@ -117,10 +117,11 @@ class Link
      * @param string $strAction
      * @param string|array $strParams - may be a string of params or an array
      * @param bool $bitEncodedAmpersand
-     *
+     * @param bool $bitHashUrl
+     * @param bool $bitPath
      * @return string
      */
-    public static function getLinkAdminHref($strModule, $strAction = "", $strParams = "", $bitEncodedAmpersand = true, $bitHashUrl = true)
+    public static function getLinkAdminHref($strModule, $strAction = "", $strParams = "", $bitEncodedAmpersand = true, $bitHashUrl = true, $bitPath = false)
     {
         //systemid in params?
         $strSystemid = "";
@@ -136,15 +137,20 @@ class Link
 
 
 
-        if ($bitHashUrl) {
+        if ($bitHashUrl || $bitPath) {
 
             //scheme: /admin/module.action.systemid
+            $strLink = "";
+            if (!$bitPath) {
+                $strLink = "#";
+            }
+
             if ($strModule != "" && $strAction == "" && $strSystemid == "") {
-                $strLink = "#/".$strModule."";
+                $strLink .= "/".$strModule."";
             } elseif ($strModule != "" && $strAction != "" && $strSystemid == "") {
-                $strLink = "#/".$strModule."/".$strAction."";
+                $strLink .= "/".$strModule."/".$strAction."";
             } else {
-                $strLink = "#/".$strModule."/".$strAction."/".$strSystemid."";
+                $strLink .= "/".$strModule."/".$strAction."/".$strSystemid."";
             }
 
             if (count($arrParams) > 0) {
@@ -155,7 +161,11 @@ class Link
                 $strLink = StringUtil::replace("&amp;", "&", $strLink);
             }
 
-            return _webpath_."/".$strLink;
+            if (!$bitPath) {
+                return _webpath_."/".$strLink;
+            } else {
+                return $strLink;
+            }
         }
 
 
