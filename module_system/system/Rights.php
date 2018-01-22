@@ -666,8 +666,6 @@ class Rights
             }
         } elseif (validateSystemid($this->objSession->getUserID())) {
             $arrGroupIds = $this->objSession->getGroupIdsAsArray();
-        } else {
-            $arrGroupIds[] = SystemSetting::getConfigValue("_guests_group_id_");
         }
 
         foreach ($arrGroupIds as $strOneGroupId) {
