@@ -998,12 +998,30 @@ class ToolkitAdmin extends Toolkit
             $strDelimiter = ',;';
         }
 
+        $strJs = <<<HTML
+            function(field, editor, tags){
+                var fieldName = $(field).data('name');
+            
+               //remove all existing hidden fields
+               $('[id="' + fieldName + '-list"]').remove();
+               
+               //add all existin hidden fields
+                var html = '<div id="' + fieldName + '-list">';
+                for (var i = 0; i < tags.length; i++) {
+                    html += '<input type="hidden" name="' + fieldName + '[]" value="' + tags[i] + '" />';
+                }
+                html += '</div>';
+                $(field).parent().append(html); 
+                
+            }
+HTML;
+
         $arrTemplate = array();
         $arrTemplate["name"] = $strName;
         $arrTemplate["title"] = $strTitle;
         $arrTemplate["values"] = json_encode(array_values($arrValues));
         $arrTemplate["delimiter"] = json_encode($strDelimiter);
-        $arrTemplate["onChange"] = empty($strOnChange) ? "function(field, editor, tags){ $(field).attr('name', $(field).data('name')); $(field).val(tags.join(',')); }" : (string)$strOnChange;
+        $arrTemplate["onChange"] = empty($strOnChange) ? $strJs : (string)$strOnChange;
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_tageditor", true);
     }
