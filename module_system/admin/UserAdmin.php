@@ -1414,6 +1414,7 @@ HTML;
         $strReturn = "";
         if ($this->getSystemid() == "") {
             $objFilter = new UserGroupFilter();
+            $objFilter->setIntSystemFilter(1);
             if (!Carrier::getInstance()->getObjSession()->isSuperAdmin()) {
                 $objFilter->setArrExcludedGroups([SystemSetting::getConfigValue("_admins_group_id_")]);
             }
