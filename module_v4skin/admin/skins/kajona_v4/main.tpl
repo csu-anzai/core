@@ -81,7 +81,7 @@
         <div class="col-md-10" id="content">
 
 
-            <div class="row pathNaviContainer">
+            <div class="row pathNaviContainer hidden">
                 <div class="col-md-12">
                     <ul class="breadcrumb">
                         <li class='pathentry home'><i class='fa fa-home'></i></span></li>
