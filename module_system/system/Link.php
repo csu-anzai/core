@@ -114,7 +114,7 @@ class Link
      * @param string|array $strParams - may be a string of params or an array
      * @param bool $bitEncodedAmpersand
      * @param bool $bitHashUrl
-     * @param bool $bitPath
+     * @param bool $bitPath - used to generate a uri without scheme i.e. /module/action/systemid?foo=bar
      * @return string
      */
     public static function getLinkAdminHref($strModule, $strAction = "", $strParams = "", $bitEncodedAmpersand = true, $bitHashUrl = true, $bitPath = false)
