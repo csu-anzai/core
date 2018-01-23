@@ -236,9 +236,9 @@ class SearchIndexwriter
 
         //insert search document
         $strQuery = "INSERT INTO "._dbprefix_."search_ix_document
-                        (search_ix_document_id, search_ix_system_id, search_ix_content_lang, search_ix_portal_object) VALUES
-                        (?, ?, ?, ?)";
-        $this->objDB->_pQuery($strQuery, [$objSearchDoc->getDocumentId(), $objSearchDoc->getStrSystemId(), $objSearchDoc->getStrContentLanguage(), $objSearchDoc->getBitPortalObject() ? 1 : 0]);
+                        (search_ix_document_id, search_ix_system_id) VALUES
+                        (?, ?)";
+        $this->objDB->_pQuery($strQuery, [$objSearchDoc->getDocumentId(), $objSearchDoc->getStrSystemId()]);
 
         $this->updateSearchContentsToDb($objSearchDoc->getContent());
     }

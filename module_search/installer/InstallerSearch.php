@@ -148,9 +148,27 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
             $strReturn .= "Updating to 6.6...\n";
             $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6");
         }
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.6") {
+            $strReturn .= $this->update_66_70();
+        }
 
 
         return $strReturn."\n\n";
+	}
+
+
+    private function update_66_70()
+    {
+        $strReturn = "Update to 7.0".PHP_EOL;
+
+        $strReturn .= "Updating schema".PHP_EOL;
+        $this->objDB->removeColumn("search_ix_document", "search_ix_content_lang");
+        $this->objDB->removeColumn("search_ix_document", "search_ix_portal_object");
+
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
+
+        return $strReturn;
 	}
 
 
@@ -170,10 +188,8 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
         $arrFields = array();
         $arrFields["search_ix_document_id"] 		= array("char20", false);
         $arrFields["search_ix_system_id"] 	        = array("char20", true);
-        $arrFields["search_ix_content_lang"] 	    = array("char20", true);
-        $arrFields["search_ix_portal_object"] 	    = array("int", true);
 
-        if(!$this->objDB->createTable("search_ix_document", $arrFields, array("search_ix_document_id"), array("search_ix_system_id", "search_ix_content_lang", "search_ix_portal_object"), false))
+        if(!$this->objDB->createTable("search_ix_document", $arrFields, array("search_ix_document_id"), array("search_ix_system_id"), false))
             $strReturn .= "An error occurred! ...\n";
 
         $strReturn .= "Installing table search_ix_content...\n";

@@ -90,7 +90,7 @@ class SearchCommons extends Model implements ModelInterface
         foreach ($arrSearchResult as $arrOneRow) {
             $objInstance = Objectfactory::getInstance()->getObject($arrOneRow["search_ix_system_id"]);
 
-            $objModule = $objInstance != null ? SystemModule::getModuleByName($objInstance->getArrModule("modul")) : null;
+            $objModule = $objInstance != null ? SystemModule::getModuleByName($objInstance->getArrModule("module")) : null;
             if ($objInstance != null && $objModule != null && $objInstance->rightView() && $objModule->rightView()) {
                 $objResult = new SearchResult();
                 $objResult->setObjSearch($objSearch);
@@ -144,8 +144,6 @@ class SearchCommons extends Model implements ModelInterface
         $objMetadataFilter->setFilterUser($objSearch->getFilterUser());
         $objMetadataFilter->setFilterChangeStartDate($objSearch->getObjChangeStartdate());
         $objMetadataFilter->setFilterChangeEndDate($objSearch->getObjChangeEnddate());
-        $objMetadataFilter->setBitPortalSearch($objSearch->getBitPortalObjectFilter());
-        $objMetadataFilter->setStrPortalLang($objSearch->getStrPortalLangFilter());
         return $objMetadataFilter;
     }
 }

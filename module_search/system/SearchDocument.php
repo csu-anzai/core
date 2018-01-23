@@ -15,7 +15,8 @@ namespace Kajona\Search\System;
  * @package module_search
  * @author tim.kiefer@kojikui.de
  */
-class SearchDocument {
+class SearchDocument
+{
 
 
     /**
@@ -29,39 +30,31 @@ class SearchDocument {
     private $strDocumentId;
 
     /**
-     * @var string
-     */
-    private $strContentLanguage = "";
-
-    /**
-     * @var bool
-     */
-    private $bitPortalObject = false;
-
-    /**
      * @var SearchContent[]
      */
     private $arrContent = array();
 
-
     /**
      * @return SearchContent[]
      */
-    public function getContent() {
+    public function getContent()
+    {
         return $this->arrContent;
     }
 
     /**
      * @param array $content
      */
-    public function setContent($content) {
+    public function setContent($content)
+    {
         $this->arrContent = $content;
     }
 
     /**
      * @return string
      */
-    public function getDocumentId() {
+    public function getDocumentId()
+    {
         return $this->strDocumentId;
     }
 
@@ -69,7 +62,8 @@ class SearchDocument {
      * @param string $strDocumentId
      * @return void
      */
-    public function setDocumentId($strDocumentId) {
+    public function setDocumentId($strDocumentId)
+    {
         $this->strDocumentId = $strDocumentId;
     }
 
@@ -77,40 +71,28 @@ class SearchDocument {
      * Id of the target object
      * @return string
      */
-    public function getStrSystemId() {
+    public function getStrSystemId()
+    {
         return $this->strSystemId;
     }
 
-    /**
-     * @param boolean $bitPortalObject
-     * @return void
-     */
-    public function setBitPortalObject($bitPortalObject) {
-        $this->bitPortalObject = $bitPortalObject;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getBitPortalObject() {
-        return $this->bitPortalObject;
-    }
 
     /**
      * @param string $strLanguage
      * @return void
      */
-    public function setStrContentLanguage($strLanguage) {
+    public function setStrContentLanguage($strLanguage)
+    {
         $this->strContentLanguage = $strLanguage;
     }
 
     /**
      * @return string
      */
-    public function getStrContentLanguage() {
+    public function getStrContentLanguage()
+    {
         return $this->strContentLanguage;
     }
-
 
 
     /**
@@ -118,7 +100,8 @@ class SearchDocument {
      * @param string $strId
      * @return void
      */
-    public function setStrSystemId($strId) {
+    public function setStrSystemId($strId)
+    {
         $this->strSystemId = $strId;
     }
 
@@ -126,7 +109,8 @@ class SearchDocument {
      * @param SearchContent $objContent
      * @return void
      */
-    public function addContentObj(SearchContent $objContent) {
+    public function addContentObj(SearchContent $objContent)
+    {
         $this->arrContent[] = $objContent;
     }
 
@@ -134,11 +118,12 @@ class SearchDocument {
      * @param string $strField
      * @param string $strContent
      */
-    public function addContent($strField, $strContent) {
+    public function addContent($strField, $strContent)
+    {
         $objAnalyzer = new SearchStandardAnalyzer();
         $objAnalyzer->analyze($strContent);
 
-        foreach($objAnalyzer->getResults() as $strContent => $intScore) {
+        foreach ($objAnalyzer->getResults() as $strContent => $intScore) {
 
             $objSearchContent = new SearchContent();
             $objSearchContent->setFieldName($strField);
