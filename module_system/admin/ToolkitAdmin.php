@@ -1000,19 +1000,20 @@ class ToolkitAdmin extends Toolkit
 
         $strJs = <<<HTML
             function(field, editor, tags){
-                var fieldName = $(field).data('name');
+                require(["jquery"], function($){
+                    var fieldName = $(field).data('name');
             
-               //remove all existing hidden fields
-               $('[id="' + fieldName + '-list"]').remove();
-               
-               //add all existin hidden fields
-                var html = '<div id="' + fieldName + '-list">';
-                for (var i = 0; i < tags.length; i++) {
-                    html += '<input type="hidden" name="' + fieldName + '[]" value="' + tags[i] + '" />';
-                }
-                html += '</div>';
-                $(field).parent().append(html); 
-                
+                   //remove all existing hidden fields
+                   $('[id="' + fieldName + '-list"]').remove();
+                   
+                   //add all existin hidden fields
+                    var html = '<div id="' + fieldName + '-list">';
+                    for (var i = 0; i < tags.length; i++) {
+                        html += '<input type="hidden" name="' + fieldName + '[]" value="' + tags[i] + '" />';
+                    }
+                    html += '</div>';
+                    $(field).parent().append(html); 
+                });
             }
 HTML;
 
