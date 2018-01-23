@@ -480,7 +480,7 @@
             <fileset dir="${basedir}${tempPath}" includes="**/setupproject.php"/>
             <fileset dir="${basedir}${tempPath}" includes="**/V4toV5Migration.php"/>
             <fileset dir="${basedir}${tempPath}" includes="**/.git"/>
-            <fileset dir="${basedir}${tempPath}" includes="**/core/_buildfiles/**"/>
+            <fileset dir="${basedir}${tempPath}" includes="**/core*/_buildfiles*/**"/>
         </delete>
     </target>
 
