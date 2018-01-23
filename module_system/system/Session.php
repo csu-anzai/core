@@ -564,7 +564,7 @@ final class Session
     }
 
     /**
-     * Returns the userid or '' in case of guest of the current user
+     * Returns the userid or ''
      *
      * @return string
      */
@@ -622,11 +622,9 @@ final class Session
     public function getGroupIdsAsString()
     {
         if ($this->getObjInternalSession() != null) {
-            $strGroupids = $this->getSession(self::STR_SESSION_GROUPIDS);
-        } else {
-            $strGroupids = SystemSetting::getConfigValue("_guests_group_id_");
+            return $this->getSession(self::STR_SESSION_GROUPIDS);
         }
-        return $strGroupids;
+        return "";
     }
 
     /**
@@ -649,7 +647,7 @@ final class Session
         if ($this->getObjInternalSession() != null) {
             $strGroupids = $this->getSession(self::STR_SESSION_GROUPIDS_SHORT);
         } else {
-            $strGroupids = UserGroup::getShortIdForGroupId(SystemSetting::getConfigValue("_guests_group_id_"));
+            $strGroupids = "";
         }
         return explode(",", $strGroupids);
     }
@@ -682,13 +680,14 @@ final class Session
      * Initializes the internal kajona session
      *
      * @return void
+     * @throws Exception
      */
     public function initInternalSession()
     {
 
 
         $arrTables = Database::getInstance()->getTables();
-        if (!in_array(_dbprefix_."session", $arrTables) || SystemSetting::getConfigValue("_guests_group_id_") === null) {
+        if (!in_array(_dbprefix_."session", $arrTables)) {
             return;
         }
 

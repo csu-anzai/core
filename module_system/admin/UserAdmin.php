@@ -207,7 +207,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
         }
 
         if ($objListEntry instanceof UserGroup) {
-            if ($objListEntry->getSystemid() != SystemSetting::getConfigValue("_guests_group_id_") && $objListEntry->getSystemid() != SystemSetting::getConfigValue("_admins_group_id_") && $this->isGroupEditable($objListEntry)) {
+            if ($objListEntry->getSystemid() != SystemSetting::getConfigValue("_admins_group_id_") && $this->isGroupEditable($objListEntry)) {
                 if ($objListEntry->rightDelete()) {
                     return $this->objToolkit->listDeleteButton(
                         $objListEntry->getStrDisplayName(),
@@ -325,7 +325,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
     protected function renderEditAction(Model $objListEntry, $bitDialog = false)
     {
         if ($objListEntry instanceof UserGroup) {
-            if ($objListEntry->getSystemid() != SystemSetting::getConfigValue("_guests_group_id_") && $objListEntry->getSystemid() != SystemSetting::getConfigValue("_admins_group_id_") && $this->isGroupEditable($objListEntry)) {
+            if ($objListEntry->getSystemid() != SystemSetting::getConfigValue("_admins_group_id_") && $this->isGroupEditable($objListEntry)) {
                 if ($objListEntry->rightEdit()) {
                     return $this->objToolkit->listButton(Link::getLinkAdminDialog("user", "groupEdit", "&systemid=".$objListEntry->getSystemid(), "", $this->getLang("action_group_edit"), "icon_edit"));
                 }

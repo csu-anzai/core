@@ -322,27 +322,19 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $this->registerConstant("_system_session_ipfixation_", "true", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
 
 
-        //Creating the admin & guest groups
+        //Creating the admin GROUP
         $objAdminGroup = new UserGroup();
         $objAdminGroup->setStrName("Admins");
         $objAdminGroup->updateObjectToDb();
         $strReturn .= "Registered Group Admins...\n";
 
-        $objGuestGroup = new UserGroup();
-        $objGuestGroup->setStrName("Guests");
-        $objGuestGroup->updateObjectToDb();
-        $strReturn .= "Registered Group Guests...\n";
-
-        //Systemid of guest-user & admin group
-        $strGuestID = $objGuestGroup->getSystemid();
-        $intGuestShortId = $objGuestGroup->getIntShortId();
+        //Systemid of admin group
         $strAdminID = $objAdminGroup->getSystemid();
         $intAdminShortid = $objAdminGroup->getIntShortId();
-        $this->registerConstant("_guests_group_id_", $strGuestID, SystemSetting::$int_TYPE_STRING, _user_modul_id_);
         $this->registerConstant("_admins_group_id_", $strAdminID, SystemSetting::$int_TYPE_STRING, _user_modul_id_);
 
         //BUT: We have to modify the right-record of the root node, too
-        $strGroupsAll = ",".$intGuestShortId.",".$intAdminShortid.",";
+        $strGroupsAll = ",".$intAdminShortid.",";
         $strGroupsAdmin = ",".$intAdminShortid.",";
 
         //Create an root-record for the tree
