@@ -16,7 +16,6 @@ $lang["permissions_header"]              = array(0 => "View", 1 => "Edit", 2 => 
 //editable entries
 $lang["_admin_skin_default_"]            = "Default admin skin";
 $lang["_admins_group_id_"]               = "ID of the admin group";
-$lang["_guests_group_id_"]               = "ID of the guest group";
 $lang["_user_selfedit_"]                 = "Edit own profile";
 $lang["_user_selfedit_hint"]             = "Defines, if the user is allowed to change its own profile.";
 $lang["action_edit_user"]                = "Edit user";
@@ -106,7 +105,7 @@ $lang["mitglied_speichern_erfolg"]       = "Assignments saved successfully";
 $lang["mitglied_speichern_fehler"]       = "An error occurred while saving assignments";
 $lang["modul_titel"]                     = "Users";
 $lang["quickhelp_edit"]                  = "This form is used to edit or create a new user.<br />If the user is set active, the account is allowed to login in general.<br />In addtion, the area allowed to access must be set.";
-$lang["quickhelp_grouplist"]             = "Groups available are listed in this view.<br />The groups of the guests and the admins can\'t be deleted, since they are required for the system to work properly.";
+$lang["quickhelp_grouplist"]             = "Groups available are listed in this view.<br />The admins group can\'t be deleted, since it is required for the system to work properly.";
 $lang["quickhelp_groupmember"]           = "All members of a group are listed right here. To end the membership of a user, the membership can be deleted. If you want a user to become a member of the group, you have to use the group dialog.";
 $lang["quickhelp_groupnew"]              = "To create a group, you just have to specify a title for the group.";
 $lang["quickhelp_groupsave"]             = "To create a group, you just have to specify a title for the group.";

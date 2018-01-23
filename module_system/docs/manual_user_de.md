@@ -45,7 +45,7 @@ Der Kajona-Login Provider kann dabei als Referenz herangezogen werden, ein weite
 
 Der Wert des default-Skins sollte klar sein: Welcher Skin wird als Standard-Skin verwendet, bis der User einen Skin explizit auswählt.
 
-Mit dem Wert „ID der Admin-Gruppe“ kann festgelegt werden, welche Gruppen-ID als globaler Admin behandelt wird. Analog definiert der Wert der Gäste-Gruppe, was als Gast behandelt werden soll.
+Mit dem Wert „ID der Admin-Gruppe“ kann festgelegt werden, welche Gruppen-ID als globaler Admin behandelt wird.
 
 Der Wert „Anzahl Zeilen“ legt fest, wie viele Zeilen im Login-Protokoll ausgegeben werden sollen.
 Die Einstellung „Eigene Daten“ erlaubt Anwendern, auch dann ihr Profil zu verändern, wenn der User an sich keine Rechte am Usermanagement hat. Wird der Wert auf „Nein“ gesetzt, dann benötigt der Benutzer die entsprechenden Rechte an der Benutzerverwaltung.

@@ -14,8 +14,6 @@ If enabled, the backend-access is allowed using https only. If the backend is lo
 The default backend skin
 * `_admins_group_id_` module: system
 SystemID of the global admin-group. Shouldn't be changed.
-* `_guests_group_id_` module: system
-SystemID of the guests group. All users not being logged in are treated as members of the guest group.
 * `_mediamanager_default_filesrepoid_` module: mediamanager
 SystemID of the default repository to select files from. Used as an entry-repo for file-selection dialogs.
 * `_mediaamanager_default_imagesrepoid_` module: mediamanager

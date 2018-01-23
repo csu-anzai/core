@@ -40,7 +40,7 @@ class FormentryHeadline extends FormentryBase implements FormentryPrintableInter
      */
     public function renderField() {
         $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
-        return $objToolkit->formHeadline($this->getStrValue(), $this->getStrClass(), $this->getStrLevel());
+        return $objToolkit->formHeadline($this->getStrValue(), $this->getStrClass()." ".$this->getStrEntryName(), $this->getStrLevel());
     }
 
     public function updateLabel($strKey = "") {

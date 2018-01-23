@@ -207,7 +207,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
         }
 
         if ($objListEntry instanceof UserGroup) {
-            if ($objListEntry->getSystemid() != SystemSetting::getConfigValue("_guests_group_id_") && $objListEntry->getSystemid() != SystemSetting::getConfigValue("_admins_group_id_") && $this->isGroupEditable($objListEntry)) {
+            if ($objListEntry->getSystemid() != SystemSetting::getConfigValue("_admins_group_id_") && $this->isGroupEditable($objListEntry)) {
                 if ($objListEntry->rightDelete()) {
                     return $this->objToolkit->listDeleteButton(
                         $objListEntry->getStrDisplayName(),
@@ -325,7 +325,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
     protected function renderEditAction(Model $objListEntry, $bitDialog = false)
     {
         if ($objListEntry instanceof UserGroup) {
-            if ($objListEntry->getSystemid() != SystemSetting::getConfigValue("_guests_group_id_") && $objListEntry->getSystemid() != SystemSetting::getConfigValue("_admins_group_id_") && $this->isGroupEditable($objListEntry)) {
+            if ($objListEntry->getSystemid() != SystemSetting::getConfigValue("_admins_group_id_") && $this->isGroupEditable($objListEntry)) {
                 if ($objListEntry->rightEdit()) {
                     return $this->objToolkit->listButton(Link::getLinkAdminDialog("user", "groupEdit", "&systemid=".$objListEntry->getSystemid(), "", $this->getLang("action_group_edit"), "icon_edit"));
                 }
@@ -1403,11 +1403,13 @@ HTML;
     /**
      * Creates a browser-like view of the users available
      *
-     * @permissions view
+     * @permissions loggedin
      * @return string
+     * @throws Exception
      */
     protected function actionUserBrowser()
     {
+
         $this->setArrModuleEntry("template", "/folderview.tpl");
         $strReturn = "";
         if ($this->getSystemid() == "") {
@@ -1460,18 +1462,10 @@ HTML;
         $strReturn = "";
         if (SystemModule::getModuleByName("system")->rightEdit() && Carrier::getInstance()->getObjSession()->isSuperAdmin()) {
             //reset the aspect
-            $strAddon = "";
-            $objDefaultAspect = SystemAspect::getDefaultAspect();
-
-            if ($objDefaultAspect !== null) {
-                $strAddon = "&aspect=".$objDefaultAspect->getSystemid();
-            }
-
             $objNewUser = new UserUser($this->getSystemid());
             if ($this->objSession->switchSessionToUser($objNewUser)) {
                 AdminHelper::flushActionNavigationCache();
-                $this->adminReload(Link::getLinkAdminHref("dashboard", "", $strAddon));
-                return "";
+                return Link::clientRedirectManual(_webpath_);
             } else {
                 throw new Exception("session switch failed", Exception::$level_ERROR);
             }
