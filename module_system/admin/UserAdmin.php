@@ -1403,11 +1403,13 @@ HTML;
     /**
      * Creates a browser-like view of the users available
      *
-     * @permissions view
+     * @permissions loggedin
      * @return string
+     * @throws Exception
      */
     protected function actionUserBrowser()
     {
+
         $this->setArrModuleEntry("template", "/folderview.tpl");
         $strReturn = "";
         if ($this->getSystemid() == "") {
@@ -1460,18 +1462,10 @@ HTML;
         $strReturn = "";
         if (SystemModule::getModuleByName("system")->rightEdit() && Carrier::getInstance()->getObjSession()->isSuperAdmin()) {
             //reset the aspect
-            $strAddon = "";
-            $objDefaultAspect = SystemAspect::getDefaultAspect();
-
-            if ($objDefaultAspect !== null) {
-                $strAddon = "&aspect=".$objDefaultAspect->getSystemid();
-            }
-
             $objNewUser = new UserUser($this->getSystemid());
             if ($this->objSession->switchSessionToUser($objNewUser)) {
                 AdminHelper::flushActionNavigationCache();
-                $this->adminReload(Link::getLinkAdminHref("dashboard", "", $strAddon));
-                return "";
+                return Link::clientRedirectManual(_webpath_);
             } else {
                 throw new Exception("session switch failed", Exception::$level_ERROR);
             }

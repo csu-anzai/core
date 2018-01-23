@@ -25,6 +25,7 @@ abstract class AbstractController
     const STR_PERMISSION_ANNOTATION = "@permissions";
 
     const PERMISSION_ANONYMOUS = "anonymous";
+    const PERMISSION_LOGGEDIN = "loggedin";
 
     /**
      * May be used at an action method to define the return type.
@@ -239,7 +240,7 @@ abstract class AbstractController
                     $objObjectToCheck = $this->getObjModule();
                 }
 
-                if (!$this->objRights->validatePermissionString($strPermissions, $objObjectToCheck)) {
+                if ($strPermissions != self::PERMISSION_LOGGEDIN && !$this->objRights->validatePermissionString($strPermissions, $objObjectToCheck)) {
                     ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
                     $this->strOutput = Carrier::getInstance()->getObjToolkit("admin")->warningBox($this->getLang("commons_error_permissions"));
                     $objException = new AuthenticationException("you are not authorized/authenticated to call this action", Exception::$level_ERROR);
