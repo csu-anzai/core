@@ -1552,7 +1552,9 @@ HTML;
         }
 
         try {
-            $this->objPasswordValidator->validate($this->getParam("user_pass"), $objUser);
+            if ($arrParams["user_pass"] != "" || $arrParams["user_pass2"]) {
+                $this->objPasswordValidator->validate($this->getParam("user_pass"), $objUser);
+            }
         } catch (ValidationException $objE) {
             $objForm->addValidationError("password", $objE->getMessage());
         }
