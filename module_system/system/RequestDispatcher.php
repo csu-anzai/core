@@ -324,12 +324,12 @@ class RequestDispatcher
                 $intTimeUsed = (($arrTimestampEnde['sec'] * 1000000 + $arrTimestampEnde['usec'])
                         - ($this->arrTimestampStart['sec'] * 1000000 + $this->arrTimestampStart['usec'])) / 1000000;
 
-                $strDebug .= "<b>PHP-Time:</b> ".number_format($intTimeUsed, 6)." sec ";
+                $strDebug .= "PHP-Time: ".number_format($intTimeUsed, 6)." sec ";
             }
 
             //Hows about the queries?
             if (_dbnumber_ === true) {
-                $strDebug .= "<b>Queries db/cachesize/cached/fired:</b> ".Carrier::getInstance()->getObjDB()->getNumber()."/".
+                $strDebug .= "Queries db/cachesize/cached/fired: ".Carrier::getInstance()->getObjDB()->getNumber()."/".
                     Carrier::getInstance()->getObjDB()->getCacheSize()."/".
                     Carrier::getInstance()->getObjDB()->getNumberCache()."/".
                     (Carrier::getInstance()->getObjDB()->getNumber() - Carrier::getInstance()->getObjDB()->getNumberCache())." ";
@@ -337,23 +337,11 @@ class RequestDispatcher
 
             //memory
             if (_memory_ === true) {
-                $strDebug .= "<b>Memory/Max Memory:</b> ".bytesToString(memory_get_usage())."/".bytesToString(memory_get_peak_usage())." ";
-                $strDebug .= "<b>Classes Loaded:</b> ".Classloader::getInstance()->getIntNumberOfClassesLoaded()." ";
+                $strDebug .= "Memory/Max Memory: ".bytesToString(memory_get_usage())."/".bytesToString(memory_get_peak_usage())." ";
+                $strDebug .= "Classes Loaded: ".Classloader::getInstance()->getIntNumberOfClassesLoaded()." ";
             }
 
-            if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::XML())) {
-                ResponseObject::getInstance()->addHeader("Kajona Debug: ".$strDebug);
-            } else {
-                $strDebug = "<pre style='z-index: 2000000; position: fixed; background-color: white; width: 100%; top: 0; font-size: 10px; padding: 0; margin: 0;'>Kajona Debug: ".$strDebug."</pre>";
-
-                $intBodyPos = StringUtil::indexOf($strReturn, "</body>");
-                if ($intBodyPos !== false) {
-                    $strReturn = StringUtil::substring($strReturn, 0, $intBodyPos).$strDebug.StringUtil::substring($strReturn, $intBodyPos);
-                } else {
-                    $strReturn = $strDebug.$strReturn;
-                }
-            }
-
+            ResponseObject::getInstance()->addHeader("Kajona-Debug: ".$strDebug);
         }
 
         return $strReturn;
