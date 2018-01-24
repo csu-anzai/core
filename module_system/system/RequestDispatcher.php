@@ -201,8 +201,14 @@ class RequestDispatcher
                             $strRoutieRedirect = StringUtil::replace(_webpath_."/index.php?", "", $strUrl);
                             //and strip everything until the last #sign
                             $strRoutieRedirect = StringUtil::substring($strRoutieRedirect, StringUtil::lastIndexOf($strRoutieRedirect, "#"));
+
+                            $strJs = "";
+                            if (ResponseObject::getInstance()->getBitForceMessagePollOnRedirect()) {
+                                $strJs = "require('messaging').setPollingEnabled(false); require('messaging').setPollingEnabled(true);";
+                            }
+
                             $strReturn = "<script type='text/javascript'>
-                                    require('router').loadUrl('{$strRoutieRedirect}');
+                                    require('router').loadUrl('{$strRoutieRedirect}'); {$strJs}
                                 </script>";
 
                         }

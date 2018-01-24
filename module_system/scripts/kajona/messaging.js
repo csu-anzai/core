@@ -139,6 +139,7 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util'], function ($, aja
                 }
                 timeout = null;
             }
+
         },
 
         /**
