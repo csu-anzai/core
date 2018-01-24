@@ -204,7 +204,7 @@ class RequestDispatcher
 
                             $strJs = "";
                             if (ResponseObject::getInstance()->getBitForceMessagePollOnRedirect()) {
-                                $strJs = "require('messaging').setPollingEnabled(false); require('messaging').setPollingEnabled(true);";
+                                $strJs = "require('messaging').pollMessages();";
                             }
 
                             $strReturn = "<script type='text/javascript'>

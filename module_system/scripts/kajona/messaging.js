@@ -76,6 +76,15 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util'], function ($, aja
         bitFirstLoad : true,
 
         /**
+         * Forces a polling of unread messages and alert, but only once
+         */
+        pollMessages: function() {
+            me.getUnreadCount(function (intCount) {
+                me.updateCountInfo(intCount);
+            });
+        },
+
+        /**
          * Gets the number of unread messages for the current user.
          * Expects a callback-function whereas the number is passed as a param.
          *
