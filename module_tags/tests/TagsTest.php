@@ -3,6 +3,7 @@
 namespace Kajona\Tags\Tests;
 
 use Kajona\System\System\SystemAspect;
+use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserUser;
 use Kajona\System\Tests\Testbase;
@@ -10,6 +11,22 @@ use Kajona\Tags\System\TagsTag;
 
 class TagsTest extends Testbase
 {
+
+    /**
+     * @beforeClass
+     */
+    public static function beforeClass() {
+        $objUser = new UserUser();
+        $objUser->setStrUsername(generateSystemid());
+        $objUser->setIntAdmin(1);
+        $objUser->updateObjectToDb();
+        $objUser->getObjSourceUser()->setStrEmail("demo@example");
+        $objUser->getObjSourceUser()->updateObjectToDb();
+
+        //The Admin should belong to the admin-Group
+        $objAdminGroup =new UserGroup(SystemSetting::getConfigValue("_admins_group_id_"));
+        $objAdminGroup->getObjSourceGroup()->addMember($objUser->getObjSourceUser());
+    }
 
     public function testCopyRecordWithTag()
     {
