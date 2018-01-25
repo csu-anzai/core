@@ -29,6 +29,7 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
      */
     const STR_FORM_PARAM_RESET = "reset";
     const STR_FORM_PARAM_FILTER = "setcontentfilter";
+    const STR_FORM_PARAM_SESSION = "contentfilter_session";
     const STR_FILTER_REDIRECT = "redirect";
 
     /**
