@@ -32,13 +32,12 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util'], function ($, aja
                 ajax.genericAjaxCall($onAccept.module, $onAccept.action, $onAccept.systemid, function(){
                     // on ok we trigger the getUnreadCount again since the ajax call could have created
                     // other alert messages
-                    me.getUnreadCount(function(){
-                    });
+                    me.getUnreadCount(function(){ });
                 });
             };
         }
 
-        return function() {};
+        return function() { me.getUnreadCount(function(){ });};
     };
 
     /**
