@@ -110,7 +110,8 @@ abstract class FilterBase
     }
 
     /**
-     * Returns the session id under which this filter is stored
+     * Returns the session id under which this filter is stored. By default this is the filter id but it is also
+     * possible to provide another id in case you want to store the filter under a different session key
      *
      * @return string
      */
