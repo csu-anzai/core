@@ -208,7 +208,10 @@ class RequestDispatcher
                             }
 
                             $strReturn = "<script type='text/javascript'>
-                                    require('router').loadUrl('{$strRoutieRedirect}'); {$strJs}
+                                    require(['router'], function(router){ 
+                                        router.loadUrl('{$strRoutieRedirect}'); 
+                                        {$strJs} 
+                                    });
                                 </script>";
 
                         }
