@@ -9,6 +9,7 @@
 
 namespace Kajona\System\Installer;
 
+use Kajona\Packagemanager\System\PackagemanagerManager;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Classloader;
 use Kajona\System\System\Date;
