@@ -360,8 +360,8 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $strReturn .= "Rebuilt rights structures...\n";
 
         //Creating an admin-user
-        $strUsername = null;
-        $strPassword = null;
+        $strUsername = "admin";
+        $strPassword = "kajona";
         $strEmail = "";
         //Login-Data given from installer?
         if($this->objSession->getSession("install_username") !== false && $this->objSession->getSession("install_username") != "" &&
@@ -400,7 +400,8 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $objAspect->setStrName("management");
         $objAspect->updateObjectToDb();
 
-        if ($strUsername !== null && $strPassword !== null) {
+        $objManager = new PackagemanagerManager();
+        if ($objManager->getPackage("agp_commons") === null) {
             $objUser = new UserUser();
             $objUser->setStrUsername($strUsername);
             $objUser->setIntAdmin(1);
