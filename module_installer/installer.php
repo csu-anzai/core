@@ -48,7 +48,7 @@ class Installer
     private $strForwardLink = "";
     private $strBackwardLink = "";
 
-    private $strVersion = "V 6.6";
+    private $strVersion = "V 7.0";
     private $strMinPhpVersion = "7.0";
 
     /**
@@ -370,6 +370,10 @@ class Installer
         $bitShowForm = true;
         $this->strOutput .= $this->getLang("installer_login_intro");
 
+        $objManager = new PackagemanagerManager();
+        if ($objManager->getPackage("agp_commons") !== null) {
+            ResponseObject::getInstance()->setStrRedirectUrl(_webpath_."/installer.php?step=autoInstall");
+        }
 
         if ($this->isInstalled()) {
             $bitShowForm = false;

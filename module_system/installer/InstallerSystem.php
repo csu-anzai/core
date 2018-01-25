@@ -360,8 +360,8 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $strReturn .= "Rebuilt rights structures...\n";
 
         //Creating an admin-user
-        $strUsername = "admin";
-        $strPassword = "kajona";
+        $strUsername = null;
+        $strPassword = null;
         $strEmail = "";
         //Login-Data given from installer?
         if($this->objSession->getSession("install_username") !== false && $this->objSession->getSession("install_username") != "" &&
@@ -400,19 +400,21 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $objAspect->setStrName("management");
         $objAspect->updateObjectToDb();
 
-        $objUser = new UserUser();
-        $objUser->setStrUsername($strUsername);
-        $objUser->setIntAdmin(1);
-        $objUser->setStrAdminlanguage($strAdminLanguage);
-        $objUser->updateObjectToDb();
-        $objUser->getObjSourceUser()->setStrPass($strPassword);
-        $objUser->getObjSourceUser()->setStrEmail($strEmail);
-        $objUser->getObjSourceUser()->updateObjectToDb();
-        $strReturn .= "Created User Admin: <strong>Username: ".$strUsername.", Password: ***********</strong> ...\n";
+        if ($strUsername !== null && $strPassword !== null) {
+            $objUser = new UserUser();
+            $objUser->setStrUsername($strUsername);
+            $objUser->setIntAdmin(1);
+            $objUser->setStrAdminlanguage($strAdminLanguage);
+            $objUser->updateObjectToDb();
+            $objUser->getObjSourceUser()->setStrPass($strPassword);
+            $objUser->getObjSourceUser()->setStrEmail($strEmail);
+            $objUser->getObjSourceUser()->updateObjectToDb();
+            $strReturn .= "Created User Admin: <strong>Username: ".$strUsername.", Password: ***********</strong> ...\n";
 
-        //The Admin should belong to the admin-Group
-        $objAdminGroup->getObjSourceGroup()->addMember($objUser->getObjSourceUser());
-        $strReturn .= "Registered Admin in Admin-Group...\n";
+            //The Admin should belong to the admin-Group
+            $objAdminGroup->getObjSourceGroup()->addMember($objUser->getObjSourceUser());
+            $strReturn .= "Registered Admin in Admin-Group...\n";
+        }
 
 
 
