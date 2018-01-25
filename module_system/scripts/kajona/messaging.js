@@ -8,13 +8,14 @@
  *
  * @module messaging
  */
-define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util'], function ($, ajax, dialogHelper, util) {
+define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util', 'router'], function ($, ajax, dialogHelper, util, router) {
 
 
     var pollInterval = 30000;
     var timeout = null;
 
     var intCount = 0;
+    var dialog;
 
     /**
      * Internal helper to built a real callback based on the action provided by the backend
@@ -25,15 +26,22 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util'], function ($, aja
 
         if ($onAccept.type === 'redirect') {
             return function() {
-                document.location.href = $onAccept.target;
+                router.registerLoadCallback("alert_redirect", function(){
+                    me.pollMessages();
+                });
+
+                router.loadUrl($onAccept.target);
+
+                if (dialog) {
+                    dialog.hide();
+                }
             };
         } else if ($onAccept.type === 'ajax') {
             return function() {
                 ajax.genericAjaxCall($onAccept.module, $onAccept.action, $onAccept.systemid, function(){
                     // on ok we trigger the getUnreadCount again since the ajax call could have created
                     // other alert messages
-                    me.getUnreadCount(function(){
-                    });
+                    me.pollMessages();
                 });
             };
         }
@@ -46,7 +54,7 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util'], function ($, aja
      * @param $objAlert
      */
     var renderAlert = function($objAlert) {
-        dialogHelper.showConfirmationDialog($objAlert.title, $objAlert.body, $objAlert.confirmLabel, getActionCallback($objAlert.onAccept));
+        dialog = dialogHelper.showConfirmationDialog($objAlert.title, $objAlert.body, $objAlert.confirmLabel, getActionCallback($objAlert.onAccept));
         ajax.genericAjaxCall("messaging", "deleteAlert", $objAlert.systemid);
     };
 
