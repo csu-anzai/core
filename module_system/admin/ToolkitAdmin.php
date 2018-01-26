@@ -400,9 +400,10 @@ class ToolkitAdmin extends Toolkit
      * @param bool $bitGroups
      * @param bool $bitBlockCurrentUser
      * @param array|string $arrValidateSystemid If you want to check the view-permissions for a given systemid, pass the id here
+     * @param string $strSelectedGroupId
      * @return string
      */
-    public function formInputUserSelector($strName, $strTitle = "", $strValue = "", $strClass = "", $bitUser = true, $bitGroups = false, $bitBlockCurrentUser = false, array $arrValidateSystemid = null)
+    public function formInputUserSelector($strName, $strTitle = "", $strValue = "", $strClass = "", $bitUser = true, $bitGroups = false, $bitBlockCurrentUser = false, array $arrValidateSystemid = null, $strSelectedGroupId = null)
     {
         $strUserName = "";
         $strUserId = "";
@@ -425,7 +426,7 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["opener"] = $this->listButton(Link::getLinkAdminDialog(
             "user",
             "userBrowser",
-            "&form_element={$strName}&checkid={$strCheckIds}".($bitGroups ? "&allowGroup=1" : "").($bitBlockCurrentUser ? "&filter=current" : ""),
+            "&form_element={$strName}&checkid={$strCheckIds}".($bitGroups ? "&allowGroup=1" : "").($bitBlockCurrentUser ? "&filter=current" : "").(validateSystemid($strSelectedGroupId) ? "&systemid=" . $strSelectedGroupId : ""),
             Carrier::getInstance()->getObjLang()->getLang("user_browser", "user"),
             Carrier::getInstance()->getObjLang()->getLang("user_browser", "user"),
             "icon_externalBrowser",
