@@ -368,6 +368,13 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
         $strReturn = "";
         $objWorkflow = new WorkflowsWorkflow($this->getSystemid());
 
+        $strForm = $objWorkflow->getObjWorkflowHandler()->getUserInterface();
+        if ($strForm instanceof AdminFormgenerator) {
+            if (!$strForm->validateForm()) {
+                return $strForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "saveUI"));
+            }
+        }
+
         $arrIdsToCheck = array_merge(array($this->objSession->getUserID()), $this->objSession->getGroupIdsAsArray());
         $arrIdsOfTask = explode(",", $objWorkflow->getStrResponsible());
 
