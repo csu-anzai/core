@@ -289,7 +289,7 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
      * @return string
      * @permissions view
      */
-    protected function actionShowUi()
+    protected function actionShowUi(AdminFormgenerator $objForm = null)
     {
         $strReturn = "";
 
@@ -304,57 +304,78 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
         //ui given? current user responsible?
         //magic: the difference of the tasks' ids and the users' ids should be less than the count of the task-ids - then at least one id matches
         if ($objWorkflow->getObjWorkflowHandler()->providesUserInterface() && ($objWorkflow->getStrResponsible() == "" || count(array_diff($arrIdsOfTask, $arrIdsToCheck)) < count($arrIdsOfTask))) {
-            $strCreator = "";
 
-            if (validateSystemid($objWorkflow->getStrOwner())) {
-                $objUser = new UserUser($objWorkflow->getStrOwner(), false);
-                $strCreator .= $objUser->getStrUsername();
-            }
-
-            $strResponsible = "";
-            foreach (explode(",", $objWorkflow->getStrResponsible()) as $strOneId) {
-                if (validateSystemid($strOneId)) {
-                    if ($strResponsible != "") {
-                        $strResponsible .= ", ";
-                    }
-
-                    $objUser = new UserUser($strOneId, false);
-                    if ($objUser->getStrUsername() != "") {
-                        $strResponsible .= $objUser->getStrUsername();
-                    } else {
-                        $objGroup = new UserGroup($strOneId);
-                        $strResponsible .= $objGroup->getStrName();
-                    }
-                }
-            }
-
-            $arrHeader = array($this->getLang("workflow_general"), "");
-            $arrRow1 = array($this->getLang("workflow_owner"), $strCreator);
-            $arrRow2 = array($this->getLang("workflow_responsible"), $strResponsible);
-            $strReturn .= $this->objToolkit->dataTable($arrHeader, array($arrRow1, $arrRow2));
-
-            $strForm = $objWorkflow->getObjWorkflowHandler()->getUserInterface();
-
-            if ($strForm instanceof AdminFormgenerator) {
-                $strForm->addField(new FormentryHidden(null, "workflowid"))->setStrValue($objWorkflow->getSystemid());
-                if ($strForm->getObjSourceobject() == null) {
-                    $strForm->addField(new FormentryHidden(null, "systemid"))->setStrValue($objWorkflow->getSystemid());
-                }
-                $strReturn .= $strForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "saveUI"));
-            } else {
-                $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "saveUI"));
-                $strReturn .= $strForm;
-                $strReturn .= $this->objToolkit->formInputHidden("systemid", $objWorkflow->getSystemid());
-                $strReturn .= $this->objToolkit->formInputSubmit($this->getLang("commons_save"));
-                $strReturn .= $this->objToolkit->formClose();
-            }
-        } else {
-            $strReturn .= $this->getLang("commons_error_permissions");
+            $strReturn = $this->renderUserInputForm($objWorkflow, $objForm);
+        }
+        else {
+            $strReturn = $this->getLang("commons_error_permissions");
         }
 
         return $strReturn;
     }
 
+    /**
+     * @param $objWorkflow
+     * @param $strReturn
+     * @return string
+     * @throws Exception
+     */
+    protected function renderUserInputForm($objWorkflow, AdminFormgenerator $objForm = null)
+    {
+        $strReturn = "";
+
+        $strCreator = "";
+        if (validateSystemid($objWorkflow->getStrOwner())) {
+            $objUser = new UserUser($objWorkflow->getStrOwner(), false);
+            $strCreator .= $objUser->getStrUsername();
+        }
+        $strInfo = $this->objToolkit->getTextRow($this->getLang("workflow_owner") . " " . $strCreator);
+
+        $strResponsible = "";
+        foreach (explode(",", $objWorkflow->getStrResponsible()) as $strOneId) {
+            if (validateSystemid($strOneId)) {
+                if ($strResponsible != "") {
+                    $strResponsible .= ", ";
+                }
+
+                $objUser = new UserUser($strOneId, false);
+                if ($objUser->getStrUsername() != "") {
+                    $strResponsible .= $objUser->getStrUsername();
+                } else {
+                    $objGroup = new UserGroup($strOneId);
+                    $strResponsible .= $objGroup->getStrName();
+                }
+            }
+        }
+
+        $arrHeader = array($this->getLang("workflow_general"), "");
+        $arrRow1 = array($this->getLang("workflow_owner"), $strCreator);
+        $arrRow2 = array($this->getLang("workflow_responsible"), $strResponsible);
+        $strReturn .= $this->objToolkit->dataTable($arrHeader, array($arrRow1, $arrRow2));
+
+        $strForm = "";
+        if ($objForm === null) {
+            $strForm = $objWorkflow->getObjWorkflowHandler()->getUserInterface();
+        }
+        else {
+            $strForm = $objForm;
+        }
+
+        if ($strForm instanceof AdminFormgenerator) {
+            $strForm->addField(new FormentryHidden(null, "workflowid"))->setStrValue($objWorkflow->getSystemid());
+            if ($strForm->getObjSourceobject() == null) {
+                $strForm->addField(new FormentryHidden(null, "systemid"))->setStrValue($objWorkflow->getSystemid());
+            }
+            $strReturn .= $strForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "saveUI"));
+        } else {
+            $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "saveUI"));
+            $strReturn .= $strForm;
+            $strReturn .= $this->objToolkit->formInputHidden("systemid", $objWorkflow->getSystemid());
+            $strReturn .= $this->objToolkit->formInputSubmit($this->getLang("commons_save"));
+            $strReturn .= $this->objToolkit->formClose();
+        }
+        return $strReturn;
+    }
 
     /**
      * Calls the handler to process the values collected by the ui before.
@@ -371,7 +392,7 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
         $strForm = $objWorkflow->getObjWorkflowHandler()->getUserInterface();
         if ($strForm instanceof AdminFormgenerator) {
             if (!$strForm->validateForm()) {
-                return $strForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "saveUI"));
+                return $this->actionShowUi($strForm);
             }
         }
 
