@@ -9,6 +9,7 @@
 
 namespace Kajona\System\Installer;
 
+use Kajona\Packagemanager\System\PackagemanagerManager;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Classloader;
 use Kajona\System\System\Date;
@@ -400,19 +401,22 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $objAspect->setStrName("management");
         $objAspect->updateObjectToDb();
 
-        $objUser = new UserUser();
-        $objUser->setStrUsername($strUsername);
-        $objUser->setIntAdmin(1);
-        $objUser->setStrAdminlanguage($strAdminLanguage);
-        $objUser->updateObjectToDb();
-        $objUser->getObjSourceUser()->setStrPass($strPassword);
-        $objUser->getObjSourceUser()->setStrEmail($strEmail);
-        $objUser->getObjSourceUser()->updateObjectToDb();
-        $strReturn .= "Created User Admin: <strong>Username: ".$strUsername.", Password: ***********</strong> ...\n";
+        $objManager = new PackagemanagerManager();
+        if ($objManager->getPackage("agp_commons") === null) {
+            $objUser = new UserUser();
+            $objUser->setStrUsername($strUsername);
+            $objUser->setIntAdmin(1);
+            $objUser->setStrAdminlanguage($strAdminLanguage);
+            $objUser->updateObjectToDb();
+            $objUser->getObjSourceUser()->setStrPass($strPassword);
+            $objUser->getObjSourceUser()->setStrEmail($strEmail);
+            $objUser->getObjSourceUser()->updateObjectToDb();
+            $strReturn .= "Created User Admin: <strong>Username: ".$strUsername.", Password: ***********</strong> ...\n";
 
-        //The Admin should belong to the admin-Group
-        $objAdminGroup->getObjSourceGroup()->addMember($objUser->getObjSourceUser());
-        $strReturn .= "Registered Admin in Admin-Group...\n";
+            //The Admin should belong to the admin-Group
+            $objAdminGroup->getObjSourceGroup()->addMember($objUser->getObjSourceUser());
+            $strReturn .= "Registered Admin in Admin-Group...\n";
+        }
 
 
 

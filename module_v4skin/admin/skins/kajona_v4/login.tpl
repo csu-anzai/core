@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Kajona admin [%%webpathTitle%%]</title>
+    <title>[lang,commons_skin_title,commons] [%%webpathTitle%%]</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow" />
-    <meta name="generator" content="Kajona, www.kajona.de" />
+    <meta name="generator" content="Kajona Core, https://github.com/artemeon/core" />
 
     <link rel="stylesheet" href="_webpath_/[webpath,module_system]/scripts/jqueryui/css/smoothness/jquery-ui.custom.css?_system_browser_cachebuster_" type="text/css" />
     <link rel="stylesheet" href="_webpath_/[webpath,module_system]/scripts/qtip2/jquery.qtip.min.css?_system_browser_cachebuster_" type="text/css" />
