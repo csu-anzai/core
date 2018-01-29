@@ -128,11 +128,11 @@ class UserSourcefactory
      * @param string $strParam
      * @param int|null $intStart
      * @param int|null $intEnd
+     * @param string|null $strGroupId
      * @return UserUser[]
      */
-    public function getUserlistByUserquery($strParam, $intStart = null, $intEnd = null)
+    public function getUserlistByUserquery($strParam, $intStart = null, $intEnd = null, $strGroupId = null)
     {
-
         $strDbPrefix = _dbprefix_;
         //validate if a group with the given name is available
         $strQuery = "SELECT user_tbl.user_id, user_tbl.user_subsystem
@@ -142,11 +142,16 @@ class UserSourcefactory
                           (user_tbl.user_username LIKE ? OR user_kajona.user_forename LIKE ? OR user_kajona.user_name LIKE ?)
                           AND user_tbl.user_id = system_id
                           AND (system_deleted = 0 OR system_deleted IS NULL)
-                          AND system_status = 1
-                      ORDER BY user_tbl.user_username, user_tbl.user_subsystem ASC";
+                          AND system_status = 1";
 
         $arrParams = array("%".$strParam."%", "%".$strParam."%", "%".$strParam."%");
-        
+
+        if (validateSystemid($strGroupId)) {
+            $strQuery .= " AND ? IN (SELECT group_member_group_kajona_id FROM {$strDbPrefix}user_kajona_members WHERE group_member_user_kajona_id = user_tbl.user_id) ";
+            $arrParams[] = $strGroupId;
+        }
+
+        $strQuery .= " ORDER BY user_tbl.user_username, user_tbl.user_subsystem ASC ";
 
         $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, $arrParams, $intStart, $intEnd);
 

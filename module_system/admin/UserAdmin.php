@@ -1601,13 +1601,14 @@ HTML;
     {
         $strFilter = $this->getParam("filter");
         $strCheckId = $this->getParam("checkid");
+        $strGroupId = $this->getParam("groupid");
         $arrCheckIds = json_decode($strCheckId);
 
         $arrUsers = [];
         $objSource = new UserSourcefactory();
 
         if ($this->getParam("user") == "true") {
-            $arrUsers = $objSource->getUserlistByUserquery($strFilter);
+            $arrUsers = $objSource->getUserlistByUserquery($strFilter, null, null, $strGroupId);
         }
 
         if ($this->getParam("group") == "true") {

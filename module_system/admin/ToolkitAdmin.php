@@ -458,7 +458,8 @@ class ToolkitAdmin extends Toolkit
                                     user: ".($bitUser ? "'true'" : "'false'").",
                                     group: ".($bitGroups ? "'true'" : "'false'").",
                                     block: ".($bitBlockCurrentUser ? "'current'" : "''").",
-                                    checkid: '".$strCheckIds."'
+                                    checkid: '".$strCheckIds."',
+                                    groupid: '".(validateSystemid($strSelectedGroupId) ? $strSelectedGroupId : "")."'
                                 },
                                 success: response
                             });
