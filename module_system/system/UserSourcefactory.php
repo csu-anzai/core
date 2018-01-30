@@ -146,7 +146,9 @@ class UserSourcefactory
 
         $arrParams = array("%".$strParam."%", "%".$strParam."%", "%".$strParam."%");
 
-        if (validateSystemid($strGroupId)) {
+        $bitSqlFiltered = false;
+        if (validateSystemid($strGroupId) && count($this->arrSubsystemsAvailable) == 1 && $this->arrSubsystemsAvailable[0] == "kajona") {
+            $bitSqlFiltered = true;
             $strQuery .= " AND ? IN (SELECT group_member_group_kajona_id FROM {$strDbPrefix}user_kajona_members WHERE group_member_user_kajona_id = user_tbl.user_id) ";
             $arrParams[] = $strGroupId;
         }
@@ -158,7 +160,16 @@ class UserSourcefactory
         $arrReturn = array();
         foreach ($arrRows as $arrOneRow) {
             if (in_array($arrOneRow["user_subsystem"], $this->arrSubsystemsAvailable)) {
-                $arrReturn[] = Objectfactory::getInstance()->getObject($arrOneRow["user_id"]);
+                /** @var UserUser $objUser */
+                $objUser = Objectfactory::getInstance()->getObject($arrOneRow["user_id"]);
+
+                if (validateSystemid($strGroupId) && !$bitSqlFiltered) {
+                    if (!in_array($strGroupId, $objUser->getArrGroupIds())) {
+                        continue;
+                    }
+                }
+
+                $arrReturn[] = $objUser;
             }
         }
 
