@@ -125,7 +125,7 @@ abstract class FlowHandlerAbstract implements FlowHandlerInterface
      * @param FlowTransition $objTransition
      * @return FlowConditionResult
      */
-    private function validateObjectForm(Model $objObject, FlowTransition $objTransition)
+    protected function validateObjectForm(Model $objObject, FlowTransition $objTransition)
     {
         $objResult = new FlowConditionResult();
 
