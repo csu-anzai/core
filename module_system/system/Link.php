@@ -458,7 +458,7 @@ class Link
      *
      * @return array
      */
-    private static function sanitizeUrlParams($arrParams, &$strSystemid = "")
+    public static function sanitizeUrlParams($arrParams, &$strSystemid = "")
     {
         if ($arrParams === null) {
             $arrParams = array();
