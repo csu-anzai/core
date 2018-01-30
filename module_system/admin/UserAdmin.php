@@ -1625,7 +1625,7 @@ HTML;
         $objSource = new UserSourcefactory();
 
         if ($this->getParam("user") == "true") {
-            $arrUsers = $objSource->getUserlistByUserquery($strFilter, null, null, $strGroupId);
+            $arrUsers = $objSource->getUserlistByUserquery($strFilter, 0, 25, $strGroupId);
         }
 
         if ($this->getParam("group") == "true") {
