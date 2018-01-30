@@ -426,7 +426,7 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["opener"] = $this->listButton(Link::getLinkAdminDialog(
             "user",
             "userBrowser",
-            "&form_element={$strName}&checkid={$strCheckIds}".($bitGroups ? "&allowGroup=1" : "").($bitBlockCurrentUser ? "&filter=current" : "").(validateSystemid($strSelectedGroupId) ? "&systemid=" . $strSelectedGroupId : ""),
+            "&form_element={$strName}&checkid={$strCheckIds}".($bitGroups ? "&allowGroup=1" : "").($bitBlockCurrentUser ? "&filter=current" : "").(validateSystemid($strSelectedGroupId) ? "&selectedGroup=" . $strSelectedGroupId : ""),
             Carrier::getInstance()->getObjLang()->getLang("user_browser", "user"),
             Carrier::getInstance()->getObjLang()->getLang("user_browser", "user"),
             "icon_externalBrowser",

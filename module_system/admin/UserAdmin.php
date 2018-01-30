@@ -1386,7 +1386,7 @@ HTML;
 
     public function renderLevelUpAction($strListIdentifier)
     {
-        if ($strListIdentifier == "userGroupUserList") {
+        if ($strListIdentifier == "userGroupUserList" && !validateSystemid($this->getParam("selectedGroup"))) {
             return Link::getLinkAdmin(
                 $this->getArrModule("modul"),
                 "userBrowser",
@@ -1412,6 +1412,11 @@ HTML;
 
         $this->setArrModuleEntry("template", "/folderview.tpl");
         $strReturn = "";
+
+        if (validateSystemid($this->getParam("selectedGroup"))) {
+            $this->setSystemid($this->getParam("selectedGroup"));
+        }
+
         if ($this->getSystemid() == "") {
             $objFilter = new UserGroupFilter();
             $objFilter->setIntSystemFilter(1);
@@ -1431,7 +1436,13 @@ HTML;
                 )
             );
 
-            $strReturn .= $this->renderList($objIterator, false, "userGroupList", false, "&form_element=".$this->getParam("form_element")."&filter=".$this->getParam("filter")."&allowGroup=".$this->getParam("allowGroup")."&checkid=".$this->getParam("checkid"));
+            $strReturn .= $this->renderList(
+                $objIterator,
+                false,
+                "userGroupList",
+                false,
+                Link::sanitizeUrlParams(["form_element" => $this->getParam("form_element"), "filter" => $this->getParam("filter"), "allowGroup" => $this->getParam("allowGroup"), "checkid" => $this->getParam("checkid"), "selectedGroup" => $this->getParam("selectedGroup")])
+            );
         } else {
             //show members of group
             $objGroup = new UserGroup($this->getSystemid());
@@ -1447,7 +1458,13 @@ HTML;
 
             $objIterator->setArraySection($arrUsers);
 
-            $strReturn .= $this->renderList($objIterator, false, "userGroupUserList", false, "&form_element=".$this->getParam("form_element")."&filter=".$this->getParam("filter")."&allowGroup=".$this->getParam("allowGroup")."&checkid=".$this->getParam("checkid"));
+            $strReturn .= $this->renderList(
+                $objIterator,
+                false,
+                "userGroupUserList",
+                false,
+                Link::sanitizeUrlParams(["form_element" => $this->getParam("form_element"), "filter" => $this->getParam("filter"), "allowGroup" => $this->getParam("allowGroup"), "checkid" => $this->getParam("checkid"), "selectedGroup" => $this->getParam("selectedGroup")])
+            );
         }
 
         return $strReturn;
