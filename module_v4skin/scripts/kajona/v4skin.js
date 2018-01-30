@@ -232,10 +232,15 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
             // remove all active tooltips
             tooltip.removeTooltip(el);
 
+            // trigger table changed event
+            var table = $(el).closest(".form-group").find(".table").first();
+
             // remove element
             $(el).parent().parent().fadeOut(0, function(){
                 $(this).remove();
             });
+
+            table.trigger('updated');
         },
 
         /**
