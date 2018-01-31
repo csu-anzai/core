@@ -152,7 +152,10 @@ abstract class AdminSimple extends AdminController
 
                 $strTargetUrl = Link::plainUrlToHashUrl($strTargetUrl);
             }
-            return "<script type='text/javascript'>require('router').loadUrl('{$strTargetUrl}')</script>";
+
+            return "<script type='text/javascript'>require(['router'], function(router){
+    router.loadUrl('{$strTargetUrl}'); 
+});</script>";
         }
         else {
             throw new Exception("error loading object ".$this->getSystemid(), Exception::$level_ERROR);

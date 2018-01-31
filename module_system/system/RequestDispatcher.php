@@ -204,11 +204,14 @@ class RequestDispatcher
 
                             $strJs = "";
                             if (ResponseObject::getInstance()->getBitForceMessagePollOnRedirect()) {
-                                $strJs = "require('messaging').pollMessages();";
+                                $strJs = "messaging.pollMessages();";
                             }
 
                             $strReturn = "<script type='text/javascript'>
-                                    require('router').loadUrl('{$strRoutieRedirect}'); {$strJs}
+                                    require(['router', 'messaging'], function(router, messaging){ 
+                                        router.loadUrl('{$strRoutieRedirect}'); 
+                                        {$strJs}
+                                    });
                                 </script>";
 
                         }
