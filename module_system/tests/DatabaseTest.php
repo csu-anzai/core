@@ -522,13 +522,12 @@ SQL;
     }
 
     /**
-     * This if database cann handle views create with WITH
+     * This if database can handle views created with WITH
      */
     public function testWithKeyWord()
     {
         $strDbPrefix = _dbprefix_;
 
-        //View for procedures
         $strSQL = "WITH 
         test_with_1 AS ( 
             SELECT * FROM {$strDbPrefix}system AS system
