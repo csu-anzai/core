@@ -306,17 +306,14 @@ abstract class AdminEvensimpler extends AdminSimple
 
 
             /* Create filter for list */
+            $strSessionId = null;
             $objFilter = null;
             $strFilterForm = "";
             $strObjectFilterClass = $this->getObjectFilterClass($this->getStrCurObjectTypeName());
-            if($strObjectFilterClass !== null) {
-                /** @var FilterBase $objFilter */
-                $objFilter = new $strObjectFilterClass();
-                $objFilter = $objFilter::getOrCreateFromSession();
+            if ($strObjectFilterClass !== null) {
+                $strSessionId = $this->getParam(AdminFormgeneratorFilter::STR_FORM_PARAM_SESSION) ?: null;
+                $objFilter = FilterBase::getOrCreateFromSession($strObjectFilterClass, $strSessionId);
                 $strFilterForm = $this->renderFilter($objFilter);
-                if($strFilterForm === AdminFormgeneratorFilter::STR_FILTER_REDIRECT) {
-                    return "";
-                }
             }
 
             /* Create list */
@@ -325,7 +322,12 @@ abstract class AdminEvensimpler extends AdminSimple
             $objArraySectionIterator->setArraySection($strType::getObjectListFiltered($objFilter, $this->getSystemid(), $objArraySectionIterator->calculateStartPos(), $objArraySectionIterator->calculateEndPos()));
 
             /* Render list and filter */
-            $strList = $this->renderList($objArraySectionIterator, false, "list".$this->getStrCurObjectTypeName());
+            $strPagerAddon = "";
+            if (!empty($strSessionId)) {
+                $strPagerAddon = "&" . AdminFormgeneratorFilter::STR_FORM_PARAM_SESSION . "=" . $strSessionId;
+            }
+
+            $strList = $this->renderList($objArraySectionIterator, false, "list".$this->getStrCurObjectTypeName(), false, $strPagerAddon);
             $strList = $strFilterForm.$strList;
 
             $this->setAction($strOriginalAction);
@@ -353,14 +355,10 @@ abstract class AdminEvensimpler extends AdminSimple
             $arrParams = array(
                 "systemid" => $this->getSystemid(),
                 "folderview" => $this->getParam("folderview"),
+                AdminFormgeneratorFilter::STR_FORM_PARAM_SESSION => $objFilter->getSessionId(),
             );
 
             $strFilterUrl = Link::getLinkAdminHref($this->getArrModule("module"), $this->getAction(), $arrParams);
-        }
-
-        if ($objFilter->getBitFilterUpdated()) {
-            $this->adminReload($strFilterUrl);
-            return AdminFormgeneratorFilter::STR_FILTER_REDIRECT;
         }
 
         $objFilterForm = new AdminFormgeneratorFilter($objFilter->getFilterId(), $objFilter);
