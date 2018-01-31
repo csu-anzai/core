@@ -15,6 +15,9 @@ use Kajona\System\System\UserUser;
 
 class MessagingTest extends Testbase
 {
+
+
+
     public function setUp()
     {
         parent::setUp();

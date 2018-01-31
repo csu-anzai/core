@@ -3,6 +3,7 @@
 namespace Kajona\Tags\Tests;
 
 use Kajona\System\System\SystemAspect;
+use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserUser;
 use Kajona\System\Tests\Testbase;
@@ -10,6 +11,8 @@ use Kajona\Tags\System\TagsTag;
 
 class TagsTest extends Testbase
 {
+
+
 
     public function testCopyRecordWithTag()
     {

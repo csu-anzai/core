@@ -46,7 +46,7 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util', 'router'], functi
             };
         }
 
-        return function() {};
+        return function() { me.getUnreadCount(function(){ });};
     };
 
     /**
