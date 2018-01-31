@@ -328,7 +328,8 @@ abstract class FilterBase
      *
      * @param OrmConditionInterface $objCondition
      */
-    public function addAdditionalCondition(OrmConditionInterface $objCondition) {
+    public function addAdditionalCondition(OrmConditionInterface $objCondition)
+    {
         $this->arrAdditionalConditions[] = $objCondition;
     }
 
