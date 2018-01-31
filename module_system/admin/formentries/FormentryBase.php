@@ -49,6 +49,13 @@ class FormentryBase
      */
     private $objValidator;
 
+    /**
+     * En-/Disables the validation of the field in total - even the "isEmpty" check is being skipped.
+     * The property is evaluated outside of the formentry, normally in AdminFormgenerator
+     * @var bool
+     */
+    private $bitSkipValidation = false;
+
 
     private $strLabel = null;
     private $strValidationErrorMsg = "";
@@ -72,13 +79,13 @@ class FormentryBase
         $this->objSourceObject = $objSourceObject;
         $this->strFormName = $strFormName;
 
-        if($strFormName != "") {
+        if ($strFormName != "") {
             $strFormName .= "_";
         }
 
         $this->strEntryName = StringUtil::toLowerCase($strFormName.$strSourceProperty);
 
-        if($objSourceObject != null) {
+        if ($objSourceObject != null) {
             $this->updateLabel();
         }
         $this->updateValue();
@@ -99,7 +106,7 @@ class FormentryBase
      * the object. This method is only needed in case the request parameters have changed
      * during the request and you need to update the form which may come from a cache
      */
-    public final function readValue()
+    final public function readValue()
     {
         $this->updateValue();
     }
@@ -112,10 +119,9 @@ class FormentryBase
     protected function updateValue()
     {
         $arrParams = Carrier::getAllParams();
-        if(isset($arrParams[$this->strEntryName])) {
+        if (isset($arrParams[$this->strEntryName])) {
             $this->setStrValue($arrParams[$this->strEntryName]);
-        }
-        else {
+        } else {
             $this->setStrValue($this->getValueFromObject());
         }
     }
@@ -126,7 +132,6 @@ class FormentryBase
      */
     public function updateLabel($strKey = "")
     {
-
         //check if module param is set for @fieldLabel
         $strModule = $this->getAnnotationParamValueForCurrentProperty("module", AdminFormgenerator::STR_LABEL_ANNOTATION);
         if ($strModule === null) {
@@ -158,19 +163,18 @@ class FormentryBase
     protected function getValueFromObject()
     {
 
-        if($this->objSourceObject == null) {
+        if ($this->objSourceObject == null) {
             return "";
         }
 
         //try to get the matching getter
         $objReflection = new Reflection($this->objSourceObject);
         $strGetter = $objReflection->getGetter($this->strSourceProperty);
-        if($strGetter === null) {
+        if ($strGetter === null) {
             throw new Exception("unable to find getter for value-property ".$this->strSourceProperty."@".get_class($this->objSourceObject), Exception::$level_ERROR);
         }
 
         return $this->objSourceObject->{$strGetter}();
-
     }
 
     /**
@@ -183,30 +187,29 @@ class FormentryBase
     public function setValueToObject()
     {
 
-        if($this->objSourceObject == null) {
+        if ($this->objSourceObject == null) {
             return "";
         }
 
         $objReflection = new Reflection($this->objSourceObject);
         $strSetter = $objReflection->getSetter($this->strSourceProperty);
-        if($strSetter === null) {
+        if ($strSetter === null) {
             throw new Exception("unable to find setter for value-property ".$this->strSourceProperty."@".get_class($this->objSourceObject), Exception::$level_ERROR);
         }
 
         return $this->objSourceObject->{$strSetter}($this->getStrValue());
-
     }
 
     /**
      * Checks if the field value is empty
-     * 
+     *
      * @return bool
      */
-    public final function isFieldEmpty()
+    final public function isFieldEmpty()
     {
         return (!is_array($this->getStrValue()) && trim($this->getStrValue()) === "")
-        || is_null($this->getStrValue())
-        || (is_array($this->getStrValue()) && count($this->getStrValue()) == 0); //if it is an array with no entries
+            || is_null($this->getStrValue())
+            || (is_array($this->getStrValue()) && count($this->getStrValue()) == 0); //if it is an array with no entries
     }
 
 
@@ -310,7 +313,7 @@ class FormentryBase
      */
     public function setStrHint($strHint)
     {
-        if(trim($strHint) != "") {
+        if (trim($strHint) != "") {
             $strHint = nl2br($strHint);
         }
         $this->strHint = $strHint;
@@ -368,14 +371,12 @@ class FormentryBase
      */
     public function getStrValidationErrorMsg()
     {
-        if($this->strValidationErrorMsg != "") {
+        if ($this->strValidationErrorMsg != "") {
             return $this->strValidationErrorMsg;
-        }
-        else {
-            if($this->getObjValidator() instanceof ValidatorExtendedInterface) {
+        } else {
+            if ($this->getObjValidator() instanceof ValidatorExtendedInterface) {
                 return "'".$this->getStrLabel()."': ".$this->getObjValidator()->getValidationMessage();
-            }
-            else {
+            } else {
                 return "'".$this->getStrLabel()."'";
             }
         }
@@ -393,16 +394,15 @@ class FormentryBase
     {
         $strSourceProperty = null;
 
-        if($this->getObjSourceObject() != null) {
+        if ($this->getObjSourceObject() != null) {
             $objReflection = new Reflection($this->getObjSourceObject());
 
             $arrProperties = $objReflection->getPropertiesWithAnnotation($strAnnotation);
             $strSourceProperty = null;
-            foreach($arrProperties as $strPropertyName => $strValue) {
-
+            foreach ($arrProperties as $strPropertyName => $strValue) {
                 $strPropertyWithoutPrefix = Lang::getInstance()->propertyWithoutPrefix($strPropertyName);
 
-                if($strPropertyWithoutPrefix == $this->getStrSourceProperty()) {
+                if ($strPropertyWithoutPrefix == $this->getStrSourceProperty()) {
                     $strSourceProperty = $strPropertyName;
                     break;
                 }
@@ -422,7 +422,7 @@ class FormentryBase
     protected function getAnnotationParamsForCurrentProperty($strAnnotation = AdminFormgenerator::STR_TYPE_ANNOTATION)
     {
         $strSourceProperty = $this->getCurrentProperty($strAnnotation);
-        if($strSourceProperty !== null) {
+        if ($strSourceProperty !== null) {
             $objReflection = new Reflection($this->getObjSourceObject());
             return $objReflection->getAnnotationValueForProperty($strSourceProperty, $strAnnotation, ReflectionEnum::PARAMS);
         }
@@ -442,11 +442,27 @@ class FormentryBase
     {
         $arrParams = $this->getAnnotationParamsForCurrentProperty($strAnnotation);
 
-        if(is_array($arrParams) && array_key_exists($strParamName, $arrParams)) {
+        if (is_array($arrParams) && array_key_exists($strParamName, $arrParams)) {
             return $arrParams[$strParamName];
         }
 
         return null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getBitSkipValidation(): bool
+    {
+        return $this->bitSkipValidation;
+    }
+
+    /**
+     * @param bool $bitSkipValidation
+     */
+    public function setBitSkipValidation(bool $bitSkipValidation)
+    {
+        $this->bitSkipValidation = $bitSkipValidation;
     }
 
 

@@ -147,3 +147,4 @@ $lang["commons_interval_years"]                  = "Years";
 $lang["commons_skin_footer"] = "<p>powered by <a href=\"https://github.com/artemeon/core\" target=\"_blank\" title=\"Kajona Core\">Kajona Core</a></p>";
 $lang["commons_login_footer"] = "<a href=\"https://github.com/artemeon/core\" target=\"_blank\">Kajona Core</a>";
 $lang["commons_skin_header"] = "Kajona Core";
+$lang["commons_skin_title"] = "Kajona Core";

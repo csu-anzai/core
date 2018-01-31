@@ -28,6 +28,7 @@ class FormentryUser extends FormentryBase implements FormentryPrintableInterface
 
     private $bitUser = true;
     private $bitGroups = false;
+    private $strSelectedGroupId;
     private $bitBlockCurrentUser = false;
     private $arrValidateId = null;
 
@@ -70,7 +71,7 @@ class FormentryUser extends FormentryBase implements FormentryPrintableInterface
             $strReturn .= $objToolkit->formInputHidden($this->getStrEntryName()."_id", $strUserid);
 
         } else {
-            $strReturn .= $objToolkit->formInputUserSelector($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue(), "", $this->bitUser, $this->bitGroups, $this->bitBlockCurrentUser, $this->arrValidateId);
+            $strReturn .= $objToolkit->formInputUserSelector($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue(), "", $this->bitUser, $this->bitGroups, $this->bitBlockCurrentUser, $this->arrValidateId, $this->strSelectedGroupId);
         }
 
         return $strReturn;
@@ -135,6 +136,17 @@ class FormentryUser extends FormentryBase implements FormentryPrintableInterface
     public function setBitGroups($bitGroups)
     {
         $this->bitGroups = $bitGroups;
+        return $this;
+    }
+
+    /**
+     * @param string $strSelectedGroupId
+     *
+     * @return FormentryUser
+     */
+    public function setStrSelectedGroup($strSelectedGroupId)
+    {
+        $this->strSelectedGroupId = $strSelectedGroupId;
         return $this;
     }
 

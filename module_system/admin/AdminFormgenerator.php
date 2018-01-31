@@ -244,6 +244,9 @@ class AdminFormgenerator implements \Countable
     {
         //1. Validate fields
         foreach ($this->arrFields as $objOneField) {
+            if ($objOneField->getBitSkipValidation()) {
+                continue;
+            }
 
             $bitFieldIsEmpty = $objOneField->isFieldEmpty();
 
