@@ -57,11 +57,11 @@ class TodoJstreeNodeLoader implements JStreeNodeLoaderInterface
                 $objNode->setStrType("provider");
                 $objNode->addAAttrAttr(
                     SystemJSTreeNode::STR_NODE_AATTR_HREF,
-                    "#"
+                    "#/dashboard/todo"
                 );
                 $objNode->addAAttrAttr(
                     "onclick",
-                    "require('dashboard').todo.loadCategory($strJsonKey,'')"
+                    "require('dashboard').todo.loadCategory($strJsonKey,'');return false;"
                 );
                 $objNode->addStateAttr(
                     SystemJSTreeNode::STR_NODE_STATE_OPENED,
@@ -80,11 +80,11 @@ class TodoJstreeNodeLoader implements JStreeNodeLoaderInterface
             $objNode->setStrType("category");
             $objNode->addAAttrAttr(
                 SystemJSTreeNode::STR_NODE_AATTR_HREF,
-                "#"
+                "#/dashboard/todo"
             );
             $objNode->addAAttrAttr(
                 "onclick",
-                "require('dashboard').todo.loadCategory($strKeysJson,'')"
+                "require('dashboard').todo.loadCategory($strKeysJson,'');return false;"
             );
             $objNode->addStateAttr(
                 SystemJSTreeNode::STR_NODE_STATE_OPENED,
