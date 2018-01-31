@@ -817,7 +817,7 @@ abstract class Root
         if ($bitCopyChilds) {
             //process subrecords
             //validate, if there are subrecords, so child nodes to be copied to the current record
-            $arrChilds = $this->objDB->getPArray("SELECT system_id FROM "._dbprefix_."system where system_prev_id = ? ORDER BY system_sort ASC", array($strOldSysid));
+            $arrChilds = $this->objDB->getPArray("SELECT system_id FROM "._dbprefix_."system where system_prev_id = ? AND system_deleted = 0 ORDER BY CASE WHEN system_sort < 0 THEN 9999999 ELSE system_sort END ASC, system_create_date DESC", array($strOldSysid));
             foreach ($arrChilds as $arrOneChild) {
                 if (validateSystemid($arrOneChild["system_id"])) {
                     $objInstance = Objectfactory::getInstance()->getObject($arrOneChild["system_id"]);
