@@ -127,6 +127,8 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
         //breadcrumb.resetBar();
         quickhelp.resetQuickhelp();
         tooltip.removeTooltip($('*[rel=tooltip]'));
+        //disable visible tooltips
+        $('.qtip:visible').css('display', '');
     };
 
     var applyLoadCallbacks = function() {
