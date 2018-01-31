@@ -26,15 +26,16 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util', 'router'], functi
 
         if ($onAccept.type === 'redirect') {
             return function() {
-                router.registerLoadCallback("alert_redirect", function(){
+                router.registerLoadCallback("alert_redirect", function() {
+                    $('.modal-backdrop.fade.in').remove();
                     me.pollMessages();
                 });
-
-                router.loadUrl($onAccept.target);
 
                 if (dialog) {
                     dialog.hide();
                 }
+                router.loadUrl($onAccept.target);
+
             };
         } else if ($onAccept.type === 'ajax') {
             return function() {
@@ -46,7 +47,7 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util', 'router'], functi
             };
         }
 
-        return function() { me.getUnreadCount(function(){ });};
+        return function() { };
     };
 
     /**
