@@ -23,7 +23,8 @@ namespace Kajona\System\System;
  *
  * @package module_system
  */
-class Socket {
+class Socket
+{
 
     /**
      * LineLimiter used in most cases
@@ -108,21 +109,19 @@ class Socket {
      *
      * @throws Exception
      */
-    public function __construct($strHostname, $intPort) {
+    public function __construct($strHostname, $intPort)
+    {
         $this->intPort = $intPort;
         $this->strHostname = $strHostname;
 
-        //initial constants
-        $bitSupportEnabled = true;
-        //if(!defined("AF_INET"))
-
         //Sockets implemented?
-        if(!function_exists("socket_create"))
+        if (!function_exists("socket_create")) {
             throw new Exception("Socket Support not enabled!: ", Exception::$level_ERROR);
-
+        }
     }
 
-    public function __destruct() {
+    public function __destruct()
+    {
         $this->close();
     }
 
@@ -132,16 +131,17 @@ class Socket {
      * @return bool
      * @throws Exception
      */
-    public function connect() {
+    public function connect()
+    {
         //create socket
         $this->objSocket = socket_create($this->getStrDomain(), $this->getStrType(), getprotobyname($this->getStrProtocol()));
-        if($this->objSocket === false)
+        if ($this->objSocket === false) {
             throw new Exception("Socket Exception: connection could not be established", Exception::$level_ERROR);
-        //connect socket to server
-        if(@socket_connect($this->objSocket, $this->strHostname, $this->intPort)) {
-            return true;
         }
-        else {
+        //connect socket to server
+        if (@socket_connect($this->objSocket, $this->strHostname, $this->intPort)) {
+            return true;
+        } else {
             throw new Exception("Socket Exception: ".socket_last_error(), Exception::$level_ERROR);
         }
     }
@@ -150,9 +150,11 @@ class Socket {
      * Closes the current socket
      *
      */
-    public function close() {
-        if($this->objSocket != null)
+    public function close()
+    {
+        if ($this->objSocket != null) {
             socket_close($this->objSocket);
+        }
         $this->objSocket = null;
     }
 
@@ -163,18 +165,20 @@ class Socket {
      * @return bool
      * @throws Exception
      */
-    public function write($strString) {
-        if($this->objSocket == null)
+    public function write($strString)
+    {
+        if ($this->objSocket == null) {
             throw new Exception("Socket Exception: Socket not connected", Exception::$level_ERROR);
+        }
         //write passed string
         $intNrWritten = socket_write($this->objSocket, $strString, strlen($strString));
-        if($intNrWritten === false)
+        if ($intNrWritten === false) {
             throw new Exception("Socket Exception: ".socket_last_error(), Exception::$level_ERROR);
+        }
         //write limiter
         try {
             $this->writeLimiter();
-        }
-        catch (Exception $objException) {
+        } catch (Exception $objException) {
             throw new Exception("Socket Exception: ".socket_last_error(), Exception::$level_ERROR);
         }
         return true;
@@ -187,13 +191,16 @@ class Socket {
      * @return bool
      * @throws Exception
      */
-    public function writeLimiter() {
-        if($this->objSocket == null)
+    public function writeLimiter()
+    {
+        if ($this->objSocket == null) {
             throw new Exception("Socket Exception: Socket not connected", Exception::$level_ERROR);
+        }
         //write limiter
         $intNrWritten = socket_write($this->objSocket, Socket::$strLineLimiter, strlen(Socket::$strLineLimiter));
-        if($intNrWritten === false)
+        if ($intNrWritten === false) {
             throw new Exception("Socket Exception: ".socket_last_error(), Exception::$level_ERROR);
+        }
 
         return true;
     }
@@ -205,55 +212,65 @@ class Socket {
      * @return string
      * @throws Exception
      */
-    public function read() {
-        if($this->objSocket == null)
+    public function read()
+    {
+        if ($this->objSocket == null) {
             throw new Exception("Socket Exception: Socket not connected", Exception::$level_ERROR);
+        }
         $strReturn = "";
         $strRead = socket_read($this->objSocket, Socket::$intReadSize, PHP_BINARY_READ);
-        while(strlen($strRead) > 0 && $strRead !== false ) {
+        while (strlen($strRead) > 0 && $strRead !== false) {
             $strReturn .= $strRead;
-            if(strlen($strRead) < Socket::$intReadSize)
+            if (strlen($strRead) < Socket::$intReadSize) {
                 $strRead = false;
-            else
+            } else {
                 $strRead = @socket_read($this->objSocket, Socket::$intReadSize, PHP_BINARY_READ);
+            }
         }
 
         return $strReturn;
     }
 
 
-
-    public function setStrDomain($strDomain) {
+    public function setStrDomain($strDomain)
+    {
         $this->strDomain = $strDomain;
     }
 
-    public function setStrType($strType) {
+    public function setStrType($strType)
+    {
         $this->strType = $strType;
     }
 
-    public function setStrProtocol($strProtocol) {
+    public function setStrProtocol($strProtocol)
+    {
         $this->strProtocol = $strProtocol;
     }
 
-    public function getStrDomain() {
-        if($this->strDomain == null)
+    public function getStrDomain()
+    {
+        if ($this->strDomain == null) {
             $this->strDomain = Socket::$strDomainIp4;
+        }
 
         return $this->strDomain;
     }
 
-    public function getStrType() {
-        if($this->strType == null)
+    public function getStrType()
+    {
+        if ($this->strType == null) {
             $this->strType = Socket::$strTypeStream;
+        }
 
         return $this->strType;
     }
 
-    public function getStrProtocol() {
-        if($this->strProtocol == null)
+    public function getStrProtocol()
+    {
+        if ($this->strProtocol == null) {
             $this->strProtocol = Socket::$strProtoTcp;
+        }
 
         return $this->strProtocol;
     }
 }
-
