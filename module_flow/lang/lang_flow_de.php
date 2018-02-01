@@ -49,8 +49,9 @@ $lang["flow_step_icon_8"]       = "icon_flag_yellow";
 $lang["transition_visible_0"]   = "Nein";
 $lang["transition_visible_1"]   = "Ja";
 
-$lang["transition_skip_0"]   = "Statuswechsel automatisch vorschlagen";
-$lang["transition_skip_1"]   = "Statuswechsel nicht automatisch vorschlagen";
+$lang["form_flow_skip"]    = "Statuswechsel";
+$lang["transition_skip_0"] = "Automatisch";
+$lang["transition_skip_1"] = "Keinen";
 
 $lang["flow_step_no_delete"] = "Dieser Status kann nicht gelöscht werden";
 
