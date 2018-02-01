@@ -14,14 +14,11 @@ namespace Kajona\System\Admin\Systemtasks;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\Formentries\FormentryCheckbox;
 use Kajona\System\Admin\Formentries\FormentryCheckboxarray;
-use Kajona\System\Admin\Formentries\FormentryTextrow;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Filesystem;
 use Kajona\System\System\Link;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemModule;
-use Sabre\DAV\FS\File;
-
 
 /**
  * Dumps the database to the filesystem using the current db-driver
@@ -112,5 +109,4 @@ class SystemtaskDbdump extends SystemtaskBase implements AdminSystemtaskInterfac
     {
         return "&excludedtables=".(is_array($this->getParam("excludedtables")) ? implode(",", array_keys($this->getParam("excludedtables"))) : "")."&streamfile=".$this->getParam("streamfile");
     }
-
 }
