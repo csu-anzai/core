@@ -344,6 +344,16 @@ abstract class FilterBase
     }
 
     /**
+     * Adds an additional condition to the filter
+     *
+     * @param OrmConditionInterface $objCondition
+     */
+    public function addAdditionalCondition(OrmConditionInterface $objCondition)
+    {
+        $this->arrAdditionalConditions[] = $objCondition;
+    }
+
+    /**
      * Hook method to add order by conditions to the orm objectlist.
      * By default empty, but may be overwritten in case it is required
      * @param OrmObjectlist $objORM
