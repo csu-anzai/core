@@ -9,6 +9,7 @@
 
 namespace Kajona\Dashboard\Event;
 
+use Kajona\Dashboard\System\DashboardWidget;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\GenericeventListenerInterface;
 use Kajona\System\System\OrmComparatorEnum;
@@ -16,6 +17,7 @@ use Kajona\System\System\OrmDeletedhandlingEnum;
 use Kajona\System\System\OrmObjectlist;
 use Kajona\System\System\OrmPropertyCondition;
 use Kajona\System\System\SystemEventidentifier;
+use Kajona\System\System\UserUser;
 
 /**
  * Listener to handle deleted users.
@@ -42,18 +44,18 @@ class DashboardRecorddeletedlistener implements GenericeventListenerInterface
      * @param array $arrArguments
      *
      * @return bool
+     * @throws \Kajona\System\System\Exception
      */
     public function handleEvent($strEventName, array $arrArguments)
     {
         //unwrap arguments
         list($strSystemid, $strSourceClass) = $arrArguments;
 
-        if ($strSourceClass == "Kajona\\System\\System\\UserUser" && validateSystemid($strSystemid)) {
-
+        if ($strSourceClass == UserUser::class && validateSystemid($strSystemid)) {
             $objORM = new OrmObjectlist();
             $objORM->addWhereRestriction(new OrmPropertyCondition("strUser", OrmComparatorEnum::Equal(), $strSystemid));
             $objORM->setObjHandleLogicalDeleted(OrmDeletedhandlingEnum::INCLUDED);
-            $arrWidgets = $objORM->getObjectList("Kajona\\Dashboard\\System\\DashboardWidget");
+            $arrWidgets = $objORM->getObjectList(DashboardWidget::class);
 
             foreach ($arrWidgets as $objWidget) {
                 $objWidget->deleteObjectFromDatabase();

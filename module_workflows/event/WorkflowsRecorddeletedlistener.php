@@ -37,6 +37,7 @@ class WorkflowsRecorddeletedlistener implements GenericeventListenerInterface
      * @param array $arrArguments
      *
      * @return bool
+     * @throws \Kajona\System\System\Exception
      */
     public function handleEvent($strEventName, array $arrArguments)
     {
@@ -56,7 +57,6 @@ class WorkflowsRecorddeletedlistener implements GenericeventListenerInterface
         OrmBase::setObjHandleLogicalDeletedGlobal(OrmDeletedhandlingEnum::INCLUDED);
         $arrWorkflows = WorkflowsWorkflow::getWorkflowsForSystemid($strSystemid, false);
         foreach ($arrWorkflows as $objOneWorkflow) {
-
             if ($strEventName == SystemEventidentifier::EVENT_SYSTEM_RECORDDELETED_LOGICALLY) {
                 $bitReturn = $bitReturn && $objOneWorkflow->deleteObject();
             }

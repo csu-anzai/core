@@ -17,6 +17,7 @@ use Kajona\System\System\OrmDeletedhandlingEnum;
 use Kajona\System\System\SystemEventidentifier;
 use Kajona\System\System\SystemModule;
 use Kajona\Tags\System\TagsFavorite;
+use Kajona\Tags\System\TagsTag;
 
 /**
  * Removes tag-assignments on record-deletions
@@ -25,7 +26,8 @@ use Kajona\Tags\System\TagsFavorite;
  * @author sidler@mulchprod.de
  *
  */
-class TagsRecorddeletedlistener implements GenericeventListenerInterface {
+class TagsRecorddeletedlistener implements GenericeventListenerInterface
+{
 
 
     /**
@@ -35,23 +37,25 @@ class TagsRecorddeletedlistener implements GenericeventListenerInterface {
      * @param array $arrArguments
      *
      * @return bool
+     * @throws \Kajona\System\System\Exception
      */
-    public function handleEvent($strEventName, array $arrArguments) {
+    public function handleEvent($strEventName, array $arrArguments)
+    {
         //unwrap arguments
         list($strSystemid, $strSourceClass) = $arrArguments;
 
         $bitReturn = true;
 
-        if($strSourceClass == "Kajona\\System\\TagsTag" && SystemModule::getModuleByName("tags") != null) {
+        if ($strSourceClass == TagsTag::class && SystemModule::getModuleByName("tags") != null) {
             //delete matching favorites
             OrmBase::setObjHandleLogicalDeletedGlobal(OrmDeletedhandlingEnum::INCLUDED);
             $arrFavorites = TagsFavorite::getAllFavoritesForTag($strSystemid);
-            foreach($arrFavorites as $objOneFavorite) {
-
-                if($strEventName == SystemEventidentifier::EVENT_SYSTEM_RECORDDELETED_LOGICALLY)
+            foreach ($arrFavorites as $objOneFavorite) {
+                if ($strEventName == SystemEventidentifier::EVENT_SYSTEM_RECORDDELETED_LOGICALLY) {
                     $bitReturn = $bitReturn && $objOneFavorite->deleteObject();
+                }
 
-                if($strEventName == SystemEventidentifier::EVENT_SYSTEM_RECORDDELETED) {
+                if ($strEventName == SystemEventidentifier::EVENT_SYSTEM_RECORDDELETED) {
                     $bitReturn = $bitReturn && $objOneFavorite->deleteObjectFromDatabase();
 
                     $bitReturn = $bitReturn && Carrier::getInstance()->getObjDB()->_pQuery("DELETE FROM "._dbprefix_."tags_member WHERE tags_tagid=?", array($strSystemid));
@@ -63,19 +67,20 @@ class TagsRecorddeletedlistener implements GenericeventListenerInterface {
 
 
         //delete memberships. Fire a plain query, faster then searching.
-        if($strEventName == SystemEventidentifier::EVENT_SYSTEM_RECORDDELETED)
+        if ($strEventName == SystemEventidentifier::EVENT_SYSTEM_RECORDDELETED) {
             $bitReturn = $bitReturn && Carrier::getInstance()->getObjDB()->_pQuery("DELETE FROM "._dbprefix_."tags_member WHERE tags_systemid=?", array($strSystemid));
+        }
 
         return $bitReturn;
     }
-
 
 
     /**
      * Internal init to register the event listener, called on file-inclusion, e.g. by the class-loader
      * @return void
      */
-    public static function staticConstruct() {
+    public static function staticConstruct()
+    {
         CoreEventdispatcher::getInstance()->removeAndAddListener(SystemEventidentifier::EVENT_SYSTEM_RECORDDELETED, new TagsRecorddeletedlistener());
         CoreEventdispatcher::getInstance()->removeAndAddListener(SystemEventidentifier::EVENT_SYSTEM_RECORDDELETED_LOGICALLY, new TagsRecorddeletedlistener());
     }
