@@ -7,10 +7,20 @@
 *   $Id$                                        *
 ********************************************************************************************************/
 
+declare(strict_types=1);
+
 namespace Kajona\System\Admin\Systemtasks;
 
+use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\Formentries\FormentryCheckbox;
+use Kajona\System\Admin\Formentries\FormentryCheckboxarray;
+use Kajona\System\Admin\Formentries\FormentryTextrow;
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Filesystem;
+use Kajona\System\System\Link;
+use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemModule;
+use Sabre\DAV\FS\File;
 
 
 /**
@@ -20,10 +30,6 @@ use Kajona\System\System\SystemModule;
  */
 class SystemtaskDbdump extends SystemtaskBase implements AdminSystemtaskInterface
 {
-
-    private $arrTablesToExlucde = array(
-        "stats_data", "stats_ip2country", "cache", "search_ix_document", "search_ix_content"
-    );
 
     /**
      * @inheritdoc
@@ -59,15 +65,23 @@ class SystemtaskDbdump extends SystemtaskBase implements AdminSystemtaskInterfac
             return $this->getLang("commons_error_permissions");
         }
 
-        $arrToExclude = array();
-        if ($this->getParam("excludeTables") == "1") {
-            $arrToExclude = $this->arrTablesToExlucde;
+        if ($this->getParam("filenametodownload") != "" && Carrier::getInstance()->getObjSession()->isSuperAdmin()) {
+            $objFilesytem = new Filesystem();
+            $objFilesytem->streamFile("/project/dbdumps/".$this->getParam("filenametodownload"));
+            die();
         }
 
-        if (Carrier::getInstance()->getObjDB()->dumpDb($arrToExclude)) {
-            return $this->objToolkit->getTextRow($this->getLang("systemtask_dbexport_success"));
-        }
-        else {
+        $arrToExclude = explode(",", $this->getParam("excludedtables"));
+
+        $strDumpName = "";
+        $strRedirect = "";
+        if (Carrier::getInstance()->getObjDB()->dumpDb($arrToExclude, false, $strDumpName)) {
+            if ($this->getParam("streamfile") != "") {
+                $strRedirect = Link::clientRedirectHref("system", "systemTasks", ["task" => $this->getStrInternalTaskName(), "execute" => "true", "executedirectly" => "true", "filenametodownload" => $strDumpName]);
+            }
+
+            return $this->objToolkit->getTextRow($this->getLang("systemtask_dbexport_success").$strRedirect);
+        } else {
             return $this->objToolkit->getTextRow($this->getLang("systemtask_dbexport_error"));
         }
     }
@@ -77,10 +91,18 @@ class SystemtaskDbdump extends SystemtaskBase implements AdminSystemtaskInterfac
      */
     public function getAdminForm()
     {
-        $strReturn = "";
-        $strReturn .= $this->objToolkit->formTextRow($this->getLang("systemtask_dbexport_exclude_intro"));
-        $strReturn .= $this->objToolkit->formInputDropdown("dbExcludeTables", array(0 => $this->getLang("commons_no"), 1 => $this->getLang("commons_yes")), $this->getLang("systemtask_dbexport_excludetitle"));
-        return $strReturn;
+        $objForm = new AdminFormgenerator("", null);
+        $arrTables = [];
+        foreach (Carrier::getInstance()->getObjDB()->getTables() as $strTable) {
+            if (StringUtil::indexOf($strTable, "messages") !== false || StringUtil::indexOf($strTable, "search_ix") !== false || StringUtil::indexOf($strTable, "cache") !== false || StringUtil::indexOf($strTable, "changelog") !== false) {
+                $arrTables[$strTable] = $strTable;
+            }
+        }
+        $objForm->addField(new FormentryCheckboxarray("", "excludedtables"))->setStrLabel($this->getLang("systemtask_dbexport_excludetitle"))->setArrKeyValues($arrTables);
+        if (Carrier::getInstance()->getObjSession()->isSuperAdmin()) {
+            $objForm->addField(new FormentryCheckbox("", "streamfile"))->setStrLabel($this->getLang("systemtask_dbexport_stream"));
+        }
+        return $objForm;
     }
 
     /**
@@ -88,7 +110,7 @@ class SystemtaskDbdump extends SystemtaskBase implements AdminSystemtaskInterfac
      */
     public function getSubmitParams()
     {
-        return "&excludeTables=".$this->getParam("dbExcludeTables");
+        return "&excludedtables=".(is_array($this->getParam("excludedtables")) ? implode(",", array_keys($this->getParam("excludedtables"))) : "")."&streamfile=".$this->getParam("streamfile");
     }
 
 }

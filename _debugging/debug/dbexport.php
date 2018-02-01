@@ -21,7 +21,7 @@ if (issetPost("doexport")) {
     $arrExcludedTables = array_diff($objDb->getTables(), array_keys(getPost("table")));
 
     echo "Excluded: ".implode(", ", $arrExcludedTables).PHP_EOL;
-    echo "Export driver: ".Config::getInstance()->setConfig("dbexport", "internal").PHP_EOL;
+    echo "Export driver: ".Config::getInstance()->getConfig("dbexport").PHP_EOL;
 
     if ($objDb->dumpDb($arrExcludedTables, true)) {
         echo "\n<span style='color: green;font-weight:bold;'>export successful.</span>\n";
