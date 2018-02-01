@@ -111,6 +111,10 @@ class InstallerFlow extends InstallerBase
         $strReturn.= "Add transition skip column...\n";
         $this->objDB->addColumn("flow_step_transition", "transition_skip", DbDatatypes::STR_TYPE_INT);
 
+        // set all transitions skip to 0
+        $dbPrefix = _dbprefix_;
+        $this->objDB->_pQuery("UPDATE {$dbPrefix}flow_step_transition SET transition_skip = 0", []);
+
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
         return $strReturn;
     }
