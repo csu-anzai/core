@@ -27,6 +27,7 @@ class SystemChangelogRestorer extends SystemChangelog
      * @param Date $objTimestamp
      * @param $strProperty
      * @param bool $bitSoftRestore if set to true, values not found in the changelog keep their direct values, so they are not reset to null
+     * @throws Exception
      */
     public function restoreProperty(VersionableInterface $objObject, Date $objTimestamp, $strProperty, $bitSoftRestore = false)
     {
@@ -64,6 +65,10 @@ class SystemChangelogRestorer extends SystemChangelog
 
         $strSetter = $objReflection->getSetter($strProperty);
         if ($strSetter !== null) {
+            if ($objReflection->hasPropertyAnnotation($strProperty, OrmBase::STR_ANNOTATION_BLOCKESCAPING)) {
+                $strValue = html_entity_decode($strValue);
+            }
+
             $objObject->{$strSetter}($strValue);
         }
 
@@ -76,10 +81,10 @@ class SystemChangelogRestorer extends SystemChangelog
      * @param VersionableInterface $objObject
      * @param Date $objTimestamp
      * @param bool $bitSoftRestore if set to true, values not found in the changelog keep their direct values, so they are not reset to null
+     * @throws Exception
      */
     public function restoreObject(VersionableInterface $objObject, Date $objTimestamp, $bitSoftRestore = false)
     {
-
         $objReflection = new Reflection($objObject);
         $arrProperties = $objReflection->getPropertiesWithAnnotation(self::ANNOTATION_PROPERTY_VERSIONABLE);
 
