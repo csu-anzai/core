@@ -117,7 +117,7 @@ class FlowManager
         $arrTransitions = $this->getPossibleTransitionsForModel($objObject);
 
         // filter out transition which skip the auto trigger
-        $arrTransitions = array_filter($arrTransitions, function(FlowTransition $objTransition){
+        $arrTransitions = array_filter($arrTransitions, function (FlowTransition $objTransition) {
             return !$objTransition->shouldSkip();
         });
 
