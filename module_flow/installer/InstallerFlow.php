@@ -107,7 +107,7 @@ class InstallerFlow extends InstallerBase
     {
         $strReturn = "Updating to 7.0...\n";
 
-        // make all existing transitions visible
+        // add transition skip column
         $strReturn.= "Add transition skip column...\n";
         $this->objDB->addColumn("flow_step_transition", "transition_skip", DbDatatypes::STR_TYPE_INT);
 
