@@ -215,7 +215,7 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
 
         //close session to avoid blocking
         $this->objSession->sessionClose();
-        $arrLatestVersion = $objManager->scanForUpdates();
+        $arrLatestVersion = [];// $objManager->scanForUpdates();
 
         $arrReturn = array();
         foreach ($arrPackagesToCheck as $strOnePackage) {
