@@ -77,9 +77,14 @@ class InstallerFlow extends InstallerBase
         }
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.5") {
+        if ($arrModule["module_version"] == "6.5") {
             $strReturn .= "Updating to 6.6...\n";
             $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6");
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if ($arrModule["module_version"] == "6.6") {
+            $strReturn .= $this->update_66_70();
         }
 
         return $strReturn;
@@ -95,6 +100,18 @@ class InstallerFlow extends InstallerBase
         $this->objDB->_pQuery("UPDATE {$dbPrefix}flow_step_transition SET transition_visible = 1", []);
 
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5");
+        return $strReturn;
+    }
+
+    private function update_66_70()
+    {
+        $strReturn = "Updating to 7.0...\n";
+
+        // make all existing transitions visible
+        $strReturn.= "Add transition skip column...\n";
+        $this->objDB->addColumn("flow_step_transition", "transition_skip", DbDatatypes::STR_TYPE_INT);
+
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
         return $strReturn;
     }
 }
