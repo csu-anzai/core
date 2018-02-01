@@ -43,6 +43,16 @@ class FlowTransition extends Model implements ModelInterface, AdminListableInter
     protected $intVisible = 1;
 
     /**
+     * @var int
+     * @tableColumn flow_step_transition.transition_skip
+     * @tableColumnDatatype int
+     * @fieldType Kajona\System\Admin\Formentries\FormentryDropdown
+     * @fieldDDValues [0 => transition_skip_0],[1 => transition_skip_1]
+     * @fieldMandatory
+     */
+    protected $intSkip = 0;
+
+    /**
      * This field contains parameters from the user input action
      *
      * @var array
@@ -87,6 +97,30 @@ class FlowTransition extends Model implements ModelInterface, AdminListableInter
     public function isVisible()
     {
         return !!$this->intVisible;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIntSkip()
+    {
+        return $this->intSkip;
+    }
+
+    /**
+     * @param int $intSkip
+     */
+    public function setIntSkip($intSkip)
+    {
+        $this->intSkip = $intSkip;
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldSkip()
+    {
+        return !!$this->intSkip;
     }
 
     /**
