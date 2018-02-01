@@ -81,11 +81,11 @@ abstract class AdminController extends AbstractController
     protected $objClassLoader;
 
 
-
     /**
      * Constructor
      *
      * @param string $strSystemid
+     * @throws Exception
      */
     public function __construct($strSystemid = "")
     {
@@ -117,7 +117,6 @@ abstract class AdminController extends AbstractController
     public function getModuleData($strName, $bitCache = true)
     {
         return SystemModule::getPlainModuleData($strName, $bitCache);
-
     }
 
     /**
@@ -133,8 +132,7 @@ abstract class AdminController extends AbstractController
         $objModule = SystemModule::getModuleByName($strModule);
         if ($objModule != null) {
             return $objModule->getSystemid();
-        }
-        else {
+        } else {
             return "";
         }
     }
@@ -151,8 +149,7 @@ abstract class AdminController extends AbstractController
         $strDesc = $this->getLang("module_description");
         if ($strDesc != "!module_description!") {
             return $strDesc;
-        }
-        else {
+        } else {
             return "";
         }
     }
@@ -178,80 +175,6 @@ abstract class AdminController extends AbstractController
     // --- OutputMethods ------------------------------------------------------------------------------------
 
     /**
-     * Basic controller method invoking all further methods in order to generate an admin view.
-     * Takes care of generating the navigation, title, common JS variables, loading quickhelp texts,...
-     *
-     * @throws Exception
-     * @return string
-     * @final
-     * @todo could be moved to a general admin-skin helper
-     *
-     * @deprecated
-     */
-    final public function getModuleOutput()
-    {
-        die("getModuleOutput is no longer supported");
-        //skip rendering everything if we just want to redirect...
-        if ($this->strOutput == "" && ResponseObject::getInstance()->getStrRedirectUrl() != "") {
-            return "";
-        }
-
-        if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::XML())) {
-            //fetch addtional content
-            $strReturn = $this->strOutput;
-            if ($this->getParam("contentFill") == "1") {
-                //TODO: wohin damit -> callback hook vom dispatcher aus
-                $strReturn .= $this->objToolkit->getPathNavigation($this->getArrOutputNaviEntries());
-            }
-            return $strReturn;
-        }
-
-        //set a js-reloading logic to render the body
-//        $arrParams = Carrier::getAllParams();
-//        unset($arrParams["modul"]);
-//        unset($arrParams["action"]);
-//        unset($arrParams["admin"]);
-//        $strReturn = "<script type='text/javascript'>document.location='".Link::getLinkAdminHref($this->getArrModule("modul"), $this->getAction(), $arrParams, false, true)."';</script>";
-
-
-        //TODO: wohin damit -> callback hook vom dispatcher aus
-        $this->validateAndUpdateCurrentAspect();
-
-        //Calling the content-setter, including a default dialog
-        $this->arrOutput["content"] = $this->strOutput;
-        if ($this->getArrModule("template") != "/folderview.tpl") {
-            //move to separate getters
-//            $this->arrOutput["path_home"] = AdminHelper::getAdminPathNaviHome();
-//            $this->arrOutput["moduleSitemap"] = $this->objToolkit->getAdminSitemap($this->getArrModule("modul"));
-//            $this->arrOutput["moduletitle"] = $this->getOutputModuleTitle();
-//            $this->arrOutput["actionTitle"] = $this->getOutputActionTitle();
-            if (SystemAspect::getActiveObjectCount() > 1) {
-//                $this->arrOutput["aspectChooser"] = $this->objToolkit->getAspectChooser($this->getArrModule("modul"), $this->getAction(), $this->getSystemid());
-            }
-//            $this->arrOutput["login"] = $this->getOutputLogin();
-//            $this->arrOutput["quickhelp"] = $this->getQuickHelp();
-        }
-        $objAdminHelper = new AdminHelper();
-//        $this->arrOutput["languageswitch"] = (SystemModule::getModuleByName("languages") != null ? SystemModule::getModuleByName("languages")->getAdminInstanceOfConcreteModule()->getLanguageSwitch() : "");
-        $this->arrOutput["module_id"] = $this->getArrModule("moduleId");
-        $this->arrOutput["webpathTitle"] = urldecode(str_replace(array("http://", "https://"), array("", ""), _webpath_));
-        $this->arrOutput["head"] = "<script type=\"text/javascript\">KAJONA_DEBUG = ".$this->objConfig->getDebug("debuglevel")."; KAJONA_WEBPATH = '"._webpath_."'; KAJONA_BROWSER_CACHEBUSTER = ".SystemSetting::getConfigValue("_system_browser_cachebuster_")."; KAJONA_LANGUAGE = '".Carrier::getInstance()->getObjSession()->getAdminLanguage()."';KAJONA_PHARMAP = ".json_encode(array_values(Classloader::getInstance()->getArrPharModules()))."; var require = {$objAdminHelper->generateRequireJsConfig()};</script>";
-
-        //see if there are any hooks to be called
-        $this->onRenderOutput($this->arrOutput);
-
-        //Loading the desired Template
-        //if requested the pe, load different template
-        $strTemplate = AdminskinHelper::getPathForSkin().$this->getArrModule("template");
-        if ($this->getParam("peClose") == 1 || $this->getParam("pe") == 1) {
-//            $strTemplate = "/folderview.tpl";
-        }
-       // return $this->objTemplate->fillTemplateFile($this->arrOutput, $strTemplate);
-    }
-
-
-
-    /**
      * Hook-method to modify some parts of the rendered content right before rendered into the template.
      * May also be used to add additional elements to the array rendered into
      * the admin-template.
@@ -263,7 +186,6 @@ abstract class AdminController extends AbstractController
      */
     protected function onRenderOutput(&$arrContent)
     {
-
     }
 
     /**
@@ -318,10 +240,11 @@ abstract class AdminController extends AbstractController
      */
     public function getArrOutputNaviEntries()
     {
-        $arrReturn = array(
-            Link::getLinkAdmin("dashboard", "", "", $this->getLang("modul_titel", "dashboard")),
-            Link::getLinkAdmin($this->getArrModule("modul"), "", "", $this->getOutputModuleTitle())
-        );
+        $arrReturn = [Link::getLinkAdmin("dashboard", "", "", $this->getLang("modul_titel", "dashboard"))];
+
+        if ($this->getObjModule()->rightView()) {
+            $arrReturn[] = Link::getLinkAdmin($this->getArrModule("modul"), "", "", $this->getOutputModuleTitle());
+        }
 
         //see, if the current action may be mapped
         $strActionName = $this->getObjLang()->stringToPlaceholder("action_".$this->getAction());
@@ -372,8 +295,7 @@ abstract class AdminController extends AbstractController
     {
         if ($this->getLang("modul_titel") != "!modul_titel!") {
             return $this->getLang("modul_titel");
-        }
-        else {
+        } else {
             return $this->getArrModule("modul");
         }
     }

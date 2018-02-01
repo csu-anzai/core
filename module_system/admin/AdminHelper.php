@@ -29,36 +29,20 @@ use Kajona\System\System\SystemModule;
 class AdminHelper
 {
 
-    /**
-     * Adds a menu-button to the second entry of the path-array. The menu renders the list of all modules installed,
-     * including a quick-jump link.
-     *
-     *
-     * @param array $arrPathEntries
-     * @param string $strSourceModule
-     *
-     * @static
-     * @internal param array $arrModuleActions
-     * @return string
-     */
-    public static function getAdminPathNavi($arrPathEntries, $strSourceModule = "")
-    {
-        return Carrier::getInstance()->getObjToolkit("admin")->getPathNavigation($arrPathEntries);
-    }
 
     /**
      * Fetches the list of actions for a single module, saved to the session for performance reasons
      *
      * @param SystemModule $objModule
      *
+     * @return array
+     * @throws \Kajona\System\System\Exception
      * @static
      *
-     * @return array
      */
     public static function getModuleActionNaviHelper(SystemModule $objModule)
     {
         if (Carrier::getInstance()->getObjSession()->isLoggedin()) {
-
             $strKey = __CLASS__."adminNaviEntries".$objModule->getSystemid().SystemAspect::getCurrentAspectId();
 
             $arrFinalItems = Carrier::getInstance()->getObjSession()->getSession($strKey);
@@ -67,10 +51,10 @@ class AdminHelper
             }
 
             $objAdminInstance = $objModule->getAdminInstanceOfConcreteModule();
-            if($objAdminInstance == null) {
+            if ($objAdminInstance == null) {
                 return array();
             }
-            
+
             $arrItems = $objAdminInstance->getOutputModuleNavi();
             $arrItems = array_merge($arrItems, $objAdminInstance->getModuleRightNaviEntry());
             $arrFinalItems = array();
@@ -79,13 +63,11 @@ class AdminHelper
             foreach ($arrItems as $arrOneItem) {
                 if ($arrOneItem[0] == "") {
                     $bitAdd = true;
-                }
-                else {
+                } else {
                     $bitAdd = Carrier::getInstance()->getObjRights()->validatePermissionString($arrOneItem[0], $objModule);
                 }
 
                 if ($bitAdd || $arrOneItem[1] == "") {
-
                     if ($arrOneItem[1] != "" || (!isset($arrFinalItems[$intI - 1]) || $arrFinalItems[$intI - 1] != "")) {
                         $arrFinalItems[] = $arrOneItem[1];
                         $intI++;
@@ -121,7 +103,6 @@ class AdminHelper
                 Carrier::getInstance()->getObjSession()->sessionUnset(__CLASS__."adminNaviEntries".$objOneModule->getSystemid().$objOneAspect->getSystemid());
             }
         }
-
     }
 
     /**
@@ -149,7 +130,7 @@ class AdminHelper
 
                     if (isset($arrProvidesJs["paths"]) && is_array($arrProvidesJs["paths"])) {
                         foreach ($arrProvidesJs["paths"] as $strUniqueName => $strPath) {
-                            $arrRequireConf["paths"][$strUniqueName] = $strBasePath . $strPath;
+                            $arrRequireConf["paths"][$strUniqueName] = $strBasePath.$strPath;
                         }
                     }
 
@@ -166,5 +147,4 @@ class AdminHelper
 
         return json_encode($arrRequireConf);
     }
-
 }
