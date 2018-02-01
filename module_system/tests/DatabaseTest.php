@@ -521,25 +521,6 @@ SQL;
         $this->assertEquals($longExpected, $arrRow["result_2"]);
     }
 
-    /**
-     * This if database can handle views created with WITH
-     */
-    public function testWithKeyWord()
-    {
-        $strDbPrefix = _dbprefix_;
-
-        $strSQL = "WITH 
-        test_with_1 AS ( 
-            SELECT * FROM {$strDbPrefix}system AS system
-        )
-        
-        SELECT * from test_with_1
-        ";
-
-        $objDB = Database::getInstance();
-        $this->assertTrue($objDB->_pQuery($strSQL, []));
-    }
-
     public function intComparisonDataProvider()
     {
         return [
