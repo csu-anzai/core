@@ -32,7 +32,7 @@ class UserNameTest extends Testbase
     public function testValidateError($strPassword)
     {
         $objUser = new UserUser();
-        $objUser->setStrUsername("foo");
+        $objUser->setStrUsername("fooo");
 
         $this->assertFalse($this->newPolicy()->validate($strPassword, $objUser));
     }
@@ -40,9 +40,9 @@ class UserNameTest extends Testbase
     public function errorProvider()
     {
         return [
-            ["foobar"],
-            ["foo"],
-            ["dafo"],
+            ["fooobar"],
+            ["fooo"],
+            ["bafooo"],
         ];
     }
 
