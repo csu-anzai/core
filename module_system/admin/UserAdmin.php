@@ -1441,7 +1441,8 @@ HTML;
                 false,
                 "userGroupList",
                 false,
-                Link::sanitizeUrlParams(["form_element" => $this->getParam("form_element"), "filter" => $this->getParam("filter"), "allowGroup" => $this->getParam("allowGroup"), "checkid" => $this->getParam("checkid"), "selectedGroup" => $this->getParam("selectedGroup")])
+                Link::sanitizeUrlParams(["form_element" => $this->getParam("form_element"), "filter" => $this->getParam("filter"), "allowGroup" => $this->getParam("allowGroup"), "checkid" => $this->getParam("checkid"), "selectedGroup" => $this->getParam("selectedGroup")]),
+                function() {return true; }
             );
         } else {
             //show members of group
@@ -1463,7 +1464,8 @@ HTML;
                 false,
                 "userGroupUserList",
                 false,
-                Link::sanitizeUrlParams(["form_element" => $this->getParam("form_element"), "filter" => $this->getParam("filter"), "allowGroup" => $this->getParam("allowGroup"), "checkid" => $this->getParam("checkid"), "selectedGroup" => $this->getParam("selectedGroup")])
+                Link::sanitizeUrlParams(["form_element" => $this->getParam("form_element"), "filter" => $this->getParam("filter"), "allowGroup" => $this->getParam("allowGroup"), "checkid" => $this->getParam("checkid"), "selectedGroup" => $this->getParam("selectedGroup")]),
+                function() {return true; }
             );
         }
 
@@ -1610,7 +1612,7 @@ HTML;
     /**
      * Returns a list of users and/or groups matching the passed query.
      *
-     * @permissions view
+     * @permissions loggedin
      * @return string
      * @responseType json
      */

@@ -38,8 +38,8 @@ class UserName extends PolicyAbstract
 
         $intLength = StringUtil::length($strPassword);
         for ($intI = 0; $intI < $intLength; $intI++) {
-            $strPair = StringUtil::substring($strPassword, $intI, 2);
-            if (StringUtil::length($strPair) == 2 && StringUtil::indexOf($objUser->getStrUsername(), $strPair, false) !== false) {
+            $strPair = StringUtil::substring($strPassword, $intI, 4);
+            if (StringUtil::length($strPair) == 4 && StringUtil::indexOf($objUser->getStrUsername(), $strPair, false) !== false) {
                 return false;
             }
         }

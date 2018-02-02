@@ -1489,7 +1489,7 @@ JS;
     /**
      * Returns all properties for the given module
      *
-     * @permissions view
+     * @permissions loggedin
      * @return string
      * @responseType json
      */
