@@ -200,6 +200,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["session_loginprovider"] = array("char20", true);
         $arrFields["session_lasturl"] = array("text", true);
         $arrFields["session_userid"] = array("char20", true);
+        $arrFields["session_resetuser"] = array("int", true);
 
         if(!$this->objDB->createTable("session", $arrFields, array("session_id"), array("session_phpid", "session_releasetime")))
             $strReturn .= "An error occurred! ...\n";
@@ -563,6 +564,11 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             $strReturn .= $this->update_66_661();
         }
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.6.1") {
+            $strReturn .= $this->update_661_70();
+        }
+
         return $strReturn."\n\n";
     }
 
@@ -787,6 +793,20 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6.1");
+        return $strReturn;
+    }
+
+
+    private function update_661_70()
+    {
+        $strReturn = "Updating 6.6.1 to 7.0...\n";
+
+        // password history
+        $strReturn .= "Updating session table...\n";
+        $this->objDB->addColumn("session", "session_resetuser", DbDatatypes::STR_TYPE_INT);
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
         return $strReturn;
     }
 
