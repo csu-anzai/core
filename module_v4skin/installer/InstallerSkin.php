@@ -40,8 +40,8 @@ class InstallerSkin extends InstallerBase implements InstallerInterface
 	    $strReturn = "";
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.2") {
-            $strReturn .= "Updating 6.2 to 6.5...\n";
+        if($arrModule["module_version"] == "7.0") {
+            $strReturn .= "Updating 7.0 to 7.1...\n";
             $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5");
         }
 

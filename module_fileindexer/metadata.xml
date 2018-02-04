@@ -5,12 +5,12 @@
         >
     <title>fileindexer</title>
     <description>Tool to index file content.</description>
-    <version>6.6</version>
+    <version>7.0</version>
     <author>Kajona Team</author>
     <type>MODULE</type>
     <providesInstaller>FALSE</providesInstaller>
     <requiredModules>
-        <module name="mediamanager" version="6.6" />
-        <module name="search" version="6.6" />
+        <module name="mediamanager" version="7.0" />
+        <module name="search" version="7.0" />
     </requiredModules>
 </package>

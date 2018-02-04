@@ -163,6 +163,12 @@ class InstallerWorkflows extends InstallerBase implements InstallerRemovableInte
             $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6");
         }
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.6") {
+            $strReturn .= "Updating to 7.0...\n";
+            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
+        }
+
         return $strReturn."\n\n";
 	}
 
