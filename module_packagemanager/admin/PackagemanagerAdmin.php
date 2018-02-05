@@ -461,7 +461,7 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
             if (StringUtil::indexOf($strFile, "/project") !== false) {
                 $objHandler = $objManager->getPackageManagerForPath($strFile);
                 $objHandler->move2Filesystem();
-                $strUrlToLoad = Link::getLinkAdminHref("packagemanager", "installPackage", "&package=".$objHandler->getStrTargetPath());
+                $strUrlToLoad = Link::getLinkAdminHref("packagemanager", "installPackage", "&package=".$objHandler->getStrTargetPath(), false, false);
                 $strUrlToLoad = StringUtil::replace("&amp;", "&", $strUrlToLoad);
 
                 //reload the current request in order to flush the class-loader
@@ -593,8 +593,7 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
             return $this->getLang("provider_error_package", "packagemanager");
         }
 
-        $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "processPackage", "&package=".$strFile));
-        return "";
+        return Link::clientRedirectHref($this->getArrModule("modul"), "processPackage", ["package" => $strFile]);
     }
 
     /**
