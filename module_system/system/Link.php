@@ -396,9 +396,9 @@ class Link
      * @param array $strParams
      * @return string
      */
-    public static function clientRedirectHref($strModule, $strAction = "", array $strParams = [])
+    public static function clientRedirectHref($strModule, $strAction = "", array $strParams = [], $bitEncodedAmpersand = true, $bitHashUrl = true)
     {
-        return self::clientRedirectManual(self::getLinkAdminHref($strModule, $strAction, $strParams));
+        return self::clientRedirectManual(self::getLinkAdminHref($strModule, $strAction, $strParams, $bitEncodedAmpersand, $bitHashUrl));
     }
 
     /**
