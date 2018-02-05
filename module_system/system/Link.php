@@ -310,17 +310,17 @@ class Link
 
             if (!$bitTooltip) {
                 $strLink = "<a href=\"#\" onclick=\"window.open('".Link::getLinkAdminHref($strModule, $strAction, $strParams)."','".$strTitle."','scrollbars=yes,resizable=yes,width=".$intWidth.",height=".$intHeight."'); return false;\" ".
-                    "title=\"".$strAlt."\">".AdminskinHelper::getAdminImage($strImage, $strAlt, true)."</a>";
+                    "title=\"".strip_tags($strAlt)."\">".AdminskinHelper::getAdminImage($strImage, $strAlt, true)."</a>";
             } else {
                 $strLink = "<a href=\"#\" onclick=\"window.open('".Link::getLinkAdminHref($strModule, $strAction, $strParams)."','".$strTitle."','scrollbars=yes,resizable=yes,width=".$intWidth.",height=".$intHeight."'); return false;\" ".
-                    "title=\"".$strAlt."\" rel=\"tooltip\">".AdminskinHelper::getAdminImage($strImage, $strAlt, true)."</a>";
+                    "title=\"".strip_tags($strAlt)."\" rel=\"tooltip\">".AdminskinHelper::getAdminImage($strImage, $strAlt, true)."</a>";
             }
         }
 
         if ($strImage == "" && $strText != "") {
             $bitTooltip = $bitTooltip && $strAlt != "";
 
-            $strLink = "<a href=\"#\" ".($bitPortalEditor ? "class=\"pe_link\"" : "")." ".($bitTooltip ? "title=\"".$strAlt."\" rel=\"tooltip\" " : "")." ".
+            $strLink = "<a href=\"#\" ".($bitPortalEditor ? "class=\"pe_link\"" : "")." ".($bitTooltip ? "title=\"".strip_tags($strAlt)."\" rel=\"tooltip\" " : "")." ".
                 "onclick=\"window.open('".Link::getLinkAdminHref($strModule, $strAction, $strParams)."','".$strTitle."','scrollbars=yes,resizable=yes,width=".$intWidth.",height=".$intHeight."'); return false;\">".$strText."</a>";
         }
         return $strLink;
@@ -375,9 +375,9 @@ class Link
             }
 
             if (!$bitTooltip) {
-                $strLink = "<a href=\"#\" onclick=\"".$strOnClick."\" title=\"".$strAlt."\">".AdminskinHelper::getAdminImage($strImage, $strAlt, true)."</a>";
+                $strLink = "<a href=\"#\" onclick=\"".$strOnClick."\" title=\"".strip_tags($strAlt)."\">".AdminskinHelper::getAdminImage($strImage, $strAlt, true)."</a>";
             } else {
-                $strLink = "<a href=\"#\" onclick=\"".$strOnClick."\" title=\"".$strAlt."\" rel=\"tooltip\">".AdminskinHelper::getAdminImage($strImage, $strAlt, true)."</a>";
+                $strLink = "<a href=\"#\" onclick=\"".$strOnClick."\" title=\"".strip_tags($strAlt)."\" rel=\"tooltip\">".AdminskinHelper::getAdminImage($strImage, $strAlt, true)."</a>";
             }
         }
 
@@ -385,7 +385,7 @@ class Link
             if ($strAlt == "") {
                 $strAlt = $strText;
             }
-            $strLink = "<a href=\"#\" ".($bitPortalEditor ? "class=\"pe_link\"" : "")." ".($bitTooltip ? "title=\"".$strAlt."\" rel=\"tooltip\" " : "")." onclick=\"".$strOnClick."\">".$strText."</a>";
+            $strLink = "<a href=\"#\" ".($bitPortalEditor ? "class=\"pe_link\"" : "")." ".($bitTooltip ? "title=\"".strip_tags($strAlt)."\" rel=\"tooltip\" " : "")." onclick=\"".$strOnClick."\">".$strText."</a>";
         }
         return $strLink;
     }
