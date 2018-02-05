@@ -74,7 +74,7 @@ class SystemtaskDbdump extends SystemtaskBase implements AdminSystemtaskInterfac
         $strRedirect = "";
         if (Carrier::getInstance()->getObjDB()->dumpDb($arrToExclude, false, $strDumpName)) {
             if ($this->getParam("streamfile") != "") {
-                $strRedirect = Link::clientRedirectHref("system", "systemTasks", ["task" => $this->getStrInternalTaskName(), "execute" => "true", "executedirectly" => "true", "filenametodownload" => $strDumpName]);
+                $strRedirect = Link::clientRedirectHref("system", "systemTasks", ["task" => $this->getStrInternalTaskName(), "execute" => "true", "executedirectly" => "true", "filenametodownload" => $strDumpName, "contentFill" => "1"], false, false);
             }
 
             return $this->objToolkit->getTextRow($this->getLang("systemtask_dbexport_success").$strRedirect);
