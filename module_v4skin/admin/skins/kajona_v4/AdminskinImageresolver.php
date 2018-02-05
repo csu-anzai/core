@@ -89,6 +89,7 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
     public static $arrFAImages = [
 
         "icon_accept"                 => "<i class='kj-icon fa fa-check'></i>",
+        "icon_acceptGreen"            => "<i class='kj-icon fa fa-check' style='color: green'></i>",
         "icon_acceptDisabled"         => "<span class='kj-icon fa-stack'><i class='fa fa-check'></i><i class='fa fa-ban fa-stack-1x kj-stack' style='color: red'></i></span>",
         "icon_arrowDown"              => "<i class='kj-icon fa fa-arrow-circle-down'></i>",
         "icon_arrowUp"                => "<i class='kj-icon fa fa-arrow-circle-up'></i>",
