@@ -1573,19 +1573,7 @@ class ToolkitAdmin extends Toolkit
         $objHistory = new History();
         $strParam = "";
         if (StringUtil::indexOf($strConfirmationLinkHref, "javascript:") === false) {
-            $strReloadUrl = $objHistory->getAdminHistory();
-
-            // remove unlockid from confirmation button otherwise we redirect the user to the wrong location after
-            // delete
-            if (strpos($strReloadUrl, "unlockid") !== false) {
-                $strReloadUrl = parse_str($strReloadUrl, $arrParams);
-                if (isset($arrParams["unlockid"])) {
-                    unset($arrParams["unlockid"]);
-                }
-                $strReloadUrl = http_build_query($arrParams, "", "&");
-            }
-
-            $strParam = "reloadUrl=".urlencode($strReloadUrl);
+            $strParam = "reloadUrl=".urlencode($objHistory->getAdminHistory());
             if (StringUtil::substring($strConfirmationLinkHref, -4) == ".php" || StringUtil::substring($strConfirmationLinkHref, -5) == ".html") {
                 $strParam = "?".$strParam;
             } else {
