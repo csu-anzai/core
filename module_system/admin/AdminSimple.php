@@ -138,8 +138,15 @@ abstract class AdminSimple extends AdminController
 
             $strTargetUrl = urldecode($this->getParam("reloadUrl"));
 
-            if ($strTargetUrl == "" || StringUtil::indexOf($strTargetUrl, $this->getSystemid()) !== false) {
-                 $strTargetUrl = "module=".$this->getArrModule("modul");
+            parse_str($strTargetUrl, $arrParams);
+            $bitFound = false;
+            if (isset($arrParams["systemid"])) {
+                $bitFound = $arrParams["systemid"] == $this->getSystemid();
+            }
+
+            if ($strTargetUrl == "" || $bitFound) {
+
+                $strTargetUrl = "admin=1&module=".$this->getArrModule("modul");
 
                 $intI = 1;
                 while ($this->getHistory($intI) !== null) {
