@@ -124,6 +124,11 @@
                                                                            // 3: Errors, warnings and information are logged
 
 
+    $config["changelog_provider"] = [
+        "Kajona\System\System\ChangelogProviderSettings",
+        "AGP\Prozessverwaltung\System\ChangelogProviderProzessverwaltung",
+    ];
+
 //--services --------------------------------------------------------------------------------------------
 
     //Example how to override a specific service implementation in the project config. This can be used to change the
