@@ -53,6 +53,7 @@ class SystemChangelog
 
     private static $arrOldInstances = array();
 
+    private static $arrTables;
 
     /**
      * Checks if an objects properties changed.
@@ -1003,24 +1004,19 @@ class SystemChangelog
      */
     public static function getAdditionalProviders()
     {
-
         if (self::$arrCachedProviders != null) {
             return self::$arrCachedProviders;
         }
 
-        $arrReturn = Resourceloader::getInstance()->getFolderContent(
-            "/system",
-            array(".php"),
-            false,
-            null,
-            function (&$strOneFile, $strPath) {
-                $strOneFile = Classloader::getInstance()->getInstanceFromFilename($strPath, "", ChangelogProviderInterface::class);
-            }
-        );
+        $arrProvider = Config::getInstance()->getConfig("changelog_provider");
 
-        $arrReturn = array_filter($arrReturn, function ($objEl) {
-            return $objEl != null;
-        });
+        $arrReturn = [];
+        foreach ($arrProvider as $strProviderClass) {
+            if (class_exists($strProviderClass)) {
+                $arrReturn[$strProviderClass] = new $strProviderClass();
+            }
+        }
+
         self::$arrCachedProviders = $arrReturn;
         return $arrReturn;
     }
@@ -1051,10 +1047,12 @@ class SystemChangelog
      */
     public static function getTableForClass($strClass)
     {
-        $arrTables = self::getAdditionalTables();
+        if (!self::$arrTables) {
+            self::$arrTables = self::getAdditionalTables();
+        }
 
-        if ($strClass != null && $strClass != "" && isset($arrTables[$strClass])) {
-            return $arrTables[$strClass];
+        if ($strClass != null && $strClass != "" && isset(self::$arrTables[$strClass])) {
+            return self::$arrTables[$strClass];
         } else {
             return "changelog";
         }
