@@ -335,6 +335,8 @@ class AdminFormgenerator implements \Countable
             $this->addField($objField);
         }
 
+        $this->addField(new FormentryHidden("", "formsent_".($this->objSourceobject instanceof Root ? $this->objSourceobject->getSystemid() : "")))->setStrValue("1");
+
         /*add reload URL param*/
         if ($this->strOnSaveRedirectUrl != "") {
             $objField = new FormentryHidden($this->strFormname, self::STR_FORM_ON_SAVE_RELOAD_PARAM);
@@ -391,6 +393,15 @@ class AdminFormgenerator implements \Countable
         }
 
         return $strReturn;
+    }
+
+    /**
+     * Returns true if the current form was sent with the current request
+     * @return bool
+     */
+    public function getFormIsSent()
+    {
+        return Carrier::getInstance()->issetParam("formsent_".($this->objSourceobject instanceof Root ? $this->objSourceobject->getSystemid() : ""));
     }
 
     /**
