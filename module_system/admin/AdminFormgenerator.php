@@ -410,7 +410,8 @@ class AdminFormgenerator implements \Countable
      * @param Root|null $objModel
      * @return string
      */
-    public static function getStrFormSentParamForObject($objModel = null) {
+    public static final function getStrFormSentParamForObject($objModel = null)
+    {
         return "formsent_".($objModel instanceof Root ? $objModel->getSystemid() : "");
     }
 
