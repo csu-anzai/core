@@ -511,6 +511,11 @@ final class Session
 
             $objUser->setIntLogins($objUser->getIntLogins() + 1);
             $objUser->setIntLastLogin(time());
+
+            if (!$objUser->getLockManager()->isAccessibleForCurrentUser()) {
+                //force an unlock, may be locked since the user is being edited in the backend
+                $objUser->getLockManager()->unlockRecord(true);
+            }
             $objUser->updateObjectToDb();
 
             //Drop a line to the logger

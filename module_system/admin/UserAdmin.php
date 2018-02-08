@@ -1267,12 +1267,7 @@ HTML;
         }
 
 
-        if ($this->getParam("folderview")) {
-            $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "list", "&peClose=1&blockAction=1".($this->getParam("redirecttolist") != "" ? "&peRefreshPage=".urlencode(Link::getLinkAdminHref("user", "list", "", false)) : "")));
-        } else {
-            $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "list"));
-        }
-        return "";
+        return "<script type='text/javascript'>parent.KAJONA.admin.folderview.dialog.hide();</script>";
     }
 
 
