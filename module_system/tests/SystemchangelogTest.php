@@ -52,6 +52,9 @@ class SystemchangelogTest extends Testbase
         $this->assertTrue(count($arrChangesInDb) > 0);
         $this->assertTrue($intChangesInDbCount > 0);
 
+        $objGroup = new UserGroup();
+        $objGroup->setStrName("perm_test");
+        $objGroup->updateObjectToDb();
 
         CoreEventdispatcher::getInstance()->addListener(SystemEventidentifier::EVENT_SYSTEM_RECORDUPDATED, (new class($objRecord) implements GenericeventListenerInterface {
 
@@ -69,7 +72,7 @@ class SystemchangelogTest extends Testbase
             {
                 list($objObject, $bitRecordCreated) = $arrArguments;
                 if ($objObject->getSystemid() == $this->objRecord->getSystemid()) {
-                    Carrier::getInstance()->getObjRights()->addGroupToRight(UserGroup::getObjectListFiltered()[0]->getSystemid(), $objObject->getSystemid(), Rights::$STR_RIGHT_EDIT);
+                    Carrier::getInstance()->getObjRights()->addGroupToRight(UserGroup::getGroupByName("perm_test")->getSystemid(), $objObject->getSystemid(), Rights::$STR_RIGHT_VIEW);
                 }
             }
 
@@ -86,7 +89,7 @@ class SystemchangelogTest extends Testbase
 
         $this->assertTrue($intChangesInDbCountAfter - $intChangesInDbCount > 1);
 
-
+        $objGroup->deleteObjectFromDatabase();
         $objRecord->deleteObjectFromDatabase();
     }
 
