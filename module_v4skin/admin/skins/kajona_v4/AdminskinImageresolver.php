@@ -238,6 +238,8 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
 
 
         "icon_attachement" => "<i class='kj-icon fa fa-paperclip'></i>",
+        "icon_entity" => "<i class='kj-icon fa fa-building'></i>",
+        "icon_subentity" => "<i class='kj-icon fa fa-building-o'></i>",
         "icon_chart" => "<i class='kj-icon fa fa-line-chart'></i>",
         "icon_checkbox" => "<i class='kj-icon fa fa-check-square'></i>",
         "icon_dimension" => "<i class='kj-icon fa fa-bar-chart'></i>",
