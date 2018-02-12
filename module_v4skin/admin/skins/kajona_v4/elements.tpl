@@ -864,23 +864,26 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
 
         <div class="col-sm-6 inputText">
-            <table id="%%name%%" data-name="%%name%%" class="table table-striped form-control">
-                <colgroup>
-                    <col width="20" />
-                    <col width="*" />
-                    <col width="20" />
-                </colgroup>
-                <tfoot>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td></td>
-                    <td class="icon-cell"></td>
-                </tr>
-                </tfoot>
-                <tbody>
-                %%table%%
-                </tbody>
-            </table>
+            <div class="inputContainer">
+                <table id="%%name%%" data-name="%%name%%" class="table table-striped form-control">
+                    <colgroup>
+                        <col width="20" />
+                        <col width="*" />
+                        <col width="20" />
+                    </colgroup>
+                    <tfoot>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td></td>
+                        <td class="icon-cell"></td>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    %%table%%
+                    </tbody>
+                </table>
+            </div>
+            %%removeAllLink%%
         </div>
         <div class="col-sm-2 form-opener">
             %%addLink%%

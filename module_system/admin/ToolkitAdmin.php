@@ -490,8 +490,8 @@ class ToolkitAdmin extends Toolkit
      * @param array $arrObjects
      * @param string $strAddLink
      *
+     * @param bool $bitReadOnly
      * @return string
-     * @throws Exception
      */
     public function formInputObjectList($strName, $strTitle, array $arrObjects, $strAddLink, $bitReadOnly = false)
     {
@@ -500,6 +500,10 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["title"] = $strTitle;
         $arrTemplate["addLink"] = $bitReadOnly ? "" : $strAddLink;
 
+
+
+        $arrTemplate["removeAllLink"] = $bitReadOnly ? "" : Link::getLinkAdminManual(["href" => "#", "onclick" => "require('v4skin').removeAllObjectListItems('".$strName."'); return false;"], Carrier::getInstance()->getObjLang()->getLang("commons_remove_all_assignment", "system"));
+
         $strTable = '';
         foreach ($arrObjects as $objObject) {
             /** @var $objObject Model */
@@ -507,7 +511,7 @@ class ToolkitAdmin extends Toolkit
                 $strRemoveLink = "";
                 if (!$bitReadOnly) {
                     $strDelete = Carrier::getInstance()->getObjLang()->getLang("commons_remove_assignment", "system");
-                    $strRemoveLink = Link::getLinkAdminDialog(null, "", "", $strDelete, $strDelete, "icon_delete", $strDelete, true, false, "require('v4skin').removeObjectListItem(this);return false;");
+                    $strRemoveLink = Link::getLinkAdminManual(["href" => "#", "class" => "removeLink", "onclick" => "require('v4skin').removeObjectListItem(this);return false;"], $strDelete, $strDelete, "icon_delete");// Link::getLinkAdminDialog(null, "", "", $strDelete, $strDelete, "icon_delete", $strDelete, true, false, "require('v4skin').removeObjectListItem(this);return false;");
                 }
 
                 $strIcon = is_array($objObject->getStrIcon()) ? $objObject->getStrIcon()[0] : $objObject->getStrIcon();

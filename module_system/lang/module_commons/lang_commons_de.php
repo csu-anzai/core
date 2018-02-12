@@ -98,6 +98,7 @@ $lang["commons_filter_active"]            = "Aktiver Listen-Filter";
 $lang["filter_show_hide"]                = "Filter ein-/ausblenden";
 
 $lang["commons_remove_assignment"]                     = "Zuordnung löschen";
+$lang["commons_remove_all_assignment"]                     = "Alle Zuordnungen löschen";
 $lang["commons_add_assignment"]                     = "Zuordnung hinzufügen";
 $lang["commons_objectlist_manage_assignment"]                     = "Zuordnungen verwalten";
 $lang["commons_objectlist_update_assignment"]                     = "Zuordnen";

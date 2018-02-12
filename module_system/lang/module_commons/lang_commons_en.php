@@ -98,6 +98,7 @@ $lang["commons_filter_active"]            = "List-filter in use";
 $lang["filter_show_hide"]                = "Show/hide filter";
 
 $lang["commons_remove_assignment"]                     = "Remove assignment";
+$lang["commons_remove_all_assignment"]                     = "Remove all assignments";
 $lang["commons_add_assignment"]                     = "Add assignment";
 $lang["commons_objectlist_manage_assignment"]       = "Manage assignments";
 $lang["commons_objectlist_update_assignment"]       = "Assign";

@@ -243,6 +243,10 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
             table.trigger('updated');
         },
 
+        removeAllObjectListItems: function(strTableId) {
+            $('#'+strTableId).find(".removeLink").trigger('click');
+        },
+
         /**
          * Gets all items containd in the object list
          *
