@@ -1,14 +1,10 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2004-2006 by MulchProductions, www.mulchprod.de                                                 *
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
+*   (c) 2007-2018 by Kajona, www.kajona.de                                                              *
 *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-*-------------------------------------------------------------------------------------------------------*
-*	$Id$                                            *
 ********************************************************************************************************/
 
 namespace Kajona\System\System;
-
 
 /**
  * The lockmanager takes care of locking and unlocking systemrecords.
@@ -21,7 +17,6 @@ namespace Kajona\System\System;
 class Lockmanager
 {
 
-    private $strSystemid = "";
     /**
      * @var Root
      */
@@ -30,20 +25,19 @@ class Lockmanager
     /**
      * Constructor
      *
-     * @param string $strSystemid
      * @param Root|null $objSourceObject
+     * @internal use the Root::getLockmanager() call instead
      */
-    public function __construct($strSystemid = "", Root $objSourceObject = null)
+    public function __construct(Root $objSourceObject)
     {
-        $this->strSystemid = $strSystemid;
         $this->objSourceObject = $objSourceObject;
-
     }
 
     /**
      * Locks a systemrecord for the current user
      *
      * @return bool
+     * @throws Exception
      */
     public function lockRecord()
     {
@@ -52,8 +46,10 @@ class Lockmanager
 						    system_lock_time = ?
 						WHERE system_id =?";
 
-        if (Carrier::getInstance()->getObjDB()->_pQuery($strQuery, array(Carrier::getInstance()->getObjSession()->getUserID(), time(), $this->strSystemid))) {
-            Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBQUERIES | Carrier::INT_CACHE_TYPE_ORMCACHE);
+        $intLockTime = time();
+        if (Carrier::getInstance()->getObjDB()->_pQuery($strQuery, array(Carrier::getInstance()->getObjSession()->getUserID(), $intLockTime, $this->objSourceObject->getSystemid()))) {
+            $this->objSourceObject->setStrLockId(Carrier::getInstance()->getObjSession()->getUserID());
+            $this->objSourceObject->setIntLockTime($intLockTime);
             return true;
         }
 
@@ -76,20 +72,17 @@ class Lockmanager
      * @param bool $bitForceUnlock unlocks the record, even if the user is not the owner of the lock.
      *
      * @return bool
+     * @throws Exception
      */
     public function unlockRecord($bitForceUnlock = false)
     {
         if ($bitForceUnlock || $this->isLockedByCurrentUser()) {
-
             $strQuery = "UPDATE "._dbprefix_."system
                             SET system_lock_time = '0'
                             WHERE system_id=? ";
-            if (Carrier::getInstance()->getObjDB()->_pQuery($strQuery, array($this->strSystemid))) {
-                if ($this->objSourceObject !== null) {
-                    $this->objSourceObject->setStrLockId("");
-                }
-
-                Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBQUERIES | Carrier::INT_CACHE_TYPE_ORMCACHE);
+            if (Carrier::getInstance()->getObjDB()->_pQuery($strQuery, array($this->objSourceObject->getSystemid()))) {
+                $this->objSourceObject->setStrLockId("");
+                $this->objSourceObject->setIntLockTime(0);
                 return true;
             }
         }
@@ -102,6 +95,7 @@ class Lockmanager
      * If the record is locked by someone else, false will be returned, true otherwise.
      *
      * @return bool
+     * @throws Exception
      */
     public function isAccessibleForCurrentUser()
     {
@@ -127,6 +121,7 @@ class Lockmanager
      * so the lock is being held by the current user.
      *
      * @return bool
+     * @throws Exception
      */
     public function isLockedByCurrentUser()
     {
@@ -151,6 +146,7 @@ class Lockmanager
      * This is only the case, if the user is member of the admin-group.
      *
      * @return bool
+     * @throws Exception
      */
     public function isUnlockableForCurrentUser()
     {
@@ -181,11 +177,9 @@ class Lockmanager
      */
     public function getLockId()
     {
-        $objObject = Objectfactory::getInstance()->getObject($this->strSystemid);
-        if (validateSystemid($this->strSystemid) && $objObject != null && $objObject->getStrLockId() != "") {
-            return $objObject->getStrLockId();
-        }
-        else {
+        if (validateSystemid($this->objSourceObject->getSystemid()) && $this->objSourceObject != null && $this->objSourceObject->getStrLockId() != "") {
+            return $this->objSourceObject->getStrLockId();
+        } else {
             return "0";
         }
     }
@@ -194,15 +188,14 @@ class Lockmanager
     /**
      * Fetches the current user-id locking the record
      *
+     * @param bool $bitIgnoreLockId
      * @return string
      */
     private function getLockedUntilTimestamp($bitIgnoreLockId = false)
     {
-        $objObject = Objectfactory::getInstance()->getObject($this->strSystemid);
-        if (validateSystemid($this->strSystemid) && ($bitIgnoreLockId || $objObject != null && $objObject->getStrLockId() != "")) {
-            return $objObject->getIntLockTime() + (int)SystemSetting::getConfigValue("_system_lock_maxtime_");
-        }
-        else {
+        if (validateSystemid($this->objSourceObject->getSystemid()) && ($bitIgnoreLockId || $this->objSourceObject != null && $this->objSourceObject->getStrLockId() != "")) {
+            return $this->objSourceObject->getIntLockTime() + (int)SystemSetting::getConfigValue("_system_lock_maxtime_");
+        } else {
             return "0";
         }
     }
@@ -260,6 +253,4 @@ class Lockmanager
         $arrRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, array(time() - (int)SystemSetting::getConfigValue("_system_lock_maxtime_")));
         return $arrRow["cnt"];
     }
-
 }
-

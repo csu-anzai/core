@@ -51,6 +51,11 @@ abstract class Root
      */
     private $objSortManager = null;
 
+    /**
+     * @var Lockmanager
+     */
+    private $objLockmanager = null;
+
     private $strAction; //current action to perform (GET/POST)
     protected $arrModule = array(); //Array containing information about the current module
 
@@ -2170,7 +2175,10 @@ abstract class Root
      */
     public function getLockManager()
     {
-        return new Lockmanager($this->getSystemid(), $this);
+        if ($this->objLockmanager === null) {
+            $this->objLockmanager = new Lockmanager($this);
+        }
+        return $this->objLockmanager;
     }
 
 
