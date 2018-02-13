@@ -37,7 +37,6 @@ class Lockmanager
      * Locks a systemrecord for the current user
      *
      * @return bool
-     * @throws Exception
      */
     public function lockRecord()
     {
@@ -177,7 +176,7 @@ class Lockmanager
      */
     public function getLockId()
     {
-        if (validateSystemid($this->objSourceObject->getSystemid()) && $this->objSourceObject != null && $this->objSourceObject->getStrLockId() != "") {
+        if (validateSystemid($this->objSourceObject->getSystemid()) && $this->objSourceObject->getStrLockId() != "") {
             return $this->objSourceObject->getStrLockId();
         } else {
             return "0";
@@ -193,7 +192,7 @@ class Lockmanager
      */
     private function getLockedUntilTimestamp($bitIgnoreLockId = false)
     {
-        if (validateSystemid($this->objSourceObject->getSystemid()) && ($bitIgnoreLockId || $this->objSourceObject != null && $this->objSourceObject->getStrLockId() != "")) {
+        if (validateSystemid($this->objSourceObject->getSystemid()) && ($bitIgnoreLockId || $this->objSourceObject->getStrLockId() != "")) {
             return $this->objSourceObject->getIntLockTime() + (int)SystemSetting::getConfigValue("_system_lock_maxtime_");
         } else {
             return "0";
