@@ -138,7 +138,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
 
     //enable the top navigation
     if (!util.isStackedDialog()) {
-        $('div.navbar-fixed-top').removeClass('hidden');
+        $('div.navbar-fixed-top .navbar-topbar').removeClass('hidden');
         $('div.pathNaviContainer').removeClass('hidden');
     }
 

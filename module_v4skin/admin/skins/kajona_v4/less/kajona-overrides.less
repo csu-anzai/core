@@ -104,10 +104,6 @@ body {
     &.dialogBody {
         padding: 0;
 
-        .navbar-nav.navbar-fixed-top {
-            display: none;
-        }
-
         footer {
             display: none;
         }
@@ -118,6 +114,15 @@ body {
 
         .pathNaviContainer {
             display: none;
+        }
+
+        .status-indicator {
+            top: 1px;
+            width: auto;
+            margin-right: 15px;
+            margin-left: 15px;
+            display: block;
+            position: relative;
         }
 
     }
@@ -511,6 +516,23 @@ footer {
     display: none;
 }
 
+.status-indicator {
+    height: 1px;
+    background-color: @kajona-brand-color;
+    position: absolute;
+    top: 49px;
+    left: 0;
+    width: 100%;
+
+    &.active {
+        top: 48px;
+        height: 2px;
+        background-size: 10px 10px;
+        background-image: linear-gradient(45deg,rgba(255,255,255,.55) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.55) 50%,rgba(255,255,255,.55) 75%,transparent 75%,transparent);
+        animation: progress-bar-stripes 2s linear infinite;
+    }
+}
+
 .navbar-fixed-top {
     margin: 0;
     .navbar-topbar {
@@ -541,23 +563,6 @@ footer {
                 font-size: @font-size-base+10;
             }
 
-        }
-
-        .status-indicator {
-            height: 1px;
-            background-color: @kajona-brand-color;
-            position: absolute;
-            top: 49px;
-            left: 0;
-            width: 100%;
-
-            &.active {
-                top: 48px;
-                height: 2px;
-                background-size: 10px 10px;
-                background-image: linear-gradient(45deg,rgba(255,255,255,.55) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.55) 50%,rgba(255,255,255,.55) 75%,transparent 75%,transparent);
-                animation: progress-bar-stripes 2s linear infinite;
-            }
         }
 
         .navbar-search {
