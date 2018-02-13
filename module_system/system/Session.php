@@ -589,17 +589,22 @@ final class Session
      * Returns the userid or ''
      *
      * @return string
+     * @throws Exception
      */
     public function getUserID()
     {
         $strUserid = $this->getSession(self::STR_SESSION_USERID);
-        return $strUserid ? $strUserid : '';
+        if (validateSystemid($strUserid) && $this->isLoggedin()) {
+            return $strUserid;
+        }
+        return '';
     }
 
     /**
      * Returns an instance of the current user or null of not given
      *
      * @return UserUser
+     * @throws Exception
      */
     public function getUser()
     {
@@ -627,8 +632,10 @@ final class Session
         if ($this->getUserID() != "") {
             $this->objUser = Objectfactory::getInstance()->getObject($this->getUserID(), true);
             //reload group-ids to the session
-            $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $this->objUser->getArrGroupIds()));
-            $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $this->objUser->getArrShortGroupIds()));
+            if ($this->objUser !== null) {
+                $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $this->objUser->getArrGroupIds()));
+                $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $this->objUser->getArrShortGroupIds()));
+            }
         }
     }
 
