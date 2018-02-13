@@ -151,5 +151,11 @@ class FormentryMultiUpload extends FormentryBase implements FormentryPrintableIn
         $this->strRepoId = $strRepoId;
     }
 
-
+    /**
+     * @return string
+     */
+    public function getStrRepoId()
+    {
+        return $this->strRepoId;
+    }
 }
