@@ -176,6 +176,12 @@ class AdminFormgenerator implements \Countable
     private $intButtonConfig = null;
 
     /**
+     * Renders errors as warnings, so less prominent
+     * @var bool
+     */
+    private $bitErrorsAsWarnings = false;
+
+    /**
      * Creates a new instance of the form-generator.
      *
      * @param string $strFormname
@@ -196,6 +202,7 @@ class AdminFormgenerator implements \Countable
      * Afterwards, the object may be persisted.
      *
      * @return void
+     * @throws Exception
      */
     public function updateSourceObject()
     {
@@ -380,7 +387,7 @@ class AdminFormgenerator implements \Countable
             $strReturn .= $this->objToolkit->formHeader($strTargetURI, $strGeneratedFormname, $this->strFormEncoding, $this->strOnSubmit, $this->strMethod);
         }
 
-        $strReturn .= $this->objToolkit->getValidationErrors($this);
+        $strReturn .= $this->objToolkit->getValidationErrors($this, $this->getBitErrorsAsWarnings());
         $strReturn .= $this->renderFields();
         $strReturn .= $this->renderButtons($intButtonConfig);
 
@@ -532,6 +539,7 @@ class AdminFormgenerator implements \Countable
      * Renders the javascript to lock the record
      *
      * @return string
+     * @throws Exception
      */
     protected function renderLock()
     {
@@ -713,6 +721,7 @@ class AdminFormgenerator implements \Countable
      * In order to identify a field as relevant, the getter has to be marked with a fieldType annotation.
      *
      * @return void
+     * @throws Exception
      */
     public function generateFieldsFromObject()
     {
@@ -1378,4 +1387,21 @@ class AdminFormgenerator implements \Countable
 
         return null;
     }
+
+    /**
+     * @return bool
+     */
+    public function getBitErrorsAsWarnings()
+    {
+        return $this->bitErrorsAsWarnings;
+    }
+
+    /**
+     * @param bool $bitErrorsAsWarnings
+     */
+    public function setBitErrorsAsWarnings($bitErrorsAsWarnings)
+    {
+        $this->bitErrorsAsWarnings = $bitErrorsAsWarnings;
+    }
+
 }

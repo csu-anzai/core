@@ -2292,7 +2292,7 @@ HTML;
      *
      * @return string
      */
-    public function getValidationErrors($objCalling, $strTargetAction = null)
+    public function getValidationErrors($objCalling, $bitErrorsAsWarning = false)
     {
         $strRendercode = "";
         //render mandatory fields?
@@ -2300,10 +2300,7 @@ HTML;
             if ($objCalling instanceof AdminFormgenerator) {
                 $arrFields = $objCalling->getRequiredFields();
             } else {
-                $strTempAction = $objCalling->getAction();
-                $objCalling->setAction($strTargetAction);
                 $arrFields = $objCalling->getRequiredFields();
-                $objCalling->setAction($strTempAction);
             }
 
             if (count($arrFields) > 0) {
@@ -2347,6 +2344,7 @@ HTML;
         $arrTemplate = array();
         $arrTemplate["errorrows"] = $strRows;
         $arrTemplate["errorintro"] = Lang::getInstance()->getLang("errorintro", "system");
+        $arrTemplate["errorclass"] = $bitErrorsAsWarning ? "alert-warning" : "alert-danger";
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "error_container").$strRendercode;
     }
 
