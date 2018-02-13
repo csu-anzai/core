@@ -1779,7 +1779,7 @@ abstract class Root
     public function getPrevId($strSystemid = "")
     {
         if ($strSystemid != "") {
-            throw new Exception("unsupported param @ ".__METHOD__, Exception::$level_FATALERROR);
+            throw new Exception("unsupported param @ ".__METHOD__);
         }
 
         return $this->getStrPrevId();
@@ -1818,7 +1818,7 @@ abstract class Root
     public function getRecordModuleNr($strSystemid = "")
     {
         if ($strSystemid != "") {
-            throw new Exception("unsupported param @ ".__METHOD__, Exception::$level_FATALERROR);
+            throw new Exception("unsupported param @ ".__METHOD__);
         }
 
         return $this->getIntModuleNr();
@@ -1871,7 +1871,7 @@ abstract class Root
     public function getLastEditUser($strSystemid = "")
     {
         if ($strSystemid != "") {
-            throw new Exception("unsupported param @ ".__METHOD__, Exception::$level_FATALERROR);
+            throw new Exception("unsupported param @ ".__METHOD__);
         }
 
         if (validateSystemid($this->getStrLmUser())) {
@@ -1983,7 +1983,7 @@ abstract class Root
     public function getObjCreateDate($strSystemid = "")
     {
         if ($strSystemid != "") {
-            throw new Exception("unsupported param @ ".__METHOD__, Exception::$level_FATALERROR);
+            throw new Exception("unsupported param @ ".__METHOD__);
         }
 
         return new Date($this->getLongCreateDate());
@@ -2028,7 +2028,7 @@ abstract class Root
     final public function getOwnerId($strSystemid = "")
     {
         if ($strSystemid != "") {
-            throw new Exception("unsupported param @ ".__METHOD__, Exception::$level_FATALERROR);
+            throw new Exception("unsupported param @ ".__METHOD__);
         }
 
         return $this->getStrOwner();
@@ -2049,7 +2049,7 @@ abstract class Root
     final public function setOwnerId($strOwner, $strSystemid = "")
     {
         if ($strSystemid != "") {
-            throw new Exception("unsupported param @ ".__METHOD__, Exception::$level_FATALERROR);
+            throw new Exception("unsupported param @ ".__METHOD__);
         }
 
         $this->setStrOwner($strOwner);
@@ -2085,7 +2085,7 @@ abstract class Root
     public function getStatus($strSystemid = "")
     {
         if ($strSystemid != "") {
-            throw new Exception("unsupported param @ ".__METHOD__, Exception::$level_FATALERROR);
+            throw new Exception("unsupported param @ ".__METHOD__);
         }
 
         return $this->getIntRecordStatus();

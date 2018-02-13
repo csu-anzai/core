@@ -410,7 +410,7 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
             $objHandler->processUserInput($this->getAllParams());
 
             if ($objWorkflow->getBitSaved() == true) {
-                throw new Exception("Illegal state detected! Workflow was already saved before!", Exception::$level_FATALERROR);
+                throw new Exception("Illegal state detected! Workflow was already saved before!");
             }
 
             $objWorkflow->updateObjectToDb();

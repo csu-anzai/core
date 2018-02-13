@@ -242,7 +242,7 @@ class RequestDispatcher
                 }
 
             } else {
-                throw new Exception("Requested module ".$strModule." not existing", Exception::$level_FATALERROR);
+                throw new Exception("Requested module ".$strModule." not existing");
             }
 
         } else {

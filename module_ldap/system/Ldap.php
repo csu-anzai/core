@@ -196,7 +196,7 @@ class Ldap
                 $arrResult = @ldap_next_entry($this->objCx, $arrResult);
             }
         } else {
-            throw new Exception("loading of group members failed: " . ldap_errno($this->objCx) . " # " . ldap_error($this->objCx), Exception::$level_FATALERROR);
+            throw new Exception("loading of group members failed: " . ldap_errno($this->objCx) . " # " . ldap_error($this->objCx));
         }
 
         return $arrReturn;
@@ -224,7 +224,7 @@ class Ldap
                 return $arrValues["count"];
             }
         } else {
-            throw new Exception("loading of number of group failed: " . ldap_errno($this->objCx) . " # " . ldap_error($this->objCx), Exception::$level_FATALERROR);
+            throw new Exception("loading of number of group failed: " . ldap_errno($this->objCx) . " # " . ldap_error($this->objCx));
         }
         return -1;
     }
@@ -260,7 +260,7 @@ class Ldap
             }
 
         } else {
-            throw new Exception("loading of group-memberships failed: " . ldap_errno($this->objCx) . " # " . ldap_error($this->objCx), Exception::$level_FATALERROR);
+            throw new Exception("loading of group-memberships failed: " . ldap_errno($this->objCx) . " # " . ldap_error($this->objCx));
         }
 
         return $bitReturn;
@@ -295,7 +295,7 @@ class Ldap
 
             return $arrReturn;
         } else {
-            throw new Exception("loading of custom search failed: " . ldap_errno($this->objCx) . " # " . ldap_error($this->objCx), Exception::$level_FATALERROR);
+            throw new Exception("loading of custom search failed: " . ldap_errno($this->objCx) . " # " . ldap_error($this->objCx));
         }
 
     }
@@ -339,7 +339,7 @@ class Ldap
             }
         } else {
             Logger::getInstance(Logger::USERSOURCES)->error("loading of user failed: " . ldap_errno($this->objCx) . " # " . ldap_error($this->objCx) . " \n Username: " . $strUsername . " Userfilter: " . $this->arrConfig["ldap_user_filter"]);
-            throw new Exception("loading of user failed: " . ldap_errno($this->objCx) . " # " . ldap_error($this->objCx), Exception::$level_FATALERROR);
+            throw new Exception("loading of user failed: " . ldap_errno($this->objCx) . " # " . ldap_error($this->objCx));
         }
 
         return $arrReturn;
@@ -391,7 +391,7 @@ class Ldap
         } else {
             Logger::getInstance(Logger::USERSOURCES)->error("loading of user failed: " . ldap_errno($this->objCx) . " # " . ldap_error($this->objCx) . " \n Userfilter: " . $strUserFilter . " Base DN: " . $this->arrConfig["ldap_user_base_dn"]);
 
-            throw new Exception("loading of user failed: " . ldap_errno($this->objCx) . " # " . ldap_error($this->objCx), Exception::$level_FATALERROR);
+            throw new Exception("loading of user failed: " . ldap_errno($this->objCx) . " # " . ldap_error($this->objCx));
         }
 
         return $arrReturn;
