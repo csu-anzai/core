@@ -262,7 +262,12 @@ class AdminFormgenerator implements \Countable
             //if field is not empty -> validate
             if (!$bitFieldIsEmpty) {
                 if (!$objOneField->validateValue()) {
-                    $this->addValidationError($objOneField->getStrEntryName(), $objOneField->getStrValidationErrorMsg());
+                    $arrErrorMessages = $objOneField->getValidationErrorMsg();
+                    foreach ($arrErrorMessages as $objValidationError) {
+                        $strFieldName = $objValidationError->getStrFieldName() === null ? $objOneField->getStrEntryName() : $objValidationError->getStrFieldName();
+                        $strMessage = $objOneField->getStrLabel() . ": " .$objValidationError->getStrErrorMessage();
+                        $this->addValidationError($strFieldName, $strMessage);
+                    }
                 }
             }
         }

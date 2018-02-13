@@ -10,6 +10,7 @@ namespace Kajona\System\System\Validators;
 
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Date;
+use Kajona\System\System\ValidationError;
 use Kajona\System\System\ValidatorExtendedInterface;
 
 
@@ -43,13 +44,14 @@ class DateValidator implements ValidatorExtendedInterface {
 
 
     /**
-     * Gets the validation message of the validator.
-     *
-     * @return string
+     * @inheritdoc
      */
-    public function getValidationMessage() {
+    public function getValidationMessages() {
         $objLang = Carrier::getInstance()->getObjLang();
         $strDateFormat = $objLang->getLang("dateStyleShort", "system");
-        return $objLang->getLang("commons_validator_date_validationmessage", "system", array($strDateFormat));
+
+        return [
+            new ValidationError($objLang->getLang("commons_validator_date_validationmessage", "system", array($strDateFormat)))
+        ];
     }
 }

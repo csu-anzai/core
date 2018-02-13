@@ -21,7 +21,7 @@ interface ValidatorExtendedInterface extends ValidatorInterface
     /**
      * Gets the validation message of the validator.
      *
-     * @return string
+     * @return ValidationError[]
      */
-    public function getValidationMessage();
+    public function getValidationMessages();
 }
