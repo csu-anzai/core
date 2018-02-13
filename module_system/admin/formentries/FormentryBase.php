@@ -346,6 +346,14 @@ class FormentryBase
         return $this->strSourceProperty;
     }
 
+    /**
+     * @param string $strSourceProperty
+     */
+    public function setStrSourceProperty($strSourceProperty)
+    {
+        $this->strSourceProperty = $strSourceProperty;
+    }
+
     public function getObjSourceObject()
     {
         return $this->objSourceObject;
@@ -358,7 +366,6 @@ class FormentryBase
     {
         $this->objSourceObject = $objSourceObject;
     }
-
 
     public function setStrValidationErrorMsg($strValidationErrorMsg)
     {
