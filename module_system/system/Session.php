@@ -554,6 +554,7 @@ final class Session
 
         $this->objInternalSession = null;
         $this->objUser = null;
+        $this->setSession(self::STR_SESSION_USERID, "");
         if (isset($_COOKIE[session_name()])) {
             setcookie(session_name(), '', time() - 42000);
         }
@@ -592,12 +593,11 @@ final class Session
      */
     public function getUserID()
     {
-        if ($this->getObjInternalSession() != null && $this->isLoggedin()) {
-            $strUserid = $this->getSession(self::STR_SESSION_USERID);
-        } else {
-            $strUserid = "";
+        $strUserid = $this->getSession(self::STR_SESSION_USERID);
+        if (validateSystemid($strUserid) && $this->isLoggedin()) {
+            return $strUserid;
         }
-        return $strUserid;
+        return '';
     }
 
     /**
@@ -632,8 +632,10 @@ final class Session
         if ($this->getUserID() != "") {
             $this->objUser = Objectfactory::getInstance()->getObject($this->getUserID(), true);
             //reload group-ids to the session
-            $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $this->objUser->getArrGroupIds()));
-            $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $this->objUser->getArrShortGroupIds()));
+            if ($this->objUser !== null) {
+                $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $this->objUser->getArrGroupIds()));
+                $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $this->objUser->getArrShortGroupIds()));
+            }
         }
     }
 
