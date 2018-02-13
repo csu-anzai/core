@@ -19,6 +19,7 @@ use Kajona\System\System\Lockmanager;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
+use Kajona\System\System\Objectfactory;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\VersionableInterface;
@@ -43,6 +44,7 @@ abstract class AdminSimple extends AdminController
 
     /**
      * @param string $strSystemid
+     * @throws Exception
      */
     public function __construct($strSystemid = "")
     {
@@ -53,8 +55,10 @@ abstract class AdminSimple extends AdminController
         }
 
         if ($this->getParam("unlockid") != "") {
-            $objLockmanager = new Lockmanager($this->getParam("unlockid"));
-            $objLockmanager->unlockRecord(true);
+            $objUnlock = Objectfactory::getInstance()->getObject($this->getParam("unlockid"));
+            if ($objUnlock !== null) {
+                $objUnlock->getLockManager()->unlockRecord(true);
+            }
         }
     }
 

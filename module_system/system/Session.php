@@ -554,6 +554,7 @@ final class Session
 
         $this->objInternalSession = null;
         $this->objUser = null;
+        $this->setSession(self::STR_SESSION_USERID, "");
         if (isset($_COOKIE[session_name()])) {
             setcookie(session_name(), '', time() - 42000);
         }
@@ -588,23 +589,17 @@ final class Session
      * Returns the userid or ''
      *
      * @return string
-     * @throws Exception
      */
     public function getUserID()
     {
-        if ($this->getObjInternalSession() != null && $this->isLoggedin()) {
-            $strUserid = $this->getSession(self::STR_SESSION_USERID);
-        } else {
-            $strUserid = "";
-        }
-        return $strUserid;
+        $strUserid = $this->getSession(self::STR_SESSION_USERID);
+        return $strUserid ? $strUserid : '';
     }
 
     /**
      * Returns an instance of the current user or null of not given
      *
      * @return UserUser
-     * @throws Exception
      */
     public function getUser()
     {
