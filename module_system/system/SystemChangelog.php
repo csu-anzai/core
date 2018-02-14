@@ -53,7 +53,6 @@ class SystemChangelog
 
     private static $arrOldInstances = array();
 
-    private static $arrTables;
 
     /**
      * Checks if an objects properties changed.
@@ -1008,14 +1007,30 @@ class SystemChangelog
             return self::$arrCachedProviders;
         }
 
-        $arrProvider = Config::getInstance()->getConfig("changelog_provider");
+        /** @var CacheManager $objCache */
+        $strKey = __METHOD__;
+        $objCache = Carrier::getInstance()->getContainer()->offsetGet(\Kajona\System\System\ServiceProvider::STR_CACHE_MANAGER);
+        $arrReturn = $objCache->getValue($strKey);
 
-        $arrReturn = [];
-        foreach ($arrProvider as $strProviderClass) {
-            if (class_exists($strProviderClass)) {
-                $arrReturn[$strProviderClass] = new $strProviderClass();
-            }
+        if (!empty($arrReturn)) {
+            return self::$arrCachedProviders = $arrReturn;
         }
+
+        $arrReturn = Resourceloader::getInstance()->getFolderContent(
+            "/system",
+            array(".php"),
+            false,
+            null,
+            function (&$strOneFile, $strPath) {
+                $strOneFile = Classloader::getInstance()->getInstanceFromFilename($strPath, "", ChangelogProviderInterface::class);
+            }
+        );
+
+        $arrReturn = array_filter($arrReturn, function ($objEl) {
+            return $objEl != null;
+        });
+
+        $objCache->addValue($strKey, $arrReturn);
 
         self::$arrCachedProviders = $arrReturn;
         return $arrReturn;
@@ -1047,12 +1062,10 @@ class SystemChangelog
      */
     public static function getTableForClass($strClass)
     {
-        if (!self::$arrTables) {
-            self::$arrTables = self::getAdditionalTables();
-        }
+        $arrTables = self::getAdditionalTables();
 
-        if ($strClass != null && $strClass != "" && isset(self::$arrTables[$strClass])) {
-            return self::$arrTables[$strClass];
+        if ($strClass != null && $strClass != "" && isset($arrTables[$strClass])) {
+            return $arrTables[$strClass];
         } else {
             return "changelog";
         }
