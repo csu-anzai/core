@@ -74,6 +74,8 @@ class ValidationError
     }
 
     /**
+     * Transforms an array of validation objects into the old error array format
+     *
      * @param array $arrErrors
      * @return array
      * @deprecated
