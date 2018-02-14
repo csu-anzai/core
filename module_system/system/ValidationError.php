@@ -72,4 +72,23 @@ class ValidationError
     {
         $this->strFieldName = $strFieldName;
     }
+
+    /**
+     * @param $arrErrors
+     * @return array
+     * @deprecated
+     */
+    public static function transform($arrErrors)
+    {
+        $arrValidationErrors = [];
+        foreach ($arrErrors as $objError) {
+            /** @var ValidationError $objError */
+            if (!array_key_exists($objError->getStrFieldName(), $arrValidationErrors)) {
+                $arrValidationErrors[$objError->getStrFieldName()] = array();
+            }
+            $arrValidationErrors[$objError->getStrFieldName()][] = $objError->getStrErrorMessage();
+        }
+
+        return $arrValidationErrors;
+    }
 }

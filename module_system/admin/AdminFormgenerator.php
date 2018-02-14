@@ -24,6 +24,7 @@ use Kajona\System\System\Resourceloader;
 use Kajona\System\System\Root;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\UserUser;
+use Kajona\System\System\ValidationError;
 use Kajona\System\System\ValidatorInterface;
 use Kajona\System\System\Validators\ObjectvalidatorBase;
 use Kajona\System\System\Validators\SystemidValidator;
@@ -242,13 +243,12 @@ class AdminFormgenerator implements \Countable
     }
 
     /**
-     * Validates the current form.
-     *
-     * @throws Exception
-     * @return bool
+     * @return ValidationError[]
      */
-    public function validateForm()
+    public function getValidationErrorObjects()
     {
+        $arrErrors = [];
+
         //1. Validate fields
         foreach ($this->arrFields as $objOneField) {
             if ($objOneField->getBitSkipValidation()) {
@@ -261,8 +261,8 @@ class AdminFormgenerator implements \Countable
             if ($objOneField->getBitMandatory()) {
                 //if field is mandatory and empty -> validation error
                 if ($bitFieldIsEmpty) {
-                    $strErrorMesage = $objOneField->getStrLabel() != "" ? $this->objLang->getLang("commons_validator_field_empty", "system", array($objOneField->getStrLabel())) : "";
-                    $this->addValidationError($objOneField->getStrEntryName(), $strErrorMesage);
+                    $strErrorMessage = $objOneField->getStrLabel() != "" ? $this->objLang->getLang("commons_validator_field_empty", "system", array($objOneField->getStrLabel())) : "";
+                    $arrErrors[] = new ValidationError($strErrorMessage, $objOneField->getStrEntryName());
                 }
             }
 
@@ -273,7 +273,7 @@ class AdminFormgenerator implements \Countable
                     foreach ($arrErrorMessages as $objValidationError) {
                         $strFieldName = $objValidationError->getStrFieldName() === null ? $objOneField->getStrEntryName() : $objValidationError->getStrFieldName();
                         $strMessage = $objOneField->getStrLabel() . ": " .$objValidationError->getStrErrorMessage();
-                        $this->addValidationError($strFieldName, $strMessage);
+                        $arrErrors[] = new ValidationError($strMessage, $strFieldName);
                     }
                 }
             }
@@ -311,7 +311,7 @@ class AdminFormgenerator implements \Countable
                     }
 
                     foreach ($arrMessages as $strMessage) {
-                        $this->addValidationError($strKey, $strMessage);
+                        $arrErrors[] = new ValidationError($strMessage, $strKey);
                     }
                 }
 
@@ -323,6 +323,23 @@ class AdminFormgenerator implements \Countable
                     }
                 }
             }
+        }
+
+        return $arrErrors;
+    }
+
+    /**
+     * Validates the current form.
+     *
+     * @throws Exception
+     * @return bool
+     */
+    public function validateForm()
+    {
+        $arrErrors = $this->getValidationErrorObjects();
+
+        foreach ($arrErrors as $objError) {
+            $this->addValidationError($objError->getStrFieldName(), $objError->getStrErrorMessage());
         }
 
         return count($this->arrValidationErrors) == 0;
