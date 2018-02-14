@@ -9,11 +9,25 @@ namespace Kajona\System\System;
 
 
 /**
- * Class ValidationError
+ * Class to hold validation error
+ *
+ * @author stefan.meyer@artemeon.de
+ * @since 7.0
  */
 class ValidationError
 {
+    /**
+     * Contains the error message of the validation error
+     *
+     * @var string
+     */
     private $strErrorMessage;
+
+    /**
+     * Contains the field name of the validation error
+     *
+     * @var string
+     */
     private $strFieldName;
 
     /**
