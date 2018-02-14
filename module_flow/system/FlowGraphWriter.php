@@ -223,9 +223,9 @@ HTML;
                     $strLineEnd = $objTransition->isVisible() ? "--" : ".-";
                     if (self::$bitIsIe) {
                         //IE doesn't render html labels, so no need to replace them later on --> regular edge
-                        $arrList[] = $objStatus->getStrSystemid() . "[" . $objStatus->getStrName() . "]{$strLineEnd}>" . $objTargetStatus->getSystemid() . "[" . $objTargetStatus->getStrName() . "];";
+                        $arrList[] = $objStatus->getStrSystemid() . "[" . $objStatus->getStrDisplayName() . "]{$strLineEnd}>" . $objTargetStatus->getSystemid() . "[" . $objTargetStatus->getStrDisplayName() . "];";
                     } else {
-                        $arrList[] = $objStatus->getStrSystemid() . "[" . $objStatus->getStrName() . "]{$strLineStart} <span data-" . $objTransition->getSystemid() . ">______</span> {$strLineEnd}>" . $objTargetStatus->getSystemid() . "[" . $objTargetStatus->getStrName() . "];";
+                        $arrList[] = $objStatus->getStrSystemid() . "[" . $objStatus->getStrDisplayName() . "]{$strLineStart} <span data-" . $objTransition->getSystemid() . ">______</span> {$strLineEnd}>" . $objTargetStatus->getSystemid() . "[" . $objTargetStatus->getStrDisplayName() . "];";
                     }
                     $arrUsed[$objStatus->getStrSystemid()] = $objStatus;
                 }
