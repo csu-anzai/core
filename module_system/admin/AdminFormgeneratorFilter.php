@@ -131,18 +131,14 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
      */
     protected function resetParams()
     {
-        $objCarrier = Carrier::getInstance();
+        $arrParams = Carrier::getAllParams();
         $objFilter = $this->getObjSourceobject();
 
-        // we must work on a new formgenerator since we must initialize the fields before the reset
-        $objFormgenerator = new self($objFilter->getFilterId(), $objFilter);
-        $objFormgenerator->generateFieldsFromObject();
-
-        $arrParamsSuffix = array_keys($objFormgenerator->getArrFields());
-
         // clear params
-        foreach ($arrParamsSuffix as $strSuffix) {
-            $objCarrier->setParam($this->getFormElementName($strSuffix), null);
+        foreach ($arrParams as $strKey => $strValue) {
+            if (strpos($strKey, $objFilter->getFilterId()) !== false) {
+                Carrier::getInstance()->setParam($strKey, null);
+            }
         }
     }
 
