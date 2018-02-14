@@ -490,8 +490,8 @@ class ToolkitAdmin extends Toolkit
      * @param array $arrObjects
      * @param string $strAddLink
      *
+     * @param bool $bitReadOnly
      * @return string
-     * @throws Exception
      */
     public function formInputObjectList($strName, $strTitle, array $arrObjects, $strAddLink, $bitReadOnly = false)
     {
@@ -500,6 +500,10 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["title"] = $strTitle;
         $arrTemplate["addLink"] = $bitReadOnly ? "" : $strAddLink;
 
+
+
+        $arrTemplate["removeAllLink"] = $bitReadOnly ? "" : Link::getLinkAdminManual(["href" => "#", "onclick" => "require('v4skin').removeAllObjectListItems('".$strName."'); return false;"], Carrier::getInstance()->getObjLang()->getLang("commons_remove_all_assignment", "system"));
+
         $strTable = '';
         foreach ($arrObjects as $objObject) {
             /** @var $objObject Model */
@@ -507,7 +511,7 @@ class ToolkitAdmin extends Toolkit
                 $strRemoveLink = "";
                 if (!$bitReadOnly) {
                     $strDelete = Carrier::getInstance()->getObjLang()->getLang("commons_remove_assignment", "system");
-                    $strRemoveLink = Link::getLinkAdminDialog(null, "", "", $strDelete, $strDelete, "icon_delete", $strDelete, true, false, "require('v4skin').removeObjectListItem(this);return false;");
+                    $strRemoveLink = Link::getLinkAdminManual(["href" => "#", "class" => "removeLink", "onclick" => "require('v4skin').removeObjectListItem(this);return false;"], $strDelete, $strDelete, "icon_delete");// Link::getLinkAdminDialog(null, "", "", $strDelete, $strDelete, "icon_delete", $strDelete, true, false, "require('v4skin').removeObjectListItem(this);return false;");
                 }
 
                 $strIcon = is_array($objObject->getStrIcon()) ? $objObject->getStrIcon()[0] : $objObject->getStrIcon();
@@ -2288,7 +2292,7 @@ HTML;
      *
      * @return string
      */
-    public function getValidationErrors($objCalling, $strTargetAction = null)
+    public function getValidationErrors($objCalling, $bitErrorsAsWarning = false)
     {
         $strRendercode = "";
         //render mandatory fields?
@@ -2296,10 +2300,7 @@ HTML;
             if ($objCalling instanceof AdminFormgenerator) {
                 $arrFields = $objCalling->getRequiredFields();
             } else {
-                $strTempAction = $objCalling->getAction();
-                $objCalling->setAction($strTargetAction);
                 $arrFields = $objCalling->getRequiredFields();
-                $objCalling->setAction($strTempAction);
             }
 
             if (count($arrFields) > 0) {
@@ -2343,6 +2344,7 @@ HTML;
         $arrTemplate = array();
         $arrTemplate["errorrows"] = $strRows;
         $arrTemplate["errorintro"] = Lang::getInstance()->getLang("errorintro", "system");
+        $arrTemplate["errorclass"] = $bitErrorsAsWarning ? "alert-warning" : "alert-danger";
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "error_container").$strRendercode;
     }
 

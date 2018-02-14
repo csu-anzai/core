@@ -172,10 +172,10 @@ class RequestDispatcher
                             $strReturn = $objConcreteModule->action();
                             if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::INDEX())) {
                                 if ($strReturn != "") {
-                                    $strReturn .= $objHelper->actionGetPathNavigation($objConcreteModule);
-                                    $strReturn .= $objHelper->actionGetQuickHelp($objConcreteModule);
+                                    $strReturn = $objHelper->actionGetPathNavigation($objConcreteModule).$strReturn;
+                                    $strReturn = $objHelper->actionGetQuickHelp($objConcreteModule).$strReturn;
                                     if ($objConcreteModule instanceof AdminSimple) {
-                                        $strReturn .= $objConcreteModule->getContentActionToolbar();
+                                        $strReturn = $objConcreteModule->getContentActionToolbar().$strReturn;
                                     }
                                     $strReturn = "<script type=\"text/javascript\"> require(['contentToolbar'], function(contentToolbar) { contentToolbar.resetBar()}); </script>".$strReturn; //TODO: das muss hier raus, falsche stelle?
                                 }
@@ -242,7 +242,7 @@ class RequestDispatcher
                 }
 
             } else {
-                throw new Exception("Requested module ".$strModule." not existing", Exception::$level_FATALERROR);
+                throw new Exception("Requested module ".$strModule." not existing");
             }
 
         } else {

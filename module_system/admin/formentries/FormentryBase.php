@@ -14,6 +14,7 @@ use Kajona\System\System\Model;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\ReflectionEnum;
 use Kajona\System\System\StringUtil;
+use Kajona\System\System\ValidationError;
 use Kajona\System\System\ValidatorExtendedInterface;
 use Kajona\System\System\ValidatorInterface;
 
@@ -346,6 +347,14 @@ class FormentryBase
         return $this->strSourceProperty;
     }
 
+    /**
+     * @param string $strSourceProperty
+     */
+    public function setStrSourceProperty($strSourceProperty)
+    {
+        $this->strSourceProperty = $strSourceProperty;
+    }
+
     public function getObjSourceObject()
     {
         return $this->objSourceObject;
@@ -359,7 +368,6 @@ class FormentryBase
         $this->objSourceObject = $objSourceObject;
     }
 
-
     public function setStrValidationErrorMsg($strValidationErrorMsg)
     {
         $this->strValidationErrorMsg = $strValidationErrorMsg;
@@ -367,21 +375,21 @@ class FormentryBase
     }
 
     /**
-     * @return string
+     * @return ValidationError[]
      */
-    public function getStrValidationErrorMsg()
+    public function getValidationErrorMsg()
     {
         if ($this->strValidationErrorMsg != "") {
-            return $this->strValidationErrorMsg;
+            return [new ValidationError($this->strValidationErrorMsg)];
         } else {
-            if ($this->getObjValidator() instanceof ValidatorExtendedInterface) {
-                return "'".$this->getStrLabel()."': ".$this->getObjValidator()->getValidationMessage();
+            $objValidator = $this->getObjValidator();
+            if ($objValidator instanceof ValidatorExtendedInterface) {
+                return $objValidator->getValidationMessages();
             } else {
-                return "'".$this->getStrLabel()."'";
+                return [new ValidationError($this->getStrLabel())];
             }
         }
     }
-
 
     /**
      * Gets the real property name for the current field, e.g. arrStatus, strTitle etc..

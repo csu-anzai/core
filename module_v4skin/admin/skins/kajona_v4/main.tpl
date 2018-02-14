@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow" />
     <meta name="generator" content="Kajona Core, https://github.com/artemeon/core" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <link rel="stylesheet" href="_webpath_/[webpath,module_system]/scripts/jqueryui/css/smoothness/jquery-ui.custom.css?_system_browser_cachebuster_" type="text/css" />
     <link rel="stylesheet" href="_webpath_/[webpath,module_system]/scripts/qtip2/jquery.qtip.min.css?_system_browser_cachebuster_" type="text/css" />
@@ -25,8 +26,8 @@
 
 <body>
 
-<div class="navbar-nav navbar-fixed-top hidden-print hidden">
-    <div class="navbar-topbar">
+<div class="navbar-nav navbar-fixed-top hidden-print">
+    <div class="navbar-topbar hidden">
         <div class="container-fluid">
             <div class="row">
                 <div class="sidebar-menu col-xs-1 col-sm-1 hidden-md hidden-lg">
@@ -55,9 +56,8 @@
                 </div>
             </div>
         </div>
-        <div class="status-indicator" id="status-indicator"></div>
     </div>
-
+    <div class="status-indicator" id="status-indicator"></div>
 </div>
 
 <div class="container-fluid main-container">

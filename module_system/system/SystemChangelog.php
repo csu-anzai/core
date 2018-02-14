@@ -361,7 +361,7 @@ class SystemChangelog
     private function isVersioningAvailable(VersionableInterface $objSourceModel)
     {
         if (self::$bitChangelogEnabled === null) {
-            return SystemSetting::getConfigValue("_system_changehistory_enabled_") === "true";
+            self::$bitChangelogEnabled = SystemSetting::getConfigValue("_system_changehistory_enabled_") === "true";
         }
 
 

@@ -41,6 +41,7 @@ class FormentryCheckbox extends FormentryBase implements FormentryPrintableInter
             $strReturn .= $objToolkit->formTextRow($this->getStrHint());
 
         $strReturn .= $objToolkit->formInputCheckbox($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue() == true, "", $this->getBitReadonly());
+        $strReturn .= $objToolkit->formInputHidden($this->getStrEntryName()."_prescheck", "1");
 
         return $strReturn;
     }
@@ -63,14 +64,11 @@ class FormentryCheckbox extends FormentryBase implements FormentryPrintableInter
     protected function updateValue() {
         $arrParams = Carrier::getAllParams();
 
-
         if(isset($arrParams[$this->getStrEntryName()])) {
             $this->setStrValue(true);
-        }
-        elseif(count($_POST) > 0) {
+        } elseif (isset($arrParams[$this->getStrEntryName()."_prescheck"])) {
             $this->setStrValue(false);
-        }
-        else {
+        } else {
             $this->setStrValue($this->getValueFromObject());
         }
     }

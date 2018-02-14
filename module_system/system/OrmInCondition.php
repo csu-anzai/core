@@ -121,7 +121,7 @@ class OrmInCondition extends OrmCondition
     public function setStrInCondition($strInCondition)
     {
         if ($strInCondition !== self::STR_CONDITION_IN && $strInCondition !== self::STR_CONDITION_NOTIN) {
-            throw new OrmException(Exception::$level_FATALERROR, "strInCondition must have value IN or NOT IN. Current value is ".$strInCondition);
+            throw new OrmException("strInCondition must have value IN or NOT IN. Current value is ".$strInCondition);
         }
 
         $this->strInCondition = $strInCondition;

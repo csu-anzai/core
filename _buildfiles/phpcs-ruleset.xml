@@ -18,6 +18,7 @@
     <exclude-pattern>*/lang/*</exclude-pattern>
     <exclude-pattern>*browscap.cache*</exclude-pattern>
     <exclude-pattern>*Browscap.php*</exclude-pattern>
+    <exclude-pattern>*.css</exclude-pattern>
 
     <rule ref="PSR2" />
 

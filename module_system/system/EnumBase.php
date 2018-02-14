@@ -72,7 +72,7 @@ abstract class EnumBase
     {
         $objEnum = new static($strName);
         if (!in_array($strName, $objEnum->getArrValues())) {
-            throw new Exception($strName." is not allowed for enum ".get_called_class(), Exception::$level_FATALERROR);
+            throw new Exception($strName." is not allowed for enum ".get_called_class());
         }
 
         return $objEnum;

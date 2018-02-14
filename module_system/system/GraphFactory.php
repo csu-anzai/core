@@ -53,6 +53,6 @@ class GraphFactory {
                 return $objGraph;
         }
 
-        throw new Exception("Requested charts-plugin ".$strType." not existing", Exception::$level_FATALERROR);
+        throw new Exception("Requested charts-plugin ".$strType." not existing");
     }
 }

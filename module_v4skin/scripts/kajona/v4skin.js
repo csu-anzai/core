@@ -138,7 +138,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
 
     //enable the top navigation
     if (!util.isStackedDialog()) {
-        $('div.navbar-fixed-top').removeClass('hidden');
+        $('div.navbar-fixed-top .navbar-topbar').removeClass('hidden');
         $('div.pathNaviContainer').removeClass('hidden');
     }
 
@@ -241,6 +241,10 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
             });
 
             table.trigger('updated');
+        },
+
+        removeAllObjectListItems: function(strTableId) {
+            $('#'+strTableId).find(".removeLink").trigger('click');
         },
 
         /**

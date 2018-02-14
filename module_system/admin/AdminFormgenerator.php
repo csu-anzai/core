@@ -176,6 +176,12 @@ class AdminFormgenerator implements \Countable
     private $intButtonConfig = null;
 
     /**
+     * Renders errors as warnings, so less prominent
+     * @var bool
+     */
+    private $bitErrorsAsWarnings = false;
+
+    /**
      * Creates a new instance of the form-generator.
      *
      * @param string $strFormname
@@ -196,6 +202,7 @@ class AdminFormgenerator implements \Countable
      * Afterwards, the object may be persisted.
      *
      * @return void
+     * @throws Exception
      */
     public function updateSourceObject()
     {
@@ -262,7 +269,12 @@ class AdminFormgenerator implements \Countable
             //if field is not empty -> validate
             if (!$bitFieldIsEmpty) {
                 if (!$objOneField->validateValue()) {
-                    $this->addValidationError($objOneField->getStrEntryName(), $objOneField->getStrValidationErrorMsg());
+                    $arrErrorMessages = $objOneField->getValidationErrorMsg();
+                    foreach ($arrErrorMessages as $objValidationError) {
+                        $strFieldName = $objValidationError->getStrFieldName() === null ? $objOneField->getStrEntryName() : $objValidationError->getStrFieldName();
+                        $strMessage = $objOneField->getStrLabel() . ": " .$objValidationError->getStrErrorMessage();
+                        $this->addValidationError($strFieldName, $strMessage);
+                    }
                 }
             }
         }
@@ -335,6 +347,8 @@ class AdminFormgenerator implements \Countable
             $this->addField($objField);
         }
 
+        $this->addField(new FormentryHidden("", static::getStrFormSentParamForObject($this->objSourceobject)))->setStrValue("1");
+
         /*add reload URL param*/
         if ($this->strOnSaveRedirectUrl != "") {
             $objField = new FormentryHidden($this->strFormname, self::STR_FORM_ON_SAVE_RELOAD_PARAM);
@@ -373,7 +387,7 @@ class AdminFormgenerator implements \Countable
             $strReturn .= $this->objToolkit->formHeader($strTargetURI, $strGeneratedFormname, $this->strFormEncoding, $this->strOnSubmit, $this->strMethod);
         }
 
-        $strReturn .= $this->objToolkit->getValidationErrors($this);
+        $strReturn .= $this->objToolkit->getValidationErrors($this, $this->getBitErrorsAsWarnings());
         $strReturn .= $this->renderFields();
         $strReturn .= $this->renderButtons($intButtonConfig);
 
@@ -392,6 +406,27 @@ class AdminFormgenerator implements \Countable
 
         return $strReturn;
     }
+
+    /**
+     * Returns true if the current form was sent with the current request
+     * @return bool
+     */
+    public function getFormIsSent()
+    {
+        return Carrier::getInstance()->issetParam(static::getStrFormSentParamForObject($this->getObjSourceobject()));
+    }
+
+    /**
+     * Returns the form sent praram base on the given model object
+     *
+     * @param Root|null $objModel
+     * @return string
+     */
+    public static final function getStrFormSentParamForObject($objModel = null)
+    {
+        return "formsent_".($objModel instanceof Root ? $objModel->getSystemid() : "");
+    }
+
 
     /**
      * @return int
@@ -504,6 +539,7 @@ class AdminFormgenerator implements \Countable
      * Renders the javascript to lock the record
      *
      * @return string
+     * @throws Exception
      */
     protected function renderLock()
     {
@@ -685,6 +721,7 @@ class AdminFormgenerator implements \Countable
      * In order to identify a field as relevant, the getter has to be marked with a fieldType annotation.
      *
      * @return void
+     * @throws Exception
      */
     public function generateFieldsFromObject()
     {
@@ -1350,4 +1387,21 @@ class AdminFormgenerator implements \Countable
 
         return null;
     }
+
+    /**
+     * @return bool
+     */
+    public function getBitErrorsAsWarnings()
+    {
+        return $this->bitErrorsAsWarnings;
+    }
+
+    /**
+     * @param bool $bitErrorsAsWarnings
+     */
+    public function setBitErrorsAsWarnings($bitErrorsAsWarnings)
+    {
+        $this->bitErrorsAsWarnings = $bitErrorsAsWarnings;
+    }
+
 }
