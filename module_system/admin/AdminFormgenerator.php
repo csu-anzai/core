@@ -424,7 +424,7 @@ class AdminFormgenerator implements \Countable
      */
     public static final function getStrFormSentParamForObject($objModel = null)
     {
-        return "formsent_".($objModel !== null ? get_class($objModel) : "");
+        return "formsent_".($objModel !== null ? StringUtil::toLowerCase(get_class($objModel)) : "");
     }
 
 
