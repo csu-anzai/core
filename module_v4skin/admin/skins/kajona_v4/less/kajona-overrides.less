@@ -117,12 +117,16 @@ body {
         }
 
         .status-indicator {
-            top: 1px;
+            top: 0px;
             width: auto;
             margin-right: 15px;
             margin-left: 15px;
-            display: block;
+            display: none;
             position: relative;
+
+            &.active {
+                display: block;
+            }
         }
 
     }
