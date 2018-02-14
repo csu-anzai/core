@@ -1052,6 +1052,10 @@ abstract class Root
 
         $this->setStrPrevId($strPrevId);
 
+        if ($this->getStrOwner() == "") {
+            $this->setStrOwner($this->objSession->getUserID());
+        }
+
         if (SystemModule::getModuleByName("system") != null && version_compare(SystemModule::getModuleByName("system")->getStrVersion(), "4.7.5", "lt")) {
             //So, lets generate the record
             $strQuery = "INSERT INTO "._dbprefix_."system
@@ -1066,7 +1070,7 @@ abstract class Root
                     $strSystemId,
                     $strPrevId,
                     $this->getIntModuleNr(),
-                    $this->objSession->getUserID(),
+                    $this->getStrOwner(),
                     Date::getCurrentTimestamp(),
                     $this->objSession->getUserID(),
                     time(),
@@ -1091,7 +1095,7 @@ abstract class Root
                         $strSystemId,
                         $strPrevId,
                         $this->getIntModuleNr(),
-                        $this->objSession->getUserID(),
+                        $this->getStrOwner(),
                         Date::getCurrentTimestamp(),
                         $this->objSession->getUserID(),
                         time(),
@@ -1121,7 +1125,7 @@ abstract class Root
                         $strSystemId,
                         $strPrevId,
                         $this->getIntModuleNr(),
-                        $this->objSession->getUserID(),
+                        $this->getStrOwner(),
                         Date::getCurrentTimestamp(),
                         $this->objSession->getUserID(),
                         time(),
