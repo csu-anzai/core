@@ -74,12 +74,16 @@ class ValidationError
     }
 
     /**
-     * @param $arrErrors
+     * @param array $arrErrors
      * @return array
      * @deprecated
      */
     public static function transform($arrErrors)
     {
+        if (empty($arrErrors)) {
+            return [];
+        }
+
         $arrValidationErrors = [];
         foreach ($arrErrors as $objError) {
             /** @var ValidationError $objError */
