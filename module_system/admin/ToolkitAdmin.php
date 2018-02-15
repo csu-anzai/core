@@ -1218,7 +1218,13 @@ HTML;
                     break;
             }
 
-            $strElements .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/admin/skins/kajona_v4/elements.tpl", $strElementRow, true);
+            $bitHeadline = substr($strValue, 0, 1) == "#";
+            if ($bitHeadline) {
+                $strTitle = trim(substr($strValue, 1));
+                $strElements .= "<b>{$strTitle}</b><br>";
+            } else {
+                $strElements .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/admin/skins/kajona_v4/elements.tpl", $strElementRow, true);
+            }
         }
 
         $arrTemplate["elements"] = $strElements;
