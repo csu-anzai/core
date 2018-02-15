@@ -21,6 +21,7 @@ class FormentryTextarea extends FormentryBase implements FormentryPrintableInter
     private $strOpener = "";
     private $bitLarge = false;
     private $intNumberOfRows = 4;
+    private $strPlaceholder;
 
     public function __construct($strFormName, $strSourceProperty, $objSourceObject = null) {
         parent::__construct($strFormName, $strSourceProperty, $objSourceObject);
@@ -41,7 +42,7 @@ class FormentryTextarea extends FormentryBase implements FormentryPrintableInter
         if($this->getStrHint() != null)
             $strReturn .= $objToolkit->formTextRow($this->getStrHint());
 
-        $strReturn .= $objToolkit->formInputTextArea($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue(), $this->bitLarge ? "input-large" : "", $this->getBitReadonly(), $this->getIntNumberOfRows(), $this->strOpener);
+        $strReturn .= $objToolkit->formInputTextArea($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue(), $this->bitLarge ? "input-large" : "", $this->getBitReadonly(), $this->getIntNumberOfRows(), $this->strOpener, $this->getStrPlaceholder());
 
         return $strReturn;
     }
@@ -101,7 +102,20 @@ class FormentryTextarea extends FormentryBase implements FormentryPrintableInter
         return $this->intNumberOfRows;
     }
 
+    /**
+     * @return string
+     */
+    public function getStrPlaceholder()
+    {
+        return $this->strPlaceholder;
+    }
 
-
-
+    /**
+     * @param string $strPlaceholder
+     */
+    public function setStrPlaceholder($strPlaceholder)
+    {
+        $this->strPlaceholder = $strPlaceholder;
+        return $this;
+    }
 }

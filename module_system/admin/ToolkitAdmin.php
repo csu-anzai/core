@@ -622,7 +622,7 @@ class ToolkitAdmin extends Toolkit
      *
      * @return string
      */
-    public function formInputTextArea($strName, $strTitle = "", $strValue = "", $strClass = "", $bitReadonly = false, $numberOfRows = 4, $strOpener = "")
+    public function formInputTextArea($strName, $strTitle = "", $strValue = "", $strClass = "", $bitReadonly = false, $numberOfRows = 4, $strOpener = "", $strPlaceholder)
     {
         $arrTemplate = array();
         $arrTemplate["name"] = $strName;
@@ -632,6 +632,7 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["readonly"] = ($bitReadonly ? " readonly=\"readonly\" " : "");
         $arrTemplate["numberOfRows"] = $numberOfRows;
         $arrTemplate["opener"] = $strOpener;
+        $arrTemplate["placeholder"] = !empty($strPlaceholder) ? 'placeholder="' . htmlspecialchars($strPlaceholder) . '"' : "";
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_textarea");
     }
 
