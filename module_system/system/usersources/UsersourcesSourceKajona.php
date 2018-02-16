@@ -260,16 +260,15 @@ class UsersourcesSourceKajona implements UsersourcesUsersourceInterface
 
 
     /**
-     * Returns an array of group-ids provided by the current source.
-     *
-     * @return string
+     * @inheritdoc
      */
-    public function getAllGroupIds()
+    public function getAllGroupIds($bitIgnoreSystemGroups = false)
     {
         $strQuery = "SELECT gk.group_id as group_id
                        FROM "._dbprefix_."user_group_kajona AS gk,
                             "._dbprefix_."user_group AS g
                       WHERE g.group_id = gk.group_id
+                           ".($bitIgnoreSystemGroups ? " AND g.group_system_group != 1 " : "")."
                       ORDER BY g.group_name";
         $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, array());
         $arrReturn = array();
