@@ -1156,6 +1156,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      *
      * @return string
      * @permissions edit
+     * @throws Exception
      */
     protected function actionEditMemberships()
     {
@@ -1166,7 +1167,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
         $objUsersources = new UserSourcefactory();
         $objSourcesytem = $objUsersources->getUsersource($objUser->getStrSubsystem());
 
-        $arrGroups = $objSourcesytem->getAllGroupIds();
+        $arrGroups = $objSourcesytem->getAllGroupIds(true);
         $arrUserGroups = $objUser->getArrGroupIds();
 
         $objForm = new AdminFormgenerator("user", $objUser);

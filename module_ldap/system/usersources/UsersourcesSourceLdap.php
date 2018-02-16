@@ -261,16 +261,15 @@ class UsersourcesSourceLdap implements UsersourcesUsersourceInterface
     }
 
     /**
-     * Returns an array of group-ids provided by the current source.
-     *
-     * @return string[]
+     * @inheritdoc
      */
-    public function getAllGroupIds()
+    public function getAllGroupIds($bitIgnoreSystemGroups = false)
     {
         $strQuery = "SELECT group_id
                        FROM " . _dbprefix_ . "user_group_ldap,
                             " . _dbprefix_ . "user_group
                       WHERE group_id = group_ldap_id
+                      ".($bitIgnoreSystemGroups ? " AND group_system_group != 1 " : "")."
                       ORDER BY group_name";
         $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, array());
         $arrReturn = array();
