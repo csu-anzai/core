@@ -12,6 +12,7 @@ use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Reflection;
+use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemModule;
 use ReflectionClass;
 use Traversable;
@@ -61,10 +62,19 @@ class FormentryObjecttags extends FormentryTageditor
             $strReturn .= $objToolkit->formInputObjectList($this->getStrEntryName(), $this->getStrLabel(), $this->arrKeyValues, "", $this->getBitReadonly());
         } else {
             $strReturn .= $objToolkit->formInputObjectTags($this->getStrEntryName(), $this->getStrLabel(), $this->strSource, $this->arrKeyValues, $this->strOnChangeCallback);
-            $strReturn .= $objToolkit->formInputHidden($this->getStrEntryName()."_prescheck", "1");
+            $strReturn .= $objToolkit->formInputHidden($this->getPresCheckKey(), "1");
         }
 
         return $strReturn;
+    }
+
+    /**
+     * Creates a pres-check key to detect de-selected entries
+     * @return string
+     */
+    private function getPresCheckKey()
+    {
+        return StringUtil::replace(["[", "]"], "", $this->getStrEntryName()."_prescheck");
     }
 
     /**
@@ -78,7 +88,7 @@ class FormentryObjecttags extends FormentryTageditor
         $arrParams = Carrier::getAllParams();
         if (isset($arrParams[$this->getStrEntryName() . "_id"])) {
             $this->setStrValue($arrParams[$this->getStrEntryName() . "_id"]);
-        } elseif (isset($arrParams[$this->getStrEntryName()."_prescheck"])) {
+        } elseif (isset($arrParams[$this->getPresCheckKey()])) {
             $this->setStrValue(array());
         } else {
             $this->setStrValue($this->getValueFromObject());

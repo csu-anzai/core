@@ -136,6 +136,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * Returns a list of current users
      *
      * @return string
+     * @throws Exception
      * @autoTestable
      * @permissions view
      */
@@ -194,6 +195,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * @param ModelInterface $objListEntry
      *
      * @return string
+     * @throws Exception
      */
     protected function renderDeleteAction(ModelInterface $objListEntry)
     {
@@ -255,6 +257,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * @param Model $objListEntry
      *
      * @return string
+     * @throws Exception
      */
     protected function renderCopyAction(Model $objListEntry)
     {
@@ -272,6 +275,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * @param Model|UserUser $objListEntry
      *
      * @return array
+     * @throws Exception
      */
     protected function renderAdditionalActions(Model $objListEntry)
     {
@@ -374,6 +378,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
 
     /**
      * @return string
+     * @throws Exception
      * @permissions edit
      */
     protected function actionSendPasswordFinal()
@@ -404,8 +409,9 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * @param string $strAction
      * @param AdminFormgenerator|null $objForm
      *
-     * @permissions edit
      * @return string
+     * @throws Exception
+     * @permissions edit
      * @autoTestable
      */
     protected function actionNewUser($strAction = "new", AdminFormgenerator $objForm = null)
@@ -538,6 +544,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * @param string $strMode
      *
      * @return AdminFormgenerator|Model
+     * @throws Exception
      */
     protected function getUserForm(UsersourcesUserInterface $objUser, $bitSelfedit, $strMode)
     {
@@ -648,6 +655,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      *
      * @permissions edit
      * @return string
+     * @throws Exception
      */
     protected function actionSaveUser()
     {
@@ -766,6 +774,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * Deletes a user from the database
      *
      * @return string
+     * @throws Exception
      * @permissions delete
      */
     protected function actionDeleteUser()
@@ -783,6 +792,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * Returns the list of all current groups
      *
      * @return string
+     * @throws Exception
      * @autoTestable
      * @permissions view
      */
@@ -829,6 +839,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * @param AdminFormgenerator|null $objForm
      *
      * @return string
+     * @throws Exception
      * @permissions edit
      * @autoTestable
      */
@@ -892,6 +903,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * @param UsersourcesGroupInterface|Model $objGroup
      *
      * @return AdminFormgenerator
+     * @throws Exception
      */
     private function getGroupForm(UsersourcesGroupInterface $objGroup)
     {
@@ -922,6 +934,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * Saves a new group to database
      *
      * @return string "" in case of success
+     * @throws Exception
      * @permissions edit
      */
     protected function actionGroupSave()
@@ -984,6 +997,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * Returns a list of users belonging to a specified group
      *
      * @return string
+     * @throws Exception
      * @permissions edit
      */
     protected function actionGroupMember()
@@ -1037,6 +1051,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * @param AdminFormgenerator $objForm
      *
      * @return string
+     * @throws Exception
      */
     protected function actionAddUserToGroupForm(AdminFormgenerator $objForm = null)
     {
@@ -1062,6 +1077,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * Adds a single user to a group
      *
      * @return string
+     * @throws Exception
      * @permissions edit
      */
     protected function actionAddUserToGroup()
@@ -1155,6 +1171,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * Shows a form to manage memberships of a user in groups
      *
      * @return string
+     * @throws Exception
      * @permissions edit
      * @throws Exception
      */
@@ -1162,7 +1179,6 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
     {
         /** @var UserUser $objUser */
         $objUser = Objectfactory::getInstance()->getObject($this->getSystemid());
-
         //Collect groups from the same source
         $objUsersources = new UserSourcefactory();
         $objSourcesytem = $objUsersources->getUsersource($objUser->getStrSubsystem());
@@ -1177,10 +1193,9 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
 HTML;
         $objForm->addField(new FormentryPlaintext())->setStrValue($strJs);
 
-        if (count($arrUserGroups) == 0) {
-            $objForm->addField(new FormentryPlaintext())->setStrValue($this->objToolkit->warningBox($this->getLang("form_user_hint_groups")));
-        }
 
+
+        $intCheckedGroups = 0;
         foreach ($arrGroups as $strSingleGroup) {
             //to avoid privilege escalation, the admin-group and other special groups need to be treated in a special manner
             $objSingleGroup = new UserGroup($strSingleGroup);
@@ -1188,14 +1203,24 @@ HTML;
                 continue;
             }
 
+            if (in_array($strSingleGroup, $arrUserGroups)) {
+                $intCheckedGroups++;
+            }
             $objForm->addField(new FormentryCheckbox("user", "group[".$objSingleGroup->getSystemid()."]"))->setStrLabel($objSingleGroup->getStrName())->setStrValue(in_array($strSingleGroup, $arrUserGroups));
         }
 
-        $objForm->addField(new FormentryPlaintext())->setStrValue("<script type=\"text/javascript\">
+
+        if ($intCheckedGroups == 0) {
+            $objForm->addField(new FormentryPlaintext(), "intro")->setStrValue($this->objToolkit->warningBox($this->getLang("form_user_hint_groups")));
+            $objForm->setFieldToPosition("intro", 1);
+        } else {
+            $objForm->addField(new FormentryPlaintext())->setStrValue("<script type=\"text/javascript\">
             require(['permissions'], function(permissions){
                 permissions.toggleEmtpyRows('".$this->getLang("permissions_toggle_visible", "system")."', '".$this->getLang("permissions_toggle_hidden", "system")."', 'form .form-group');
             });
-        </script>");
+            </script>");
+        }
+
 
         $objForm->addField(new FormentryHidden("", "redirecttolist"))->setStrValue($this->getParam("redirecttolist"));
         return $objForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "saveMembership"));
@@ -1582,6 +1607,7 @@ HTML;
      * @param UserUser $objUser
      *
      * @return bool
+     * @throws Exception
      */
     private function hasUserViewPermissions($strValidateId, UserUser $objUser)
     {
@@ -1610,6 +1636,7 @@ HTML;
      *
      * @permissions loggedin
      * @return string
+     * @throws Exception
      * @responseType json
      */
     protected function actionGetUserByFilter()
