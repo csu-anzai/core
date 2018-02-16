@@ -2398,7 +2398,7 @@ HTML;
      * @param ArraySectionIterator $objArraySectionIterator
      * @param string $strModule
      * @param string $strAction
-     * @param string $strLinkAdd
+     * @param string|array $strLinkAdd
      *
      * @return string the pageview code
      * @since 4.6
@@ -2415,6 +2415,10 @@ HTML;
 
         $strListItems = "";
 
+        if (is_string($strLinkAdd)) {
+            $strLinkAdd = explode("&", $strLinkAdd);
+        }
+
         //just load the current +-4 pages and the first/last +-2
         $intCounter2 = 1;
         for ($intI = 1; $intI <= $intNrOfPages; $intI++) {
@@ -2427,10 +2431,9 @@ HTML;
                 $bitDisplay = true;
             }
 
-
             if ($bitDisplay) {
                 $arrLinkTemplate = array();
-                $arrLinkTemplate["href"] = Link::getLinkAdminHref($strModule, $strAction, $strLinkAdd."&pv=".$intI, true, true);
+                $arrLinkTemplate["href"] = Link::getLinkAdminHref($strModule, $strAction, $strLinkAdd + ["pv" => $intI], true, true);
                 $arrLinkTemplate["pageNr"] = $intI;
 
                 if ($intI == $intCurrentpage) {
@@ -2448,7 +2451,7 @@ HTML;
             $arrTemplate["linkForward"] = $this->objTemplate->fillTemplateFile(
                 array(
                     "linkText" => Carrier::getInstance()->getObjLang()->getLang("pageview_forward", "system"),
-                    "href"     => Link::getLinkAdminHref($strModule, $strAction, $strLinkAdd."&pv=".($intCurrentpage + 1), true, true)
+                    "href"     => Link::getLinkAdminHref($strModule, $strAction, $strLinkAdd + ["pv" => ($intCurrentpage + 1)], true, true)
                 ),
                 "/admin/skins/kajona_v4/elements.tpl",
                 "pageview_link_forward"
@@ -2458,7 +2461,7 @@ HTML;
             $arrTemplate["linkBackward"] = $this->objTemplate->fillTemplateFile(
                 array(
                     "linkText" => Carrier::getInstance()->getObjLang()->getLang("commons_back", "commons"),
-                    "href"     => Link::getLinkAdminHref($strModule, $strAction, $strLinkAdd."&pv=".($intCurrentpage - 1), true, true)
+                    "href"     => Link::getLinkAdminHref($strModule, $strAction, $strLinkAdd + ["pv" => ($intCurrentpage - 1)], true, true)
                 ),
                 "/admin/skins/kajona_v4/elements.tpl",
                 "pageview_link_backward"
