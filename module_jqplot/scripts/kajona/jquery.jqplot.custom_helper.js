@@ -46,8 +46,9 @@ define([
      * @param objChartOptions - chart rendering options
      * @param objPostPlotOptions - options set for pos plotting
      * @param arrSeriesToDataPoints - two dimensional array which may contains urls for each data point of a series. format: array[seriesIndex][dataPointIndex] => strURL
+     * @todo umstellen auf jquery options objekt
      */
-    jqplotHelper.jqPlotChart = function (strChartId, strTooltipId, strResizeableId, bitEnableChartResizing, arrChartData, objChartOptions, objPostPlotOptions, arrSeriesToDataPoints) {
+    jqplotHelper.jqPlotChart = function (strChartId, strTooltipId, strResizeableId, bitEnableChartResizing, arrChartData, objChartOptions, objPostPlotOptions, arrSeriesToDataPoints, bitIsResponsive) {
         this.strTooltipId = strTooltipId;
         this.strChartId = strChartId;
         this.strResizeableId = strResizeableId;
@@ -55,6 +56,7 @@ define([
         this.objChartOptions = objChartOptions;
         this.objPostPlotOptions = objPostPlotOptions;
         this.arrSeriesToDataPoints = arrSeriesToDataPoints;
+        this.bitIsResponsive = bitIsResponsive;
 
         this.objJqplotChart = null;//the actual jqPlot object
         this.bitIsRendered = false;//flag to tell if the chart was already rendered or not (needed in case the chart should replotted)
@@ -89,6 +91,10 @@ define([
             if (this.bitEnableChartResizing) {
                 jqplotHelper.enableChartResizing(this.strChartId, this.strResizeableId);
             }
+
+            if (this.bitIsResponsive) {
+                jqplotHelper.enableChartResponsive(this.strChartId, this.strResizeableId);
+            }
         };
 
         /**
@@ -116,6 +122,13 @@ define([
                 jqplotHelper.arrChartObjects[strChartId].render();
             }
         });
+    };
+
+    jqplotHelper.enableChartResponsive = function (strChartId, strResizeableId) {
+        $(window).resize(function() {
+            jqplotHelper.arrChartObjects[strChartId].render();
+        });
+
     };
 
     jqplotHelper.bindDataClickEvents = function (strChartId) {
