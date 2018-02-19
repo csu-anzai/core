@@ -2423,7 +2423,9 @@ HTML;
         $strListItems = "";
 
         if (is_string($strLinkAdd)) {
-            $strLinkAdd = explode("&", $strLinkAdd);
+            $arrParams = [];
+            parse_str($strLinkAdd, $arrParams);
+            $strLinkAdd = $arrParams;
         }
 
         //just load the current +-4 pages and the first/last +-2
