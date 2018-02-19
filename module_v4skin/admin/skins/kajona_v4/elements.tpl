@@ -463,7 +463,7 @@ Textarea
     <div class="form-group">
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
         <div class="col-sm-6 %%class%%">
-            <textarea name="%%name%%" id="%%name%%" class="form-control" rows="%%numberOfRows%%" %%readonly%% %%placeholder%%>%%value%%</textarea>
+            <textarea name="%%name%%" id="%%name%%" class="form-control" rows="%%numberOfRows%%" %%readonly%% placeholder="%%placeholder%%">%%value%%</textarea>
         </div>
         <div class="col-sm-2 form-opener">
             %%opener%%

@@ -632,7 +632,7 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["readonly"] = ($bitReadonly ? " readonly=\"readonly\" " : "");
         $arrTemplate["numberOfRows"] = $numberOfRows;
         $arrTemplate["opener"] = $strOpener;
-        $arrTemplate["placeholder"] = !empty($strPlaceholder) ? 'placeholder="' . htmlspecialchars($strPlaceholder) . '"' : "";
+        $arrTemplate["placeholder"] = !empty($strPlaceholder) ? htmlspecialchars($strPlaceholder) : "";
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_textarea");
     }
 
