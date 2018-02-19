@@ -706,6 +706,7 @@ Upload-Field for multiple files with progress bar
                     var rows = $();
                     $.each(o.files, function (index, file) {
                         var row = $('#%%name%%_upl .fileupload-list-template .template-upload').clone();
+                        file.name = file.name.replace(/(.{60})/g,"$1 ");
                         row.find('.name').text(file.name);
                         row.find('.size').text(o.formatFileSize(file.size));
                         if (file.error) {

@@ -101,8 +101,10 @@ interface UsersourcesUsersourceInterface
     /**
      * Returns an array of group-ids provided by the current source.
      * return string
+     * @param bool $bitIgnoreSystemGroups
+     * @return
      */
-    public function getAllGroupIds();
+    public function getAllGroupIds($bitIgnoreSystemGroups = false);
 
     /**
      * Returns a readable name of the source, e.g. "Kajona" or "LDAP Company 1"

@@ -11,6 +11,7 @@ use Kajona\System\Admin\FormentryPrintableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Reflection;
+use Kajona\System\System\StringUtil;
 use Kajona\System\System\Validators\DummyValidator;
 
 /**
@@ -73,11 +74,18 @@ class FormentryCheckboxarray extends FormentryBase implements FormentryPrintable
         }
 
         $strReturn .= $objToolkit->formInputCheckboxArray($this->getStrEntryName(), $this->getStrLabel(), $this->intType, $this->arrKeyValues, $this->getStrValue(), $this->bitInline, $this->getBitReadonly());
-        $strReturn .= $objToolkit->formInputHidden($this->getStrEntryName()."_prescheck", "1");
-
-
+        $strReturn .= $objToolkit->formInputHidden($this->getPresCheckKey(), "1");
 
         return $strReturn;
+    }
+
+    /**
+     * Creates a pres-check key to detect de-selected entries
+     * @return string
+     */
+    final protected function getPresCheckKey()
+    {
+        return StringUtil::replace(["[", "]"], "", $this->getStrEntryName()."_prescheck");
     }
 
     /**
@@ -117,7 +125,7 @@ class FormentryCheckboxarray extends FormentryBase implements FormentryPrintable
         $arrParams = Carrier::getAllParams();
         if (isset($arrParams[$this->getStrEntryName()])) {
             $this->setStrValue($arrParams[$this->getStrEntryName()]);
-        } elseif (isset($arrParams[$this->getStrEntryName()."_prescheck"])) {
+        } elseif (isset($arrParams[$this->getPresCheckKey()])) {
             $this->setStrValue(array());
         } else {
             $this->setStrValue($this->getValueFromObject());
