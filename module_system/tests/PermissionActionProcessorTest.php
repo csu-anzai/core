@@ -69,7 +69,7 @@ class PermissionActionProcessorTest extends Testbase
     /**
      * @throws \Kajona\System\System\Exception
      */
-    public function testEmptyActions(): void
+    public function testEmptyActions()
     {
         $permManager = new PermissionActionProcessor(Rights::getInstance());
         $this->assertFalse($permManager->applyActions());
@@ -78,7 +78,7 @@ class PermissionActionProcessorTest extends Testbase
     /**
      * @throws \Kajona\System\System\Exception
      */
-    public function testResolvingActions(): void
+    public function testResolvingActions()
     {
         $permManager = new PermissionActionProcessor(Rights::getInstance());
         $permManager->addAction(new AddPermissionToGroup(self::$aspectA->getSystemid(), self::$groupA->getSystemid(), Rights::$STR_RIGHT_EDIT));
@@ -89,7 +89,7 @@ class PermissionActionProcessorTest extends Testbase
     /**
      * @throws \Kajona\System\System\Exception
      */
-    public function testSingleAction(): void
+    public function testSingleAction()
     {
         $this->assertFalse(Rights::getInstance()->checkPermissionForGroup(self::$groupA->getSystemid(), Rights::$STR_RIGHT_EDIT, self::$aspectA->getSystemid()));
 
@@ -109,7 +109,7 @@ class PermissionActionProcessorTest extends Testbase
     /**
      * @throws \Kajona\System\System\Exception
      */
-    public function testMultipleActions(): void
+    public function testMultipleActions()
     {
         $this->assertFalse(Rights::getInstance()->checkPermissionForGroup(self::$groupA->getSystemid(), Rights::$STR_RIGHT_EDIT, self::$aspectA->getSystemid()));
         $this->assertFalse(Rights::getInstance()->checkPermissionForGroup(self::$groupA->getSystemid(), Rights::$STR_RIGHT_DELETE, self::$aspectA->getSystemid()));
