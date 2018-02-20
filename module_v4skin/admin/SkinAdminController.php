@@ -52,6 +52,7 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
      * @param $strContent
      * @permissions view
      * @return string
+     * @throws \Kajona\System\System\Exception
      */
     public function actionGenerateMainTemplate($strContent)
     {
@@ -85,25 +86,43 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
      * @param $strContent
      * @permissions view
      * @return string
+     * @throws \Kajona\System\System\Exception
      */
     public function actionGenerateFolderviewTemplate($strContent)
     {
-        $arrTemplate = ["content" => $strContent];
-
-        $objAdminHelper = new AdminHelper();
-        $arrTemplate["webpathTitle"] = urldecode(str_replace(["http://", "https://"], ["", ""], _webpath_));
-        $arrTemplate["head"] = "<script type=\"text/javascript\">KAJONA_DEBUG = ".$this->objConfig->getDebug("debuglevel")."; KAJONA_WEBPATH = '"._webpath_."'; KAJONA_BROWSER_CACHEBUSTER = ".SystemSetting::getConfigValue("_system_browser_cachebuster_")."; KAJONA_LANGUAGE = '".Carrier::getInstance()->getObjSession()->getAdminLanguage()."';KAJONA_PHARMAP = ".json_encode(array_values(Classloader::getInstance()->getArrPharModules()))."; var require = {$objAdminHelper->generateRequireJsConfig()};</script>";
-
-        $strTemplate = "/main.tpl";
-        return $this->objTemplate->fillTemplateFile($arrTemplate, $strTemplate);
+        return $this->renderTemplate("/main.tpl", $strContent);
     }
 
     /**
      * @param $strContent
      * @permissions view
      * @return string
+     * @throws \Kajona\System\System\Exception
      */
     public function actionGenerateLoginTemplate($strContent)
+    {
+        return $this->renderTemplate("/login.tpl", $strContent);
+    }
+
+    /**
+     * @param $strContent
+     * @permissions view
+     * @return string
+     * @throws \Kajona\System\System\Exception
+     */
+    public function actionGenerateAnonymousTemplate($strContent)
+    {
+        return $this->renderTemplate("/anonymous.tpl", $strContent);
+    }
+
+    /**
+     * Internal helper to render the backend template
+     * @param $strTemplate
+     * @param $strContent
+     * @return string
+     * @throws \Kajona\System\System\Exception
+     */
+    private function renderTemplate($strTemplate, $strContent)
     {
         $arrTemplate = ["content" => $strContent];
 
@@ -112,7 +131,6 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
         $arrTemplate["webpathTitle"] = urldecode(str_replace(["http://", "https://"], ["", ""], _webpath_));
         $arrTemplate["head"] = "<script type=\"text/javascript\">KAJONA_DEBUG = ".$this->objConfig->getDebug("debuglevel")."; KAJONA_WEBPATH = '"._webpath_."'; KAJONA_BROWSER_CACHEBUSTER = ".SystemSetting::getConfigValue("_system_browser_cachebuster_")."; KAJONA_LANGUAGE = '".Carrier::getInstance()->getObjSession()->getAdminLanguage()."';KAJONA_PHARMAP = ".json_encode(array_values(Classloader::getInstance()->getArrPharModules()))."; var require = {$objAdminHelper->generateRequireJsConfig()};</script>";
 
-        $strTemplate = "/login.tpl";
         return $this->objTemplate->fillTemplateFile($arrTemplate, $strTemplate);
     }
 

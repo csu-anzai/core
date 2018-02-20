@@ -262,7 +262,7 @@ class RequestDispatcher
                 return Exception::renderException(new ActionNotFoundException("you are not authorized/authenticated to call this action", Exception::$level_FATALERROR));
             }
 
-            if (count(Carrier::getInstance()->getObjDB()->getTables()) == 0 && file_exists(_realpath_."installer.php")) {
+            if (count(Carrier::getInstance()->getObjDB()->getTables()) == 0 && file_exists(_realpath_."/installer.php")) {
                 return Link::clientRedirectManual(_webpath_."/installer.php");
             }
 
@@ -271,7 +271,11 @@ class RequestDispatcher
             $strReturn = $objLogin->action($strAction);
 
             if (Carrier::getInstance()->getParam("contentFill") != "1") {
-                $strReturn = $objHelper->actionGenerateLoginTemplate("<div class='loadingContainer'></div>");
+                if (!empty(Carrier::getInstance()->getParam("anonymous"))) {
+                    $strReturn = $objHelper->actionGenerateAnonymousTemplate("<div class='loadingContainer'></div>");
+                } else {
+                    $strReturn = $objHelper->actionGenerateLoginTemplate("<div class='loadingContainer'></div>");
+                }
             }
         }
 

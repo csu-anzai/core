@@ -39,6 +39,7 @@ class GraphJqplot implements GraphInterface
     private $bitIsHorizontalBar = false;
 
     private $bitIsResizeable = true;
+    private $bitIsResponsive = false;
     private $bitDownloadLink = true;
 
     const STRING_FORMAT = "%s";
@@ -504,8 +505,9 @@ class GraphJqplot implements GraphInterface
         $strTooltipId = "tooltip_".$strSystemId;
         $strImageExportId = $strChartId."_exportpng";
 
+        $strWidth = $this->bitIsResponsive ? "100%" : $this->intWidth."px";
         //create div where the chart is being put
-        $strReturn = "<div onmouseover='$(\"#\"+\"{$strImageExportId}\").show();' onmouseout='$(\"#\"+\"{$strImageExportId}\").hide();' id=\"$strResizeableId\" style=\"width:".$this->intWidth."px; height:".$this->intHeight."px;\">";
+        $strReturn = "<div onmouseover='$(\"#\"+\"{$strImageExportId}\").show();' onmouseout='$(\"#\"+\"{$strImageExportId}\").hide();' id=\"$strResizeableId\" style=\"width:{$strWidth}; height:".$this->intHeight."px;\">";
 
         //chart div
         $strReturn .= "<div id=\"$strChartId\" style=\"width:95%; height:100%; float: left;\"></div>";
@@ -557,7 +559,7 @@ class GraphJqplot implements GraphInterface
                         $.jqplot.sprintf.thousandsSeparator = '$strThousandsChar';
                         $.jqplot.sprintf.decimalMark = '$strDecChar';
 
-                        var objChart_$strChartId = new jqplotHelper.jqPlotChart('$strChartId', '$strTooltipId', '$strResizeableId', '$this->bitIsResizeable', $strChartData, $strChartOptions, $strPostPlotOptions, $strDataPointObjects);
+                        var objChart_$strChartId = new jqplotHelper.jqPlotChart('$strChartId', '$strTooltipId', '$strResizeableId', '$this->bitIsResizeable', $strChartData, $strChartOptions, $strPostPlotOptions, $strDataPointObjects, '$this->bitIsResponsive');
                         objChart_$strChartId.render();
                 });
             });
@@ -1139,6 +1141,26 @@ class GraphJqplot implements GraphInterface
     {
         $this->arrOptions["grid"]["drawBorder"] = $bitDrawBorder;
     }
+
+    /**
+     * If enabled, line chars are rendered smooth
+     * @param $bitSmooth
+     */
+    public function setRenderSmoothLines($bitSmooth)
+    {
+        $this->arrOptions["seriesDefaults"]["rendererOptions"]["smooth"] = $bitSmooth;
+    }
+
+    /**
+     * Enables general repsonsiveness of the chart. This includes that the chart takes up 100% width of the parent container.
+     * @param bool $bitIsResponsive
+     */
+    public function setBitIsResponsive($bitIsResponsive)
+    {
+        $this->bitIsResponsive = $bitIsResponsive;
+    }
+
+
 
     /**
      * @return boolean
