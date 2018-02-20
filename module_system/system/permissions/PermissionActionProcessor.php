@@ -50,6 +50,9 @@ class PermissionActionProcessor
         $updated = false;
         //fetch the old permissions
         foreach ($this->actions as $systemid => $actions) {
+            if (empty($actions)) {
+                continue;
+            }
             $permissionRow = $this->rights->getArrayRights($systemid);
             $oldPermissionRow = $permissionRow;
 
