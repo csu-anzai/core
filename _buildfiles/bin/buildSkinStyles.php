@@ -7,7 +7,7 @@ echo "Collecting less files".PHP_EOL;
 
 $strRoot = realpath(__DIR__."/../../..");
 $arrFiles = [
-    $strRoot."/core/module_v4skin/admin/skins/kajona_v4/less/bootstrap.less"
+
 ];
 
 
@@ -65,6 +65,7 @@ foreach ($objIterator as $strPath => $objDir) {
 }
 
 natsort($arrFiles);
+array_unshift($arrFiles, $strRoot."/core/module_v4skin/admin/skins/kajona_v4/less/bootstrap.less");
 
 //create a temp less file
 $strFile = "";
