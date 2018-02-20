@@ -34,9 +34,9 @@ use Kajona\System\System\SystemJSTreeConfig;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\Toolkit;
+use Kajona\System\View\Components\Datatable\Datatable;
 use Kajona\Tags\System\TagsFavorite;
 use Kajona\Tags\System\TagsTag;
-use Kajona\View\Components\Datatable\Datatable;
 
 /**
  * Admin-Part of the toolkit-classes
