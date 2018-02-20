@@ -6,8 +6,7 @@
  * Time: 16:32
  */
 
-namespace Kajona\View\Components;
-
+namespace Kajona\System\View\Components;
 
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Reflection;

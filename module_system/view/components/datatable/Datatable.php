@@ -6,9 +6,10 @@
 
 declare(strict_types = 1);
 
-namespace Kajona\View\Components\Datatable;
+namespace Kajona\System\View\Components\Datatable;
+
 use Kajona\System\System\StringUtil;
-use Kajona\View\Components\AbstractComponent;
+use Kajona\System\View\Components\AbstractComponent;
 
 /**
  * Returns a table filled with infos.
