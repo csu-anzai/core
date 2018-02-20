@@ -41,7 +41,7 @@ class RemovePermissionFromGroup implements PermissionActionInterface
     /**
      * @inheritdoc
      */
-    public function applyAction($permissions): array
+    public function applyAction(array $permissions): array
     {
         $intKey = array_search($this->getGroupId(), $permissions[$this->permission]);
         if ($intKey !== false) {

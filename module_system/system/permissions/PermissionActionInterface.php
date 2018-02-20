@@ -30,9 +30,9 @@ interface PermissionActionInterface
     /**
      * Applies the action to the set of permissions.
      *
-     * @param $permissions
+     * @param array $permissions
      * @return array
      * @see Rights::getArrayRights()
      */
-    public function applyAction($permissions): array;
+    public function applyAction(array $permissions): array;
 }

@@ -21,27 +21,38 @@ namespace Kajona\System\System\Permissions;
  */
 class AddPermissionToGroup implements PermissionActionInterface
 {
+    /**
+     * @var string
+     */
     private $systemid = "";
+
+    /**
+     * @var string
+     */
     private $groupId = "";
+
+    /**
+     * @var string
+     */
     private $permission = "";
 
     /**
      * AddPermissionToGroup constructor.
-     * @param $strSystemid
-     * @param $strGroupId
-     * @param $strPermission
+     * @param string $systemId
+     * @param string $groupId
+     * @param string $permission
      */
-    public function __construct(string $strSystemid, string $strGroupId, string $strPermission)
+    public function __construct(string $systemId, string $groupId, string $permission)
     {
-        $this->systemid = $strSystemid;
-        $this->groupId = $strGroupId;
-        $this->permission = $strPermission;
+        $this->systemid = $systemId;
+        $this->groupId = $groupId;
+        $this->permission = $permission;
     }
 
     /**
      * @inheritdoc
      */
-    public function applyAction($permissions): array
+    public function applyAction(array $permissions): array
     {
         if (!in_array($this->getGroupId(), $permissions[$this->permission])) {
             $permissions[$this->permission][] = $this->getGroupId();
