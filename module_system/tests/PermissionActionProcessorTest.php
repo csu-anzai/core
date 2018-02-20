@@ -4,14 +4,12 @@ declare(strict_types = 1);
 
 namespace Kajona\System\Tests;
 
-use Kajona\System\System\Carrier;
 use Kajona\System\System\Permissions\AddPermissionToGroup;
 use Kajona\System\System\Permissions\PermissionActionProcessor;
 use Kajona\System\System\Permissions\RemovePermissionFromGroup;
 use Kajona\System\System\Rights;
 use Kajona\System\System\SystemAspect;
 use Kajona\System\System\UserGroup;
-use Kajona\System\System\UserUser;
 
 class PermissionActionProcessorTest extends Testbase
 {
@@ -35,6 +33,9 @@ class PermissionActionProcessorTest extends Testbase
      */
     private static $groupB;
 
+    /**
+     * @throws \Kajona\System\System\Exception
+     */
     public function setUp()
     {
         parent::setUp();
@@ -65,12 +66,18 @@ class PermissionActionProcessorTest extends Testbase
 
     }
 
+    /**
+     * @throws \Kajona\System\System\Exception
+     */
     public function testEmptyActions(): void
     {
         $permManager = new PermissionActionProcessor(Rights::getInstance());
         $this->assertFalse($permManager->applyActions());
     }
 
+    /**
+     * @throws \Kajona\System\System\Exception
+     */
     public function testResolvingActions(): void
     {
         $permManager = new PermissionActionProcessor(Rights::getInstance());
@@ -79,6 +86,9 @@ class PermissionActionProcessorTest extends Testbase
         $this->assertFalse($permManager->applyActions());
     }
 
+    /**
+     * @throws \Kajona\System\System\Exception
+     */
     public function testSingleAction(): void
     {
         $this->assertFalse(Rights::getInstance()->checkPermissionForGroup(self::$groupA->getSystemid(), Rights::$STR_RIGHT_EDIT, self::$aspectA->getSystemid()));
@@ -96,6 +106,9 @@ class PermissionActionProcessorTest extends Testbase
         $this->assertFalse(Rights::getInstance()->checkPermissionForGroup(self::$groupA->getSystemid(), Rights::$STR_RIGHT_EDIT, self::$aspectA->getSystemid()));
     }
 
+    /**
+     * @throws \Kajona\System\System\Exception
+     */
     public function testMultipleActions(): void
     {
         $this->assertFalse(Rights::getInstance()->checkPermissionForGroup(self::$groupA->getSystemid(), Rights::$STR_RIGHT_EDIT, self::$aspectA->getSystemid()));
