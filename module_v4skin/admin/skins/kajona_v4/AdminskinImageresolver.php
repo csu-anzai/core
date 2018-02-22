@@ -298,6 +298,8 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_controlRateable" => "<i class='kj-icon fa fa-check-circle-o'></i>",
         "icon_business_process" => "<i class='kj-icon fa fa-industry'></i>",
         "icon_confirmation" =>  "<i class='kj-icon fa fa-envelope'></i>",
+        "icon_commodity_group" =>  "<i class='kj-icon fa fa-cubes'></i>",
+        "icon_product_group" =>  "<i class='kj-icon fa fa-cube'></i>",
 
         //note: a copy of this markup is placed in agp_util.js and elements_artemeon.tpl::input_dropdown_ampel
         "icon_ampel_gelb" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_gelb'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle orange'></i><i class='kj-icon fa fa-circle-thin'></i></span>",
