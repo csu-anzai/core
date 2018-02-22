@@ -131,6 +131,13 @@ body {
 
     }
 
+    &.anonymous {
+        padding: 0;
+
+        .status-indicator {
+            top: 0;
+        }
+    }
 
     h1 {
         font-size: @font-size-base + 12;
@@ -1239,7 +1246,7 @@ footer {
     }
 
 
-    .kajona-data-table {
+    .kajona-data-table { //todo: deprecated, may be removed
 
         &.floatThead-table {
             background-color: #FFF;

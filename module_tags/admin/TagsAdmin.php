@@ -164,6 +164,10 @@ class TagsAdmin extends AdminEvensimpler implements AdminInterface
      */
     protected function actionGenericTagForm()
     {
+        if (!$this->getObjModule()->rightView()) {
+            return $this->getLang("commons_error_permissions");
+        }
+
         $this->setArrModuleEntry("template", "/folderview.tpl");
         return $this->getTagForm($this->getSystemid(), $this->getParam("attribute"));
     }

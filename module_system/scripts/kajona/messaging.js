@@ -115,7 +115,7 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util', 'router'], functi
                     }
                 } else {
                     // in case the API returns a 401 the user has logged out so reload the page to show the login page
-                    if (data.status == 401 && $('#loginContainer').length == 0) {
+                    if (data.status == 401 && $('#loginContainer').length == 0 && !$('body').hasClass('anonymous')) {
                         location.reload();
                     }
                 }
@@ -141,7 +141,7 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util', 'router'], functi
          * @param bitEnabled
          */
         setPollingEnabled : function(bitEnabled) {
-            if(util.isStackedDialog()) {
+            if(util.isStackedDialog() || $('body').hasClass('anonymous')) {
                 bitEnabled = false;
             }
 

@@ -21,6 +21,7 @@ use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\StringUtil;
+use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\VersionableInterface;
 
@@ -586,8 +587,7 @@ abstract class AdminSimple extends AdminController
             return "";
         }
 
-        if ($objListEntry->rightView()) {
-
+        if ($objListEntry->rightView() && SystemModule::getModuleByName("tags") !== null && SystemModule::getModuleByName("tags")->rightView()) {
             //sanitize critical chars
             $strDialogTitle = $objListEntry->getStrDisplayName();
             $strDialogTitle = addslashes(StringUtil::replace(array("\n", "\r"), array(), strip_tags(nl2br($strDialogTitle))));
