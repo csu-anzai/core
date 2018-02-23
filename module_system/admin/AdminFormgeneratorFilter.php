@@ -74,8 +74,6 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
     public function renderForm($strTargetURI, $intButtonConfig = 2)
     {
         $objCarrier = Carrier::getInstance();
-        $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
-        $objLang = Carrier::getInstance()->getObjLang();
         $objFilter = $this->getObjSourceobject();
 
         /* Check if post request was send? */
@@ -103,7 +101,7 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
         $bitFilterActive = false;
         foreach ($this->getArrFields() as $objOneField) {
             if (!$objOneField instanceof FormentryHidden) {
-                $bitFilterActive = $bitFilterActive || $objOneField->getStrValue() != "";
+                $bitFilterActive = $bitFilterActive || !$objOneField->isFieldEmpty();
             }
         }
 

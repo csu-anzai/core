@@ -206,7 +206,7 @@ class FormentryBase
      *
      * @return bool
      */
-    final public function isFieldEmpty()
+    public function isFieldEmpty()
     {
         return (!is_array($this->getStrValue()) && trim($this->getStrValue()) === "")
             || is_null($this->getStrValue())
