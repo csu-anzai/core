@@ -36,20 +36,28 @@ class AdminModelserializer
     const CLASS_KEY = "strRecordClass";
 
     /**
-     * Converts an model into an string representation
+     * Returns all properties of an model as array. If the whitelist argument is provided returns only the provided
+     * properties
      *
      * @param ModelInterface $objModel
+     * @param array $arrWhitelist
      * @param string $strAnnotation
-     * @return string
+     * @return array
+     * @throws Exception
      */
-    public static function serialize(ModelInterface $objModel, $strAnnotation = OrmBase::STR_ANNOTATION_TABLECOLUMN)
+    public static function getProperties(ModelInterface $objModel, array $arrWhitelist = null, $strAnnotation = OrmBase::STR_ANNOTATION_TABLECOLUMN)
     {
         $objReflection = new Reflection(get_class($objModel));
         $arrProperties = $objReflection->getPropertiesWithAnnotation($strAnnotation);
         $arrFieldTypes = $objReflection->getPropertiesWithAnnotation(AdminFormgenerator::STR_TYPE_ANNOTATION);
-        $arrJSON = array();
+        $arrJSON = [];
 
         foreach ($arrProperties as $strAttributeName => $strAttributeValue) {
+            // in case we have a whitelist and the proeprty is not in the whitelist skip
+            if ($arrWhitelist !== null && !in_array($strAttributeName, $arrWhitelist)) {
+                continue;
+            }
+
             $strGetter = $objReflection->getGetter($strAttributeName);
             if ($strGetter != null) {
                 $strValue = $objModel->$strGetter();
@@ -76,6 +84,19 @@ class AdminModelserializer
             }
         }
 
+        return $arrJSON;
+    }
+
+    /**
+     * Converts an model into an string representation
+     *
+     * @param ModelInterface $objModel
+     * @param string $strAnnotation
+     * @return string
+     */
+    public static function serialize(ModelInterface $objModel, $strAnnotation = OrmBase::STR_ANNOTATION_TABLECOLUMN)
+    {
+        $arrJSON = self::getProperties($objModel, null, $strAnnotation);
         $arrJSON[self::CLASS_KEY] = get_class($objModel);
 
         return json_encode($arrJSON);
