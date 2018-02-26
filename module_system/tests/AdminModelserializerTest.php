@@ -46,6 +46,23 @@ class AdminModelserializerTest extends Testbase
         $this->assertEquals($arrExpect, $arrActual);
     }
 
+    public function testGetPropertiesWhitelist()
+    {
+        $objModel = new MessagingMessage();
+        $objModel->setStrTitle("foobar");
+        $objModel->setStrBody("foobar");
+        $objModel->setBitRead(true);
+
+        $arrActual = AdminModelserializer::getProperties($objModel, ["strTitle", "bitRead"]);
+
+        $arrExpect = [
+            'strTitle' => "foobar",
+            'bitRead' => true,
+        ];
+
+        $this->assertEquals($arrExpect, $arrActual);
+    }
+
     public function testSerialize()
     {
         $objModel = new MessagingMessage();
