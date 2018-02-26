@@ -17,7 +17,7 @@ use Kajona\System\System\Reflection;
 use Kajona\System\System\Root;
 
 /**
- * Serializer class which can convert all table columns of an model into an string representation and vice versa
+ * Serializer class which can convert model objects into a JSON string and vice versa
  *
  * @author christoph.kappestein@gmail.com
  * @since  4.8
@@ -36,7 +36,7 @@ class AdminModelserializer
     const CLASS_KEY = "strRecordClass";
 
     /**
-     * Returns all properties of an model as array. If the whitelist argument is provided returns only the provided
+     * Returns all properties of a model as array. If the whitelist argument is provided returns only the provided
      * properties
      *
      * @param ModelInterface $objModel
@@ -88,11 +88,13 @@ class AdminModelserializer
     }
 
     /**
-     * Converts an model into an string representation
+     * Converts a model into a JSON string representation. Use the unserialize method to convert this string back into
+     * an object
      *
      * @param ModelInterface $objModel
      * @param string $strAnnotation
      * @return string
+     * @throws Exception
      */
     public static function serialize(ModelInterface $objModel, $strAnnotation = OrmBase::STR_ANNOTATION_TABLECOLUMN)
     {
@@ -103,11 +105,12 @@ class AdminModelserializer
     }
 
     /**
-     * Creates an model based on an serialized string
+     * Creates a model based on a serialized string. Returns an instance of the fitting model class
      *
      * @param string $strData
      * @param string $strAnnotation
      * @return ModelInterface
+     * @throws Exception
      */
     public static function unserialize($strData, $strAnnotation = OrmBase::STR_ANNOTATION_TABLECOLUMN)
     {
@@ -128,11 +131,14 @@ class AdminModelserializer
     }
 
     /**
+     * Returns an object instance based on the provided array data. Looks in the array at the CLASS_KEY and creates a
+     * new instance of this class. Throws an exception in case the class could not be determined
+     *
      * @param array $arrData
      * @return ModelInterface
      * @throws Exception
      */
-    protected static function getObjectFromJson($arrData)
+    protected static function getObjectFromJson(array $arrData)
     {
         if (isset($arrData[self::CLASS_KEY])) {
             $strClassName = $arrData[self::CLASS_KEY];
