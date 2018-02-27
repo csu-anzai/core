@@ -40,6 +40,9 @@ class RemoveGroup implements PermissionActionInterface
         $this->groupId = $groupId;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getSystemid(): string
     {
         return $this->systemId;

@@ -47,6 +47,9 @@ class ReplaceGroup implements PermissionActionInterface
         $this->newGroupId = $newGroupId;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getSystemid(): string
     {
         return $this->systemId;
