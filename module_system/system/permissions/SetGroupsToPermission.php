@@ -12,12 +12,11 @@ declare(strict_types=1);
 namespace Kajona\System\System\Permissions;
 
 /**
- * Sets all groups for a specific permission
+ * Sets all groups for a specific permission and overwrites all existing entries
  *
  * @package module_system
- * @author sidler@mulchprod.de
+ * @author christoph.kappestein@artemeon.de
  * @since 7.0
- *
  */
 class SetGroupsToPermission implements PermissionActionInterface
 {
