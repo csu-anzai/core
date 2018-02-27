@@ -2,11 +2,9 @@
 
 namespace Kajona\System\Tests;
 
-use Kajona\System\Admin\AdminFormgenerator;
-use Kajona\System\System\Model;
-use Kajona\System\System\Permissions\ReplaceGroup;
 use Kajona\System\System\Permissions\SetGroupsToPermission;
 use Kajona\System\System\Rights;
+use Kajona\System\System\SystemSetting;
 
 class SetGroupsToPermissionTest extends Testbase
 {
@@ -20,7 +18,7 @@ class SetGroupsToPermissionTest extends Testbase
 
         $actual = $setGroups->applyAction($permissions);
         $expect = [
-            Rights::$STR_RIGHT_VIEW => ["foo", "bar"],
+            Rights::$STR_RIGHT_VIEW => ["foo", "bar", SystemSetting::getConfigValue("_admins_group_id_")],
         ];
 
         $this->assertEquals($expect, $actual);

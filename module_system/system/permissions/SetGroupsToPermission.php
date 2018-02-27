@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Kajona\System\System\Permissions;
 
+use Kajona\System\System\SystemSetting;
+
 /**
  * Sets all groups for a specific permission and overwrites all existing entries
  *
@@ -60,7 +62,15 @@ class SetGroupsToPermission implements PermissionActionInterface
      */
     public function applyAction(array $permissions): array
     {
-        $permissions[$this->permission] = $this->groupIds;
+        $groupIds = $this->groupIds;
+
+        // add admin group
+        $adminGroupId = SystemSetting::getConfigValue("_admins_group_id_");
+        if (!in_array($adminGroupId, $this->groupIds)) {
+            $groupIds[] = $adminGroupId;
+        }
+
+        $permissions[$this->permission] = $groupIds;
         return $permissions;
     }
 }
