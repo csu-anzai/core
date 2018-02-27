@@ -110,9 +110,10 @@ class ServiceLifeCycleImpl implements ServiceLifeCycleInterface
     {
         // check whether the model has a permission handler
         $objReflection = new Reflection($objModel);
-        $strHandler = $objReflection->getAnnotationValuesFromClass(PermissionHandlerInterface::PERMISSION_HANDLER_ANNOTATION);
+        $arrHandler = $objReflection->getAnnotationValuesFromClass(PermissionHandlerInterface::PERMISSION_HANDLER_ANNOTATION);
 
-        if (!empty($strHandler)) {
+        if (!empty($arrHandler)) {
+            $strHandler = reset($arrHandler);
             $objPermissionHandler = Carrier::getInstance()->getContainer()->offsetGet($strHandler);
 
             if ($objPermissionHandler instanceof PermissionHandlerInterface) {
