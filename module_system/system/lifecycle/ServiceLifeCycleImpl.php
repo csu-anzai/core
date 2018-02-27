@@ -2,8 +2,12 @@
 
 namespace Kajona\System\System\Lifecycle;
 
+use AGP\Prozessverwaltung\System\ProzessverwaltungObjectBase;
+use Kajona\System\System\Carrier;
 use Kajona\System\System\Database;
+use Kajona\System\System\Permissions\PermissionHandlerInterface;
 use Kajona\System\System\RedirectException;
+use Kajona\System\System\Reflection;
 use Kajona\System\System\Root;
 
 /**
@@ -23,10 +27,16 @@ class ServiceLifeCycleImpl implements ServiceLifeCycleInterface
         Database::getInstance()->transactionBegin();
 
         try {
+            $bitIsNew  = !validateSystemid($objModel->getSystemid());
             $bitReturn = $objModel->updateObjectToDb($strPrevId);
 
             if (!$bitReturn) {
                 throw new ServiceLifeCycleUpdateException("Error updating object ".strip_tags($objModel->getStrDisplayName()), $objModel->getSystemid());
+            }
+
+            // call permission handler if available
+            if ($objModel instanceof ProzessverwaltungObjectBase && !$objModel->isObjectdesignerTemplate()) {
+                $this->invokePermissionHandler($objModel, $bitIsNew);
             }
 
             Database::getInstance()->transactionCommit();
@@ -89,5 +99,29 @@ class ServiceLifeCycleImpl implements ServiceLifeCycleInterface
         }
 
         return $objModel;
+    }
+
+    /**
+     * @param Root $objModel
+     * @param bool $bitIsNew
+     * @throws \Kajona\System\System\Exception
+     */
+    private function invokePermissionHandler(Root $objModel, $bitIsNew)
+    {
+        // check whether the model has a permission handler
+        $objReflection = new Reflection($objModel);
+        $strHandler = $objReflection->getAnnotationValuesFromClass(PermissionHandlerInterface::PERMISSION_HANDLER_ANNOTATION);
+
+        if (!empty($strHandler)) {
+            $objPermissionHandler = Carrier::getInstance()->getContainer()->offsetGet($strHandler);
+
+            if ($objPermissionHandler instanceof PermissionHandlerInterface) {
+                if ($bitIsNew) {
+                    $objPermissionHandler->onInitialize($objModel);
+                } else {
+                    $objPermissionHandler->onUpdate($objModel);
+                }
+            }
+        }
     }
 }
