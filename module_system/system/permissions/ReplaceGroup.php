@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Kajona\System\System\Permissions;
 
 /**
- * Replaces a specific group with another group
+ * Replaces a specific group with another group in all permissions
  *
  * @package module_system
  * @author christoph.kappestein@artemeon.de

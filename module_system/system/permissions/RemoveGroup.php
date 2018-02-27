@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Kajona\System\System\Permissions;
 
 /**
- * Removes a specific group
+ * Removes a specific group from all permissions
  *
  * @package module_system
  * @author christoph.kappestein@artemeon.de
