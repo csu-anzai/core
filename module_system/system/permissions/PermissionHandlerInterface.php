@@ -21,10 +21,10 @@ use Kajona\System\System\UserGroup;
  * concepts:
  *
  * - Group types
- * A group type is a random string which can be resolved to a user group. We are working with such group types since
- * it is often needed to _not_ simply set a fix user group id but resolve a user group based on a specific property or
- * assigned OE from the model. The handler contains all available group types for the model and can resolve such a group
- * type to an actual user group object
+ * A group type is a random string which can be resolved to multiple user groups. We are working with such group types
+ * since it is often needed to _not_ simply set a fix user group id but resolve a user group based on a specific
+ * property or assigned OE from the model. The handler contains all available group types for the model and can resolve
+ * such a group type to actual user group objects
  *
  * - Right handling
  * If a model is created or changed the right handler has the chance to also adjust the rights of the model or also any
@@ -46,13 +46,13 @@ interface PermissionHandlerInterface
     public function getGroupTypes();
 
     /**
-     * Returns either the user group or null in case the group type does not exist
+     * Returns an array of user groups or an empty array
      *
      * @param Root $objRecord
      * @param string $strGroupType
-     * @return UserGroup|null
+     * @return UserGroup[]
      */
-    public function getGroup(Root $objRecord, $strGroupType);
+    public function getGroups(Root $objRecord, $strGroupType);
 
     /**
      * Sets the initial rights of an record
