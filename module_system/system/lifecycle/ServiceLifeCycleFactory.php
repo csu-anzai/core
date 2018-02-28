@@ -2,6 +2,7 @@
 
 namespace Kajona\System\System\Lifecycle;
 
+use Kajona\System\System\Carrier;
 use Kajona\System\System\Config;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\ServiceProvider;
@@ -54,5 +55,22 @@ class ServiceLifeCycleFactory
         } else {
             return $this->objContainer->offsetGet(ServiceProvider::STR_LIFE_CYCLE_DEFAULT);
         }
+    }
+
+    /**
+     * Returns the fitting life cycle for this model class. Note if you are in a context where you can access the DI
+     * container i.e. the controller it is recommended to use the @inject annotation. Use this method only in case you
+     * have no other option to access the DI container. This method exists only so that we dont have to write this
+     * boilerplate code very often and that we can easily find the places where we access the DI container from a global
+     * context
+     *
+     * @deprecated
+     * @param string $strModelClass
+     * @return ServiceLifeCycleInterface
+     */
+    public static function getLifeCycle($strModelClass)
+    {
+        /** @var ServiceLifeCycleFactory $objFactory */
+        return Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_LIFE_CYCLE_FACTORY)->factory($strModelClass);
     }
 }

@@ -858,6 +858,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
                 initialTags: %%values%%,
                 forceLowercase: false,
                 delimiter: %%delimiter%%,
+                maxLength: 250,
                 onChange: onChange
             });
 
