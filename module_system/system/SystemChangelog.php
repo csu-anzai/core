@@ -99,15 +99,6 @@ class SystemChangelog
     }
 
     /**
-     * @param VersionableInterface $objCurrentObject
-     * @return VersionableInterface
-     */
-    public static function getOldInstance(VersionableInterface $objCurrentObject)
-    {
-        return self::$arrOldInstances[$objCurrentObject->getSystemid()] ?? null;
-    }
-
-    /**
      * Resets the old values for a given object, e.g. to have a clean map on new object persits
      * @param VersionableInterface|Model $objObject
      */
