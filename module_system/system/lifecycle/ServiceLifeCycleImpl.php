@@ -24,10 +24,14 @@ class ServiceLifeCycleImpl implements ServiceLifeCycleInterface
      */
     public function update(Root $objModel, $strPrevId = false)
     {
+        // read original state from the database. The new call does not trigger a SQL query since the data comes from
+        // the OrmRowcache. Its important that we _don't_ use the factory since we want a different instance
+        $strClass = get_class($objModel);
+        $objOldModel = new $strClass($objModel->getSystemid());
+
         Database::getInstance()->transactionBegin();
 
         try {
-            $bitIsNew  = !validateSystemid($objModel->getSystemid());
             $bitReturn = $objModel->updateObjectToDb($strPrevId);
 
             if (!$bitReturn) {
@@ -36,7 +40,7 @@ class ServiceLifeCycleImpl implements ServiceLifeCycleInterface
 
             // call permission handler if available
             if ($objModel instanceof ProzessverwaltungObjectBase && !$objModel->isObjectdesignerTemplate()) {
-                $this->invokePermissionHandler($objModel, $bitIsNew);
+                $this->invokePermissionHandler($objOldModel, $objModel);
             }
 
             Database::getInstance()->transactionCommit();
@@ -102,14 +106,14 @@ class ServiceLifeCycleImpl implements ServiceLifeCycleInterface
     }
 
     /**
-     * @param Root $objModel
-     * @param bool $bitIsNew
+     * @param Root $objOldModel
+     * @param Root $objNewModel
      * @throws \Kajona\System\System\Exception
      */
-    private function invokePermissionHandler(Root $objModel, $bitIsNew)
+    private function invokePermissionHandler(Root $objOldModel, Root $objNewModel)
     {
         // check whether the model has a permission handler
-        $objReflection = new Reflection($objModel);
+        $objReflection = new Reflection($objNewModel);
         $arrHandler = $objReflection->getAnnotationValuesFromClass(PermissionHandlerInterface::PERMISSION_HANDLER_ANNOTATION);
 
         if (!empty($arrHandler)) {
@@ -117,10 +121,10 @@ class ServiceLifeCycleImpl implements ServiceLifeCycleInterface
             $objPermissionHandler = Carrier::getInstance()->getContainer()->offsetGet($strHandler);
 
             if ($objPermissionHandler instanceof PermissionHandlerInterface) {
-                if ($bitIsNew) {
-                    $objPermissionHandler->onInitialize($objModel);
+                if (!validateSystemid($objOldModel->getSystemid())) {
+                    $objPermissionHandler->onInitialize($objNewModel);
                 } else {
-                    $objPermissionHandler->onUpdate($objModel);
+                    $objPermissionHandler->onUpdate($objOldModel, $objNewModel);
                 }
             }
         }
