@@ -66,6 +66,12 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
 
     var generateUrl = function(url) {
 
+        //if we have a php url, return directly
+        if (url.indexOf("index.php") > 0) {
+            return { url: url.replace(KAJONA_WEBPATH, ''), module: ''};
+        }
+
+
         // detect where the page was loaded from an iframe and thus is displayed in a dialog
         var isStackedDialog = util.isStackedDialog();
 
