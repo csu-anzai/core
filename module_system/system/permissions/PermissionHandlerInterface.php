@@ -18,7 +18,7 @@ use Kajona\System\System\UserGroup;
  * The permissions handler is a service which handles rights on an object. It is invoked if we create or update a
  * model. Since it is a service it is also possible to customize the implementation for a project. You can specify a
  * permission handler on the model through the @permissionHandler annotation. Basically a handler follows two basic
- * conecpts:
+ * concepts:
  *
  * - Group types
  * A group type is a random string which can be resolved to a user group. We are working with such group types since
