@@ -44,6 +44,13 @@ class ServiceLifeCycleFactoryTest extends Testbase
 
         $this->assertInstanceOf(ServiceLifeCycleImpl::class, $objService);
     }
+
+    public function testGetLifeCycle()
+    {
+        $objService = ServiceLifeCycleFactory::getLifeCycle(ModelB::class);
+
+        $this->assertInstanceOf(ServiceLifeCycleImpl::class, $objService);
+    }
 }
 
 /**
