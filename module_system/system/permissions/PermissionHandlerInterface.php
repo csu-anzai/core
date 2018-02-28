@@ -46,7 +46,8 @@ interface PermissionHandlerInterface
     public function getGroupTypes();
 
     /**
-     * Returns an array of user groups or an empty array
+     * Returns an array of user groups or an empty array. The key of the array must contain the systemid of the group
+     * this simplfies handling or merging multiple groups
      *
      * @param Root $objRecord
      * @param string $strGroupType
