@@ -126,6 +126,8 @@ class ServiceLifeCycleImpl implements ServiceLifeCycleInterface
                 } else {
                     $objPermissionHandler->onUpdate($objOldModel, $objNewModel);
                 }
+            } else {
+                throw new \RuntimeException(sprintf("Provided permission handler is not an instance of %s", PermissionHandlerInterface::class));
             }
         }
     }
