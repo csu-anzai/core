@@ -7,6 +7,7 @@
 
 namespace Kajona\Flow\System;
 
+use Kajona\System\System\Lang;
 use Kajona\System\System\Link;
 
 /**
@@ -257,6 +258,8 @@ HTML;
         $strLinkTransitionAction = Link::getLinkAdminHref("flow", "listTransitionAction", "&systemid=" . $strTmpSystemId);
         $strLinkTransitionCondition = Link::getLinkAdminHref("flow", "listTransitionCondition", "&systemid=" . $strTmpSystemId);
 
+        $strAction = Lang::getInstance()->getLang("modul_titel_transition_action", "flow");
+        $strCondition = Lang::getInstance()->getLang("modul_titel_transition_condition", "flow");
 
         $strInit = "{}";
         $strHeight = "";
@@ -291,7 +294,7 @@ HTML;
                 var actionLink = "{$strLinkTransitionAction}".replace('{$strTmpSystemId}', transitionId);
                 var conditionLink = "{$strLinkTransitionCondition}".replace('{$strTmpSystemId}', transitionId);
 
-                $(this).html('<a href="' + actionLink + '"><i class="kj-icon fa fa-play-circle-o"></i></a> <a href="' + conditionLink + '"><i class="kj-icon fa fa-table"></i></a');
+                $(this).html('<a href="' + actionLink + '" title="{$strAction}"><i class="kj-icon fa fa-play-circle-o"></i></a> <a href="' + conditionLink + '" title="{$strCondition}"><i class="kj-icon fa fa-table"></i></a');
             });
 
             $('.node').on('click', function(){
