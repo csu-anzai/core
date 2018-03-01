@@ -52,7 +52,6 @@
             <fileset id="sources.dirs" dir="${basedir}${sourcesPath}">
                 <exclude name="*/**/.idea"/>
                 <exclude name="*/**/.git"/>
-                <exclude name="**/_buildfiles/**"/>
                 <exclude name="**/_vagrant/**"/>
                 <exclude name="**/_docker/**"/>
                 <include name="*/**"/>
@@ -73,7 +72,6 @@
             <fileset id="sources.dirs" dir="${basedir}${sourcesPath}">
                 <exclude name="*/**/.svn"/>
                 <exclude name="*/**/.git"/>
-                <exclude name="**/_buildfiles/**"/>
             </fileset>
         </copy>
 

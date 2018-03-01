@@ -51,6 +51,11 @@ abstract class Root
      */
     private $objSortManager = null;
 
+    /**
+     * @var Lockmanager
+     */
+    private $objLockmanager = null;
+
     private $strAction; //current action to perform (GET/POST)
     protected $arrModule = array(); //Array containing information about the current module
 
@@ -817,7 +822,7 @@ abstract class Root
         if ($bitCopyChilds) {
             //process subrecords
             //validate, if there are subrecords, so child nodes to be copied to the current record
-            $arrChilds = $this->objDB->getPArray("SELECT system_id FROM "._dbprefix_."system where system_prev_id = ? ORDER BY system_sort ASC", array($strOldSysid));
+            $arrChilds = $this->objDB->getPArray("SELECT system_id FROM "._dbprefix_."system where system_prev_id = ? AND system_deleted = 0 ORDER BY CASE WHEN system_sort < 0 THEN 9999999 ELSE system_sort END ASC, system_create_date DESC", array($strOldSysid));
             foreach ($arrChilds as $arrOneChild) {
                 if (validateSystemid($arrOneChild["system_id"])) {
                     $objInstance = Objectfactory::getInstance()->getObject($arrOneChild["system_id"]);
@@ -1047,6 +1052,10 @@ abstract class Root
 
         $this->setStrPrevId($strPrevId);
 
+        if ($this->getStrOwner() == "") {
+            $this->setStrOwner($this->objSession->getUserID());
+        }
+
         if (SystemModule::getModuleByName("system") != null && version_compare(SystemModule::getModuleByName("system")->getStrVersion(), "4.7.5", "lt")) {
             //So, lets generate the record
             $strQuery = "INSERT INTO "._dbprefix_."system
@@ -1061,7 +1070,7 @@ abstract class Root
                     $strSystemId,
                     $strPrevId,
                     $this->getIntModuleNr(),
-                    $this->objSession->getUserID(),
+                    $this->getStrOwner(),
                     Date::getCurrentTimestamp(),
                     $this->objSession->getUserID(),
                     time(),
@@ -1086,7 +1095,7 @@ abstract class Root
                         $strSystemId,
                         $strPrevId,
                         $this->getIntModuleNr(),
-                        $this->objSession->getUserID(),
+                        $this->getStrOwner(),
                         Date::getCurrentTimestamp(),
                         $this->objSession->getUserID(),
                         time(),
@@ -1116,7 +1125,7 @@ abstract class Root
                         $strSystemId,
                         $strPrevId,
                         $this->getIntModuleNr(),
-                        $this->objSession->getUserID(),
+                        $this->getStrOwner(),
                         Date::getCurrentTimestamp(),
                         $this->objSession->getUserID(),
                         time(),
@@ -1774,7 +1783,7 @@ abstract class Root
     public function getPrevId($strSystemid = "")
     {
         if ($strSystemid != "") {
-            throw new Exception("unsupported param @ ".__METHOD__, Exception::$level_FATALERROR);
+            throw new Exception("unsupported param @ ".__METHOD__);
         }
 
         return $this->getStrPrevId();
@@ -1813,7 +1822,7 @@ abstract class Root
     public function getRecordModuleNr($strSystemid = "")
     {
         if ($strSystemid != "") {
-            throw new Exception("unsupported param @ ".__METHOD__, Exception::$level_FATALERROR);
+            throw new Exception("unsupported param @ ".__METHOD__);
         }
 
         return $this->getIntModuleNr();
@@ -1866,7 +1875,7 @@ abstract class Root
     public function getLastEditUser($strSystemid = "")
     {
         if ($strSystemid != "") {
-            throw new Exception("unsupported param @ ".__METHOD__, Exception::$level_FATALERROR);
+            throw new Exception("unsupported param @ ".__METHOD__);
         }
 
         if (validateSystemid($this->getStrLmUser())) {
@@ -1978,7 +1987,7 @@ abstract class Root
     public function getObjCreateDate($strSystemid = "")
     {
         if ($strSystemid != "") {
-            throw new Exception("unsupported param @ ".__METHOD__, Exception::$level_FATALERROR);
+            throw new Exception("unsupported param @ ".__METHOD__);
         }
 
         return new Date($this->getLongCreateDate());
@@ -2023,7 +2032,7 @@ abstract class Root
     final public function getOwnerId($strSystemid = "")
     {
         if ($strSystemid != "") {
-            throw new Exception("unsupported param @ ".__METHOD__, Exception::$level_FATALERROR);
+            throw new Exception("unsupported param @ ".__METHOD__);
         }
 
         return $this->getStrOwner();
@@ -2044,7 +2053,7 @@ abstract class Root
     final public function setOwnerId($strOwner, $strSystemid = "")
     {
         if ($strSystemid != "") {
-            throw new Exception("unsupported param @ ".__METHOD__, Exception::$level_FATALERROR);
+            throw new Exception("unsupported param @ ".__METHOD__);
         }
 
         $this->setStrOwner($strOwner);
@@ -2080,7 +2089,7 @@ abstract class Root
     public function getStatus($strSystemid = "")
     {
         if ($strSystemid != "") {
-            throw new Exception("unsupported param @ ".__METHOD__, Exception::$level_FATALERROR);
+            throw new Exception("unsupported param @ ".__METHOD__);
         }
 
         return $this->getIntRecordStatus();
@@ -2170,7 +2179,10 @@ abstract class Root
      */
     public function getLockManager()
     {
-        return new Lockmanager($this->getSystemid(), $this);
+        if ($this->objLockmanager === null) {
+            $this->objLockmanager = new Lockmanager($this);
+        }
+        return $this->objLockmanager;
     }
 
 

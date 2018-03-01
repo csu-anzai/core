@@ -40,6 +40,7 @@ class SystemSession extends Model implements ModelInterface
     private $strLoginprovider = "";
     private $strLasturl = "";
     private $strLoginstatus = "";
+    private $bitResetUser = null;
 
     private $bitValid = false;
 
@@ -55,7 +56,6 @@ class SystemSession extends Model implements ModelInterface
 
         //base class
         parent::__construct($strSystemid);
-
     }
 
     /**
@@ -68,6 +68,23 @@ class SystemSession extends Model implements ModelInterface
         return $this->getSystemid();
     }
 
+    /**
+     * Updates the flag to re-init a session for ALL sessions currently opened.
+     * @return bool
+     */
+    public function forceUserReset()
+    {
+        return $this->objDB->_pQuery("UPDATE "._dbprefix_."session SET session_resetuser = 1", []);
+    }
+
+    /**
+     * Invalidates the flag for the current user to reset the session, e.g. since the reset was performed
+     * @return bool
+     */
+    public function invalidateUserResetFlag()
+    {
+        return $this->objDB->_pQuery("UPDATE "._dbprefix_."session SET session_resetuser = null WHERE session_id = ?", [$this->getSystemid()]);
+    }
 
     /**
      * Initalises the current object, if a systemid was given
@@ -90,6 +107,9 @@ class SystemSession extends Model implements ModelInterface
             $this->setStrLoginstatus($arrRow["session_loginstatus"]);
             $this->setStrLoginprovider($arrRow["session_loginprovider"]);
             $this->setStrLasturl($arrRow["session_lasturl"]);
+            if (isset($arrRow["session_resetuser"]) && $arrRow["session_resetuser"] == 1) {
+                $this->bitResetUser = true;
+            }
 
             $this->strDbSystemid = $this->getSystemid();
 
@@ -405,4 +425,11 @@ class SystemSession extends Model implements ModelInterface
         return $this->strLoginstatus;
     }
 
+    /**
+     * @return bool
+     */
+    public function getBitResetUser()
+    {
+        return $this->bitResetUser;
+    }
 }

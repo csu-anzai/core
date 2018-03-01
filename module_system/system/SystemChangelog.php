@@ -360,7 +360,7 @@ class SystemChangelog
     private function isVersioningAvailable(VersionableInterface $objSourceModel)
     {
         if (self::$bitChangelogEnabled === null) {
-            return SystemSetting::getConfigValue("_system_changehistory_enabled_") === "true";
+            self::$bitChangelogEnabled = SystemSetting::getConfigValue("_system_changehistory_enabled_") === "true";
         }
 
 
@@ -1003,9 +1003,17 @@ class SystemChangelog
      */
     public static function getAdditionalProviders()
     {
-
         if (self::$arrCachedProviders != null) {
             return self::$arrCachedProviders;
+        }
+
+        /** @var CacheManager $objCache */
+        $strKey = __METHOD__;
+        $objCache = Carrier::getInstance()->getContainer()->offsetGet(\Kajona\System\System\ServiceProvider::STR_CACHE_MANAGER);
+        $arrReturn = $objCache->getValue($strKey);
+
+        if (!empty($arrReturn)) {
+            return self::$arrCachedProviders = $arrReturn;
         }
 
         $arrReturn = Resourceloader::getInstance()->getFolderContent(
@@ -1021,6 +1029,9 @@ class SystemChangelog
         $arrReturn = array_filter($arrReturn, function ($objEl) {
             return $objEl != null;
         });
+
+        $objCache->addValue($strKey, $arrReturn);
+
         self::$arrCachedProviders = $arrReturn;
         return $arrReturn;
     }

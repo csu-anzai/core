@@ -1,49 +1,7 @@
 
-define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'statusDisplay', 'messaging', 'ajax', 'util', 'folderview'], function ($, bootstrap, jqueryui, workingIndicator, tooltip, statusDisplay, messaging, ajax, util, folderview) {
+define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'statusDisplay', 'messaging', 'ajax', 'util', 'folderview', 'breadcrumb', 'lang'], function ($, bootstrap, jqueryui, workingIndicator, tooltip, statusDisplay, messaging, ajax, util, folderview, breadcrumb, lang) {
 
-    var breadcrumb = {
 
-        updatePathNavigationEllipsis : function() {
-
-            var $arrPathLIs = $(".pathNaviContainer  .breadcrumb  li.pathentry");
-            var $objBreadcrumb = $(".pathNaviContainer  .breadcrumb");
-
-            //first run: get the number of entries and a first styling
-            var intEntries = ($arrPathLIs.length);
-            var intWidth = $objBreadcrumb.width();
-            var intMaxWidth = Math.ceil(intWidth/intEntries);
-
-            $arrPathLIs.css("max-width", intMaxWidth);
-
-            //second run: calc the remaining x-space
-            var intTotalUnused = this.getUnusedSpace(intMaxWidth);
-
-            if(intTotalUnused > intMaxWidth) {
-                intMaxWidth = Math.ceil(intWidth/ (intEntries - (Math.floor(intTotalUnused / intMaxWidth)) ));
-                $arrPathLIs.css("max-width", intMaxWidth);
-            }
-
-        },
-
-        getUnusedSpace : function(intMaxWidth) {
-            var intTotalUnused = 0;
-            $(".pathNaviContainer  .breadcrumb  li.pathentry").each(function() {
-                var $li = $(this);
-                if($li.width() < intMaxWidth) {
-                    intTotalUnused += (intMaxWidth - $li.width());
-                }
-            });
-
-            return intTotalUnused;
-        },
-
-        appendLinkToPathNavigation : function(strLinkContent) {
-            var link = $("<li class='pathentry'></li>").append(strLinkContent+"&nbsp;");
-            $("div.pathNaviContainer  ul.breadcrumb").append(link);
-            this.updatePathNavigationEllipsis();
-        }
-
-    };
 
     var msg = {
 
@@ -165,18 +123,24 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
 
     });
 
-    breadcrumb.updatePathNavigationEllipsis();
+    breadcrumb.updateEllipsis();
     $(window).on("resize", function() {
-        breadcrumb.updatePathNavigationEllipsis();
+        breadcrumb.updateEllipsis();
     });
 
     //register desktop notifications for messaging
     //util.desktopNotification.grantPermissions();
 
-    //init offacnvas menu
+    //init offacanvas menu
     $('[data-toggle="offcanvas"]').click(function () {
         $('.row-offcanvas').toggleClass('active')
     });
+
+    //enable the top navigation
+    if (!util.isStackedDialog()) {
+        $('div.navbar-fixed-top .navbar-topbar').removeClass('hidden');
+        $('div.pathNaviContainer').removeClass('hidden');
+    }
 
 
     return {
@@ -201,7 +165,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
                 var $objCur = $(this);
                 if(!$objCur.is('[readonly]')) {
                     if($('#'+$objCur.attr('id')+'_id')) {
-                        $( '#'+$objCur.attr('id')+'_id' ).val( "" );
+                        $( '#'+$objCur.attr('id')+'_id' ).val( "" ).trigger('change');
                     }
                 }
 
@@ -228,7 +192,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
                     var $objCur = $(this);
                     $objCur.val( ui.item.title );
                     if($('#'+$objCur.attr('id')+'_id')) {
-                        $( '#'+$objCur.attr('id')+'_id' ).val( ui.item.systemid);
+                        $( '#'+$objCur.attr('id')+'_id' ).val( ui.item.systemid).trigger('change');
                     }
                     $objCur.trigger('change');
                 }
@@ -253,7 +217,8 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
                     $.each($.parseJSON(data), function(index, item) {
                         $('#tagsSubemenu').append("<li><a href='"+item.url+"'><i class='fa fa-tag'></i> "+item.name+"</a></li>");
                     });
-                    $('#tagsSubemenu').append("<li class='divider'></li><li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1&module=tags'><i class='fa fa-tag'></i> "+me.properties.tags.show_all+"</a></li>")
+                    $('#tagsSubemenu').append("<li class='divider'></li><li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1#/tags'><i class='fa fa-tag'></i> <span data-lang-property='tags:action_show_all'></span></a></li>");
+                    lang.initializeProperties('#tagsSubemenu');
                 }
             });
         },
@@ -267,10 +232,19 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
             // remove all active tooltips
             tooltip.removeTooltip(el);
 
+            // trigger table changed event
+            var table = $(el).closest(".form-group").find(".table").first();
+
             // remove element
             $(el).parent().parent().fadeOut(0, function(){
                 $(this).remove();
             });
+
+            table.trigger('updated');
+        },
+
+        removeAllObjectListItems: function(strTableId) {
+            $('#'+strTableId).find(".removeLink").trigger('click');
         },
 
         /**

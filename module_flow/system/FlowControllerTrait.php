@@ -149,8 +149,10 @@ require(["jquery", "ajax"], function($, ajax){
 
                 try {
                     $objHandler->handleStatusTransition($objObject, $objTransition);
+                    ResponseObject::getInstance()->setBitForceMessagePollOnRedirect(true);
                     $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "list", "&systemid=" . $objObject->getStrPrevId()));
                 } catch (RedirectException $e) {
+                    ResponseObject::getInstance()->setBitForceMessagePollOnRedirect(true);
                     throw $e;
                 } catch (\Exception $e) {
                     $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
@@ -240,6 +242,7 @@ require(["jquery", "ajax"], function($, ajax){
                     $arrMenu[] = array(
                         "name" => AdminskinHelper::getAdminImage("icon_flag_hex_disabled_" . $objTargetStatus->getStrIconColor()) . " " . $objTargetStatus->getStrDisplayName() . $strValidation,
                         "link" => "#",
+                        "onclick" => "return false;",
                     );
                 } else {
                     $arrMenu[] = array(

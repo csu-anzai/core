@@ -49,6 +49,10 @@ $lang["flow_step_icon_8"]       = "icon_flag_yellow";
 $lang["transition_visible_0"]   = "No";
 $lang["transition_visible_1"]   = "Yes";
 
+$lang["form_flow_skip"]    = "Status change";
+$lang["transition_skip_0"] = "Automatic";
+$lang["transition_skip_1"] = "None";
+
 $lang["flow_step_no_delete"] = "It is not possible to delete this status";
 
 $lang["flow_current_status"]   = "Current status";

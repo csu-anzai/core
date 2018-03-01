@@ -81,16 +81,6 @@ class SearchSearch extends Model implements ModelInterface, AdminListableInterfa
      */
     private $objChangeEnddate = null;
 
-    /**
-     * @var null
-     */
-    private $bitPortalObjectFilter = null;
-
-    /**
-     * @var null
-     */
-    private $strPortalLangFilter = null;
-
 
     public function getStrDisplayName()
     {
@@ -327,38 +317,6 @@ class SearchSearch extends Model implements ModelInterface, AdminListableInterfa
     public function getObjChangeStartdate()
     {
         return $this->getObjStartDate();
-    }
-
-    /**
-     * @param null $bitPortalObjectFilter
-     */
-    public function setBitPortalObjectFilter($bitPortalObjectFilter)
-    {
-        $this->bitPortalObjectFilter = $bitPortalObjectFilter;
-    }
-
-    /**
-     * @return null
-     */
-    public function getBitPortalObjectFilter()
-    {
-        return $this->bitPortalObjectFilter;
-    }
-
-    /**
-     * @param null $strPortalLangFilter
-     */
-    public function setStrPortalLangFilter($strPortalLangFilter)
-    {
-        $this->strPortalLangFilter = $strPortalLangFilter;
-    }
-
-    /**
-     * @return null
-     */
-    public function getStrPortalLangFilter()
-    {
-        return $this->strPortalLangFilter;
     }
 
     /**

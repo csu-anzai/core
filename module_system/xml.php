@@ -19,12 +19,6 @@ use Kajona\System\System\ResponseObject;
 use Kajona\System\System\ServiceProvider;
 use Kajona\System\System\SystemEventidentifier;
 
-if (issetGet("admin") && getGet("admin") == 1) {
-    define("_admin_", true);
-} else {
-    define("_admin_", false);
-}
-
 define("_autotesting_", false);
 
 
@@ -58,7 +52,6 @@ class Xml
 
         $strModule = Carrier::getInstance()->getParam("module");
         $strAction = Carrier::getInstance()->getParam("action");
-        $strLanguageParam = Carrier::getInstance()->getParam("language");
 
         $this->objResponse = ResponseObject::getInstance();
         $this->objResponse->setStrResponseType(HttpResponsetypes::STR_TYPE_XML);
@@ -72,10 +65,14 @@ class Xml
             return;
         }
 
+        if (Carrier::getInstance()->getParam("contentFill") == 1) {
+            $this->objResponse->setStrResponseType(HttpResponsetypes::STR_TYPE_HTML);
+        }
+
         $this->objBuilder = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_OBJECT_BUILDER);
 
         $objDispatcher = new RequestDispatcher($this->objResponse, $this->objBuilder);
-        $objDispatcher->processRequest(_admin_, $strModule, $strAction, $strLanguageParam);
+        $objDispatcher->processRequest($strModule, $strAction);
 
         if ($this->objResponse->getStrContent() == "") {
             ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_BADREQUEST);

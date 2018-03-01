@@ -24,6 +24,7 @@ use Kajona\System\System\Resourceloader;
 use Kajona\System\System\Root;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\UserUser;
+use Kajona\System\System\ValidationError;
 use Kajona\System\System\ValidatorInterface;
 use Kajona\System\System\Validators\ObjectvalidatorBase;
 use Kajona\System\System\Validators\SystemidValidator;
@@ -176,6 +177,12 @@ class AdminFormgenerator implements \Countable
     private $intButtonConfig = null;
 
     /**
+     * Renders errors as warnings, so less prominent
+     * @var bool
+     */
+    private $bitErrorsAsWarnings = false;
+
+    /**
      * Creates a new instance of the form-generator.
      *
      * @param string $strFormname
@@ -186,7 +193,7 @@ class AdminFormgenerator implements \Countable
         $this->strFormname = $strFormname;
         $this->objSourceobject = $objSourceobject;
 
-        $this->strOnSubmit = "$(this).on('submit', function() { return false; }); $(window).off('unload'); require('messaging').setPollingEnabled(false); require('forms').animateSubmit(this); return true;";
+        $this->strOnSubmit = "require('forms').defaultOnSubmit(this);return false;";
         $this->objLang = Lang::getInstance();
         $this->objToolkit = Carrier::getInstance()->getObjToolkit("admin");
     }
@@ -196,6 +203,7 @@ class AdminFormgenerator implements \Countable
      * Afterwards, the object may be persisted.
      *
      * @return void
+     * @throws Exception
      */
     public function updateSourceObject()
     {
@@ -235,15 +243,17 @@ class AdminFormgenerator implements \Countable
     }
 
     /**
-     * Validates the current form.
-     *
-     * @throws Exception
-     * @return bool
+     * @return ValidationError[]
      */
-    public function validateForm()
+    public function getValidationErrorObjects()
     {
+        $arrErrors = [];
+
         //1. Validate fields
         foreach ($this->arrFields as $objOneField) {
+            if ($objOneField->getBitSkipValidation()) {
+                continue;
+            }
 
             $bitFieldIsEmpty = $objOneField->isFieldEmpty();
 
@@ -251,15 +261,20 @@ class AdminFormgenerator implements \Countable
             if ($objOneField->getBitMandatory()) {
                 //if field is mandatory and empty -> validation error
                 if ($bitFieldIsEmpty) {
-                    $strErrorMesage = $objOneField->getStrLabel() != "" ? $this->objLang->getLang("commons_validator_field_empty", "system", array($objOneField->getStrLabel())) : "";
-                    $this->addValidationError($objOneField->getStrEntryName(), $strErrorMesage);
+                    $strErrorMessage = $objOneField->getStrLabel() != "" ? $this->objLang->getLang("commons_validator_field_empty", "system", array($objOneField->getStrLabel())) : "";
+                    $arrErrors[] = new ValidationError($strErrorMessage, $objOneField->getStrEntryName());
                 }
             }
 
             //if field is not empty -> validate
             if (!$bitFieldIsEmpty) {
                 if (!$objOneField->validateValue()) {
-                    $this->addValidationError($objOneField->getStrEntryName(), $objOneField->getStrValidationErrorMsg());
+                    $arrErrorMessages = $objOneField->getValidationErrorMsg();
+                    foreach ($arrErrorMessages as $objValidationError) {
+                        $strFieldName = $objValidationError->getStrFieldName() === null ? $objOneField->getStrEntryName() : $objValidationError->getStrFieldName();
+                        $strMessage = $objOneField->getStrLabel() . ": " .$objValidationError->getStrErrorMessage();
+                        $arrErrors[] = new ValidationError($strMessage, $strFieldName);
+                    }
                 }
             }
         }
@@ -296,7 +311,7 @@ class AdminFormgenerator implements \Countable
                     }
 
                     foreach ($arrMessages as $strMessage) {
-                        $this->addValidationError($strKey, $strMessage);
+                        $arrErrors[] = new ValidationError($strMessage, $strKey);
                     }
                 }
 
@@ -308,6 +323,23 @@ class AdminFormgenerator implements \Countable
                     }
                 }
             }
+        }
+
+        return $arrErrors;
+    }
+
+    /**
+     * Validates the current form.
+     *
+     * @throws Exception
+     * @return bool
+     */
+    public function validateForm()
+    {
+        $arrErrors = $this->getValidationErrorObjects();
+
+        foreach ($arrErrors as $objError) {
+            $this->addValidationError($objError->getStrFieldName(), $objError->getStrErrorMessage());
         }
 
         return count($this->arrValidationErrors) == 0;
@@ -331,6 +363,8 @@ class AdminFormgenerator implements \Countable
             $objField->setStrEntryName("systemid")->setStrValue($this->objSourceobject->getSystemid())->setObjValidator(new SystemidValidator());
             $this->addField($objField);
         }
+
+        $this->addField(new FormentryHidden("", static::getStrFormSentParamForObject($this->objSourceobject)))->setStrValue("1");
 
         /*add reload URL param*/
         if ($this->strOnSaveRedirectUrl != "") {
@@ -370,7 +404,7 @@ class AdminFormgenerator implements \Countable
             $strReturn .= $this->objToolkit->formHeader($strTargetURI, $strGeneratedFormname, $this->strFormEncoding, $this->strOnSubmit, $this->strMethod);
         }
 
-        $strReturn .= $this->objToolkit->getValidationErrors($this);
+        $strReturn .= $this->objToolkit->getValidationErrors($this, $this->getBitErrorsAsWarnings());
         $strReturn .= $this->renderFields();
         $strReturn .= $this->renderButtons($intButtonConfig);
 
@@ -389,6 +423,27 @@ class AdminFormgenerator implements \Countable
 
         return $strReturn;
     }
+
+    /**
+     * Returns true if the current form was sent with the current request
+     * @return bool
+     */
+    public function getFormIsSent()
+    {
+        return Carrier::getInstance()->issetParam(static::getStrFormSentParamForObject($this->getObjSourceobject()));
+    }
+
+    /**
+     * Returns the form sent praram base on the given model object
+     *
+     * @param Root|null $objModel
+     * @return string
+     */
+    public static final function getStrFormSentParamForObject($objModel = null)
+    {
+        return "formsent_".($objModel !== null ? StringUtil::toLowerCase(get_class($objModel)) : "");
+    }
+
 
     /**
      * @return int
@@ -501,6 +556,7 @@ class AdminFormgenerator implements \Countable
      * Renders the javascript to lock the record
      *
      * @return string
+     * @throws Exception
      */
     protected function renderLock()
     {
@@ -509,13 +565,12 @@ class AdminFormgenerator implements \Countable
             $this->objSourceobject->getLockManager()->lockRecord();
 
             //register a new unlock-handler
-            $strReturn .= "<script type='text/javascript'>
-                        $(window).on('unload', function() { $.ajax({url: KAJONA_WEBPATH + '/xml.php?admin=1&module=system&action=unlockRecord&systemid=" . $this->objSourceobject->getSystemid() . "', async:false}) ; });
-                    </script>";
+            $strReturn .= "<script type='text/javascript'>require(['forms'], function(forms) {forms.registerUnlockId('{$this->objSourceobject->getSystemid()}')});</script>";
         }
 
         return $strReturn;
     }
+
 
     /**
      * Renders the fields grouped in a specific style
@@ -683,6 +738,7 @@ class AdminFormgenerator implements \Countable
      * In order to identify a field as relevant, the getter has to be marked with a fieldType annotation.
      *
      * @return void
+     * @throws Exception
      */
     public function generateFieldsFromObject()
     {
@@ -1024,6 +1080,10 @@ class AdminFormgenerator implements \Countable
     public function removeField($strName)
     {
         unset($this->arrFields[$strName]);
+        if (in_array($this->strFormname."_".$strName, $this->arrHiddenElements)) {
+            unset($this->arrHiddenElements[array_flip($this->arrHiddenElements)[$this->strFormname."_".$strName]]);
+        }
+
         return $this;
     }
 
@@ -1344,4 +1404,21 @@ class AdminFormgenerator implements \Countable
 
         return null;
     }
+
+    /**
+     * @return bool
+     */
+    public function getBitErrorsAsWarnings()
+    {
+        return $this->bitErrorsAsWarnings;
+    }
+
+    /**
+     * @param bool $bitErrorsAsWarnings
+     */
+    public function setBitErrorsAsWarnings($bitErrorsAsWarnings)
+    {
+        $this->bitErrorsAsWarnings = $bitErrorsAsWarnings;
+    }
+
 }

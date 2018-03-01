@@ -6,6 +6,7 @@ use Kajona\Search\Event\SearchObjectdeletedlistener;
 use Kajona\Search\Event\SearchRecordupdatedlistener;
 use Kajona\Search\System\SearchCommons;
 use Kajona\Search\System\SearchSearch;
+use Kajona\System\System\Rights;
 use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemModule;
 use Kajona\System\Tests\Testbase;
@@ -19,6 +20,8 @@ class SearchIndexEventTest extends Testbase
         parent::setUp();
         SearchObjectdeletedlistener::$BIT_UPDATE_INDEX_ON_END_OF_REQUEST = false;
         SearchRecordupdatedlistener::$BIT_UPDATE_INDEX_ON_END_OF_REQUEST = false;
+
+        Rights::getInstance()->setBitTestMode(true);
     }
 
     protected function tearDown()
@@ -26,6 +29,8 @@ class SearchIndexEventTest extends Testbase
         parent::tearDown();
         SearchObjectdeletedlistener::$BIT_UPDATE_INDEX_ON_END_OF_REQUEST = true;
         SearchRecordupdatedlistener::$BIT_UPDATE_INDEX_ON_END_OF_REQUEST = true;
+
+        Rights::getInstance()->setBitTestMode(false);
     }
 
 

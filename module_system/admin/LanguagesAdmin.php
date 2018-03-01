@@ -31,7 +31,6 @@ class LanguagesAdmin extends AdminSimple implements AdminInterface
 {
 
     private static $arrLanguageSwitchEntries = null;
-    private static $strOnChangeHandler = "require('switchLanguage').change(this.value);";
     private static $strActiveKey = "";
 
 

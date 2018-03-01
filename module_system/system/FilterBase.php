@@ -46,6 +46,10 @@ abstract class FilterBase
      */
     private $strFilterId = null;
 
+    /**
+     * @var string
+     */
+    private $strSessionId = null;
 
     /**
      * Array to store additional conditions which are not provided by the filter itself
@@ -58,10 +62,12 @@ abstract class FilterBase
      * FilterBase constructor.
      *
      * @param string $strFilterId
+     * @param string $strSessionId
      */
-    public function __construct($strFilterId = null)
+    public function __construct($strFilterId = null, $strSessionId = null)
     {
         $this->strFilterId = $strFilterId;
+        $this->strSessionId = $strSessionId;
 
         $this->initFilter();
     }
@@ -104,6 +110,21 @@ abstract class FilterBase
     }
 
     /**
+     * Returns the session id under which this filter is stored. By default this is the filter id but it is also
+     * possible to provide another id in case you want to store the filter under a different session key
+     *
+     * @return string
+     */
+    public function getSessionId()
+    {
+        if ($this->strSessionId !== null) {
+            return $this->strSessionId;
+        } else {
+            return $this->getFilterId();
+        }
+    }
+
+    /**
      * Returns the module name.
      * The module name is being retrieved via the class annotation @module
      *
@@ -129,27 +150,26 @@ abstract class FilterBase
      * If retrieved from session a clone is being returned.
      *
      * @param string $strClass
+     * @param string $strSessionId
      * @return self
      */
-    public static function getOrCreateFromSession($strClass = null)
+    public static function getOrCreateFromSession($strClass = null, $strSessionId = null)
     {
         /** @var FilterBase $objFilter */
         $strCalledClass = $strClass === null ? get_called_class() : $strClass;
-        $objFilter = new $strCalledClass();
-        $strFilterId = $objFilter->getFilterId();
+        $objFilter = new $strCalledClass(null, $strSessionId);
+        $strSessionId = $objFilter->getSessionId();
 
         /*
          * Check if filter form was submitted.
          * If not try to get filter from session
          */
         if (Carrier::getInstance()->getParam($objFilter->getFullParamName(AdminFormgeneratorFilter::STR_FORM_PARAM_FILTER)) != "") {
-            $objFilter->setBitFilterUpdated(true);
-
             /*
              * In case filter was reset reset, remove from session
              */
             if (Carrier::getInstance()->getParam(AdminFormgeneratorFilter::STR_FORM_PARAM_RESET) != "") {
-                Session::getInstance()->sessionUnset($strFilterId);
+                Session::getInstance()->sessionUnset($strSessionId);
 
                 //if filter was reset, set default values
                 $objFilter->configureDefaultValues();
@@ -161,8 +181,8 @@ abstract class FilterBase
             /*
              * Get objFilter from Session
              */
-            if (Session::getInstance()->sessionIsset($strFilterId)) {
-                $objFilter = Session::getInstance()->getSession($strFilterId);
+            if (Session::getInstance()->sessionIsset($strSessionId)) {
+                $objFilter = Session::getInstance()->getSession($strSessionId);
             } else {
                 //in case filter is not in session yet -> set default values
                 $objFilter->configureDefaultValues();
@@ -324,6 +344,16 @@ abstract class FilterBase
     }
 
     /**
+     * Adds an additional condition to the filter
+     *
+     * @param OrmConditionInterface $objCondition
+     */
+    public function addAdditionalCondition(OrmConditionInterface $objCondition)
+    {
+        $this->arrAdditionalConditions[] = $objCondition;
+    }
+
+    /**
      * Hook method to add order by conditions to the orm objectlist.
      * By default empty, but may be overwritten in case it is required
      * @param OrmObjectlist $objORM
@@ -391,9 +421,8 @@ abstract class FilterBase
     public function writeFilterToSession()
     {
         $objFilter = clone $this;
-        $objFilter->setBitFilterUpdated(false);
 
-        $strSessionId = $objFilter->getFilterId();
+        $strSessionId = $objFilter->getSessionId();
         Session::getInstance()->setSession($strSessionId, $objFilter);
     }
 
@@ -411,6 +440,7 @@ abstract class FilterBase
 
     /**
      * @return boolean
+     * @deprecated
      */
     public function getBitFilterUpdated()
     {
@@ -419,6 +449,7 @@ abstract class FilterBase
 
     /**
      * @param boolean $bitFilterUpdated
+     * @deprecated
      */
     public function setBitFilterUpdated($bitFilterUpdated)
     {

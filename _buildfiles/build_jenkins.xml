@@ -94,14 +94,14 @@
 		    								init,
 					    					buildProject, installProjectSqlite,
 					    					lint,phpunitFast,jasmine,
-					    					buildAllInOneZip" />
+					    					buildFullZip" />
 
 
     <target name="buildSqliteFull" depends="
 		    								init,
 					    					buildProject, installProjectSqlite,
 					    					lint,phpunit,jasmine,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,
-					    					buildAllInOneZip, buildFullZip" />
+					    					buildFullZip" />
 
     <target name="buildMysql" depends="
 		    								init,
@@ -122,10 +122,6 @@
 		    								init,
 					    					buildProject, installProjectMssql,
 					    					phpunitFast,jasmine" />
-
-    <target name="buildAllInOneZipOnly" depends="
-                                            init,
-                                            buildProject, buildAllInOneZip" />
 
 
 
@@ -276,10 +272,10 @@
         <copy todir="${basedir}${projectPath}" overwrite="true"  includeEmptyDirs="true" >
             <fileset id="sources.dirs" dir="${basedir}${sourcesPath}">
                 <exclude name=".git"/>
-                <exclude name="core/_buildfiles/"/>
                 <include name="core*/module_*/*/**"/>
                 <include name="core*/template_*/*/**"/>
                 <include name="core*/_debugging/*/**"/>
+                <include name="core*/_buildfiles/*/**"/>
                 <include name="core*/*.php"/>
                 <include name="core*/*.htaccess"/>
             </fileset>
@@ -292,7 +288,6 @@
         <copy todir="${basedir}${tempPath}" overwrite="true"  includeEmptyDirs="true" >
             <fileset id="sources.dirs" dir="${basedir}${sourcesPath}">
                 <exclude name=".git"/>
-                <exclude name="core/_buildfiles/"/>
                 <exclude name="core*/module_pchart/" />
                 <exclude name="core*/module_flotchart/" />
 
@@ -312,52 +307,6 @@
     </target>
 
 
-
-
-    <!-- creates the full-zip including all modules and elements -->
-    <target name="buildAllInOneZip" depends="init" >
-        <antcall target="setupPackageFolders" />
-        <copy todir="${basedir}${tempPath}" overwrite="true"  includeEmptyDirs="true" >
-            <fileset id="sources.dirs" dir="${basedir}${sourcesPath}">
-                <exclude name=".git"/>
-
-                <include name="core*/module_dashboard/**"/>
-                <include name="core*/module_eventmanager/**"/>
-                <include name="core*/module_faqs/**"/>
-                <include name="core*/module_formular/**"/>
-                <include name="core*/module_guestbook/**"/>
-                <include name="core*/module_installer/**"/>
-                <include name="core*/module_jqplot/**"/>
-                <include name="core*/module_languageswitch/**"/>
-                <include name="core*/module_mediamanager/**"/>
-                <include name="core*/module_navigation/**"/>
-                <include name="core*/module_news/**"/>
-                <include name="core*/module_packagemanager/**"/>
-                <include name="core*/module_pages/**"/>
-                <include name="core*/module_postacomment/**"/>
-                <include name="core*/module_rating/**"/>
-                <include name="core*/module_rssfeed/**"/>
-                <include name="core*/module_samplecontent/**"/>
-                <include name="core*/module_search/**"/>
-                <include name="core*/module_stats/**"/>
-                <include name="core*/module_system/**"/>
-                <include name="core*/module_tags/**"/>
-                <include name="core*/module_v4skin/**"/>
-                <include name="core*/module_votings/**"/>
-                <include name="core*/*.php"/>
-                <include name="core*/*.htaccess"/>
-            </fileset>
-        </copy>
-
-        <antcall target="buildPackageHelper" />
-        <antcall target="modulePharHelper" />
-
-        <zip destfile="${basedir}${packagesPath}/kajona_v6_allinone_${DSTAMP}-${TSTAMP}.zip">
-            <fileset dir="${basedir}${tempPath}/../" />
-        </zip>
-    </target>
-
-
     <target name="modulePharHelper" description="generates phar files out of the current module structure">
         <exec executable="php" dir="${basedir}${tempPath}/core"  failonerror="on" >
             <arg line="-f generate_phar.php removesource=true"/>
@@ -369,28 +318,11 @@
 
     </target>
 
-    <!-- deprecated -->
-    <target name="modulePackagesZipHelper" depends="init" description="call this task before using the shellscript in order to generate module-zips">
-        <copy todir="${basedir}${tempPath}" overwrite="true"  includeEmptyDirs="true"  >
-            <fileset id="sources.dirs" dir="${basedir}${sourcesPath}">
-                <exclude name=".svn"/>
-                <exclude name=".git"/>
-                <include name="core*/module_*/**"/>
-                <include name="core*/template_*/**"/>
-                <include name="core*/_debugging/**"/>
-                <include name="core*/*.php"/>
-            </fileset>
-        </copy>
-
-        <antcall target="buildPackageHelper" />
-
-    </target>
 
     <target name="buildPackageHelper" description="triggers the project setup and the compilation / compression of css / js files">
         <exec executable="php" dir="${basedir}"  failonerror="on" >
             <arg line="-f buildProject.php ${tempPath} onlySetup"/>
         </exec>
-        <antcall target="compileLess" />
         <antcall target="compressCss" />
         <antcall target="compressJs" />
         <antcall target="cleanZipContent" />
@@ -400,7 +332,6 @@
         <exec executable="php" dir="${basedir}"  failonerror="on" >
             <arg line="-f buildProject.php ${tempPath} onlySetup"/>
         </exec>
-        <antcall target="compileLess" />
         <antcall target="compressCss" />
         <antcall target="compressJs" />
         <antcall target="cleanZipContent" />
@@ -410,7 +341,6 @@
         <exec executable="php" dir="${basedir}"  failonerror="on" >
             <arg line="-f buildProject.php ${tempPath} onlySetup"/>
         </exec>
-        <antcall target="compileLess" />
         <!--<antcall target="compressCss" />-->
         <!--<antcall target="compressJs" />-->
         <delete includeemptydirs="true">
@@ -484,18 +414,9 @@
             <fileset dir="${basedir}${tempPath}" includes="**/setupproject.php"/>
             <fileset dir="${basedir}${tempPath}" includes="**/V4toV5Migration.php"/>
             <fileset dir="${basedir}${tempPath}" includes="**/.git"/>
-            <fileset dir="${basedir}${tempPath}" includes="**/core/_buildfiles/jstests/selenium/**"/>
+            <fileset dir="${basedir}${tempPath}" includes="**/core*/_buildfiles*/**"/>
         </delete>
     </target>
-
-
-    <target name="compileLess" description="Compiles the less files and inserts them into to tpl files">
-        <echo>Compiling less files</echo>
-        <exec executable="php" dir="${basedir}"  failonerror="on" >
-            <arg line="-f lessc/v4setup.php "/>
-        </exec>
-    </target>
-
 
 
     <target name="compressCss" description="Minifies the css files using the cleancss compressor">
@@ -504,6 +425,9 @@
         <copy todir="${basedir}${tempPath}">
             <fileset dir="${basedir}${tempPath}">
                 <include name="**/*.css"/>
+                <exclude name="**/build/**/*.css"/>
+                <exclude name="**/composer/**/*.css"/>
+                <exclude name="**/jstests/**/*.css"/>
             </fileset>
             <globmapper from="*.css" to="*-full.css"/>
         </copy>
@@ -529,6 +453,7 @@
                 <exclude name="**/ckeditor/**/*.js" />
                 <exclude name="core*/module_*/tests/**/*.js" />
                 <exclude name="core*/*/scripts/spec/*.js" />
+                <exclude name="core*/_buildfiles/**/*.js" />
             </fileset>
             <globmapper from="*.js" to="*-full.js"/>
         </copy>

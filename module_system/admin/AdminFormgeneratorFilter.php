@@ -29,6 +29,7 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
      */
     const STR_FORM_PARAM_RESET = "reset";
     const STR_FORM_PARAM_FILTER = "setcontentfilter";
+    const STR_FORM_PARAM_SESSION = "contentfilter_session";
     const STR_FILTER_REDIRECT = "redirect";
 
     /**
@@ -73,8 +74,6 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
     public function renderForm($strTargetURI, $intButtonConfig = 2)
     {
         $objCarrier = Carrier::getInstance();
-        $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
-        $objLang = Carrier::getInstance()->getObjLang();
         $objFilter = $this->getObjSourceobject();
 
         /* Check if post request was send? */
@@ -102,7 +101,7 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
         $bitFilterActive = false;
         foreach ($this->getArrFields() as $objOneField) {
             if (!$objOneField instanceof FormentryHidden) {
-                $bitFilterActive = $bitFilterActive || $objOneField->getStrValue() != "";
+                $bitFilterActive = $bitFilterActive || !$objOneField->isFieldEmpty();
             }
         }
 
@@ -130,18 +129,14 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
      */
     protected function resetParams()
     {
-        $objCarrier = Carrier::getInstance();
+        $arrParams = Carrier::getAllParams();
         $objFilter = $this->getObjSourceobject();
 
-        // we must work on a new formgenerator since we must initialize the fields before the reset
-        $objFormgenerator = new self($objFilter->getFilterId(), $objFilter);
-        $objFormgenerator->generateFieldsFromObject();
-
-        $arrParamsSuffix = array_keys($objFormgenerator->getArrFields());
-
         // clear params
-        foreach ($arrParamsSuffix as $strSuffix) {
-            $objCarrier->setParam($this->getFormElementName($strSuffix), null);
+        foreach ($arrParams as $strKey => $strValue) {
+            if (strpos($strKey, $objFilter->getFilterId()) !== false) {
+                Carrier::getInstance()->setParam($strKey, null);
+            }
         }
     }
 

@@ -32,6 +32,9 @@
     $config['dbprefix']             = "%%defaultprefix%%";             //table-prefix
     $config['dbport']               = "%%defaultport%%";               //Database port, default: ""
 
+    $config['dbexport']             = "default";                       //the way to import / export database dumps
+                                                                       //default: binaries provided by the driver
+                                                                       //internal: requires the module 'dbdump' to be present, uses a core-internal dump import / export routine
 
 
 
@@ -57,6 +60,12 @@
 
     $config['loginproviders']       = "kajona";                        //A chain of login-providers, each implementing a single usersource. The providers
                                                                        //are queried in the order of appearance. The list is comma-separated, no blanks allowed.
+
+    $config['password_validator']   = [
+        'minlength'  => [6],                                           //Minimum length of the provided password
+        'complexity' => [1, 0, 1, 0],                                  //Password must contain the following char types (alpha-lower, alpha-upper, digit, special)
+        'blacklist'  => [],                                            //Blacklist of specific words which are forbidden in the password
+    ];
 
 //--caching ---------------------------------------------------------------------------------------------
 
@@ -105,7 +114,7 @@
     $debug['dblog']                 = false;                           //Logs all queries sent to the db into a logfile. If set to true, the
                                                                        //debuglogging has to be set to 3, since queries are leveled as information
 
-    $debug['debuglevel']            = 1;                               //Current level of debugging. There are several states:
+    $debug['debuglevel']            = 0;                               //Current level of debugging. There are several states:
                                                                            // 0: fatal errors will be displayed
                                                                            // 1: fatal and regular errors will be displayed
     $debug['debuglogging']          = 2;                               //Configures the logging-engine:
@@ -117,6 +126,10 @@
 
 //--services --------------------------------------------------------------------------------------------
 
+    //Example how to override a specific service implementation in the project config. This can be used to change the
+    //the behaviour of a service according to the needs of a customer. Because you use a different FQCN for the service
+    //you may also extend the standard service and change only specific methods. This helps to reuse existing code and
+    //simplifies updating project specific code
     $config["service_provider"] = [
         /*
         \AGP\Contracts\System\ServiceProvider::STR_DEPLOY_KEY_FINDER => function($c){

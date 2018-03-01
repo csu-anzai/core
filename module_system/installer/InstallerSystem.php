@@ -9,6 +9,7 @@
 
 namespace Kajona\System\Installer;
 
+use Kajona\Packagemanager\System\PackagemanagerManager;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Classloader;
 use Kajona\System\System\Date;
@@ -33,6 +34,7 @@ use Kajona\System\System\SystemChangelog;
 use Kajona\System\System\SystemCommon;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemPwchangehistory;
+use Kajona\System\System\SystemPwHistory;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserUser;
@@ -198,6 +200,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["session_loginprovider"] = array("char20", true);
         $arrFields["session_lasturl"] = array("text", true);
         $arrFields["session_userid"] = array("char20", true);
+        $arrFields["session_resetuser"] = array("int", true);
 
         if(!$this->objDB->createTable("session", $arrFields, array("session_id"), array("session_phpid", "session_releasetime")))
             $strReturn .= "An error occurred! ...\n";
@@ -253,6 +256,10 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         // idgenerator
         $strReturn .= "Installing idgenerator table...\n";
         $objManager->createTable(IdGenerator::class);
+
+        // password history
+        $strReturn .= "Installing password history...\n";
+        $objManager->createTable(SystemPwHistory::class);
 
         //Now we have to register module by module
 
@@ -317,27 +324,19 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $this->registerConstant("_system_session_ipfixation_", "true", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
 
 
-        //Creating the admin & guest groups
+        //Creating the admin GROUP
         $objAdminGroup = new UserGroup();
         $objAdminGroup->setStrName("Admins");
         $objAdminGroup->updateObjectToDb();
         $strReturn .= "Registered Group Admins...\n";
 
-        $objGuestGroup = new UserGroup();
-        $objGuestGroup->setStrName("Guests");
-        $objGuestGroup->updateObjectToDb();
-        $strReturn .= "Registered Group Guests...\n";
-
-        //Systemid of guest-user & admin group
-        $strGuestID = $objGuestGroup->getSystemid();
-        $intGuestShortId = $objGuestGroup->getIntShortId();
+        //Systemid of admin group
         $strAdminID = $objAdminGroup->getSystemid();
         $intAdminShortid = $objAdminGroup->getIntShortId();
-        $this->registerConstant("_guests_group_id_", $strGuestID, SystemSetting::$int_TYPE_STRING, _user_modul_id_);
         $this->registerConstant("_admins_group_id_", $strAdminID, SystemSetting::$int_TYPE_STRING, _user_modul_id_);
 
         //BUT: We have to modify the right-record of the root node, too
-        $strGroupsAll = ",".$intGuestShortId.",".$intAdminShortid.",";
+        $strGroupsAll = ",".$intAdminShortid.",";
         $strGroupsAdmin = ",".$intAdminShortid.",";
 
         //Create an root-record for the tree
@@ -403,19 +402,22 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $objAspect->setStrName("management");
         $objAspect->updateObjectToDb();
 
-        $objUser = new UserUser();
-        $objUser->setStrUsername($strUsername);
-        $objUser->setIntAdmin(1);
-        $objUser->setStrAdminlanguage($strAdminLanguage);
-        $objUser->updateObjectToDb();
-        $objUser->getObjSourceUser()->setStrPass($strPassword);
-        $objUser->getObjSourceUser()->setStrEmail($strEmail);
-        $objUser->getObjSourceUser()->updateObjectToDb();
-        $strReturn .= "Created User Admin: <strong>Username: ".$strUsername.", Password: ***********</strong> ...\n";
+        $objManager = new PackagemanagerManager();
+        if ($objManager->getPackage("agp_commons") === null) {
+            $objUser = new UserUser();
+            $objUser->setStrUsername($strUsername);
+            $objUser->setIntAdmin(1);
+            $objUser->setStrAdminlanguage($strAdminLanguage);
+            $objUser->updateObjectToDb();
+            $objUser->getObjSourceUser()->setStrPass($strPassword);
+            $objUser->getObjSourceUser()->setStrEmail($strEmail);
+            $objUser->getObjSourceUser()->updateObjectToDb();
+            $strReturn .= "Created User Admin: <strong>Username: ".$strUsername.", Password: ***********</strong> ...\n";
 
-        //The Admin should belong to the admin-Group
-        $objAdminGroup->getObjSourceGroup()->addMember($objUser->getObjSourceUser());
-        $strReturn .= "Registered Admin in Admin-Group...\n";
+            //The Admin should belong to the admin-Group
+            $objAdminGroup->getObjSourceGroup()->addMember($objUser->getObjSourceUser());
+            $strReturn .= "Registered Admin in Admin-Group...\n";
+        }
 
 
 
@@ -549,6 +551,22 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "6.5.2") {
             $strReturn .= $this->update_652_653();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.5.3") {
+            $strReturn .= "Updating to 6.6...\n";
+            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6");
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.6") {
+            $strReturn .= $this->update_66_661();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "6.6.1") {
+            $strReturn .= $this->update_661_70();
         }
 
         return $strReturn."\n\n";
@@ -760,7 +778,35 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         }
 
         $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.4");
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.3");
+        return $strReturn;
+    }
+
+    private function update_66_661()
+    {
+        $strReturn = "Updating 6.6 to 6.6.1...\n";
+
+        // password history
+        $strReturn .= "Installing password history...\n";
+        $objManager = new OrmSchemamanager();
+        $objManager->createTable(SystemPwHistory::class);
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6.1");
+        return $strReturn;
+    }
+
+
+    private function update_661_70()
+    {
+        $strReturn = "Updating 6.6.1 to 7.0...\n";
+
+        // password history
+        $strReturn .= "Updating session table...\n";
+        $this->objDB->addColumn("session", "session_resetuser", DbDatatypes::STR_TYPE_INT);
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
         return $strReturn;
     }
 

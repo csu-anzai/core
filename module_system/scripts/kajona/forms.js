@@ -8,7 +8,7 @@
  *
  * @module forms
  */
-define('forms', ['jquery', 'tooltip', 'util'], function ($, tooltip, util) {
+define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function ($, tooltip, router, util, messaging) {
 
     /** @exports forms */
     var forms = {};
@@ -23,7 +23,7 @@ define('forms', ['jquery', 'tooltip', 'util'], function ($, tooltip, util) {
     forms.hideField = function(objField) {
         objField = util.getElement(objField);
 
-        var objFormGroup = objField.closest('.form-group');
+        var objFormGroup = objField.is('h3') || objField.is('h4') ? objField : objField.closest('.form-group');
 
         //1. Hide field
         objFormGroup.slideUp(0);
@@ -43,7 +43,7 @@ define('forms', ['jquery', 'tooltip', 'util'], function ($, tooltip, util) {
     forms.showField = function(objField) {
         objField = util.getElement(objField);
 
-        var objFormGroup = objField.closest('.form-group');
+        var objFormGroup = objField.is('h3') || objField.is('h4') ? objField : objField.closest('.form-group');
 
         //1. Show field
         objFormGroup.slideDown(0);
@@ -219,6 +219,55 @@ define('forms', ['jquery', 'tooltip', 'util'], function ($, tooltip, util) {
             });
         }
     };
+
+    forms.defaultOnSubmit = function (objForm) {
+        $(objForm).on('submit', function() {
+            return false;
+        });
+        KAJONA.admin.forms.submittedEl = objForm;
+        $(window).off('unload');
+
+        this.animateSubmit(objForm);
+
+        // disable polling on form submit
+        messaging.setPollingEnabled(false);
+
+        var $btn = $(document.activeElement);
+        if (
+            /* there is an activeElement at all */
+            $btn.length &&
+
+            /* it's a child of the form */
+            $(objForm).has($btn) &&
+
+            /* it's really a submit element */
+            $btn.is('button[type="submit"], input[type="submit"], input[type="image"]') &&
+
+            /* it has a "name" attribute */
+            $btn.is('[name]')
+            ) {
+                //name, value
+                $(objForm).append($('<input type="hidden">').attr('name', $btn.attr('name')).attr('value', $btn.val()));
+                /* access $btn.attr("name") and $btn.val() for data */
+        }
+
+        router.registerFormCallback("activate_polling", function(){
+            // enable polling after we receive the response of the form
+            messaging.setPollingEnabled(true);
+        });
+
+        router.loadUrl(objForm.action);
+
+        return false;
+    };
+
+
+    forms.registerUnlockId = function (strId) {
+        router.registerLoadCallback("form_unlock", function() {
+            $.ajax({url: KAJONA_WEBPATH + '/xml.php?admin=1&module=system&action=unlockRecord&systemid='+strId});
+        });
+    };
+
 
     /**
      * Adds a callback invoked as soon as the rendering of mandatory elements finished.

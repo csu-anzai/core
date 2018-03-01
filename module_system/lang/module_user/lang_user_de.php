@@ -16,7 +16,6 @@ $lang["permissions_header"]              = array(0 => "Anzeigen", 1 => "Bearbeit
 //editable entries
 $lang["_admin_skin_default_"]            = "Standard-Admin-Skin";
 $lang["_admins_group_id_"]               = "ID der Admin-Gruppe";
-$lang["_guests_group_id_"]               = "ID der Gäste-Gruppe";
 $lang["_user_selfedit_"]                 = "Eigene Daten bearbeiten";
 $lang["_user_selfedit_hint"]             = "Legt fest, ob ein Benutzer seine eigenen Daten bearbeiten darf";
 $lang["action_edit_user"]                = "Benutzer bearbeiten";
@@ -105,7 +104,7 @@ $lang["mitglied_speichern_erfolg"]       = "Zugehörigkeit erfolgreich gespeiche
 $lang["mitglied_speichern_fehler"]       = "Fehler beim Speichern der Zugehörigkeit";
 $lang["modul_titel"]                     = "Benutzer";
 $lang["quickhelp_edit"]                  = "Dieses Formular dient zum Bearbeiten oder Anlegen eines neuen Benutzers. <br />Wenn der Benutzer aktiv geschaltet wurde, dann darf er sich grunsätzlich am System anmelden.<br />Zusätzlich muss aber der Bereich definiert sein, in dem sich ein Benutzer anmelden darf.";
-$lang["quickhelp_grouplist"]             = "Auf der Seite \"Alle Gruppen\" werden alle existierenden Gruppen im System angezeigt. Diese Gruppen können bearbeitet, Gruppenmitglieder angezeigt, gelöscht  und neue Gruppen  angelegt werden. <br />Die Grupper der Gäste sowie die Gruppe der Administratoren kann nicht bearbeitet werden, da diese vom System vorrausgesetzt werden.";
+$lang["quickhelp_grouplist"]             = "Auf der Seite \"Alle Gruppen\" werden alle existierenden Gruppen im System angezeigt. Diese Gruppen können bearbeitet, Gruppenmitglieder angezeigt, gelöscht  und neue Gruppen  angelegt werden. <br />Die Gruppe der Administratoren kann nicht bearbeitet werden, da diese vom System vorrausgesetzt wird.";
 $lang["quickhelp_groupmember"]           = "Listet alle Mitglieder einer Gruppe auf. Um die Mitgliedschaft eines Benutzers in dieser Gruppe zu beenden, kann die Zugehörigkeit einfach gelöscht werden. Soll ein Benutzer der Gruppe hinzugefügt werden, so muss dies über den Gruppendialog des Benutzers direkt erfolgen.";
 $lang["quickhelp_groupnew"]              = "Auf der Seite \"Neue Gruppe\" werden neue Gruppen im System angelegt. Diese können über den Aktionspunkt \"Neue Benutzer\" oder über \"Alle Gruppen\" angelegt werden.";
 $lang["quickhelp_groupsave"]             = "Auf der Seite \"Neue Gruppe\" werden neue Gruppen im System angelegt. Diese können über den Aktionspunkt \"Neue Benutzer\" oder über \"Alle Gruppen\" angelegt werden.";
@@ -165,3 +164,11 @@ $lang["usersource_kajona_name"]          = "Kajona intern";
 $lang["user_copy_info"]                  = "Die Gruppeneinstellungen werden von dem Benutzer {0} kopiert. Im nächsten Schritt ist es möglich diese weiter anzupassen.";
 $lang["user_last_pwchanges_info"]        = "Benutzer welche das Passwort zurückgesetzt haben:";
 $lang["change_type_group"]               = "Gruppe";
+
+$lang["user_password_validate_blacklist"] = "Das Passwort enthält gesperrte Begriffe";
+$lang["user_password_validate_complexity"] = "Das Passwort muss mindestens folgende Zeichen enthalten: {0} Großbuchstaben, {1} Kleinbuchstaben, {2} Zahlen, {3} Sonderzeichen (z.B. !,$,#,%)";
+$lang["user_password_validate_minlength"] = "Das Passwort muss mindestens {0} Zeichen lang sein";
+$lang["user_password_validate_passwordhistory"] = "Das Passwort wurde bereits verwendet";
+$lang["user_password_validate_username"] = "Das Passwort darf keine Zeichen aus dem Benutzernamen enthalten";
+
+$lang["reset_reason_expired"] = "Ihr Passwort is abgelaufen. Bitte vergeben Sie ein neues Passwort unter Angabe des zugehörigen Benutzernamens.";

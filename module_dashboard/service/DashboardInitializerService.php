@@ -101,14 +101,6 @@ class DashboardInitializerService
                 $objDashboard->updateObjectToDb(DashboardWidget::getWidgetsRootNodeForUser($strUserid, $strManagementAspectId));
             }
 
-            if (SystemModule::getModuleByName("stats") !== null) {
-                $objDashboard = new DashboardWidget();
-                $objDashboard->setStrColumn("column2");
-                $objDashboard->setStrUser($strUserid);
-                $objDashboard->setStrClass(AdminwidgetStats::class);
-                $objDashboard->setStrContent(serialize(array("current" => "checked", "day" => "checked", "last" => "checked", "nrLast" => "4", "chart" => "checked")));
-                $objDashboard->updateObjectToDb(DashboardWidget::getWidgetsRootNodeForUser($strUserid, $strManagementAspectId));
-            }
         }
 
 

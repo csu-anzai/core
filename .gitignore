@@ -4,3 +4,4 @@ vendor/
 *.phar
 _buildfiles/jstests/node_modules
 _buildfiles/jstests/guideps/node_modules
+module_v4skin/admin/skins/kajona_v4/less/styles.min.css

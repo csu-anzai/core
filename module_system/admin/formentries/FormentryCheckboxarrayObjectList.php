@@ -8,6 +8,7 @@ namespace Kajona\System\Admin\Formentries;
 
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Objectfactory;
+use Kajona\System\System\StringUtil;
 
 
 /**
@@ -78,10 +79,9 @@ class FormentryCheckboxarrayObjectList extends FormentryCheckboxarray
         }
 
         $strReturn .= $objToolkit->formInputCheckboxArrayObjectList($this->getStrEntryName(), $this->getStrLabel(), $this->getAvailableItems(), $this->getSelectedItems(), $this->getBitReadonly(), $this->getBitShowPath(), $this->getBitPathCallback(), $this->getStrAddLink());
-        $strReturn .= $objToolkit->formInputHidden($this->getStrEntryName()."_prescheck", "1");
+        $strReturn .= $objToolkit->formInputHidden($this->getPresCheckKey(), "1");
 
         return $strReturn;
-
     }
 
     /**

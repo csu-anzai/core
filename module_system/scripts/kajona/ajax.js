@@ -21,34 +21,69 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
          * Possible usage:
          * ajax.loadUrlToElement('#report_container', '/xml.php?admin=1&module=stats&action=getReport', '&plugin=general');
          *
-         * @param strElementSelector (may be selector or a jquery object)
-         * @param strUrl
-         * @param strData
+         * @param {String} strElementSelector (may be selector or a jquery object)
+         * @param {String} strUrl
+         * @param {String} strData
+         * @param {Boolean} bitBlockLoadingContainer
+         * @param {String} strMethod default is GET
+         * @param {Function} objCallback - is called if the request was successful
          */
-        loadUrlToElement: function(strElementSelector, strUrl, strData, bitBlockLoadingContainer) {
+        loadUrlToElement: function(strElementSelector, strUrl, strData, bitBlockLoadingContainer, strMethod, objCallback) {
             workingIndicator.start();
 
             var objElement = util.getElement(strElementSelector);
 
-            if(!bitBlockLoadingContainer) {
+            if (!bitBlockLoadingContainer) {
                 objElement.html('<div class="loadingContainer"></div>');
+            } else {
+                objElement.css('opacity', '0.4');
             }
 
-            $.get(KAJONA_WEBPATH+strUrl, strData)
-                .done(
-                    function(data) {
+            if(!strMethod) {
+                strMethod = 'GET';
+            }
+
+            var target = strElementSelector;
+            $.ajax({
+                type: strMethod,
+                url: KAJONA_WEBPATH+strUrl,
+                data: strData
+            }).done(
+                function(data, status, xhr) {
+                    // detect file download
+                    var disposition = xhr.getResponseHeader('Content-Disposition');
+                    if (disposition && disposition.indexOf('filename') !== -1) {
+                        // @TODO workaround to fix old file downloads. In case the ajax request returns a
+                        // Content-Disposition header we redirect the client to the url to trigger the file download
+                        // through the browser. Note you need to update the url of your download to point the user
+                        // directly to the file instead of using a hash route. With this workaround the user downloads
+                        // the file twice, once through the ajax call and then through the redirect.
+                        location.href = KAJONA_WEBPATH+strUrl;
+                    } else {
                         objElement.html(data);
+                        objElement.css('opacity', '1');
+
                         tooltip.initTooltip();
+
+                        if (typeof objCallback === 'function') {
+                            objCallback();
+                        }
                     }
-                )
-                .always(
-                    function(response) {
-                        workingIndicator.stop();
-                    }
-                )
-                .error(function(data) {
-                    statusDisplay.messageError("<b>Request failed!</b><br />" + data);
-                });
+                }
+            ).always(
+                function(response) {
+                    workingIndicator.stop();
+                }
+            ).error(function(data) {
+
+                if (data.status === 500 && KAJONA_DEBUG === 1) {
+                    objElement.html(data.responseText);
+                    objElement.css('opacity', '1');
+                }
+
+                //maybe it was xml, so strip
+                statusDisplay.messageError("<b>Request failed!</b><br />" + data);
+            });
         },
 
         getDataObjectFromString: function(strData, bitFirstIsSystemid) {

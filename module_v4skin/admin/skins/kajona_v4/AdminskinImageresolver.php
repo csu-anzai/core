@@ -89,6 +89,7 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
     public static $arrFAImages = [
 
         "icon_accept"                 => "<i class='kj-icon fa fa-check'></i>",
+        "icon_acceptGreen"            => "<i class='kj-icon fa fa-check' style='color: green'></i>",
         "icon_acceptDisabled"         => "<span class='kj-icon fa-stack'><i class='fa fa-check'></i><i class='fa fa-ban fa-stack-1x kj-stack' style='color: red'></i></span>",
         "icon_arrowDown"              => "<i class='kj-icon fa fa-arrow-circle-down'></i>",
         "icon_arrowUp"                => "<i class='kj-icon fa fa-arrow-circle-up'></i>",
@@ -197,6 +198,7 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_rss"                    => "<i class='kj-icon fa fa-rss'></i>",
         "icon_sitemap"                => "<i class='kj-icon fa fa-sitemap'></i>",
         "icon_sound"                  => "<i class='kj-icon fa fa-music'></i>",
+        "icon_sort_numeric"           => "<i class='kj-icon fa fa-sort-numeric-asc'></i>",
         "icon_submenu"                => "<i class='kj-icon fa fa-chevron-down'></i>",
         "icon_sync"                   => "<i class='kj-icon fa fa-refresh'></i>",
         "icon_systemtask"             => "<i class='kj-icon fa fa-tasks'></i>",
@@ -236,6 +238,8 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
 
 
         "icon_attachement" => "<i class='kj-icon fa fa-paperclip'></i>",
+        "icon_entity" => "<i class='kj-icon fa fa-building'></i>",
+        "icon_subentity" => "<i class='kj-icon fa fa-building-o'></i>",
         "icon_chart" => "<i class='kj-icon fa fa-line-chart'></i>",
         "icon_checkbox" => "<i class='kj-icon fa fa-check-square'></i>",
         "icon_dimension" => "<i class='kj-icon fa fa-bar-chart'></i>",
@@ -294,6 +298,8 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_controlRateable" => "<i class='kj-icon fa fa-check-circle-o'></i>",
         "icon_business_process" => "<i class='kj-icon fa fa-industry'></i>",
         "icon_confirmation" =>  "<i class='kj-icon fa fa-envelope'></i>",
+        "icon_commodity_group" =>  "<i class='kj-icon fa fa-cubes'></i>",
+        "icon_product_group" =>  "<i class='kj-icon fa fa-cube'></i>",
 
         //note: a copy of this markup is placed in agp_util.js and elements_artemeon.tpl::input_dropdown_ampel
         "icon_ampel_gelb" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_gelb'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle orange'></i><i class='kj-icon fa fa-circle-thin'></i></span>",

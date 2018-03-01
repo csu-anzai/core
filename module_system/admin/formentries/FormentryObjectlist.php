@@ -225,7 +225,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         $strObjectName = "";
 
         $objClass = new ReflectionClass(get_class($objObject)); //TODO remove hardcoded cross-module dependencies
-        if ($objClass->implementsInterface('AGP\Aufgaben\System\AufgabenTaskableInterface')) {
+        if (SystemModule::getModuleByName("aufgaben") !== null && $objClass->implementsInterface('AGP\Aufgaben\System\AufgabenTaskableInterface')) {
             $strObjectName .= "[".$objObject->getStrTaskCategory()."] ";
         }
         elseif ($objClass->implementsInterface('Kajona\System\System\VersionableInterface')) {

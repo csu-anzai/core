@@ -2,8 +2,8 @@
 
 namespace Kajona\System\Tests;
 
+use Kajona\System\Admin\AdminController;
 use Kajona\System\Admin\AdminInterface;
-use Kajona\System\Portal\PortalInterface;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Classloader;
@@ -11,11 +11,33 @@ use Kajona\System\System\RedirectException;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\StringUtil;
+use Kajona\System\System\SystemSetting;
+use Kajona\System\System\UserGroup;
+use Kajona\System\System\UserUser;
 use ReflectionClass;
 use ReflectionMethod;
 
 class GeneralActionTest extends Testbase
 {
+
+    public static function setUpBeforeClass()
+    {
+        //Create a new user
+        $objUser = new UserUser();
+        $objUser->setStrUsername(__CLASS__);
+        $objUser->updateObjectToDb();
+
+        $objAdminGroup = new UserGroup(SystemSetting::getConfigValue("_admins_group_id_"));
+        $objAdminGroup->getObjSourceGroup()->addMember($objUser->getObjSourceUser());
+
+        Carrier::getInstance()->getObjSession()->loginUser($objUser);
+    }
+
+    public static function tearDownAfterClass()
+    {
+        Carrier::getInstance()->getObjSession()->logout();
+        UserUser::getAllUsersByName(__CLASS__)[0]->deleteObjectFromDatabase();
+    }
 
 
     public function testAdminModules()
@@ -27,7 +49,7 @@ class GeneralActionTest extends Testbase
         //load all admin-classes
         $arrFiles = Resourceloader::getInstance()->getFolderContent("/admin", array(".php"), false, null,
             function (&$strOneFile, $strPath) {
-                $strOneFile = Classloader::getInstance()->getInstanceFromFilename($strPath, "Kajona\\System\\Admin\\AdminController", null, array(), true);
+                $strOneFile = Classloader::getInstance()->getInstanceFromFilename($strPath, AdminController::class, null, array(), true);
             });
 
         foreach ($arrFiles as $objAdminInstance) {
@@ -42,38 +64,8 @@ class GeneralActionTest extends Testbase
 
     }
 
-
-    public function testPortalModules()
-    {
-
-
-        Carrier::getInstance()->getObjRights()->setBitTestMode(true);
-
-        //load all admin-classes
-        $arrFiles = Resourceloader::getInstance()->getFolderContent("/portal", array(".php"), false, null,
-            function (&$strOneFile, $strPath) {
-                if($strOneFile == "global_includes.php") {
-                    $strOneFile = null;
-                    return;
-                }
-                $strOneFile = Classloader::getInstance()->getInstanceFromFilename($strPath, "Kajona\\System\\Portal\\PortalController", null, array(), true);
-            });
-
-        foreach ($arrFiles as $objPortalInstance) {
-            if ($objPortalInstance !== null) {
-                $this->runSingleFile($objPortalInstance);
-            }
-        }
-
-        Carrier::getInstance()->getObjRights()->setBitTestMode(false);
-
-        $this->assertTrue(true);//dummy assertion to make test not risky. Until here no exception should have occurred
-
-    }
-
-
     /**
-     * @param AdminInterface|PortalInterface $objViewInstance
+     * @param AdminInterface $objViewInstance
      */
     private function runSingleFile($objViewInstance)
     {

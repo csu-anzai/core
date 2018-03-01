@@ -73,7 +73,7 @@ class SystemtaskDbimport extends SystemtaskBase implements AdminSystemtaskInterf
         $strReturn = "";
         //show dropdown to select db-dump
         $objFilesystem = new Filesystem();
-        $arrFiles = $objFilesystem->getFilelist(_projectpath_."/dbdumps/", array(".sql", ".gz"));
+        $arrFiles = $objFilesystem->getFilelist(_projectpath_."/dbdumps/", array(".sql", ".gz", ".zip"));
         $arrOptions = array();
         foreach ($arrFiles as $strOneFile) {
             $arrDetails = $objFilesystem->getFileDetails(_projectpath_."/dbdumps/".$strOneFile);

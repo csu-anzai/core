@@ -8,10 +8,14 @@
 
 namespace Kajona\Packagemanager\System;
 
+use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\Formentries\FormentryHidden;
+use Kajona\System\Admin\Formentries\FormentryUpload;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Classloader;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Filesystem;
+use Kajona\System\System\Link;
 use Kajona\System\System\Logger;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\Resourceloader;
@@ -62,7 +66,14 @@ class PackagemanagerContentproviderLocal implements PackagemanagerContentprovide
         $strReturn .= $objToolkit->getTextRow($objLang->getLang("provider_local_uploadhint", "packagemanager"));
         $strReturn .= $objToolkit->divider();
 
-        $strReturn .= $objToolkit->formHeader(getLinkAdminHref("packagemanager", "uploadPackage"), generateSystemid(), "multipart/form-data");
+//        $objForm = new AdminFormgenerator("", null);
+//        $objForm->addField(new FormentryUpload("", "provider_local_file"))->setStrLabel($objLang->getLang("provider_local_file", "packagemanager"));
+//        $objForm->addField(new FormentryHidden("", "provider"))->setStrValue(__CLASS__);
+//        $objForm->setStrFormEncoding("multipart/form-data");
+//        $strReturn .= $objForm->renderForm(getLinkAdminHref("packagemanager", "uploadPackage"));
+//        return $strReturn;
+
+        $strReturn .= $objToolkit->formHeader(Link::getLinkAdminHref("packagemanager", "uploadPackage", ["contentFill" => "1"], false, false), generateSystemid(), "multipart/form-data", "");
         $strReturn .= $objToolkit->formInputUpload("provider_local_file", $objLang->getLang("provider_local_file", "packagemanager"));
         $strReturn .= $objToolkit->formInputHidden("provider", __CLASS__);
         $strReturn .= $objToolkit->formInputSubmit();

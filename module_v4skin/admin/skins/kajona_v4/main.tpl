@@ -2,21 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Kajona admin [%%webpathTitle%%]</title>
+    <title>[lang,commons_skin_title,commons] [%%webpathTitle%%]</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow" />
-    <meta name="generator" content="Kajona, www.kajona.de" />
+    <meta name="generator" content="Kajona Core, https://github.com/artemeon/core" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <link rel="stylesheet" href="_webpath_/[webpath,module_system]/scripts/jqueryui/css/smoothness/jquery-ui.custom.css?_system_browser_cachebuster_" type="text/css" />
     <link rel="stylesheet" href="_webpath_/[webpath,module_system]/scripts/qtip2/jquery.qtip.min.css?_system_browser_cachebuster_" type="text/css" />
-
-    <!-- KAJONA_BUILD_LESS_START -->
-    <link href="_webpath_/[webpath,module_v4skin]/admin/skins/kajona_v4/less/bootstrap.less?_system_browser_cachebuster_" rel="stylesheet/less">
-    <!--<script> less = { env:'development' }; </script>-->
-    <script src="_webpath_/[webpath,module_v4skin]/admin/skins/kajona_v4/less/less.min.js"></script>
-    <!-- KAJONA_BUILD_LESS_END -->
+    <link rel="stylesheet" href="_webpath_/[webpath,module_v4skin]/admin/skins/kajona_v4/less/styles.min.css?_system_browser_cachebuster_" type="text/css" />
 
     <script src="_webpath_/[webpath,module_system]/scripts/jquery/jquery.min.js?_system_browser_cachebuster_"></script>
+    <script src="_webpath_/[webpath,module_system]/scripts/routie/routie.js?_system_browser_cachebuster_"></script>
     %%head%%
     <script type="text/javascript">var searchExtendText = '[lang,search_details,search]';</script>
     <script src="_webpath_/[webpath,module_system]/scripts/requirejs/require.js?_system_browser_cachebuster_"></script>
@@ -30,7 +27,7 @@
 <body>
 
 <div class="navbar-nav navbar-fixed-top hidden-print">
-    <div class="navbar-topbar">
+    <div class="navbar-topbar hidden">
         <div class="container-fluid">
             <div class="row">
                 <div class="sidebar-menu col-xs-1 col-sm-1 hidden-md hidden-lg">
@@ -53,17 +50,14 @@
 
                 </div>
                 <div class="col-md-5 col-sm-6 col-xs-7 navbar-dropdown-section pull-right">
-                    <span>%%languageswitch%%</span>
-                    <span class="">%%aspectChooser%%</span>
-                    <a id="portaleditor" class="btn btn-default hidden-xs" href="_webpath_">
-                        Portal
-                    </a>
+                    <span class="languageSwitchContainer">%%languageswitch%%</span>
+                    <script type="text/javascript">
+                    </script>
                 </div>
             </div>
         </div>
-        <div class="status-indicator" id="status-indicator"></div>
     </div>
-
+    <div class="status-indicator" id="status-indicator"></div>
 </div>
 
 <div class="container-fluid main-container">
@@ -71,22 +65,28 @@
 
         <!-- MODULE NAVIGATION -->
         <div class="col-md-2 hidden-print mainnavi-container sidebar-offcanvas" id="sidebar">
-            <div class="sidebar-nav">
-                <div class="panel-group" id="moduleNavigation">
-                    <div class="nav-header">Kajona V6</div>
-                    %%moduleSitemap%%
-                </div>
+            <div class="sidebar-nav" id="moduleNavigation">
             </div>
+            <script type="text/javascript">
+                require(['util', 'moduleNavigation'], function(util, mNavi) {
+                    if (!util.isStackedDialog()) {
+                        mNavi.loadNavigation();
+                    }
+                });
+            </script>
+
         </div>
 
         <!-- CONTENT CONTAINER -->
         <div class="col-md-10" id="content">
 
 
-            <div class="row pathNaviContainer">
+            <div class="row pathNaviContainer hidden">
                 <div class="col-md-12">
-                    %%path%%
-                    %%quickhelp%%
+                    <ul class="breadcrumb">
+                        <li class='pathentry home'><i class='fa fa-home'></i></span></li>
+                    </ul>
+                    <div id="quickhelp" class=" pull-right" style=" "><i class="fa fa-question-circle"></i></div>
                 </div>
             </div>
 
@@ -100,12 +100,13 @@
                 </div>
             </div>
 
-            %%content%%
+            <div id="moduleOutput">%%content%%</div>
+
         </div>
     </div>
 
     <footer>
-        <p>powered by <a href="http://www.kajona.de/" target="_blank" title="Kajona - empowering your content">Kajona</a></p>
+        [lang,commons_skin_footer,commons]
     </footer>
 
 </div>
@@ -125,6 +126,23 @@
         </div>
     </div>
 </div>
+
+<!-- folderview container -->
+<div class="modal fade" id="folderviewDialogStacked" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3 id="folderviewDialogStacked_title" class="modal-title">BROWSER</h3>
+            </div>
+            <div class="modal-body">
+                <div id="folderviewDialogStacked_loading" class="loadingContainer loadingContainerBackground"></div>
+                <div id="folderviewDialogStacked_content"><!-- filled by js --></div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- modal dialog container -->
 <div class="modal fade" id="jsDialog_0">

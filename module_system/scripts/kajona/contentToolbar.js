@@ -5,9 +5,10 @@
  *
  * @module contentToolbar
  */
-define(['jquery'], function ($) {
+define('contentToolbar', ['jquery', 'util'], function ($, util) {
 
     var $objToolbarContainer = $(".contentToolbar");
+    var $objActionToolbarContainer = $(".contentToolbar .navbar-inner");
     var $objToolbarList = $(".contentToolbar ul:first");
 
     return /** @alias module:contentToolbar */ {
@@ -65,6 +66,19 @@ define(['jquery'], function ($) {
         },
 
         /**
+         *
+         * @param $objContainer
+         */
+        registerRecordActions: function($objContainer) {
+            if (!util.isStackedDialog()) {
+                var $objNode = $('<div>').attr('class', 'actionToolbar pull-right').append($objContainer.children());
+                $objActionToolbarContainer.append($objNode);
+
+                this.showBar();
+            }
+        },
+
+        /**
          * Removes a sinvle entry
          * @param strIdentifier
          */
@@ -83,6 +97,7 @@ define(['jquery'], function ($) {
          */
         resetBar : function() {
             $objToolbarList.empty();
+            $objToolbarContainer.find(".actionToolbar").remove();
             $objToolbarContainer.addClass('hidden');
         },
 

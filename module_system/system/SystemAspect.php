@@ -230,7 +230,7 @@ class SystemAspect extends Model implements ModelInterface, AdminListableInterfa
     {
 
         //process params maybe existing
-        if (defined("_admin_") && _admin_ && Carrier::getInstance()->getParam("aspect") != "" && validateSystemid(Carrier::getInstance()->getParam("aspect"))) {
+        if (Carrier::getInstance()->getParam("aspect") != "" && validateSystemid(Carrier::getInstance()->getParam("aspect"))) {
             self::setCurrentAspectId(Carrier::getInstance()->getParam("aspect"));
         }
 

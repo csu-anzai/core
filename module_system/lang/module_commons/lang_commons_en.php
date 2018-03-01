@@ -98,6 +98,7 @@ $lang["commons_filter_active"]            = "List-filter in use";
 $lang["filter_show_hide"]                = "Show/hide filter";
 
 $lang["commons_remove_assignment"]                     = "Remove assignment";
+$lang["commons_remove_all_assignment"]                     = "Remove all assignments";
 $lang["commons_add_assignment"]                     = "Add assignment";
 $lang["commons_objectlist_manage_assignment"]       = "Manage assignments";
 $lang["commons_objectlist_update_assignment"]       = "Assign";
@@ -143,3 +144,8 @@ $lang["commons_interval_month"]                  = "Month";
 $lang["commons_interval_months"]                 = "Months";
 $lang["commons_interval_year"]                   = "Year";
 $lang["commons_interval_years"]                  = "Years";
+
+$lang["commons_skin_footer"] = "<p>powered by <a href=\"https://github.com/artemeon/core\" target=\"_blank\" title=\"Kajona Core\">Kajona Core</a></p>";
+$lang["commons_login_footer"] = "<a href=\"https://github.com/artemeon/core\" target=\"_blank\">Kajona Core</a>";
+$lang["commons_skin_header"] = "Kajona Core";
+$lang["commons_skin_title"] = "Kajona Core";

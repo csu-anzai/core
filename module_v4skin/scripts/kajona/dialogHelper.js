@@ -37,6 +37,7 @@ define('dialogHelper', ['jquery', 'dialog'], function ($, Dialog) {
             dialogInstance.setTitle(strTitle);
             dialogInstance.init();
 
+
             //register the dialog
             require(['folderview'], function(folderview) {
                 folderview.dialog = dialogInstance;
@@ -44,6 +45,20 @@ define('dialogHelper', ['jquery', 'dialog'], function ($, Dialog) {
 
             return dialogInstance;
 
+        },
+
+        showIframeDialogStacked : function(strUrl, strTitle) {
+            var dialogInstance = new Dialog('folderviewDialogStacked', 0);
+            dialogInstance.setContentIFrame(strUrl);
+            dialogInstance.setTitle(strTitle);
+            dialogInstance.init();
+
+            //register the dialog
+            require(['folderview'], function(folderview) {
+                folderview.dialog = dialogInstance;
+            });
+
+            return dialogInstance;
         },
 
         /**

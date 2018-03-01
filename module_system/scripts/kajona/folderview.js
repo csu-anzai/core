@@ -30,10 +30,17 @@ define("folderview", ["jquery", "util"], function($, util){
          * @param {function} objCallback
          */
         selectCallback: function (arrTargetsValues, objCallback) {
+
             if (window.opener) {
                 window.opener.require('folderview').fillFormFields(arrTargetsValues);
             } else if (parent) {
-                parent.require('folderview').fillFormFields(arrTargetsValues);
+                if(parent.KAJONA.util.folderviewHandler) {
+                    parent.KAJONA.util.folderviewHandler.fillFormFields(arrTargetsValues);
+                    parent.KAJONA.util.folderviewHandler = null;
+                } else {
+                    parent.require('folderview').fillFormFields(arrTargetsValues);
+                }
+
             }
 
             if ($.isFunction(objCallback)) {
@@ -79,8 +86,9 @@ define("folderview", ["jquery", "util"], function($, util){
          * @param {Array} arrItems        - array with item of the following format {strSystemId: <systemid>, strDisplayName:<displayname>, strIcon:<icon>}
          * @param {Array} arrAvailableIds -
          * @param {string} strDeleteButton -
+         * @param {boolean} bitStayOpen
          */
-        setObjectListItems: function(strElementName, arrItems, arrAvailableIds, strDeleteButton){
+        setObjectListItems: function(strElementName, arrItems, arrAvailableIds, strDeleteButton, bitStayOpen){
             var table = util.getElementFromOpener(strElementName);
 
             var tbody = table.find('tbody');
@@ -103,7 +111,7 @@ define("folderview", ["jquery", "util"], function($, util){
                     html+= '    <td class="listimage">' + arrItems[i].strIcon + '</td>';
                     html+= '    <td class="title"><div class="smaller">'+strEscapedPath+'</div>' + strEscapedTitle + ' <input type="hidden" name="' + strElementName + '[]" value="' + arrItems[i].strSystemId + '" /></td>';
                     html+= '    <td class="icon-cell">';
-                    html+= '        <a href="#" onclick="require(\'v4skin\').removeObjectListItem(this);return false">' + strDeleteButton + '</a>';
+                    html+= '        <a href="#" class="removeLink" onclick="require(\'v4skin\').removeObjectListItem(this);return false">' + strDeleteButton + '</a>';
                     html+= '    </td>';
                     html+= '</tr>';
 
@@ -112,8 +120,9 @@ define("folderview", ["jquery", "util"], function($, util){
                 table.trigger('updated');
             }
 
-
-            this.close();
+            if (bitStayOpen !== true) {
+                this.close();
+            }
         },
 
         /**

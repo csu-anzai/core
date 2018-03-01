@@ -185,63 +185,6 @@ Divider to split up a page in logical sections
 <hr />
 </divider>
 
-data list header. Used to open a table to print data
-<datalist_header>
-<table class="table table-striped table-condensed kajona-data-table %%cssaddon%%">
-</datalist_header>
-
-<datalist_header_tbody>
-    <table class="table table-striped-tbody table-condensed kajona-data-table %%cssaddon%%">
-</datalist_header_tbody>
-
-data list footer. at the bottom of the datatable
-<datalist_footer>
-    </table>
-    <script type="text/javascript">
-        require(["jquery-floatThread"], function() {
-            $('table.kajona-data-table:not(.kajona-data-table-ignore-floatthread)').floatThead({
-                scrollingTop: $("body.dialogBody").size() > 0 ? 0 : 70,
-                useAbsolutePositioning: true
-            });
-        });
-    </script>
-</datalist_footer>
-
-One Column in a row (header record) - the header, the content, the footer
-<datalist_column_head_header>
-    <thead><tr>
-</datalist_column_head_header>
-
-<datalist_column_head>
-    <th class="%%class%%" %%addons%%>%%value%%</th>
-</datalist_column_head>
-
-<datalist_column_head_footer>
-    </tr></thead>
-</datalist_column_head_footer>
-
-One Column in a row (data record) - the header, the content, the footer, providing the option of two styles
-<datalist_column_header>
-	<tr data-systemid="%%systemid%%">
-</datalist_column_header>
-
-<datalist_column_header_tbody>
-    <tbody>
-    <tr data-systemid="%%systemid%%">
-</datalist_column_header_tbody>
-
-<datalist_column>
-    <td class="%%class%%">%%value%%</td>
-</datalist_column>
-
-<datalist_column_footer>
-	</tr>
-</datalist_column_footer>
-
-<datalist_column_footer_tbody>
-    </tr>
-    </tbody>
-</datalist_column_footer_tbody>
 
 
 
@@ -463,7 +406,7 @@ Textarea
     <div class="form-group">
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
         <div class="col-sm-6 %%class%%">
-            <textarea name="%%name%%" id="%%name%%" class="form-control" rows="%%numberOfRows%%" %%readonly%%>%%value%%</textarea>
+            <textarea name="%%name%%" id="%%name%%" class="form-control" rows="%%numberOfRows%%" %%readonly%% placeholder="%%placeholder%%">%%value%%</textarea>
         </div>
         <div class="col-sm-2 form-opener">
             %%opener%%
@@ -706,6 +649,7 @@ Upload-Field for multiple files with progress bar
                     var rows = $();
                     $.each(o.files, function (index, file) {
                         var row = $('#%%name%%_upl .fileupload-list-template .template-upload').clone();
+                        file.name = file.name.replace(/(.{60})/g,"$1 ");
                         row.find('.name').text(file.name);
                         row.find('.size').text(o.formatFileSize(file.size));
                         if (file.error) {
@@ -864,23 +808,26 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
 
         <div class="col-sm-6 inputText">
-            <table id="%%name%%" data-name="%%name%%" class="table table-striped form-control">
-                <colgroup>
-                    <col width="20" />
-                    <col width="*" />
-                    <col width="20" />
-                </colgroup>
-                <tfoot>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td></td>
-                    <td class="icon-cell"></td>
-                </tr>
-                </tfoot>
-                <tbody>
-                %%table%%
-                </tbody>
-            </table>
+            <div class="inputContainer">
+                <table id="%%name%%" data-name="%%name%%" class="table table-striped form-control">
+                    <colgroup>
+                        <col width="20" />
+                        <col width="*" />
+                        <col width="20" />
+                    </colgroup>
+                    <tfoot>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td></td>
+                        <td class="icon-cell"></td>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    %%table%%
+                    </tbody>
+                </table>
+            </div>
+            %%removeAllLink%%
         </div>
         <div class="col-sm-2 form-opener">
             %%addLink%%
@@ -910,6 +857,8 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
             $("#%%name%%").tagEditor({
                 initialTags: %%values%%,
                 forceLowercase: false,
+                delimiter: %%delimiter%%,
+                maxLength: 250,
                 onChange: onChange
             });
 
@@ -998,24 +947,26 @@ A list of checkbox input elements
                 %%elements%%
             </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label class="col-sm-3 control-label"></label>
-        <div class="col-sm-6">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" name="checkAll_%%name%%" id="checkAll_%%name%%" %%readonly%%> [lang,commons_select_all,system]
-                </label>
+        <div class="col-sm-12">
+            <label class="col-sm-3 control-label"></label>
+            <div class="col-sm-6">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="checkAll_%%name%%" id="checkAll_%%name%%" %%readonly%%> [lang,commons_select_all,system]
+                    </label>
+                </div>
             </div>
         </div>
     </div>
 
+
+
     <script type='text/javascript'>
 require(["jquery"], function($) {
 $("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
-    var checkBoxes = $("input:checkbox[name^='%%name%%']");
-    checkBoxes.prop('checked', $("input:checkbox[name='checkAll_%%name%%']").prop('checked'));
+    var checkBoxes = $("input:checkbox[name^='%%name%%']").not("[disabled]");
+    checkBoxes.prop('checked', $("input:checkbox[name='checkAll_%%name%%']").prop('checked')).trigger('change');
 });
 });
     </script>
@@ -1023,7 +974,7 @@ $("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
 
 <input_checkboxarray_checkbox>
     <div class="%%type%%%%inline%%">
-        <label><input type="%%type%%" name="%%name%%" value="%%value%%" %%checked%% %%readonly%% /> %%title%%</label>
+        <label><input type="%%type%%" name="%%name%%"  id="%%name%%" value="%%value%%" %%checked%% %%readonly%% /> %%title%%</label>
     </div>
 </input_checkboxarray_checkbox>
 
@@ -1077,8 +1028,8 @@ A list of checkbox for object elements
     <script type='text/javascript'>
         require(["jquery"], function($) {
             $("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
-                var checkBoxes = $("input:checkbox[name^='%%name%%']");
-                checkBoxes.prop('checked', $("input:checkbox[name='checkAll_%%name%%']").prop('checked'));
+                var checkBoxes = $("input:checkbox[name^='%%name%%']").not("[disabled]");
+                checkBoxes.prop('checked', $("input:checkbox[name='checkAll_%%name%%']")).trigger('change');
             });
         });
     </script>
@@ -1280,17 +1231,6 @@ Shown, wherever the attention of the user is needed
     </div>
 </warning_box>
 
-Renders a toc navigation
-<toc_navigation>
-    <script type="text/javascript">
-        require(['jquery', 'toc'], function($, toc) {
-            $(document).ready(function(){
-                toc.render("%%selector%%");
-            });
-        });
-    </script>
-</toc_navigation>
-
 Used to print plain text
 <text_row>
 <p class="%%class%%">%%text%%</p>
@@ -1397,7 +1337,7 @@ The textarea field to replace by the editor. If the editor can't be loaded, a pl
 <div class="form-group">
     <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
     <div class="col-sm-6">
-        <textarea name="%%name%%" id="%%name%%" class="form-control inputWysiwyg" data-kajona-editorid="%%editorid%%">%%content%%</textarea></div><br />
+        <textarea name="%%name%%" id="%%name%%" class="form-control inputWysiwyg" data-kajona-editorid="%%editorid%%" %%readonly%%>%%content%%</textarea></div><br />
     </div>
 </wysiwyg_ckeditor>
 
@@ -1416,17 +1356,8 @@ Please refer to the CKEditor documentation to see what's possible here
 
 The following sections are used to display the path-navigations, e.g. used by the navigation module
 
-<path_container>
-    <ul class="breadcrumb">
-        %%pathnavi%%
-    </ul>
-    <div id="quickhelp" class=" pull-right" style=" "><i class="fa fa-question-circle"></i></div>
-</path_container>
-
 <path_entry>
-    <li class="pathentry">
-        %%pathlink%%
-    </li>
+  <script type="text/javascript"> require(['breadcrumb'], function(breadcrumb) { breadcrumb.appendLinkToPathNavigation('%%pathlink%%') }); </script>
 </path_entry>
 
 ---------------------------------------------------------------------------------------------------------
@@ -1444,15 +1375,15 @@ Toolbar, prominent in the layout. Rendered to switch between action.
 
 Toolbar for the current record, rendered to quick-access the actions of the current record.
 <contentActionToolbar_wrapper>
-<div class="actionToolbar pull-right">%%content%%</div>
-<script type="text/javascript"> require(['contentToolbar'], function(contentToolbar) { contentToolbar.showBar(); }); </script>
+<div class="hidden toolbarContentContainer">%%content%%</div>
+<script type="text/javascript"> require(['contentToolbar'], function(contentToolbar) { contentToolbar.registerRecordActions($('.toolbarContentContainer')); }); </script>
 </contentActionToolbar_wrapper>
 
 ---------------------------------------------------------------------------------------------------------
 -- ERROR HANDLING ---------------------------------------------------------------------------------------
 
 <error_container>
-    <div class="alert alert-danger">
+    <div class="alert %%errorclass%%">
         <a class="close" data-dismiss="alert" href="#">&times;</a>
         <h4 class="alert-heading">%%errorintro%%</h4>
         <ul>
@@ -1528,41 +1459,13 @@ pe_iconbar, pe_disable
 
 </pe_toolbar>
 
-
-
-
----------------------------------------------------------------------------------------------------------
--- LANGUAGES --------------------------------------------------------------------------------------------
-
-A single button, represents one language. Put together in the language-switch
-<language_switch_button>
-    <option value="%%languageKey%%">%%languageName%%</option>
-</language_switch_button>
-
-A button for the active language
-<language_switch_button_active>
-    <option value="%%languageKey%%" selected="selected">%%languageName%%</option>
-</language_switch_button_active>
-
-The language switch surrounds the buttons
-<language_switch>
-    <select id="languageChooser" onchange="%%onchangehandler%%">%%languagebuttons%%</select>
-    <script type="text/javascript">require(['switchLanguage']);</script>
-</language_switch>
-
 ---------------------------------------------------------------------------------------------------------
 -- QUICK HELP -------------------------------------------------------------------------------------------
 
 <quickhelp>
     <script type="text/javascript">
-        require(['jquery', 'bootstrap'], function() {
-            $('#quickhelp').popover({
-                title: '%%title%%',
-                content: '%%text%%',
-                placement: 'bottom',
-                trigger: 'hover',
-                html: true
-            }).css("cursor", "help").show();
+        require(['quickhelp', 'bootstrap'], function(quickhelp) {
+            quickhelp.setQuickhelp('%%title%%', '%%text%%');
         });
     </script>
 </quickhelp>
@@ -1688,9 +1591,16 @@ The language switch surrounds the buttons
             </div>
         </div>
         <div class="col-md-8 treeViewContent" data-kajona-treeid="%%treeId%%">
-            <div class=""><a href="#" onclick="require('tree').toggleTreeView('%%treeId%%');" title="[lang,treeviewtoggle,system]" rel="tooltip"><i class="fa fa-bars"></i></a></div>
+            <div class=""><a href="#" id="%%treeId%%_toggle" onclick="" title="[lang,treeviewtoggle,system]" rel="tooltip"><i class="fa fa-bars"></i></a></div>
             %%sideContent%%
         </div>
+
+        <script type='text/javascript'>
+            $('#%%treeId%%_toggle').on('click', function(e) {
+                require('tree').toggleTreeView('%%treeId%%');
+                e.preventDefault();
+            })
+        </script>
     </div>
 </treeview>
 
@@ -1745,7 +1655,7 @@ place ajaxScript before the closing input_tagselector-tag.
 The aspect chooser is shown in cases more than one aspect is defined in the system-module.
 It containes a list of aspects and provides the possibility to switch the different aspects.
 <aspect_chooser>
-    <select onchange="window.location.replace(this.value);">
+    <select onchange="require('moduleNavigation').loadNavigation(this.value);">
         %%options%%
     </select>
 </aspect_chooser>
@@ -1852,7 +1762,7 @@ It containes a list of aspects and provides the possibility to switch the differ
 </contextmenu_wrapper>
 
 <contextmenu_entry>
-    <li ><a href="%%elementLink%%">%%elementName%%</a></li>
+    <li ><a href="%%elementLink%%" onclick="%%elementAction%%">%%elementName%%</a></li>
 </contextmenu_entry>
 
 <contextmenu_entry_full>
@@ -1886,33 +1796,38 @@ It containes a list of aspects and provides the possibility to switch the differ
 -- BACKEND NAVIGATION -----------------------------------------------------------------------------------
 
 <sitemap_wrapper>
-        %%level%%
+      <div class="nav-header">
+            %%aspectToggle%%
+            V7
+      </div>
+    %%level%%
 </sitemap_wrapper>
 
+
+<sitemap_aspect_wrapper>
+<div data-kajona-aspectid='%%aspectId%%' id="%%aspectId%%" class='%%class%% aspect-container panel-group'>
+%%aspectContent%%
+</div>
+
+</sitemap_aspect_wrapper>
+
 <sitemap_combined_entry_header>
-    <a data-toggle="collapse" data-parent="#moduleNavigation" href="#menu_%%systemid%%" rel="tooltip" title="%%moduleName%%">
+    <a data-toggle="collapse" data-parent="#%%aspectId%%" href="#menu_%%systemid%%%%aspectId%%" rel="tooltip" title="%%moduleName%%" data-kajona-module="%%moduleTitle%%">
         <i class="fa %%faicon%%"></i>
     </a>
 </sitemap_combined_entry_header>
 
 <sitemap_combined_entry_body>
-    <div id="menu_%%systemid%%" class="panel-collapse collapse">
+    <div id="menu_%%systemid%%%%aspectId%%" class="panel-collapse collapse" data-kajona-module="%%moduleTitle%%">
         <div class="panel-body">
             <ul>%%actions%%</ul>
         </div>
     </div>
 </sitemap_combined_entry_body>
 
-<sitemap_combined_entry_body_active>
-    <div id="menu_%%systemid%%" class="panel-collapse collapge in">
-        <div class="panel-body">
-            <ul>%%actions%%</ul>
-        </div>
-    </div>
-</sitemap_combined_entry_body_active>
 
 <sitemap_combined_entry_wrapper>
-    <div class="panel panel-default">
+    <div class="panel panel-default panel-combined">
         <div class="panel-heading">
             <span class="linkcontainer ">
                 %%combined_header%%
@@ -1922,27 +1837,15 @@ It containes a list of aspects and provides the possibility to switch the differ
     </div>
 </sitemap_combined_entry_wrapper>
 
-<sitemap_combined_entry_wrapper_active>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <span class="linkcontainer active">
-                %%combined_header%%
-            </span>
-        </div>
-        %%combined_body%%
-    </div>
-</sitemap_combined_entry_wrapper_active>
-
-
 
 <sitemap_module_wrapper>
     <div class="panel panel-default">
         <div class="panel-heading">
-            <a data-toggle="collapse" data-parent="#moduleNavigation" href="#menu_%%systemid%%">
+            <a data-toggle="collapse" data-parent="#%%aspectId%%" href="#menu_%%systemid%%%%aspectId%%" data-kajona-module="%%moduleTitle%%" >
                 %%moduleName%%
             </a>
         </div>
-        <div id="menu_%%systemid%%" class="panel-collapse collapse">
+        <div id="menu_%%systemid%%%%aspectId%%" class="panel-collapse collapse" data-kajona-module="%%moduleTitle%%">
             <div class="panel-body">
                 <ul>%%actions%%</ul>
             </div>
@@ -1950,20 +1853,6 @@ It containes a list of aspects and provides the possibility to switch the differ
     </div>
 </sitemap_module_wrapper>
 
-<sitemap_module_wrapper_active>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <a class="active" data-toggle="collapse" data-parent="#moduleNavigation" href="#menu_%%systemid%%">
-                %%moduleName%%
-            </a>
-        </div>
-        <div id="menu_%%systemid%%" class="panel-collapse collapse in">
-            <div class="panel-body">
-                <ul>%%actions%%</ul>
-            </div>
-        </div>
-    </div>
-</sitemap_module_wrapper_active>
 
 <sitemap_action_entry>
     <li>%%action%%</li>

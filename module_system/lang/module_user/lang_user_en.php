@@ -16,7 +16,6 @@ $lang["permissions_header"]              = array(0 => "View", 1 => "Edit", 2 => 
 //editable entries
 $lang["_admin_skin_default_"]            = "Default admin skin";
 $lang["_admins_group_id_"]               = "ID of the admin group";
-$lang["_guests_group_id_"]               = "ID of the guest group";
 $lang["_user_selfedit_"]                 = "Edit own profile";
 $lang["_user_selfedit_hint"]             = "Defines, if the user is allowed to change its own profile.";
 $lang["action_edit_user"]                = "Edit user";
@@ -106,7 +105,7 @@ $lang["mitglied_speichern_erfolg"]       = "Assignments saved successfully";
 $lang["mitglied_speichern_fehler"]       = "An error occurred while saving assignments";
 $lang["modul_titel"]                     = "Users";
 $lang["quickhelp_edit"]                  = "This form is used to edit or create a new user.<br />If the user is set active, the account is allowed to login in general.<br />In addtion, the area allowed to access must be set.";
-$lang["quickhelp_grouplist"]             = "Groups available are listed in this view.<br />The groups of the guests and the admins can\'t be deleted, since they are required for the system to work properly.";
+$lang["quickhelp_grouplist"]             = "Groups available are listed in this view.<br />The admins group can\'t be deleted, since it is required for the system to work properly.";
 $lang["quickhelp_groupmember"]           = "All members of a group are listed right here. To end the membership of a user, the membership can be deleted. If you want a user to become a member of the group, you have to use the group dialog.";
 $lang["quickhelp_groupnew"]              = "To create a group, you just have to specify a title for the group.";
 $lang["quickhelp_groupsave"]             = "To create a group, you just have to specify a title for the group.";
@@ -166,3 +165,11 @@ $lang["usersource_kajona_name"]          = "Kajona internal";
 $lang["user_copy_info"]                  = "The group settings are inherited from the user {0}. In the next step it is possible to adjust the group settings.";
 $lang["user_last_pwchanges_info"]        = "User history:";
 $lang["change_type_group"]               = "Group";
+
+$lang["user_password_validate_blacklist"] = "The password contains blocked keywords";
+$lang["user_password_validate_complexity"] = "The password must include the following characters: {0} upper-case letters, {1} lower-case letters, {2} digits, {3} special-characters (i.e. !,$,#,%)";
+$lang["user_password_validate_minlength"] = "The password must be at least {0} characters long";
+$lang["user_password_validate_passwordhistory"] = "The password was previously used";
+$lang["user_password_validate_username"] = "The password must not contain characters from the username";
+
+$lang["reset_reason_expired"] = "Your password is expired. Please choose a new password along with providing your username.";

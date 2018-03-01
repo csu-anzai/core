@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://apidocs.kajona.de/xsd/package.xsd"
+    >
+    <title>dbdump</title>
+    <description>Creates database dumps independent from the underlying db-system.</description>
+    <version>7.0</version>
+    <author>Kajona Team</author>
+    <type>MODULE</type>
+    <providesInstaller>FALSE</providesInstaller>
+    <requiredModules>
+        <module name="system" version="7.0" />
+    </requiredModules>
+</package>

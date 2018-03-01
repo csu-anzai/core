@@ -1,5 +1,6 @@
 
-require(['jquery', 'jquery-ui', 'jquery-touchPunch', 'bootstrap', 'v4skin', 'loader', 'dialog', 'folderview', 'lists', 'dialogHelper'], function(jquery, jqueryui, touch, bootstrap, v4skin, loader, Dialog, folderview) {
+require(['router', 'jquery', 'jquery-ui', 'jquery-touchPunch', 'bootstrap', 'v4skin', 'loader', 'dialog', 'folderview', 'lists', 'dialogHelper', 'ajax'],
+    function(router, jquery, jqueryui, touch, bootstrap, v4skin, loader, Dialog, folderview, lists, dialogHelper, ajax) {
 
     //backwards compatibility
     if (typeof KAJONA == "undefined") {
@@ -16,10 +17,16 @@ require(['jquery', 'jquery-ui', 'jquery-touchPunch', 'bootstrap', 'v4skin', 'loa
         };
     }
 
+    KAJONA.util.dialogHelper = dialogHelper;
+    // a reference to a possible dialogHandler
+    KAJONA.util.folderviewHandler = null;
     KAJONA.admin.folderview.dialog = new Dialog('folderviewDialog', 0);
     folderview.dialog = KAJONA.admin.folderview.dialog;
 
     $ = jquery;
+
+    //register the global router
+    router.init();
 
     // BC layer
 
@@ -31,4 +38,11 @@ require(['jquery', 'jquery-ui', 'jquery-touchPunch', 'bootstrap', 'v4skin', 'loa
     jsDialog_2 = new Dialog('jsDialog_2', 2);
     /** @deprecated */
     jsDialog_3 = new Dialog('jsDialog_3', 3);
+
+    KAJONA.admin.forms.submittedEl = null;
+
+
+
+
+
 });

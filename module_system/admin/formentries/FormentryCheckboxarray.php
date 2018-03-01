@@ -10,6 +10,8 @@ use ArrayObject;
 use Kajona\System\Admin\FormentryPrintableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Objectfactory;
+use Kajona\System\System\Reflection;
+use Kajona\System\System\StringUtil;
 use Kajona\System\System\Validators\DummyValidator;
 
 /**
@@ -29,6 +31,11 @@ class FormentryCheckboxarray extends FormentryBase implements FormentryPrintable
     private $intType = 1;
     private $bitInline = false;
     private $arrKeyValues = array();
+
+    /**
+     * a list of [key=>value],[key=>value] pairs, resolved from the language-files
+     */
+    const STR_VALUES_ANNOTATION = "@fieldValues";
 
     public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
     {
@@ -67,11 +74,18 @@ class FormentryCheckboxarray extends FormentryBase implements FormentryPrintable
         }
 
         $strReturn .= $objToolkit->formInputCheckboxArray($this->getStrEntryName(), $this->getStrLabel(), $this->intType, $this->arrKeyValues, $this->getStrValue(), $this->bitInline, $this->getBitReadonly());
-        $strReturn .= $objToolkit->formInputHidden($this->getStrEntryName()."_prescheck", "1");
-
-
+        $strReturn .= $objToolkit->formInputHidden($this->getPresCheckKey(), "1");
 
         return $strReturn;
+    }
+
+    /**
+     * Creates a pres-check key to detect de-selected entries
+     * @return string
+     */
+    final protected function getPresCheckKey()
+    {
+        return StringUtil::replace(["[", "]"], "", $this->getStrEntryName()."_prescheck");
     }
 
     /**
@@ -81,6 +95,11 @@ class FormentryCheckboxarray extends FormentryBase implements FormentryPrintable
      */
     public function setStrValue($strValue)
     {
+
+        if (is_string($strValue)) {
+            return parent::setStrValue(explode(",", $strValue));
+        }
+
         $arrTargetValues = array();
 
         if ((is_array($strValue) || $strValue instanceof ArrayObject) && count($strValue) > 0) {
@@ -106,10 +125,32 @@ class FormentryCheckboxarray extends FormentryBase implements FormentryPrintable
         $arrParams = Carrier::getAllParams();
         if (isset($arrParams[$this->getStrEntryName()])) {
             $this->setStrValue($arrParams[$this->getStrEntryName()]);
-        } elseif (isset($arrParams[$this->getStrEntryName()."_prescheck"])) {
+        } elseif (isset($arrParams[$this->getPresCheckKey()])) {
             $this->setStrValue(array());
         } else {
             $this->setStrValue($this->getValueFromObject());
+        }
+
+
+        //try to find the matching source property
+        $strSourceProperty = $this->getCurrentProperty(self::STR_VALUES_ANNOTATION);
+        if ($strSourceProperty == null) {
+            return;
+        }
+
+        //set dd values
+        if ($this->getObjSourceObject() != null && $this->getStrSourceProperty() != "") {
+            $objReflection = new Reflection($this->getObjSourceObject());
+            $strDDValues = $objReflection->getAnnotationValueForProperty($strSourceProperty, self::STR_VALUES_ANNOTATION);
+            $strModule = $this->getAnnotationParamValueForCurrentProperty("module", self::STR_VALUES_ANNOTATION);
+            if ($strModule === null) {
+                $strModule = $this->getObjSourceObject()->getArrModule("modul");
+            }
+
+            $arrDDValues = FormentryDropdown::convertDDValueStringToArray($strDDValues, $strModule);
+            if ($arrDDValues !== null) {
+                $this->setArrKeyValues($arrDDValues);
+            }
         }
     }
 
@@ -146,7 +187,7 @@ class FormentryCheckboxarray extends FormentryBase implements FormentryPrintable
         foreach ($this->getStrValue() as $strOneId) {
             if (validateSystemid($strOneId)) {
                 $arrNew[] = Objectfactory::getInstance()->getObject($strOneId)->getStrDisplayName();
-            } else {
+            } elseif (isset($this->arrKeyValues[$strOneId])) {
                 $arrNew[] = $this->arrKeyValues[$strOneId];
             }
         }

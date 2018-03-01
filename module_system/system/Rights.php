@@ -84,6 +84,7 @@ class Rights
      * @param string $strStartId
      *
      * @return bool
+     * @throws Exception
      */
     public function rebuildRightsStructure(string $strStartId = "0"): bool
     {
@@ -319,6 +320,7 @@ class Rights
      * @param string $strSystemid
      *
      * @return bool
+     * @throws Exception
      */
     public function setInherited(bool $bitIsInherited, string $strSystemid): bool
     {
@@ -382,7 +384,6 @@ class Rights
                             WHERE right_id = ? AND system_id = right_id";
 
             $arrRow = $this->objDb->getPRow($strQuery, array($strSystemid));
-
         }
 
 
@@ -502,6 +503,7 @@ class Rights
      * @param string $strUserid
      *
      * @return bool
+     * @throws Exception
      */
     public function rightView(string $strSystemid, string $strUserid = ""): bool
     {
@@ -515,6 +517,7 @@ class Rights
      * @param string $strUserid
      *
      * @return bool
+     * @throws Exception
      */
     public function rightEdit(string $strSystemid, string $strUserid = ""): bool
     {
@@ -529,6 +532,7 @@ class Rights
      * @param string $strUserid
      *
      * @return bool
+     * @throws Exception
      */
     public function rightDelete(string $strSystemid, string $strUserid = ""): bool
     {
@@ -543,6 +547,7 @@ class Rights
      * @param string $strUserid
      *
      * @return bool
+     * @throws Exception
      */
     public function rightRight(string $strSystemid, string $strUserid = ""): bool
     {
@@ -557,6 +562,7 @@ class Rights
      * @param string $strUserid
      *
      * @return bool
+     * @throws Exception
      */
     public function rightRight1(string $strSystemid, string $strUserid = ""): bool
     {
@@ -571,6 +577,7 @@ class Rights
      * @param string $strUserid
      *
      * @return bool
+     * @throws Exception
      */
     public function rightRight2(string $strSystemid, string $strUserid = ""): bool
     {
@@ -585,6 +592,7 @@ class Rights
      * @param string $strUserid
      *
      * @return bool
+     * @throws Exception
      */
     public function rightRight3(string $strSystemid, string $strUserid = ""): bool
     {
@@ -598,6 +606,7 @@ class Rights
      * @param string $strUserid
      *
      * @return bool
+     * @throws Exception
      */
     public function rightRight4(string $strSystemid, string $strUserid = ""): bool
     {
@@ -612,6 +621,7 @@ class Rights
      * @param string $strUserid
      *
      * @return bool
+     * @throws Exception
      */
     public function rightRight5(string $strSystemid, string $strUserid = ""): bool
     {
@@ -625,6 +635,7 @@ class Rights
      * @param string $strUserid
      *
      * @return bool
+     * @throws Exception
      */
     public function rightChangelog(string $strSystemid, string $strUserid = ""): bool
     {
@@ -639,6 +650,7 @@ class Rights
      * @param string $strSystemid
      *
      * @return bool
+     * @throws Exception
      */
     public function checkPermissionForUserId(string $strUserid, string $strPermission, string $strSystemid): bool
     {
@@ -666,8 +678,6 @@ class Rights
             }
         } elseif (validateSystemid($this->objSession->getUserID())) {
             $arrGroupIds = $this->objSession->getGroupIdsAsArray();
-        } else {
-            $arrGroupIds[] = SystemSetting::getConfigValue("_guests_group_id_");
         }
 
         foreach ($arrGroupIds as $strOneGroupId) {
@@ -720,6 +730,7 @@ class Rights
      * @param $strTargetSystemid
      *
      * @return bool
+     * @throws Exception
      */
     public function copyPermissions(string $strSourceSystemid, string $strTargetSystemid): bool
     {
@@ -741,6 +752,7 @@ class Rights
      * @param string $strRight one of view, edit, delete, right, right1, right2, right3, right4, right5
      *
      * @return bool
+     * @throws Exception
      */
     public function addGroupToRight(string $strGroupId, string $strSystemid, string $strRight): bool
     {
@@ -758,8 +770,14 @@ class Rights
         $intShortId = UserGroup::getShortIdForGroupId($strGroupId);
 
         //add the group to the row
+        $bitUpdateRequired = false;
         if (!in_array($intShortId, $arrRights[$strRight])) {
             $arrRights[$strRight][] = $intShortId;
+            $bitUpdateRequired = true;
+        }
+
+        if (!$bitUpdateRequired) {
+            return true;
         }
 
         //build a one-dim array
@@ -787,6 +805,7 @@ class Rights
      * @param $strSystemId
      * @param $strGroupId
      * @param array $arrRights
+     * @throws Exception
      */
     public function addRightsToGroup($strSystemId, $strGroupId, array $arrRights)
     {
@@ -809,6 +828,7 @@ class Rights
      * @param array $arrRights
      * @param string $strSystemid
      * @return bool
+     * @throws Exception
      */
     public function setGroupsToRights(array $arrRights, string $strSystemid): bool
     {
@@ -819,7 +839,7 @@ class Rights
         $arrExistingRights = $this->getArrayRightsShortIds($strSystemid);
 
         // convert short right ids array to string
-        $arrExistingRights = array_map(function($arrRights){
+        $arrExistingRights = array_map(function ($arrRights) {
             if (is_array($arrRights)) {
                 return implode(",", array_filter($arrRights));
             } else {
@@ -838,7 +858,7 @@ class Rights
                 $arrNewGroupIds[] = $strAdminGroupId;
             }
 
-            $arrNewRights[$strRight] = implode(",", array_map(function($strGroupId){
+            $arrNewRights[$strRight] = implode(",", array_map(function ($strGroupId) {
                 return UserGroup::getShortIdForGroupId($strGroupId);
             }, $arrNewGroupIds));
         }
@@ -855,6 +875,7 @@ class Rights
      * @param string $strRight one of view, edit, delete, right, right1, right2, right3, right4, right5
      *
      * @return bool
+     * @throws Exception
      */
     public function removeGroupFromRight(string $strGroupId, string $strSystemid, string $strRight): bool
     {
@@ -871,12 +892,18 @@ class Rights
         $intShortId = UserGroup::getShortIdForGroupId($strGroupId);
 
         //remove the group
+        $bitUpdateRequired = false;
         if (in_array($intShortId, $arrRights[$strRight])) {
             foreach ($arrRights[$strRight] as $intKey => $strSingleGroup) {
                 if ($strSingleGroup == $intShortId) {
                     unset($arrRights[$strRight][$intKey]);
+                    $bitUpdateRequired = true;
                 }
             }
+        }
+
+        if (!$bitUpdateRequired) {
+            return true;
         }
 
         //build a one-dim array
@@ -903,13 +930,13 @@ class Rights
      *
      * @param $strSystemId
      * @param $strGroupId
-     * @param array $arrRights
+     * @throws Exception
      */
     public function removeAllRightsFromGroup($strSystemId, $strGroupId)
     {
         $arrRights = $this->getArrayRights($strSystemId);
         foreach ($arrRights as $strRight => $arrGroupIds) {
-            if($strRight == self::$STR_RIGHT_INHERIT) {
+            if ($strRight == self::$STR_RIGHT_INHERIT) {
                 continue;
             }
 
@@ -951,17 +978,17 @@ class Rights
      * If at least a single permission is given, true is returned, otherwise false.
      *
      * @param string $strPermissions
-     * @param Model $objObject
+     * @param Root $objObject
      *
      * @return bool
      * @throws Exception
      * @since 4.0
      */
-    public function validatePermissionString(string $strPermissions, Model $objObject): bool
+    public function validatePermissionString(string $strPermissions, Root $objObject): bool
     {
 
-        if (!$objObject instanceof Model) {
-            throw new Exception("automated permission-check only for instances of ".Model::class, Exception::$level_ERROR);
+        if (!$objObject instanceof Root) {
+            throw new Exception("automated permission-check only for instances of ".Root::class, Exception::$level_ERROR);
         }
 
         if (trim($strPermissions) == "") {

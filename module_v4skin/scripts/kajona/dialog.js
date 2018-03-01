@@ -1,5 +1,7 @@
 
-define('dialog', ['jquery', 'bootstrap'], function ($, bootstrap) {
+define('dialog', ['jquery', 'bootstrap', 'router', 'util', 'folderview'], function ($, bootstrap, router, util, folderview) {
+
+    var dialogStack = [];
 
     return /** @alias module:dialog */ function (strDialogId, intDialogType, bitDragging, bitResizing) {
         this.dialog = null;
@@ -80,6 +82,8 @@ define('dialog', ['jquery', 'bootstrap'], function ($, bootstrap) {
 
         this.setContentIFrame = function(strUrl) {
             this.iframeId = this.containerId + '_iframe';
+            strUrl = router.generateUrl(strUrl);
+            strUrl = KAJONA_WEBPATH+strUrl.url+"&combinedLoad=1";
             this.iframeURL = strUrl;
         };
 
@@ -91,6 +95,7 @@ define('dialog', ['jquery', 'bootstrap'], function ($, bootstrap) {
                 show: false
             });
 
+
             if(!intHeight) {
                 if($('#' + this.containerId+" .modal-dialog").hasClass("modal-lg")) {
                     intHeight = $(window).height() * 0.6;
@@ -99,12 +104,17 @@ define('dialog', ['jquery', 'bootstrap'], function ($, bootstrap) {
                     intHeight = '';
             }
 
-            var isStackedDialog = !!(window.frameElement && window.frameElement.nodeName && window.frameElement.nodeName.toLowerCase() == 'iframe');
 
+            if ( util.isStackedDialog()) {
 
+                //trigger a new dialog on the base window
 
-            if (isStackedDialog) {
                 if(this.iframeURL != null) {
+
+                    //TODO: POC:
+                    parent.KAJONA.util.dialogHelper.showIframeDialogStacked(this.iframeURL, $('#' + this.containerId + '_title').text());
+                    parent.KAJONA.util.folderviewHandler = folderview;
+
                     //open the iframe in a regular popup
                     //workaround for stacked dialogs. if a modal is already opened, the second iframe is loaded in a popup window.
                     //stacked modals still face issues with dimensions and scrolling. (see http://trace.kajona.de/view.php?id=724)
@@ -116,27 +126,30 @@ define('dialog', ['jquery', 'bootstrap'], function ($, bootstrap) {
                         intHeight = 500;
                     }
 
-                    window.open(this.iframeURL, $('#' + this.containerId + '_title').text(), 'scrollbars=yes,resizable=yes,width=' + (intWidth) + ',height=' + (intHeight));
+                    //window.open(this.iframeURL, $('#' + this.containerId + '_title').text(), 'scrollbars=yes,resizable=yes,width=' + (intWidth) + ',height=' + (intHeight));
                     return;
                 }
             }
 
             if(this.iframeURL != null) {
-                $("#folderviewDialog_loading").css('display', 'block');
+                $("#"+this.containerId+"_loading").css('display', 'block');
                 $('#' + this.containerId + '_content').html('<iframe src="' + this.iframeURL + '" width="100%" height="'+(intHeight)+'" name="' + this.iframeId + '" id="' + this.iframeId + '" class="seamless" seamless></iframe>');
                 this.iframeURL = null;
 
+                var id = this.iframeId;
+                var containerId = this.containerId;
                 $("#"+this.iframeId).on('load', function() {
-                    $("#folderviewDialog_loading").css('display', 'none');
+                    $("#"+containerId+"_loading").css('display', 'none');
+                    $('#'+id).contents().find("body").addClass('dialogBody')
+
                 });
             }
 
 
-            if(!isStackedDialog && this.bitLarge) {
+            if(!util.isStackedDialog() && this.bitLarge) {
                 $('#' + this.containerId+" .modal-dialog").addClass("modal-lg-lg");
 
                 $('#' + this.containerId).on('hidden.bs.modal', function (e) {
-                    console.log('hidden');
                     $(this).find(".modal-dialog").removeClass("modal-lg-lg");
                 });
 
@@ -145,6 +158,7 @@ define('dialog', ['jquery', 'bootstrap'], function ($, bootstrap) {
 
             //finally show the modal
             $('#' + this.containerId).modal('show');
+
 
             if (bitDragging) {
                 this.enableDragging();
@@ -215,5 +229,7 @@ define('dialog', ['jquery', 'bootstrap'], function ($, bootstrap) {
             })
         }
     };
+
+
 
 });

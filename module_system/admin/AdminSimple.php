@@ -19,7 +19,9 @@ use Kajona\System\System\Lockmanager;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
+use Kajona\System\System\Objectfactory;
 use Kajona\System\System\StringUtil;
+use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\VersionableInterface;
 
@@ -43,6 +45,7 @@ abstract class AdminSimple extends AdminController
 
     /**
      * @param string $strSystemid
+     * @throws Exception
      */
     public function __construct($strSystemid = "")
     {
@@ -53,8 +56,10 @@ abstract class AdminSimple extends AdminController
         }
 
         if ($this->getParam("unlockid") != "") {
-            $objLockmanager = new Lockmanager($this->getParam("unlockid"));
-            $objLockmanager->unlockRecord(true);
+            $objUnlock = Objectfactory::getInstance()->getObject($this->getParam("unlockid"));
+            if ($objUnlock !== null) {
+                $objUnlock->getLockManager()->unlockRecord(true);
+            }
         }
     }
 
@@ -64,6 +69,7 @@ abstract class AdminSimple extends AdminController
      * @param array &$arrContent
      *
      * @return void
+     * @deprecated
      */
     protected function onRenderOutput(&$arrContent)
     {
@@ -75,7 +81,7 @@ abstract class AdminSimple extends AdminController
      *
      * @return string
      */
-    protected function getContentActionToolbar()
+    public function getContentActionToolbar()
     {
         if (StringUtil::indexOf($this->getAction(), "list") !== false || StringUtil::indexOf($this->getAction(), "new") !== false || StringUtil::indexOf($this->getAction(), "save") !== false) {
             return "";
@@ -85,7 +91,7 @@ abstract class AdminSimple extends AdminController
             $objRecord = $this->objFactory->getObject($this->getSystemid());
 
             if ($objRecord instanceof AdminListableInterface) {
-                return $this->getActionIcons($objRecord);
+                return $this->objToolkit->getContentActionToolbar($this->getActionIcons($objRecord));
             }
         }
 
@@ -137,7 +143,13 @@ abstract class AdminSimple extends AdminController
 
             $strTargetUrl = urldecode($this->getParam("reloadUrl"));
 
-            if ($strTargetUrl == "" || StringUtil::indexOf($strTargetUrl, $this->getSystemid()) !== false) {
+            parse_str($strTargetUrl, $arrParams);
+            $bitFound = false;
+            if (isset($arrParams["systemid"])) {
+                $bitFound = $arrParams["systemid"] == $this->getSystemid();
+            }
+
+            if ($strTargetUrl == "" || $bitFound) {
 
                 $strTargetUrl = "admin=1&module=".$this->getArrModule("modul");
 
@@ -146,17 +158,16 @@ abstract class AdminSimple extends AdminController
                     $strTargetUrl = $this->getHistory($intI++);
 
                     if (StringUtil::indexOf($strTargetUrl, $this->getSystemid()) === false) {
-                        if (StringUtil::indexOf($strTargetUrl, "admin=1") === false) {
-                            $strTargetUrl = "admin=1&module=".$this->getArrModule("modul");
-                        }
-
                         break;
                     }
                 }
 
+                $strTargetUrl = Link::plainUrlToHashUrl($strTargetUrl);
             }
 
-            $this->adminReload(_indexpath_."?".$strTargetUrl.($this->getParam("pe") != "" ? "&peClose=1&blockAction=1" : ""));
+            return "<script type='text/javascript'>require(['router'], function(router){
+    router.loadUrl('{$strTargetUrl}'); 
+});</script>";
         }
         else {
             throw new Exception("error loading object ".$this->getSystemid(), Exception::$level_ERROR);
@@ -576,8 +587,7 @@ abstract class AdminSimple extends AdminController
             return "";
         }
 
-        if ($objListEntry->rightView()) {
-
+        if ($objListEntry->rightView() && SystemModule::getModuleByName("tags") !== null && SystemModule::getModuleByName("tags")->rightView()) {
             //sanitize critical chars
             $strDialogTitle = $objListEntry->getStrDisplayName();
             $strDialogTitle = addslashes(StringUtil::replace(array("\n", "\r"), array(), strip_tags(nl2br($strDialogTitle))));
@@ -614,7 +624,7 @@ abstract class AdminSimple extends AdminController
 
             //create the list-button and the js code to show the dialog
             $strButton = Link::getLinkAdminManual(
-                "href=\"#\" onclick=\"javascript:jsDialog_1.setTitle('".$this->getLang("dialog_copyHeader", "system")."'); jsDialog_1.setContent('".$strQuestion."', '".$this->getLang("dialog_copyButton", "system")."',  function() {jsDialog_3.init(); document.location.href= '{$strHref}';}); jsDialog_1.init(); return false;\"",
+                "href=\"#\" onclick=\"javascript:jsDialog_1.setTitle('".$this->getLang("dialog_copyHeader", "system")."'); jsDialog_1.setContent('".$strQuestion."', '".$this->getLang("dialog_copyButton", "system")."',  function() {document.location.href= '{$strHref}';}); jsDialog_1.init(); return false;\"",
                 "",
                 $this->getLang("commons_edit_copy", "system"),
                 "icon_copy"

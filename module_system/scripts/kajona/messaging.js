@@ -8,13 +8,14 @@
  *
  * @module messaging
  */
-define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialogHelper) {
+define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util', 'router'], function ($, ajax, dialogHelper, util, router) {
 
 
     var pollInterval = 30000;
     var timeout = null;
 
     var intCount = 0;
+    var dialog;
 
     /**
      * Internal helper to built a real callback based on the action provided by the backend
@@ -25,20 +26,28 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
 
         if ($onAccept.type === 'redirect') {
             return function() {
-                document.location.href = $onAccept.target;
+                router.registerLoadCallback("alert_redirect", function() {
+                    $('.modal-backdrop.fade.in').remove();
+                    me.pollMessages();
+                });
+
+                if (dialog) {
+                    dialog.hide();
+                }
+                router.loadUrl($onAccept.target);
+
             };
         } else if ($onAccept.type === 'ajax') {
             return function() {
                 ajax.genericAjaxCall($onAccept.module, $onAccept.action, $onAccept.systemid, function(){
                     // on ok we trigger the getUnreadCount again since the ajax call could have created
                     // other alert messages
-                    me.getUnreadCount(function(){
-                    });
+                    me.pollMessages();
                 });
             };
         }
 
-        return function() {};
+        return function() { };
     };
 
     /**
@@ -46,7 +55,7 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
      * @param $objAlert
      */
     var renderAlert = function($objAlert) {
-        dialogHelper.showConfirmationDialog($objAlert.title, $objAlert.body, $objAlert.confirmLabel, getActionCallback($objAlert.onAccept));
+        dialog = dialogHelper.showConfirmationDialog($objAlert.title, $objAlert.body, $objAlert.confirmLabel, getActionCallback($objAlert.onAccept));
         ajax.genericAjaxCall("messaging", "deleteAlert", $objAlert.systemid);
     };
 
@@ -76,12 +85,26 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
         bitFirstLoad : true,
 
         /**
+         * Forces a polling of unread messages and alert, but only once
+         */
+        pollMessages: function() {
+            me.getUnreadCount(function (intCount) {
+                me.updateCountInfo(intCount);
+            });
+        },
+
+        /**
          * Gets the number of unread messages for the current user.
          * Expects a callback-function whereas the number is passed as a param.
          *
          * @param objCallback
          */
         getUnreadCount : function(objCallback) {
+            // in case we are on the login page dont poll
+            if ($('#loginContainer').length > 0) {
+                return;
+            }
+
             ajax.genericAjaxCall("messaging", "getUnreadMessagesCount", "", function(data, status, jqXHR) {
                 if(status == 'success') {
                     var $objResult = $.parseJSON(data);
@@ -89,6 +112,11 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
 
                     if($objResult.alert) {
                         renderAlert($objResult.alert);
+                    }
+                } else {
+                    // in case the API returns a 401 the user has logged out so reload the page to show the login page
+                    if (data.status == 401 && $('#loginContainer').length == 0 && !$('body').hasClass('anonymous')) {
+                        location.reload();
                     }
                 }
             });
@@ -113,6 +141,10 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
          * @param bitEnabled
          */
         setPollingEnabled : function(bitEnabled) {
+            if(util.isStackedDialog() || $('body').hasClass('anonymous')) {
+                bitEnabled = false;
+            }
+
             if (bitEnabled) {
                 // start timeout only if we have not already a timeout
                 if (!timeout) {
@@ -125,6 +157,7 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
                 }
                 timeout = null;
             }
+
         },
 
         /**
@@ -138,10 +171,12 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper'], function ($, ajax, dialo
             if (intCount > 0) {
                 $userNotificationsCount.show();
                 if (oldCount != intCount) {
-                    var strTitle = document.title.replace("(" + oldCount + ")", "");
-                    document.title = "(" + intCount + ") " + strTitle;
+                    if (document.title.match(/\(\d+\)/)) {
+                        document.title = document.title.replace(/\(\d+\)/, "(" + intCount + ")");
+                    } else {
+                        document.title = "(" + intCount + ") " + document.title;
+                    }
                 }
-
             } else {
                 $userNotificationsCount.hide();
             }

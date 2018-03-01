@@ -9,6 +9,7 @@ namespace Kajona\System\Admin\Formentries;
 use Kajona\System\Admin\FormentryPrintableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
+use Kajona\System\System\StringUtil;
 use Kajona\System\System\Validators\DummyValidator;
 
 
@@ -17,11 +18,13 @@ use Kajona\System\System\Validators\DummyValidator;
  * @since 4.0
  * @package module_formgenerator
  */
-class FormentryCheckbox extends FormentryBase implements FormentryPrintableInterface {
+class FormentryCheckbox extends FormentryBase implements FormentryPrintableInterface
+{
 
     private $strOpener = "";
 
-    public function __construct($strFormName, $strSourceProperty, $objSourceObject = null) {
+    public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
+    {
         parent::__construct($strFormName, $strSourceProperty, $objSourceObject);
 
         //set the default validator
@@ -34,22 +37,35 @@ class FormentryCheckbox extends FormentryBase implements FormentryPrintableInter
      *
      * @return string
      */
-    public function renderField() {
+    public function renderField()
+    {
         $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
         $strReturn = "";
-        if($this->getStrHint() != null)
+        if ($this->getStrHint() != null) {
             $strReturn .= $objToolkit->formTextRow($this->getStrHint());
+        }
 
         $strReturn .= $objToolkit->formInputCheckbox($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue() == true, "", $this->getBitReadonly());
+        $strReturn .= $objToolkit->formInputHidden($this->getPresCheckKey(), "1");
 
         return $strReturn;
+    }
+
+    /**
+     * Creates a pres-check key to detect de-selected entries
+     * @return string
+     */
+    private function getPresCheckKey()
+    {
+        return StringUtil::replace(["[", "]"], "", $this->getStrEntryName()."_prescheck");
     }
 
     /**
      * @param $strValue
      * @return FormentryBase
      */
-    public function setStrValue($strValue) {
+    public function setStrValue($strValue)
+    {
         parent::setStrValue($strValue != false);
         return $this;
     }
@@ -60,31 +76,31 @@ class FormentryCheckbox extends FormentryBase implements FormentryPrintableInter
      * If found in the params-array, the value will be used, otherwise
      * the source-objects' getter is invoked.
      */
-    protected function updateValue() {
+    protected function updateValue()
+    {
         $arrParams = Carrier::getAllParams();
 
-
-        if(isset($arrParams[$this->getStrEntryName()])) {
+        if (isset($arrParams[$this->getStrEntryName()])) {
             $this->setStrValue(true);
-        }
-        elseif(count($_POST) > 0) {
+        } elseif (isset($arrParams[$this->getPresCheckKey()])) {
             $this->setStrValue(false);
-        }
-        else {
+        } else {
             $this->setStrValue($this->getValueFromObject());
         }
     }
 
     /**
      * @param $strOpener
-     * @return FormentryText
+     * @return FormentryCheckbox
      */
-    public function setStrOpener($strOpener) {
+    public function setStrOpener($strOpener)
+    {
         $this->strOpener = $strOpener;
         return $this;
     }
 
-    public function getStrOpener() {
+    public function getStrOpener()
+    {
         return $this->strOpener;
     }
 
@@ -94,7 +110,8 @@ class FormentryCheckbox extends FormentryBase implements FormentryPrintableInter
      *
      * @return string
      */
-    public function getValueAsText() {
+    public function getValueAsText()
+    {
         return $this->getStrValue() == true ? Carrier::getInstance()->getObjLang()->getLang("commons_yes", "commons") : Carrier::getInstance()->getObjLang()->getLang("commons_no", "commons");
     }
 
@@ -107,7 +124,7 @@ class FormentryCheckbox extends FormentryBase implements FormentryPrintableInter
      */
     public function setValueToObject()
     {
-        if($this->getBitReadonly() == true) {
+        if ($this->getBitReadonly() == true) {
             return true;
         }
         return parent::setValueToObject();

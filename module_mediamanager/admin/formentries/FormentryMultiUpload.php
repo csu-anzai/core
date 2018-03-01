@@ -39,11 +39,16 @@ class FormentryMultiUpload extends FormentryBase implements FormentryPrintableIn
     /**
      * @inheritDoc
      */
-    public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
+    public function __construct($strFormName, $strSourceProperty, $objSourceObject = null, $strRepoId = null)
     {
         parent::__construct($strFormName, $strSourceProperty, $objSourceObject);
+
         //default: files-repo-id
-        $this->strRepoId = SystemSetting::getConfigValue("_mediamanager_default_filesrepoid_");
+        if ($strRepoId !== null) {
+            $this->strRepoId = $strRepoId;
+        } else {
+            $this->strRepoId = SystemSetting::getConfigValue("_mediamanager_default_filesrepoid_");
+        }
 
         //may be overwritten with a dedicated repo-id
         if ($this->getObjSourceObject() != null && $this->getStrSourceProperty() != "") {
@@ -146,5 +151,11 @@ class FormentryMultiUpload extends FormentryBase implements FormentryPrintableIn
         $this->strRepoId = $strRepoId;
     }
 
-
+    /**
+     * @return string
+     */
+    public function getStrRepoId()
+    {
+        return $this->strRepoId;
+    }
 }

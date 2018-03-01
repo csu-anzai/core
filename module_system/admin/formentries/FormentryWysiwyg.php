@@ -59,7 +59,7 @@ class FormentryWysiwyg extends FormentryBase implements FormentryPrintableInterf
             $strReturn .= $objToolkit->formTextRow($this->getStrHint());
         }
 
-        $strReturn .= $objToolkit->formWysiwygEditor($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue(), $this->strToolbarset);
+        $strReturn .= $objToolkit->formWysiwygEditor($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue(), $this->strToolbarset, $this->getBitReadonly());
 
         return $strReturn;
     }

@@ -9,16 +9,21 @@
 
 namespace Kajona\System\Admin;
 
+use Kajona\System\System\AuthenticationException;
 use Kajona\System\System\Cookie;
 use Kajona\System\System\HttpStatuscodes;
 use Kajona\System\System\Link;
 use Kajona\System\System\Logger;
 use Kajona\System\System\RequestEntrypointEnum;
 use Kajona\System\System\ResponseObject;
+use Kajona\System\System\Security\PasswordExpiredException;
+use Kajona\System\System\Security\PasswordRotator;
+use Kajona\System\System\Security\PasswordValidatorInterface;
+use Kajona\System\System\Security\ValidationException;
 use Kajona\System\System\Session;
+use Kajona\System\System\StringUtil;
 use Kajona\System\System\UserUser;
 use Kajona\System\System\Wadlgenerator;
-
 
 /**
  * This class shows a little LoginScreen if the user is net yet logged in
@@ -31,10 +36,21 @@ use Kajona\System\System\Wadlgenerator;
  */
 class LoginAdmin extends AdminController implements AdminInterface
 {
-
     const SESSION_REFERER = "LOGIN_SESSION_REFERER";
     const SESSION_PARAMS = "LOGIN_SESSION_PARAMS";
     const SESSION_LOAD_FROM_PARAMS = "LOGIN_SESSION_LOAD_FROM_PARAMS";
+
+    /**
+     * @inject system_password_validator
+     * @var PasswordValidatorInterface
+     */
+    protected $objPasswordValidator;
+
+    /**
+     * @inject system_password_rotator
+     * @var PasswordRotator
+     */
+    protected $objPasswordRotator;
 
     public function __construct()
     {
@@ -43,7 +59,7 @@ class LoginAdmin extends AdminController implements AdminInterface
 
         parent::__construct();
 
-        if ($this->getAction() != "pwdReset" && $this->getAction() != "login" && $this->getAction() != "adminLogin" && $this->getAction() != "adminLogout") {
+        if (!in_array($this->getAction(), ["pwdReset", "login", "adminLogin", "adminLogout"])) {
             $this->setAction("login");
         }
     }
@@ -52,11 +68,11 @@ class LoginAdmin extends AdminController implements AdminInterface
     /**
      * Creates a small login-field
      *
+     * @permissions anonymous
      * @return string
      */
     protected function actionLogin()
     {
-
         if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::XML())) {
             if ($this->objSession->login($this->getParam("username"), $this->getParam("password"))) {
                 //user allowed to access admin?
@@ -71,38 +87,21 @@ class LoginAdmin extends AdminController implements AdminInterface
                 return "<message><error>".xmlSafeString($this->getLang("login_xml_error", "system"))."</error></message>";
             }
         } else {
-
             if ($this->objSession->isLoggedin() && $this->objSession->isAdmin()) {
-                $this->loadPostLoginSite();
-                return;
+                return $this->loadPostLoginSite();
             }
 
-            //Save the requested URL
-            if ($this->getParam("loginerror") == "") {
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                // on post try to login the user
+                $strReturn = $this->actionAdminLogin();
+            } else {
                 //Store some of the last requests' data
                 $this->objSession->setSession(self::SESSION_REFERER, getServer("QUERY_STRING"));
                 $this->objSession->setSession(self::SESSION_PARAMS, getArrayPost());
+
+                //Loading a small login-form
+                $strReturn = $this->getLoginForm();
             }
-
-            //Loading a small login-form
-            $arrTemplate = array();
-            $strForm = "";
-            $strForm .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "adminLogin"));
-            $strForm .= $this->objToolkit->formInputText("name", $this->getLang("login_loginUser", "user"), "", "input-large");
-            $strForm .= $this->objToolkit->formInputPassword("passwort", $this->getLang("login_loginPass", "user"), "", "input-large");
-            $strForm .= $this->objToolkit->formInputSubmit($this->getLang("login_loginButton", "user"));
-            $strForm .= $this->objToolkit->formClose();
-            $arrTemplate["form"] = $strForm;
-            $arrTemplate["loginTitle"] = $this->getLang("login_loginTitle", "user");
-            $arrTemplate["loginJsInfo"] = $this->getLang("login_loginJsInfo", "user");
-            $arrTemplate["loginCookiesInfo"] = $this->getLang("login_loginCookiesInfo", "user");
-            //An error occurred?
-            if ($this->getParam("loginerror") == 1) {
-                $arrTemplate["error"] = $this->getLang("login_loginError", "user");
-            }
-
-            $strReturn = $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "login_form");
-
 
             return $strReturn;
         }
@@ -111,6 +110,7 @@ class LoginAdmin extends AdminController implements AdminInterface
     /**
      * Creates a form in order to change the password - if the authcode is valid
      *
+     * @permissions anonymous
      * @return string
      */
     protected function actionPwdReset()
@@ -124,55 +124,99 @@ class LoginAdmin extends AdminController implements AdminInterface
         $objUser = new UserUser($this->getParam("systemid"));
 
         if ($objUser->getStrAuthcode() != "" && $this->getParam("authcode") == $objUser->getStrAuthcode() && $objUser->getStrUsername() != "") {
-            if ($this->getParam("reset") == "") {
-                //Loading a small form to change the password
-                $arrTemplate = array();
-                $strForm = "";
-                $strForm .= $this->objToolkit->getTextRow($this->getLang("login_password_form_intro", "user"));
-                $strForm .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "pwdReset"));
-                $strForm .= $this->objToolkit->formInputText("username", $this->getLang("login_loginUser", "user"), "", "inputTextShort");
-                $strForm .= $this->objToolkit->formInputPassword("password1", $this->getLang("login_loginPass", "user"), "", "inputTextShort");
-                $strForm .= $this->objToolkit->formInputPassword("password2", $this->getLang("login_loginPass2", "user"), "", "inputTextShort");
-                $strForm .= $this->objToolkit->formInputSubmit($this->getLang("login_changeButton", "user"), "", "", "inputSubmitShort");
-                $strForm .= $this->objToolkit->formInputHidden("reset", "reset");
-                $strForm .= $this->objToolkit->formInputHidden("authcode", $this->getParam("authcode"));
-                $strForm .= $this->objToolkit->formInputHidden("systemid", $this->getParam("systemid"));
-                $strForm .= $this->objToolkit->formClose();
-                $arrTemplate["form"] = $strForm;
-                $arrTemplate["loginTitle"] = $this->getLang("login_loginTitle", "user");
-                $arrTemplate["loginJsInfo"] = $this->getLang("login_loginJsInfo", "user");
-                $arrTemplate["loginCookiesInfo"] = $this->getLang("login_loginCookiesInfo", "user");
-                //An error occurred?
-                if ($this->getParam("loginerror") == 1) {
-                    $arrTemplate["error"] = $this->getLang("login_loginError", "user");
-                }
-
-                $strReturn = $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "login_form");
-            } else {
+            if ($this->getParam("reset") != "") {
                 //check the submitted passwords.
                 $strPass1 = trim($this->getParam("password1"));
                 $strPass2 = trim($this->getParam("password2"));
 
-                if ($strPass1 == $strPass2 && checkText($strPass1, 3, 200) && $objUser->getStrUsername() == $this->getParam("username")) {
-                    if ($objUser->getObjSourceUser()->isPasswordResettable() && method_exists($objUser->getObjSourceUser(), "setStrPass")) {
-                        $objUser->getObjSourceUser()->setStrPass($strPass1);
-                        $objUser->getObjSourceUser()->updateObjectToDb();
-                    }
-                    $objUser->setStrAuthcode("");
-                    $objUser->updateObjectToDb();
-                    Logger::getInstance()->info("changed password of user ".$objUser->getStrUsername());
+                if ($strPass1 == $strPass2 && $objUser->getStrUsername() == $this->getParam("username")) {
+                    try {
+                        $bitReturn = $this->objPasswordValidator->validate($strPass1, $objUser);
+                        if ($bitReturn) {
+                            if ($objUser->getObjSourceUser()->isPasswordResettable() && method_exists($objUser->getObjSourceUser(), "setStrPass")) {
+                                $objUser->getObjSourceUser()->setStrPass($strPass1);
+                                $objUser->getObjSourceUser()->updateObjectToDb();
+                            }
+                            $objUser->setStrAuthcode("");
+                            $objUser->updateObjectToDb();
+                            Logger::getInstance()->info("changed password of user ".$objUser->getStrUsername());
 
-                    $strReturn .= $this->getLang("login_change_success", "user");
+                            return $this->objToolkit->warningBox($this->getLang("login_change_success", "user"));
+                        } else {
+                            $strReturn .= $this->objToolkit->warningBox($this->getLang("login_change_error", "user"));
+                        }
+                    } catch (ValidationException $objE) {
+                        $strReturn .= $this->objToolkit->warningBox($objE->getMessage());
+                    }
                 } else {
-                    $strReturn .= $this->getLang("login_change_error", "user");
+                    $strReturn .= $this->objToolkit->warningBox($this->getLang("login_change_error", "user"));
+                }
+            } else {
+                if ($this->getParam("reason") == "expired") {
+                    $strReturn .= $this->objToolkit->warningBox($this->getLang("reset_reason_expired", "user"), "alert-info");
+                } else {
+                    $strReturn .= $this->objToolkit->warningBox($this->getLang("login_password_form_intro", "user"), "alert-info");
                 }
             }
+
+            $strReturn .= $this->getPwdResetForm();
         } else {
-            $strReturn .= $this->getLang("login_change_error", "user");
+            $strReturn .= $this->objToolkit->warningBox($this->getLang("login_change_error", "user"));
         }
 
 
         return $strReturn;
+    }
+
+    private function getLoginForm($bitError = false)
+    {
+        $strForm = "";
+        $strForm .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "login"), generateSystemid(), "", "require('forms').defaultOnSubmit(this);return false;");
+        $strForm .= $this->objToolkit->formInputText("name", $this->getLang("login_loginUser", "user"), "", "input-large");
+        $strForm .= $this->objToolkit->formInputPassword("passwort", $this->getLang("login_loginPass", "user"), "", "input-large");
+        $strForm .= $this->objToolkit->formInputSubmit($this->getLang("login_loginButton", "user"));
+        $strForm .= $this->objToolkit->formClose();
+        $strForm .= "<script type='text/javascript'>require(['forms', 'util'], function(forms, util){
+    util.setBrowserFocus('name');
+});</script>";
+
+        $arrTemplate = array();
+        $arrTemplate["form"] = $strForm;
+        $arrTemplate["loginTitle"] = $this->getLang("login_loginTitle", "user");
+        $arrTemplate["loginJsInfo"] = $this->getLang("login_loginJsInfo", "user");
+        $arrTemplate["loginCookiesInfo"] = $this->getLang("login_loginCookiesInfo", "user");
+        //An error occurred?
+        if ($bitError) {
+            $arrTemplate["error"] = $this->getLang("login_loginError", "user");
+        }
+
+        return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "login_form");
+    }
+
+    private function getPwdResetForm()
+    {
+        //Loading a small form to change the password
+        $strForm = "";
+        $strForm .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "pwdReset"), generateSystemid(), "", "require('forms').defaultOnSubmit(this);return false;");
+        $strForm .= $this->objToolkit->formInputText("username", $this->getLang("login_loginUser", "user"), "", "inputTextShort");
+        $strForm .= $this->objToolkit->formInputPassword("password1", $this->getLang("login_loginPass", "user"), "", "inputTextShort");
+        $strForm .= $this->objToolkit->formInputPassword("password2", $this->getLang("login_loginPass2", "user"), "", "inputTextShort");
+        $strForm .= $this->objToolkit->formInputSubmit($this->getLang("login_changeButton", "user"), "", "", "inputSubmitShort");
+        $strForm .= $this->objToolkit->formInputHidden("reset", "reset");
+        $strForm .= $this->objToolkit->formInputHidden("authcode", $this->getParam("authcode"));
+        $strForm .= $this->objToolkit->formInputHidden("systemid", $this->getParam("systemid"));
+        $strForm .= $this->objToolkit->formClose();
+        $strForm .= "<script type='text/javascript'>require(['forms', 'util'], function(forms, util){
+    util.setBrowserFocus('username');
+});</script>";
+
+        $arrTemplate = array();
+        $arrTemplate["form"] = $strForm;
+        $arrTemplate["loginTitle"] = $this->getLang("login_loginTitle", "user");
+        $arrTemplate["loginJsInfo"] = $this->getLang("login_loginJsInfo", "user");
+        $arrTemplate["loginCookiesInfo"] = $this->getLang("login_loginCookiesInfo", "user");
+
+        return $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "login_form");
     }
 
     /**
@@ -184,10 +228,9 @@ class LoginAdmin extends AdminController implements AdminInterface
     {
         $arrTemplate = array();
         $arrTemplate["name"] = $this->objSession->getUsername();
-        $arrTemplate["profile"] = Link::getLinkAdminHref("user", "edit", "userid=".$this->objSession->getUserID());
-        $arrTemplate["logout"] = Link::getLinkAdminHref($this->getArrModule("modul"), "adminLogout");
-        $arrTemplate["dashboard"] = Link::getLinkAdminHref("dashboard");
-        $arrTemplate["sitemap"] = Link::getLinkAdminHref("dashboard", "sitemap");
+        $arrTemplate["profile"] = Link::getLinkAdminHref("user", "edit", "userid=".$this->objSession->getUserID(), false);
+        $arrTemplate["logout"] = Link::getLinkAdminHref($this->getArrModule("modul"), "adminLogout", "", true, false);
+        $arrTemplate["dashboard"] = Link::getLinkAdminHref("dashboard", "", "", false);
         $arrTemplate["statusTitle"] = $this->getLang("login_statusTitle", "user");
         $arrTemplate["profileTitle"] = $this->getLang("login_profileTitle", "user");
         $arrTemplate["logoutTitle"] = $this->getLang("login_logoutTitle", "user");
@@ -202,35 +245,44 @@ class LoginAdmin extends AdminController implements AdminInterface
     /**
      * Generates the form to fetch the credentials required to authenticate a user
      *
+     * @permissions anonymous
      * @return string
      */
     protected function actionAdminLogin()
     {
-
+try {
         if ($this->objSession->login($this->getParam("name"), $this->getParam("passwort"))) {
             //user allowed to access admin?
             if (!$this->objSession->isAdmin()) {
                 //no, reset session
-                $this->objSession->logout();
-            }
+                $this->objSession->logout();}
+
             //save the current skin as a cookie
             $objCookie = new Cookie();
-            $objCookie->setCookie("adminskin", $this->objSession->getAdminSkin(false, true));
             $objCookie->setCookie("adminlanguage", $this->objSession->getAdminLanguage(false, true));
 
-            $this->loadPostLoginSite();
+                return $this->loadPostLoginSite();
+            } else {
+                return $this->getLoginForm(true);
+            }
+        } catch (AuthenticationException $objEx) {
+            return $this->getLoginForm(true);
+        } catch (PasswordExpiredException $objEx) {
+            // if expired redirect to reset password form
+            $strToken = generateSystemid();
 
-            return true;
-        } else {
-            ResponseObject::getInstance()->setStrRedirectUrl(Link::getLinkAdminHref("login", "login", "&loginerror=1"));
-            return false;
+            $objUser = $this->objFactory->getObject($objEx->getStrUserId());
+            $objUser->setStrAuthcode($strToken);
+            $objUser->updateObjectToDb();
+
+            return Link::clientRedirectHref("login", "pwdReset", ["systemid" => $objUser->getSystemid(), "authcode" => $strToken, "reason" => "expired"]);
         }
     }
-
 
     /**
      * Ends the session of the current user
      *
+     * @permissions anonymous
      * @return string
      */
     protected function actionLogout()
@@ -243,21 +295,26 @@ class LoginAdmin extends AdminController implements AdminInterface
     /**
      * Ends the session of the current user and
      * redirects back to the login-screen
+     *
+     * @permissions anonymous
      */
     protected function actionAdminlogout()
     {
         $this->objSession->logout();
-        ResponseObject::getInstance()->setStrRedirectUrl(Link::getLinkAdminHref("login"));
+        ResponseObject::getInstance()->setStrRedirectUrl(Link::getLinkAdminHref("login", "", "", true, false));
     }
 
 
     private function loadPostLoginSite()
     {
-        //any url to redirect?
-        if ($this->objSession->getSession(self::SESSION_REFERER) != "" && $this->objSession->getSession(self::SESSION_REFERER) != "admin=1") {
-            ResponseObject::getInstance()->setStrRedirectUrl(_indexpath_."?".$this->objSession->getSession(self::SESSION_REFERER));
+        // any url to redirect? Only in case its available and we dont come from the login module
+        $strRefer = $this->objSession->getSession(self::SESSION_REFERER);
+        if ($strRefer != "" && strpos($strRefer, "module=login") === false) {
+            $strUrl = StringUtil::replace("&contentFill=1", "", $strRefer);
             $this->objSession->sessionUnset(self::SESSION_REFERER);
             $this->objSession->setSession(self::SESSION_LOAD_FROM_PARAMS, "true");
+
+            return Link::clientRedirectManual(_indexpath_."?".$strUrl);
         } else {
             //route to the default module
             $strModule = "dashboard";
@@ -267,7 +324,11 @@ class LoginAdmin extends AdminController implements AdminInterface
                     $strModule = $objUser->getStrAdminModule();
                 }
             }
-            ResponseObject::getInstance()->setStrRedirectUrl(Link::getLinkAdminHref($strModule));
+
+            // at the moment it is required to use the "old" url style since otherwise it could happen that the
+            // location.href call does not trigger a redirect (in case only the url hash has changed) and thus we would
+            // not load a different template and see the main content inside the login template
+            return Link::clientRedirectManual(_indexpath_."?admin=1&module=".$strModule);
         }
     }
 
@@ -277,8 +338,8 @@ class LoginAdmin extends AdminController implements AdminInterface
      * fetch the number of messages for the user. Since the user is "logged out" by the server,
      * an "not authorized" exception is called - what is correct, but not really required right here.
      *
+     * @permissions anonymous
      * @return string
-     *
      */
     protected function actionGetRecentMessages()
     {
@@ -289,6 +350,7 @@ class LoginAdmin extends AdminController implements AdminInterface
     /**
      * Generates the wadl file for the current module
      *
+     * @permissions anonymous
      * @return string
      */
     protected function actionWADL()

@@ -390,6 +390,8 @@ HTML;
     /**
      * Uploads or shows the form to upload a file
      *
+     * @TODO check whether method is used
+     * @permissions right1
      * @return string
      */
     private function actionUploadFileInternal()
@@ -418,7 +420,7 @@ HTML;
      * Synchronizes all repos available
      *
      * @return string
-     * @permission edit
+     * @permissions edit
      * @autoTestable
      */
     protected function actionMassSync()
@@ -437,9 +439,6 @@ HTML;
         $strReturn = $this->getLang("sync_end");
         $strReturn .= $this->objToolkit->getTextRow($this->getLang("sync_add").$arrSyncs["insert"].$this->getLang("sync_del").$arrSyncs["delete"]);
 
-        //Flush cache
-        $this->flushCompletePagesCache();
-
         return $strReturn;
     }
 
@@ -457,7 +456,6 @@ HTML;
 
         $objFile = Objectfactory::getInstance()->getObject($this->getSystemid());
 
-        $this->flushCompletePagesCache();
         if ($this->getParam("source") != "") {
             $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "openFolder", "&systemid=".$objFile->getPrevId()));
         } else {
@@ -471,6 +469,7 @@ HTML;
     /**
      * Returns details and additional functions handling the current image.
      *
+     * @permissions view
      * @return string
      */
     protected function actionImageDetails()
@@ -579,7 +578,7 @@ HTML;
     /**
      * @return array
      */
-    protected function getArrOutputNaviEntries()
+    public function getArrOutputNaviEntries()
     {
         $arrEntries = parent::getArrOutputNaviEntries();
 
@@ -719,6 +718,7 @@ HTML;
      * By default, the methods takes two params into account: folder and form_element
      *
      * @return string
+     * @permissions view
      * @autoTestable
      */
     protected function actionFolderListFolderview()

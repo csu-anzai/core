@@ -16,11 +16,15 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
 use Kajona\System\System\GraphFactory;
+use Kajona\System\System\HttpStatuscodes;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 use Kajona\System\System\Objectfactory;
+use Kajona\System\System\ResponseObject;
+use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserUser;
+use Kajona\Workflows\System\WorkflowsController;
 use Kajona\Workflows\System\WorkflowsHandler;
 use Kajona\Workflows\System\WorkflowsStats;
 use Kajona\Workflows\System\WorkflowsWorkflow;
@@ -289,7 +293,7 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
      * @return string
      * @permissions view
      */
-    protected function actionShowUi()
+    protected function actionShowUi(AdminFormgenerator $objForm = null)
     {
         $strReturn = "";
 
@@ -304,57 +308,78 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
         //ui given? current user responsible?
         //magic: the difference of the tasks' ids and the users' ids should be less than the count of the task-ids - then at least one id matches
         if ($objWorkflow->getObjWorkflowHandler()->providesUserInterface() && ($objWorkflow->getStrResponsible() == "" || count(array_diff($arrIdsOfTask, $arrIdsToCheck)) < count($arrIdsOfTask))) {
-            $strCreator = "";
 
-            if (validateSystemid($objWorkflow->getStrOwner())) {
-                $objUser = new UserUser($objWorkflow->getStrOwner(), false);
-                $strCreator .= $objUser->getStrUsername();
-            }
-
-            $strResponsible = "";
-            foreach (explode(",", $objWorkflow->getStrResponsible()) as $strOneId) {
-                if (validateSystemid($strOneId)) {
-                    if ($strResponsible != "") {
-                        $strResponsible .= ", ";
-                    }
-
-                    $objUser = new UserUser($strOneId, false);
-                    if ($objUser->getStrUsername() != "") {
-                        $strResponsible .= $objUser->getStrUsername();
-                    } else {
-                        $objGroup = new UserGroup($strOneId);
-                        $strResponsible .= $objGroup->getStrName();
-                    }
-                }
-            }
-
-            $arrHeader = array($this->getLang("workflow_general"), "");
-            $arrRow1 = array($this->getLang("workflow_owner"), $strCreator);
-            $arrRow2 = array($this->getLang("workflow_responsible"), $strResponsible);
-            $strReturn .= $this->objToolkit->dataTable($arrHeader, array($arrRow1, $arrRow2));
-
-            $strForm = $objWorkflow->getObjWorkflowHandler()->getUserInterface();
-
-            if ($strForm instanceof AdminFormgenerator) {
-                $strForm->addField(new FormentryHidden(null, "workflowid"))->setStrValue($objWorkflow->getSystemid());
-                if ($strForm->getObjSourceobject() == null) {
-                    $strForm->addField(new FormentryHidden(null, "systemid"))->setStrValue($objWorkflow->getSystemid());
-                }
-                $strReturn .= $strForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "saveUI"));
-            } else {
-                $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "saveUI"));
-                $strReturn .= $strForm;
-                $strReturn .= $this->objToolkit->formInputHidden("systemid", $objWorkflow->getSystemid());
-                $strReturn .= $this->objToolkit->formInputSubmit($this->getLang("commons_save"));
-                $strReturn .= $this->objToolkit->formClose();
-            }
-        } else {
-            $strReturn .= $this->getLang("commons_error_permissions");
+            $strReturn = $this->renderUserInputForm($objWorkflow, $objForm);
+        }
+        else {
+            $strReturn = $this->getLang("commons_error_permissions");
         }
 
         return $strReturn;
     }
 
+    /**
+     * @param $objWorkflow
+     * @param $strReturn
+     * @return string
+     * @throws Exception
+     */
+    protected function renderUserInputForm($objWorkflow, AdminFormgenerator $objForm = null)
+    {
+        $strReturn = "";
+
+        $strCreator = "";
+        if (validateSystemid($objWorkflow->getStrOwner())) {
+            $objUser = new UserUser($objWorkflow->getStrOwner(), false);
+            $strCreator .= $objUser->getStrUsername();
+        }
+        $strInfo = $this->objToolkit->getTextRow($this->getLang("workflow_owner") . " " . $strCreator);
+
+        $strResponsible = "";
+        foreach (explode(",", $objWorkflow->getStrResponsible()) as $strOneId) {
+            if (validateSystemid($strOneId)) {
+                if ($strResponsible != "") {
+                    $strResponsible .= ", ";
+                }
+
+                $objUser = new UserUser($strOneId, false);
+                if ($objUser->getStrUsername() != "") {
+                    $strResponsible .= $objUser->getStrUsername();
+                } else {
+                    $objGroup = new UserGroup($strOneId);
+                    $strResponsible .= $objGroup->getStrName();
+                }
+            }
+        }
+
+        $arrHeader = array($this->getLang("workflow_general"), "");
+        $arrRow1 = array($this->getLang("workflow_owner"), $strCreator);
+        $arrRow2 = array($this->getLang("workflow_responsible"), $strResponsible);
+        $strReturn .= $this->objToolkit->dataTable($arrHeader, array($arrRow1, $arrRow2));
+
+        $strForm = "";
+        if ($objForm === null) {
+            $strForm = $objWorkflow->getObjWorkflowHandler()->getUserInterface();
+        }
+        else {
+            $strForm = $objForm;
+        }
+
+        if ($strForm instanceof AdminFormgenerator) {
+            $strForm->addField(new FormentryHidden(null, "workflowid"))->setStrValue($objWorkflow->getSystemid());
+            if ($strForm->getObjSourceobject() == null) {
+                $strForm->addField(new FormentryHidden(null, "systemid"))->setStrValue($objWorkflow->getSystemid());
+            }
+            $strReturn .= $strForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "saveUI"));
+        } else {
+            $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "saveUI"));
+            $strReturn .= $strForm;
+            $strReturn .= $this->objToolkit->formInputHidden("systemid", $objWorkflow->getSystemid());
+            $strReturn .= $this->objToolkit->formInputSubmit($this->getLang("commons_save"));
+            $strReturn .= $this->objToolkit->formClose();
+        }
+        return $strReturn;
+    }
 
     /**
      * Calls the handler to process the values collected by the ui before.
@@ -368,6 +393,13 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
         $strReturn = "";
         $objWorkflow = new WorkflowsWorkflow($this->getSystemid());
 
+        $strForm = $objWorkflow->getObjWorkflowHandler()->getUserInterface();
+        if ($strForm instanceof AdminFormgenerator) {
+            if (!$strForm->validateForm()) {
+                return $this->actionShowUi($strForm);
+            }
+        }
+
         $arrIdsToCheck = array_merge(array($this->objSession->getUserID()), $this->objSession->getGroupIdsAsArray());
         $arrIdsOfTask = explode(",", $objWorkflow->getStrResponsible());
 
@@ -378,7 +410,7 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
             $objHandler->processUserInput($this->getAllParams());
 
             if ($objWorkflow->getBitSaved() == true) {
-                throw new Exception("Illegal state detected! Workflow was already saved before!", Exception::$level_FATALERROR);
+                throw new Exception("Illegal state detected! Workflow was already saved before!");
             }
 
             $objWorkflow->updateObjectToDb();
@@ -628,6 +660,26 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
         $this->adminReload(getLinkAdminHref($this->getArrModule("modul"), "list"));
 
         return $strReturn;
+    }
+
+    /**
+     * Triggers the workflow engine
+     *
+     * @return string
+     * @permissions anonymous
+     */
+    protected function actionTrigger()
+    {
+        Carrier::getInstance()->getObjSession()->setBitBlockDbUpdate(true);
+        if ($this->getParam("authkey") == SystemSetting::getConfigValue("_workflows_trigger_authkey_")) {
+            $objWorkflowController = new WorkflowsController();
+            $objWorkflowController->processWorkflows();
+            return "<message>Execution successful</message>";
+        }
+
+
+        ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
+        return "<message><error>Not authorized</error></message>";
     }
 
 }

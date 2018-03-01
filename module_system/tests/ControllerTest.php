@@ -45,6 +45,7 @@ class ControllerTestController extends AbstractController
 {
 
     /**
+     * @permissions anonymous
      * @responseType xml
      * @return string
      */
@@ -54,6 +55,7 @@ class ControllerTestController extends AbstractController
     }
 
     /**
+     * @permissions anonymous
      * @responseType abcdiekatze
      * @return string
      */

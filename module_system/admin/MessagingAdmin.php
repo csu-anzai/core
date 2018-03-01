@@ -61,7 +61,7 @@ class MessagingAdmin extends AdminEvensimpler implements AdminInterface
     /**
      * @return array
      */
-    protected function getArrOutputNaviEntries()
+    public function getArrOutputNaviEntries()
     {
         $arrEntries = parent::getArrOutputNaviEntries();
         $objObject = Objectfactory::getInstance()->getObject($this->getSystemid());
@@ -294,16 +294,21 @@ JS;
 
 
         //create the list-button and the js code to show the dialog
-        $strDeleteAllRead = Link::getLinkAdminManual(
-            "href=\"#\" onclick=\"javascript:jsDialog_1.setTitle('".Carrier::getInstance()->getObjLang()->getLang("dialog_deleteHeader", "system")."'); jsDialog_1.setContent('".$this->getLang("delete_all_read_question")."', '".Carrier::getInstance()->getObjLang()->getLang("dialog_deleteButton", "system")."',  function() {jsDialog_3.init(); document.location.href= '".getLinkAdminHref($this->getArrModule("module"), "deleteAllRead")."';}); jsDialog_1.init(); return false;\"",
-            AdminskinHelper::getAdminImage("icon_delete").$this->getLang("action_delete_all_read")
+        $strDeleteAllRead = $this->objToolkit->confirmationLink(
+            $this->getLang("delete_all_read_question"),
+            getLinkAdminHref($this->getArrModule("module"), "deleteAllRead"),
+            AdminskinHelper::getAdminImage("icon_delete").$this->getLang("action_delete_all_read"),
+            $this->getLang("dialog_deleteHeader", "system"),
+            $this->getLang("dialog_deleteButton", "system")
         );
 
-        $strDeleteAll = Link::getLinkAdminManual(
-            "href=\"#\" onclick=\"javascript:jsDialog_1.setTitle('".Carrier::getInstance()->getObjLang()->getLang("dialog_deleteHeader", "system")."'); jsDialog_1.setContent('".$this->getLang("delete_all_question")."', '".Carrier::getInstance()->getObjLang()->getLang("dialog_deleteButton", "system")."',  function() {jsDialog_3.init(); document.location.href= '".getLinkAdminHref($this->getArrModule("module"), "deleteAll")."';}); jsDialog_1.init(); return false;\"",
-            AdminskinHelper::getAdminImage("icon_delete").$this->getLang("action_delete_all")
+        $strDeleteAll = $this->objToolkit->confirmationLink(
+            $this->getLang("delete_all_question"),
+            getLinkAdminHref($this->getArrModule("module"), "deleteAll"),
+            AdminskinHelper::getAdminImage("icon_delete").$this->getLang("action_delete_all"),
+            $this->getLang("dialog_deleteHeader", "system"),
+            $this->getLang("dialog_deleteButton", "system")
         );
-
 
         $strReturn .= $this->objToolkit->getContentToolbar(array(
             Link::getLinkAdmin($this->getArrModule("module"), "setAllRead", "", AdminskinHelper::getAdminImage("icon_mail").$this->getLang("action_set_all_read")),
@@ -335,8 +340,8 @@ JS;
         if ($this->getObjModule()->rightDelete()) {
             $arrDefault[] = new AdminBatchaction(AdminskinHelper::getAdminImage("icon_delete"), Link::getLinkAdminXml("system", "delete", "&systemid=%systemid%"), $this->getLang("commons_batchaction_delete"));
         }
-        $arrDefault[] = new AdminBatchaction(AdminskinHelper::getAdminImage("icon_mail"), Link::getLinkAdminXml("messaging", "setRead", "&systemid=%systemid%"), $this->getLang("batchaction_read"));
-        $arrDefault[] = new AdminBatchaction(AdminskinHelper::getAdminImage("icon_mailNew"), Link::getLinkAdminXml("messaging", "setUnread", "&systemid=%systemid%"), $this->getLang("batchaction_unread"));
+        $arrDefault[] = new AdminBatchaction(AdminskinHelper::getAdminImage("icon_mail"), Link::getLinkAdminXml("messaging", "apiSetRead", "&systemid=%systemid%"), $this->getLang("batchaction_read"));
+        $arrDefault[] = new AdminBatchaction(AdminskinHelper::getAdminImage("icon_mailNew"), Link::getLinkAdminXml("messaging", "apiSetUnread", "&systemid=%systemid%"), $this->getLang("batchaction_unread"));
         return $arrDefault;
     }
 
@@ -379,7 +384,7 @@ JS;
      * @return string
      * @permissions view
      */
-    protected function actionSetRead()
+    protected function actionApiSetRead()
     {
         $objMessage = Objectfactory::getInstance()->getObject($this->getSystemid());
         if ($objMessage instanceof MessagingMessage) {
@@ -398,7 +403,7 @@ JS;
      * @return string
      * @permissions view
      */
-    protected function actionSetUnread()
+    protected function actionApiSetUnread()
     {
         $objMessage = Objectfactory::getInstance()->getObject($this->getSystemid());
         if ($objMessage instanceof MessagingMessage) {
@@ -412,6 +417,7 @@ JS;
     }
 
     /**
+     * @permissions view
      * @return string
      */
     protected function actionEdit()
@@ -420,6 +426,7 @@ JS;
     }
 
     /**
+     * @permissions edit
      * @return string
      */
     protected function actionNew()
@@ -432,6 +439,7 @@ JS;
 
 
     /**
+     * @permissions edit
      * @return string
      */
     protected function actionSave()
@@ -468,6 +476,7 @@ JS;
     /**
      * Creates a summary of the message
      *
+     * @permissions view
      * @return string
      */
     protected function actionView()
@@ -582,7 +591,7 @@ JS;
                 "systemid" => $objOneMessage->getSystemid(),
                 "title"    => $objOneMessage->getStrDisplayName(),
                 "unread"   => $objOneMessage->getBitRead(),
-                "details"  => Link::getLinkAdminHref($objOneMessage->getArrModule("modul"), "edit", "&systemid=".$objOneMessage->getSystemid(), false)
+                "details"  => Link::getLinkAdminHref($objOneMessage->getArrModule("modul"), "edit", "&systemid=".$objOneMessage->getSystemid(), false, true)
             );
         }
 
@@ -609,5 +618,26 @@ JS;
         }
         throw new AuthenticationException("User is not allowed to delete action", Exception::$level_ERROR);
     }
+
+
+    /**
+     * Marks a message as read and returns a 1x1px transparent gif as a "read indicator"
+     *
+     * @return string
+     * @responseType gif
+     * @permissions anonymous
+     */
+    protected function actionSetRead()
+    {
+        $objMessage = Objectfactory::getInstance()->getObject($this->getSystemid());
+
+        if ($objMessage !== null && $objMessage instanceof MessagingMessage && $objMessage->getBitRead() == 0) {
+            $objMessage->setBitRead(1);
+            $objMessage->updateObjectToDb();
+        }
+
+        return base64_decode("R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
+    }
+
 
 }

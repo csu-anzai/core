@@ -74,6 +74,14 @@ define('util', ['jquery'], function ($) {
     };
 
     /**
+     * Detects if the current viewport is embedded in an iframe or a popup
+     * @returns {boolean}
+     */
+    util.isStackedDialog = function() {
+        return !!(window.frameElement && window.frameElement.nodeName && window.frameElement.nodeName.toLowerCase() == 'iframe');
+    };
+
+    /**
      * Used to show/hide an html element
      *
      * @param {String} strElementId
@@ -275,20 +283,6 @@ define('util', ['jquery'], function ($) {
         }
         return null;
     };
-
-    /**
-     * switches the edited language in admin
-     */
-    util.switchLanguage = function(strLanguageToLoad) {
-        var url = window.location.href;
-        url = url.replace(/(\?|&)language=([a-z]+)/, "");
-        if (url.indexOf('?') == -1) {
-            window.location.replace(url + '?language=' + strLanguageToLoad);
-        } else {
-            window.location.replace(url + '&language=' + strLanguageToLoad);
-        }
-    };
-
 
     /**
      * Gets the jQuery object

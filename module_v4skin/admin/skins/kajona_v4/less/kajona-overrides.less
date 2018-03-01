@@ -39,7 +39,6 @@
 @kajona-topbar-bg:          "../img/navbar-inner-background.png";
 @kajona-search-bg:          "../img/pusteblume-submenu.png";
 @kajona-breadcrumb-bg:      "../img/pusteblume.png";
-@kajona-portal-bg:          "../img/portaleditor-arrow.png";
 
 //glyphicons
 @icon-font-path:          "../fonts/glyphicons/";
@@ -104,8 +103,41 @@ body {
 
     &.dialogBody {
         padding: 0;
+
+        footer {
+            display: none;
+        }
+
+        .contentTopbar {
+            display: none;
+        }
+
+        .pathNaviContainer {
+            display: none;
+        }
+
+        .status-indicator {
+            top: 0px;
+            width: auto;
+            margin-right: 15px;
+            margin-left: 15px;
+            display: none;
+            position: relative;
+
+            &.active {
+                display: block;
+            }
+        }
+
     }
 
+    &.anonymous {
+        padding: 0;
+
+        .status-indicator {
+            top: 0;
+        }
+    }
 
     h1 {
         font-size: @font-size-base + 12;
@@ -151,14 +183,12 @@ footer {
         line-height: 20px;
         padding: 5px 15px;
         text-transform: uppercase;
+
+        a {
+            color: @white;
+        }
     }
 
-    .toc-navigation-panel {
-        margin:2px 0px 2px 0px;
-        white-space:nowrap;
-        text-align:right;
-        overflow-y: auto;
-    }
 
     .affix {
         width:302px;
@@ -171,42 +201,6 @@ footer {
     @media (max-width: @screen-sm-max) {
         .affix {
             display:none;
-        }
-    }
-
-    .toc-navigation-panel ul {
-        list-style-type:none;
-        margin:0 0 1px 0;
-        padding:0;
-    }
-
-    .toc-navigation-panel li {
-        margin:0;
-        padding:0;
-        border:0 solid @white;
-        border-left-width:10px;
-    }
-
-    .toc-navigation-panel li.active {
-        background-color:@gray-light;
-        border:0 solid @kajona-brand-color;
-        border-left-width:10px;
-    }
-
-    .toc-navigation-panel a {
-        margin-right: 15px;
-        margin-left: 4px;
-        padding: 4px;
-        padding-right:0;
-        overflow:hidden;
-        text-align:left;
-        text-overflow: ellipsis;
-        z-index: 1;
-
-        &:hover {
-            overflow: visible;
-            background-color: @kajona-gray;
-            //display: inline-block;
         }
     }
 
@@ -533,6 +527,23 @@ footer {
     display: none;
 }
 
+.status-indicator {
+    height: 1px;
+    background-color: @kajona-brand-color;
+    position: absolute;
+    top: 49px;
+    left: 0;
+    width: 100%;
+
+    &.active {
+        top: 48px;
+        height: 2px;
+        background-size: 10px 10px;
+        background-image: linear-gradient(45deg,rgba(255,255,255,.55) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.55) 50%,rgba(255,255,255,.55) 75%,transparent 75%,transparent);
+        animation: progress-bar-stripes 2s linear infinite;
+    }
+}
+
 .navbar-fixed-top {
     margin: 0;
     .navbar-topbar {
@@ -565,23 +576,6 @@ footer {
 
         }
 
-        .status-indicator {
-            height: 1px;
-            background-color: @kajona-brand-color;
-            position: absolute;
-            top: 49px;
-            left: 0;
-            width: 100%;
-
-            &.active {
-                top: 48px;
-                height: 2px;
-                background-size: 10px 10px;
-                background-image: linear-gradient(45deg,rgba(255,255,255,.55) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.55) 50%,rgba(255,255,255,.55) 75%,transparent 75%,transparent);
-                animation: progress-bar-stripes 2s linear infinite;
-            }
-        }
-
         .navbar-search {
 
             .input-group {
@@ -609,13 +603,6 @@ footer {
                 }
             }
 
-        }
-
-        select {
-            border: none;
-            margin-top: 12px;
-            background: @white;
-            height: 25px;
         }
 
     }
@@ -663,23 +650,6 @@ footer {
     }
 }
 
-#portaleditor {
-    border: 0;
-    text-transform: uppercase;
-    font-weight: 700;
-    font-size: @font-size-base + 4;
-    color: #888;
-    .box-shadow(none);
-    background:url(@kajona-portal-bg) right 6px no-repeat transparent;
-    padding-right: 30px;
-
-    &:hover {
-        color:darken(#888, 10%);
-    }
-
-}
-
-
 .pathNaviContainer {
 
     position: fixed;
@@ -717,11 +687,6 @@ footer {
                 max-width: 100% !important;
             }
 
-            a.moduleSwitchLink {
-                i {
-                    font-size: @font-size-base+4;
-                }
-            }
         }
 
         li.pathentry a,
@@ -740,6 +705,10 @@ footer {
             overflow: visible;
             &:before {
                 display: none;
+            }
+
+            i {
+                font-size: @font-size-base+4;
             }
         }
 
@@ -989,6 +958,12 @@ footer {
 
         .checkbox {
             padding-top: 0;
+
+
+            .form-control-feedback {
+                top: 0;
+                right: 0;
+            }
         }
 
         label {
@@ -1079,6 +1054,11 @@ footer {
 
             .checkbox, .radio {
                 padding: 4px;
+            }
+
+            .table {
+                border: none;
+                margin-bottom: 0;
             }
         }
 
@@ -1266,7 +1246,7 @@ footer {
     }
 
 
-    .kajona-data-table {
+    .kajona-data-table { //todo: deprecated, may be removed
 
         &.floatThead-table {
             background-color: #FFF;
@@ -1274,6 +1254,10 @@ footer {
 
         td {
             vertical-align: top;
+
+            .help-block {
+                margin-bottom: 0;
+            }
         }
 
         td.border-right, th.border-right {

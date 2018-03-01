@@ -26,6 +26,8 @@ define(["jquery", "ajax", "statusDisplay", "tooltip", "util"], function($, ajax,
                         tooltip.addTooltip($('#updateWrapper' + packagemanager.objWrapperNames[packageName] + ' a'));
                         tooltip.addTooltip($('#updateWrapper' + packagemanager.objWrapperNames[packageName] + ' span'));
                     });
+                    packagemanager.arrPackageNames = [];
+                    packagemanager.objWrapperNames = {};
                 }
                 else {
                     statusDisplay.messageError('<b>Request failed!</b><br />' + data);

@@ -9,6 +9,7 @@
 namespace Kajona\System\System\Validators;
 
 use Kajona\System\System\Carrier;
+use Kajona\System\System\ValidationError;
 use Kajona\System\System\ValidatorExtendedInterface;
 
 
@@ -35,12 +36,13 @@ class PosintValidator implements ValidatorExtendedInterface {
 
 
     /**
-     * Gets the validation message of the validator.
-     *
-     * @return string
+     * @inheritdoc
      */
-    public function getValidationMessage() {
+    public function getValidationMessages() {
         $objLang = Carrier::getInstance()->getObjLang();
-        return $objLang->getLang("commons_validator_posint_validationmessage", "system");
+
+        return [
+            new ValidationError($objLang->getLang("commons_validator_posint_validationmessage", "system"))
+        ];
     }
 }

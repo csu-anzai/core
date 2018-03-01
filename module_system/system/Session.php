@@ -9,6 +9,7 @@
 
 namespace Kajona\System\System;
 
+use Kajona\System\System\Security\PasswordExpiredException;
 
 /**
  * Manages all those session stuff as logins or logouts and access to session vars
@@ -50,7 +51,6 @@ final class Session
 
     private $bitClosed = false;
 
-    const STR_SESSION_ADMIN_SKIN_KEY = "STR_SESSION_ADMIN_SKIN_KEY";
     const STR_SESSION_ADMIN_LANG_KEY = "STR_SESSION_ADMIN_LANG_KEY";
 
     const STR_SESSION_USERID = "STR_SESSION_USERID";
@@ -180,6 +180,7 @@ final class Session
      * @param string $strCode
      *
      * @return void
+     * @throws Exception
      */
     public function setCaptchaCode($strCode)
     {
@@ -192,6 +193,7 @@ final class Session
      * forcing the comparison to fail.
      *
      * @return string
+     * @throws Exception
      */
     public function getCaptchaCode()
     {
@@ -267,6 +269,7 @@ final class Session
      * Checks if the current user is logged in
      *
      * @return bool
+     * @throws Exception
      */
     public function isLoggedin()
     {
@@ -275,16 +278,20 @@ final class Session
         } else {
             return false;
         }
-
     }
 
     /**
      * Checks whether a user is an admin or not
      *
      * @return bool
+     * @throws Exception
+     * @deprecated
+     * @todo: ausbauen
      */
     public function isAdmin()
     {
+        return true;
+
         if ($this->isLoggedin()) {
             if ($this->getSession(self::STR_SESSION_ISADMIN) == 1) {
                 return true;
@@ -301,6 +308,7 @@ final class Session
      * Checks whether the current user is member of the global super admin group or not
      *
      * @return bool
+     * @throws Exception
      */
     public function isSuperAdmin()
     {
@@ -314,42 +322,6 @@ final class Session
     }
 
     /**
-     * Returns the name of the current skin, if the user is logged in and admin
-     *
-     * @param bool $bitUseCookie
-     * @param bool $bitSkipSessionEntry
-     *
-     * @return string
-     */
-    public function getAdminSkin($bitUseCookie = true, $bitSkipSessionEntry = false)
-    {
-
-        if (!$bitSkipSessionEntry && $this->getSession(self::STR_SESSION_ADMIN_SKIN_KEY) != "") {
-            return $this->getSession(self::STR_SESSION_ADMIN_SKIN_KEY);
-        }
-
-        //Maybe we can load the skin from the cookie
-        $objCookie = new Cookie();
-        $strSkin = $objCookie->getCookie("adminskin");
-        if ($strSkin != "" && $bitUseCookie) {
-            return $strSkin;
-        }
-
-        if ($this->isLoggedin()) {
-            if ($this->isAdmin()) {
-                if ($this->getUser() != null && $this->getUser()->getStrAdminskin() != "") {
-                    $strSkin = $this->getUser()->getStrAdminskin();
-                    $this->setSession(self::STR_SESSION_ADMIN_SKIN_KEY, $strSkin);
-                    return $strSkin;
-                }
-            }
-        }
-
-        $this->setSession(self::STR_SESSION_ADMIN_SKIN_KEY, SystemSetting::getConfigValue("_admin_skin_default_"));
-        return SystemSetting::getConfigValue("_admin_skin_default_");
-    }
-
-    /**
      * Returns the language the user set for the administration
      * NOTE: THIS IS FOR THE TEXTS, NOT THE CONTENTS
      *
@@ -357,6 +329,7 @@ final class Session
      * @param bool $bitSkipSessionEntry
      *
      * @return string
+     * @throws Exception
      */
     public function getAdminLanguage($bitUseCookie = true, $bitSkipSessionEntry = false)
     {
@@ -400,28 +373,10 @@ final class Session
     }
 
     /**
-     * Checks if a user is allowed in portal or not
-     *
-     * @return bool
-     */
-    public function isPortal()
-    {
-        if ($this->isLoggedin()) {
-            if ($this->getUser() != null && $this->getUser()->getIntPortal() == 1) {
-                return true;
-            } else {
-                return false;
-            }
-
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * Checks if a user is set active or not
      *
      * @return bool
+     * @throws Exception
      */
     public function isActive()
     {
@@ -445,8 +400,9 @@ final class Session
      *
      * @param UserUser $objUser
      *
-     * @see Session::login($strName, $strPass)
      * @return bool
+     * @throws Exception
+     * @see Session::login($strName, $strPass)
      */
     public function loginUser(UserUser $objUser)
     {
@@ -464,6 +420,8 @@ final class Session
      * @param string $strPassword
      *
      * @return bool
+     * @throws AuthenticationException
+     * @throws Exception
      */
     public function login($strName, $strPassword)
     {
@@ -476,13 +434,15 @@ final class Session
                 $bitReturn = $this->internalLoginHelper($objUser);
             }
         } catch (AuthenticationException $objEx) {
-            $bitReturn = false;
-        }
-
-
-        if ($bitReturn === false) {
             Logger::getInstance()->info("Unsuccessful login attempt by user ".$strName);
             UserLog::generateLog(0, $strName);
+
+            throw $objEx;
+        } catch (PasswordExpiredException $objEx) {
+            Logger::getInstance()->info("Unsuccessful login attempt by user ".$strName." password is expired");
+            UserLog::generateLog(0, $strName);
+
+            throw $objEx;
         }
 
         return $bitReturn;
@@ -495,7 +455,9 @@ final class Session
      *
      * @param UserUser $objTargetUser
      *
+     * @param bool $bitForce
      * @return bool
+     * @throws Exception
      */
     public function switchSessionToUser(UserUser $objTargetUser, $bitForce = false)
     {
@@ -523,6 +485,7 @@ final class Session
      * @param UserUser $objUser
      *
      * @return bool
+     * @throws Exception
      */
     private function internalLoginHelper(UserUser $objUser)
     {
@@ -548,6 +511,11 @@ final class Session
 
             $objUser->setIntLogins($objUser->getIntLogins() + 1);
             $objUser->setIntLastLogin(time());
+
+            if (!$objUser->getLockManager()->isAccessibleForCurrentUser()) {
+                //force an unlock, may be locked since the user is being edited in the backend
+                $objUser->getLockManager()->unlockRecord(true);
+            }
             $objUser->updateObjectToDb();
 
             //Drop a line to the logger
@@ -574,6 +542,7 @@ final class Session
      * Logs a user off from the system
      *
      * @return void
+     * @throws Exception
      */
     public function logout()
     {
@@ -585,6 +554,7 @@ final class Session
 
         $this->objInternalSession = null;
         $this->objUser = null;
+        $this->setSession(self::STR_SESSION_USERID, "");
         if (isset($_COOKIE[session_name()])) {
             setcookie(session_name(), '', time() - 42000);
         }
@@ -603,6 +573,7 @@ final class Session
      * Returns the name of the current user
      *
      * @return string
+     * @throws Exception
      */
     public function getUsername()
     {
@@ -615,24 +586,25 @@ final class Session
     }
 
     /**
-     * Returns the userid or '' in case of guest of the current user
+     * Returns the userid or ''
      *
      * @return string
+     * @throws Exception
      */
     public function getUserID()
     {
-        if ($this->getObjInternalSession() != null && $this->isLoggedin()) {
-            $strUserid = $this->getSession(self::STR_SESSION_USERID);
-        } else {
-            $strUserid = "";
+        $strUserid = $this->getSession(self::STR_SESSION_USERID);
+        if (validateSystemid($strUserid) && $this->isLoggedin()) {
+            return $strUserid;
         }
-        return $strUserid;
+        return '';
     }
 
     /**
      * Returns an instance of the current user or null of not given
      *
      * @return UserUser
+     * @throws Exception
      */
     public function getUser()
     {
@@ -660,8 +632,21 @@ final class Session
         if ($this->getUserID() != "") {
             $this->objUser = Objectfactory::getInstance()->getObject($this->getUserID(), true);
             //reload group-ids to the session
-            $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $this->objUser->getArrGroupIds()));
-            $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $this->objUser->getArrShortGroupIds()));
+            if ($this->objUser !== null) {
+                $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $this->objUser->getArrGroupIds()));
+                $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $this->objUser->getArrShortGroupIds()));
+            }
+        }
+    }
+
+    /**
+     * Updates the flag to re-init a session for ALL sessions currently opened.
+     * @throws Exception
+     */
+    public function resetAllUser()
+    {
+        if ($this->getObjInternalSession() != null) {
+            $this->getObjInternalSession()->forceUserReset();
         }
     }
 
@@ -669,21 +654,21 @@ final class Session
      * Returns the systemids of groups the user is member in as a string
      *
      * @return string
+     * @throws Exception
      */
     public function getGroupIdsAsString()
     {
         if ($this->getObjInternalSession() != null) {
-            $strGroupids = $this->getSession(self::STR_SESSION_GROUPIDS);
-        } else {
-            $strGroupids = SystemSetting::getConfigValue("_guests_group_id_");
+            return $this->getSession(self::STR_SESSION_GROUPIDS);
         }
-        return $strGroupids;
+        return "";
     }
 
     /**
      * Returns the systemids of groups the user is member in as an array
      *
      * @return array
+     * @throws Exception
      */
     public function getGroupIdsAsArray()
     {
@@ -694,13 +679,14 @@ final class Session
      * Returns the short ids of groups the user is member in as an array
      *
      * @return array
+     * @throws Exception
      */
     public function getShortGroupIdsAsArray()
     {
         if ($this->getObjInternalSession() != null) {
             $strGroupids = $this->getSession(self::STR_SESSION_GROUPIDS_SHORT);
         } else {
-            $strGroupids = UserGroup::getShortIdForGroupId(SystemSetting::getConfigValue("_guests_group_id_"));
+            $strGroupids = "";
         }
         return explode(",", $strGroupids);
     }
@@ -719,6 +705,7 @@ final class Session
      * Returns the internal session id used by kajona, so NOT by php
      *
      * @return string
+     * @throws Exception
      */
     public function getInternalSessionId()
     {
@@ -733,13 +720,13 @@ final class Session
      * Initializes the internal kajona session
      *
      * @return void
+     * @throws Exception
      */
     public function initInternalSession()
     {
 
-
         $arrTables = Database::getInstance()->getTables();
-        if (!in_array(_dbprefix_."session", $arrTables) || SystemSetting::getConfigValue("_guests_group_id_") === null) {
+        if (!in_array(_dbprefix_."session", $arrTables)) {
             return;
         }
 
@@ -749,6 +736,11 @@ final class Session
             $this->objInternalSession = SystemSession::getSessionById($this->getSession("KAJONA_INTERNAL_SESSID"));
 
             if ($this->objInternalSession != null && $this->objInternalSession->isSessionValid()) {
+                if ($this->objInternalSession->getBitResetUser()) {
+                    //need to reset the user
+                    $this->resetUser();
+                    $this->objInternalSession->invalidateUserResetFlag();
+                }
                 $this->objInternalSession->setIntReleasetime(time() + (int)SystemSetting::getConfigValue("_system_release_time_"));
                 $this->objInternalSession->setStrLasturl(getServer("QUERY_STRING"));
             } else {
@@ -777,10 +769,10 @@ final class Session
 
     /**
      * @return SystemSession
+     * @throws Exception
      */
     private function getObjInternalSession()
     {
-
         //lazy loading
         if ($this->objInternalSession == null && !$this->bitLazyLoaded) {
             $this->initInternalSession();
