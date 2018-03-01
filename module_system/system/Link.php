@@ -96,15 +96,15 @@ class Link
      * @param string $strImage
      * @param bool $bitTooltip
      * @param string $strCss
-     * @param string $strAddon
+     * @param string $strOnClick
      *
      * @return string
      */
-    public static function getLinkAdmin($strModule, $strAction, $strParams = "", $strText = "", $strAlt = "", $strImage = "", $bitTooltip = true, $strCss = "", $strAddon = "")
+    public static function getLinkAdmin($strModule, $strAction, $strParams = "", $strText = "", $strAlt = "", $strImage = "", $bitTooltip = true, $strCss = "", $strOnClick = "")
     {
         $strHref = "href=\"".Link::getLinkAdminHref($strModule, $strAction, $strParams, true, true)."\"";
-        if (!empty($strAddon)) {
-            $strHref.= " " . $strAddon;
+        if (!empty($strOnClick)) {
+            $strHref.= ' onclick="' . htmlspecialchars($strOnClick). '"';
         }
         return self::getLinkAdminManual($strHref, $strText, $strAlt, $strImage, "", "", $bitTooltip, $strCss);
     }
