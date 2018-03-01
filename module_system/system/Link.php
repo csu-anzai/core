@@ -96,15 +96,18 @@ class Link
      * @param string $strImage
      * @param bool $bitTooltip
      * @param string $strCss
+     * @param string $strAddon
      *
      * @return string
      */
-    public static function getLinkAdmin($strModule, $strAction, $strParams = "", $strText = "", $strAlt = "", $strImage = "", $bitTooltip = true, $strCss = "")
+    public static function getLinkAdmin($strModule, $strAction, $strParams = "", $strText = "", $strAlt = "", $strImage = "", $bitTooltip = true, $strCss = "", $strAddon = "")
     {
         $strHref = "href=\"".Link::getLinkAdminHref($strModule, $strAction, $strParams, true, true)."\"";
+        if (!empty($strAddon)) {
+            $strHref.= " " . $strAddon;
+        }
         return self::getLinkAdminManual($strHref, $strText, $strAlt, $strImage, "", "", $bitTooltip, $strCss);
     }
-
 
     /**
      * Generates a link for the admin-area
