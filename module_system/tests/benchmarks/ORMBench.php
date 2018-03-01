@@ -3,29 +3,27 @@
 namespace Kajona\System\Tests\Benchmarks;
 
 use AGP\Prozessverwaltung\System\ProzessverwaltungProzess;
-use Kajona\System\System\MessagingMessage;
 use Kajona\System\System\OrmObjectinit;
-use Kajona\System\System\OrmObjectinitNew;
 
 /**
- * InitObjectFromDb
+ * ORMBench
  *
- * @Revs(1000)
+ * @Revs(10)
  * @Iterations(10)
  */
-class InitObjectFromDb
+class ORMBench
 {
-    public function benchInit()
+    public function benchInitObjectFromDb()
     {
         $objObject = new ProzessverwaltungProzess();
         $objORM = new OrmObjectinit($objObject);
         $objORM->initObjectFromDb();
     }
 
-    public function benchInitNew()
+    public function benchUpdateObjectToDb()
     {
         $objObject = new ProzessverwaltungProzess();
-        $objORM = new OrmObjectinitNew($objObject);
-        $objORM->initObjectFromDb();
+        $objObject->setStrTitel("foobar");
+        $objObject->updateObjectToDb();
     }
 }
