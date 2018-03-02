@@ -81,6 +81,12 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
                     objElement.css('opacity', '1');
                 }
 
+                if (data.status === 401) {
+                    objElement.html(data.responseText);
+                    objElement.css('opacity', '1');
+                    return;
+                }
+
                 //maybe it was xml, so strip
                 statusDisplay.messageError("<b>Request failed!</b><br />" + data);
             });
