@@ -104,7 +104,7 @@ abstract class SystemtaskBase
     {
         $arrFiles = Resourceloader::getInstance()->getFolderContent("/admin/systemtasks", array(".php"), false, null, function (&$strOneFile, $strPath) {
 
-            $objInstance = Classloader::getInstance()->getInstanceFromFilename($strPath, "Kajona\\System\\Admin\\Systemtasks\\SystemtaskBase");
+            $objInstance = Classloader::getInstance()->getInstanceFromFilename($strPath, SystemtaskBase::class);
 
             if ($objInstance instanceof AdminSystemtaskInterface) {
                 $strOneFile = $objInstance;
@@ -141,6 +141,7 @@ abstract class SystemtaskBase
      * @param string|AdminFormgenerator $objAdminForm
      *
      * @return string
+     * @throws \Kajona\System\System\Exception
      */
     public final function generateAdminForm($strTargetModule = "system", $strTargetAction = "systemTasks", $objAdminForm = null)
     {
@@ -153,9 +154,10 @@ abstract class SystemtaskBase
 
             if ($this->bitMultipartform) {
                 $objAdminForm->setStrFormEncoding(AdminFormgenerator::FORM_ENCTYPE_MULTIPART);
+                $objAdminForm->setStrOnSubmit("");
             }
 
-            $strLink = Link::getLinkAdminHref($strTargetModule, $strTargetAction, "task=".$this->getStrInternalTaskName());
+            $strLink = Link::getLinkAdminHref($strTargetModule, $strTargetAction, "task=".$this->getStrInternalTaskName(), true, !$this->bitMultipartform);
             $strReturn = $objAdminForm->renderForm($strLink, 0);
         }
         elseif ($objAdminForm != "") {
@@ -192,7 +194,7 @@ abstract class SystemtaskBase
     /**
      * Empty implementation, override in subclass!
      *
-     * @return AdminFormgenerator
+     * @return AdminFormgenerator|void
      */
     public function getAdminForm()
     {
@@ -201,7 +203,7 @@ abstract class SystemtaskBase
     /**
      * Empty implementation, override in subclass!
      *
-     * @return string[]
+     * @return string
      */
     public function getSubmitParams()
     {
@@ -215,6 +217,7 @@ abstract class SystemtaskBase
      */
     public function getStrInternalTaskName()
     {
+        return "";
     }
 
     /**
