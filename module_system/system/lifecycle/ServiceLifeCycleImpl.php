@@ -122,7 +122,7 @@ class ServiceLifeCycleImpl implements ServiceLifeCycleInterface
 
             if ($objPermissionHandler instanceof PermissionHandlerInterface) {
                 if (!validateSystemid($objOldModel->getSystemid())) {
-                    $objPermissionHandler->onInitialize($objNewModel);
+                    $objPermissionHandler->onCreate($objNewModel);
                 } else {
                     $objPermissionHandler->onUpdate($objOldModel, $objNewModel);
                 }

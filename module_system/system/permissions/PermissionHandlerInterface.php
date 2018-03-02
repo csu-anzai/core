@@ -61,7 +61,7 @@ interface PermissionHandlerInterface
      * @param Root $objRecord
      * @return void
      */
-    public function onInitialize(Root $objRecord);
+    public function onCreate(Root $objRecord);
 
     /**
      * Sets rights of an record on update
