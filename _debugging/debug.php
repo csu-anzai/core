@@ -84,4 +84,5 @@ header("Content-Type: text/html; charset=utf-8");
 $objDebug = new DebugHelper();
 $objDebug->debugHelper();
 
+CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_ENDPROCESSING, array(RequestEntrypointEnum::DEBUG()));
 CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_AFTERCONTENTSEND, array(RequestEntrypointEnum::DEBUG()));
