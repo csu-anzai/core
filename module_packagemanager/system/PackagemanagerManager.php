@@ -17,6 +17,7 @@ use Kajona\System\System\Exception;
 use Kajona\System\System\Logger;
 use Kajona\System\System\MessagingMessage;
 use Kajona\System\System\MessagingMessagehandler;
+use Kajona\System\System\Objectfactory;
 use Kajona\System\System\OrmBase;
 use Kajona\System\System\OrmDeletedhandlingEnum;
 use Kajona\System\System\Reflection;
@@ -375,7 +376,7 @@ class PackagemanagerManager
             $objMessage->setStrBody($strMailtext);
             $objMessage->setObjMessageProvider(new MessageproviderPackageupdate());
             $objMessage->setStrInternalIdentifier($strIdentifier);
-            $objMessageHandler->sendMessageObject($objMessage, new UserGroup(SystemSetting::getConfigValue("_admins_group_id_")));
+            $objMessageHandler->sendMessageObject($objMessage, Objectfactory::getInstance()->getObject(SystemSetting::getConfigValue("_admins_group_id_")));
         }
     }
 
