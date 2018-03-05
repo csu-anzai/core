@@ -2,6 +2,7 @@
 
 namespace Kajona\System\System;
 
+use Kajona\System\System\Permissions\PermissionHandlerFactory;
 use Kajona\System\System\Security\PasswordRotator;
 use Kajona\System\System\Security\PasswordValidator;
 use Kajona\System\System\Security\Policy;
@@ -112,6 +113,11 @@ class ServiceProvider implements ServiceProviderInterface
      */
     const STR_PASSWORD_VALIDATOR = "system_password_validator";
 
+    /**
+     * @see \Kajona\System\System\Permissions\PermissionHandlerFactory
+     */
+    const STR_PERMISSION_HANDLER_FACTORY = "system_permission_handler_factory";
+
     public function register(Container $objContainer)
     {
         $objContainer[self::STR_DB] = function ($c) {
@@ -179,7 +185,9 @@ class ServiceProvider implements ServiceProviderInterface
         };
 
         $objContainer[self::STR_MESSAGE_HANDLER] = function ($c) {
-            return new MessagingMessagehandler($c[self::STR_LIFE_CYCLE_FACTORY]);
+            return new MessagingMessagehandler(
+                $c[self::STR_LIFE_CYCLE_FACTORY]
+            );
         };
 
         $objContainer[self::STR_LIFE_CYCLE_FACTORY] = function ($c) {
@@ -187,11 +195,15 @@ class ServiceProvider implements ServiceProviderInterface
         };
 
         $objContainer[self::STR_LIFE_CYCLE_DEFAULT] = function ($c) {
-            return new Lifecycle\ServiceLifeCycleImpl();
+            return new Lifecycle\ServiceLifeCycleImpl(
+                $c[ServiceProvider::STR_PERMISSION_HANDLER_FACTORY]
+            );
         };
 
         $objContainer[self::STR_LIFE_CYCLE_MESSAGES_ALERT] = function ($c) {
-            return new MessagingAlertLifeCycle();
+            return new MessagingAlertLifeCycle(
+                $c[ServiceProvider::STR_PERMISSION_HANDLER_FACTORY]
+            );
         };
 
         $objContainer[self::STR_PASSWORD_VALIDATOR] = function ($c) {
@@ -219,5 +231,8 @@ class ServiceProvider implements ServiceProviderInterface
             );
         };
 
+        $objContainer[self::STR_PERMISSION_HANDLER_FACTORY] = function ($c) {
+            return new PermissionHandlerFactory($c);
+        };
     }
 }

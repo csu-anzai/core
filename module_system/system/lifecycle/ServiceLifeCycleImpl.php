@@ -5,6 +5,7 @@ namespace Kajona\System\System\Lifecycle;
 use AGP\Prozessverwaltung\System\ProzessverwaltungObjectBase;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Database;
+use Kajona\System\System\Permissions\PermissionHandlerFactory;
 use Kajona\System\System\Permissions\PermissionHandlerInterface;
 use Kajona\System\System\RedirectException;
 use Kajona\System\System\Reflection;
@@ -19,6 +20,19 @@ use Kajona\System\System\Root;
  */
 class ServiceLifeCycleImpl implements ServiceLifeCycleInterface
 {
+    /**
+     * @var PermissionHandlerFactory
+     */
+    protected $objFactory;
+
+    /**
+     * @param PermissionHandlerFactory $objFactory
+     */
+    public function __construct(PermissionHandlerFactory $objFactory)
+    {
+        $this->objFactory = $objFactory;
+    }
+
     /**
      * @inheritdoc
      */
@@ -112,22 +126,13 @@ class ServiceLifeCycleImpl implements ServiceLifeCycleInterface
      */
     private function invokePermissionHandler(Root $objOldModel, Root $objNewModel)
     {
-        // check whether the model has a permission handler
-        $objReflection = new Reflection($objNewModel);
-        $arrHandler = $objReflection->getAnnotationValuesFromClass(PermissionHandlerInterface::PERMISSION_HANDLER_ANNOTATION);
+        $objPermissionHandler = $this->objFactory->factory(get_class($objNewModel));
 
-        if (!empty($arrHandler)) {
-            $strHandler = reset($arrHandler);
-            $objPermissionHandler = Carrier::getInstance()->getContainer()->offsetGet($strHandler);
-
-            if ($objPermissionHandler instanceof PermissionHandlerInterface) {
-                if (!validateSystemid($objOldModel->getSystemid())) {
-                    $objPermissionHandler->onCreate($objNewModel);
-                } else {
-                    $objPermissionHandler->onUpdate($objOldModel, $objNewModel);
-                }
+        if ($objPermissionHandler instanceof PermissionHandlerInterface) {
+            if (!validateSystemid($objOldModel->getSystemid())) {
+                $objPermissionHandler->onCreate($objNewModel);
             } else {
-                throw new \RuntimeException(sprintf("Provided permission handler is not an instance of %s", PermissionHandlerInterface::class));
+                $objPermissionHandler->onUpdate($objOldModel, $objNewModel);
             }
         }
     }
