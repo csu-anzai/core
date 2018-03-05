@@ -224,14 +224,7 @@ class UsersourcesGroupKajona extends Model implements ModelInterface, Usersource
         $objLog = new SystemChangelog();
         $objLog->processChanges(Objectfactory::getInstance()->getObject($this->getSystemid()), "editMemberships", [["property" => UserGroup::STR_ASSIGNMENT_PROPERTY, "oldvalue" => '', "newvalue" => $objUser->getSystemid()]]);
 
-        $this->bitBlockRemoveCl = true;
-        $this->removeMember($objUser);
-        $this->bitBlockRemoveCl = false;
-
-        $strQuery = "INSERT INTO "._dbprefix_."user_kajona_members
-                       (group_member_group_kajona_id, group_member_user_kajona_id) VALUES
-                         (?, ?)";
-        return $this->objDB->_pQuery($strQuery, array($this->getSystemid(), $objUser->getSystemid()));
+        return $this->objDB->insertOrUpdate("user_kajona_members", ["group_member_group_kajona_id", "group_member_user_kajona_id"], [$this->getSystemid(), $objUser->getSystemid()], ["group_member_group_kajona_id", "group_member_user_kajona_id"]);
     }
 
 

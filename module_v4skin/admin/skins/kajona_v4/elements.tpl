@@ -1798,7 +1798,7 @@ It containes a list of aspects and provides the possibility to switch the differ
 <sitemap_wrapper>
       <div class="nav-header">
             %%aspectToggle%%
-            V7
+            [lang,commons_product_title,commons]
       </div>
     %%level%%
 </sitemap_wrapper>
