@@ -20,11 +20,11 @@ use Kajona\System\System\UserGroup;
  * permission handler on the model through the @permissionHandler annotation. Basically a handler follows two basic
  * concepts:
  *
- * - Group types
- * A group type is a random string which can be resolved to multiple user groups. We are working with such group types
- * since it is often needed to _not_ simply set a fix user group id but resolve a user group based on a specific
- * property or assigned OE from the model. The handler contains all available group types for the model and can resolve
- * such a group type to actual user group objects
+ * - Roles
+ * A role is a string identifier which can be resolved to multiple user groups. We are working with such roles since it
+ * is often needed to _not_ simply set a fix user group id but resolve a user group based on a specific property or
+ * assigned OE from the model. The handler contains all available group types for the model and can resolve such a role
+ * to actual user group objects
  *
  * - Right handling
  * If a model is created or changed the right handler has the chance to also adjust the rights of the model or also any
@@ -39,21 +39,29 @@ interface PermissionHandlerInterface
     const PERMISSION_HANDLER_ANNOTATION = '@permissionHandler';
 
     /**
-     * Returns all available groups types for this handler
+     * Returns all available roles for this handler
      *
      * @return array
      */
-    public function getGroupTypes();
+    public function getRoles();
 
     /**
      * Returns an array of user groups or an empty array. The key of the array must contain the systemid of the group
      * this simplfies handling or merging multiple groups
      *
      * @param Root $objRecord
-     * @param string $strGroupType
+     * @param string $strRole
      * @return UserGroup[]
      */
-    public function getGroups(Root $objRecord, $strGroupType);
+    public function getGroupsByRole(Root $objRecord, string $strRole);
+
+    /**
+     * Returns all rights which are available for a specific role
+     *
+     * @param string $strRole
+     * @return array
+     */
+    public function getRoleRights(string $strRole);
 
     /**
      * Sets the initial rights of an record
