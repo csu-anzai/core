@@ -8,12 +8,15 @@
 namespace Kajona\Flow\System;
 
 use Kajona\System\System\AdminListableInterface;
+use Kajona\System\System\Carrier;
 use Kajona\System\System\Database;
 use Kajona\System\System\IdGenerator;
 use Kajona\System\System\Lang;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
+use Kajona\System\System\Permissions\PermissionHandlerFactory;
+use Kajona\System\System\Permissions\PermissionHandlerInterface;
 use Kajona\System\System\UserGroup;
 
 /**
@@ -64,11 +67,14 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
     protected $strIconColor;
 
     /**
-     * @var UserGroup[]
-     * @objectList flow_status2edit (source="status_system_id", target="usergroup_system_id", type={"Kajona\\System\\System\\UserGroup"})
-     * @fieldType Kajona\System\Admin\Formentries\FormentryObjecttags
+     * @var string
+     * @tableColumn flow_step.step_roles
+     * @tableColumnDatatype text
+     * @fieldType Kajona\Flow\Admin\Formentries\FormentryRoles
+     * @fieldMandatory
+     * @blockEscaping
      */
-    protected $arrEditGroups;
+    protected $strRoles;
 
     /**
      * @return string
@@ -124,6 +130,44 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
     public function setStrIconColor($strIconColor)
     {
         $this->strIconColor = $strIconColor;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStrRoles()
+    {
+        return $this->strRoles;
+    }
+
+    /**
+     * @param string $strRoles
+     */
+    public function setStrRoles($strRoles)
+    {
+        $this->strRoles = $strRoles;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRightsForRole(string $strRole)
+    {
+        $arrRoles = json_decode($this->strRoles, true);
+        return $arrRoles[$strRole] ?? [];
+    }
+
+    /**
+     * @return PermissionHandlerInterface
+     */
+    public function getPermissionHandler()
+    {
+        /** @var PermissionHandlerFactory $objHandlerFactory */
+        $objHandlerFactory = Carrier::getInstance()->getContainer()->offsetGet(\Kajona\System\System\ServiceProvider::STR_PERMISSION_HANDLER_FACTORY);
+        $strTargetClass = $this->getFlowConfig()->getStrTargetClass();
+        $objPermissionHandler = $objHandlerFactory->factory($strTargetClass);
+
+        return $objPermissionHandler;
     }
 
     /**
