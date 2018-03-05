@@ -102,18 +102,16 @@ abstract class PermissionHandlerAbstract implements PermissionHandlerInterface
     {
         $arrRoles = $this->getRoles();
         $objProcessor = new PermissionActionProcessor($this->objRights);
+        $objProcessor->addAction(new RemoveAllGroups($objRecord->getSystemid()));
 
         foreach ($arrRoles as $strRole) {
             $arrGroups = $this->getGroupsByRole($objRecord, $strRole);
             $arrRights = $objStatus->getRightsForRole($strRole);
 
-            foreach ($arrRights as $strRight => $strValue) {
-                $arrGroupIds = [];
-                foreach ($arrGroups as $objGroup) {
-                    $arrGroupIds[] = $objGroup->getSystemid();
+            foreach ($arrGroups as $objGroup) {
+                foreach ($arrRights as $strRight => $strValue) {
+                    $objProcessor->addAction(new AddPermissionToGroup($objRecord->getSystemid(), $objGroup->getSystemid(), $strRight));
                 }
-
-                $objProcessor->addAction(new SetGroupsToPermission($objRecord->getSystemid(), $strRight, $arrGroupIds));
             }
         }
 
