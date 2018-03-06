@@ -91,7 +91,8 @@ class FormentryRoles extends FormentryBase
         foreach ($this->arrEntries as $strRole => $objEntry) {
             /** @var FormentryCheckboxarray $objEntry */
             if (isset($arrRoles[$strRole])) {
-                $objEntry->setStrValue($arrRoles[$strRole]);
+                $arrValues = array_combine($arrRoles[$strRole], array_fill(0, count($arrRoles[$strRole]), "checked"));
+                $objEntry->setStrValue($arrValues);
             }
         }
 
@@ -151,7 +152,7 @@ class FormentryRoles extends FormentryBase
 
                 if (isset($arrParams[$strKey])) {
                     if (is_array($arrParams[$strKey])) {
-                        $arrValues[$strRole] = $arrParams[$strKey];
+                        $arrValues[$strRole] = array_keys($arrParams[$strKey]);
                     } else {
                         $arrValues[$strRole] = [];
                     }

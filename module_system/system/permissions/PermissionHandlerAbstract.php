@@ -119,7 +119,7 @@ abstract class PermissionHandlerAbstract implements PermissionHandlerInterface
             $arrRights = $objStatus->getRightsForRole($strRole);
 
             foreach ($arrGroups as $objGroup) {
-                foreach ($arrRights as $strRight => $strValue) {
+                foreach ($arrRights as $strRight) {
                     $objProcessor->addAction(new AddPermissionToGroup($objRecord->getSystemid(), $objGroup->getSystemid(), $strRight));
                 }
             }
