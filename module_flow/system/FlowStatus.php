@@ -67,6 +67,13 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
     protected $strIconColor;
 
     /**
+     * @var UserGroup[]
+     * @objectList flow_status2edit (source="status_system_id", target="usergroup_system_id", type={"Kajona\\System\\System\\UserGroup"})
+     * @fieldType Kajona\System\Admin\Formentries\FormentryObjecttags
+     */
+    protected $arrEditGroups;
+
+    /**
      * @var string
      * @tableColumn flow_step.step_roles
      * @tableColumnDatatype text
