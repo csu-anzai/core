@@ -62,7 +62,11 @@ abstract class PermissionHandlerAbstract implements PermissionHandlerInterface
         $objStatus = $this->objFlowManager->getCurrentStepForModel($objRecord);
 
         if ($objStatus instanceof FlowStatus) {
-            $this->setRights($objStatus, $objRecord);
+            $objProcessor = new PermissionActionProcessor($this->objRights);
+
+            $this->setRights($objStatus, $objRecord, $objProcessor);
+
+            $objProcessor->applyActions();
         }
     }
 
@@ -79,7 +83,11 @@ abstract class PermissionHandlerAbstract implements PermissionHandlerInterface
         $objStatus = $this->objFlowManager->getCurrentStepForModel($objNewRecord);
 
         if ($objStatus instanceof FlowStatus) {
-            $this->setRights($objStatus, $objNewRecord);
+            $objProcessor = new PermissionActionProcessor($this->objRights);
+
+            $this->setRights($objStatus, $objNewRecord, $objProcessor);
+
+            $objProcessor->applyActions();
         }
     }
 
@@ -94,14 +102,16 @@ abstract class PermissionHandlerAbstract implements PermissionHandlerInterface
     abstract protected function hasChanged(Root $objOldRecord, Root $objNewRecord);
 
     /**
+     * Method which adds specific right actions to the provided permission action processor
+     *
      * @param FlowStatus $objStatus
      * @param Root $objRecord
+     * @param PermissionActionProcessor $objProcessor
      * @throws Exception
      */
-    protected function setRights(FlowStatus $objStatus, Root $objRecord)
+    protected function setRights(FlowStatus $objStatus, Root $objRecord, PermissionActionProcessor $objProcessor)
     {
         $arrRoles = $this->getRoles();
-        $objProcessor = new PermissionActionProcessor($this->objRights);
         $objProcessor->addAction(new RemoveAllGroups($objRecord->getSystemid()));
 
         foreach ($arrRoles as $strRole) {
@@ -114,7 +124,5 @@ abstract class PermissionHandlerAbstract implements PermissionHandlerInterface
                 }
             }
         }
-
-        $objProcessor->applyActions();
     }
 }
