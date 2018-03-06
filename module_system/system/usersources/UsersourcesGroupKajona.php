@@ -221,6 +221,10 @@ class UsersourcesGroupKajona extends Model implements ModelInterface, Usersource
      */
     public function addMember(UsersourcesUserInterface $objUser)
     {
+        if (!validateSystemid($objUser->getSystemid())) {
+            return false;
+        }
+
         $objLog = new SystemChangelog();
         $objLog->processChanges(Objectfactory::getInstance()->getObject($this->getSystemid()), "editMemberships", [["property" => UserGroup::STR_ASSIGNMENT_PROPERTY, "oldvalue" => '', "newvalue" => $objUser->getSystemid()]]);
 
