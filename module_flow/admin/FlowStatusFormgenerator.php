@@ -21,15 +21,4 @@ use Kajona\System\Admin\Formentries\FormentryHeadline;
  */
 class FlowStatusFormgenerator extends AdminFormgenerator
 {
-    /**
-     * @inheritDoc
-     */
-    public function generateFieldsFromObject()
-    {
-        parent::generateFieldsFromObject();
-
-        $this->addField(new FormentryHeadline("headline_roles"))
-            ->setStrValue($this->getLang("form_flow_headline_roles"));
-        $this->setFieldToPosition("headline_roles", 3);
-    }
 }

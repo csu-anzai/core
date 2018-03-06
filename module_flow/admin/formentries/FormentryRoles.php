@@ -105,13 +105,18 @@ class FormentryRoles extends FormentryBase
     {
         $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
         $strReturn = "";
-        if ($this->getStrHint() != null) {
-            $strReturn .= $objToolkit->formTextRow($this->getStrHint());
-        }
 
-        foreach ($this->arrEntries as $objEntry) {
-            /** @var FormentryCheckboxarray $objEntry */
-            $strReturn .= $objEntry->renderField();
+        if (!empty($this->arrEntries)) {
+            if ($this->getStrHint() != null) {
+                $strReturn .= $objToolkit->formTextRow($this->getStrHint());
+            }
+
+            $strReturn .= $objToolkit->formHeadline(Lang::getInstance()->getLang("form_flow_headline_roles", "flow"));
+
+            foreach ($this->arrEntries as $objEntry) {
+                /** @var FormentryCheckboxarray $objEntry */
+                $strReturn .= $objEntry->renderField();
+            }
         }
 
         return $strReturn;
