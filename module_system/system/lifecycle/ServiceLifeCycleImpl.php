@@ -23,14 +23,14 @@ class ServiceLifeCycleImpl implements ServiceLifeCycleInterface
     /**
      * @var PermissionHandlerFactory
      */
-    protected $objFactory;
+    protected $objPermissionFactory;
 
     /**
-     * @param PermissionHandlerFactory $objFactory
+     * @param PermissionHandlerFactory $objPermissionFactory
      */
-    public function __construct(PermissionHandlerFactory $objFactory)
+    public function __construct(PermissionHandlerFactory $objPermissionFactory)
     {
-        $this->objFactory = $objFactory;
+        $this->objPermissionFactory = $objPermissionFactory;
     }
 
     /**
@@ -126,7 +126,7 @@ class ServiceLifeCycleImpl implements ServiceLifeCycleInterface
      */
     private function invokePermissionHandler(Root $objOldModel, Root $objNewModel)
     {
-        $objPermissionHandler = $this->objFactory->factory(get_class($objNewModel));
+        $objPermissionHandler = $this->objPermissionFactory->factory(get_class($objNewModel));
 
         if ($objPermissionHandler instanceof PermissionHandlerInterface) {
             if (!validateSystemid($objOldModel->getSystemid())) {

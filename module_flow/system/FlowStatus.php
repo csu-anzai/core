@@ -151,7 +151,7 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
     /**
      * @return array
      */
-    public function getRightsForRole(string $strRole)
+    public function getRightsForRole($strRole)
     {
         $arrRoles = json_decode($this->strRoles, true);
         return $arrRoles[$strRole] ?? [];

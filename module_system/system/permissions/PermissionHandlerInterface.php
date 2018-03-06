@@ -53,7 +53,7 @@ interface PermissionHandlerInterface
      * @param string $strRole
      * @return UserGroup[]
      */
-    public function getGroupsByRole(Root $objRecord, string $strRole);
+    public function getGroupsByRole(Root $objRecord, $strRole);
 
     /**
      * Returns all rights which are available for a specific role
@@ -61,7 +61,7 @@ interface PermissionHandlerInterface
      * @param string $strRole
      * @return array
      */
-    public function getRoleRights(string $strRole);
+    public function getRoleRights($strRole);
 
     /**
      * Sets the initial rights of an record
