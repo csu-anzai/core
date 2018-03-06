@@ -45,6 +45,14 @@ class RemoveAllGroups implements PermissionActionInterface
     }
 
     /**
+     * This action must be executed always at fist to reset the rights
+     */
+    public function getPriority(): int
+    {
+        return -64;
+    }
+
+    /**
      * @inheritdoc
      */
     public function applyAction(array $permissions): array

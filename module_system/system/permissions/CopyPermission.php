@@ -66,6 +66,14 @@ class CopyPermission implements PermissionActionInterface
     /**
      * @inheritdoc
      */
+    public function getPriority(): int
+    {
+        return 0;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function applyAction(array $permissions): array
     {
         $inheritRights = $this->rights->getArrayRights($this->foreignId, $this->permission);
