@@ -56,7 +56,8 @@ class PermissionActionProcessor
             }
 
             // sort all actions for this systemid after priority
-            $sortedActions = usort($actions, function (PermissionActionInterface $a, PermissionActionInterface $b) {
+            $sortedActions = $actions;
+            usort($sortedActions, function (PermissionActionInterface $a, PermissionActionInterface $b) {
                 return $a->getPriority() <=> $b->getPriority();
             });
 
