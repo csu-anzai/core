@@ -71,7 +71,6 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
      * @tableColumn flow_step.step_roles
      * @tableColumnDatatype text
      * @fieldType Kajona\Flow\Admin\Formentries\FormentryRoles
-     * @fieldMandatory
      * @blockEscaping
      */
     protected $strRoles;
