@@ -92,14 +92,17 @@ abstract class PermissionHandlerAbstract implements PermissionHandlerInterface
     }
 
     /**
-     * This method must return whether a property has changed so that we need to set the rights i.e. in case a OE has
-     * changed
+     * This method must return whether a property has changed so that we need to set the rights i.e. in case the status
+     * or a OE has changed
      *
      * @param Root $objOldRecord
      * @param Root $objNewRecord
      * @return bool
      */
-    abstract protected function hasChanged(Root $objOldRecord, Root $objNewRecord);
+    protected function hasChanged(Root $objOldRecord, Root $objNewRecord)
+    {
+        return $objOldRecord->getIntRecordStatus() != $objNewRecord->getIntRecordStatus();
+    }
 
     /**
      * Method which adds specific right actions to the provided permission action processor
