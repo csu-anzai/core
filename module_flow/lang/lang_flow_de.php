@@ -21,7 +21,7 @@ $lang["action_transition_condition"] = "Bedingungen";
 
 $lang["form_flow_name"]         = "Name";
 $lang["form_flow_iconcolor"]    = "Farbe";
-$lang["form_flow_headline_roles"] = "Rollen Konfiguration";
+$lang["form_flow_headline_roles"] = "Rollenkonfiguration";
 $lang["form_flow_viewgroups"]   = "Ansehen";
 $lang["form_flow_editgroups"]   = "Bearbeiten";
 $lang["form_flow_deletegroups"] = "Löschen";
