@@ -29,6 +29,7 @@ class OrmPermissionCondition extends OrmCondition
      * @param string $strPermission
      * @param array|null $arrUserGroupIds
      * @param null $strColumn - optional, set if different column is being used
+     * @throws Exception
      */
     public function __construct($strPermission, array $arrUserGroupIds = null, $strColumn = null)
     {
@@ -38,7 +39,11 @@ class OrmPermissionCondition extends OrmCondition
         $this->strPermission = $strPermission;
 
         if ($this->arrUserGroupIds === null) {
-            $this->arrUserGroupIds = Carrier::getInstance()->getObjSession()->getGroupIdsAsArray();
+            $this->arrUserGroupIds = Carrier::getInstance()->getObjSession()->getShortGroupIdsAsArray();
+        } else {
+            $this->arrUserGroupIds = array_map(function ($strSytemid) {
+                return UserGroup::getShortIdForGroupId($strSytemid);
+            }, $this->arrUserGroupIds);
         }
 
         if ($strColumn == null) {
@@ -59,7 +64,7 @@ class OrmPermissionCondition extends OrmCondition
 
         $objCompound = new OrmCompositeCondition(array(), OrmCondition::STR_CONDITION_OR);
         foreach ($this->arrUserGroupIds as $strUserGroupId) {
-            $objCompound->addCondition(new OrmCondition("{$this->strColumn} {$strLikeOperator}  ?", array("%,".UserGroup::getShortIdForGroupId($strUserGroupId).",%")));
+            $objCompound->addCondition(new OrmCondition("{$this->strColumn} {$strLikeOperator}  ?", array("%,".$strUserGroupId.",%")));
         }
 
         return $objCompound;
