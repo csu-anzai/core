@@ -353,7 +353,11 @@ class DateHelper
     {
         $strRelativeString = "";
 
-        if ($objPeriod->equals(DatePeriodEnum::YEAR())) {
+        if ($objPeriod->equals(DatePeriodEnum::YEAR3())) {
+            $strRelativeString = "-3 year first day of january";
+        } elseif ($objPeriod->equals(DatePeriodEnum::YEAR2())) {
+            $strRelativeString = "-2 year first day of january";
+        } elseif ($objPeriod->equals(DatePeriodEnum::YEAR())) {
             $strRelativeString = "-1 year first day of january";
         } elseif ($objPeriod->equals(DatePeriodEnum::HALFYEAR())) {
             $intMonth = $objDate->getIntMonth();
@@ -408,7 +412,11 @@ class DateHelper
     {
         $strRelativeString = "";
 
-        if ($objPeriod->equals(DatePeriodEnum::YEAR())) {
+        if ($objPeriod->equals(DatePeriodEnum::YEAR3())) {
+            $strRelativeString = "-3 year last day of december";
+        } elseif ($objPeriod->equals(DatePeriodEnum::YEAR2())) {
+            $strRelativeString = "-2 year last day of december";
+        } elseif ($objPeriod->equals(DatePeriodEnum::YEAR())) {
             $strRelativeString = "-1 year last day of december";
         } elseif ($objPeriod->equals(DatePeriodEnum::HALFYEAR())) {
             $intMonth = $objDate->getIntMonth();
@@ -462,7 +470,11 @@ class DateHelper
     {
         $strRelativeString = "";
 
-        if ($objPeriod->equals(DatePeriodEnum::YEAR())) {
+        if ($objPeriod->equals(DatePeriodEnum::YEAR3())) {
+            $strRelativeString = "+3 year first day of january";
+        } elseif ($objPeriod->equals(DatePeriodEnum::YEAR2())) {
+            $strRelativeString = "+2 year first day of january";
+        } elseif ($objPeriod->equals(DatePeriodEnum::YEAR())) {
             $strRelativeString = "+1 year first day of january";
         } elseif ($objPeriod->equals(DatePeriodEnum::HALFYEAR())) {
             $intMonth = $objDate->getIntMonth();
@@ -516,7 +528,11 @@ class DateHelper
     {
         $strRelativeString = "";
 
-        if ($objPeriod->equals(DatePeriodEnum::YEAR())) {
+        if ($objPeriod->equals(DatePeriodEnum::YEAR3())) {
+            $strRelativeString = "+3 year last day of december";
+        } elseif ($objPeriod->equals(DatePeriodEnum::YEAR2())) {
+            $strRelativeString = "+2 year last day of december";
+        } elseif ($objPeriod->equals(DatePeriodEnum::YEAR())) {
             $strRelativeString = "+1 year last day of december";
         } elseif ($objPeriod->equals(DatePeriodEnum::HALFYEAR())) {
             $intMonth = $objDate->getIntMonth();
@@ -570,7 +586,11 @@ class DateHelper
     {
         $strRelativeString = "";
 
-        if ($objPeriod->equals(DatePeriodEnum::YEAR())) {
+        if ($objPeriod->equals(DatePeriodEnum::YEAR3())) {
+            $strRelativeString = "+2 year first day of january";
+        } elseif ($objPeriod->equals(DatePeriodEnum::YEAR2())) {
+            $strRelativeString = "+1 year first day of january";
+        } elseif ($objPeriod->equals(DatePeriodEnum::YEAR())) {
             $strRelativeString = "first day of january";
         } elseif ($objPeriod->equals(DatePeriodEnum::HALFYEAR())) {
             $intMonth = $objDate->getIntMonth();
@@ -636,7 +656,11 @@ class DateHelper
     {
         $strRelativeString = "";
 
-        if ($objPeriod->equals(DatePeriodEnum::YEAR())) {
+        if ($objPeriod->equals(DatePeriodEnum::YEAR3())) {
+            $strRelativeString = "+2 year last day of december";
+        } elseif ($objPeriod->equals(DatePeriodEnum::YEAR2())) {
+            $strRelativeString = "+1 year last day of december";
+        } elseif ($objPeriod->equals(DatePeriodEnum::YEAR())) {
             $strRelativeString = "last day of december";
         } elseif ($objPeriod->equals(DatePeriodEnum::HALFYEAR())) {
             $intMonth = $objDate->getIntMonth();
@@ -688,7 +712,11 @@ class DateHelper
     {
         $strRelativeString = "";
 
-        if ($objPeriod->equals(DatePeriodEnum::YEAR())) {
+        if ($objPeriod->equals(DatePeriodEnum::YEAR3())) {
+            $strRelativeString = "+3 year";
+        } elseif ($objPeriod->equals(DatePeriodEnum::YEAR2())) {
+            $strRelativeString = "+2 year";
+        } elseif ($objPeriod->equals(DatePeriodEnum::YEAR())) {
             $strRelativeString = "+1 year";
         } elseif ($objPeriod->equals(DatePeriodEnum::HALFYEAR())) {
             $strRelativeString = "+6 month";
