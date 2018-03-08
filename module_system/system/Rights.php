@@ -134,7 +134,9 @@ class Rights
         if ($this->objDb->_pQuery($strQuery, $arrParams)) {
             //Flush the cache so later lookups will match the new rights
             $this->objDb->flushQueryCache();
-            $this->flushRightsCache();
+            //unset in cache
+            unset(self::$arrPermissionMap[$strSystemid]);
+
             return true;
         } else {
             return false;
@@ -676,7 +678,7 @@ class Rights
         //fetch permissions once
         $arrRights = array_flip(explode(",", $this->getPlainRightRow($strSystemid, $strPermission)[$strPermission]));
         foreach ($arrGroupShortIds as $strOneGroupId) {
-            if (isset($strOneGroupId, $arrRights)) {
+            if (isset($arrRights[$strOneGroupId])) {
                 self::$arrPermissionMap[$strSystemid][$strUserid][$strPermission] = true;
                 return true;
             }
@@ -952,7 +954,6 @@ class Rights
      */
     private function flushRightsCache()
     {
-        self::$arrPermissionMap = array();
         Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_ORMCACHE);
     }
 
