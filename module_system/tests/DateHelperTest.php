@@ -137,6 +137,13 @@ class DateHelperTest extends Testbase
         $objHelper = new DateHelper();
 
         $arrDates = array();
+
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR3(), "basedate" => 20150101000001, "expecteddate" => 20170101000001);
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR3(), "basedate" => 20151001000001, "expecteddate" => 20170101000001);
+
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR2(), "basedate" => 20150101000001, "expecteddate" => 20160101000001);
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR2(), "basedate" => 20151001000001, "expecteddate" => 20160101000001);
+
         $arrDates[] = array("period" => DatePeriodEnum::YEAR(), "basedate" => 20150101000001, "expecteddate" => 20150101000001);
         $arrDates[] = array("period" => DatePeriodEnum::YEAR(), "basedate" => 20151001000001, "expecteddate" => 20150101000001);
 
@@ -184,6 +191,12 @@ class DateHelperTest extends Testbase
         $objHelper = new DateHelper();
 
         $arrDates = array();
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR3(), "basedate" => 20150101000001, "expecteddate" => 20171231000001);
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR3(), "basedate" => 20151001000001, "expecteddate" => 20171231000001);
+
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR2(), "basedate" => 20150101000001, "expecteddate" => 20161231000001);
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR2(), "basedate" => 20151001000001, "expecteddate" => 20161231000001);
+
         $arrDates[] = array("period" => DatePeriodEnum::YEAR(), "basedate" => 20150101000001, "expecteddate" => 20151231000001);
         $arrDates[] = array("period" => DatePeriodEnum::YEAR(), "basedate" => 20151001000001, "expecteddate" => 20151231000001);
 
@@ -230,6 +243,12 @@ class DateHelperTest extends Testbase
         $objHelper = new DateHelper();
 
         $arrDates = array();
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR3(), "basedate" => 20150101000001, "expecteddate" => 20120101000001);
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR3(), "basedate" => 20151001000001, "expecteddate" => 20120101000001);
+
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR2(), "basedate" => 20150101000001, "expecteddate" => 20130101000001);
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR2(), "basedate" => 20151001000001, "expecteddate" => 20130101000001);
+
         $arrDates[] = array("period" => DatePeriodEnum::YEAR(), "basedate" => 20150101000001, "expecteddate" => 20140101000001);
         $arrDates[] = array("period" => DatePeriodEnum::YEAR(), "basedate" => 20151001000001, "expecteddate" => 20140101000001);
 
@@ -277,6 +296,12 @@ class DateHelperTest extends Testbase
         $objHelper = new DateHelper();
 
         $arrDates = array();
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR3(), "basedate" => 20150101000001, "expecteddate" => 20121231000001);
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR3(), "basedate" => 20151001000001, "expecteddate" => 20121231000001);
+
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR2(), "basedate" => 20150101000001, "expecteddate" => 20131231000001);
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR2(), "basedate" => 20151001000001, "expecteddate" => 20131231000001);
+
         $arrDates[] = array("period" => DatePeriodEnum::YEAR(), "basedate" => 20150101000001, "expecteddate" => 20141231000001);
         $arrDates[] = array("period" => DatePeriodEnum::YEAR(), "basedate" => 20151001000001, "expecteddate" => 20141231000001);
 
@@ -323,6 +348,12 @@ class DateHelperTest extends Testbase
         $objHelper = new DateHelper();
 
         $arrDates = array();
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR3(), "basedate" => 20150101000001, "expecteddate" => 20180101000001);
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR3(), "basedate" => 20151001000001, "expecteddate" => 20180101000001);
+
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR2(), "basedate" => 20150101000001, "expecteddate" => 20170101000001);
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR2(), "basedate" => 20151001000001, "expecteddate" => 20170101000001);
+
         $arrDates[] = array("period" => DatePeriodEnum::YEAR(), "basedate" => 20150101000001, "expecteddate" => 20160101000001);
         $arrDates[] = array("period" => DatePeriodEnum::YEAR(), "basedate" => 20151001000001, "expecteddate" => 20160101000001);
 
@@ -369,6 +400,12 @@ class DateHelperTest extends Testbase
         $objHelper = new DateHelper();
 
         $arrDates = array();
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR3(), "basedate" => 20150101000001, "expecteddate" => 20181231000001);
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR3(), "basedate" => 20151001000001, "expecteddate" => 20181231000001);
+
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR2(), "basedate" => 20150101000001, "expecteddate" => 20171231000001);
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR2(), "basedate" => 20151001000001, "expecteddate" => 20171231000001);
+
         $arrDates[] = array("period" => DatePeriodEnum::YEAR(), "basedate" => 20150101000001, "expecteddate" => 20161231000001);
         $arrDates[] = array("period" => DatePeriodEnum::YEAR(), "basedate" => 20151001000001, "expecteddate" => 20161231000001);
 
@@ -455,6 +492,12 @@ class DateHelperTest extends Testbase
         $objHelper = new DateHelper();
 
         $arrDates = array();
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR3(), "basedate" => 20150101000001, "expecteddate" => 20180101000001);
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR3(), "basedate" => 20151001000001, "expecteddate" => 20181001000001);
+
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR2(), "basedate" => 20150101000001, "expecteddate" => 20170101000001);
+        $arrDates[] = array("period" => DatePeriodEnum::YEAR2(), "basedate" => 20151001000001, "expecteddate" => 20171001000001);
+
         $arrDates[] = array("period" => DatePeriodEnum::YEAR(), "basedate" => 20150101000001, "expecteddate" => 20160101000001);
         $arrDates[] = array("period" => DatePeriodEnum::YEAR(), "basedate" => 20151001000001, "expecteddate" => 20161001000001);
 
