@@ -341,15 +341,15 @@ abstract class AdminEvensimpler extends AdminSimple
 
     /**
      * Renders the filter form.
-     * If FilterBase::STR_FILTER_REDIRECT is being returned an adminReload with given filter url is being trigerred.
      *
      * @param FilterBase $objFilter
      * @param string|null $strFilterUrl
      * @param boolean $bitInitiallyVisible
-     *
+     * @param string $strLangActive
+     * @param string $strLangInactive
      * @return string
      */
-    public function renderFilter(FilterBase $objFilter, $strFilterUrl = null, $bitInitiallyVisible = false)
+    public function renderFilter(FilterBase $objFilter, $strFilterUrl = null, $bitInitiallyVisible = false, $strLangActive = null, $strLangInactive = null)
     {
         if ($strFilterUrl === null) {
             $arrParams = array(
@@ -363,6 +363,8 @@ abstract class AdminEvensimpler extends AdminSimple
 
         $objFilterForm = new AdminFormgeneratorFilter($objFilter->getFilterId(), $objFilter);
         $objFilterForm->setBitInitiallyVisible($bitInitiallyVisible);
+        $objFilterForm->setStrLangActive($strLangActive);
+        $objFilterForm->setStrLangInactive($strLangInactive);
 
         $strFilterForm = $objFilterForm->renderForm($strFilterUrl);
 
