@@ -370,9 +370,7 @@ class Rights
         if (OrmRowcache::getCachedInitRow($strSystemid) != null) {
             $arrRow = OrmRowcache::getCachedInitRow($strSystemid);
         } else {
-            $strQuery = "SELECT *
-                            FROM "._dbprefix_."system
-                            WHERE system_id = ?";
+            $strQuery = "SELECT * FROM "._dbprefix_."system WHERE system_id = ?";
 
             $arrRow = $this->objDb->getPRow($strQuery, array($strSystemid));
         }
