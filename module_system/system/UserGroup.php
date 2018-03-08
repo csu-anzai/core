@@ -74,6 +74,8 @@ class UserGroup extends Model implements ModelInterface, AdminListableInterface,
     private $objSourceGroup;
 
 
+    private static $arrShortIds = null;
+
     /**
      * Returns the name to be used when rendering the current object, e.g. in admin-lists.
      *
@@ -245,28 +247,36 @@ class UserGroup extends Model implements ModelInterface, AdminListableInterface,
     public static function getShortIdForGroupId(string $strGroupId)
     {
         //build the map, cached by the cache manager. on cache-miss rebuilding.
+
+        if (self::$arrShortIds !== null && array_key_exists($strGroupId, self::$arrShortIds)) {
+            return self::$arrShortIds[$strGroupId];
+        }
+
         /** @var CacheManager $objCache */
         $objCache = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_CACHE_MANAGER);
         $strCacheKey = __CLASS__."group2id";
-        $arrIds = $objCache->getValue($strCacheKey);
-        if ($arrIds === false) {
-            $arrIds = array();
+
+        if (self::$arrShortIds === null) {
+            self::$arrShortIds = $objCache->getValue($strCacheKey);
+            if (self::$arrShortIds === false) {
+                self::$arrShortIds = array();
+            }
         }
 
-        if (array_key_exists($strGroupId, $arrIds)) {
-            return $arrIds[$strGroupId];
+        if (array_key_exists($strGroupId, self::$arrShortIds)) {
+            return self::$arrShortIds[$strGroupId];
         }
 
         //not found in cache, refill
         foreach (Carrier::getInstance()->getObjDB()->getPArray("SELECT group_id, group_short_id FROM "._dbprefix_."user_group", array()) as $arrOneRow) {
-            $arrIds[$arrOneRow["group_id"]] = $arrOneRow["group_short_id"];
+            self::$arrShortIds[$arrOneRow["group_id"]] = $arrOneRow["group_short_id"];
         }
 
-        if (!array_key_exists($strGroupId, $arrIds)) {
-            $arrIds[$strGroupId] = null;
+        if (!array_key_exists($strGroupId, self::$arrShortIds)) {
+            self::$arrShortIds[$strGroupId] = null;
         }
-        $objCache->addValue($strCacheKey, $arrIds, 0);
-        return $arrIds[$strGroupId];
+        $objCache->addValue($strCacheKey, self::$arrShortIds, 0);
+        return self::$arrShortIds[$strGroupId];
     }
 
     /**
