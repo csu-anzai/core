@@ -353,15 +353,15 @@ abstract class Root
                 $this->strOldPrevId = $this->strPrevId;
                 $this->intOldRecordStatus = $this->intRecordStatus;
 
-                if ($arrRow["system_date_start"] > 0) {
+                if (!empty($arrRow["system_date_start"])) {
                     $this->objStartDate = new Date($arrRow["system_date_start"]);
                 }
 
-                if ($arrRow["system_date_end"] > 0) {
+                if (!empty($arrRow["system_date_end"])) {
                     $this->objEndDate = new Date($arrRow["system_date_end"]);
                 }
 
-                if ($arrRow["system_date_special"] > 0) {
+                if (!empty($arrRow["system_date_special"])) {
                     $this->objSpecialDate = new Date($arrRow["system_date_special"]);
                 }
 
