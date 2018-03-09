@@ -75,9 +75,12 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
                     workingIndicator.stop();
                 }
             ).error(function(data) {
-
-                if (data.status === 500 && KAJONA_DEBUG === 1) {
-                    objElement.html(data.responseText);
+                if (data.status === 500) {
+                    if (KAJONA_DEBUG === 1) {
+                        objElement.html(data.responseText);
+                    } else {
+                        objElement.html("<div class=\"alert alert-danger\" role=\"alert\">An error occurred. Please contact the system admin.</div>");
+                    }
                     objElement.css('opacity', '1');
                 }
 
@@ -88,7 +91,7 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
                 }
 
                 //maybe it was xml, so strip
-                statusDisplay.messageError("<b>Request failed!</b><br />" + data);
+                statusDisplay.messageError("<b>Request failed!</b><br />");
             });
         },
 
