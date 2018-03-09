@@ -123,7 +123,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * Renders the form to edit an existing entry
      *
      * @return string
-     * @permissions edit
+     * @permissions anonymous
      */
     protected function actionEdit()
     {
@@ -395,7 +395,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
 
 
     /**
-     * @permissions edit
+     * @permissions anonymous
      * @return string
      */
     protected function actionEditUser()
@@ -411,7 +411,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      *
      * @return string
      * @throws Exception
-     * @permissions edit
+     * @permissions anonymous
      * @autoTestable
      */
     protected function actionNewUser($strAction = "new", AdminFormgenerator $objForm = null)
@@ -653,7 +653,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
     /**
      * Stores the submitted data to the backend / the loginprovider
      *
-     * @permissions edit
+     * @permissions anonymous
      * @return string
      * @throws Exception
      */
