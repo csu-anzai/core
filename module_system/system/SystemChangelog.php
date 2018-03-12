@@ -53,6 +53,7 @@ class SystemChangelog
 
     private static $arrOldInstances = array();
 
+    private static $arrTables;
 
     /**
      * Checks if an objects properties changed.
@@ -385,6 +386,8 @@ class SystemChangelog
     private function processChangeArray(array $arrChanges, VersionableInterface $objSourceModel, $strAction, $bitForceEntry = false, $bitDeleteAction = null)
     {
         $bitReturn = true;
+        $strUserId = Carrier::getInstance()->getObjSession()->getUserID();
+        $strModelClass = get_class($objSourceModel);
 
         if (is_array($arrChanges)) {
             $arrReducedChanges = array();
@@ -396,23 +399,22 @@ class SystemChangelog
                 $strNewvalue = $arrChangeSet["newvalue"];
                 $strProperty = $arrChangeSet["property"];
 
-
-                Logger::getInstance()->info("change in class ".get_class($objSourceModel)."@".$strAction." systemid: ".$objSourceModel->getSystemid()." property: ".$strProperty." old value: ".StringUtil::truncate($strOldvalue, 60)." new value: ".StringUtil::truncate($strNewvalue, 60));
+                //Logger::getInstance()->info("change in class ".$strModelClass."@".$strAction." systemid: ".$objSourceModel->getSystemid()." property: ".$strProperty." old value: ".StringUtil::truncate($strOldvalue, 60)." new value: ".StringUtil::truncate($strNewvalue, 60));
 
                 $arrValues = array(
                     generateSystemid(),
                     Date::getCurrentTimestamp(),
                     $objSourceModel->getSystemid(),
                     $objSourceModel->getPrevid(),
-                    Carrier::getInstance()->getObjSession()->getUserID(),
-                    get_class($objSourceModel),
+                    $strUserId,
+                    $strModelClass,
                     $strAction,
                     $strProperty,
                     $strOldvalue,
                     $strNewvalue
                 );
 
-                self::$arrInsertCache[self::getTableForClass(get_class($objSourceModel))][] = $arrValues;
+                self::$arrInsertCache[self::getTableForClass($strModelClass)][] = $arrValues;
             }
 
         }
@@ -1062,10 +1064,12 @@ class SystemChangelog
      */
     public static function getTableForClass($strClass)
     {
-        $arrTables = self::getAdditionalTables();
+        if (!self::$arrTables) {
+            self::$arrTables = self::getAdditionalTables();
+        }
 
-        if ($strClass != null && $strClass != "" && isset($arrTables[$strClass])) {
-            return $arrTables[$strClass];
+        if ($strClass != null && $strClass != "" && isset(self::$arrTables[$strClass])) {
+            return self::$arrTables[$strClass];
         } else {
             return "changelog";
         }
