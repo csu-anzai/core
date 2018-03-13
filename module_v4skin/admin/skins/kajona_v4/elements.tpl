@@ -1159,7 +1159,7 @@ Part to display the login status, user is logged in
             <ul class="dropdown-menu sub-menu" id="messagingShortlist">
                 <li><a>Loading...</a></li>
                 <li class="divider"></li>
-                <li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1&module=messaging'><i class='fa fa-envelope'></i> [lang,action_show_all,messaging]</a></li>
+                <li><a href='#/messaging'><i class='fa fa-envelope'></i> [lang,action_show_all,messaging]</a></li>
             </ul>
         </li>
 
@@ -1170,7 +1170,7 @@ Part to display the login status, user is logged in
             <ul class="dropdown-menu sub-menu" id="tagsSubemenu">
                 <li><a>Loading...</a></li>
                 <li class="divider"></li>
-                <li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1&module=tags'><i class='fa fa-tag'></i> [lang,action_show_all,tags]</a></li>
+                <li><a href='#/tags'><i class='fa fa-tag'></i> [lang,action_show_all,tags]</a></li>
             </ul>
         </li>
         <li class="divider"></li>
