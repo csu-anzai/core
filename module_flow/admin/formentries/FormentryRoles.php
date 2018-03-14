@@ -139,7 +139,8 @@ class FormentryRoles extends FormentryBase
         $bitFound = false;
         foreach ($arrRoles as $strRole) {
             $strKey = strtolower("{$this->getStrEntryName()}_{$strRole}");
-            if (isset($arrParams[$strKey])) {
+            $strKeyPrescheck = strtolower("{$this->getStrEntryName()}_{$strRole}_prescheck");
+            if (isset($arrParams[$strKey]) || isset($arrParams[$strKeyPrescheck])) {
                 $bitFound = true;
                 break;
             }
