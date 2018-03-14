@@ -162,6 +162,22 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
     }
 
     /**
+     * @param string $strName
+     * @return FlowStatus|null
+     */
+    public function getStatusByName($strName)
+    {
+        $arrStatus = $this->getArrStatus();
+        foreach ($arrStatus as $objStatus) {
+            /** @var FlowStatus $objStatus */
+            if ($objStatus->getStrName() == $strName) {
+                return $objStatus;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns all available transitions for this flow
      *
      * @return FlowTransition[]
