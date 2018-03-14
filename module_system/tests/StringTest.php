@@ -140,6 +140,27 @@ class StringTest extends Testbase
     }
 
     /**
+     * @dataProvider parseUrlStringProvider
+     */
+    public function testParseUrlString($strString)
+    {
+        $arrExpected = [];
+        parse_str($strString, $arrExpected);
+        $arrResult = StringUtil::parseUrlString($strString);
+        $this->assertEquals($arrExpected, $arrResult);
+    }
+
+    public function parseUrlStringProvider()
+    {
+        return array(
+            ["first=value&second=value"],
+            ["first=value&arr[]=foo+bar&arr[]=baz"],
+            ["first=value&arr[2]=foo+bar&arr[3]=baz"],
+            ["action=search&interest[0]=sports&interest[1]=music&sort=interest"],
+        );
+    }
+
+    /**
      * @dataProvider startsWithProvider()
      */
     public function testStartsWith($intExpectedResult, $strString, $strSearch)
