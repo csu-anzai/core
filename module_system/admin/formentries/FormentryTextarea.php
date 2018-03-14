@@ -16,14 +16,16 @@ use Kajona\System\System\Validators\TextValidator;
  * @since 4.0
  * @package module_formgenerator
  */
-class FormentryTextarea extends FormentryBase implements FormentryPrintableInterface {
+class FormentryTextarea extends FormentryBase implements FormentryPrintableInterface
+{
 
     private $strOpener = "";
     private $bitLarge = false;
     private $intNumberOfRows = 4;
     private $strPlaceholder;
 
-    public function __construct($strFormName, $strSourceProperty, $objSourceObject = null) {
+    public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
+    {
         parent::__construct($strFormName, $strSourceProperty, $objSourceObject);
 
         //set the default validator
@@ -36,11 +38,13 @@ class FormentryTextarea extends FormentryBase implements FormentryPrintableInter
      *
      * @return string
      */
-    public function renderField() {
+    public function renderField()
+    {
         $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
         $strReturn = "";
-        if($this->getStrHint() != null)
+        if ($this->getStrHint() != null) {
             $strReturn .= $objToolkit->formTextRow($this->getStrHint());
+        }
 
         $strReturn .= $objToolkit->formInputTextArea($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue(), $this->bitLarge ? "input-large" : "", $this->getBitReadonly(), $this->getIntNumberOfRows(), $this->strOpener, $this->getStrPlaceholder());
 
@@ -53,20 +57,23 @@ class FormentryTextarea extends FormentryBase implements FormentryPrintableInter
      *
      * @return string
      */
-    public function getValueAsText() {
-        return nl2br($this->getStrValue());
+    public function getValueAsText()
+    {
+        return nl2br(replaceTextLinks($this->getStrValue()));
     }
 
     /**
      * @param $strOpener
      * @return FormentryText
      */
-    public function setStrOpener($strOpener) {
+    public function setStrOpener($strOpener)
+    {
         $this->strOpener = $strOpener;
         return $this;
     }
 
-    public function getStrOpener() {
+    public function getStrOpener()
+    {
         return $this->strOpener;
     }
 
@@ -75,7 +82,8 @@ class FormentryTextarea extends FormentryBase implements FormentryPrintableInter
      *
      * @return $this
      */
-    public function setBitLarge($bitLarge) {
+    public function setBitLarge($bitLarge)
+    {
         $this->bitLarge = $bitLarge;
         return $this;
     }
@@ -83,14 +91,17 @@ class FormentryTextarea extends FormentryBase implements FormentryPrintableInter
     /**
      * @return boolean
      */
-    public function getBitLarge() {
+    public function getBitLarge()
+    {
         return $this->bitLarge;
     }
 
     /**
      * @param int $intNumberOfRows
+     * @return FormentryTextarea
      */
-    public function setIntNumberOfRows($intNumberOfRows) {
+    public function setIntNumberOfRows($intNumberOfRows)
+    {
         $this->intNumberOfRows = $intNumberOfRows;
         return $this;
     }
@@ -98,7 +109,8 @@ class FormentryTextarea extends FormentryBase implements FormentryPrintableInter
     /**
      * @return int
      */
-    public function getIntNumberOfRows() {
+    public function getIntNumberOfRows()
+    {
         return $this->intNumberOfRows;
     }
 
@@ -112,6 +124,7 @@ class FormentryTextarea extends FormentryBase implements FormentryPrintableInter
 
     /**
      * @param string $strPlaceholder
+     * @return FormentryTextarea
      */
     public function setStrPlaceholder($strPlaceholder)
     {

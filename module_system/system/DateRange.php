@@ -109,6 +109,12 @@ class DateRange
         } elseif ($objInterval->equals(DatePeriodEnum::YEAR())) {
             $objTmpStartDate->setBeginningOfDay()->setIntDay(1)->setIntMonth(1);
             $objTmpEndDate->setEndOfDay()->setIntDay(1)->setIntMonth(1)->setNextYear()->setPreviousDay();
+        } elseif ($objInterval->equals(DatePeriodEnum::YEAR2())) {
+            $objTmpStartDate->setBeginningOfDay()->setIntDay(1)->setIntMonth(1);
+            $objTmpEndDate->setEndOfDay()->setIntDay(1)->setIntMonth(1)->setNextYear()->setNextYear()->setPreviousDay();
+        } elseif ($objInterval->equals(DatePeriodEnum::YEAR3())) {
+            $objTmpStartDate->setBeginningOfDay()->setIntDay(1)->setIntMonth(1);
+            $objTmpEndDate->setEndOfDay()->setIntDay(1)->setIntMonth(1)->setNextYear()->setNextYear()->setNextYear()->setPreviousDay();
         }
 
         return self::getDateRange($objTmpStartDate, $objTmpEndDate, $objInterval);
@@ -168,6 +174,10 @@ class DateRange
             }
         } elseif ($objInterval->equals(DatePeriodEnum::YEAR())) {
             $objDate->setNextYear();
+        } elseif ($objInterval->equals(DatePeriodEnum::YEAR2())) {
+            $objDate->setNextYear()->setNextYear();
+        } elseif ($objInterval->equals(DatePeriodEnum::YEAR3())) {
+            $objDate->setNextYear()->setNextYear()->setNextYear();
         } else {
             throw new RuntimeException('Invalid interval');
         }
