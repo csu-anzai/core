@@ -16,6 +16,9 @@ use Kajona\System\System\Root;
 use Kajona\System\System\Validators\DummyValidator;
 
 /**
+ * Form entry which lists all roles which are configured through a permission handler. At the moment this works only
+ * if the source object is an instance of FlowStatus
+ *
  * @author christoph.kappestein@gmail.de
  * @since 7.0
  * @package module_flow
