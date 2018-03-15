@@ -52,6 +52,14 @@ class AddPermissionToGroup implements PermissionActionInterface
     /**
      * @inheritdoc
      */
+    public function getPriority(): int
+    {
+        return -32;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function applyAction(array $permissions): array
     {
         if (!in_array($this->getGroupId(), $permissions[$this->permission])) {
