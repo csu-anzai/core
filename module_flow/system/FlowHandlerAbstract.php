@@ -10,6 +10,7 @@ namespace Kajona\Flow\System;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminFormgeneratorFactory;
 use Kajona\System\System\Database;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Logger;
 use Kajona\System\System\Model;
 use Kajona\System\System\RedirectException;
@@ -31,11 +32,18 @@ abstract class FlowHandlerAbstract implements FlowHandlerInterface
     protected $objFlowManager;
 
     /**
-     * @param FlowManager $objFlowManager
+     * @var ServiceLifeCycleFactory
      */
-    public function __construct(FlowManager $objFlowManager)
+    protected $objLifeCycleFactory;
+
+    /**
+     * @param FlowManager $objFlowManager
+     * @param ServiceLifeCycleFactory $objLifeCycleFactory
+     */
+    public function __construct(FlowManager $objFlowManager, ServiceLifeCycleFactory $objLifeCycleFactory)
     {
         $this->objFlowManager = $objFlowManager;
+        $this->objLifeCycleFactory = $objLifeCycleFactory;
     }
 
     /**
@@ -71,9 +79,11 @@ abstract class FlowHandlerAbstract implements FlowHandlerInterface
                     throw new \RuntimeException("Transition is not visible");
                 }
 
-                // persist the new status
+                // set new status
                 $objObject->setIntRecordStatus($intNewStatus);
-                $objObject->updateObjectToDb();
+
+                // persist the new status
+                $this->objLifeCycleFactory->factory(get_class($objObject))->update($objObject);
 
                 // execute transition actions
                 $this->executeActions($objObject, $objTransition);

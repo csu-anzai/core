@@ -190,6 +190,18 @@ class RequestDispatcher
                                 //login page required
                                 $bitLogin = true;
                             }
+                        } catch (\Exception $objEx) {
+                            if (!($objEx instanceof Exception)) {
+                                $objException = new Exception($objEx->getMessage());
+                            }
+                            $objException->processException();
+
+                            // Execution has to be stopped here!
+                            if (ResponseObject::getInstance()->getStrStatusCode() == "" || ResponseObject::getInstance()->getStrStatusCode() == HttpStatuscodes::SC_OK) {
+                                ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_INTERNAL_SERVER_ERROR);
+                            }
+
+                            $strReturn = Exception::renderException($objException);
                         }
 
                         //if we resulted in a redirect, rewrite it to a js based on and force the redirect on "root" level

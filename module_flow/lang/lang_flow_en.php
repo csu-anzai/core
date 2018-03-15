@@ -22,6 +22,7 @@ $lang["action_transition_condition"] = "Conditions";
 $lang["form_flow_name"]         = "Name";
 $lang["form_flow_iconcolor"]    = "Color";
 $lang["form_flow_headline_groups"] = "Group configuration";
+$lang["form_flow_headline_roles"] = "Role configuration";
 $lang["form_flow_viewgroups"]   = "View";
 $lang["form_flow_editgroups"]   = "Edit";
 $lang["form_flow_deletegroups"] = "Delete";

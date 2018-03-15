@@ -23,9 +23,17 @@ interface PermissionActionInterface
 {
     /**
      * Returns the id of the matched record
+     *
      * @return string
      */
     public function getSystemid(): string;
+
+    /**
+     * Returns the priority of this action
+     *
+     * @return int
+     */
+    public function getPriority(): int;
 
     /**
      * Applies the action to the set of permissions.

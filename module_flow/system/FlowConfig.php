@@ -54,21 +54,9 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
     private $objHandler;
 
     /**
-     * @var FlowManager
-     */
-    private $objFlowManager;
-
-    /**
      * @var boolean
      */
     private $bitValidateConsistency = true;
-
-    public function __construct($strSystemid = "")
-    {
-        parent::__construct($strSystemid);
-
-        $this->objFlowManager = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_MANAGER);
-    }
 
     /**
      * @return string
@@ -174,6 +162,22 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
     }
 
     /**
+     * @param string $strName
+     * @return FlowStatus|null
+     */
+    public function getStatusByName($strName)
+    {
+        $arrStatus = $this->getArrStatus();
+        foreach ($arrStatus as $objStatus) {
+            /** @var FlowStatus $objStatus */
+            if ($objStatus->getStrName() == $strName) {
+                return $objStatus;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns all available transitions for this flow
      *
      * @return FlowTransition[]
@@ -231,8 +235,10 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
     public function getHandler()
     {
         if (!$this->objHandler) {
-            $strClass = $this->getStrHandlerClass();
-            $this->objHandler = new $strClass($this->objFlowManager);
+            /** @var FlowHandlerFactory $objHandlerFactory */
+            $objHandlerFactory = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_HANDLER_FACTORY);
+
+            $this->objHandler = $objHandlerFactory->factory($this->getStrHandlerClass());
         }
 
         return $this->objHandler;
@@ -496,9 +502,12 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
      */
     public static function getAvailableHandler()
     {
+        // @TODO we should use the FlowHandlerFactory service to create a new handler instance but at the moment we can
+        // only pass arguments to the constructor and can not use some sort of factory
         $objFlowManager = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_MANAGER);
+        $objLifeCycleFactory = Carrier::getInstance()->getContainer()->offsetGet(\Kajona\System\System\ServiceProvider::STR_LIFE_CYCLE_FACTORY);
         $objPluginManager = new Pluginmanager(FlowHandlerInterface::EXTENSION_POINT);
-        $arrPlugins = $objPluginManager->getPlugins([$objFlowManager]);
+        $arrPlugins = $objPluginManager->getPlugins([$objFlowManager, $objLifeCycleFactory]);
 
         /** @var FlowHandlerInterface[] $arrHandler */
         $arrHandler = array();
