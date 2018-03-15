@@ -1,11 +1,12 @@
 <?php
 
-namespace Kajona\System\Tests;
+namespace Kajona\System\Tests\Permissions;
 
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\System\Model;
 use Kajona\System\System\Permissions\ReplaceGroup;
 use Kajona\System\System\Rights;
+use Kajona\System\Tests\Testbase;
 
 class ReplaceGroupTest extends Testbase
 {

@@ -1,9 +1,10 @@
 <?php
 
-namespace Kajona\System\Tests;
+namespace Kajona\System\Tests\Permissions;
 
 use Kajona\System\System\Permissions\RemoveGroup;
 use Kajona\System\System\Rights;
+use Kajona\System\Tests\Testbase;
 
 class RemoveGroupTest extends Testbase
 {

@@ -1,10 +1,11 @@
 <?php
 
-namespace Kajona\System\Tests;
+namespace Kajona\System\Tests\Permissions;
 
 use Kajona\System\System\Permissions\CopyPermission;
 use Kajona\System\System\Rights;
 use Kajona\System\System\SystemModule;
+use Kajona\System\Tests\Testbase;
 
 class CopyPermissionTest extends Testbase
 {
