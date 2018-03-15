@@ -84,8 +84,7 @@ abstract class PermissionHandlerAbstract implements PermissionHandlerInterface
 
         if ($objStatus instanceof FlowStatus) {
             // in case the status has no roles configured we dont set any rights
-            $strRoles = $objStatus->getStrRoles();
-            if (empty($strRoles)) {
+            if (!$this->hasRolesConfigured($objStatus)) {
                 return;
             }
 
@@ -133,5 +132,26 @@ abstract class PermissionHandlerAbstract implements PermissionHandlerInterface
                 }
             }
         }
+    }
+
+    /**
+     * Checks whether the provided status has roles configured
+     *
+     * @param FlowStatus $objStatus
+     * @return bool
+     */
+    private function hasRolesConfigured(FlowStatus $objStatus)
+    {
+        $strRoles = $objStatus->getStrRoles();
+        if (empty($strRoles)) {
+            return false;
+        }
+
+        $arrRoles = json_decode($strRoles, true);
+        if (empty($arrRoles)) {
+            return false;
+        }
+
+        return is_array($arrRoles);
     }
 }
