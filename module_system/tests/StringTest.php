@@ -154,6 +154,8 @@ class StringTest extends Testbase
     {
         return array(
             ["first=value&second=value"],
+            ["first=value&second=value&redirect=".urlencode("/#avc/katze")],
+            ["first=value&second=value#acbg"],
             ["first=value&arr[]=foo+bar&arr[]=baz"],
             ["first=value&arr[2]=foo+bar&arr[3]=baz"],
             ["action=search&interest[0]=sports&interest[1]=music&sort=interest"],
