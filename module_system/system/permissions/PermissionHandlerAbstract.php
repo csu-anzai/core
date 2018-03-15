@@ -59,15 +59,7 @@ abstract class PermissionHandlerAbstract implements PermissionHandlerInterface
      */
     public function onCreate(Root $objRecord)
     {
-        $objStatus = $this->objFlowManager->getCurrentStepForModel($objRecord);
-
-        if ($objStatus instanceof FlowStatus) {
-            $objProcessor = new PermissionActionProcessor($this->objRights);
-
-            $this->setRights($objStatus, $objRecord, $objProcessor);
-
-            $objProcessor->applyActions();
-        }
+        $this->calculatePermissions($objRecord);
     }
 
     /**
@@ -80,12 +72,20 @@ abstract class PermissionHandlerAbstract implements PermissionHandlerInterface
             return;
         }
 
-        $objStatus = $this->objFlowManager->getCurrentStepForModel($objNewRecord);
+        $this->calculatePermissions($objNewRecord);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function calculatePermissions(Root $objRecord)
+    {
+        $objStatus = $this->objFlowManager->getCurrentStepForModel($objRecord);
 
         if ($objStatus instanceof FlowStatus) {
             $objProcessor = new PermissionActionProcessor($this->objRights);
 
-            $this->setRights($objStatus, $objNewRecord, $objProcessor);
+            $this->setRights($objStatus, $objRecord, $objProcessor);
 
             $objProcessor->applyActions();
         }
