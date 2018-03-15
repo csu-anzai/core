@@ -79,4 +79,12 @@ interface PermissionHandlerInterface
      * @return void
      */
     public function onUpdate(Root $objOldRecord, Root $objNewRecord);
+
+    /**
+     * Read the permissions settings from the configured flow and writes them to the provided record
+     *
+     * @param Root $objRecord
+     * @return void
+     */
+    public function calculatePermissions(Root $objRecord);
 }
