@@ -83,6 +83,12 @@ abstract class PermissionHandlerAbstract implements PermissionHandlerInterface
         $objStatus = $this->objFlowManager->getCurrentStepForModel($objRecord);
 
         if ($objStatus instanceof FlowStatus) {
+            // in case the status has no roles configured we dont set any rights
+            $strRoles = $objStatus->getStrRoles();
+            if (empty($strRoles)) {
+                return;
+            }
+
             $objProcessor = new PermissionActionProcessor($this->objRights);
 
             $this->setRights($objStatus, $objRecord, $objProcessor);
