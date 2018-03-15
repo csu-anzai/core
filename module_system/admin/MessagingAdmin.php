@@ -66,7 +66,7 @@ class MessagingAdmin extends AdminEvensimpler implements AdminInterface
         $arrEntries = parent::getArrOutputNaviEntries();
         $objObject = Objectfactory::getInstance()->getObject($this->getSystemid());
         if ($objObject instanceof MessagingMessage) {
-            $arrEntries[] = Link::getLinkAdmin("messaging", "edit", "&systemid=".$objObject->getSystemid(), $objObject->getStrDisplayName());
+            $arrEntries[] = Link::getLinkAdmin("messaging", "view", "&systemid=".$objObject->getSystemid(), $objObject->getStrDisplayName());
         }
 
         return $arrEntries;
@@ -80,6 +80,7 @@ class MessagingAdmin extends AdminEvensimpler implements AdminInterface
      * @autoTestable
      *
      * @return string
+     * @throws Exception
      */
     protected function actionConfig()
     {
@@ -106,7 +107,6 @@ class MessagingAdmin extends AdminEvensimpler implements AdminInterface
 JS;
         $arrRows = array();
         foreach ($arrMessageproviders as $objOneProvider) {
-
             if ($objOneProvider instanceof MessageproviderExtendedInterface && !$objOneProvider->isVisibleInConfigView()) {
                 continue;
             }
@@ -145,7 +145,8 @@ JS;
     {
         if ($objListEntry instanceof MessagingMessage) {
             return array(
-                Link::getLinkAdminDialog($this->getArrModule("modul"), "new", "&messaging_user_id=".$objListEntry->getStrSenderId()."&messaging_messagerefid=".$objListEntry->getSystemid()."&messaging_title=RE: ".$objListEntry->getStrTitle(), $this->getLang("message_reply"), $this->getLang("message_reply"), "icon_reply")
+                $this->objToolkit->listButton(Link::getLinkAdmin($objListEntry->getArrModule("modul"), "view", "&systemid=".$objListEntry->getSystemid(), $this->getLang("action_edit"), $this->getLang("action_edit"), "icon_lens" )),
+                $this->objToolkit->listButton(Link::getLinkAdminDialog($this->getArrModule("modul"), "new", ["messaging_user_id" => $objListEntry->getStrSenderId(), "messaging_messagerefid" => $objListEntry->getSystemid(), "messaging_title" => "RE: ".$objListEntry->getStrTitle()], $this->getLang("message_reply"), $this->getLang("message_reply"), "icon_reply"))
             );
         }
 
@@ -180,6 +181,7 @@ JS;
      *
      * @permissions edit
      * @return void
+     * @throws Exception
      */
     protected function actionSaveConfig()
     {
@@ -208,6 +210,7 @@ JS;
      * @permissions edit
      *
      * @return string
+     * @throws Exception
      */
     protected function actionSaveConfigAjax()
     {
@@ -229,8 +232,7 @@ JS;
                     $strMessage = $objOneProvider->getStrName()." ".$this->getLang("provider_bymail")."=".($bitA ? "enabled" : "disabled");
                     break;
 
-                }
-                elseif ($this->getParam($strClassname."_enabled") != "") {
+                } elseif ($this->getParam($strClassname."_enabled") != "") {
                     $bitA = $this->getParam($strClassname."_enabled") == "true";
                     $objConfig->setBitEnabled($bitA);
                     $objConfig->updateObjectToDb();
@@ -251,18 +253,6 @@ JS;
      */
     protected function renderEditAction(Model $objListEntry, $bitDialog = false)
     {
-        if ($objListEntry->rightView()) {
-            return $this->objToolkit->listButton(
-                Link::getLinkAdmin(
-                    $objListEntry->getArrModule("modul"),
-                    "edit",
-                    "&systemid=".$objListEntry->getSystemid(),
-                    $this->getLang("action_edit"),
-                    $this->getLang("action_edit"),
-                    "icon_lens"
-                )
-            );
-        }
         return "";
     }
 
@@ -285,6 +275,7 @@ JS;
      * @return string
      * @permissions view
      * @autoTestable
+     * @throws Exception
      */
     protected function actionList()
     {
@@ -348,6 +339,7 @@ JS;
     /**
      * @return string
      * @permissions delete
+     * @throws Exception
      */
     protected function actionDeleteAllRead()
     {
@@ -359,6 +351,7 @@ JS;
     /**
      * @return string
      * @permissions delete
+     * @throws Exception
      */
     protected function actionDeleteAll()
     {
@@ -370,6 +363,7 @@ JS;
     /**
      * @return string
      * @permissions view
+     * @throws Exception
      */
     protected function actionSetAllRead()
     {
@@ -383,6 +377,7 @@ JS;
      *
      * @return string
      * @permissions view
+     * @throws Exception
      */
     protected function actionApiSetRead()
     {
@@ -402,6 +397,7 @@ JS;
      *
      * @return string
      * @permissions view
+     * @throws Exception
      */
     protected function actionApiSetUnread()
     {
@@ -428,6 +424,7 @@ JS;
     /**
      * @permissions edit
      * @return string
+     * @throws Exception
      */
     protected function actionNew()
     {
@@ -441,6 +438,7 @@ JS;
     /**
      * @permissions edit
      * @return string
+     * @throws Exception
      */
     protected function actionSave()
     {
@@ -467,9 +465,9 @@ JS;
 
 
         return $this->objToolkit->warningBox($this->getLang("message_sent_success")).
-        $this->objToolkit->formHeader("").
-        $this->objToolkit->formInputSubmit($this->getLang("commons_ok"), "", "onclick=parent.require('folderview').dialog.hide();").
-        $this->objToolkit->formClose();
+            $this->objToolkit->formHeader("").
+            $this->objToolkit->formInputSubmit($this->getLang("commons_ok"), "", "onclick=parent.require('folderview').dialog.hide();").
+            $this->objToolkit->formClose();
     }
 
 
@@ -478,6 +476,7 @@ JS;
      *
      * @permissions view
      * @return string
+     * @throws Exception
      */
     protected function actionView()
     {
@@ -487,8 +486,7 @@ JS;
         //different permission handlings
         if ($objMessage !== null && !$objMessage->rightView()) {
             return $this->strOutput = $this->getLang("commons_error_permissions");
-        }
-        elseif ($objMessage == null) {
+        } elseif ($objMessage == null) {
 
             $strText = $this->getLang("message_not_existing");
             $strOk = $this->getLang("commons_ok");
@@ -539,8 +537,7 @@ JS;
             $strReturn .= $this->objToolkit->getFieldset($objMessage->getStrTitle(), $this->objToolkit->getTextRow($strBody));
 
             return $strReturn;
-        }
-        else {
+        } else {
             return $this->getLang("commons_error_permissions");
         }
     }
@@ -575,6 +572,7 @@ JS;
      *
      * @return string
      * @responseType json
+     * @throws Exception
      */
     protected function actionGetRecentMessages()
     {
@@ -589,15 +587,15 @@ JS;
         foreach ($arrMessages as $objOneMessage) {
             $arrReturn[] = array(
                 "systemid" => $objOneMessage->getSystemid(),
-                "title"    => $objOneMessage->getStrDisplayName(),
-                "unread"   => $objOneMessage->getBitRead(),
-                "details"  => Link::getLinkAdminHref($objOneMessage->getArrModule("modul"), "edit", "&systemid=".$objOneMessage->getSystemid(), false, true)
+                "title" => $objOneMessage->getStrDisplayName(),
+                "unread" => $objOneMessage->getBitRead(),
+                "details" => Link::getLinkAdminHref($objOneMessage->getArrModule("modul"), "edit", "&systemid=".$objOneMessage->getSystemid(), false, true)
             );
         }
 
 
         $arrReturn = array(
-            "messages"     => $arrReturn,
+            "messages" => $arrReturn,
             "messageCount" => MessagingMessage::getNumberOfMessagesForUser($this->objSession->getUserID(), true),
         );
 
@@ -626,6 +624,7 @@ JS;
      * @return string
      * @responseType gif
      * @permissions anonymous
+     * @throws Exception
      */
     protected function actionSetRead()
     {
