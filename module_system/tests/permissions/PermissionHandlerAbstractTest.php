@@ -22,7 +22,7 @@ class PermissionHandlerAbstractTest extends Testbase
     {
         $objRecord = new SystemModule();
 
-        $objHandler = $this->newHandler($this->getConfiguredRoles(), $this->getExpectedRights());
+        $objHandler = $this->newHandler($this->getConfiguredRoles(), $this->getExpectedRights(), true, true);
         $objHandler->onCreate($objRecord);
     }
 
@@ -33,7 +33,7 @@ class PermissionHandlerAbstractTest extends Testbase
         $objNewRecord = new SystemModule();
         $objNewRecord->setIntRecordStatus(2);
 
-        $objHandler = $this->newHandler($this->getConfiguredRoles(), $this->getExpectedRights());
+        $objHandler = $this->newHandler($this->getConfiguredRoles(), $this->getExpectedRights(), true, true);
         $objHandler->onUpdate($objOldRecord, $objNewRecord);
     }
 
@@ -42,7 +42,7 @@ class PermissionHandlerAbstractTest extends Testbase
         $objOldRecord = new SystemModule();
         $objNewRecord = new SystemModule();
 
-        $objHandler = $this->newHandler($this->getConfiguredRoles(), $this->getExpectedRights(), true);
+        $objHandler = $this->newHandler($this->getConfiguredRoles(), $this->getExpectedRights(), false, false);
         $objHandler->onUpdate($objOldRecord, $objNewRecord);
     }
 
@@ -50,11 +50,27 @@ class PermissionHandlerAbstractTest extends Testbase
     {
         $objRecord = new SystemModule();
 
-        $objHandler = $this->newHandler($this->getConfiguredRoles(), $this->getExpectedRights());
+        $objHandler = $this->newHandler($this->getConfiguredRoles(), $this->getExpectedRights(), true, true);
         $objHandler->calculatePermissions($objRecord);
     }
 
-    private function newHandler(array $arrRoles = null, array $arrExpectRights = [], $expectNoCall = false)
+    public function testCalculatePermissionsNullRoles()
+    {
+        $objRecord = new SystemModule();
+
+        $objHandler = $this->newHandler(null, $this->getExpectedRights(), true, false);
+        $objHandler->calculatePermissions($objRecord);
+    }
+
+    public function testCalculatePermissionsEmptyRoles()
+    {
+        $objRecord = new SystemModule();
+
+        $objHandler = $this->newHandler([], $this->getExpectedRights(), true, false);
+        $objHandler->calculatePermissions($objRecord);
+    }
+
+    private function newHandler(array $arrRoles = null, array $arrExpectRights = [], $expectFlowCall = true, $expectRightsCall = true)
     {
         $container = Carrier::getInstance()->getContainer();
 
@@ -67,26 +83,26 @@ class PermissionHandlerAbstractTest extends Testbase
             ->setMethods(["getCurrentStepForModel"])
             ->getMock();
 
-        if ($expectNoCall) {
-            $objFlowManager->expects($this->never())
-                ->method("getCurrentStepForModel");
-        } else {
+        if ($expectFlowCall) {
             $objFlowManager->expects($this->once())
                 ->method("getCurrentStepForModel")
                 ->willReturn($objStatus);
+        } else {
+            $objFlowManager->expects($this->never())
+                ->method("getCurrentStepForModel");
         }
 
         $objRights = $this->getMockBuilder(Rights::class)
             ->setMethods(["setRights"])
             ->getMock();
 
-        if ($expectNoCall) {
-            $objRights->expects($this->never())
-                ->method("setRights");
-        } else {
+        if ($expectRightsCall) {
             $objRights->expects($this->once())
                 ->method("setRights")
                 ->with($this->equalTo($arrExpectRights));
+        } else {
+            $objRights->expects($this->never())
+                ->method("setRights");
         }
 
         return new PermTestHandler(
