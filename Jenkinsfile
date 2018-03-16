@@ -1,5 +1,5 @@
 pipeline {
-    env.PATH = "${tool 'Ant'}/bin:${env.PATH}"
+    //env.PATH = "${tool 'Ant'}/bin:${env.PATH}"
 
     agent any
     stages {
