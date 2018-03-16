@@ -72,6 +72,18 @@ class PermissionHandlerFactoryTest extends Testbase
 
         $objFactory->factory(PermTestModelInvalidHandler::class);
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Identifier "perm_test_no_service" is not defined.
+     */
+    public function testFactoryInvalidService()
+    {
+        $objContainer = Carrier::getInstance()->getContainer();
+        $objFactory = new PermissionHandlerFactory($objContainer);
+
+        $objFactory->factory(PermTestModelNoService::class);
+    }
 }
 
 /**
@@ -89,6 +101,13 @@ class PermTestModelWithoutHandler
  * @permissionHandler perm_test_service_invalid
  */
 class PermTestModelInvalidHandler
+{
+}
+
+/**
+ * @permissionHandler perm_test_no_service
+ */
+class PermTestModelNoService
 {
 }
 
