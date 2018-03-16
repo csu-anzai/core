@@ -56,7 +56,7 @@ class Rights
     /**
      * Constructor doing the usual setup things
      */
-    private function __construct()
+    public function __construct()
     {
         $this->objDb = Carrier::getInstance()->getObjDB();
         $this->objSession = Carrier::getInstance()->getObjSession();
