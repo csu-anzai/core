@@ -7,11 +7,18 @@ use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleImpl;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
+use Kajona\System\System\Permissions\PermissionHandlerFactory;
 use Kajona\System\System\Root;
+use Kajona\System\System\ServiceProvider;
 use Kajona\System\Tests\Testbase;
 
 class ServiceLifeCycleImplTest extends Testbase
 {
+    /**
+     * @var PermissionHandlerFactory
+     */
+    protected $objPermissionHandlerFactory;
+
     /**
      * @var ServiceLifeCycleFactory
      */
@@ -26,8 +33,9 @@ class ServiceLifeCycleImplTest extends Testbase
     {
         parent::setUp();
 
+        $this->objPermissionHandlerFactory = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_PERMISSION_HANDLER_FACTORY);
         $this->objServiceFactory = new ServiceLifeCycleFactory(Carrier::getInstance()->getContainer());
-        $this->objServiceImpl = new ServiceLifeCycleImpl($this->objServiceFactory);
+        $this->objServiceImpl = new ServiceLifeCycleImpl($this->objPermissionHandlerFactory);
     }
 
     public function testUpdate()
