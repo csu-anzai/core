@@ -5,11 +5,13 @@ namespace Kajona\System\Tests\Permissions;
 use Kajona\Flow\System\FlowManager;
 use Kajona\Flow\System\FlowStatus;
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Permissions\PermissionHandlerAbstract;
 use Kajona\System\System\Rights;
 use Kajona\System\System\Root;
 use Kajona\System\System\ServiceProvider;
 use Kajona\System\System\SystemModule;
+use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\Tests\Testbase;
 
@@ -18,6 +20,51 @@ use Kajona\System\Tests\Testbase;
  */
 class PermissionHandlerAbstractTest extends Testbase
 {
+    const GROUP_RESP = "PermResp";
+    const GROUP_COMPLIANCE = "PermCompliance";
+
+    protected $strGroupRespId;
+    protected $strGroupComplianceId;
+    protected $strGroupAdminId;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $objGroupResp = UserGroup::getGroupByName(self::GROUP_RESP);
+        if (!$objGroupResp) {
+            $objGroupResp = new UserGroup();
+            $objGroupResp->setStrName(self::GROUP_RESP);
+            $objGroupResp->updateObjectToDb();
+        }
+
+        $objGroupCompliance = UserGroup::getGroupByName(self::GROUP_COMPLIANCE);
+        if (!$objGroupCompliance) {
+            $objGroupCompliance = new UserGroup();
+            $objGroupCompliance->setStrName(self::GROUP_COMPLIANCE);
+            $objGroupCompliance->updateObjectToDb();
+        }
+
+        $this->strGroupRespId = $objGroupResp->getSystemid();
+        $this->strGroupComplianceId = $objGroupCompliance->getSystemid();
+        $this->strGroupAdminId = SystemSetting::getConfigValue("_admins_group_id_");
+    }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        $objGroupResp = Objectfactory::getInstance()->getObject($this->strGroupRespId);
+        if ($objGroupResp instanceof UserGroup) {
+            $objGroupResp->deleteObjectFromDatabase();
+        }
+
+        $objGroupCompliance = Objectfactory::getInstance()->getObject($this->strGroupComplianceId);
+        if ($objGroupCompliance instanceof UserGroup) {
+            $objGroupCompliance->deleteObjectFromDatabase();
+        }
+    }
+
     public function testOnCreate()
     {
         $objRecord = new SystemModule();
@@ -114,21 +161,17 @@ class PermissionHandlerAbstractTest extends Testbase
 
     private function getExpectedRights()
     {
-        $objGroupResp = UserGroup::getGroupByName("AGP_user");
-        $objGroupCompliance = UserGroup::getGroupByName("ARTEMEON");
-        $objGroupAdmins = UserGroup::getGroupByName("Admins");
-
         $permissionRow = [
-            'view' => [$objGroupAdmins->getSystemid(), $objGroupResp->getSystemid(), $objGroupCompliance->getSystemid()],
-            'edit' => [$objGroupAdmins->getSystemid(), $objGroupResp->getSystemid()],
-            'delete' => [$objGroupAdmins->getSystemid()],
-            'right' => [$objGroupAdmins->getSystemid()],
-            'right1' => [$objGroupAdmins->getSystemid()],
-            'right2' => [$objGroupAdmins->getSystemid()],
-            'right3' => [$objGroupAdmins->getSystemid()],
-            'right4' => [$objGroupAdmins->getSystemid(), $objGroupCompliance->getSystemid()],
-            'right5' => [$objGroupAdmins->getSystemid()],
-            'changelog' => [$objGroupAdmins->getSystemid()],
+            'view' => [$this->strGroupAdminId, $this->strGroupRespId, $this->strGroupComplianceId],
+            'edit' => [$this->strGroupAdminId, $this->strGroupRespId],
+            'delete' => [$this->strGroupAdminId],
+            'right' => [$this->strGroupAdminId],
+            'right1' => [$this->strGroupAdminId],
+            'right2' => [$this->strGroupAdminId],
+            'right3' => [$this->strGroupAdminId],
+            'right4' => [$this->strGroupAdminId, $this->strGroupComplianceId],
+            'right5' => [$this->strGroupAdminId],
+            'changelog' => [$this->strGroupAdminId],
             'inherit' => 0,
         ];
 
@@ -173,11 +216,11 @@ class PermTestHandler extends PermissionHandlerAbstract
     {
         $arrGroups = [];
         if ($strRole == self::ROLE_RESPONSIBLE) {
-            $arrGroups[] = UserGroup::getGroupByName("AGP_user");
+            $arrGroups[] = UserGroup::getGroupByName(PermissionHandlerAbstractTest::GROUP_RESP);
         } elseif ($strRole == self::ROLE_COMPLIANCE) {
-            $arrGroups[] = UserGroup::getGroupByName("ARTEMEON");
+            $arrGroups[] = UserGroup::getGroupByName(PermissionHandlerAbstractTest::GROUP_COMPLIANCE);
         } elseif ($strRole == self::ROLE_ADMIN) {
-            $arrGroups[] = UserGroup::getGroupByName("Admins");
+            $arrGroups[] = Objectfactory::getInstance()->getObject(SystemSetting::getConfigValue("_admins_group_id_"));
         }
 
         $arrResult = [];
