@@ -5,20 +5,24 @@ pipeline {
     stages {
 
         stage ('Kajona_Core_AdHoc_SQLite - Checkout') {
-         	 checkout scm
+            steps {
+                 checkout scm
+            }
         }
 
 
         stage ('Kajona_Core_AdHoc_SQLite - Build') {
-            // Ant build step
-            withEnv(["PATH+ANT=${tool 'Standard 1.9.x'}/bin"]) {
-     			if(isUnix()) {
-     				sh "ant -buildfile core/_buildfiles/build_jenkins.xml buildSqliteFast "
-    			} else {
-     				bat "ant -buildfile core/_buildfiles/build_jenkins.xml buildSqliteFast "
-    			}
-     		}
-    		archiveArtifacts allowEmptyArchive: false, artifacts: 'core/_buildfiles/packages/', caseSensitive: true, defaultExcludes: true, fingerprint: false, onlyIfSuccessful: false
+            steps {
+                // Ant build step
+                withEnv(["PATH+ANT=${tool 'Standard 1.9.x'}/bin"]) {
+                    if(isUnix()) {
+                        sh "ant -buildfile core/_buildfiles/build_jenkins.xml buildSqliteFast "
+                    } else {
+                        bat "ant -buildfile core/_buildfiles/build_jenkins.xml buildSqliteFast "
+                    }
+                }
+                archiveArtifacts allowEmptyArchive: false, artifacts: 'core/_buildfiles/packages/', caseSensitive: true, defaultExcludes: true, fingerprint: false, onlyIfSuccessful: false
+    		}
     	}
 
 
