@@ -16,7 +16,7 @@ pipeline {
                 // Ant build step
                 withEnv(["PATH+ANT=${tool 'Standard 1.9.x'}/bin"]) {
                     //if(isUnix()) {
-                        sh "ant -buildfile core/_buildfiles/build_jenkins.xml buildSqliteFast "
+                        sh "ant -buildfile _buildfiles/build_jenkins.xml buildSqliteFast "
                     //} else {
                     //    bat "ant -buildfile core/_buildfiles/build_jenkins.xml buildSqliteFast "
                     //}
