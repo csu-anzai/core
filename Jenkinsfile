@@ -6,7 +6,7 @@ pipeline {
 
         stage ('Kajona_Core_AdHoc_SQLite - Checkout') {
             steps {
-                 checkout scm
+                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'core']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/artemeon/core.git']]])
             }
         }
 
@@ -15,11 +15,7 @@ pipeline {
             steps {
                 // Ant build step
                 withEnv(["PATH+ANT=${tool 'Standard 1.9.x'}/bin"]) {
-                    //if(isUnix()) {
-                        sh "ant -buildfile _buildfiles/build_jenkins.xml buildSqliteFast "
-                    //} else {
-                    //    bat "ant -buildfile core/_buildfiles/build_jenkins.xml buildSqliteFast "
-                    //}
+                        sh "ant -buildfile core/_buildfiles/build_jenkins.xml buildSqliteFast "
                 }
                // archiveArtifacts allowEmptyArchive: false, artifacts: 'core/_buildfiles/packages/', caseSensitive: true, defaultExcludes: true, fingerprint: false, onlyIfSuccessful: false
     		}
