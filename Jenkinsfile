@@ -3,7 +3,10 @@ agent any
     stages {
         stage('build') {
             steps {
-                echo 'building a pipeline'
+                echo 'Starting Build'
+                env.PATH = "${tool 'Ant'}/bin:${env.PATH}"
+                checkout scm
+                sh 'ant -file core/_buildfiles/build_jenkins.xml buildSqliteFast'
             }
         }
     }
