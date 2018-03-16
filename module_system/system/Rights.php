@@ -55,6 +55,11 @@ class Rights
 
     /**
      * Constructor doing the usual setup things
+     *
+     * Please dont create an instance of the rights class manually, the recommended way is to get the "rights" service
+     * from the DI container
+     *
+     * @internal
      */
     public function __construct()
     {
