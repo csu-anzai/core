@@ -4,6 +4,7 @@ namespace Kajona\System\Tests\Lifecycle;
 
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleImpl;
+use Kajona\System\System\Permissions\PermissionHandlerFactory;
 use Kajona\System\System\ServiceProvider;
 use Kajona\System\Tests\Testbase;
 use Pimple\Container;
@@ -18,14 +19,17 @@ class ServiceLifeCycleFactoryTest extends Testbase
     protected function setUp()
     {
         $objContainer = new Container();
+        $objContainer[ServiceProvider::STR_PERMISSION_HANDLER_FACTORY] = function(Container $c){
+            return new PermissionHandlerFactory($c);
+        };
         $objContainer[ServiceProvider::STR_LIFE_CYCLE_FACTORY] = function(Container $c){
             return new ServiceLifeCycleFactory($c);
         };
         $objContainer['service_a'] = function(Container $c){
-            return new ServiceA($c[ServiceProvider::STR_LIFE_CYCLE_FACTORY]);
+            return new ServiceA($c[ServiceProvider::STR_PERMISSION_HANDLER_FACTORY]);
         };
         $objContainer[ServiceProvider::STR_LIFE_CYCLE_DEFAULT] = function(Container $c){
-            return new ServiceDefault($c[ServiceProvider::STR_LIFE_CYCLE_FACTORY]);
+            return new ServiceDefault($c[ServiceProvider::STR_PERMISSION_HANDLER_FACTORY]);
         };
 
         $this->objServiceFactory = $objContainer[ServiceProvider::STR_LIFE_CYCLE_FACTORY];
