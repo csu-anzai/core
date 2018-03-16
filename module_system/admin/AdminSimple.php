@@ -142,15 +142,18 @@ abstract class AdminSimple extends AdminController
             $this->objLifeCycleFactory->factory(get_class($objRecord))->delete($objRecord);
 
             $strTargetUrl = urldecode($this->getParam("reloadUrl"));
-
             parse_str($strTargetUrl, $arrParams);
             $bitFound = false;
             if (isset($arrParams["systemid"])) {
                 $bitFound = $arrParams["systemid"] == $this->getSystemid();
+            } else {
+                $arrParams = explode("/", $strTargetUrl);
+                if (count($arrParams) >= 4) {
+                    $bitFound = $arrParams[3] == $this->getSystemid();
+                }
             }
 
             if ($strTargetUrl == "" || $bitFound) {
-
                 $strTargetUrl = "admin=1&module=".$this->getArrModule("modul");
 
                 $intI = 1;
