@@ -23,7 +23,7 @@ pipeline {
     	}
 
         stage ('Publish xUnit') {
-            step {
+            steps {
                 junit 'core/_buildfiles/build/logs/junit.xml'
             }
         }
