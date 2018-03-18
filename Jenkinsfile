@@ -9,14 +9,12 @@ pipeline {
                     checkout scm
                 }
             }
-
-            /* steps {
-                 checkout([$class: 'GitSCM', branches: [[name: '**']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'core']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/artemeon/core.git']]])
-            } */
         }
 
         stage('loadtest2') {
-            load "core/_buildfiles/buildsteps/buildStep2.groovy"
+            steps {
+                load "core/_buildfiles/buildsteps/buildStep2.groovy"
+            }
         }
 
         stage('loadTest') {
@@ -31,7 +29,11 @@ pipeline {
                 stage ('cleanFilesystem') {
                     steps {
                         withAnt(installation: 'Ant') {
-                            sh "ant -buildfile core/_buildfiles/build_jenkins.xml cleanFilesystem"
+                            try {
+                                sh "ant -buildfile core/_buildfiles/build_jenkins.xml cleanFilesystem"
+                            } catch (err) {
+
+                            }
                         }
                     }
                 }
