@@ -1,5 +1,4 @@
-pipeline {
-        agent any
+node {
         stages {
                 stage('Prepare') {
 
@@ -8,4 +7,5 @@ pipeline {
                         }
                 }
         }
+
 }
