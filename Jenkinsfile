@@ -11,7 +11,9 @@ pipeline {
 
 
         stage('loadTest') {
-            load "core/_buildfiles/buildsteps/prepareAndBuild.groovy"
+            steps {
+                load "core/_buildfiles/buildsteps/prepareAndBuild.groovy"
+            }
         }
 
         stage('Prepare') {
