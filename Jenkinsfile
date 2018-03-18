@@ -58,7 +58,9 @@ pipeline {
                     sh "ant -buildfile core/_buildfiles/build_jenkins.xml buildProject "
                 }
             }
+        }
 
+        stage('install Project') {
             steps {
                 withAnt(installation: 'Ant') {
                     sh "ant -buildfile core/_buildfiles/build_jenkins.xml installProjectSqlite "
@@ -98,7 +100,6 @@ pipeline {
         stage ('Build Archive') {
             steps {
                 // Ant build step
-                //withEnv(["PATH+ANT=${tool 'Standard 1.9.x'}/bin"]) {
                 withAnt(installation: 'Ant') {
                     sh "ant -buildfile core/_buildfiles/build_jenkins.xml buildFullZip "
                 }
