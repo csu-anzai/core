@@ -13,7 +13,7 @@ pipeline {
 
         stage('loadtest2') {
             steps {
-                load "core/_buildfiles/buildsteps/buildStep2.groovy"
+                //load "core/_buildfiles/buildsteps/buildStep2.groovy"
             }
         }
 
