@@ -29,10 +29,12 @@ pipeline {
                 stage ('cleanFilesystem') {
                     steps {
                         withAnt(installation: 'Ant') {
-                            try {
-                                sh "ant -buildfile core/_buildfiles/build_jenkins.xml cleanFilesystem"
-                            } catch (err) {
+                            script {
+                                try {
+                                    sh "ant -buildfile core/_buildfiles/build_jenkins.xml cleanFilesystem"
+                                } catch (err) {
 
+                                }
                             }
                         }
                     }
