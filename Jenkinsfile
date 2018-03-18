@@ -11,11 +11,11 @@ pipeline {
             }
         }
 
-        stage('loadtest2') {
+        /*stage('loadtest2') {
             steps {
                 //load "core/_buildfiles/buildsteps/buildStep2.groovy"
             }
-        }
+        }*/
 
         stage('loadTest') {
             steps {
