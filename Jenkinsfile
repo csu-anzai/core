@@ -4,8 +4,10 @@ pipeline {
     stages {
 
         stage ('Git Checkout') {
-            dir('core') {
-                checkout scm
+            steps {
+                dir('core') {
+                    checkout scm
+                }
             }
 
             /* steps {
