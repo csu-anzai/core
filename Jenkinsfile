@@ -32,12 +32,19 @@ pipeline {
         stage ('Publish xUnit') {
             steps {
                 junit 'core/_buildfiles/build/logs/junit.xml'
+                //step([$class: 'XUnitBuilder', testTimeMargin: '3000', thresholdMode: 1, thresholds: [[$class: 'FailedThreshold', failureNewThreshold: '0', failureThreshold: '0', unstableNewThreshold: '0', unstableThreshold: '0'], [$class: 'SkippedThreshold', failureNewThreshold: '1000', failureThreshold: '1000', unstableNewThreshold: '1000', unstableThreshold: '1000']], tools: [[$class: 'JUnitType', deleteOutputFiles: true, failIfNotNew: true, pattern: 'core/_buildfiles/build/logs/junit.xml', skipNoTestFiles: false, stopProcessingIfError: true]]])
             }
         }
 
     	stage ('Archive') {
     	    steps {
     	        archiveArtifacts 'core/_buildfiles/packages/'
+    	    }
+    	}
+
+    	stage ('Mailer') {
+    	    steps {
+    	        step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: '', sendToIndividuals: true])
     	    }
     	}
 
