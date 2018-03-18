@@ -120,13 +120,13 @@ pipeline {
     	    }
     	}
 
-    	stage ('Mailer') {
-    	    steps {
+    }
+    post {
+        always {
+            steps {
     	        step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: '', sendToIndividuals: true])
     	    }
-    	}
-
-
+        }
     }
 }
 
