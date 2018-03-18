@@ -15,6 +15,7 @@ pipeline {
             } */
         }
 
+        load "core/_buildfiles/buildsteps/buildStep2.groovy"
 
         stage('loadTest') {
             steps {
