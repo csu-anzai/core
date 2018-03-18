@@ -1,20 +1,5 @@
-pipeline {
-
-
-
-
-    //def labels = ['php7', 'mssql']
-    //def builders = [:]
-
+pipeline {  
     agent any
-
-    //triggers {
-        //cron('H */4 * * 1-5')
-        //pollSCM('H/5 * * * * ')
-    //}
-
-
-    //for (x in labels) {
 
     stages {
 
@@ -163,7 +148,7 @@ pipeline {
     }
     post {
         always {
-            step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: '${CHANGE_AUTHOR_EMAIL}', sendToIndividuals: true])
+            step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']])])
         }
     }
 }
