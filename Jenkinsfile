@@ -10,6 +10,10 @@ pipeline {
         }
 
 
+        stage('loadTest') {
+            load "core/_buildfiles/buildsteps/prepareAndBuild.groovy"
+        }
+
         stage('Prepare') {
             parallel {
 
