@@ -74,13 +74,13 @@ pipeline {
                     }
                 }
 
-                stage ('phpunit') {
+                /* stage ('phpunit') {
                     steps {
                         withAnt(installation: 'Ant') {
                             sh "ant -buildfile core/_buildfiles/build_jenkins.xml phpunit "
                         }
                     }
-                }
+                } */
                 stage ('jasmine') {
                     steps {
                         withAnt(installation: 'Ant') {
@@ -98,6 +98,8 @@ pipeline {
                         label 'php7'
                     }
                     steps {
+                        sh "ant -buildfile core/_buildfiles/build_jenkins.xml buildProject "
+                        sh "ant -buildfile core/_buildfiles/build_jenkins.xml installProjectSqlite "
                         sh "ant -buildfile core/_buildfiles/build_jenkins.xml phpunit "
                     }
                     post {
@@ -112,6 +114,8 @@ pipeline {
                         label 'sourceguardian71'
                     }
                     steps {
+                        sh "ant -buildfile core/_buildfiles/build_jenkins.xml buildProject "
+                        sh "ant -buildfile core/_buildfiles/build_jenkins.xml installProjectSqlite "
                         sh "ant -buildfile core/_buildfiles/build_jenkins.xml phpunit "
                     }
                     post {
