@@ -1,5 +1,8 @@
 pipeline {
 
+
+
+
     //def labels = ['php7', 'mssql']
     //def builders = [:]
 
@@ -70,6 +73,7 @@ pipeline {
                         }
                     }
                 }
+
                 stage ('phpunit') {
                     steps {
                         withAnt(installation: 'Ant') {
@@ -87,12 +91,44 @@ pipeline {
             }
         }
 
-        stage ('Publish xUnit') {
-            steps {
-                junit 'core/_buildfiles/build/logs/junit.xml'
-                //step([$class: 'XUnitBuilder', testTimeMargin: '3000', thresholdMode: 1, thresholds: [[$class: 'FailedThreshold', failureNewThreshold: '0', failureThreshold: '0', unstableNewThreshold: '0', unstableThreshold: '0'], [$class: 'SkippedThreshold', failureNewThreshold: '1000', failureThreshold: '1000', unstableNewThreshold: '1000', unstableThreshold: '1000']], tools: [[$class: 'JUnitType', deleteOutputFiles: true, failIfNotNew: true, pattern: 'core/_buildfiles/build/logs/junit.xml', skipNoTestFiles: false, stopProcessingIfError: true]]])
+        stage ('phpunit') {
+            parallel {
+                stage ('php7') {
+                    agent {
+                        label 'php7'
+                    }
+                    steps {
+                        sh "ant -buildfile core/_buildfiles/build_jenkins.xml phpunit "
+                    }
+                    post {
+                        always {
+                            junit 'core/_buildfiles/build/logs/junit.xml'
+                        }
+                    }
+                }
+
+                stage ('php71') {
+                    agent {
+                        label 'sourceguardian71'
+                    }
+                    steps {
+                        sh "ant -buildfile core/_buildfiles/build_jenkins.xml phpunit "
+                    }
+                    post {
+                        always {
+                            junit 'core/_buildfiles/build/logs/junit.xml'
+                        }
+                    }
+                }
             }
         }
+
+        //stage ('Publish xUnit') {
+        //    steps {
+        //        junit 'core/_buildfiles/build/logs/junit.xml'
+                //step([$class: 'XUnitBuilder', testTimeMargin: '3000', thresholdMode: 1, thresholds: [[$class: 'FailedThreshold', failureNewThreshold: '0', failureThreshold: '0', unstableNewThreshold: '0', unstableThreshold: '0'], [$class: 'SkippedThreshold', failureNewThreshold: '1000', failureThreshold: '1000', unstableNewThreshold: '1000', unstableThreshold: '1000']], tools: [[$class: 'JUnitType', deleteOutputFiles: true, failIfNotNew: true, pattern: 'core/_buildfiles/build/logs/junit.xml', skipNoTestFiles: false, stopProcessingIfError: true]]])
+        //    }
+        //}
         
 
         stage ('Build Archive') {
@@ -116,7 +152,7 @@ pipeline {
     }
     post {
         always {
-            step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: '', sendToIndividuals: true])
+            step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: '${CHANGE_AUTHOR_EMAIL}', sendToIndividuals: true])
         }
     }
 }
