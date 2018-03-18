@@ -4,8 +4,7 @@ pipeline {
     //def builders = [:]
 
     agent {
-            label 'php7'
-            label 'mssql'
+        any
     }
 
     //triggers {
