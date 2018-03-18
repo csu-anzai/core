@@ -1,13 +1,24 @@
 pipeline {
-    //env.PATH = "${tool 'Ant'}/bin:${env.PATH}"
 
-    agent any
+    //def labels = ['php7', 'mssql']
+    //def builders = [:]
+
+    agent {
+        node {
+            label 'php7'
+        }
+        node {
+            label 'mssql'
+        }
+    }
 
     //triggers {
         //cron('H */4 * * 1-5')
         //pollSCM('H/5 * * * * ')
     //}
 
+
+    //for (x in labels) {
 
     stages {
 
