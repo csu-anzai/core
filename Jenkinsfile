@@ -74,13 +74,18 @@ pipeline {
                     }
                 }
 
-                /* stage ('phpunit') {
+                stage ('phpunit') {
                     steps {
                         withAnt(installation: 'Ant') {
                             sh "ant -buildfile core/_buildfiles/build_jenkins.xml phpunit "
                         }
                     }
-                } */
+                    post {
+                        always {
+                            junit 'core/_buildfiles/build/logs/junit.xml'
+                        }
+                    }
+                }
                 stage ('jasmine') {
                     steps {
                         withAnt(installation: 'Ant') {
@@ -91,6 +96,7 @@ pipeline {
             }
         }
 
+/*
         stage ('phpunit') {
             parallel {
                 stage ('php7') {
@@ -126,6 +132,7 @@ pipeline {
                 }
             }
         }
+*/
 
         //stage ('Publish xUnit') {
         //    steps {
