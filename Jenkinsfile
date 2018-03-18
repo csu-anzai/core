@@ -3,10 +3,10 @@ pipeline {
 
     agent any
 
-    triggers {
+    //triggers {
         //cron('H */4 * * 1-5')
         //pollSCM('H/5 * * * * ')
-    }
+    //}
 
 
     stages {
