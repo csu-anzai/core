@@ -1,6 +1,11 @@
 pipeline {  
     agent any
 
+    triggers {
+        //cron('H */4 * * 1-5')
+        pollSCM('H/5 * * * * ')
+    }
+
     stages {
 
         stage ('Git Checkout') {
