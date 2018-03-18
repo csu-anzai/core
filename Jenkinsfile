@@ -52,6 +52,13 @@ pipeline {
             
         }
 
+        stage('build Project') {
+            steps {
+                withAnt(installation: 'Ant') {
+                    sh "ant -buildfile core/_buildfiles/build_jenkins.xml buildProject "
+                }
+            }
+        }
 
         stage('install Project') {
             steps {
