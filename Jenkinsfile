@@ -3,9 +3,7 @@ pipeline {
     //def labels = ['php7', 'mssql']
     //def builders = [:]
 
-    agent {
-        any
-    }
+    agent any
 
     //triggers {
         //cron('H */4 * * 1-5')
