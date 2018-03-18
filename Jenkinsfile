@@ -22,12 +22,79 @@ pipeline {
         }
 
 
-        stage ('Build') {
+        stage('Prepare') {
+            parallel {
+
+                stage ('cleanFilesystem') {
+                    steps {
+                        withAnt(installation: 'Ant') {
+                            sh "ant -buildfile core/_buildfiles/build_jenkins.xml cleanFilesystem"
+                        }
+                    }
+                }
+                stage ('npm deps') {
+                    steps {
+                        withAnt(installation: 'Ant') {
+                            sh "ant -buildfile core/_buildfiles/build_jenkins.xml installNpmBuildDependencies"
+                        }
+                    }
+                }
+                stage ('composer deps') {
+                    steps {
+                        withAnt(installation: 'Ant') {
+                            sh "ant -buildfile core/_buildfiles/build_jenkins.xml installComposerBuildDependencies"
+                        }
+                    }
+                }
+                    
+                
+            }
+            
+        }
+
+
+        stage('install Project') {
+            steps {
+                withAnt(installation: 'Ant') {
+                    sh "ant -buildfile core/_buildfiles/build_jenkins.xml installProjectSqlite "
+                }
+            }
+        }
+
+        stage('testing') {
+            parallel {
+                stage ('lint') {
+                    steps {
+                        withAnt(installation: 'Ant') {
+                            sh "ant -buildfile core/_buildfiles/build_jenkins.xml lint "
+                        }
+                    }
+                }
+                stage ('phpunit') {
+                    steps {
+                        withAnt(installation: 'Ant') {
+                            sh "ant -buildfile core/_buildfiles/build_jenkins.xml phpunit "
+                        }
+                    }
+                }
+                stage ('jasmine') {
+                    steps {
+                        withAnt(installation: 'Ant') {
+                            sh "ant -buildfile core/_buildfiles/build_jenkins.xml jasmine "
+                        }
+                    }
+                }
+            }
+        }
+
+        
+
+        stage ('Build Archive') {
             steps {
                 // Ant build step
                 //withEnv(["PATH+ANT=${tool 'Standard 1.9.x'}/bin"]) {
                 withAnt(installation: 'Ant') {
-                    sh "ant -buildfile core/_buildfiles/build_jenkins.xml buildSqliteFast "
+                    sh "ant -buildfile core/_buildfiles/build_jenkins.xml buildFullZip "
                 }
 
     		}
