@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     options { 
-        checkoutToSubdirectory('foo') 
+        checkoutToSubdirectory('core') 
     }
 
     triggers {
