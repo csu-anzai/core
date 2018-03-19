@@ -1,6 +1,10 @@
 pipeline {  
     agent any
 
+    options { 
+        checkoutToSubdirectory('foo') 
+    }
+
     triggers {
         //cron('H */4 * * 1-5')
         pollSCM('H/5 * * * * ')
@@ -8,13 +12,13 @@ pipeline {
 
     stages {
 
-        stage ('Git Checkout') {
+        /*stage ('Git Checkout') {
             steps {
                 dir('core') {
                     checkout scm
                 }
             }
-        }
+        }*/
 
         /*stage('loadtest2') {
             steps {
@@ -33,6 +37,14 @@ pipeline {
 
                 stage ('cleanFilesystem') {
                     steps {
+
+                        dir('core/_buildfiles/build') {
+                            deleteDir();
+                        }
+                        dir('core/_buildfiles/buildproject') {
+                            deleteDir();
+                        }
+
                         withAnt(installation: 'Ant') {
                             //script {
                             //    try {
