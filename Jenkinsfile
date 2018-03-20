@@ -9,75 +9,14 @@ pipeline {
     }
 
     triggers {
-        //cron('H */4 * * 1-5')
         pollSCM('H/5 * * * * ')
     }
 
     stages {
 
-        /*stage ('Git Checkout') {
-            steps {
-                dir('core') {
-                    checkout scm
-                }
-            }
-        }*/
 
-        /*stage('loadtest2') {
-            steps {
-                //load "core/_buildfiles/buildsteps/buildStep2.groovy"
-            }
-        }*/
-
-        stage('loadTest') {
-            steps {
-                load "core/_buildfiles/buildsteps/prepareAndBuild.groovy"
-            }
-        }
-
-        stage('Prepare') {
-            parallel {
-
-                stage ('cleanFilesystem') {
-                    steps {
-
-                        dir('core/_buildfiles/build') {
-                            deleteDir();
-                        }
-                        dir('core/_buildfiles/buildproject') {
-                            deleteDir();
-                        }
-
-                        withAnt(installation: 'Ant') {
-                            //script {
-                            //    try {
-                                    sh "ant -buildfile core/_buildfiles/build_jenkins.xml cleanFilesystem"
-                            //    } catch (err) {
-//
-  //                              }
-                            //}
-                        }
-                    }
-                }
-                stage ('npm deps') {
-                    steps {
-                        withAnt(installation: 'Ant') {
-                            sh "ant -buildfile core/_buildfiles/build_jenkins.xml installNpmBuildDependencies"
-                        }
-                    }
-                }
-                stage ('composer deps') {
-                    steps {
-                        withAnt(installation: 'Ant') {
-                            sh "ant -buildfile core/_buildfiles/build_jenkins.xml installComposerBuildDependencies"
-                        }
-                    }
-                }
-                    
-                
-            }
-            
-        }
+        prepareWorkspace
+        
 
         stage('build Project') {
             steps {
