@@ -31,6 +31,11 @@ class PermissionHandlerAbstractTest extends Testbase
     {
         parent::setUp();
 
+        $objFlow = SystemModule::getModuleByName("flow");
+        if (!$objFlow) {
+            $this->markTestSkipped("Flow module not available");
+        }
+
         $objGroupResp = UserGroup::getGroupByName(self::GROUP_RESP);
         if (!$objGroupResp) {
             $objGroupResp = new UserGroup();
