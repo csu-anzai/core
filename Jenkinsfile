@@ -186,6 +186,12 @@ pipeline {
         always {
             step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']])])
         }
+        success {
+            mattermostSend color: 'good', message: "Build Succeeded: ${env.JOB_NAME} ${env.BUILD_NUMBER}"
+        }
+        failure {
+            mattermostSend color: 'danger', message: "Build Failed: ${env.JOB_NAME} ${env.BUILD_NUMBER}"
+        }
     }
 }
 
