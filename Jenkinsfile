@@ -1,3 +1,6 @@
+#!groovy
+@Library('art-shared@master') _ 
+
 pipeline {  
     agent any
 
@@ -185,13 +188,9 @@ pipeline {
     post {
         always {
             step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']])])
+            sendNotification currentBuild.result
         }
-        success {
-            mattermostSend color: 'good', message: "Build Succeeded: ${env.JOB_NAME} ${env.BUILD_NUMBER}", username: "jenkins"
-        }
-        failure {
-            mattermostSend color: 'danger', message: "Build Failed: ${env.JOB_NAME} ${env.BUILD_NUMBER}", username: "jenkins"
-        }
+        
     }
 }
 
