@@ -8,6 +8,7 @@ use Kajona\System\System\Permissions\PermissionHandlerFactory;
 use Kajona\System\System\Permissions\PermissionHandlerInterface;
 use Kajona\System\System\Root;
 use Kajona\System\System\ServiceProvider;
+use Kajona\System\System\SystemModule;
 use Kajona\System\Tests\Testbase;
 
 /**
@@ -18,6 +19,11 @@ class PermissionHandlerFactoryTest extends Testbase
     public function setUp()
     {
         parent::setUp();
+
+        $objFlow = SystemModule::getModuleByName("flow");
+        if (!$objFlow) {
+            $this->markTestSkipped("Flow module not available");
+        }
 
         $objContainer = Carrier::getInstance()->getContainer();
         $objContainer["perm_test_service"] = function($c){
