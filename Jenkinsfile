@@ -14,26 +14,31 @@ pipeline {
 
     stages {
 
-
-        //prepareWorkspace
         stage('Prepare') {
-            parallel {
+            steps {
 
-                stage ('cleanFilesystem') {
-                    steps {
-
-                        dir('core/_buildfiles/build') {
-                            deleteDir();
-                        }
-                        dir('core/_buildfiles/buildproject') {
-                            deleteDir();
-                        }
-
-                        withAnt(installation: 'Ant') {
-                            sh "ant -buildfile core/_buildfiles/build_jenkins.xml cleanFilesystem"
-                        }
-                    }
+                dir('core/_buildfiles/build') {
+                    deleteDir();
                 }
+                dir('core/_buildfiles/buildproject') {
+                    deleteDir();
+                }
+
+                dir('core/_buildfiles/temp') {
+                    deleteDir();
+                }
+
+                dir('core/_buildfiles/packages') {
+                    deleteDir();
+                }
+                /*withAnt(installation: 'Ant') {
+                    sh "ant -buildfile core/_buildfiles/build_jenkins.xml cleanFilesystem"
+                }*/
+            }
+        }
+
+        stage('Build Deps') {
+            parallel {
                 stage ('npm deps') {
                     steps {
                         withAnt(installation: 'Ant') {
@@ -48,8 +53,6 @@ pipeline {
                         }
                     }
                 }
-                    
-                
             }
             
         }
@@ -96,52 +99,7 @@ pipeline {
                 }
             }
         }
-
-/*
-        stage ('phpunit') {
-            parallel {
-                stage ('php7') {
-                    agent {
-                        label 'php7'
-                    }
-                    steps {
-                        sh "ant -buildfile core/_buildfiles/build_jenkins.xml buildProject "
-                        sh "ant -buildfile core/_buildfiles/build_jenkins.xml installProjectSqlite "
-                        sh "ant -buildfile core/_buildfiles/build_jenkins.xml phpunit "
-                    }
-                    post {
-                        always {
-                            junit 'core/_buildfiles/build/logs/junit.xml'
-                        }
-                    }
-                }
-
-                stage ('php71') {
-                    agent {
-                        label 'sourceguardian71'
-                    }
-                    steps {
-                        sh "ant -buildfile core/_buildfiles/build_jenkins.xml buildProject "
-                        sh "ant -buildfile core/_buildfiles/build_jenkins.xml installProjectSqlite "
-                        sh "ant -buildfile core/_buildfiles/build_jenkins.xml phpunit "
-                    }
-                    post {
-                        always {
-                            junit 'core/_buildfiles/build/logs/junit.xml'
-                        }
-                    }
-                }
-            }
-        }
-*/
-
-        //stage ('Publish xUnit') {
-        //    steps {
-        //        junit 'core/_buildfiles/build/logs/junit.xml'
-                //step([$class: 'XUnitBuilder', testTimeMargin: '3000', thresholdMode: 1, thresholds: [[$class: 'FailedThreshold', failureNewThreshold: '0', failureThreshold: '0', unstableNewThreshold: '0', unstableThreshold: '0'], [$class: 'SkippedThreshold', failureNewThreshold: '1000', failureThreshold: '1000', unstableNewThreshold: '1000', unstableThreshold: '1000']], tools: [[$class: 'JUnitType', deleteOutputFiles: true, failIfNotNew: true, pattern: 'core/_buildfiles/build/logs/junit.xml', skipNoTestFiles: false, stopProcessingIfError: true]]])
-        //    }
-        //}
-        
+    
 
         stage ('Build Archive') {
             steps {
@@ -150,15 +108,8 @@ pipeline {
                     sh "ant -buildfile core/_buildfiles/build_jenkins.xml buildFullZip "
                 }
 
+                archiveArtifacts 'core/_buildfiles/packages/'
     		}
-    	}
-
-        
-
-    	stage ('Archive') {
-    	    steps {
-    	        archiveArtifacts 'core/_buildfiles/packages/'
-    	    }
     	}
 
     }
