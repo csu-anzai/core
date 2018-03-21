@@ -15,8 +15,46 @@ pipeline {
     stages {
 
 
-        prepareWorkspace
-        
+        //prepareWorkspace
+        stage('Prepare') {
+            parallel {
+
+                stage ('cleanFilesystem') {
+                    steps {
+
+                        dir('core/_buildfiles/build') {
+                            deleteDir();
+                        }
+                        dir('core/_buildfiles/buildproject') {
+                            deleteDir();
+                        }
+
+                        withAnt(installation: 'Ant') {
+                            sh "ant -buildfile core/_buildfiles/build_jenkins.xml cleanFilesystem"
+                        }
+                    }
+                }
+                stage ('npm deps') {
+                    steps {
+                        withAnt(installation: 'Ant') {
+                            sh "ant -buildfile core/_buildfiles/build_jenkins.xml installNpmBuildDependencies"
+                        }
+                    }
+                }
+                stage ('composer deps') {
+                    steps {
+                        withAnt(installation: 'Ant') {
+                            sh "ant -buildfile core/_buildfiles/build_jenkins.xml installComposerBuildDependencies"
+                        }
+                    }
+                }
+                    
+                
+            }
+            
+        }
+    }
+
 
         stage('build Project') {
             steps {
