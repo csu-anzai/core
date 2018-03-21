@@ -11,6 +11,7 @@ namespace Kajona\Debugging\Debug;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Classloader;
 use Kajona\System\System\CoreEventdispatcher;
+use Kajona\System\System\Exception;
 use Kajona\System\System\RequestEntrypointEnum;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\ResponseObject;
@@ -41,7 +42,12 @@ class DebugHelper
             $strPath = array_search(getGet("debugfile"), Resourceloader::getInstance()->getFolderContent("/debug", array(".php")));
             if ($strPath !== false) {
                 echo "Passing request to ".$strPath."\n\n";
-                include $strPath;
+
+                try {
+                    include $strPath;
+                } catch (Exception $objEx) {
+                    echo Exception::renderException($objEx);
+                }
             }
 
         }
