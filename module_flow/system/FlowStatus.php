@@ -164,6 +164,17 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
     }
 
     /**
+     * @param int $intRole
+     * @param string $strRight
+     * @return bool
+     */
+    public function roleHasRight(int $intRole, string $strRight)
+    {
+        $arrPermissions = $this->getRightsForRole($intRole);
+        return in_array($strRight, $arrPermissions);
+    }
+
+    /**
      * @param string $arrRoles
      */
     public function setRoles(array $arrRoles)
