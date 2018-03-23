@@ -62,6 +62,9 @@ class PermissionActionProcessor
             });
 
             $permissionRow = $this->rights->getArrayRights($systemid);
+            if (array_key_exists(Rights::$STR_RIGHT_INHERIT, $permissionRow)) {
+                unset($permissionRow[Rights::$STR_RIGHT_INHERIT]);
+            }
             $oldPermissionRow = $permissionRow;
 
             foreach ($sortedActions as $singleAction) {
