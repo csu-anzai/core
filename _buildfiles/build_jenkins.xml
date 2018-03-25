@@ -189,14 +189,14 @@
     <!-- builds the project, aka creates a project out of the sources -->
     <target name="buildProject">
         <antcall target="copy2project">
-            <param name="targetDir" value="${basedir}${projectPath}">
+            <param name="targetDir" value="${basedir}${projectPath}" />
         </antcall>
     </target>
 
     <!-- creates the full-zip including all modules and elements -->
     <target name="buildFullZip" depends="init" >
         <antcall target="copy2project">
-            <param name="targetDir" value="${basedir}${tempPath}">
+            <param name="targetDir" value="${basedir}${tempPath}" />
         </antcall>
 
         <parallel>
