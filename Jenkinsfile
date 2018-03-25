@@ -31,9 +31,7 @@ pipeline {
                 dir('core/_buildfiles/packages') {
                     deleteDir();
                 }
-                /*withAnt(installation: 'Ant') {
-                    sh "ant -buildfile core/_buildfiles/build_jenkins.xml cleanFilesystem"
-                }*/
+                
             }
         }
 
