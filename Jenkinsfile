@@ -3,7 +3,4 @@
 
 
 //working as expected, but limited capabilities
-defaultBuild 
-    antBuildTask: 'installProjectSqlite', 
-    buildNode: 'php7', 
-    checkoutDir: 'core'
+defaultBuild antBuildTask: 'installProjectSqlite', buildNode: 'php7', checkoutDir: 'core'
