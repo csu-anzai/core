@@ -1,6 +1,9 @@
 #!groovy
 @Library('art-shared@master') _ 
 
+defaultBuild antBuildTask: 'installProjectSqlite'
+
+/*
 pipeline {  
     agent any
 
@@ -120,3 +123,4 @@ pipeline {
     }
 }
 
+*/
