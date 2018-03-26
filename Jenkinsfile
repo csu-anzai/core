@@ -1,7 +1,7 @@
 #!groovy
 @Library('art-shared@master') _ 
 
-defaultBuild antBuildTask: 'installProjectSqlite'
+defaultBuild antBuildTask: 'installProjectSqlite', buildNode: 'php7'
 
 /*
 pipeline {  
