@@ -21,6 +21,13 @@ define('util', ['jquery'], function ($) {
         if (window.opener) {
             return $('#' + strElementId, window.opener.document);
         } else if (parent){
+            if (parent.KAJONA.util.folderviewHandler) {
+                // in case we are coming from a nested view
+                var el = parent.$('#folderviewDialog_iframe').contents().find('#' + strElementId);
+                if (el.length > 0) {
+                    return el;
+                }
+            }
             return parent.$('#' + strElementId);
         }
         else {
