@@ -1,7 +1,37 @@
 #!groovy
 @Library('art-shared@master') _ 
 
-defaultBuild antBuildTask: 'installProjectSqlite', buildNode: 'php7'
+
+pipeline {
+    agent none
+
+    options { 
+        checkoutToSubdirectory('core') 
+    }
+
+    triggers {
+        pollSCM('H/5 * * * * ')
+    }
+
+    script {
+        runBuildStages antBuildTask: 'installProjectSqlite', buildNode: 'php7'
+    }
+
+    stages {
+        //import stages map from scripted pipeline
+    }
+
+    post {
+        always {
+            step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']])])
+            //sendNotification currentBuild.result --> add custom post handler
+        }
+        
+    }
+}
+
+//working as expected, but limited capabilities
+//defaultBuild antBuildTask: 'installProjectSqlite', buildNode: 'php7'
 
 /*
 pipeline {  
