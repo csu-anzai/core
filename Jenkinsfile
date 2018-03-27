@@ -34,9 +34,9 @@ pipeline {
                         }
                     }
 
-                    stage ('slave mssql') {
+                    stage ('slave sourceguardian71') {
                         agent {
-                            label 'mssql'
+                            label 'sourceguardian71'
                         }
                         steps {
                             checkout([
