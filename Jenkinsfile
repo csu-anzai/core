@@ -10,10 +10,6 @@
 pipeline {  
         agent none
 
-        options { 
-            checkoutToSubdirectory('core') 
-        }
-
         triggers {
             pollSCM('H/5 * * * * ')
         }
@@ -27,7 +23,12 @@ pipeline {
                             label 'php7'
                         }
                         steps {
-                            checkout scm
+                            checkout([
+                                $class: 'GitSCM',
+                                branches: scm.branches,
+                                extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'core']],
+                                userRemoteConfigs: scm.userRemoteConfigs
+                            ])
 
                             withAnt(installation: 'Ant') {
                                 sh "ant -buildfile core/_buildfiles/build_jenkins.xml installProjectSqlite"
@@ -41,8 +42,13 @@ pipeline {
                             label 'mssql'
                         }
                         steps {
-                            checkout scm
-                            
+                            checkout([
+                                $class: 'GitSCM',
+                                branches: scm.branches,
+                                extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'core']],
+                                userRemoteConfigs: scm.userRemoteConfigs
+                            ])
+
                             withAnt(installation: 'Ant') {
                                 sh "ant -buildfile core/_buildfiles/build_jenkins.xml installProjectSqlite"
                             }
