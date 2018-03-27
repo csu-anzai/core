@@ -32,6 +32,12 @@ pipeline {
                             }
                             archiveArtifacts 'core/_buildfiles/packages/'
                         }
+                        post {
+                            always {
+                                junit 'core/_buildfiles/build/logs/junit.xml'
+                                step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']])])
+                            }
+                        }
                     }
 
                     stage ('slave sourceguardian71') {
@@ -51,6 +57,7 @@ pipeline {
                         post {
                             always {
                                 junit 'core/_buildfiles/build/logs/junit.xml'
+                                step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']])])
                             }
                         }
                     }
@@ -59,11 +66,5 @@ pipeline {
             }
 
         }
-        post {
-            always {
-                step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']])])
-                //sendNotification currentBuild.result
-            }
-            
-        }
+        
     }
