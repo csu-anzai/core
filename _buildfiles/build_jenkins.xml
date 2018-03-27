@@ -128,38 +128,40 @@
         </parallel>
     </target>
 
-
     <target name="installBuildDependencies">
         <parallel>
-            <sequential>
-                <echo>Composer Build Dependencies</echo>
-                <echo>Copy composer.json and composer.lock to ${basedir}${tempPath}</echo>
-                <copy todir="${basedir}${buildPath}/composerbuild" overwrite="true"  includeEmptyDirs="true" >
-                    <fileset id="composer.dirs" dir="${basedir}${composerPath}">
-                        <include name="composer.json"/>
-                        <include name="composer.lock"/>
-                    </fileset>
-                </copy>
-
-                <echo>Execute composer</echo>
-                <exec dir="${basedir}${buildPath}/composerbuild" executable="${path.composer}" failonerror="on" >
-                    <arg line=" install"/>
-                    <arg line=" --no-dev"/>
-                    <arg line=" --quiet"/>
-                </exec>
-            </sequential>
-
-            <sequential>
-                <echo>npm Build Dependencies</echo>
-                <echo>Execute npm</echo>
-                <exec dir="${basedir}${jsPath}" executable="${path.npm}" failonerror="on">
-                    <arg line=" config set registry ${npmLocalRegistry}"/>
-                </exec>
-                <exec dir="${basedir}${jsPath}" executable="${path.npm}" failonerror="on">
-                    <arg line=" install"/>
-                </exec>
-            </sequential>
+            <antcall target="installComposerBuildDependencies">
+            <antcall target="installNpmBuildDependencies">
         </parallel>
+    </target>
+
+    <target name="installComposerBuildDependencies">
+        <echo>Composer Build Dependencies</echo>
+        <echo>Copy composer.json and composer.lock to ${basedir}${tempPath}</echo>
+        <copy todir="${basedir}${buildPath}/composerbuild" overwrite="true"  includeEmptyDirs="true" >
+            <fileset id="composer.dirs" dir="${basedir}${composerPath}">
+                <include name="composer.json"/>
+                <include name="composer.lock"/>
+            </fileset>
+        </copy>
+
+        <echo>Execute composer</echo>
+        <exec dir="${basedir}${buildPath}/composerbuild" executable="${path.composer}" failonerror="on" >
+            <arg line=" install"/>
+            <arg line=" --no-dev"/>
+            <arg line=" --quiet"/>
+        </exec>
+    </target>
+
+    <target name="installNpmBuildDependencies">
+        <echo>npm Build Dependencies</echo>
+        <echo>Execute npm</echo>
+        <exec dir="${basedir}${jsPath}" executable="${path.npm}" failonerror="on">
+            <arg line=" config set registry ${npmLocalRegistry}"/>
+        </exec>
+        <exec dir="${basedir}${jsPath}" executable="${path.npm}" failonerror="on">
+            <arg line=" install"/>
+        </exec>
     </target>
 
 
