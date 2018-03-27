@@ -48,6 +48,11 @@ pipeline {
                             }
                             archiveArtifacts 'core/_buildfiles/packages/'
                         }
+                        post {
+                            always {
+                                junit 'core/_buildfiles/build/logs/junit.xml'
+                            }
+                        }
                     }
                 }
                 
