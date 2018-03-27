@@ -12,16 +12,16 @@ class BuildHelper {
     public function main() {
 
 
-        echo "\n\n";
+        echo "\n";
         echo "Kajona Build Project Helper\n";
         echo " Params:\n";
         echo "   projectPath: ".$this->strProjectPath."\n";
         echo "   configFile: ".$this->strConfigFile."\n";
         echo "   onlySetup: ".($this->bitOnlyProjectsetup ? "true" : "false")."\n";
-        echo "\n\n";
+        echo "\n";
         echo "  PHP Version: ".PHP_VERSION."\n";
         echo "  PHP integer size: ".PHP_INT_SIZE." (4 = 32bit, 8 = 64bit)\n";
-        echo "\n\n";
+        echo "\n";
 
 
 
@@ -88,12 +88,9 @@ class BuildHelper {
 
         \Kajona\System\System\Carrier::getInstance()->flushCache(\Kajona\System\System\Carrier::INT_CACHE_TYPE_DBQUERIES | \Kajona\System\System\Carrier::INT_CACHE_TYPE_DBTABLES | \Kajona\System\System\Carrier::INT_CACHE_TYPE_MODULES | \Kajona\System\System\Carrier::INT_CACHE_TYPE_OBJECTFACTORY | \Kajona\System\System\Carrier::INT_CACHE_TYPE_ORMCACHE);
 
-        echo "\n\n";
-        echo "Blocking browscap update\n";
-        touch(__DIR__."/".$this->strProjectPath."/project/temp/cache.lock");
 
-        echo "\n\n\n";
-        echo "Searching for packages to be installed...";
+        echo "\n";
+        echo "Searching for packages to be installed...".PHP_EOL;
         $objManager = new \Kajona\Packagemanager\System\PackagemanagerManager();
         $arrPackageMetadata = $objManager->getAvailablePackages();
 
@@ -104,7 +101,7 @@ class BuildHelper {
         }
 
         echo "nr of packages found to install: ".count($arrPackagesToInstall)."\n";
-        echo "\n\n";
+        echo "\n";
 
         $intMaxLoops = 0;
         echo "starting installations...\n";

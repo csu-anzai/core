@@ -136,8 +136,8 @@
     </target>
 
     <target name="installComposerBuildDependencies">
-        <echo>Composer Build Dependencies</echo>
-        <echo>Copy composer.json and composer.lock to ${basedir}${tempPath}</echo>
+        <!--echo>Composer Build Dependencies</echo>
+        <echo>Copy composer.json and composer.lock to ${basedir}${tempPath}</echo-->
         <copy todir="${basedir}${buildPath}/composerbuild" overwrite="true"  includeEmptyDirs="true" >
             <fileset id="composer.dirs" dir="${basedir}${composerPath}">
                 <include name="composer.json"/>
@@ -145,7 +145,7 @@
             </fileset>
         </copy>
 
-        <echo>Execute composer</echo>
+        <!--echo>Execute composer</echo-->
         <exec dir="${basedir}${buildPath}/composerbuild" executable="${path.composer}" failonerror="on" >
             <arg line=" install"/>
             <arg line=" --no-dev"/>
@@ -154,8 +154,8 @@
     </target>
 
     <target name="installNpmBuildDependencies">
-        <echo>npm Build Dependencies</echo>
-        <echo>Execute npm</echo>
+        <!--echo>npm Build Dependencies</echo>
+        <echo>Execute npm</echo -->
         <exec dir="${basedir}${jsPath}" executable="${path.npm}" failonerror="on">
             <arg line=" config set registry ${npmLocalRegistry}"/>
         </exec>
