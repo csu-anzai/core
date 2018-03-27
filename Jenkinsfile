@@ -27,6 +27,8 @@ pipeline {
                             label 'php7'
                         }
                         steps {
+                            checkout scm
+
                             withAnt(installation: 'Ant') {
                                 sh "ant -buildfile core/_buildfiles/build_jenkins.xml installProjectSqlite"
                             }
@@ -39,6 +41,8 @@ pipeline {
                             label 'mssql'
                         }
                         steps {
+                            checkout scm
+                            
                             withAnt(installation: 'Ant') {
                                 sh "ant -buildfile core/_buildfiles/build_jenkins.xml installProjectSqlite"
                             }
