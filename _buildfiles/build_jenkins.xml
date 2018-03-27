@@ -130,8 +130,8 @@
 
     <target name="installBuildDependencies">
         <parallel>
-            <antcall target="installComposerBuildDependencies">
-            <antcall target="installNpmBuildDependencies">
+            <antcall target="installComposerBuildDependencies" />
+            <antcall target="installNpmBuildDependencies" />
         </parallel>
     </target>
 
