@@ -24,14 +24,11 @@ pipeline {
                         }
                         steps {
                             checkout([
-                                $class: 'GitSCM',
-                                branches: scm.branches,
-                                extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'core']],
-                                userRemoteConfigs: scm.userRemoteConfigs
+                                $class: 'GitSCM', branches: scm.branches, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'core']], userRemoteConfigs: scm.userRemoteConfigs
                             ])
 
                             withAnt(installation: 'Ant') {
-                                sh "ant -buildfile core/_buildfiles/build_jenkins.xml installProjectSqlite"
+                                sh "ant -buildfile core/_buildfiles/build_jenkins.xml buildSqliteFast"
                             }
                             archiveArtifacts 'core/_buildfiles/packages/'
                         }
@@ -43,14 +40,11 @@ pipeline {
                         }
                         steps {
                             checkout([
-                                $class: 'GitSCM',
-                                branches: scm.branches,
-                                extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'core']],
-                                userRemoteConfigs: scm.userRemoteConfigs
+                                $class: 'GitSCM', branches: scm.branches, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'core']], userRemoteConfigs: scm.userRemoteConfigs
                             ])
 
                             withAnt(installation: 'Ant') {
-                                sh "ant -buildfile core/_buildfiles/build_jenkins.xml installProjectSqlite"
+                                sh "ant -buildfile core/_buildfiles/build_jenkins.xml buildSqliteFast"
                             }
                             archiveArtifacts 'core/_buildfiles/packages/'
                         }
