@@ -23,8 +23,8 @@ pipeline {
             stage('Build') {
                 parallel {
                     stage ('slave php7') {
-                        label {
-                            'php7'
+                        agent {
+                            label 'php7'
                         }
                         steps {
                             withAnt(installation: 'Ant') {
@@ -35,8 +35,8 @@ pipeline {
                     }
 
                     stage ('slave mssql') {
-                        label {
-                            'mssql'
+                        agent {
+                            label 'mssql'
                         }
                         steps {
                             withAnt(installation: 'Ant') {
