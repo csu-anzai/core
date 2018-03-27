@@ -70,85 +70,98 @@
              No need to change anything below!
      -->
 
-
     <!-- internal initialization -->
-    <target name="init" depends="cleanFilesystem,installComposerBuildDependencies,installNpmBuildDependencies">
+    <target name="init" depends="cleanFilesystem,installBuildDependencies">
         <tstamp />
     </target>
 
     <target name="buildSqliteFast" depends="
 		    								init,
 					    					buildProject, installProjectSqlite,
-					    					lint,phpunitFast,jasmine,
+					    					runFastTests,
 					    					buildFullZip" />
 
 
     <target name="buildSqliteFull" depends="
 		    								init,
 					    					buildProject, installProjectSqlite,
-					    					lint,phpunit,jasmine,phpmd-ci,phpcs-ci,
+					    					runFullTests,
 					    					buildFullZip" />
 
     <target name="buildMysql" depends="
 		    								init,
 					    					buildProject, installProjectMysql,
-					    					phpunitFast,jasmine" />
+					    					runFastTests" />
 
     <target name="buildOracle" depends="
 		    								init,
 					    					buildProject, installProjectOracle,
-					    					phpunitFast,jasmine" />
+					    					runFastTests" />
 
     <target name="buildPostgres" depends="
 		    								init,
 					    					buildProject, installProjectPostgres,
-					    					phpunitFast,jasmine" />
+					    					runFastTests" />
 
     <target name="buildMssql" depends="
 		    								init,
 					    					buildProject, installProjectMssql,
-					    					phpunitFast,jasmine" />
+					    					runFastTests" />
 
 
 
-    <!-- installs all composer dependencies required for the build itself, so mainly external tools -->
-    <target name="installComposerBuildDependencies" >
-        <echo>Copy composer.json and composer.lock to ${basedir}${tempPath}</echo>
-        <copy todir="${basedir}${buildPath}/composerbuild" overwrite="true"  includeEmptyDirs="true" >
-            <fileset id="composer.dirs" dir="${basedir}${composerPath}">
-                <include name="composer.json"/>
-                <include name="composer.lock"/>
-            </fileset>
-        </copy>
-
-        <echo>Execute composer</echo>
-        <exec dir="${basedir}${buildPath}/composerbuild" executable="${path.composer}" failonerror="on" >
-            <arg line=" install"/>
-            <arg line=" --no-dev"/>
-            <arg line=" --quiet"/>
-        </exec>
+    <target name="runFastTests">
+        <parallel>
+            <antcall target="lint" />
+            <antcall target="phpunitFast" />
+            <antcall target="jasmine" />
+        </parallel>
     </target>
 
-    <!-- installs all node dependencies -->
-    <target name="installNpmBuildDependencies" >
-        <echo>Execute npm</echo>
-        <exec dir="${basedir}${jsPath}" executable="${path.npm}" failonerror="on">
-            <arg line=" config set registry ${npmLocalRegistry}"/>
-        </exec>
-        <exec dir="${basedir}${jsPath}" executable="${path.npm}" failonerror="on">
-            <arg line=" install"/>
-        </exec>
+    <target name="runFullTests">
+        <parallel>
+            <antcall target="lint" />
+            <antcall target="phpunit" />
+            <antcall target="phpmd-ci" />
+            <antcall target="phpcs-ci" />
+            <antcall target="jasmine" />
+        </parallel>
+    </target>
+    
+
+    <target name="installBuildDependencies">
+        <parallel>
+            <sequential>
+                <echo>Composer Build Dependencies</echo>
+                <echo>Copy composer.json and composer.lock to ${basedir}${tempPath}</echo>
+                <copy todir="${basedir}${buildPath}/composerbuild" overwrite="true"  includeEmptyDirs="true" >
+                    <fileset id="composer.dirs" dir="${basedir}${composerPath}">
+                        <include name="composer.json"/>
+                        <include name="composer.lock"/>
+                    </fileset>
+                </copy>
+
+                <echo>Execute composer</echo>
+                <exec dir="${basedir}${buildPath}/composerbuild" executable="${path.composer}" failonerror="on" >
+                    <arg line=" install"/>
+                    <arg line=" --no-dev"/>
+                    <arg line=" --quiet"/>
+                </exec>
+            </sequential>
+
+            <sequential>
+                <echo>npm Build Dependencies</echo>
+                <echo>Execute npm</echo>
+                <exec dir="${basedir}${jsPath}" executable="${path.npm}" failonerror="on">
+                    <arg line=" config set registry ${npmLocalRegistry}"/>
+                </exec>
+                <exec dir="${basedir}${jsPath}" executable="${path.npm}" failonerror="on">
+                    <arg line=" install"/>
+                </exec>
+            </sequential>
+        </parallel>
     </target>
 
-    <target name="installNpmGuiBuildDependencies" >
-        <echo>Execute npm</echo>
-        <exec dir="${basedir}${jsPath}" executable="${path.npm}" failonerror="on">
-            <arg line=" config set registry ${npmLocalRegistry}"/>
-        </exec>
-        <exec dir="${basedir}${jsPath}/guideps" executable="${path.npm}" failonerror="on">
-            <arg line=" install"/>
-        </exec>
-    </target>
 
     <!-- removes existing folders and creates them again -->
     <target name="cleanFilesystem">
