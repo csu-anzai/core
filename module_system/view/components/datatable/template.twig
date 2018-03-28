@@ -1,0 +1,30 @@
+
+<table class="core-component-datatable table {% if withTbody %}table-striped-tbody{% else %}table-striped{% endif %} table-condensed kajona-data-table {{ tableCssAddon }}">
+<thead>
+<tr>
+    {% for header in headers %}
+    <th>{{ header }}</th>
+    {% endfor %}
+</tr>
+</thead>
+{% for key, row in rows %}
+    {% if withTbody %}<tbody>{% endif %}
+    <tr data-systemid="{{ key }}">
+        {% for column in row %}
+        <td>{{ column|raw }}</td>
+        {% endfor %}
+    </tr>
+    {% if withTbody %}</tbody>{% endif %}
+{% endfor %}
+</table>
+
+{% if withFloatThread %}
+<script type="text/javascript">
+require(["jquery-floatThread"], function() {
+    $('table.core-component-datatable:not(.kajona-data-table-ignore-floatthread)').floatThead({
+        scrollingTop: $("body.dialogBody").size() > 0 ? 0 : 70,
+        useAbsolutePositioning: true
+    });
+});
+</script>
+{% endif %}

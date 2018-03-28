@@ -8,7 +8,6 @@ declare(strict_types = 1);
 
 namespace Kajona\System\View\Components\Datatable;
 
-use Kajona\System\System\StringUtil;
 use Kajona\System\View\Components\AbstractComponent;
 
 /**
@@ -19,68 +18,73 @@ use Kajona\System\View\Components\AbstractComponent;
  * 
  * @author sidler@mulchprod.de
  * @since 7.0
- * @componentTemplate datatable/template.tpl
+ * @componentTemplate datatable/template.twig
  */
 class Datatable extends AbstractComponent
 {
-    
-
     /**
-     * @var array $arrHeader the first row to name the columns
+     * The first row to name the columns
+     *
+     * @var array
      */
-    private $arrHeader;
+    private $arrHeaders;
 
     /**
-     * @var array $arrValues every entry is one row
+     * Every entry is one row
+     *
+     * @var array
      */
     private $arrRows;
 
-    private $strTableCssAddon = "";
+    /**
+     * @var string
+     */
+    private $strTableCssAddon;
+
+    /**
+     * @var bool
+     */
     private $bitWithTbody = false;
 
     /**
-     * Datatable constructor.
-     * @param $arrHeader
-     * @param $arrRows
+     * @var bool
      */
-    public function __construct($arrHeader, $arrRows)
-    {
-        $this->arrHeader = $arrHeader;
-        $this->arrRows = $arrRows;
-        
-        parent::__construct();
-    }
+    private $bitWithFloatThread = false;
 
     /**
-     * @return string
+     * @param array $arrHeaders
+     * @param array $arrRows
      */
-    public function getStrTableCssAddon(): string
+    public function __construct(array $arrHeaders, array $arrRows)
     {
-        return $this->strTableCssAddon;
+        parent::__construct();
+
+        $this->arrHeaders = $arrHeaders;
+        $this->arrRows = $arrRows;
     }
 
     /**
      * @param string $strTableCssAddon
      */
-    public function setStrTableCssAddon(string $strTableCssAddon)
+    public function setTableCssAddon(string $strTableCssAddon)
     {
         $this->strTableCssAddon = $strTableCssAddon;
     }
 
     /**
-     * @return bool
+     * @param bool $bitWithTbody
      */
-    public function isBitWithTbody(): bool
+    public function setWithTbody(bool $bitWithTbody)
     {
-        return $this->bitWithTbody;
+        $this->bitWithTbody = $bitWithTbody;
     }
 
     /**
-     * @param bool $bitWithTbody
+     * @param bool $bitWithFloatThread
      */
-    public function setBitWithTbody(bool $bitWithTbody)
+    public function setWithFloatThread(bool $bitWithFloatThread)
     {
-        $this->bitWithTbody = $bitWithTbody;
+        $this->bitWithFloatThread = $bitWithFloatThread;
     }
 
     /**
@@ -88,58 +92,12 @@ class Datatable extends AbstractComponent
      */
     public function renderComponent(): string
     {
-
-        $strReturn = "";
-        //The Table header & the templates
-        $strReturn .= $this->renderTemplate(array("cssaddon" => $this->strTableCssAddon), "datalist_header".($this->bitWithTbody ? "_tbody" : ""));
-
-        //Iterating over the rows
-
-        //Starting with the header, column by column
-        if (is_array($this->arrHeader) && !empty($this->arrHeader)) {
-            $strReturn .= $this->renderTemplate(array(), "datalist_column_head_header");
-
-            $bitNrToSkip = 0;
-            foreach ($this->arrHeader as $strCssClass => $strHeader) {
-                $bitSkipPrint = 0;
-                $strAddon = "";
-                if (StringUtil::indexOf($strCssClass, "colspan-2") !== false) {
-                    $strAddon = " colspan='2' ";
-                    $bitSkipPrint = 1;
-                    $strCssClass = StringUtil::replace("colspan-2", "", $strCssClass);
-                } elseif (StringUtil::indexOf($strCssClass, "colspan-3") !== false) {
-                    $strAddon = " colspan='3' ";
-                    $bitSkipPrint = 2;
-                    $strCssClass = StringUtil::replace("colspan-3", "", $strCssClass);
-                }
-
-                if ($bitNrToSkip-- <= 0) {
-                    $strReturn .= $this->renderTemplate(array("value" => $strHeader, "class" => $strCssClass, "addons" => $strAddon), "datalist_column_head");
-                }
-
-                if ($bitSkipPrint > 0) {
-                    $bitNrToSkip = $bitSkipPrint;
-                }
-
-            }
-
-            $strReturn .= $this->renderTemplate(array(), "datalist_column_head_footer");
-        }
-
-        //And the content, row by row, column by column
-        foreach ($this->arrRows as $strKey => $arrValueRow) {
-            $strReturn .= $this->renderTemplate(array("systemid" => $strKey), "datalist_column_header".($this->bitWithTbody ? "_tbody" : ""));
-
-            foreach ($arrValueRow as $strCssClass => $strValue) {
-                $strReturn .= $this->renderTemplate(array("value" => $strValue, "class" => $strCssClass), "datalist_column");
-            }
-
-            $strReturn .= $this->renderTemplate(array(), "datalist_column_footer".($this->bitWithTbody ? "_tbody" : ""));
-        }
-
-        //And the footer
-        $strReturn .= $this->renderTemplate(array(), "datalist_footer");
-        return $strReturn;
+        return $this->renderTemplate([
+            'headers' => $this->arrHeaders,
+            'rows' => $this->arrRows,
+            'withTbody' => $this->bitWithTbody,
+            'withFloatThread' => $this->bitWithFloatThread,
+            'tableCssAddon' => $this->strTableCssAddon,
+        ]);
     }
-
 }
