@@ -22,7 +22,7 @@ class FunctionsTest extends Testbase
         //simple link
         $this->assertEquals("hello <a href=\"http://www.kajona.de\">http://www.kajona.de</a> world", replaceTextLinks("hello http://www.kajona.de world"));
         $this->assertEquals(" <a href=\"http://www.kajona.de\">http://www.kajona.de</a> world", replaceTextLinks("http://www.kajona.de world"));
-        $this->assertEquals("hello <a href=\"http://www.kajona.de\">http://www.kajona.de</a> ", replaceTextLinks("hello http://www.kajona.de"));
+        $this->assertEquals("hello <a href=\"http://www.kajona.de\">http://www.kajona.de</a>", replaceTextLinks("hello http://www.kajona.de"));
         $this->assertEquals("hello <a href=\"https://www.kajona.de\">https://www.kajona.de</a> world", replaceTextLinks("hello https://www.kajona.de world"));
         $this->assertEquals("hello <a href=\"ftp://www.kajona.de\">ftp://www.kajona.de</a> world", replaceTextLinks("hello ftp://www.kajona.de world"));
 
@@ -54,15 +54,15 @@ TEXT;
 Die Risikoanalyse 'Risikoanalyse Rahmenvertrag (28.03.2018)' wurde von Status 'In Bearbeitung' nach 'In Review' gesetzt.
 
 Die Zusammenfassung können Sie unter folgendem Link einsehen:
- <a href="https://aquarium.kajona.de:8443/master/#/riskanalysis/showSummary/08fc1be5abb56446ea4b">https://aquarium.kajona.de:8443/master/#/riskanalysis/showSummary/08fc1be5abb56446ea4b</a> 
+ <a href="https://aquarium.kajona.de:8443/master/#/riskanalysis/showSummary/08fc1be5abb56446ea4b">https://aquarium.kajona.de:8443/master/#/riskanalysis/showSummary/08fc1be5abb56446ea4b</a>
 
 Bitte verwenden Sie den unten stehenden Link, um die einzelnen Risiken einzusehen:
- <a href="https://aquarium.kajona.de:8443/master/#/riskanalysis/riskWizardPage/08fc1be5abb56446ea4b">https://aquarium.kajona.de:8443/master/#/riskanalysis/riskWizardPage/08fc1be5abb56446ea4b</a> 
- 
- <a href="https://aquarium.kajona.de:8443/master/#/riskanalysis/riskWizardPage/08fc1be5abb56446ea4b">https://aquarium.kajona.de:8443/master/#/riskanalysis/riskWizardPage/08fc1be5abb56446ea4b</a><br /> 
+ <a href="https://aquarium.kajona.de:8443/master/#/riskanalysis/riskWizardPage/08fc1be5abb56446ea4b">https://aquarium.kajona.de:8443/master/#/riskanalysis/riskWizardPage/08fc1be5abb56446ea4b</a>
+
+ <a href="https://aquarium.kajona.de:8443/master/#/riskanalysis/riskWizardPage/08fc1be5abb56446ea4b">https://aquarium.kajona.de:8443/master/#/riskanalysis/riskWizardPage/08fc1be5abb56446ea4b</a><br />
 
 Unter dem folgendem Link können Sie die aktuelle Risikoanalyse vergleichen:
- <a href="https://aquarium.kajona.de:8443/master/#/riskanalysis/showDiff?left_container_id=08fc1be5abb56446ea4b&right_container_id=08fc1be5abb56446ea4b">https://aquarium.kajona.de:8443/master/#/riskanalysis/showDiff?left_container_id=08fc1be5abb56446ea4b&right_container_id=08fc1be5abb56446ea4b</a> 
+ <a href="https://aquarium.kajona.de:8443/master/#/riskanalysis/showDiff?left_container_id=08fc1be5abb56446ea4b&right_container_id=08fc1be5abb56446ea4b">https://aquarium.kajona.de:8443/master/#/riskanalysis/showDiff?left_container_id=08fc1be5abb56446ea4b&right_container_id=08fc1be5abb56446ea4b</a>
 TEXT;
 
         $strActual = replaceTextLinks($strText);
