@@ -192,11 +192,11 @@
         <copy todir="${targetDir}" overwrite="true"  includeEmptyDirs="true" >
             <fileset id="sources.dirs" dir="${basedir}${sourcesPath}">
                 <exclude name=".git"/>
-                <include name="core*/module_*/*/**"/>
-                <include name="core*/_debugging/*/**"/>
-                <include name="core*/_buildfiles/*/**"/>
-                <include name="core*/*.php"/>
-                <include name="core*/*.htaccess"/>
+                <exclude name=".idea"/>
+                <exclude name="**/.git"/>
+                <exclude name="**/.idea"/>
+                <include name="*/**"/>
+                <include name="*/*"/>
             </fileset>
         </copy>
     </target>
@@ -214,12 +214,14 @@
             <param name="targetDir" value="${basedir}${tempPath}" />
         </antcall>
 
-        <parallel>
-            <antcall target="buildPackageHelper" />
-            <antcall target="modulePharHelper" />
-        </parallel>
+        <exec executable="php" dir="${basedir}"  failonerror="on" >
+            <arg line="-f cleanCore.php ${tempPath}"/>
+        </exec>
 
-        <zip destfile="${basedir}${packagesPath}/kajona_v6_full_${DSTAMP}-${TSTAMP}.zip">
+        <antcall target="buildPackageHelper" />
+        <antcall target="modulePharHelper" />
+    
+        <zip destfile="${basedir}${packagesPath}/build_${DSTAMP}-${TSTAMP}.zip">
             <fileset dir="${basedir}${tempPath}/../" />
         </zip>
     </target>
@@ -248,16 +250,7 @@
         <antcall target="cleanZipContent" />
     </target>
 
-    <target name="buildPackageHelperProject" description="triggers the project setup and the compilation / compression of css / js files">
-        <exec executable="php" dir="${basedir}"  failonerror="on" >
-            <arg line="-f buildProject.php ${tempPath} onlySetup"/>
-        </exec>
-        <parallel>
-            <antcall target="compressCss" />
-            <antcall target="compressJs" />
-        </parallel>
-        <antcall target="cleanZipContent" />
-    </target>
+    
 
     <!-- triggers the installation of the project aka. creating the db-structure -->
 
