@@ -87,6 +87,11 @@ class InstallerFlow extends InstallerBase
             $strReturn .= $this->update_66_70();
         }
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if ($arrModule["module_version"] == "7.0") {
+            $strReturn .= $this->update_70_701();
+        }
+
         return $strReturn;
     }
 
@@ -116,6 +121,18 @@ class InstallerFlow extends InstallerBase
         $this->objDB->_pQuery("UPDATE {$dbPrefix}flow_step_transition SET transition_skip = 0", []);
 
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
+        return $strReturn;
+    }
+
+    private function update_70_701()
+    {
+        $strReturn = "Updating to 7.0.1...\n";
+
+        // add step roles column
+        $strReturn.= "Add roles column...\n";
+        $this->objDB->addColumn("flow_step", "step_roles", DbDatatypes::STR_TYPE_TEXT);
+
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.1");
         return $strReturn;
     }
 }
