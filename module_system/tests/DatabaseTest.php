@@ -139,6 +139,15 @@ class DatabaseTest extends Testbase
 
     }
 
+    public function testChangeColumnType()
+    {
+        $objDb = Carrier::getInstance()->getObjDB();
+        $this->createTable();
+
+        // test changing a column type with the same column name
+        $this->assertTrue($objDb->changeColumn("temp_autotest", "temp_char10", "temp_char10", DbDatatypes::STR_TYPE_LONGTEXT));
+    }
+
     public function testAddColumn()
     {
         $objDb = Carrier::getInstance()->getObjDB();
