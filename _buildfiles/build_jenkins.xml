@@ -190,14 +190,14 @@
     <!-- possible params: targetDir -->
     <target name="copy2project">
         <copy todir="${targetDir}" overwrite="true"  includeEmptyDirs="true" >
-            <fileset id="sources.dirs" dir="${basedir}${sourcesPath}">
-                <exclude name=".git"/>
-                <exclude name=".idea"/>
-                <exclude name="**/.git"/>
-                <exclude name="**/.idea"/>
-                <include name="*/**"/>
-                <include name="*/*"/>
-            </fileset>
+            <fileset id="sources.dirs" dir="${basedir}${sourcesPath}">		              
+                <exclude name=".git"/>		              
+                <include name="core*/module_*/*/**"/>		 
+                <include name="core*/_debugging/*/**"/>	
+                <include name="core*/_buildfiles/*/**"/>	
+                <include name="core*/*.php"/>		 
+                <include name="core*/*.htaccess"/>	
+            </fileset>		              
         </copy>
     </target>
 
@@ -303,6 +303,7 @@
             <fileset dir="${basedir}${tempPath}" includes="**/core*/*/tests/**"/>
             <fileset dir="${basedir}${tempPath}" includes="**/core*/*/scripts/spec/**"/>
             <fileset dir="${basedir}${tempPath}" includes="**/setupproject.php"/>
+            <fileset dir="${basedir}${tempPath}" includes="**/Jenkinsfile"/>
             <fileset dir="${basedir}${tempPath}" includes="**/V4toV5Migration.php"/>
             <fileset dir="${basedir}${tempPath}" includes="**/.git"/>
             <fileset dir="${basedir}${tempPath}" includes="**/core*/_buildfiles*/**"/>
