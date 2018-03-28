@@ -5,8 +5,6 @@
 //working as expected, but limited capabilities
 //defaultBuild antBuildTask: 'installProjectSqlite', buildNode: 'php7', checkoutDir: 'core'
 
-
-
 pipeline {  
         agent none
 
