@@ -19,9 +19,11 @@ use Kajona\System\System\Reflection;
 abstract class AbstractComponent
 {
     /**
-     * The template used to render the current component. Please add the folder-name, too. If the template file ends
-     * with .twig we use the twig template engine
+     * The template used to render the current component. Please add the folder-name, too.-
      * Example: datatable/template.tpl
+     *
+     * If the template file ends with .twig we use the twig template engine in this case you dont need to specify the
+     * folder instead you need to reference the template file relative to the class file
      */
     const STR_TEMPLATE_ANNOTATION = "@componentTemplate";
 
@@ -81,7 +83,9 @@ abstract class AbstractComponent
             return $engine;
         }
 
-        $loader = new \Twig_Loader_Filesystem(__DIR__);
+        $reflection = new \ReflectionObject($this);
+        $classDir = dirname($reflection->getFileName());
+        $loader = new \Twig_Loader_Filesystem($classDir);
         $engine = new \Twig_Environment($loader, array(
             'cache' => _realpath_ . 'project/temp/cache',
         ));
