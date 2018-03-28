@@ -78,7 +78,7 @@
     <target name="buildSqliteFast" depends="
 		    								init,
 					    					buildProject, installProjectSqlite,
-					    					
+					    					runFastTests,
 					    					buildFullZip" />
 
 
