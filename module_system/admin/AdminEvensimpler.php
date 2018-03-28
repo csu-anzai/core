@@ -15,6 +15,7 @@ use Kajona\System\System\FilterBase;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
+use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\StringUtil;
 use ReflectionMethod;
@@ -239,30 +240,22 @@ abstract class AdminEvensimpler extends AdminSimple
             $this->setStrCurObjectTypeName($strObjectTypeName);
         }
 
-        //try 2: regular, oldschool resolving based on the current action-params
-        $strType = $this->getCurObjectClassName();
-
-        if(!is_null($strType)) {
-
-            //reset the current object reference to an object created before (e.g. during actionSave)
-            $objForm = AdminFormgeneratorFactory::getFormForModel($objInstance);
-            if($objForm !== null) {
-                $objInstance = $objForm->getObjSourceobject();
-            }
-
-            $objForm = $this->getAdminForm($objInstance);
-            $objForm->addField(new FormentryHidden("", "mode"))->setStrValue("edit");
-
-            $bitValidate = $this->getParam("validate") === "true";
-            if ($bitValidate) {
-                $objForm->validateForm();
-            }
-
-            return $objForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "save".$this->getStrCurObjectTypeName()));
+        //reset the current object reference to an object created before (e.g. during actionSave)
+        $objForm = AdminFormgeneratorFactory::getFormForModel($objInstance);
+        if($objForm !== null) {
+            $objInstance = $objForm->getObjSourceobject();
         }
-        else {
-            throw new Exception("error editing current object type not known ", Exception::$level_ERROR);
+
+        $objForm = $this->getAdminForm($objInstance);
+        $objForm->addField(new FormentryHidden("", "mode"))->setStrValue("edit");
+
+        $bitValidate = $this->getParam("validate") === "true";
+        if ($bitValidate) {
+            $objForm->validateForm();
         }
+
+        return $objForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "save".$this->getStrCurObjectTypeName()));
+
     }
 
 
@@ -341,15 +334,15 @@ abstract class AdminEvensimpler extends AdminSimple
 
     /**
      * Renders the filter form.
-     * If FilterBase::STR_FILTER_REDIRECT is being returned an adminReload with given filter url is being trigerred.
      *
      * @param FilterBase $objFilter
      * @param string|null $strFilterUrl
      * @param boolean $bitInitiallyVisible
-     *
+     * @param string $strLangActive
+     * @param string $strLangInactive
      * @return string
      */
-    public function renderFilter(FilterBase $objFilter, $strFilterUrl = null, $bitInitiallyVisible = false)
+    public function renderFilter(FilterBase $objFilter, $strFilterUrl = null, $bitInitiallyVisible = false, $strLangActive = null, $strLangInactive = null)
     {
         if ($strFilterUrl === null) {
             $arrParams = array(
@@ -363,6 +356,8 @@ abstract class AdminEvensimpler extends AdminSimple
 
         $objFilterForm = new AdminFormgeneratorFilter($objFilter->getFilterId(), $objFilter);
         $objFilterForm->setBitInitiallyVisible($bitInitiallyVisible);
+        $objFilterForm->setStrLangActive($strLangActive);
+        $objFilterForm->setStrLangInactive($strLangInactive);
 
         $strFilterForm = $objFilterForm->renderForm($strFilterUrl);
 
@@ -392,56 +387,51 @@ abstract class AdminEvensimpler extends AdminSimple
      */
     protected function actionSave()
     {
-        $strType = $this->getCurObjectClassName();
+        /** @var $objRecord ModelInterface|Model */
+        $objRecord = null;
         $strSystemId = "";
 
-        if(!is_null($strType)) {
+        if ($this->getParam("mode") == "new") {
+            $strType = $this->getCurObjectClassName();
 
-            /** @var $objRecord ModelInterface|Model */
-            $objRecord = null;
-
-            if($this->getParam("mode") == "new") {
+            if (!is_null($strType)) {
                 $objRecord = new $strType();
                 $strSystemId = $this->getSystemid();
             }
-            elseif($this->getParam("mode") == "edit") {
-                $objRecord = new $strType($this->getSystemid());
-            }
-
-            if($objRecord != null) {
-                $objForm = $this->getAdminForm($objRecord);
-                if(!$objForm->validateForm()) {
-                    if($this->getParam("mode") === "new") {
-                        return $this->actionNew();
-                    }
-                    if($this->getParam("mode") === "edit") {
-                        return $this->actionEdit();
-                    }
-                }
-
-                $objForm->updateSourceObject();
-                $objRecord = $objForm->getObjSourceobject();
-
-                $this->persistModel($objRecord, $strSystemId);
-
-                $this->setSystemid($objRecord->getStrSystemid());
-
-                //Check if save reload param is set
-                $strReloadAction = $this->getParam(AdminFormgenerator::STR_FORM_ON_SAVE_RELOAD_PARAM);
-                if($strReloadAction == "") {
-                    $strReloadAction = Link::getLinkAdminHref($this->getArrModule("modul"), $this->getActionNameForClass("list", $objRecord), "&systemid=" . $objRecord->getStrPrevId() . ($this->getParam("pe") != "" ? "&peClose=1&blockAction=1" : ""));
-                }
-
-                $this->adminReload($strReloadAction);
-                return "";
-            }
+        } elseif ($this->getParam("mode") == "edit") {
+            $objRecord = Objectfactory::getInstance()->getObject($this->getSystemid());
         }
-        else {
+
+
+        if ($objRecord === null) {
             throw new Exception("error on saving current object type not known ", Exception::$level_ERROR);
         }
 
+        $objForm = $this->getAdminForm($objRecord);
+        if (!$objForm->validateForm()) {
+            if ($this->getParam("mode") === "new") {
+                return $this->actionNew();
+            }
+            if ($this->getParam("mode") === "edit") {
+                return $this->actionEdit();
+            }
+        }
 
-        return $this->getLang("commons_error_permissions");
+        $objForm->updateSourceObject();
+        $objRecord = $objForm->getObjSourceobject();
+
+        $this->persistModel($objRecord, $strSystemId);
+
+        $this->setSystemid($objRecord->getStrSystemid());
+
+        //Check if save reload param is set
+        $strReloadAction = $this->getParam(AdminFormgenerator::STR_FORM_ON_SAVE_RELOAD_PARAM);
+        if($strReloadAction == "") {
+            $strReloadAction = Link::getLinkAdminHref($this->getArrModule("modul"), $this->getActionNameForClass("list", $objRecord), "&systemid=" . $objRecord->getStrPrevId() . ($this->getParam("pe") != "" ? "&peClose=1&blockAction=1" : ""));
+        }
+
+        $this->adminReload($strReloadAction);
+        return "";
     }
 
     /**

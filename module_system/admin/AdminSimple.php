@@ -142,15 +142,18 @@ abstract class AdminSimple extends AdminController
             $this->objLifeCycleFactory->factory(get_class($objRecord))->delete($objRecord);
 
             $strTargetUrl = urldecode($this->getParam("reloadUrl"));
-
             parse_str($strTargetUrl, $arrParams);
             $bitFound = false;
             if (isset($arrParams["systemid"])) {
                 $bitFound = $arrParams["systemid"] == $this->getSystemid();
+            } else {
+                $arrParams = explode("/", $strTargetUrl);
+                if (count($arrParams) >= 4) {
+                    $bitFound = $arrParams[3] == $this->getSystemid();
+                }
             }
 
             if ($strTargetUrl == "" || $bitFound) {
-
                 $strTargetUrl = "admin=1&module=".$this->getArrModule("modul");
 
                 $intI = 1;
@@ -621,16 +624,7 @@ abstract class AdminSimple extends AdminController
         if ($objListEntry->rightEdit() && $this->strPeAddon == "") {
             $strQuestion = $this->getLang("commons_copy_record_question", "system", array(StringUtil::jsSafeString($objListEntry->getStrDisplayName())));
             $strHref = Link::getLinkAdminHref($objListEntry->getArrModule("modul"), $this->getActionNameForClass("copyObject", $objListEntry), "&systemid=".$objListEntry->getSystemid().$this->strPeAddon);
-
-            //create the list-button and the js code to show the dialog
-            $strButton = Link::getLinkAdminManual(
-                "href=\"#\" onclick=\"javascript:jsDialog_1.setTitle('".$this->getLang("dialog_copyHeader", "system")."'); jsDialog_1.setContent('".$strQuestion."', '".$this->getLang("dialog_copyButton", "system")."',  function() {document.location.href= '{$strHref}';}); jsDialog_1.init(); return false;\"",
-                "",
-                $this->getLang("commons_edit_copy", "system"),
-                "icon_copy"
-            );
-
-            return $this->objToolkit->listButton($strButton);
+            return $this->objToolkit->listConfirmationButton($strQuestion, $strHref, "icon_copy", $this->getLang("commons_edit_copy", "system"), $this->getLang("dialog_copyHeader", "system"), $this->getLang("dialog_copyButton", "system"));
         }
         return "";
     }

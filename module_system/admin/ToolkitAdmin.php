@@ -1205,6 +1205,7 @@ HTML;
                 'checked'  => in_array($strKey, $arrSelected) ? 'checked' : '',
                 'inline'   => $bitInline ? '-inline' : '',
                 'readonly' => $bitReadonly ? 'disabled' : '',
+                'css'      => "",
             );
 
             switch ($intType) {
@@ -1225,6 +1226,11 @@ HTML;
                 $strTitle = trim(substr($strValue, 1));
                 $strElements .= "<b>{$strTitle}</b><br>";
             } else {
+                $bitIndent = substr($strValue, 0, 1) == "-";
+                if ($bitIndent) {
+                    $arrTemplateRow["title"] = substr($strValue, 1);
+                    $arrTemplateRow["css"] = "style='margin-left:20px;'";
+                }
                 $strElements .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/admin/skins/kajona_v4/elements.tpl", $strElementRow, true);
             }
         }

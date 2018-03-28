@@ -99,7 +99,7 @@ class FormentryMasterdropdown extends FormentryBase implements FormentryPrintabl
 
                     objTargetElement = $('#'+strTargetElement)
 
-                    if(strPrefix == "") {
+                    if (!strPrefix) {
                         arrValues = (this.objValues[strTargetElement]);
                     }
                     else {

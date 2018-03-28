@@ -317,7 +317,7 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
         $intCurrentStatus = $objObject->getIntRecordStatus();
         $objStatus = $objFlow->getStatusByIndex($intCurrentStatus);
 
-        return FlowGraphWriter::write($objFlow, $objStatus);
+        return FlowGraphWriter::write($objFlow, $objStatus, true);
     }
 
     /**

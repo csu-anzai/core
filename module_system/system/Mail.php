@@ -266,7 +266,7 @@ class Mail
 
 
             //Kajona Headers to avoid being marked as spam
-            $this->arrHeader[] = "X-Mailer: Kajona Mailer V5".$this->strEndOfLine;
+            $this->arrHeader[] = "X-Mailer: Kajona Core Mailer V7".$this->strEndOfLine;
             $this->arrHeader[] = "Message-ID: <".generateSystemid()."_kajona@".getServer("SERVER_NAME").">".$this->strEndOfLine;
 
             //header for multipartmails?

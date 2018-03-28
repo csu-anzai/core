@@ -56,7 +56,7 @@ class UserSourcefactory
         $arrRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, array($strName));
 
         if (isset($arrRow["group_id"]) && validateSystemid($arrRow["group_id"])) {
-            return new UserGroup($arrRow["group_id"]);
+            return Objectfactory::getInstance()->getObject($arrRow["group_id"]);
         }
 
         //nothing found
@@ -81,7 +81,7 @@ class UserSourcefactory
         $arrReturn = array();
         foreach ($arrRows as $arrOneRow) {
             if (in_array($arrOneRow["group_subsystem"], $this->arrSubsystemsAvailable)) {
-                $arrReturn[] = new UserGroup($arrOneRow["group_id"]);
+                $arrReturn[] = Objectfactory::getInstance()->getObject($arrOneRow["group_id"]);
             }
         }
         return $arrReturn;

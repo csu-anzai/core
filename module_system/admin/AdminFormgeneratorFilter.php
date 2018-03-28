@@ -40,6 +40,16 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
     private $bitInitiallyVisible = false;
 
     /**
+     * @var string
+     */
+    protected $strLangActive;
+
+    /**
+     * @var string
+     */
+    protected $strLangInactive;
+
+    /**
      * @param string $strFormname
      * @param FilterBase $objSourceobject
      *
@@ -105,17 +115,24 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
             }
         }
 
-        return self::renderToolbarEntry($strReturn, $bitFilterActive, $this->getBitInitiallyVisible());
+        return self::renderToolbarEntry($strReturn, $bitFilterActive, $this->getBitInitiallyVisible(), $this->getStrLangActive(), $this->getStrLangInactive());
     }
 
-    public static function renderToolbarEntry($strFilter, $bitFilterActive, $bitInitiallyVisible = false)
+    public static function renderToolbarEntry($strFilter, $bitFilterActive, $bitInitiallyVisible = false, $strLangActive = null, $strLangInactive = null)
     {
         $objLang = Carrier::getInstance()->getObjLang();
+
+        if ($strLangActive === null) {
+            $strLangActive = $objLang->getLang("commons_filter_active", "system");
+        }
+        if ($strLangInactive === null) {
+            $strLangInactive = $objLang->getLang("filter_show_hide", "system");
+        }
 
         $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
         $arrFolder = $objToolkit->getLayoutFolderPic(
             $strFilter,
-            $bitFilterActive ? $objLang->getLang("commons_filter_active", "system") : $objLang->getLang("filter_show_hide", "system"),
+            $bitFilterActive ? $strLangActive : $strLangInactive,
             "icon_folderOpen",
             $bitFilterActive ? "icon_filter" : "icon_folderClosed",
             $bitInitiallyVisible
@@ -172,5 +189,37 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
     public function setBitInitiallyVisible($bitInitiallyVisible)
     {
         $this->bitInitiallyVisible = $bitInitiallyVisible;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStrLangActive()
+    {
+        return $this->strLangActive;
+    }
+
+    /**
+     * @param string $strLangActive
+     */
+    public function setStrLangActive($strLangActive)
+    {
+        $this->strLangActive = $strLangActive;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStrLangInactive()
+    {
+        return $this->strLangInactive;
+    }
+
+    /**
+     * @param string $strLangInactive
+     */
+    public function setStrLangInactive($strLangInactive)
+    {
+        $this->strLangInactive = $strLangInactive;
     }
 }

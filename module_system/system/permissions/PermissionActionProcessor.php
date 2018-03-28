@@ -42,6 +42,7 @@ class PermissionActionProcessor
     /**
      * Applies the set of changes. Detects if a permission update is required.
      * Returns true in case a record was updated, false in case no update was required.
+     *
      * @return bool
      * @throws \Kajona\System\System\Exception
      */
@@ -53,10 +54,21 @@ class PermissionActionProcessor
             if (empty($actions)) {
                 continue;
             }
+
+            // sort all actions for this systemid after priority
+            $sortedActions = $actions;
+            usort($sortedActions, function (PermissionActionInterface $a, PermissionActionInterface $b) {
+                return $a->getPriority() <=> $b->getPriority();
+            });
+
             $permissionRow = $this->rights->getArrayRights($systemid);
+            if (array_key_exists(Rights::$STR_RIGHT_INHERIT, $permissionRow)) {
+                unset($permissionRow[Rights::$STR_RIGHT_INHERIT]);
+            }
             $oldPermissionRow = $permissionRow;
 
-            foreach ($actions as $singleAction) {
+            foreach ($sortedActions as $singleAction) {
+                /** @var PermissionActionInterface $singleAction */
                 $permissionRow = $singleAction->applyAction($permissionRow);
             }
 
@@ -105,12 +117,7 @@ class PermissionActionProcessor
             $this->actions[$operation->getSystemid()] = [];
         }
 
-        //add operations need to be performed ahead
-        if ($operation instanceof AddPermissionToGroup) {
-            array_unshift($this->actions[$operation->getSystemid()], $operation);
-        } else {
-            $this->actions[$operation->getSystemid()][] = $operation;
-        }
+        $this->actions[$operation->getSystemid()][] = $operation;
     }
 
 }

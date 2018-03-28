@@ -20,6 +20,8 @@ namespace Kajona\System\System;
  * @method static DatePeriodEnum QUARTER()
  * @method static DatePeriodEnum HALFYEAR()
  * @method static DatePeriodEnum YEAR()
+ * @method static DatePeriodEnum YEAR2()
+ * @method static DatePeriodEnum YEAR3()
  */
 class DatePeriodEnum extends EnumBase
 {
@@ -30,6 +32,8 @@ class DatePeriodEnum extends EnumBase
     private static $INT_FREQUENCY_QUARTER = 4;
     private static $INT_FREQUENCY_HALFYEAR = 5;
     private static $INT_FREQUENCY_YEAR = 6;
+    private static $INT_FREQUENCY_YEAR2 = 7;
+    private static $INT_FREQUENCY_YEAR3 = 8;
 
 
     /**
@@ -39,7 +43,7 @@ class DatePeriodEnum extends EnumBase
      */
     protected function getArrValues()
     {
-        return array("DAY", "WEEK", "MONTH", "QUARTER", "HALFYEAR", "YEAR");
+        return array("DAY", "WEEK", "MONTH", "QUARTER", "HALFYEAR", "YEAR", "YEAR2", "YEAR3");
     }
 
 
@@ -54,9 +58,13 @@ class DatePeriodEnum extends EnumBase
     public static function convertFrequencyIntToEnum($intFrequency)
     {
         switch ($intFrequency) {
+            case self::$INT_FREQUENCY_YEAR3:
+                return DatePeriodEnum::YEAR3();
+            case self::$INT_FREQUENCY_YEAR2:
+                return DatePeriodEnum::YEAR2();
             case self::$INT_FREQUENCY_YEAR:
                 return DatePeriodEnum::YEAR();
-            case self::$INT_FREQUENCY_HALFYEAR;
+            case self::$INT_FREQUENCY_HALFYEAR:
                 return DatePeriodEnum::HALFYEAR();
             case self::$INT_FREQUENCY_QUARTER:
                 return DatePeriodEnum::QUARTER();
@@ -81,22 +89,21 @@ class DatePeriodEnum extends EnumBase
      */
     public static function convertFrequencyEnumToInt(DatePeriodEnum $enumFrequency)
     {
-        if($enumFrequency->equals(DatePeriodEnum::YEAR())) {
+        if ($enumFrequency->equals(DatePeriodEnum::YEAR3())) {
+            return self::$INT_FREQUENCY_YEAR3;
+        } elseif ($enumFrequency->equals(DatePeriodEnum::YEAR2())) {
+            return self::$INT_FREQUENCY_YEAR2;
+        } elseif ($enumFrequency->equals(DatePeriodEnum::YEAR())) {
             return self::$INT_FREQUENCY_YEAR;
-        }
-        elseif($enumFrequency->equals(DatePeriodEnum::HALFYEAR())) {
+        } elseif ($enumFrequency->equals(DatePeriodEnum::HALFYEAR())) {
             return self::$INT_FREQUENCY_HALFYEAR;
-        }
-        elseif($enumFrequency->equals(DatePeriodEnum::QUARTER())) {
+        } elseif ($enumFrequency->equals(DatePeriodEnum::QUARTER())) {
             return self::$INT_FREQUENCY_QUARTER;
-        }
-        elseif($enumFrequency->equals(DatePeriodEnum::MONTH())) {
+        } elseif ($enumFrequency->equals(DatePeriodEnum::MONTH())) {
             return self::$INT_FREQUENCY_MONTH;
-        }
-        elseif($enumFrequency->equals(DatePeriodEnum::WEEK())) {
+        } elseif ($enumFrequency->equals(DatePeriodEnum::WEEK())) {
             return self::$INT_FREQUENCY_WEEK;
-        }
-        elseif($enumFrequency->equals(DatePeriodEnum::DAY())) {
+        } elseif ($enumFrequency->equals(DatePeriodEnum::DAY())) {
             return self::$INT_FREQUENCY_DAY;
         }
 

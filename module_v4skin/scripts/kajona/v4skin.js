@@ -19,7 +19,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
                     else
                         $('#messagingShortlist').append("<li><a href='" + item.details + "'><i class='fa fa-envelope'></i> " + item.title + "</a></li>");
                 });
-                $('#messagingShortlist').append("<li class='divider'></li><li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1&module=messaging'><i class='fa fa-envelope'></i> " + msg.properties.show_all + "</a></li>");
+                $('#messagingShortlist').append("<li class='divider'></li><li><a href='#/messaging'><i class='fa fa-envelope'></i> " + msg.properties.show_all + "</a></li>");
 
             });
         }
@@ -217,7 +217,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
                     $.each($.parseJSON(data), function(index, item) {
                         $('#tagsSubemenu').append("<li><a href='"+item.url+"'><i class='fa fa-tag'></i> "+item.name+"</a></li>");
                     });
-                    $('#tagsSubemenu').append("<li class='divider'></li><li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1#/tags'><i class='fa fa-tag'></i> <span data-lang-property='tags:action_show_all'></span></a></li>");
+                    $('#tagsSubemenu').append("<li class='divider'></li><li><a href='#/tags'><i class='fa fa-tag'></i> <span data-lang-property='tags:action_show_all'></span></a></li>");
                     lang.initializeProperties('#tagsSubemenu');
                 }
             });

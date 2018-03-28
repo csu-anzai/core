@@ -2,11 +2,13 @@
 
 namespace Kajona\System\Tests;
 
+use Kajona\System\System\Carrier;
 use Kajona\System\System\Date;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\MessagingAlert;
 use Kajona\System\System\MessagingAlertLifeCycle;
 use Kajona\System\System\MessagingMessagehandler;
+use Kajona\System\System\ServiceProvider;
 use Kajona\System\System\UserUser;
 
 class MessagingMessagehandlerTest extends Testbase
@@ -17,7 +19,10 @@ class MessagingMessagehandlerTest extends Testbase
         $objUser = new UserUser();
         $objUser->setSystemid(generateSystemid());
 
+        $objPermissionHandlerFactory = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_PERMISSION_HANDLER_FACTORY);
+
         $objLifeCycle = $this->getMockBuilder(MessagingAlertLifeCycle::class)
+            ->setConstructorArgs([$objPermissionHandlerFactory])
             ->setMethods(["update"])
             ->getMock();
 
@@ -48,7 +53,10 @@ class MessagingMessagehandlerTest extends Testbase
         $objUser->setSystemid(generateSystemid());
         $objUser->setIntRecordStatus(0);
 
+        $objPermissionHandlerFactory = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_PERMISSION_HANDLER_FACTORY);
+
         $objLifeCycle = $this->getMockBuilder(MessagingAlertLifeCycle::class)
+            ->setConstructorArgs([$objPermissionHandlerFactory])
             ->setMethods(["update"])
             ->getMock();
 

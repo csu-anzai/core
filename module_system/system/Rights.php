@@ -55,8 +55,13 @@ class Rights
 
     /**
      * Constructor doing the usual setup things
+     *
+     * Please dont create an instance of the rights class manually, the recommended way is to get the "rights" service
+     * from the DI container
+     *
+     * @internal
      */
-    private function __construct()
+    public function __construct()
     {
         $this->objDb = Carrier::getInstance()->getObjDB();
         $this->objSession = Carrier::getInstance()->getObjSession();
@@ -134,7 +139,9 @@ class Rights
         if ($this->objDb->_pQuery($strQuery, $arrParams)) {
             //Flush the cache so later lookups will match the new rights
             $this->objDb->flushQueryCache();
-            $this->flushRightsCache();
+            //unset in cache
+            unset(self::$arrPermissionMap[$strSystemid]);
+
             return true;
         } else {
             return false;
@@ -362,33 +369,26 @@ class Rights
      *
      * @param string $strSystemid
      *
+     * @param string $strPermissionFilter
      * @return array
      */
-    private function getPlainRightRow(string $strSystemid): array
+    private function getPlainRightRow(string $strSystemid, string $strPermissionFilter = ""): array
     {
-
         if (OrmRowcache::getCachedInitRow($strSystemid) != null) {
             $arrRow = OrmRowcache::getCachedInitRow($strSystemid);
         } else {
-            $strQuery = "SELECT *
-                            FROM "._dbprefix_."system
-                            WHERE system_id = ?";
-
-            $arrRow = $this->objDb->getPRow($strQuery, array($strSystemid));
-        }
-
-
-        if (SystemModule::getModuleByName("system") !== null && version_compare(SystemModule::getModuleByName("system")->getStrVersion(), "6.2.3", "<") && !isset($arrRow["right_view"])) {
-            $strQuery = "SELECT *
-                            FROM "._dbprefix_."system_right, "._dbprefix_."system
-                            WHERE right_id = ? AND system_id = right_id";
+            $strQuery = "SELECT * FROM "._dbprefix_."system WHERE system_id = ?";
 
             $arrRow = $this->objDb->getPRow($strQuery, array($strSystemid));
         }
 
 
         $arrRights = array();
-        if (isset($arrRow["system_id"]) && count($arrRow) >= 10) {
+        if (isset($arrRow["system_id"])) {
+            if ($strPermissionFilter != "") {
+                return [$strPermissionFilter => $arrRow["right_".$strPermissionFilter]];
+            }
+
             $arrRights[self::$STR_RIGHT_VIEW] = $arrRow["right_view"];
             $arrRights[self::$STR_RIGHT_EDIT] = $arrRow["right_edit"];
             $arrRights[self::$STR_RIGHT_DELETE] = $arrRow["right_delete"];
@@ -436,7 +436,7 @@ class Rights
     {
         $arrReturn = array();
 
-        $arrRow = $this->getPlainRightRow($strSystemid);
+        $arrRow = $this->getPlainRightRow($strSystemid, $strPermissionFilter);
 
         if ($strPermissionFilter != "") {
             return array($strPermissionFilter => explode(",", "".$arrRow[$strPermissionFilter]));
@@ -662,26 +662,28 @@ class Rights
             return true;
         }
 
-        if (isset(self::$arrPermissionMap[$strSystemid][$strUserid][$strPermission])) {
+        if (isset(self::$arrPermissionMap[$strSystemid][$strUserid]) && array_key_exists($strPermission, self::$arrPermissionMap[$strSystemid][$strUserid])) {
             return self::$arrPermissionMap[$strSystemid][$strUserid][$strPermission];
         }
 
-        $arrGroupIds = array();
+        $arrGroupShortIds = array();
 
         if (validateSystemid($strUserid)) {
             if ($strUserid == $this->objSession->getUserID()) {
-                $arrGroupIds = $this->objSession->getGroupIdsAsArray();
+                $arrGroupShortIds = $this->objSession->getShortGroupIdsAsArray();
             } else {
                 /** @var UserUser $objUser */
                 $objUser = Objectfactory::getInstance()->getObject($strUserid);
-                $arrGroupIds = $objUser->getArrGroupIds();
+                $arrGroupShortIds = $objUser->getArrShortGroupIds();
             }
         } elseif (validateSystemid($this->objSession->getUserID())) {
-            $arrGroupIds = $this->objSession->getGroupIdsAsArray();
+            $arrGroupShortIds = $this->objSession->getShortGroupIdsAsArray();
         }
 
-        foreach ($arrGroupIds as $strOneGroupId) {
-            if ($this->checkPermissionForGroup($strOneGroupId, $strPermission, $strSystemid)) {
+        //fetch permissions once
+        $arrRights = array_flip(explode(",", $this->getPlainRightRow($strSystemid, $strPermission)[$strPermission]));
+        foreach ($arrGroupShortIds as $strOneGroupId) {
+            if (isset($arrRights[$strOneGroupId])) {
                 self::$arrPermissionMap[$strSystemid][$strUserid][$strPermission] = true;
                 return true;
             }
@@ -717,8 +719,12 @@ class Rights
             return false;
         }
 
-        $arrRights = $this->getArrayRightsShortIds($strSystemid, $strPermission);
-        return in_array($intShortId, $arrRights[$strPermission]);
+        $arrRights = $this->getPlainRightRow($strSystemid, $strPermission);
+        return strpos($arrRights[$strPermission], ",".$intShortId.",") !== false;
+
+        //note: strpos is faster then an explode + in_array
+        //$arrRights = $this->getArrayRightsShortIds($strSystemid, $strPermission);
+        //return in_array($intShortId, $arrRights[$strPermission]);
     }
 
     /**
@@ -953,7 +959,6 @@ class Rights
      */
     private function flushRightsCache()
     {
-        self::$arrPermissionMap = array();
         Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_ORMCACHE);
     }
 

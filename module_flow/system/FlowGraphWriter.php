@@ -25,9 +25,10 @@ class FlowGraphWriter
      *
      * @param FlowConfig $objFlow
      * @param mixed $objHighlite
+     * @param bool $bitPreview
      * @return string
      */
-    public static function write(FlowConfig $objFlow, $objHighlite = null)
+    public static function write(FlowConfig $objFlow, $objHighlite = null, $bitPreview = false)
     {
         //ugly hack to fetch old IE versions. used to inject some special options and css definitions
         $strUA = htmlentities($_SERVER['HTTP_USER_AGENT'], ENT_QUOTES, 'UTF-8');
@@ -35,7 +36,7 @@ class FlowGraphWriter
             self::$bitIsIe = true;
         }
         //return self::writeCytoscape($objFlow, $objHighlite);
-        return self::writeMermaid($objFlow, $objHighlite);
+        return self::writeMermaid($objFlow, $objHighlite, $bitPreview);
     }
 
     /**
@@ -191,7 +192,7 @@ class FlowGraphWriter
 HTML;
     }
 
-    private static function writeMermaid(FlowConfig $objFlow, $objHighlite = null)
+    private static function writeMermaid(FlowConfig $objFlow, $objHighlite = null, $bitPreview = false)
     {
         $arrStatus = $objFlow->getArrStatus();
 
@@ -254,9 +255,16 @@ HTML;
         $strGraph = implode("\n", $arrList);
 
         $strTmpSystemId = generateSystemid();
-        $strLinkTransition = Link::getLinkAdminHref("flow", "listTransition", "&systemid=" . $strTmpSystemId);
-        $strLinkTransitionAction = Link::getLinkAdminHref("flow", "listTransitionAction", "&systemid=" . $strTmpSystemId);
-        $strLinkTransitionCondition = Link::getLinkAdminHref("flow", "listTransitionCondition", "&systemid=" . $strTmpSystemId);
+
+        if ($bitPreview) {
+            $strLinkTransition = "";
+            $strLinkTransitionAction = "";
+            $strLinkTransitionCondition = "";
+        } else {
+            $strLinkTransition = Link::getLinkAdminHref("flow", "listTransition", "&systemid=" . $strTmpSystemId);
+            $strLinkTransitionAction = Link::getLinkAdminHref("flow", "listTransitionAction", "&systemid=" . $strTmpSystemId);
+            $strLinkTransitionCondition = Link::getLinkAdminHref("flow", "listTransitionCondition", "&systemid=" . $strTmpSystemId);
+        }
 
         $strAction = Lang::getInstance()->getLang("modul_titel_transition_action", "flow");
         $strCondition = Lang::getInstance()->getLang("modul_titel_transition_condition", "flow");

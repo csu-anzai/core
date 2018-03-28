@@ -973,8 +973,8 @@ $("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
 </input_checkboxarray>
 
 <input_checkboxarray_checkbox>
-    <div class="%%type%%%%inline%%">
-        <label><input type="%%type%%" name="%%name%%"  id="%%name%%" value="%%value%%" %%checked%% %%readonly%% /> %%title%%</label>
+    <div class="%%type%%%%inline%%" %%css%%>
+        <label><input type="%%type%%" name="%%name%%" id="%%name%%" value="%%value%%" data-index="%%key%%" %%checked%% %%readonly%% /> %%title%%</label>
     </div>
 </input_checkboxarray_checkbox>
 
@@ -1155,22 +1155,22 @@ Part to display the login status, user is logged in
     </a>
     <ul class="dropdown-menu generalContextMenu" role="menu">
         <li class="dropdown-submenu">
-            <a tabindex="-1" href="#"><i class='fa fa-envelope'></i> [lang,modul_titel,messaging]</a>
+            <a tabindex="-1" href="#" onclick="return false;"><i class='fa fa-envelope'></i> [lang,modul_titel,messaging]</a>
             <ul class="dropdown-menu sub-menu" id="messagingShortlist">
                 <li><a>Loading...</a></li>
                 <li class="divider"></li>
-                <li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1&module=messaging'><i class='fa fa-envelope'></i> [lang,action_show_all,messaging]</a></li>
+                <li><a href='#/messaging'><i class='fa fa-envelope'></i> [lang,action_show_all,messaging]</a></li>
             </ul>
         </li>
 
         <!-- messages will be inserted here -->
         <li class="divider"></li>
         <li class="dropdown-submenu">
-            <a tabindex="-1" href="#"><i class='fa fa-tag'></i> [lang,modul_titel,tags]</a>
+            <a tabindex="-1" href="#" onclick="return false;"><i class='fa fa-tag'></i> [lang,modul_titel,tags]</a>
             <ul class="dropdown-menu sub-menu" id="tagsSubemenu">
                 <li><a>Loading...</a></li>
                 <li class="divider"></li>
-                <li><a href='"+KAJONA_WEBPATH+"/index.php?admin=1&module=tags'><i class='fa fa-tag'></i> [lang,action_show_all,tags]</a></li>
+                <li><a href='#/tags'><i class='fa fa-tag'></i> [lang,action_show_all,tags]</a></li>
             </ul>
         </li>
         <li class="divider"></li>
@@ -1798,7 +1798,7 @@ It containes a list of aspects and provides the possibility to switch the differ
 <sitemap_wrapper>
       <div class="nav-header">
             %%aspectToggle%%
-            V7
+            [lang,commons_product_title,commons]
       </div>
     %%level%%
 </sitemap_wrapper>
