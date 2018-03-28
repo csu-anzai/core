@@ -11,20 +11,24 @@ namespace Kajona\System\View\Components;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Reflection;
 
-
 /**
  * Base class for view components
+ *
  * @package Kajona\View\Components
  */
 abstract class AbstractComponent
 {
     /**
-     * The template used to render the current component. Please add the folder-name, too.-
+     * The template used to render the current component. Please add the folder-name, too. If the template file ends
+     * with .twig we use the twig template engine
      * Example: datatable/template.tpl
      */
     const STR_TEMPLATE_ANNOTATION = "@componentTemplate";
 
-    private $strTemplateName = "";
+    /**
+     * @var string
+     */
+    private $strTemplateName;
 
     /**
      * AbstractComponent constructor.
@@ -39,16 +43,49 @@ abstract class AbstractComponent
         }
     }
 
-    protected function renderTemplate(array $arrData, string $strSection): string
+    /**
+     * @param array $arrData
+     * @param string $strSection
+     * @return string
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     */
+    protected function renderTemplate(array $arrData, string $strSection = ""): string
     {
-        $objTemplate = Carrier::getInstance()->getObjTemplate();
-        return $objTemplate->fillTemplateFile($arrData, "/view/components/".$this->strTemplateName, $strSection);
+        $strExtension = pathinfo($this->strTemplateName, PATHINFO_EXTENSION);
+
+        if ($strExtension == "twig") {
+            return $this->newTwig()->render($this->strTemplateName, $arrData);
+        } else {
+            $objTemplate = Carrier::getInstance()->getObjTemplate();
+            return $objTemplate->fillTemplateFile($arrData, "/view/components/".$this->strTemplateName, $strSection);
+        }
     }
 
     /**
      * Renders the component itself
+     *
      * @return string
      */
     abstract public function renderComponent(): string;
 
+    /**
+     * @return \Twig_Environment
+     */
+    private function newTwig()
+    {
+        static $engine;
+
+        if ($engine) {
+            return $engine;
+        }
+
+        $loader = new \Twig_Loader_Filesystem(__DIR__);
+        $engine = new \Twig_Environment($loader, array(
+            'cache' => _realpath_ . 'project/temp/cache',
+        ));
+
+        return $engine;
+    }
 }
