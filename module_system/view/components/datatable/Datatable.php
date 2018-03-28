@@ -11,11 +11,8 @@ namespace Kajona\System\View\Components\Datatable;
 use Kajona\System\View\Components\AbstractComponent;
 
 /**
- * Returns a table filled with infos.
- * The header may be build using cssclass -> value or index -> value arrays
- * Values may be build using cssclass -> value or index -> value arrays, too (per row)
- * For header, the passing of the fake-classes colspan-2 and colspan-3 are allowed in order to combine cells
- * 
+ * Renders a simple table with headers and rows
+ *
  * @author sidler@mulchprod.de
  * @since 7.0
  * @componentTemplate datatable/template.twig
