@@ -15,7 +15,7 @@ use Kajona\System\View\Components\AbstractComponent;
  *
  * @author sidler@mulchprod.de
  * @since 7.0
- * @componentTemplate datatable/template.twig
+ * @componentTemplate template.twig
  */
 class Datatable extends AbstractComponent
 {
