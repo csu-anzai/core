@@ -144,6 +144,7 @@ class DatabaseTest extends Testbase
         $objDb = Carrier::getInstance()->getObjDB();
         $this->createTable();
 
+        // test changing a column type with the same column name
         $this->assertTrue($objDb->changeColumn("temp_autotest", "temp_char10", "temp_char10", DbDatatypes::STR_TYPE_LONGTEXT));
     }
 
