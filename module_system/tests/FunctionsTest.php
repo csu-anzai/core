@@ -34,6 +34,38 @@ class FunctionsTest extends Testbase
         //keep links already existing
         $this->assertEquals("hello <a href=\"http://www.kajona.de\">aaaa</a> world", replaceTextLinks("hello <a href=\"http://www.kajona.de\">aaaa</a> world"));
         $this->assertEquals("hello <a href=\"http://www.kajona.de\">http://www.kajona.de</a> world", replaceTextLinks("hello <a href=\"http://www.kajona.de\">http://www.kajona.de</a> world"));
+
+        $strText = <<<TEXT
+Die Risikoanalyse 'Risikoanalyse Rahmenvertrag (28.03.2018)' wurde von Status 'In Bearbeitung' nach 'In Review' gesetzt.
+
+Die Zusammenfassung können Sie unter folgendem Link einsehen:
+https://aquarium.kajona.de:8443/master/#/riskanalysis/showSummary/08fc1be5abb56446ea4b
+
+Bitte verwenden Sie den unten stehenden Link, um die einzelnen Risiken einzusehen:
+https://aquarium.kajona.de:8443/master/#/riskanalysis/riskWizardPage/08fc1be5abb56446ea4b
+
+Unter dem folgendem Link können Sie die aktuelle Risikoanalyse vergleichen:
+https://aquarium.kajona.de:8443/master/#/riskanalysis/showDiff?left_container_id=08fc1be5abb56446ea4b&right_container_id=08fc1be5abb56446ea4b
+TEXT;
+
+        $strExpect = <<<TEXT
+Die Risikoanalyse 'Risikoanalyse Rahmenvertrag (28.03.2018)' wurde von Status 'In Bearbeitung' nach 'In Review' gesetzt.
+
+Die Zusammenfassung können Sie unter folgendem Link einsehen:
+ <a href="https://aquarium.kajona.de:8443/master/#/riskanalysis/showSummary/08fc1be5abb56446ea4b">https://aquarium.kajona.de:8443/master/#/riskanalysis/showSummary/08fc1be5abb56446ea4b</a> 
+
+Bitte verwenden Sie den unten stehenden Link, um die einzelnen Risiken einzusehen:
+ <a href="https://aquarium.kajona.de:8443/master/#/riskanalysis/riskWizardPage/08fc1be5abb56446ea4b">https://aquarium.kajona.de:8443/master/#/riskanalysis/riskWizardPage/08fc1be5abb56446ea4b</a> 
+
+Unter dem folgendem Link können Sie die aktuelle Risikoanalyse vergleichen:
+ <a href="https://aquarium.kajona.de:8443/master/#/riskanalysis/showDiff?left_container_id=08fc1be5abb56446ea4b&right_container_id=08fc1be5abb56446ea4b">https://aquarium.kajona.de:8443/master/#/riskanalysis/showDiff?left_container_id=08fc1be5abb56446ea4b&right_container_id=08fc1be5abb56446ea4b</a> 
+TEXT;
+
+        $strActual = replaceTextLinks($strText);
+        $strActual = str_replace(["\r\n", "\n", "\r"], "\n", $strActual);
+        $strExpect = str_replace(["\r\n", "\n", "\r"], "\n", $strExpect);
+
+        $this->assertEquals($strExpect, $strActual);
     }
 
     /**
