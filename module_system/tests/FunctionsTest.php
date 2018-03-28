@@ -44,6 +44,8 @@ https://aquarium.kajona.de:8443/master/#/riskanalysis/showSummary/08fc1be5abb564
 Bitte verwenden Sie den unten stehenden Link, um die einzelnen Risiken einzusehen:
 https://aquarium.kajona.de:8443/master/#/riskanalysis/riskWizardPage/08fc1be5abb56446ea4b
 
+https://aquarium.kajona.de:8443/master/#/riskanalysis/riskWizardPage/08fc1be5abb56446ea4b<br />
+
 Unter dem folgendem Link können Sie die aktuelle Risikoanalyse vergleichen:
 https://aquarium.kajona.de:8443/master/#/riskanalysis/showDiff?left_container_id=08fc1be5abb56446ea4b&right_container_id=08fc1be5abb56446ea4b
 TEXT;
@@ -56,6 +58,8 @@ Die Zusammenfassung können Sie unter folgendem Link einsehen:
 
 Bitte verwenden Sie den unten stehenden Link, um die einzelnen Risiken einzusehen:
  <a href="https://aquarium.kajona.de:8443/master/#/riskanalysis/riskWizardPage/08fc1be5abb56446ea4b">https://aquarium.kajona.de:8443/master/#/riskanalysis/riskWizardPage/08fc1be5abb56446ea4b</a> 
+ 
+ <a href="https://aquarium.kajona.de:8443/master/#/riskanalysis/riskWizardPage/08fc1be5abb56446ea4b">https://aquarium.kajona.de:8443/master/#/riskanalysis/riskWizardPage/08fc1be5abb56446ea4b</a><br /> 
 
 Unter dem folgendem Link können Sie die aktuelle Risikoanalyse vergleichen:
  <a href="https://aquarium.kajona.de:8443/master/#/riskanalysis/showDiff?left_container_id=08fc1be5abb56446ea4b&right_container_id=08fc1be5abb56446ea4b">https://aquarium.kajona.de:8443/master/#/riskanalysis/showDiff?left_container_id=08fc1be5abb56446ea4b&right_container_id=08fc1be5abb56446ea4b</a> 
