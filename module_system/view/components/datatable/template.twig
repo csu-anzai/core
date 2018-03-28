@@ -9,7 +9,7 @@
 </thead>
 {% for key, row in rows %}
     {% if withTbody %}<tbody>{% endif %}
-    <tr data-systemid="{{ key }}">
+    <tr data-key="{{ key }}">
         {% for column in row %}
         <td>{{ column|raw }}</td>
         {% endfor %}
@@ -21,7 +21,7 @@
 {% if withFloatThread %}
 <script type="text/javascript">
 require(["jquery-floatThread"], function() {
-    $('table.core-component-datatable:not(.kajona-data-table-ignore-floatthread)').floatThead({
+    $('table.core-component-datatable').floatThead({
         scrollingTop: $("body.dialogBody").size() > 0 ? 0 : 70,
         useAbsolutePositioning: true
     });
