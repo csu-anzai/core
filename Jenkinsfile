@@ -26,7 +26,7 @@ pipeline {
                             ])
 
                             withAnt(installation: 'Ant') {
-                                sh "ant -buildfile core/_buildfiles/build_jenkins.xml buildSqliteFast"
+                                sh "ant -buildfile core/_buildfiles/build.xml buildSqliteFast"
                             }
                             archiveArtifacts 'core/_buildfiles/packages/'
                         }
@@ -48,7 +48,7 @@ pipeline {
                             ])
 
                             withAnt(installation: 'Ant') {
-                                sh "ant -buildfile core/_buildfiles/build_jenkins.xml buildSqliteFast"
+                                sh "ant -buildfile core/_buildfiles/build.xml buildSqliteFast"
                             }
                             archiveArtifacts 'core/_buildfiles/packages/'
                         }
