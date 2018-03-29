@@ -33,14 +33,11 @@ class PharCreator
 
             foreach ($arrFiles as $strFile) {
 
-                if (is_dir(__DIR__."/../".$strOneCore."/".$strFile) && substr($strFile, 0, 7) == 'module_') {
+                if (is_dir(__DIR__."/../".$strOneCore."/".$strFile) && (substr($strFile, 0, 7) == 'module_')) {
 
                     $strModuleName = substr($strFile, 7);
-                    $strPharName = "module_".$strModuleName.".phar";
+                    $strPharName = $strFile.".phar";
                     
-//                    if($strModuleName != "system") {
-//                        continue;
-//                    }
 
                     $strTargetPath = __DIR__."/../".$strOneCore."/".$strPharName;
                     if ($this->strDeployPath != "" && is_dir($this->strDeployPath."/".$strOneCore)) {

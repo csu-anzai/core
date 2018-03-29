@@ -315,6 +315,8 @@
             <fileset dir="${basedir}${tempPath}" includes="**/V4toV5Migration.php"/>
             <fileset dir="${basedir}${tempPath}" includes="**/.git"/>
             <fileset dir="${basedir}${tempPath}" includes="**/core*/_buildfiles*/**"/>
+            <fileset dir="${basedir}${tempPath}" includes="**/core*/_debugging*/**"/>
+            <fileset dir="${basedir}${tempPath}" includes="debug.php"/>
         </delete>
     </target>
 
