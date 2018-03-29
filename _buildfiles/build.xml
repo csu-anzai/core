@@ -8,10 +8,7 @@
 
      This build-file may be migrated to phing, feel free to start the migration
 
-
      Author: sidler
-     $Id$
-
      ====================================================================== -->
 <project name="Kajona Head Build" default="buildSqliteFast" basedir=".">
 
@@ -53,7 +50,6 @@
     <property name="npmLocalRegistry" value="http://packages.artemeon.int:4873/" />
 
 
-
     <!-- path to composer -->
     <property name="path.composer"  value="composer${script-suffix}" />
     <!-- path to node -->
@@ -66,68 +62,82 @@
     <property name="path.phpcs"     value="${composerBinariesPath}/phpcs${script-suffix}" />
     <!-- path to phpmd -->
     <property name="path.phpmd"     value="${composerBinariesPath}/phpmd${script-suffix}" />
-    <!-- path to phpcpd -->
-    <property name="path.phpcpd"    value="${composerBinariesPath}/phpcpd${script-suffix}" />
-    <!-- path to pdepend -->
-    <property name="path.pdepend"   value="${composerBinariesPath}/pdepend${script-suffix}" />
     <!-- path to php -->
     <property name="path.php"       value="php" />
-    <!-- path to phploc -->
-    <property name="path.phploc"    value="${composerBinariesPath}/phploc${script-suffix}" />
-    <!-- path to phpcb -->
-    <property name="path.phpcb"     value="${composerBinariesPath}/phpcb${script-suffix}" />
-    <!-- path to phpdox -->
-    <property name="path.phpdox"     value="${composerBinariesPath}/phpdox${script-suffix}" />
 
 
     <!--
              No need to change anything below!
      -->
 
-
     <!-- internal initialization -->
-    <target name="init" depends="cleanFilesystem,installComposerBuildDependencies,installNpmBuildDependencies">
+    <target name="init" depends="cleanFilesystem,installBuildDependencies">
         <tstamp />
     </target>
 
     <target name="buildSqliteFast" depends="
 		    								init,
 					    					buildProject, installProjectSqlite,
-					    					lint,phpunitFast,jasmine,
+					    					runFastTests,
 					    					buildFullZip" />
 
 
     <target name="buildSqliteFull" depends="
 		    								init,
 					    					buildProject, installProjectSqlite,
-					    					lint,phpunit,jasmine,phpmd-ci,phpcs-ci,
+					    					runFullTests,
 					    					buildFullZip" />
 
     <target name="buildMysql" depends="
 		    								init,
 					    					buildProject, installProjectMysql,
-					    					phpunitFast,jasmine" />
+					    					runFastTests" />
 
     <target name="buildOracle" depends="
 		    								init,
 					    					buildProject, installProjectOracle,
-					    					phpunitFast,jasmine" />
+					    					runFastTests" />
 
     <target name="buildPostgres" depends="
 		    								init,
 					    					buildProject, installProjectPostgres,
-					    					phpunitFast,jasmine" />
+					    					runFastTests" />
 
     <target name="buildMssql" depends="
 		    								init,
 					    					buildProject, installProjectMssql,
-					    					phpunitFast,jasmine" />
+					    					runFastTests" />
 
 
 
-    <!-- installs all composer dependencies required for the build itself, so mainly external tools -->
-    <target name="installComposerBuildDependencies" >
-        <echo>Copy composer.json and composer.lock to ${basedir}${tempPath}</echo>
+    <target name="runFastTests">
+        <parallel>
+            <antcall target="lint" />
+            <antcall target="phpunitFast" />
+            <antcall target="jasmine" />
+        </parallel>
+    </target>
+
+    <target name="runFullTests">
+        <parallel>
+            <antcall target="lint" />
+            <antcall target="phpunit" />
+            <antcall target="phpmd-ci" />
+            <antcall target="phpcs-ci" />
+            <antcall target="jasmine" />
+        </parallel>
+    </target>
+
+    <target name="installBuildDependencies">
+        <parallel>
+            <antcall target="installComposerBuildDependencies" />
+            <antcall target="installNpmBuildDependencies" />
+        </parallel>
+    </target>
+
+    <target name="installComposerBuildDependencies">
+        <!--echo>Composer Build Dependencies</echo>
+        <echo>Copy composer.json and composer.lock to ${basedir}${tempPath}</echo-->
         <copy todir="${basedir}${buildPath}/composerbuild" overwrite="true"  includeEmptyDirs="true" >
             <fileset id="composer.dirs" dir="${basedir}${composerPath}">
                 <include name="composer.json"/>
@@ -135,7 +145,7 @@
             </fileset>
         </copy>
 
-        <echo>Execute composer</echo>
+        <!--echo>Execute composer</echo-->
         <exec dir="${basedir}${buildPath}/composerbuild" executable="${path.composer}" failonerror="on" >
             <arg line=" install"/>
             <arg line=" --no-dev"/>
@@ -143,9 +153,9 @@
         </exec>
     </target>
 
-    <!-- installs all node dependencies -->
-    <target name="installNpmBuildDependencies" >
-        <echo>Execute npm</echo>
+    <target name="installNpmBuildDependencies">
+        <!--echo>npm Build Dependencies</echo>
+        <echo>Execute npm</echo -->
         <exec dir="${basedir}${jsPath}" executable="${path.npm}" failonerror="on">
             <arg line=" config set registry ${npmLocalRegistry}"/>
         </exec>
@@ -154,93 +164,6 @@
         </exec>
     </target>
 
-    <target name="installNpmGuiBuildDependencies" >
-        <echo>Execute npm</echo>
-        <exec dir="${basedir}${jsPath}" executable="${path.npm}" failonerror="on">
-            <arg line=" config set registry ${npmLocalRegistry}"/>
-        </exec>
-        <exec dir="${basedir}${jsPath}/guideps" executable="${path.npm}" failonerror="on">
-            <arg line=" install"/>
-        </exec>
-    </target>
-
-
-    <!-- executes javascript protractor tests -->
-    <target name="protractorSetup" depends="installNpmBuildDependencies,installNpmGuiBuildDependencies">
-        <!-- deletes all files from the tmp folder -->
-        <antcall target="setupPackageFolders" />
-
-        <!-- copy all files to the temp folder -->
-        <copy todir="${basedir}${tempPath}" overwrite="true" includeEmptyDirs="true" >
-            <fileset id="sources.dirs" dir="${basedir}${sourcesPath}">
-                <exclude name=".git"/>
-                <include name="core*/module_*/*/**"/>
-                <include name="core*/template_*/*/**"/>
-                <include name="core*/_debugging/*/**"/>
-                <include name="core*/*.php"/>
-                <include name="core*/*.htaccess"/>
-                <include name="core/_buildfiles/jstests/selenium/**"/><!-- contains the page objects-->
-            </fileset>
-        </copy>
-
-        <!-- Extract phar files -->
-        <copy file="${basedir}/extractPhar.php" tofile="${basedir}${tempPath}/extractPhar.php" />
-
-        <!-- remove modules which are not included in the package config -->
-        <exec executable="${path.php}" dir="${basedir}" failonerror="on" >
-            <arg line="cleanCore.php ${tempPath}"/>
-        </exec>
-
-        <antcall target="buildPackageHelperSelenium" />
-
-        <!-- Modify .htaccess file-->
-        <echo file="${basedir}${tempPath}/.htaccess" append="true">
-            Allow from all
-        </echo>
-
-    </target>
-
-    <target name="protractorExecute" depends="installNpmBuildDependencies">
-
-        <!-- Start webdriver-->
-        <exec dir="${basedir}${jsPath}" executable="${path.node}" failonerror="on">
-            <arg line="./guideps/node_modules/protractor/bin/webdriver-manager update"/>
-        </exec>
-        <exec dir="${basedir}${jsPath}" executable="${path.node}" spawn="true">
-            <arg line="./guideps/node_modules/protractor/bin/webdriver-manager start"/>
-        </exec>
-
-        <!-- wait so that the selenium and webserver are ready -->
-        <sleep seconds="4" />
-
-        <!-- run selenium tests -->
-        <echo> Run selenium tests </echo>
-        <exec dir="${basedir}${jsPath}" executable="${path.node}" failonerror="on">
-            <arg line="./guideps/node_modules/protractor/bin/protractor e2e/conf.js"/>
-        </exec>
-
-        <!-- Stop webdriver-->
-        <exec dir="${basedir}${jsPath}" executable="${path.node}" spawn="true">
-            <arg line="./guideps/node_modules/protractor/bin/webdriver-manager shutdown"/>
-        </exec>
-
-    </target>
-
-    <target name="protractor" depends="protractorSetup">
-        <antcall target="protractorExecute" />
-    </target>
-
-    <target name="protractorPhar" depends="protractorSetup">
-        <sleep seconds="10"/>
-        <antcall target="modulePharHelper" />
-
-        <!-- call extract phar -->
-        <exec dir="${basedir}${tempPath}" executable="${path.php}">
-            <arg line="extractPhar.php"/>
-        </exec>
-
-        <antcall target="protractorExecute" />
-    </target>
 
     <!-- removes existing folders and creates them again -->
     <target name="cleanFilesystem">
@@ -259,49 +182,54 @@
         <mkdir  dir="${basedir}${buildPath}/api"/>
         <mkdir  dir="${basedir}${buildPath}/logs"/>
         <mkdir  dir="${basedir}${buildPath}/coverage"/>
-        <!--<mkdir  dir="${basedir}${buildPath}/code-browser"/>-->
         <mkdir  dir="${basedir}${buildPath}/pdepend"/>
-        <!--<mkdir  dir="${basedir}${buildPath}/phpdox"/>-->
         <mkdir  dir="${basedir}${buildPath}/composerbuild"/>
-
     </target>
 
 
+    <!-- possible params: targetDir -->
+    <target name="copy2project">
+        <copy todir="${targetDir}" overwrite="true"  includeEmptyDirs="true" >
+            <fileset id="sources.dirs" dir="${basedir}${sourcesPath}">		              
+                <exclude name=".git"/>		              
+                <exclude name="files/extract/**"/>		              
+                <exclude name="files/cache/**"/>		              
+                <exclude name="project/log/**"/>		              
+                <exclude name="project/dbdumps"/>		              
+                <exclude name="project/temp/**"/>		              
+                <include name="core*/module_*/*/**"/>		 
+                <include name="core*/_debugging/*/**"/>	
+                <!--<include name="core*/_buildfiles/*/**"/>-->	
+                <include name="core*/*.php"/>		 
+                <include name="core*/*.htaccess"/>	
+                <include name="files/**"/>	
+                <include name="project/**"/>	
+                <include name=".htaccess"/>	
+            </fileset>		              
+        </copy>
+    </target>
+
     <!-- builds the project, aka creates a project out of the sources -->
     <target name="buildProject">
-        <copy todir="${basedir}${projectPath}" overwrite="true"  includeEmptyDirs="true" >
-            <fileset id="sources.dirs" dir="${basedir}${sourcesPath}">
-                <exclude name=".git"/>
-                <include name="core*/module_*/*/**"/>
-                <include name="core*/template_*/*/**"/>
-                <include name="core*/_debugging/*/**"/>
-                <include name="core*/_buildfiles/*/**"/>
-                <include name="core*/*.php"/>
-                <include name="core*/*.htaccess"/>
-            </fileset>
-        </copy>
+        <antcall target="copy2project">
+            <param name="targetDir" value="${basedir}${projectPath}" />
+        </antcall>
     </target>
 
     <!-- creates the full-zip including all modules and elements -->
     <target name="buildFullZip" depends="init" >
-        <antcall target="setupPackageFolders" />
-        <copy todir="${basedir}${tempPath}" overwrite="true"  includeEmptyDirs="true" >
-            <fileset id="sources.dirs" dir="${basedir}${sourcesPath}">
-                <exclude name=".git"/>
-                <exclude name="core*/module_pchart/" />
-                <exclude name="core*/module_flotchart/" />
+        <antcall target="copy2project">
+            <param name="targetDir" value="${basedir}${tempPath}" />
+        </antcall>
 
-                <include name="core*/module_*/*/**"/>
-                <include name="core*/template_*/*/**"/>
-                <include name="core*/*.php"/>
-                <include name="core*/*.htaccess"/>
-            </fileset>
-        </copy>
+        <exec executable="php" dir="${basedir}"  failonerror="on" >
+            <arg line="-f cleanCore.php ${tempPath}"/>
+        </exec>
 
         <antcall target="buildPackageHelper" />
         <antcall target="modulePharHelper" />
-
-        <zip destfile="${basedir}${packagesPath}/kajona_v6_full_${DSTAMP}-${TSTAMP}.zip">
+    
+        <zip destfile="${basedir}${packagesPath}/build_${DSTAMP}-${TSTAMP}.zip">
             <fileset dir="${basedir}${tempPath}/../" />
         </zip>
     </target>
@@ -323,40 +251,14 @@
         <exec executable="php" dir="${basedir}"  failonerror="on" >
             <arg line="-f buildProject.php ${tempPath} onlySetup"/>
         </exec>
-        <antcall target="compressCss" />
-        <antcall target="compressJs" />
+        <parallel>
+            <antcall target="compressCss" />
+            <antcall target="compressJs" />
+        </parallel>
         <antcall target="cleanZipContent" />
     </target>
 
-    <target name="buildPackageHelperProject" description="triggers the project setup and the compilation / compression of css / js files">
-        <exec executable="php" dir="${basedir}"  failonerror="on" >
-            <arg line="-f buildProject.php ${tempPath} onlySetup"/>
-        </exec>
-        <antcall target="compressCss" />
-        <antcall target="compressJs" />
-        <antcall target="cleanZipContent" />
-    </target>
-
-    <target name="buildPackageHelperSelenium" description="triggers the project setup and the compilation / compression of css / js files">
-        <exec executable="php" dir="${basedir}"  failonerror="on" >
-            <arg line="-f buildProject.php ${tempPath} onlySetup"/>
-        </exec>
-        <!--<antcall target="compressCss" />-->
-        <!--<antcall target="compressJs" />-->
-        <delete includeemptydirs="true">
-            <fileset dir="${basedir}${tempPath}" includes="**/*.less"/>
-            <fileset dir="${basedir}${tempPath}" includes="**/less.js"/>
-            <fileset dir="${basedir}${tempPath}" includes="**/less-full.js"/>
-            <fileset dir="${basedir}${tempPath}" includes="**/*.odt"/>
-            <fileset dir="${basedir}${tempPath}" includes="**/setupproject.php"/>
-            <fileset dir="${basedir}${tempPath}" includes="**/.git"/>
-        </delete>
-    </target>
-
-    <target name="setupPackageFolders" description="deletes the temp-folders and creates the initial structure">
-        <delete dir="${basedir}${tempPath}"/>
-        <mkdir  dir="${basedir}${tempPath}"/>
-    </target>
+    
 
     <!-- triggers the installation of the project aka. creating the db-structure -->
 
@@ -400,9 +302,6 @@
         </exec>
     </target>
 
-
-
-
     <target name="cleanZipContent" description="Removes internal files used by the development not to be included into the build zips">
         <delete includeemptydirs="true">
             <fileset dir="${basedir}${tempPath}" includes="**/*.less"/>
@@ -412,9 +311,12 @@
             <fileset dir="${basedir}${tempPath}" includes="**/core*/*/tests/**"/>
             <fileset dir="${basedir}${tempPath}" includes="**/core*/*/scripts/spec/**"/>
             <fileset dir="${basedir}${tempPath}" includes="**/setupproject.php"/>
+            <fileset dir="${basedir}${tempPath}" includes="**/Jenkinsfile"/>
             <fileset dir="${basedir}${tempPath}" includes="**/V4toV5Migration.php"/>
             <fileset dir="${basedir}${tempPath}" includes="**/.git"/>
             <fileset dir="${basedir}${tempPath}" includes="**/core*/_buildfiles*/**"/>
+            <fileset dir="${basedir}${tempPath}" includes="**/core*/_debugging*/**"/>
+            <fileset dir="${basedir}${tempPath}" includes="debug.php"/>
         </delete>
     </target>
 
@@ -482,25 +384,6 @@
         </apply>
     </target>
 
-    <target name="phploc" description="Measure project size using PHPLOC">
-        <exec executable="${path.phploc}">
-            <arg line=" --exclude=vendor"/>
-            <arg value="--log-csv" />
-            <arg value="${basedir}${buildPath}/logs/phploc.csv" />
-            <arg path="${basedir}${projectPath}" />
-        </exec>
-    </target>
-
-    <target name="pdepend" description="Calculate software metrics using PHP_Depend">
-        <exec executable="${path.pdepend}">
-            <arg value="--jdepend-xml=${basedir}${buildPath}/logs/jdepend.xml" />
-            <arg value="--jdepend-chart=${basedir}${buildPath}/pdepend/dependencies.svg" />
-            <arg value="--overview-pyramid=${basedir}${buildPath}/pdepend/overview-pyramid.svg" />
-            <arg value="--ignore=*/vendor/*,${basedir}${projectPath}/core/module_ezcchart/vendor/,${basedir}${projectPath}/core/module_pchart/vendor,${basedir}${projectPath}/core/module_pdf/vendor,${basedir}${projectPath}/core/module_phpexcel/vendor,${basedir}${projectPath}/core/module_qrcode/vendor,${basedir}${projectPath}/core/module_system/vendor "/>
-            <arg path="${basedir}${projectPath}" />
-        </exec>
-    </target>
-
 
     <target name="phpmd-ci" description="Perform project mess detection using PHPMD creating a log file for the continuous integration server">
         <exec executable="${path.phpmd}">
@@ -514,7 +397,6 @@
         </exec>
     </target>
 
-
     <target name="phpcs-ci" description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
         <exec executable="${path.phpcs}"  output="/dev/null" >
             <arg value="--tab-width=4" />
@@ -525,59 +407,24 @@
         </exec>
     </target>
 
-    <target name="phpcpd" description="Find duplicate code using PHPCPD">
-        <exec executable="${path.phpcpd}">
-            <arg line=" --exclude=vendor "/>
-            <arg value="--log-pmd" />
-            <arg value="${basedir}${buildPath}/logs/pmd-cpd.xml" />
-            <arg path="${basedir}${projectPath}" />
-        </exec>
-    </target>
-
-
-    <target name="phpdox">
-        <echo>Generating PHP API Docs</echo>
-        <exec executable="${path.phpdox}" dir="${basedir}" taskname="phpdox">
-            <arg line="-f ${basedir}/phpdox.xml" />
-        </exec>
-    </target>
-
-
-
     <target name="phpunit" description="Run unit tests with PHPUnit">
         <exec executable="${path.phpunit}" failonerror="true">
             <arg line="--configuration ${basedir}/phpunit.xml " />
-            <!--<arg path="${basedir}${projectPath}" />-->
         </exec>
     </target>
 
     <target name="phpunitFast" description="Run unit tests with PHPUnit">
         <exec executable="${path.phpunit}" failonerror="true">
             <arg line="--configuration '${basedir}/phpunit_fast.xml' " />
-            <!--<arg path="${basedir}${projectPath}" />-->
         </exec>
     </target>
 
     <!-- executes javascript jasmine tests -->
     <target name="jasmine">
-
         <!--currently disabled due to requirejs migration-->
         <exec dir="${basedir}${jsPath}" executable="${path.node}" failonerror="on">
             <arg line="./node_modules/jasmine/bin/jasmine.js"/>
         </exec>
     </target>
-
-
-    <target name="phpcb" description="Aggregate tool output with PHP_CodeBrowser">
-        <exec executable="${path.phpcb}">
-            <arg value="--log" />
-            <arg path="${basedir}${buildPath}/logs" />
-            <arg value="--source" />
-            <arg path="${basedir}${projectPath}" />
-            <arg value="--output" />
-            <arg path="${basedir}${buildPath}/code-browser" />
-        </exec>
-    </target>
-
 
 </project>
