@@ -15,7 +15,7 @@ https://github.com/artemeon/core/issues
 Build-System
 ---
 We currently provide various build-scripts in order to test, clean, build and package a project out of the sources.
-Please have a look at the ant-scripts located at `_buildfiles`: `build_jenkins.xml`, `build_project.xml`
+Please have a look at the ant-scripts located at `_buildfiles`: `build.xml`
 
 Documentation
 ---
