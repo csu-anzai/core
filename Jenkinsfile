@@ -97,7 +97,7 @@ pipeline {
         post {
             always {
                 script {
-                    mattermost('SUCCESS', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}')√
+                    mattermost('SUCCESS', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}')
                 }
             }
 
