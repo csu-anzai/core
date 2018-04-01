@@ -21,7 +21,7 @@ pipeline {
                         agent {
                             node {
                                 label 'mssql'
-                                customWorkspace "C:/j/workspace/${JOB_NAME}_${BRANCH_NAME}"
+                                customWorkspace "C:/j/workspace/AGP_${BRANCH_NAME}"
                             }
                         }
                         steps {
