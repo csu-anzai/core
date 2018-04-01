@@ -1,6 +1,7 @@
 #!groovy
 
-
+@Library('art-shared@master') _
+import static de.artemeon.Utilities.*
 
 //working as expected, but limited capabilities
 //defaultBuild antBuildTask: 'installProjectSqlite', buildNode: 'php7', checkoutDir: 'core'
@@ -95,13 +96,13 @@ pipeline {
 
         post {
             success {
-                library('art-shared').mattermost ('SUCCESS', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}')
+                mattermost 'SUCCESS', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}'
             }
             unstable {
-                library('art-shared').mattermost ('UNSTABLE', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}')
+                mattermost 'UNSTABLE', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}'
             }
             failure {
-                library('art-shared').mattermost ('FAILURE', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}')
+                mattermost 'FAILURE', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}'
             }
         }
     }
