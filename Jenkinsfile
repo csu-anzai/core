@@ -1,5 +1,5 @@
 #!groovy
-@Library('art-shared@master') _ 
+
 
 
 //working as expected, but limited capabilities
@@ -30,9 +30,9 @@ pipeline {
                             ])
 
                             withAnt(installation: 'Ant') {
-                                bat "ant -buildfile core/_buildfiles/build.xml buildSqliteFast"
+                               // bat "ant -buildfile core/_buildfiles/build.xml buildSqliteFast"
                             }
-                            archiveArtifacts 'core/_buildfiles/packages/'
+                            //archiveArtifacts 'core/_buildfiles/packages/'
                         }
                         post {
                             always {
@@ -95,13 +95,13 @@ pipeline {
 
         post {
             success {
-                mattermost ('SUCCESS', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}')
+                library('art-shared').mattermost ('SUCCESS', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}')
             }
             unstable {
-                mattermost ('UNSTABLE', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}')
+                library('art-shared').mattermost ('UNSTABLE', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}')
             }
             failure {
-                mattermost ('FAILURE', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}')
+                library('art-shared').mattermost ('FAILURE', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}')
             }
         }
     }
