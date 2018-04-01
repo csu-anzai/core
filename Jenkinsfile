@@ -95,14 +95,11 @@ pipeline {
         }
 
         post {
-            success {
-                mattermost 'SUCCESS', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}'
+            always {
+                script {
+                    mattermost('SUCCESS', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}')√
+                }
             }
-            unstable {
-                mattermost 'UNSTABLE', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}'
-            }
-            failure {
-                mattermost 'FAILURE', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}'
-            }
+
         }
     }
