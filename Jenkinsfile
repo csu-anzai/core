@@ -38,7 +38,7 @@ pipeline {
                             }
                         }
                     }
-/*
+
                     stage ('slave php7') {
                         agent {
                             label 'php7'
@@ -82,7 +82,8 @@ pipeline {
                             }
                         }
                     }
-                    */
+                    
+                    
                 }
                 
             }
