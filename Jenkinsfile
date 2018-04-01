@@ -92,5 +92,16 @@ pipeline {
             }
 
         }
-        
+
+        post {
+            success {
+                mattermost "SUCCESS"
+            }
+            unstable {
+                mattermost "UNSTABLE"
+            }
+            failure {
+                mattermost "SUCCESS"
+            }
+        }
     }
