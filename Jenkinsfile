@@ -1,7 +1,7 @@
 #!groovy
 
-@Library('art-shared@master') _
-import static de.artemeon.Utilities.*
+//@Library('art-shared@master') _
+//import static de.artemeon.Utilities.*
 
 //working as expected, but limited capabilities
 //defaultBuild antBuildTask: 'installProjectSqlite', buildNode: 'php7', checkoutDir: 'core'
@@ -31,9 +31,9 @@ pipeline {
                             ])
 
                             withAnt(installation: 'Ant') {
-                               // bat "ant -buildfile core/_buildfiles/build.xml buildSqliteFast"
+                                bat "ant -buildfile core/_buildfiles/build.xml buildSqliteFast"
                             }
-                            //archiveArtifacts 'core/_buildfiles/packages/'
+                            archiveArtifacts 'core/_buildfiles/packages/'
                         }
                         post {
                             always {
@@ -42,7 +42,7 @@ pipeline {
                             }
                         }
                     }
-                    /*
+
                     stage ('slave php7') {
                         agent {
                             label 'php7'
@@ -86,7 +86,7 @@ pipeline {
                             }
                         }
                     }
-                    */
+
                     
                 }
                 
@@ -94,12 +94,5 @@ pipeline {
 
         }
 
-        post {
-            always {
-                script {
-                    mattermost('SUCCESS', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}')
-                }
-            }
 
-        }
     }
