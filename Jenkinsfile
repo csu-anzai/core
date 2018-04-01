@@ -16,6 +16,29 @@ pipeline {
 
             stage('Build') {
                 parallel {
+
+                    stage ('slave mssql') {
+                        agent {
+                            label 'mssql'
+                        }
+                        steps {
+                            checkout([
+                                $class: 'GitSCM', branches: scm.branches, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'core']], userRemoteConfigs: scm.userRemoteConfigs
+                            ])
+
+                            withAnt(installation: 'Ant') {
+                                bat "ant -buildfile core/_buildfiles/build.xml buildSqliteFast"
+                            }
+                            archiveArtifacts 'core/_buildfiles/packages/'
+                        }
+                        post {
+                            always {
+                                junit 'core/_buildfiles/build/logs/junit.xml'
+                                step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']])])
+                            }
+                        }
+                    }
+/*
                     stage ('slave php7') {
                         agent {
                             label 'php7'
@@ -59,6 +82,7 @@ pipeline {
                             }
                         }
                     }
+                    */
                 }
                 
             }
