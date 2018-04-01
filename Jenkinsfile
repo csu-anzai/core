@@ -21,7 +21,7 @@ pipeline {
                         agent {
                             node {
                                 label 'mssql'
-                                customWorkspace "C:/j/workspace/AGP_${BRANCH_NAME}"
+                                customWorkspace "C:/j/workspace/KajonaCore_${BRANCH_NAME}"
                             }
                         }
                         steps {
