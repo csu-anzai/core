@@ -41,7 +41,7 @@ pipeline {
                             }
                         }
                     }
-/*
+                    /*
                     stage ('slave php7') {
                         agent {
                             label 'php7'
@@ -95,13 +95,13 @@ pipeline {
 
         post {
             success {
-                mattermost 'SUCCESS' '${env.JOB_NAME}' '${env.BUILD_NUMBER}' '${env.BUILD_URL}'
+                mattermost ('SUCCESS', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}')
             }
             unstable {
-                mattermost 'UNSTABLE' '${env.JOB_NAME}' '${env.BUILD_NUMBER}' '${env.BUILD_URL}'
+                mattermost ('UNSTABLE', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}')
             }
             failure {
-                mattermost 'FAILURE' '${env.JOB_NAME}' '${env.BUILD_NUMBER}' '${env.BUILD_URL}'
+                mattermost ('FAILURE', '${env.JOB_NAME}', '${env.BUILD_NUMBER}', '${env.BUILD_URL}')
             }
         }
     }
