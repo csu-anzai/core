@@ -19,7 +19,10 @@ pipeline {
 
                     stage ('slave mssql') {
                         agent {
-                            label 'mssql'
+                            node {
+                                label 'mssql'
+                                customWorkspace "C:/j/workspace/JOB_NAME_${BRANCH_NAME}"
+                            }
                         }
                         steps {
                             checkout([
