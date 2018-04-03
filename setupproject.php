@@ -201,7 +201,7 @@ TEXT;
         }
 
         $arrOutput = array();
-        exec("ant -f ".escapeshellarg(self::$strRealPath."/core/_buildfiles/build_jenkins.xml")." installNpmBuildDependencies ", $arrOutput);
+        exec("ant -f ".escapeshellarg(self::$strRealPath."/core/_buildfiles/build.xml")." installNpmBuildDependencies ", $arrOutput);
         echo "   " . implode("\n   ", $arrOutput);
     }
 
