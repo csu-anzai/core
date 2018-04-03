@@ -219,36 +219,13 @@ TEXT;
 
     private static function scanComposer()
     {
-        $objCoreDirs = new DirectoryIterator(__DIR__ . "/../");
-        foreach ($objCoreDirs as $objCoreDir) {
-            if ($objCoreDir->isDir() && substr($objCoreDir->getFilename(), 0, 4) == 'core') {
-                $objModuleDirs = new DirectoryIterator($objCoreDir->getRealPath());
-                foreach ($objModuleDirs as $objDir) {
-                    if (substr($objDir->getFilename(), 0, 7) == 'module_') {
-                        $composerFile = $objDir->getRealPath() . '/composer.json';
-                        if (is_file($composerFile)) {
-                            $arrOutput = array();
-                            $intReturn = 0;
-                            exec('composer install --prefer-dist --quiet --working-dir  ' . dirname($composerFile), $arrOutput, $intReturn);
-                            if ($intReturn == 127) {
-                                echo "<span style='color: red;'>composer was not found. please run 'composer install --prefer-dist --working-dir " . dirname($composerFile) . "' manually</span>\n";
-                                continue;
-                            }
-                            if ($intReturn == 1) {
-                                echo "<span style='color: red;'>composer error. please run 'composer install --prefer-dist --working-dir " . dirname($composerFile) . "' manually</span>\n";
-
-                                if (!is_writable(dirname($composerFile))) {
-                                    echo "<span style='color: red;'>    target folder " . dirname($composerFile) . " is not writable</span>\n";
-                                }
-                                continue;
-                            }
-                            echo "Composer install finished for " . $composerFile . ": \n";
-
-                            echo "   " . implode("\n   ", $arrOutput);
-                        }
-                    }
-                }
-            }
+        if (is_file(__DIR__ . "/_buildfiles/bin/buildComposer.php")) {
+            echo "Install composer dependencies" . PHP_EOL;
+            $arrOutput = array();
+            exec("php -f " . escapeshellarg(self::$strRealPath . "/core/_buildfiles/bin/buildComposer.php"), $arrOutput);
+            echo "   " . implode("\n   ", $arrOutput);
+        } else {
+            echo "<span style='color: red;'>Missing buildComposer.php helper</span>";
         }
     }
 }
