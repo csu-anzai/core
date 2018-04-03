@@ -23,9 +23,9 @@ use Kajona\System\System\Exception;
 use Kajona\System\System\Filesystem;
 use Kajona\System\System\HttpResponsetypes;
 use Kajona\System\System\HttpStatuscodes;
-use Kajona\System\System\Image2;
-use Kajona\System\System\Imageplugins\ImageCrop;
-use Kajona\System\System\Imageplugins\ImageRotate;
+use Artemeon\Image\Image;
+use Artemeon\Image\Plugins\ImageCrop;
+use Artemeon\Image\Plugins\ImageRotate;
 use Kajona\System\System\Link;
 use Kajona\System\System\Logger;
 use Kajona\System\System\Model;
@@ -1339,7 +1339,7 @@ HTML;
 
         $strFile = $this->getParam("file");
 
-        $objImage = new Image2();
+        $objImage = new Image();
         $objImage->setUseCache(false);
         $objImage->load($strFile);
         $objImage->addOperation(new ImageRotate($this->getParam("angle")));
@@ -1375,7 +1375,7 @@ HTML;
 
         $strFile = $this->getParam("file");
 
-        $objImage = new Image2();
+        $objImage = new Image();
         $objImage->setUseCache(false);
         $objImage->load($strFile);
         $objImage->addOperation(new ImageCrop($this->getParam("intX"), $this->getParam("intY"), $this->getParam("intWidth"), $this->getParam("intHeight")));

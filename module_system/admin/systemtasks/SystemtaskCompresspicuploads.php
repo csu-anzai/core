@@ -10,8 +10,8 @@
 namespace Kajona\System\Admin\Systemtasks;
 
 use Kajona\System\System\Filesystem;
-use Kajona\System\System\Image2;
-use Kajona\System\System\Imageplugins\ImageScale;
+use Artemeon\Image\Image;
+use Artemeon\Image\Plugins\ImageScale;
 use Kajona\System\System\SystemModule;
 
 
@@ -113,7 +113,7 @@ class SystemtaskCompresspicuploads extends SystemtaskBase implements AdminSystem
         foreach ($arrFilesFolders["files"] as $arrOneFile) {
             $strImagePath = $strPath."/".$arrOneFile["filename"];
 
-            $objImage = new Image2();
+            $objImage = new Image();
             $objImage->setUseCache(false);
             $objImage->load($strImagePath);
             $objImage->addOperation(new ImageScale($this->intMaxWidth, $this->intMaxHeight));
