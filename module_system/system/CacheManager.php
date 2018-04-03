@@ -232,7 +232,6 @@ class CacheManager
 
     protected function buildDriver($intType, $strNamespace)
     {
-        require_once __DIR__ . '/../vendor/autoload.php';
         $arrDriver = array();
 
         if ($intType & self::TYPE_ARRAY) {
