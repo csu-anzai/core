@@ -4,22 +4,60 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "18e1b0bbde861d9b0985f245f759b244",
-    "content-hash": "28c220e7de2f0f6b652b7735f9cfc1bd",
+    "hash": "5b50705cda11180e3c99d388bdfdc013",
+    "content-hash": "e659825ebc4f9b776aa9ae085999cb15",
     "packages": [
+        {
+            "name": "artemeon/image",
+            "version": "v0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/artemeon/image.git",
+                "reference": "15c663ced6302a2208ac86e7ffa5a90b9a5e8022"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/artemeon/image/zipball/15c663ced6302a2208ac86e7ffa5a90b9a5e8022",
+                "reference": "15c663ced6302a2208ac86e7ffa5a90b9a5e8022",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Artemeon\\Image\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Simple image manipulation",
+            "homepage": "http://kajona.de",
+            "keywords": [
+                "image",
+                "manipulation"
+            ],
+            "time": "2018-03-29 15:14:54"
+        },
         {
             "name": "doctrine/cache",
             "version": "v1.6.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/doctrine/cache.git",
-                "reference": "b6f544a20f4807e81f7044d31e679ccbb1866dc3"
+                "url": "git@github.com:doctrine/cache.git",
+                "reference": "557e44fa9ee20e4f2601844d37ea25229265a72e"
             },
             "dist": {
                 "type": "tar",
-                "url": "https://buildpackages.kajona.de:5443//dist/doctrine-cache-b6f544a20f4807e81f7044d31e679ccbb1866dc3-zip-04548a.tar",
-                "reference": "b6f544a20f4807e81f7044d31e679ccbb1866dc3",
-                "shasum": "7b4b4271a84aef96cfde95f95ef21d937b646c01"
+                "url": "https://buildpackages.kajona.de:5443//dist/doctrine-cache-557e44fa9ee20e4f2601844d37ea25229265a72e-zip-ef2436.tar",
+                "reference": "557e44fa9ee20e4f2601844d37ea25229265a72e",
+                "shasum": "3556220303578cb33880fa820e9f40ecf419cccf"
             },
             "require": {
                 "php": "~5.5|~7.0"
@@ -79,10 +117,6 @@
                 "cache",
                 "caching"
             ],
-            "support": {
-                "source": "https://github.com/doctrine/cache/tree/v1.6.1",
-                "issues": "https://github.com/doctrine/cache/issues"
-            },
             "time": "2016-10-29 11:16:17"
         },
         {
@@ -90,14 +124,14 @@
             "version": "v3.0.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/silexphp/Pimple.git",
-                "reference": "a30f7d6e57565a2e1a316e1baf2a483f788b258a"
+                "url": "git@github.com:silexphp/Pimple.git",
+                "reference": "0edc4653791de2a1d8be57d6e903b82c6a973264"
             },
             "dist": {
                 "type": "tar",
-                "url": "https://buildpackages.kajona.de:5443//dist/pimple-pimple-a30f7d6e57565a2e1a316e1baf2a483f788b258a-zip-9c6676.tar",
-                "reference": "a30f7d6e57565a2e1a316e1baf2a483f788b258a",
-                "shasum": "e7bfca47266555fe1ecd778697939d885e335724"
+                "url": "https://buildpackages.kajona.de:5443//dist/pimple-pimple-0edc4653791de2a1d8be57d6e903b82c6a973264-zip-5b41ca.tar",
+                "reference": "0edc4653791de2a1d8be57d6e903b82c6a973264",
+                "shasum": "01a86ddcc430c991c668756da27715c950bca83d"
             },
             "require": {
                 "php": ">=5.3.0"
@@ -128,10 +162,6 @@
                 "container",
                 "dependency injection"
             ],
-            "support": {
-                "source": "https://github.com/silexphp/Pimple/tree/v3.0.2",
-                "issues": "https://github.com/silexphp/Pimple/issues"
-            },
             "time": "2015-09-11 15:10:35"
         },
         {
@@ -139,14 +169,14 @@
             "version": "1.0.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/php-fig/log.git",
+                "url": "git@github.com:php-fig/log.git",
                 "reference": "4ebe3a8bf773a19edfe0a84b6585ba3d401b724d"
             },
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/4ebe3a8bf773a19edfe0a84b6585ba3d401b724d",
+                "type": "tar",
+                "url": "https://buildpackages.kajona.de:5443//dist/psr-log-4ebe3a8bf773a19edfe0a84b6585ba3d401b724d-zip-6434e8.tar",
                 "reference": "4ebe3a8bf773a19edfe0a84b6585ba3d401b724d",
-                "shasum": ""
+                "shasum": "db2cf2770adcf2a777528d068e45fe61ddcf2450"
             },
             "require": {
                 "php": ">=5.3.0"
@@ -162,7 +192,6 @@
                     "Psr\\Log\\": "Psr/Log/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
