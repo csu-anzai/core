@@ -35,6 +35,9 @@ if (!include_once __DIR__."/system/Classloader.php") {
     rawIncludeError(__DIR__."/system/Classloader.php");
 }
 
+// add autoload
+require_once __DIR__ . "/../module_vendor/vendor/autoload.php";
+
 // -- Auto-Loader for classes ------------------------------------------------------------------------------------------
 // Register autoloader
 spl_autoload_register(array(\Kajona\System\System\Classloader::getInstance(), "loadClass"));
@@ -51,9 +54,6 @@ if (file_exists(_realpath_."project/bootstrap.php")) {
 
 // -- The Path on web --------------------------------------------------------------------------------------------------
 defineWebPath();
-
-// add autoload
-require_once __DIR__ . "/../module_vendor/vendor/autoload.php";
 
 // -- Include needed classes of each module ----------------------------------------------------------------------------
 // This registers all service providers of each module
