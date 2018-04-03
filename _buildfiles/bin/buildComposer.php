@@ -39,10 +39,6 @@ foreach ($objCoreDirs as $objCoreDir) {
 
                     if (isset($content["require"]) && is_array($content["require"])) {
                         foreach ($content["require"] as $name => $version) {
-                            if (isset($composer["require"][$name])) {
-                                throw new \RuntimeException("Found duplicate package declaration");
-                            }
-
                             $composer["require"][$name] = $version;
                         }
                     }
