@@ -52,6 +52,9 @@ if (file_exists(_realpath_."project/bootstrap.php")) {
 // -- The Path on web --------------------------------------------------------------------------------------------------
 defineWebPath();
 
+// add autoload
+require_once __DIR__ . "/../module_vendor/vendor/autoload.php";
+
 // -- Include needed classes of each module ----------------------------------------------------------------------------
 // This registers all service providers of each module
 \Kajona\System\System\Classloader::getInstance()->registerModuleServices(\Kajona\System\System\Carrier::getInstance()->getContainer());
