@@ -28,10 +28,10 @@ class Grid extends AbstractComponent
     protected $rows;
 
     /**
-     * The column widths contains an array with the bootstrap col- class. I.e. an array [2, 10] for a grid which has a
-     * small sidebar column
+     * The column widths contains an array with the bootstrap col- class width. I.e. an array [2, 10] for a grid which
+     * has a small left sidebar column. The sum of all columns must be 12.
      *
-     * @param string $columnWidths
+     * @param array $columnWidths
      */
     public function __construct(array $columnWidths)
     {
