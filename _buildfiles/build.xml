@@ -150,6 +150,7 @@
             <arg line=" install"/>
             <arg line=" --no-dev"/>
             <arg line=" --quiet"/>
+            <arg line=" --prefer-source"/>
         </exec>
     </target>
 
