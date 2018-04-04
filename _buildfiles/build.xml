@@ -10,7 +10,7 @@
 
      Author: sidler
      ====================================================================== -->
-<project name="Kajona Head Build" default="buildSqliteFast" basedir=".">
+<project name="Kajona Head Build" default="buildSqliteFast" basedir="." xmlns:if="ant:if" xmlns:unless="ant:unless">
 
     <description>
         Buildfile to run common tasks.
@@ -27,6 +27,9 @@
         <os family="windows" />
     </condition>
     <condition property="script-suffix-cmd" value=".cmd" else="">
+        <os family="windows" />
+    </condition>
+    <condition property="isWindows" value="true">
         <os family="windows" />
     </condition>
 
@@ -150,7 +153,7 @@
             <arg line=" install"/>
             <arg line=" --no-dev"/>
             <arg line=" --quiet"/>
-            <arg line=" --prefer-source"/>
+            <arg if:set="isWindows" line=" --prefer-source"/>
         </exec>
     </target>
 
