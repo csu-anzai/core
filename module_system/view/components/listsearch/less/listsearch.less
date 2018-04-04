@@ -1,23 +1,23 @@
 
 .core-component-listsearch {
 
-    .core-component-listsearch-search {
+    .search {
         margin-bottom:8px;
     }
 
-    .core-component-listsearch-result {
+    .result {
         overflow:hidden;
     }
 
-    .core-component-listsearch-result-item {
+    .result-item {
         border-bottom:1px solid #eee;
     }
 
-    .core-component-listsearch-result-item:nth-child(odd) {
-        background-color:#f9f9f9;
+    .result-item:nth-child(odd) {
+        background-color:@table-bg-hover;
     }
 
-    .core-component-listsearch-result-item > a {
+    .result-item > a {
         display:block;
         text-decoration:none;
         padding:6px;
@@ -25,7 +25,7 @@
         white-space: nowrap;
     }
 
-    .core-component-listsearch-result-item > a:hover {
+    .result-item > a:hover {
         background-color:@component-active-bg;
         color:@component-active-color;
     }
