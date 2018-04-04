@@ -10,7 +10,7 @@
 require(["jquery"], function($){
     var emptyMessage = "{{ empty_placeholder|escape("js") }}";
     var auto = $("#listsearch-{{ form_id }}-form").autocomplete({
-        source: {{ endpoint|raw }},
+        source: "{{ endpoint_url|escape("js") }}",
         search: function(event, ui) {
             $("#listsearch-{{ form_id }}-result").html("<div class='loadingContainer'></div>");
         },
@@ -23,8 +23,10 @@ require(["jquery"], function($){
 
     auto.autocomplete("instance")._renderItem = function(ul, item) {
         var href;
+        var itemUrl = "{{ item_url|escape("js") }}";
         if (item.systemid) {
-            href = item.icon + "&nbsp;<a href='#/contracts/list/" + item.systemid + "'>" + item.title + "</a>";
+            var url = itemUrl.replace("{systemid}", item.systemid);
+            href = item.icon + "&nbsp;<a href='" + url + "'>" + item.title + "</a>";
         } else {
             href = item.title;
         }

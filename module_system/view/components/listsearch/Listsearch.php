@@ -26,16 +26,23 @@ class Listsearch extends AbstractComponent
     /**
      * @var string
      */
+    protected $itemUrl;
+
+    /**
+     * @var string
+     */
     protected $searchPlaceholder;
 
     /**
      * @param string $endpointUrl
+     * @param string $itemUrl
      */
-    public function __construct($endpointUrl)
+    public function __construct($endpointUrl, $itemUrl)
     {
         parent::__construct();
 
         $this->endpointUrl = $endpointUrl;
+        $this->itemUrl = $itemUrl;
         $this->searchPlaceholder = Lang::getInstance()->getLang("commons_search_field_placeholder", "module_commons");
     }
 
@@ -45,6 +52,14 @@ class Listsearch extends AbstractComponent
     public function setEndpointUrl(string $endpointUrl)
     {
         $this->endpointUrl = $endpointUrl;
+    }
+
+    /**
+     * @param string $itemUrl
+     */
+    public function setItemUrl(string $itemUrl)
+    {
+        $this->itemUrl = $itemUrl;
     }
 
     /**
@@ -61,7 +76,8 @@ class Listsearch extends AbstractComponent
     public function renderComponent(): string
     {
         $data = [
-            "endpoint" => json_encode($this->endpointUrl),
+            "endpoint_url" => $this->endpointUrl,
+            "item_url" => $this->itemUrl,
             "search_placeholder" => $this->searchPlaceholder,
             "form_id" => generateSystemid(),
         ];
