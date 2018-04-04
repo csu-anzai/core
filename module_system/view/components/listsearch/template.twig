@@ -26,7 +26,7 @@ require(["jquery"], function($){
         var itemUrl = "{{ item_url|escape("js") }}";
         if (item.systemid) {
             var url = itemUrl.replace("{systemid}", item.systemid);
-            href = item.icon + "&nbsp;<a href='" + url + "'>" + item.title + "</a>";
+            href = "<a href='" + url + "' title='" + item.title + "'>" + item.icon + " " + item.title + "</a>";
         } else {
             href = item.title;
         }
