@@ -31,6 +31,12 @@ pipeline {
                             }
                             archiveArtifacts 'core/_buildfiles/packages/'
                         }
+                        post {
+                            always {
+                                junit 'core/_buildfiles/build/logs/junit.xml'
+                                step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']])])
+                            }
+                        }
                     }
 
                     stage ('slave php7') {
@@ -46,6 +52,12 @@ pipeline {
                                 sh "ant -buildfile core/_buildfiles/build.xml buildSqliteFast"
                             }
                             archiveArtifacts 'core/_buildfiles/packages/'
+                        }
+                        post {
+                            always {
+                                junit 'core/_buildfiles/build/logs/junit.xml'
+                                step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']])])
+                            }
                         }
                     }
 
@@ -63,6 +75,12 @@ pipeline {
                             }
                             archiveArtifacts 'core/_buildfiles/packages/'
                         }
+                        post {
+                            always {
+                                junit 'core/_buildfiles/build/logs/junit.xml'
+                                step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']])])
+                            }
+                        }
                         
                     }
 
@@ -73,10 +91,6 @@ pipeline {
 
         }
         post {
-            always {
-                junit 'core/_buildfiles/build/logs/junit.xml'
-                step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']])])
-            }
             failure {
                 sendNotification 'FAILURE'
             }
