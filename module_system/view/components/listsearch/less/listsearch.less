@@ -10,7 +10,6 @@
     }
 
     .core-component-listsearch-result-item {
-        padding:4px 0;
         border-bottom:1px solid #eee;
     }
 
@@ -19,5 +18,15 @@
     }
 
     .core-component-listsearch-result-item > a {
+        display:block;
+        text-decoration:none;
+        padding:6px;
+        color:@link-color;
+        white-space: nowrap;
+    }
+
+    .core-component-listsearch-result-item > a:hover {
+        background-color:@brand-primary;
+        color:@link-hover-color;
     }
 }
