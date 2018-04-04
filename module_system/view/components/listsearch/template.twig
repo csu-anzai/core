@@ -1,0 +1,41 @@
+
+<div class="core-component-listsearch">
+    <div class="core-component-listsearch-search">
+        <input type="text" id="listsearch-{{ form_id }}-form" placeholder="{{ search_placeholder|escape("html_attr") }}" class="form-control">
+    </div>
+    <div class="core-component-listsearch-result" id="listsearch-{{ form_id }}-result"></div>
+</div>
+
+<script type="text/javascript">
+require(["jquery"], function($){
+    var emptyMessage = "{{ empty_placeholder|escape("js") }}";
+    var auto = $("#listsearch-{{ form_id }}-form").autocomplete({
+        source: {{ endpoint|raw }},
+        search: function(event, ui) {
+            $("#listsearch-{{ form_id }}-result").html("<div class='loadingContainer'></div>");
+        },
+        response: function() {
+            $("#listsearch-{{ form_id }}-result").empty();
+        },
+        minLength: 0,
+        appendTo: "#listsearch-{{ form_id }}-result"
+    });
+
+    auto.autocomplete("instance")._renderItem = function(ul, item) {
+        var href;
+        if (item.systemid) {
+            href = item.icon + "&nbsp;<a href='#/contracts/list/" + item.systemid + "'>" + item.title + "</a>";
+        } else {
+            href = item.title;
+        }
+
+        return $('<div class="core-component-listsearch-result-item">')
+            .data('item.autocomplete', item)
+            .append(href)
+            .appendTo($("#listsearch-{{ form_id }}-result"));
+    };
+
+    $("#listsearch-{{ form_id }}-form").autocomplete("search", "");
+});
+</script>
+
