@@ -1,0 +1,14 @@
+
+<div class="core-component-grid">
+    <div class="container-fluid">
+        {% for row in rows %}
+        <div class="row">
+            {% for key, column in row %}
+            <div class="col-md-{{ column_widths[key] }}">
+                {{ column|raw }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
