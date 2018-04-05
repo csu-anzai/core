@@ -7,30 +7,42 @@
 </div>
 
 <script type="text/javascript">
-require(["jquery"], function($){
+require(["jquery", "workingIndicator"], function($, workingIndicator){
     var emptyMessage = "{{ empty_placeholder|escape("js") }}";
     var searchEl = $("#{{ form_id }} > .search > input");
-    var auto = searchEl.autocomplete({
-        source: "{{ endpoint_url|escape("js") }}",
+
+    var config = {
+        source: function(request, response) {
+            $.ajax({
+                url: "{{ endpoint_url|escape("js") }}",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    search_query: request.term
+                },
+                success: response
+            });
+        },
         search: function(event, ui) {
             $("#{{ form_id }} > .result").html("<div class='loadingContainer'></div>");
+            workingIndicator.getInstance().start();
         },
         response: function() {
             $("#{{ form_id }} > .result").empty();
+            workingIndicator.getInstance().stop();
         },
         minLength: 0,
         appendTo: "#{{ form_id }} > .result"
-    });
+    };
+
+    var auto = searchEl.autocomplete(config);
 
     auto.autocomplete("instance")._renderItem = function(ul, item) {
-        var href;
-        var itemUrl = "{{ item_url|escape("js") }}";
-        if (item.systemid) {
-            var url = itemUrl.replace("{systemid}", item.systemid);
-            href = "<a href='" + url + "' title='" + item.title + "'>" + item.icon + " " + item.title + "</a>";
-        } else {
-            href = item.title;
-        }
+        var href = $('<a>')
+            .attr("href", item.link)
+            .attr("rel", "tooltip")
+            .attr("title", item.description)
+            .html(item.icon + "&nbsp;&nbsp;" + item.description);
 
         return $('<div class="result-item">')
             .data('item.autocomplete', item)
