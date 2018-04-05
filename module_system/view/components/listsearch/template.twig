@@ -38,15 +38,21 @@ require(["jquery", "workingIndicator"], function($, workingIndicator){
     var auto = searchEl.autocomplete(config);
 
     auto.autocomplete("instance")._renderItem = function(ul, item) {
-        var href = $('<a>')
-            .attr("href", item.link)
-            .attr("rel", "tooltip")
-            .attr("title", item.description)
-            .html(item.icon + "&nbsp;&nbsp;" + item.description);
+        var entry;
+        if (item.link) {
+            entry = $('<a>')
+                .attr("href", item.link)
+                .attr("rel", "tooltip")
+                .attr("title", item.description)
+                .html(item.icon + "&nbsp;&nbsp;" + item.description);
+        } else {
+            entry = $('<p>')
+                .html(item.description);
+        }
 
         return $('<div class="result-item">')
             .data('item.autocomplete', item)
-            .append(href)
+            .append(entry)
             .appendTo($("#{{ form_id }} > .result"));
     };
 
