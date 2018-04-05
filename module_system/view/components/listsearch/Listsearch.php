@@ -36,7 +36,7 @@ class Listsearch extends AbstractComponent
         parent::__construct();
 
         $this->endpointUrl = $endpointUrl;
-        $this->searchPlaceholder = Lang::getInstance()->getLang("commons_search_field_placeholder", "module_commons");
+        $this->searchPlaceholder = Lang::getInstance()->getLang("form_search_query", "module_search");
     }
 
     /**
