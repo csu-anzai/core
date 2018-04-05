@@ -150,5 +150,3 @@ $lang["commons_login_footer"] = "<a href=\"https://github.com/artemeon/core\" ta
 $lang["commons_skin_header"] = "Kajona Core";
 $lang["commons_skin_title"] = "Kajona Core";
 $lang["commons_product_title"] = "V7";
-
-$lang["commons_search_field_placeholder"] = "Search ...";
