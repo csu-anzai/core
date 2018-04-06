@@ -59,7 +59,7 @@ class CommonSortmanager implements SortmanagerInterface
         }
 
         $strQuery = "SELECT system_id, system_sort
-                     FROM "._dbprefix_."system
+                     FROM agp_system
                      WHERE system_prev_id=?
                      AND system_id != '0'
                      AND system_deleted = 0
@@ -71,7 +71,7 @@ class CommonSortmanager implements SortmanagerInterface
         $intI = 1;
         foreach ($arrSiblings as $arrOneSibling) {
             if ($arrOneSibling["system_sort"] != $intI) {
-                $strQuery = "UPDATE "._dbprefix_."system SET system_sort = ? where system_id = ?";
+                $strQuery = "UPDATE agp_system SET system_sort = ? where system_id = ?";
                 $this->objDB->_pQuery($strQuery, array($intI, $arrOneSibling["system_id"]));
             }
             $intI++;
@@ -80,7 +80,7 @@ class CommonSortmanager implements SortmanagerInterface
         //the new sort-id should fetch the number of siblings on the new prev-id
         $arrParams[0] = $strNewPrevid;
         $strQuery = "SELECT system_id, system_sort
-                     FROM "._dbprefix_."system
+                     FROM agp_system
                      WHERE system_prev_id=?
                      AND system_id != '0'
                      AND system_deleted = 0
@@ -91,7 +91,7 @@ class CommonSortmanager implements SortmanagerInterface
 
         $intNewCount = count($arrSiblings);//$this->objSource->getNumberOfSiblings($this->objSource->getSystemid(), false);
         $this->objSource->setIntSort($intNewCount);
-        $strQuery = "UPDATE "._dbprefix_."system SET system_sort = ? where system_id = ?";
+        $strQuery = "UPDATE agp_system SET system_sort = ? where system_id = ?";
         $this->objDB->_pQuery($strQuery, array($intNewCount, $this->objSource->getSystemid()));
     }
 
@@ -125,7 +125,7 @@ class CommonSortmanager implements SortmanagerInterface
 
 
         $strQuery = "SELECT system_id, system_sort, system_deleted
-                     FROM "._dbprefix_."system
+                     FROM agp_system
                      WHERE system_prev_id =?
                      AND system_deleted = 0
                      AND system_sort > -1
@@ -143,7 +143,7 @@ class CommonSortmanager implements SortmanagerInterface
         }
 
         if (count($arrIds) > 0) {
-            $strQuery = "UPDATE "._dbprefix_."system SET system_sort = system_sort-1 where system_deleted = 0 AND system_sort > -1 AND system_id IN (".implode(",", array_map(function ($strVal) {
+            $strQuery = "UPDATE agp_system SET system_sort = system_sort-1 where system_deleted = 0 AND system_sort > -1 AND system_id IN (".implode(",", array_map(function ($strVal) {
                     return "?";
                 }, $arrIds)).")";
             $this->objDB->_pQuery($strQuery, $arrIds);
@@ -207,7 +207,7 @@ class CommonSortmanager implements SortmanagerInterface
 
         //Load all elements on the same level, so at first get the prev id
         $strQuery = "SELECT system_id, system_sort
-                         FROM "._dbprefix_."system
+                         FROM agp_system
                          WHERE system_prev_id=? AND system_id != '0'
                            AND system_deleted = 0
                            AND system_sort > -1
@@ -287,7 +287,7 @@ class CommonSortmanager implements SortmanagerInterface
      */
     private function updateRecordSort($strSystemid, $intPos)
     {
-        $strQuery = "UPDATE "._dbprefix_."system
+        $strQuery = "UPDATE agp_system
                             SET system_sort= ?
                             WHERE system_id=?";
         $this->objDB->_pQuery($strQuery, array($intPos, $strSystemid));

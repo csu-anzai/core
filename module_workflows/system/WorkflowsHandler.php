@@ -145,9 +145,9 @@ class WorkflowsHandler extends \Kajona\System\System\Model implements \Kajona\Sy
     public static function getHandlerByClass($strClass)
     {
         $strQuery = "SELECT * FROM
-                            "._dbprefix_."workflows_handler,
-                            "._dbprefix_."system
-                   LEFT JOIN "._dbprefix_."system_date
+                            agp_workflows_handler,
+                            agp_system
+                   LEFT JOIN agp_system_date
                             ON system_id = system_date_id
                       WHERE system_id = workflows_handler_id
                         AND workflows_handler_class = ?";

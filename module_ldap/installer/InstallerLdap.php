@@ -104,14 +104,14 @@ class InstallerLdap extends InstallerBase implements InstallerRemovableInterface
         }
 
         //fetch associated users
-        foreach ($this->objDB->getPArray("SELECT * FROM "._dbprefix_."user_ldap", array()) as $arrOneRow) {
+        foreach ($this->objDB->getPArray("SELECT * FROM agp_user_ldap", array()) as $arrOneRow) {
             $objOneUser = new UserUser($arrOneRow["user_ldap_id"]);
             echo "Deleting ldap user ".$objOneUser->getStrDisplayName()."...\n";
             $objOneUser->deleteObjectFromDatabase();
         }
 
         //fetch associated groups
-        foreach ($this->objDB->getPArray("SELECT * FROM "._dbprefix_."user_group_ldap", array()) as $arrOneRow) {
+        foreach ($this->objDB->getPArray("SELECT * FROM agp_user_group_ldap", array()) as $arrOneRow) {
             $objOneUser = new UserGroup($arrOneRow["group_ldap_id"]);
             echo "Deleting ldap group ".$objOneUser->getStrDisplayName()."...\n";
             $objOneUser->deleteObjectFromDatabase();
@@ -128,7 +128,7 @@ class InstallerLdap extends InstallerBase implements InstallerRemovableInterface
         //delete the tables
         foreach (array("user_group_ldap", "user_ldap") as $strOneTable) {
             $strReturn .= "Dropping table ".$strOneTable."...\n";
-            if (!$this->objDB->_pQuery("DROP TABLE ".$this->objDB->encloseTableName(_dbprefix_.$strOneTable)."", array())) {
+            if (!$this->objDB->_pQuery("DROP TABLE ".$this->objDB->encloseTableName($strOneTable)."", array())) {
                 $strReturn .= "Error deleting table, aborting.\n";
                 return false;
             }

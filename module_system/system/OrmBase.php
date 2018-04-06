@@ -69,7 +69,7 @@ abstract class OrmBase
     {
         $this->objObject = $objObject;
         if (self::$bitLogcialDeleteAvailable === null) {
-            $arrColumns = Database::getInstance()->getColumnsOfTable(_dbprefix_."system");
+            $arrColumns = Database::getInstance()->getColumnsOfTable("agp_system");
             self::$bitLogcialDeleteAvailable = count(array_filter($arrColumns, function ($arrOneTable) {
                 return $arrOneTable["columnName"] == "system_deleted";
             })) > 0;
@@ -151,16 +151,16 @@ abstract class OrmBase
             $arrOneTable = explode(".", $strOneTable);
             $strWhere .= "AND system_id=".$arrOneTable[1]." ";
             if (in_array($arrOneTable[0], $this->arrBlockedTableAlias)) {
-                $arrTables[] = Carrier::getInstance()->getObjDB()->encloseTableName(_dbprefix_.$arrOneTable[0])." ";
+                $arrTables[] = Carrier::getInstance()->getObjDB()->encloseTableName($arrOneTable[0])." ";
             } else {
-                $arrTables[] = Carrier::getInstance()->getObjDB()->encloseTableName(_dbprefix_.$arrOneTable[0])." AS ".Carrier::getInstance()->getObjDB()->encloseTableName($arrOneTable[0])."";
+                $arrTables[] = Carrier::getInstance()->getObjDB()->encloseTableName($arrOneTable[0])." AS ".Carrier::getInstance()->getObjDB()->encloseTableName($arrOneTable[0])."";
             }
         }
 
         //build the query
         $strQuery = "FROM  ".implode(", ", $arrTables)." ,
-                            ".Carrier::getInstance()->getObjDB()->encloseTableName(_dbprefix_."system")." AS system
-                  LEFT JOIN "._dbprefix_."system_date AS system_date
+                            ".Carrier::getInstance()->getObjDB()->encloseTableName("agp_system")." AS system
+                  LEFT JOIN agp_system_date AS system_date
                          ON system_id = system_date_id
                       WHERE 1=1
                             ".$strWhere."";
@@ -181,8 +181,8 @@ abstract class OrmBase
         $objCfg = OrmAssignmentConfig::getConfigForProperty($this->getObjObject(), $strPropertyName);
         $objDB = Carrier::getInstance()->getObjDB();
         $strQuery = " SELECT *
-                        FROM ".$objDB->encloseTableName(_dbprefix_.$objCfg->getStrTableName()).",
-                             ".$objDB->encloseTableName(_dbprefix_."system")."
+                        FROM ".$objDB->encloseTableName($objCfg->getStrTableName()).",
+                             ".$objDB->encloseTableName("agp_system")."
                        WHERE system_id =  ".$objDB->encloseColumnName($objCfg->getStrTargetColumn())."
                          AND ".$objDB->encloseColumnName($objCfg->getStrSourceColumn())." = ?
                              ".$this->getDeletedWhereRestriction();

@@ -39,7 +39,7 @@ class WorkflowsController
         $this->strProcessId = generateSystemid();
         $objDb = Carrier::getInstance()->getObjDB();
 
-        $objDb->_pQuery("INSERT INTO "._dbprefix_."workflows_stat_wfc (wfc_id, wfc_start) VALUES (?,?)", [$this->strProcessId, new Date()]);
+        $objDb->_pQuery("INSERT INTO agp_workflows_stat_wfc (wfc_id, wfc_start) VALUES (?,?)", [$this->strProcessId, new Date()]);
 
         $this->scheduleWorkflows();
 
@@ -49,7 +49,7 @@ class WorkflowsController
 
         $this->runWorkflows();
 
-        $objDb->_pQuery("UPDATE "._dbprefix_."workflows_stat_wfc SET wfc_end = ? where wfc_id = ?", [new Date(), $this->strProcessId]);
+        $objDb->_pQuery("UPDATE agp_workflows_stat_wfc SET wfc_end = ? where wfc_id = ?", [new Date(), $this->strProcessId]);
     }
 
 
@@ -120,7 +120,7 @@ class WorkflowsController
 
             if ($objOneWorkflow->getIntRecordStatus() == 0) {
                 $objDb->_pQuery(
-                    "INSERT INTO "._dbprefix_."workflows_stat_wfh (wfh_id, wfh_wfc, wfh_start, wfh_end, wfh_class, wfh_result) VALUES (?,?,?,?,?,?)",
+                    "INSERT INTO agp_workflows_stat_wfh (wfh_id, wfh_wfc, wfh_start, wfh_end, wfh_class, wfh_result) VALUES (?,?,?,?,?,?)",
                     [$strWfRunId, $this->strProcessId, new Date(), new Date(), $objOneWorkflow->getStrClass(), WorkflowsResultEnum::INACTIVE()]
                 );
                 Logger::getInstance(self::STR_LOGFILE)->warning("workflow ".$objOneWorkflow->getSystemid()." is inactive, can't be executed");
@@ -131,7 +131,7 @@ class WorkflowsController
             $objLockmanager = $objOneWorkflow->getLockManager();
             if ($objLockmanager->isLocked()) {
                 $objDb->_pQuery(
-                    "INSERT INTO "._dbprefix_."workflows_stat_wfh (wfh_id, wfh_wfc, wfh_start, wfh_end, wfh_class, wfh_result) VALUES (?,?,?,?,?,?)",
+                    "INSERT INTO agp_workflows_stat_wfh (wfh_id, wfh_wfc, wfh_start, wfh_end, wfh_class, wfh_result) VALUES (?,?,?,?,?,?)",
                     [$strWfRunId, $this->strProcessId, new Date(), new Date(), $objOneWorkflow->getStrClass(), WorkflowsResultEnum::LOCKED()]
                 );
                 Logger::getInstance(self::STR_LOGFILE)->warning("workflow ".$objOneWorkflow->getSystemid()." is locked, can't be executed");
@@ -140,10 +140,10 @@ class WorkflowsController
 
             //double-check if the workflow is still pending. it's possible that the workflow was fetched in the meantime by another thread.
             //so skip if the wf-state is either no longer scheduled or the nr of executions differ
-            $arrRow = Carrier::getInstance()->getObjDB()->getPRow("SELECT * FROM "._dbprefix_."workflows WHERE workflows_id = ?", array($objOneWorkflow->getSystemid()), 0, false);
+            $arrRow = Carrier::getInstance()->getObjDB()->getPRow("SELECT * FROM agp_workflows WHERE workflows_id = ?", array($objOneWorkflow->getSystemid()), 0, false);
             if ($arrRow["workflows_state"] != WorkflowsWorkflow::$INT_STATE_SCHEDULED || $arrRow["workflows_runs"] != $objOneWorkflow->getIntRuns()) {
                 $objDb->_pQuery(
-                    "INSERT INTO "._dbprefix_."workflows_stat_wfh (wfh_id, wfh_wfc, wfh_start, wfh_end, wfh_class, wfh_result) VALUES (?,?,?,?,?,?)",
+                    "INSERT INTO agp_workflows_stat_wfh (wfh_id, wfh_wfc, wfh_start, wfh_end, wfh_class, wfh_result) VALUES (?,?,?,?,?,?)",
                     [$strWfRunId, $this->strProcessId, new Date(), new Date(), $objOneWorkflow->getStrClass(), WorkflowsResultEnum::PROCESSED_BY_OTHER_THREAD()]
                 );
                 Logger::getInstance(self::STR_LOGFILE)->info("skipping workflow ".$objOneWorkflow->getSystemid().", seems it was executed in the meantime");
@@ -164,7 +164,7 @@ class WorkflowsController
 
             //trigger the workflow
             Logger::getInstance(self::STR_LOGFILE)->info("executing workflow ".$objOneWorkflow->getSystemid());
-            $objDb->_pQuery("INSERT INTO "._dbprefix_."workflows_stat_wfh (wfh_id, wfh_wfc, wfh_start, wfh_class) VALUES (?,?,?,?)", [$strWfRunId, $this->strProcessId, new Date(), $objOneWorkflow->getStrClass()]);
+            $objDb->_pQuery("INSERT INTO agp_workflows_stat_wfh (wfh_id, wfh_wfc, wfh_start, wfh_class) VALUES (?,?,?,?)", [$strWfRunId, $this->strProcessId, new Date(), $objOneWorkflow->getStrClass()]);
 
 
             try {
@@ -172,18 +172,18 @@ class WorkflowsController
                     //handler executed successfully. shift to state 'executed'
                     $objOneWorkflow->setIntState(WorkflowsWorkflow::$INT_STATE_EXECUTED);
                     Logger::getInstance(self::STR_LOGFILE)->info(" execution finished, new state: executed");
-                    $objDb->_pQuery("UPDATE "._dbprefix_."workflows_stat_wfh SET wfh_end = ?, wfh_result = ? where wfh_id = ?", [new Date(), WorkflowsResultEnum::EXECUTE_FINISHED(), $strWfRunId]);
+                    $objDb->_pQuery("UPDATE agp_workflows_stat_wfh SET wfh_end = ?, wfh_result = ? where wfh_id = ?", [new Date(), WorkflowsResultEnum::EXECUTE_FINISHED(), $strWfRunId]);
                 } else {
                     //handler failed to execute. reschedule.
                     $objHandler->schedule();
                     $objOneWorkflow->setIntState(WorkflowsWorkflow::$INT_STATE_SCHEDULED);
                     Logger::getInstance(self::STR_LOGFILE)->info(" execution finished, new state: scheduled");
-                    $objDb->_pQuery("UPDATE "._dbprefix_."workflows_stat_wfh SET wfh_end = ?, wfh_result = ? where wfh_id = ?", [new Date(), WorkflowsResultEnum::EXECUTE_SCHEDULED(), $strWfRunId]);
+                    $objDb->_pQuery("UPDATE agp_workflows_stat_wfh SET wfh_end = ?, wfh_result = ? where wfh_id = ?", [new Date(), WorkflowsResultEnum::EXECUTE_SCHEDULED(), $strWfRunId]);
                 }
             } catch (\Exception $objEx) {
                 //fetch exceptions and reschedule the workflow - hopefully possible
                 Logger::getInstance(self::STR_LOGFILE)->error(" execution failed, message: ".$objEx->getMessage());
-                $objDb->_pQuery("UPDATE "._dbprefix_."workflows_stat_wfh SET wfh_end = ?, wfh_result = ? where wfh_id = ?", [new Date(), WorkflowsResultEnum::EXCEPTION(), $strWfRunId]);
+                $objDb->_pQuery("UPDATE agp_workflows_stat_wfh SET wfh_end = ?, wfh_result = ? where wfh_id = ?", [new Date(), WorkflowsResultEnum::EXCEPTION(), $strWfRunId]);
                 $objHandler->schedule();
                 $objOneWorkflow->setIntState(WorkflowsWorkflow::$INT_STATE_SCHEDULED);
             }

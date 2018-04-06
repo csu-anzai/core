@@ -120,7 +120,7 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
         //delete the tables
         foreach(array("search_search", "search_log", "search_ix_document", "search_ix_content") as $strOneTable) {
             $strReturn .= "Dropping table ".$strOneTable."...\n";
-            if(!$this->objDB->_pQuery("DROP TABLE ".$this->objDB->encloseTableName(_dbprefix_.$strOneTable), array())) {
+            if(!$this->objDB->_pQuery("DROP TABLE ".$this->objDB->encloseTableName($strOneTable), array())) {
                 $strReturn .= "Error deleting table, aborting.\n";
                 return false;
             }

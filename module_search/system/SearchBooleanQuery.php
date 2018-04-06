@@ -150,8 +150,8 @@ class SearchBooleanQuery implements SearchQueryInterface {
      * @param string[] $arrParameters
      */
     private function internalBuildQuery(&$strQuery, &$arrParameters) {
-        $strQuery .= "FROM (SELECT search_ix_document_id, search_ix_system_id from "._dbprefix_."search_ix_document AS D
-                 ".($this->objMetadataFilter != null ? "  LEFT JOIN "._dbprefix_."system ON search_ix_system_id = system_id " : "")."
+        $strQuery .= "FROM (SELECT search_ix_document_id, search_ix_system_id from agp_search_ix_document AS D
+                 ".($this->objMetadataFilter != null ? "  LEFT JOIN agp_system ON search_ix_system_id = system_id " : "")."
                      WHERE ";
 
         $strWhereMust = "1=1 ";
@@ -163,8 +163,8 @@ class SearchBooleanQuery implements SearchQueryInterface {
 
         /* @var $objTerm SearchTerm */
         foreach($this->arrMustNotOccurs as $objTerm) {
-            //$strWhereMust .= "AND NOT EXISTS (select 1 from " . _dbprefix_ . "search_ix_content WHERE search_ix_content_content= ? ". ($objTerm->getStrField()!=null ? " AND search_ix_content_field_name = ? ": "" )  ." AND search_ix_document_id = search_ix_content_document_id) ";
-            $strWhereMust .= "AND search_ix_document_id NOT IN (select search_ix_content_document_id from " . _dbprefix_ . "search_ix_content WHERE search_ix_content_content LIKE ? ". ($objTerm->getStrField()!=null ? " AND search_ix_content_field_name = ? ": "")." ) ";
+            //$strWhereMust .= "AND NOT EXISTS (select 1 from agp_search_ix_content WHERE search_ix_content_content= ? ". ($objTerm->getStrField()!=null ? " AND search_ix_content_field_name = ? ": "" )  ." AND search_ix_document_id = search_ix_content_document_id) ";
+            $strWhereMust .= "AND search_ix_document_id NOT IN (select search_ix_content_document_id from agp_search_ix_content WHERE search_ix_content_content LIKE ? ". ($objTerm->getStrField()!=null ? " AND search_ix_content_field_name = ? ": "")." ) ";
             $arrParameters[] = $objTerm->getStrText()."%";
 
             if($objTerm->getStrField() != null)
@@ -172,8 +172,8 @@ class SearchBooleanQuery implements SearchQueryInterface {
         }
         /* @var $objTerm SearchTerm */
         foreach($this->arrMustOccurs as $objTerm) {
-            //$strWhereMust .= "AND exists (select 1 from " . _dbprefix_ . "search_ix_content WHERE search_ix_content_content= ? ". ($objTerm->getStrField()!=null ? " AND search_ix_content_field_name = ? ": "" )  ." AND search_ix_document_id = search_ix_content_document_id) ";
-            $strWhereMust .= "AND search_ix_document_id IN (select search_ix_content_document_id from " . _dbprefix_ . "search_ix_content WHERE search_ix_content_content LIKE ? ". ($objTerm->getStrField()!=null ? " AND search_ix_content_field_name = ? ": "")." ) ";
+            //$strWhereMust .= "AND exists (select 1 from agp_search_ix_content WHERE search_ix_content_content= ? ". ($objTerm->getStrField()!=null ? " AND search_ix_content_field_name = ? ": "" )  ." AND search_ix_document_id = search_ix_content_document_id) ";
+            $strWhereMust .= "AND search_ix_document_id IN (select search_ix_content_document_id from agp_search_ix_content WHERE search_ix_content_content LIKE ? ". ($objTerm->getStrField()!=null ? " AND search_ix_content_field_name = ? ": "")." ) ";
             $arrParameters[] = $objTerm->getStrText()."%";
 
             if($objTerm->getStrField() != null)
@@ -195,7 +195,7 @@ class SearchBooleanQuery implements SearchQueryInterface {
             $strWhere .= ")";
             $arrMustShouldTerms[] = $strWhere;
         }
-        $strQuery .= "INNER JOIN (select search_ix_content_document_id, search_ix_content_score from " . _dbprefix_ . "search_ix_content where ". implode(" OR ", $arrMustShouldTerms).") z
+        $strQuery .= "INNER JOIN (select search_ix_content_document_id, search_ix_content_score from agp_search_ix_content where ". implode(" OR ", $arrMustShouldTerms).") z
                         ON search_ix_document_id = search_ix_content_document_id";
     }
 

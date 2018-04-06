@@ -168,8 +168,8 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
         }
 
         $strQuery = "SELECT system_id
-        			  FROM "._dbprefix_."dashboard,
-        			  	   "._dbprefix_."system
+        			  FROM agp_dashboard,
+        			  	   agp_system
         			 WHERE dashboard_id = system_id
         			   AND system_prev_id = ?
         			   AND dashboard_user = ?
@@ -216,8 +216,8 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
         $arrParams = array();
 
         $strQuery = "SELECT system_id
-        			  FROM "._dbprefix_."dashboard,
-        			  	   "._dbprefix_."system
+        			  FROM agp_dashboard,
+        			  	   agp_system
         			 WHERE dashboard_id = system_id
         	     ORDER BY system_sort ASC ";
 

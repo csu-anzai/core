@@ -268,7 +268,7 @@ class UserGroup extends Model implements ModelInterface, AdminListableInterface,
         }
 
         //not found in cache, refill
-        foreach (Carrier::getInstance()->getObjDB()->getPArray("SELECT group_id, group_short_id FROM "._dbprefix_."user_group", array()) as $arrOneRow) {
+        foreach (Carrier::getInstance()->getObjDB()->getPArray("SELECT group_id, group_short_id FROM agp_user_group", array()) as $arrOneRow) {
             self::$arrShortIds[$arrOneRow["group_id"]] = $arrOneRow["group_short_id"];
         }
 
@@ -300,7 +300,7 @@ class UserGroup extends Model implements ModelInterface, AdminListableInterface,
         }
 
         //fill the cache completely
-        foreach (Carrier::getInstance()->getObjDB()->getPArray("SELECT group_id, group_short_id FROM "._dbprefix_."user_group", array()) as $arrOneRow) {
+        foreach (Carrier::getInstance()->getObjDB()->getPArray("SELECT group_id, group_short_id FROM agp_user_group", array()) as $arrOneRow) {
             $arrIds[$arrOneRow["group_short_id"]] = $arrOneRow["group_id"];
         }
 

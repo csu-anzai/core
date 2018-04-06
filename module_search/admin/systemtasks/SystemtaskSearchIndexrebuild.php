@@ -76,7 +76,7 @@ class SystemtaskSearchIndexrebuild extends SystemtaskBase implements AdminSystem
         if (!Carrier::getInstance()->getObjSession()->sessionIsset($this->STR_SESSION_KEY)) {
 
             //fetch all records to be indexed
-            $strQuery = "SELECT system_id FROM "._dbprefix_."system WHERE system_deleted = 0";
+            $strQuery = "SELECT system_id FROM agp_system WHERE system_deleted = 0";
             $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, array());
 
             $arrIds = array();

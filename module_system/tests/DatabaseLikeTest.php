@@ -12,10 +12,10 @@ class DatabaseLikeTest extends Testbase
     {
         Carrier::getInstance()->getObjDB()->flushQueryCache();
         Carrier::getInstance()->getObjDB()->flushTablesCache();
-        foreach(array("temp_liketest") as $strOneTable) {
+        foreach(array("agp_temp_liketest") as $strOneTable) {
 
-            if (in_array(_dbprefix_.$strOneTable, Carrier::getInstance()->getObjDB()->getTables())) {
-                $strQuery = "DROP TABLE "._dbprefix_.$strOneTable;
+            if (in_array($strOneTable, Carrier::getInstance()->getObjDB()->getTables())) {
+                $strQuery = "DROP TABLE ".$strOneTable;
                 Carrier::getInstance()->getObjDB()->_pQuery($strQuery, array());
             }
 
@@ -32,8 +32,8 @@ class DatabaseLikeTest extends Testbase
         $objDB = Carrier::getInstance()->getObjDB();
 
 
-        if (in_array(_dbprefix_ . "temp_liketest", Carrier::getInstance()->getObjDB()->getTables())) {
-            $strQuery = "DROP TABLE " . _dbprefix_ . "temp_liketest";
+        if (in_array("agp_temp_liketest", Carrier::getInstance()->getObjDB()->getTables())) {
+            $strQuery = "DROP TABLE agp_temp_liketest";
             Carrier::getInstance()->getObjDB()->_pQuery($strQuery, array());
         }
 
@@ -66,39 +66,38 @@ class DatabaseLikeTest extends Testbase
     {
         $this->markTestSkipped('currently problems on mysql');
 
-        $strTableName = _dbprefix_."temp_liketest";
         $objDB = Carrier::getInstance()->getObjDB();
-        $this->assertEquals(count($objDB->getPArray("SELECT * FROM {$strTableName}", array())), 6);
+        $this->assertEquals(count($objDB->getPArray("SELECT * FROM agp_temp_liketest", array())), 6);
 
-        $arrRows = $objDB->getPArray("SELECT * FROM {$strTableName} WHERE temp_text = ?", array('abc die katze'));
+        $arrRows = $objDB->getPArray("SELECT * FROM agp_temp_liketest WHERE temp_text = ?", array('abc die katze'));
         $this->assertEquals(count($arrRows), 1);
         $this->assertEquals($arrRows[0]["temp_name"], "lower");
 
-        $arrRows = $objDB->getPArray("SELECT * FROM {$strTableName} WHERE temp_text = ?", array('Abc Die Katze'));
+        $arrRows = $objDB->getPArray("SELECT * FROM agp_temp_liketest WHERE temp_text = ?", array('Abc Die Katze'));
         $this->assertEquals(count($arrRows), 1);
         $this->assertEquals($arrRows[0]["temp_name"], "capitalized");
 
-        $arrRows = $objDB->getPArray("SELECT * FROM {$strTableName} WHERE temp_text = ?", array('ABC DIE KATZE'));
+        $arrRows = $objDB->getPArray("SELECT * FROM agp_temp_liketest WHERE temp_text = ?", array('ABC DIE KATZE'));
         $this->assertEquals(count($arrRows), 1);
         $this->assertEquals($arrRows[0]["temp_name"], "upper");
 
-        $arrRows = $objDB->getPArray("SELECT * FROM {$strTableName} WHERE temp_text = ?", array('aBC DIE katze'));
+        $arrRows = $objDB->getPArray("SELECT * FROM agp_temp_liketest WHERE temp_text = ?", array('aBC DIE katze'));
         $this->assertEquals(count($arrRows), 0);
 
 
-        $arrRows = $objDB->getPArray("SELECT * FROM {$strTableName} WHERE temp_name = ?", array('key'));
+        $arrRows = $objDB->getPArray("SELECT * FROM agp_temp_liketest WHERE temp_name = ?", array('key'));
         $this->assertEquals(count($arrRows), 1);
         $this->assertEquals($arrRows[0]["temp_text"], "lower");
 
-        $arrRows = $objDB->getPArray("SELECT * FROM {$strTableName} WHERE temp_name = ?", array('Key'));
+        $arrRows = $objDB->getPArray("SELECT * FROM agp_temp_liketest WHERE temp_name = ?", array('Key'));
         $this->assertEquals(count($arrRows), 1);
         $this->assertEquals($arrRows[0]["temp_text"], "capitalized");
 
-        $arrRows = $objDB->getPArray("SELECT * FROM {$strTableName} WHERE temp_name = ?", array('KEY'));
+        $arrRows = $objDB->getPArray("SELECT * FROM agp_temp_liketest WHERE temp_name = ?", array('KEY'));
         $this->assertEquals(count($arrRows), 1);
         $this->assertEquals($arrRows[0]["temp_text"], "upper");
 
-        $arrRows = $objDB->getPArray("SELECT * FROM {$strTableName} WHERE temp_name = ?", array('kEy'));
+        $arrRows = $objDB->getPArray("SELECT * FROM agp_temp_liketest WHERE temp_name = ?", array('kEy'));
         $this->assertEquals(count($arrRows), 0);
 
     }
@@ -107,16 +106,15 @@ class DatabaseLikeTest extends Testbase
     public function testLike()
     {
         $objDB = Carrier::getInstance()->getObjDB();
-        $strTableName = _dbprefix_."temp_liketest";
-        $this->assertEquals(count($objDB->getPArray("SELECT * FROM {$strTableName}", array())), 6);
+        $this->assertEquals(count($objDB->getPArray("SELECT * FROM agp_temp_liketest", array())), 6);
 
-        $arrRows = $objDB->getPArray("SELECT * FROM {$strTableName} WHERE temp_text LIKE ? ORDER BY temp_id ASC", array('abc%'));
+        $arrRows = $objDB->getPArray("SELECT * FROM agp_temp_liketest WHERE temp_text LIKE ? ORDER BY temp_id ASC", array('abc%'));
         $this->assertEquals(count($arrRows), 3);
         $this->assertEquals($arrRows[0]["temp_name"], "lower");
         $this->assertEquals($arrRows[1]["temp_name"], "capitalized");
         $this->assertEquals($arrRows[2]["temp_name"], "upper");
 
-        $arrRows = $objDB->getPArray("SELECT * FROM {$strTableName} WHERE temp_name LIKE ? ORDER BY temp_id ASC", array('key%'));
+        $arrRows = $objDB->getPArray("SELECT * FROM agp_temp_liketest WHERE temp_name LIKE ? ORDER BY temp_id ASC", array('key%'));
         $this->assertEquals(count($arrRows), 3);
         $this->assertEquals($arrRows[0]["temp_text"], "lower");
         $this->assertEquals($arrRows[1]["temp_text"], "capitalized");

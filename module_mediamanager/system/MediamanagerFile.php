@@ -283,8 +283,8 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
     private function countOtherFilesWithSamePath()
     {
         $strQuery = "SELECT COUNT(*) AS cnt
-                       FROM "._dbprefix_."system,
-                            "._dbprefix_."mediamanager_file
+                       FROM agp_system,
+                            agp_mediamanager_file
                     WHERE system_id = file_id
                       AND file_filename = ?
                       AND file_id != ?";
@@ -334,7 +334,7 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
     public function increaseHits()
     {
         $this->setIntHits($this->getIntHits() + 1);
-        $strQuery = "UPDATE "._dbprefix_."mediamanager_file SET file_hits = file_hits+1 WHERE file_id = ?";
+        $strQuery = "UPDATE agp_mediamanager_file SET file_hits = file_hits+1 WHERE file_id = ?";
         return $this->objDB->_pQuery($strQuery, array($this->getSystemid()));
     }
 

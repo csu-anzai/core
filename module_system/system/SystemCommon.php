@@ -39,7 +39,7 @@ class SystemCommon extends Model implements ModelInterface {
         $arrReturn = array();
 
         $strQuery = "SELECT system_id
-                       FROM " . _dbprefix_ . "system
+                       FROM agp_system
                        WHERE 1=1
                    " . ($intModuleFilter !== false ? " AND system_module_nr = ? " : "") . "
                    " . ($strClassFilter !== false ? " AND system_class = ? " : "") . "

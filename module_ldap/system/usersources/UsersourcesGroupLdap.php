@@ -62,7 +62,7 @@ class UsersourcesGroupLdap extends \Kajona\System\System\Model implements \Kajon
      */
     protected function initObjectInternal()
     {
-        $strQuery = "SELECT * FROM " . _dbprefix_ . "user_group_ldap WHERE group_ldap_id=?";
+        $strQuery = "SELECT * FROM agp_user_group_ldap WHERE group_ldap_id=?";
         $arrRow = $this->objDB->getPRow($strQuery, array($this->getSystemid()));
 
         if (count($arrRow) > 0) {
@@ -86,13 +86,13 @@ class UsersourcesGroupLdap extends \Kajona\System\System\Model implements \Kajon
             Logger::getInstance(Logger::USERSOURCES)->info("saved new ldap group " . $this->getStrSystemid());
             $strGrId = generateSystemid();
             $this->setSystemid($strGrId);
-            $strQuery = "INSERT INTO " . _dbprefix_ . "user_group_ldap
+            $strQuery = "INSERT INTO agp_user_group_ldap
                           (group_ldap_id, group_ldap_dn, group_ldap_cfg) VALUES
                           (?, ?, ?)";
             return $this->objDB->_pQuery($strQuery, array($strGrId, $this->getStrDn(), $this->getIntCfg()), array(true, false));
         } else {
             Logger::getInstance(Logger::USERSOURCES)->info("updated ldap group " . $this->getSystemid());
-            $strQuery = "UPDATE " . _dbprefix_ . "user_group_ldap
+            $strQuery = "UPDATE agp_user_group_ldap
                             SET group_ldap_dn=?, group_ldap_cfg=?
                           WHERE group_ldap_id=?";
             return $this->objDB->_pQuery($strQuery, array($this->getStrDn(), $this->getIntCfg(), $this->getSystemid()), array(false, false));
@@ -123,7 +123,7 @@ class UsersourcesGroupLdap extends \Kajona\System\System\Model implements \Kajon
      */
     public function setNewRecordId($strId)
     {
-        $strQuery = "UPDATE " . _dbprefix_ . "user_group_ldap SET group_ldap_id = ? WHERE group_ldap_id = ?";
+        $strQuery = "UPDATE agp_user_group_ldap SET group_ldap_id = ? WHERE group_ldap_id = ?";
         $this->objDB->_pQuery($strQuery, array($strId, $this->getSystemid()));
         $this->setSystemid($strId);
     }
@@ -226,7 +226,7 @@ class UsersourcesGroupLdap extends \Kajona\System\System\Model implements \Kajon
     public function deleteGroup()
     {
         Logger::getInstance()->info("deleted ldap group with id " . $this->getSystemid());
-        $strQuery = "DELETE FROM " . _dbprefix_ . "user_group_ldap WHERE group_ldap_id=?";
+        $strQuery = "DELETE FROM agp_user_group_ldap WHERE group_ldap_id=?";
         CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_RECORDDELETED, array($this->getSystemid(), get_class($this)));
         return $this->objDB->_pQuery($strQuery, array($this->getSystemid()));
     }

@@ -198,7 +198,7 @@ class OrmObjectupdate extends OrmBase
             }
 
             $bitReturn = $bitReturn && $objDB->_pQuery(
-                "DELETE FROM ".$objDB->encloseTableName(_dbprefix_.$objCfg->getStrTableName())." WHERE ".$objDB->encloseColumnName($objCfg->getStrSourceColumn())." = ?",
+                "DELETE FROM ".$objDB->encloseTableName($objCfg->getStrTableName())." WHERE ".$objDB->encloseColumnName($objCfg->getStrSourceColumn())." = ?",
                 array($this->getObjObject()->getSystemid())
             );
             $bitReturn = $bitReturn && $objDB->multiInsert($objCfg->getStrTableName(), array($objCfg->getStrSourceColumn(), $objCfg->getStrTargetColumn()), $arrInserts);
@@ -284,7 +284,7 @@ class OrmObjectupdate extends OrmBase
 
         $arrValues = array();
 
-        $strQuery = "UPDATE ".$objDB->encloseTableName(_dbprefix_.$strTargetTable)." SET ";
+        $strQuery = "UPDATE ".$objDB->encloseTableName($strTargetTable)." SET ";
 
         $intI = 0;
         foreach ($arrColValues as $strColumn => $objValue) {

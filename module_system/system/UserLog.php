@@ -35,7 +35,7 @@ class UserLog
 
         $arrParams = array();
 
-        $strQuery = "INSERT INTO "._dbprefix_."user_log
+        $strQuery = "INSERT INTO agp_user_log
 						(user_log_id, user_log_userid, user_log_date, user_log_status, user_log_ip, user_log_sessid) VALUES
 						(?, ?, ?, ?, ?, ?)";
 
@@ -64,7 +64,7 @@ class UserLog
      */
     public static function registerLogout()
     {
-        $strQuery = "UPDATE "._dbprefix_."user_log
+        $strQuery = "UPDATE agp_user_log
                         SET user_log_enddate = ?
                       WHERE user_log_sessid = ?";
 
@@ -86,8 +86,8 @@ class UserLog
     public static function getLoginLogs($intStart = null, $intEnd = null)
     {
         $strQuery = "SELECT *
-				       FROM "._dbprefix_."user_log
-			      LEFT JOIN "._dbprefix_."user
+				       FROM agp_user_log
+			      LEFT JOIN agp_user
 						ON user_log_userid = user_id
 				   ORDER BY user_log_date DESC";
         return Carrier::getInstance()->getObjDB()->getPArray($strQuery, array(), $intStart, $intEnd);
@@ -104,7 +104,7 @@ class UserLog
     public function getLoginLogsCount(Date $objStartDate = null, Date $objEndDate = null)
     {
         $strQuery = "SELECT COUNT(*) AS cnt
-						FROM "._dbprefix_."user_log as log";
+						FROM agp_user_log as log";
 
         $arrParams = array();
         if ($objStartDate !== null && $objEndDate !== null) {

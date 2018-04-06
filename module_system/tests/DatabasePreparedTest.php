@@ -11,8 +11,8 @@ class DatabasePreparedTest extends Testbase
     public function tearDown()
     {
         $this->flushDBCache();
-        if (in_array(_dbprefix_ . "temp_autotest", Carrier::getInstance()->getObjDB()->getTables())) {
-            $strQuery = "DROP TABLE " . _dbprefix_ . "temp_autotest";
+        if (in_array("agp_temp_autotest", Carrier::getInstance()->getObjDB()->getTables())) {
+            $strQuery = "DROP TABLE agp_temp_autotest";
             Carrier::getInstance()->getObjDB()->_pQuery($strQuery, array());
         }
 
@@ -42,7 +42,7 @@ class DatabasePreparedTest extends Testbase
 
 
         for ($intI = 1; $intI <= 50; $intI++) {
-            $strQuery = "INSERT INTO " . _dbprefix_ . "temp_autotest
+            $strQuery = "INSERT INTO agp_temp_autotest
                 (temp_id, temp_long, temp_double, temp_char10, temp_char20, temp_char100, temp_char254, temp_char500, temp_text)
                 VALUES
                 (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -51,18 +51,18 @@ class DatabasePreparedTest extends Testbase
         }
 
 
-        $strQuery = "SELECT * FROM " . _dbprefix_ . "temp_autotest ORDER BY temp_long ASC";
+        $strQuery = "SELECT * FROM agp_temp_autotest ORDER BY temp_long ASC";
         $arrRow = $objDB->getPRow($strQuery, array());
         $this->assertTrue(count($arrRow) >= 9, "testDataBase getRow count");
         $this->assertEquals($arrRow["temp_char10"], "1", "testDataBase getRow content");
 
 
-        $strQuery = "SELECT * FROM " . _dbprefix_ . "temp_autotest WHERE temp_char10 = ? ORDER BY temp_long ASC";
+        $strQuery = "SELECT * FROM agp_temp_autotest WHERE temp_char10 = ? ORDER BY temp_long ASC";
         $arrRow = $objDB->getPRow($strQuery, array('2'));
         $this->assertTrue(count($arrRow) >= 9, "testDataBase getRow count");
         $this->assertEquals($arrRow["temp_char10"], "2", "testDataBase getRow content");
 
-        $strQuery = "SELECT * FROM " . _dbprefix_ . "temp_autotest ORDER BY temp_long ASC";
+        $strQuery = "SELECT * FROM agp_temp_autotest ORDER BY temp_long ASC";
         $arrRow = $objDB->getPArray($strQuery, array());
         $this->assertEquals(count($arrRow), 50, "testDataBase getArray count");
 
@@ -70,11 +70,11 @@ class DatabasePreparedTest extends Testbase
         foreach ($arrRow as $arrSingleRow)
             $this->assertEquals($arrSingleRow["temp_char10"], $intI++, "testDataBase getArray content");
 
-        $strQuery = "SELECT * FROM " . _dbprefix_ . "temp_autotest  WHERE temp_char10 = ? ORDER BY temp_long ASC";
+        $strQuery = "SELECT * FROM agp_temp_autotest  WHERE temp_char10 = ? ORDER BY temp_long ASC";
         $arrRow = $objDB->getPArray($strQuery, array('2'));
         $this->assertEquals(count($arrRow), 1, "testDataBase getArray count");
 
-        $strQuery = "SELECT * FROM " . _dbprefix_ . "temp_autotest ORDER BY temp_long ASC";
+        $strQuery = "SELECT * FROM agp_temp_autotest ORDER BY temp_long ASC";
         $arrRow = $objDB->getPArray($strQuery, array(), 0, 9);
         $this->assertEquals(count($arrRow), 10, "testDataBase getArraySection count");
 
@@ -83,7 +83,7 @@ class DatabasePreparedTest extends Testbase
             $this->assertEquals($arrSingleRow["temp_char10"], $intI++, "testDataBase getArraySection content");
 
         $this->flushDBCache();
-        $strQuery = "SELECT * FROM " . _dbprefix_ . "temp_autotest WHERE temp_char10 LIKE ? ORDER BY temp_long ASC";
+        $strQuery = "SELECT * FROM agp_temp_autotest WHERE temp_char10 LIKE ? ORDER BY temp_long ASC";
         $arrRow = $objDB->getPArray($strQuery, array("%"), 0, 9);
         $this->assertEquals(count($arrRow), 10, "testDataBase getArraySection param count");
 
@@ -91,15 +91,15 @@ class DatabasePreparedTest extends Testbase
         foreach ($arrRow as $arrSingleRow)
             $this->assertEquals($arrSingleRow["temp_char10"], $intI++, "testDataBase getArraySection param content");
 
-        $strQuery = "SELECT * FROM " . _dbprefix_ . "temp_autotest  WHERE temp_char10 = ? AND temp_char20 = ? ORDER BY temp_long ASC";
+        $strQuery = "SELECT * FROM agp_temp_autotest  WHERE temp_char10 = ? AND temp_char20 = ? ORDER BY temp_long ASC";
         $arrRow = $objDB->getPArray($strQuery, array('2', 'char202'));
         $this->assertEquals(count($arrRow), 1, "testDataBase getArray 2 params count");
 
-        $strQuery = "SELECT * FROM " . _dbprefix_ . "temp_autotest  WHERE temp_char10 = ? AND temp_char20 = ? ORDER BY temp_long ASC";
+        $strQuery = "SELECT * FROM agp_temp_autotest  WHERE temp_char10 = ? AND temp_char20 = ? ORDER BY temp_long ASC";
         $arrRow = $objDB->getPArray($strQuery, array('2', null));
         $this->assertEquals(count($arrRow), 0, "testDataBase getArray 2 params count");
         
-        $strQuery = "DROP TABLE " . _dbprefix_ . "temp_autotest";
+        $strQuery = "DROP TABLE agp_temp_autotest";
         $this->assertTrue($objDB->_pQuery($strQuery, array()), "testDataBase dropTable");
 
     }
@@ -118,7 +118,7 @@ class DatabasePreparedTest extends Testbase
 
         $this->assertTrue($objDB->createTable("temp_autotest_float", $arrFields, array("temp_id")), "testDataBase createTable");
 
-        $objDB->_pQuery("DELETE FROM " . _dbprefix_ . "temp_autotest_float WHERE 1 = 1", array());
+        $objDB->_pQuery("DELETE FROM agp_temp_autotest_float WHERE 1 = 1", array());
 
         $objDB->multiInsert(
             "temp_autotest_float",
@@ -126,17 +126,17 @@ class DatabasePreparedTest extends Testbase
             array(array("id1", 123456, 1.7), array("id2", "123456", "1.7"))
         );
 
-        $arrRow = $objDB->getPRow("SELECT * FROM " . _dbprefix_ . "temp_autotest_float WHERE temp_id = ?", array("id1"));
+        $arrRow = $objDB->getPRow("SELECT * FROM agp_temp_autotest_float WHERE temp_id = ?", array("id1"));
 
         $this->assertEquals(123456, $arrRow["temp_long"]);
         $this->assertEquals(1.7, round($arrRow["temp_double"], 1));
 
-        $arrRow = $objDB->getPRow("SELECT * FROM " . _dbprefix_ . "temp_autotest_float WHERE temp_id = ?", array("id2"));
+        $arrRow = $objDB->getPRow("SELECT * FROM agp_temp_autotest_float WHERE temp_id = ?", array("id2"));
 
         $this->assertEquals(123456, $arrRow["temp_long"]);
         $this->assertEquals(1.7, round($arrRow["temp_double"], 1));
 
-        $strQuery = "DROP TABLE " . _dbprefix_ . "temp_autotest_float";
+        $strQuery = "DROP TABLE agp_temp_autotest_float";
         $this->assertTrue($objDB->_pQuery($strQuery, array()), "testDataBase dropTable");
 
     }

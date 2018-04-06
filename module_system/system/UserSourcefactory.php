@@ -52,7 +52,7 @@ class UserSourcefactory
     {
 
         //validate if a group with the given name is available
-        $strQuery = "SELECT group_id FROM "._dbprefix_."user_group where group_name = ?";
+        $strQuery = "SELECT group_id FROM agp_user_group where group_name = ?";
         $arrRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, array($strName));
 
         if (isset($arrRow["group_id"]) && validateSystemid($arrRow["group_id"])) {
@@ -75,7 +75,7 @@ class UserSourcefactory
     {
 
         //validate if a group with the given name is available
-        $strQuery = "SELECT group_id, group_subsystem FROM "._dbprefix_."user_group where group_name LIKE ?";
+        $strQuery = "SELECT group_id, group_subsystem FROM agp_user_group where group_name LIKE ?";
         $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, array($strName."%"), $intStart, $intEnd);
 
         $arrReturn = array();
@@ -101,7 +101,7 @@ class UserSourcefactory
 
         //validate if a group with the given name is available
 
-        $strQuery = "SELECT user_id FROM "._dbprefix_."user, "._dbprefix_."system where user_id = system_id AND user_username = ? AND (system_deleted = 0 OR system_deleted IS NULL)";
+        $strQuery = "SELECT user_id FROM agp_user, agp_system where user_id = system_id AND user_username = ? AND (system_deleted = 0 OR system_deleted IS NULL)";
         $arrRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, array($strName));
 
         if (isset($arrRow["user_id"]) && validateSystemid($arrRow["user_id"])) {
@@ -133,11 +133,10 @@ class UserSourcefactory
      */
     public function getUserlistByUserquery($strParam, $intStart = null, $intEnd = null, $strGroupId = null)
     {
-        $strDbPrefix = _dbprefix_;
         //validate if a group with the given name is available
         $strQuery = "SELECT user_tbl.user_id, user_tbl.user_subsystem
-                      FROM {$strDbPrefix}system, {$strDbPrefix}user AS user_tbl
-                      LEFT JOIN {$strDbPrefix}user_kajona AS user_kajona ON user_tbl.user_id = user_kajona.user_id
+                      FROM agp_system, agp_user AS user_tbl
+                      LEFT JOIN agp_user_kajona AS user_kajona ON user_tbl.user_id = user_kajona.user_id
                       WHERE
                           (user_tbl.user_username LIKE ? OR user_kajona.user_forename LIKE ? OR user_kajona.user_name LIKE ?)
                           AND user_tbl.user_id = system_id
@@ -149,7 +148,7 @@ class UserSourcefactory
         $bitSqlFiltered = false;
         if (validateSystemid($strGroupId) && count($this->arrSubsystemsAvailable) == 1 && $this->arrSubsystemsAvailable[0] == "kajona") {
             $bitSqlFiltered = true;
-            $strQuery .= " AND ? IN (SELECT group_member_group_kajona_id FROM {$strDbPrefix}user_kajona_members WHERE group_member_user_kajona_id = user_tbl.user_id) ";
+            $strQuery .= " AND ? IN (SELECT group_member_group_kajona_id FROM agp_user_kajona_members WHERE group_member_user_kajona_id = user_tbl.user_id) ";
             $arrParams[] = $strGroupId;
         }
 

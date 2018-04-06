@@ -88,7 +88,7 @@ class OrmInConditionTest extends Testbase
 
         $objRestriction = new OrmInCondition("temp_systemid", $arrParams);
 
-        $arrResult = $objDB->getPArray("SELECT * FROM " . _dbprefix_ . "temp_propertyintest WHERE " . $objRestriction->getStrWhere(), $objRestriction->getArrParams());
+        $arrResult = $objDB->getPArray("SELECT * FROM agp_temp_propertyintest WHERE " . $objRestriction->getStrWhere(), $objRestriction->getArrParams());
 
         $this->assertEquals("text 1", $arrResult[0]["temp_name"]);
     }

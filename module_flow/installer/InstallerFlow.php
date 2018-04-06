@@ -101,8 +101,7 @@ class InstallerFlow extends InstallerBase
         $this->objDB->addColumn("flow_step_transition", "transition_visible", DbDatatypes::STR_TYPE_INT);
 
         // make all existing transitions visible
-        $dbPrefix = _dbprefix_;
-        $this->objDB->_pQuery("UPDATE {$dbPrefix}flow_step_transition SET transition_visible = 1", []);
+        $this->objDB->_pQuery("UPDATE agp_flow_step_transition SET transition_visible = 1", []);
 
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5");
         return $strReturn;
@@ -117,8 +116,7 @@ class InstallerFlow extends InstallerBase
         $this->objDB->addColumn("flow_step_transition", "transition_skip", DbDatatypes::STR_TYPE_INT);
 
         // set all transitions skip to 0
-        $dbPrefix = _dbprefix_;
-        $this->objDB->_pQuery("UPDATE {$dbPrefix}flow_step_transition SET transition_skip = 0", []);
+        $this->objDB->_pQuery("UPDATE agp_flow_step_transition SET transition_skip = 0", []);
 
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
         return $strReturn;

@@ -321,8 +321,7 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
             $strTargetClass = $objFlow->getStrTargetClass();
             $intStatus = $this->getIntStatus();
 
-            $dbPrefix = _dbprefix_;
-            $arrRow = Database::getInstance()->getPRow("SELECT COUNT(*) AS cnt FROM {$dbPrefix}system WHERE system_class = ? AND system_status = ?", [$strTargetClass, $intStatus]);
+            $arrRow = Database::getInstance()->getPRow("SELECT COUNT(*) AS cnt FROM agp_system WHERE system_class = ? AND system_status = ?", [$strTargetClass, $intStatus]);
             $intCount = isset($arrRow["cnt"]) ? (int) $arrRow["cnt"] : 0;
 
             if ($intCount > 0) {

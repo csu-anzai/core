@@ -67,7 +67,7 @@ class LanguagesRecorddeletedlistener implements GenericeventListenerInterface {
 
 
         //fire a plain query on the database, much faster then searching for matching records
-        $strQuery = "DELETE FROM "._dbprefix_."languages_languageset
+        $strQuery = "DELETE FROM agp_languages_languageset
                   WHERE languageset_language = ?
                      OR languageset_systemid = ?";
 

@@ -37,7 +37,7 @@ class OrmObjectinitTest extends Testbase
     {
         parent::tearDown();
         $objDb = Carrier::getInstance()->getObjDB();
-        $objDb->_pQuery("DROP TABLE "._dbprefix_."inittestclass", array());
+        $objDb->_pQuery("DROP TABLE agp_inittestclass", array());
         Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBTABLES);
     }
 

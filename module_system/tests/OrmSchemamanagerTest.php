@@ -15,9 +15,9 @@ class OrmSchemamanagerTest extends Testbase
     {
         $objDb = Carrier::getInstance()->getObjDB();
 
-        foreach (array("ormtest", "testclass", "testclass_rel", "testclass2_rel") as $strOneTable) {
-            if (in_array(_dbprefix_ . $strOneTable, $objDb->getTables())) {
-                $objDb->_pQuery("DROP TABLE " . _dbprefix_ . $strOneTable, array());
+        foreach (array("agp_ormtest", "agp_testclass", "agp_testclass_rel", "agp_testclass2_rel") as $strOneTable) {
+            if (in_array($strOneTable, $objDb->getTables())) {
+                $objDb->_pQuery("DROP TABLE " .$strOneTable, array());
                 Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBTABLES);
             }
         }
@@ -33,16 +33,16 @@ class OrmSchemamanagerTest extends Testbase
         $objManager = new OrmSchemamanager();
 
         $arrTables = $objDb->getTables();
-        $this->assertTrue(!in_array(_dbprefix_ . "ormtest", $arrTables));
+        $this->assertTrue(!in_array("agp_ormtest", $arrTables));
 
         $objManager->createTable("Kajona\\System\\Tests\\OrmSchematestTestclass");
         Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBTABLES);
 
         $arrTables = $objDb->getTables();
-        $this->assertTrue(in_array(_dbprefix_ . "ormtest", $arrTables));
+        $this->assertTrue(in_array("agp_ormtest", $arrTables));
 
         //fetch table informations
-        $arrTable = $objDb->getColumnsOfTable(_dbprefix_ . "ormtest");
+        $arrTable = $objDb->getColumnsOfTable("agp_ormtest");
 
         $arrColumnNamesToDatatype = array();
         array_walk($arrTable, function ($arrValue) use (&$arrColumnNamesToDatatype) {
@@ -128,20 +128,20 @@ class OrmSchemamanagerTest extends Testbase
         $objManager = new OrmSchemamanager();
 
         $arrTables = $objDb->getTables();
-        $this->assertTrue(!in_array(_dbprefix_ . "testclass", $arrTables));
-        $this->assertTrue(!in_array(_dbprefix_ . "testclass_rel", $arrTables));
-        $this->assertTrue(!in_array(_dbprefix_ . "testclass2_rel", $arrTables));
+        $this->assertTrue(!in_array("agp_testclass", $arrTables));
+        $this->assertTrue(!in_array("agp_testclass_rel", $arrTables));
+        $this->assertTrue(!in_array("agp_testclass2_rel", $arrTables));
 
         $objManager->createTable("Kajona\\System\\Tests\\OrmSchematestTestclassAssignments");
         Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBTABLES);
 
         $arrTables = $objDb->getTables();
-        $this->assertTrue(in_array(_dbprefix_ . "testclass", $arrTables));
-        $this->assertTrue(in_array(_dbprefix_ . "testclass_rel", $arrTables));
-        $this->assertTrue(in_array(_dbprefix_ . "testclass2_rel", $arrTables));
+        $this->assertTrue(in_array("agp_testclass", $arrTables));
+        $this->assertTrue(in_array("agp_testclass_rel", $arrTables));
+        $this->assertTrue(in_array("agp_testclass2_rel", $arrTables));
 
         //fetch table informations
-        $arrTable = $objDb->getColumnsOfTable(_dbprefix_ . "testclass_rel");
+        $arrTable = $objDb->getColumnsOfTable("agp_testclass_rel");
 
         $arrColumnNames = array_map(function ($arrValue) {
             return $arrValue["columnName"];
@@ -151,7 +151,7 @@ class OrmSchemamanagerTest extends Testbase
         $this->assertTrue(in_array("testclass_source_id", $arrColumnNames));
         $this->assertTrue(in_array("testclass_target_id", $arrColumnNames));
 
-        $arrTable = $objDb->getColumnsOfTable(_dbprefix_ . "testclass2_rel");
+        $arrTable = $objDb->getColumnsOfTable("agp_testclass2_rel");
 
         $arrColumnNames = array_map(function ($arrValue) {
             return $arrValue["columnName"];

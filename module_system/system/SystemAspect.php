@@ -166,7 +166,7 @@ class SystemAspect extends Model implements ModelInterface, AdminListableInterfa
      */
     public static function resetDefaultAspect()
     {
-        $strQuery = "UPDATE "._dbprefix_."aspects
+        $strQuery = "UPDATE agp_aspects
                      SET aspect_default = 0";
         return Carrier::getInstance()->getObjDB()->_pQuery($strQuery, array());
     }

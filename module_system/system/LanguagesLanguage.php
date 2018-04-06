@@ -185,7 +185,7 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
      */
     public static function resetAllDefaultLanguages()
     {
-        $strQuery = "UPDATE "._dbprefix_."languages
+        $strQuery = "UPDATE agp_languages
                      SET language_default = 0";
         return Carrier::getInstance()->getObjDB()->_pQuery($strQuery, array());
     }
@@ -202,11 +202,11 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
     {
         $this->objDB->transactionBegin();
 
-        $strQuery1 = "UPDATE "._dbprefix_."page_properties
+        $strQuery1 = "UPDATE agp_page_properties
                         SET pageproperties_language = ?
                         WHERE pageproperties_language = ?";
 
-        $strQuery2 = "UPDATE "._dbprefix_."page_element
+        $strQuery2 = "UPDATE agp_page_element
                         SET page_element_ph_language = ?
                         WHERE page_element_ph_language = ?";
 

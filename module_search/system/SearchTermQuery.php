@@ -88,10 +88,10 @@ class SearchTermQuery implements SearchQueryInterface
      */
     private function internalBuildQuery(&$strQuery, &$arrParameters) {
 
-        $strQuery .= "FROM "._dbprefix_."search_ix_document AS D
-                INNER JOIN "._dbprefix_."search_ix_content AS z
+        $strQuery .= "FROM agp_search_ix_document AS D
+                INNER JOIN agp_search_ix_content AS z
                         ON search_ix_content_document_id = search_ix_document_id
-             ".($this->objMetadataFilter != null ? "  LEFT JOIN "._dbprefix_."system ON search_ix_system_id = system_id " : "")."
+             ".($this->objMetadataFilter != null ? "  LEFT JOIN agp_system ON search_ix_system_id = system_id " : "")."
                      WHERE 1=1 ";
 
         //metadata filter

@@ -27,7 +27,7 @@ class SortTest extends Testbase
             $arrAspects[] = $objAspect;
         }
 
-        $strQuery = "SELECT system_id, system_sort FROM "._dbprefix_."system WHERE system_prev_id = ? ORDER BY system_sort ASC";
+        $strQuery = "SELECT system_id, system_sort FROM agp_system WHERE system_prev_id = ? ORDER BY system_sort ASC";
         $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, array($objRootAspect->getSystemid()), null, null, false);
 
         for($intI = 0; $intI < 5; $intI++) {
@@ -228,7 +228,7 @@ class SortTest extends Testbase
         //initial movings
         $objAspect = new SystemAspect($arrNodes[1]);
         $objAspect->setPosition("upwards");
-        $arrNodes = $objDB->getPArray("SELECT system_id FROM " . _dbprefix_ . "system WHERE system_prev_id = ? ORDER BY system_sort ASC", array($strBaseNodeId));
+        $arrNodes = $objDB->getPArray("SELECT system_id FROM agp_system WHERE system_prev_id = ? ORDER BY system_sort ASC", array($strBaseNodeId));
         //move the third to the first pos
         $objAspect = new SystemAspect($arrNodes[2]["system_id"]);
         $objAspect->setPosition("upwards");
@@ -237,7 +237,7 @@ class SortTest extends Testbase
         //next one should be with no effect
         $objAspect->setPosition("upwards");
         $objDB->flushQueryCache();
-        $arrNodesAfter = $objDB->getPArray("SELECT system_id FROM " . _dbprefix_ . "system WHERE system_prev_id = ? ORDER BY system_sort ASC", array($strBaseNodeId));
+        $arrNodesAfter = $objDB->getPArray("SELECT system_id FROM agp_system WHERE system_prev_id = ? ORDER BY system_sort ASC", array($strBaseNodeId));
 
         $this->assertEquals($arrNodesAfter[0]["system_id"], $arrNodes[2]["system_id"], __FILE__ . " checkPositionShitftingByRelativeShift");
         $this->assertEquals($arrNodesAfter[1]["system_id"], $arrNodes[0]["system_id"], __FILE__ . " checkPositionShitftingByRelativeShift");
@@ -245,11 +245,11 @@ class SortTest extends Testbase
 
         //moving by set pos
         $objDB->flushQueryCache();
-        $arrNodes = $objDB->getPArray("SELECT system_id FROM " . _dbprefix_ . "system WHERE system_prev_id = ? ORDER BY system_sort ASC", array($strBaseNodeId));
+        $arrNodes = $objDB->getPArray("SELECT system_id FROM agp_system WHERE system_prev_id = ? ORDER BY system_sort ASC", array($strBaseNodeId));
         $objDB->flushQueryCache();
         $objAspect = new SystemAspect($arrNodes[2]["system_id"]);
         $objAspect->setAbsolutePosition(1);
-        $arrNodesAfter = $objDB->getPArray("SELECT system_id FROM " . _dbprefix_ . "system WHERE system_prev_id = ? ORDER BY system_sort ASC", array($strBaseNodeId));
+        $arrNodesAfter = $objDB->getPArray("SELECT system_id FROM agp_system WHERE system_prev_id = ? ORDER BY system_sort ASC", array($strBaseNodeId));
         $this->assertEquals($arrNodesAfter[0]["system_id"], $arrNodes[2]["system_id"], __FILE__ . " checkPositionShitftingByAbsoluteShift");
         $this->assertEquals($arrNodesAfter[1]["system_id"], $arrNodes[0]["system_id"], __FILE__ . " checkPositionShitftingByAbsoluteShift");
         $this->assertEquals($arrNodesAfter[2]["system_id"], $arrNodes[1]["system_id"], __FILE__ . " checkPositionShitftingByAbsoluteShift");
@@ -258,7 +258,7 @@ class SortTest extends Testbase
         $objAspect = new SystemAspect($arrNodes[2]["system_id"]);
         $objAspect->setAbsolutePosition(3);
         $objDB->flushQueryCache();
-        $arrNodesAfter = $objDB->getPArray("SELECT system_id FROM " . _dbprefix_ . "system WHERE system_prev_id = ? ORDER BY system_sort ASC", array($strBaseNodeId));
+        $arrNodesAfter = $objDB->getPArray("SELECT system_id FROM agp_system WHERE system_prev_id = ? ORDER BY system_sort ASC", array($strBaseNodeId));
         $this->assertEquals($arrNodesAfter[0]["system_id"], $arrNodes[0]["system_id"], __FILE__ . " checkPositionShitftingByAbsoluteShift");
         $this->assertEquals($arrNodesAfter[1]["system_id"], $arrNodes[1]["system_id"], __FILE__ . " checkPositionShitftingByAbsoluteShift");
         $this->assertEquals($arrNodesAfter[2]["system_id"], $arrNodes[2]["system_id"], __FILE__ . " checkPositionShitftingByAbsoluteShift");

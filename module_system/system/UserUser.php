@@ -202,11 +202,9 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
      */
     public static function getObjectListFiltered(FilterBase $objFilter = null, $strUsernameFilter = "", $intStart = null, $intEnd = null)
     {
-        $strDbPrefix = _dbprefix_;
-
         $strQuery = "SELECT user_tbl.user_id
-                      FROM {$strDbPrefix}system, ".Carrier::getInstance()->getObjDB()->encloseTableName(_dbprefix_."user")." AS user_tbl
-                      LEFT JOIN {$strDbPrefix}user_kajona AS user_kajona ON user_tbl.user_id = user_kajona.user_id
+                      FROM agp_system, ".Carrier::getInstance()->getObjDB()->encloseTableName("agp_user")." AS user_tbl
+                      LEFT JOIN agp_user_kajona AS user_kajona ON user_tbl.user_id = user_kajona.user_id
                       WHERE
                           (user_tbl.user_username LIKE ? OR user_kajona.user_forename LIKE ? OR user_kajona.user_name LIKE ?)
                           AND user_tbl.user_id = system_id
@@ -233,11 +231,9 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
      */
     public static function getObjectCountFiltered(FilterBase $objFilter = null, $strUsernameFilter = "")
     {
-        $strDbPrefix = _dbprefix_;
-
         $strQuery = "SELECT COUNT(*) AS cnt
-                      FROM {$strDbPrefix}system, {$strDbPrefix}user AS user_tbl 
-                      LEFT JOIN {$strDbPrefix}user_kajona AS user_kajona ON user_tbl.user_id = user_kajona.user_id
+                      FROM agp_system, agp_user AS user_tbl 
+                      LEFT JOIN agp_user_kajona AS user_kajona ON user_tbl.user_id = user_kajona.user_id
                       WHERE
                           (user_tbl.user_username LIKE ? OR user_kajona.user_forename LIKE ? OR user_kajona.user_name LIKE ?)
                           AND user_tbl.user_id = system_id

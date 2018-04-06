@@ -126,11 +126,11 @@ class Rights
         $arrParams[] = ",". (!empty($arrRights[self::$STR_RIGHT_CHANGELOG]) ? trim("".$arrRights[self::$STR_RIGHT_CHANGELOG], ",") : "").",";
         $arrParams[] = $strSystemid;
 
-        $strQuery = "UPDATE "._dbprefix_."system
+        $strQuery = "UPDATE agp_system
             SET right_inherit=?, right_view=?, right_edit=?, right_delete=?, right_right=?, right_right1=?, right_right2=?, right_right3=?, right_right4=?, right_right5=?, right_changelog=? WHERE system_id=?";
 
         if (SystemModule::getModuleByName("system") !== null && version_compare(SystemModule::getModuleByName("system")->getStrVersion(), "6.2.3", "<")) {
-            $strQuery = "UPDATE "._dbprefix_."system_right
+            $strQuery = "UPDATE agp_system_right
             SET right_inherit=?, right_view=?, right_edit=?, right_delete=?, right_right=?, right_right1=?, right_right2=?, right_right3=?, right_right4=?, right_right5=?, right_changelog=? WHERE right_id=?";
 
         }
@@ -347,7 +347,7 @@ class Rights
     {
 
         $strQuery = "SELECT system_id
-                     FROM "._dbprefix_."system
+                     FROM agp_system
                      WHERE system_prev_id=?
                        AND system_id != '0'
                      ORDER BY system_sort ASC";
@@ -377,7 +377,7 @@ class Rights
         if (OrmRowcache::getCachedInitRow($strSystemid) != null) {
             $arrRow = OrmRowcache::getCachedInitRow($strSystemid);
         } else {
-            $strQuery = "SELECT * FROM "._dbprefix_."system WHERE system_id = ?";
+            $strQuery = "SELECT * FROM agp_system WHERE system_id = ?";
 
             $arrRow = $this->objDb->getPRow($strQuery, array($strSystemid));
         }

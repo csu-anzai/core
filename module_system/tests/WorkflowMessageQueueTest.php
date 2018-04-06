@@ -96,10 +96,9 @@ class WorkflowMessageQueueTest extends Testbase
 
     private function removeAllQueueEntries()
     {
-        $strPrefix = _dbprefix_;
         $objDb = Database::getInstance();
 
-        $arrResult = $objDb->getPArray("SELECT queue_id FROM {$strPrefix}messages_queue", []);
+        $arrResult = $objDb->getPArray("SELECT queue_id FROM agp_messages_queue", []);
         foreach ($arrResult as $arrRow) {
             $objQueue = Objectfactory::getInstance()->getObject($arrRow["queue_id"]);
             $objQueue->deleteObjectFromDatabase();

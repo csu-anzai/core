@@ -41,12 +41,12 @@ if (issetPost("doexport")) {
         $strChecked = "checked='checked'";
 
         $arrDisabled = [
-            _dbprefix_ . "search_ix_content",
-            _dbprefix_ . "search_ix_document",
-            _dbprefix_ . "workflows_stat_wfc",
-            _dbprefix_ . "workflows_stat_wfh",
-            _dbprefix_ . "workflows_user_log",
-            _dbprefix_ . "session",
+            "agp_search_ix_content",
+            "agp_search_ix_document",
+            "agp_workflows_stat_wfc",
+            "agp_workflows_stat_wfh",
+            "agp_workflows_user_log",
+            "agp_session",
         ];
 
         if (in_array($strTable, $arrDisabled) || StringUtil::indexOf($strTable, "_partition_") !== false) {

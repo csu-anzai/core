@@ -50,7 +50,7 @@ function validateSingleLevelSort($strParentId)
 
     if ($objCommon->getIntModuleNr() == 10 || $objCommon->getIntModuleNr() == 14) {
         $strQuery = "SELECT system_id
-                         FROM "._dbprefix_."system
+                         FROM agp_system
                          WHERE system_prev_id=? AND system_id != '0'
                            AND system_module_nr IN (?, ?)
                            AND system_deleted != 1
@@ -83,7 +83,7 @@ function validateSingleLevelSort($strParentId)
 
             if (getGet("doFix") != "") {
                 $strCurLevel .= "\nSetting new sort-id to ".$intExpected."\n";
-                $strQuery = "UPDATE "._dbprefix_."system SET system_sort = ? WHERE system_id = ? ";
+                $strQuery = "UPDATE agp_system SET system_sort = ? WHERE system_id = ? ";
                 \Kajona\System\System\Carrier::getInstance()->getObjDB()->_pQuery($strQuery, array($intExpected, $objCurNode->getSystemid()));
             }
         } else {
@@ -122,7 +122,7 @@ function validateSinglePage(PagesPage $objPage)
 
             if (getGet("doFix") != "") {
                 $strCurLevel .= "\nSetting new sort-id to ".$intI."\n";
-                $strQuery = "UPDATE "._dbprefix_."system SET system_sort = ? WHERE system_id = ? ";
+                $strQuery = "UPDATE agp_system SET system_sort = ? WHERE system_id = ? ";
                 \Kajona\System\System\Carrier::getInstance()->getObjDB()->_pQuery($strQuery, array($intI, $objOneElement->getSystemid()));
             }
         } else {

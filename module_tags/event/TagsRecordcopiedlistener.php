@@ -39,12 +39,12 @@ class TagsRecordcopiedlistener implements GenericeventListenerInterface {
         $strNewSystemid = $arrArguments[1];
 
         $strQuery = "SELECT tags_tagid, tags_attribute, tags_owner
-                       FROM "._dbprefix_."tags_member
+                       FROM agp_tags_member
                       WHERE tags_systemid = ?";
         $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, array($strOldSystemid));
 
         foreach($arrRows as $arrSingleRow) {
-            $strQuery = "INSERT INTO "._dbprefix_."tags_member (tags_memberid, tags_tagid, tags_systemid, tags_attribute, tags_owner) VALUES (?, ?, ?, ?, ?)";
+            $strQuery = "INSERT INTO agp_tags_member (tags_memberid, tags_tagid, tags_systemid, tags_attribute, tags_owner) VALUES (?, ?, ?, ?, ?)";
             Carrier::getInstance()->getObjDB()->_pQuery($strQuery, array(generateSystemid(), $arrSingleRow["tags_tagid"], $strNewSystemid, $arrSingleRow["tags_attribute"], $arrSingleRow["tags_owner"]));
         }
 
