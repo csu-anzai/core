@@ -40,7 +40,7 @@ class InstallerLdap extends InstallerBase implements InstallerRemovableInterface
         $arrFields["group_ldap_dn"] = array(DbDatatypes::STR_TYPE_TEXT, true);
         $arrFields["group_ldap_cfg"] = array(DbDatatypes::STR_TYPE_INT, true);
 
-        if (!$this->objDB->createTable("user_group_ldap", $arrFields, array("group_ldap_id"))) {
+        if (!$this->objDB->createTable("agp_user_group_ldap", $arrFields, array("group_ldap_id"))) {
             $strReturn .= "An error occurred! ...\n";
         }
 
@@ -53,7 +53,7 @@ class InstallerLdap extends InstallerBase implements InstallerRemovableInterface
         $arrFields["user_ldap_dn"] = array(DbDatatypes::STR_TYPE_TEXT, true);
         $arrFields["user_ldap_cfg"] = array(DbDatatypes::STR_TYPE_INT, true);
 
-        if (!$this->objDB->createTable("user_ldap", $arrFields, array("user_ldap_id"))) {
+        if (!$this->objDB->createTable("agp_user_ldap", $arrFields, array("user_ldap_id"))) {
             $strReturn .= "An error occurred! ...\n";
         }
 

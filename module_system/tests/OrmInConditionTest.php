@@ -71,14 +71,14 @@ class OrmInConditionTest extends Testbase
         $arrFields["temp_systemid"] = array("char40", false);
         $arrFields["temp_name"] = array("char254", true);
 
-        $this->assertTrue($objDB->createTable("temp_propertyintest", $arrFields, array("temp_systemid")), "testDataBase createTable");
+        $this->assertTrue($objDB->createTable("agp_temp_propertyintest", $arrFields, array("temp_systemid")), "testDataBase createTable");
         
         $arrValues = array();
         for ($intI = 1; $intI <= 50; $intI++) {
             $arrValues[] = array(generateSystemid(), "text " . $intI);
         }
 
-        $this->assertTrue($objDB->multiInsert("temp_propertyintest", array("temp_systemid", "temp_name"), $arrValues));
+        $this->assertTrue($objDB->multiInsert("agp_temp_propertyintest", array("temp_systemid", "temp_name"), $arrValues));
 
         $arrParams = array();
         for ($intI = 1; $intI <= OrmInCondition::MAX_IN_VALUES + 10; $intI++) {

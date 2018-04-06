@@ -50,7 +50,7 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
         $arrFields["downloads_log_user"] = array("char20", true);
         $arrFields["downloads_log_ip"] = array("char20", true);
 
-        if (!$this->objDB->createTable("mediamanager_dllog", $arrFields, array("downloads_log_id"))) {
+        if (!$this->objDB->createTable("agp_mediamanager_dllog", $arrFields, array("downloads_log_id"))) {
             $strReturn .= "An error occurred! ...\n";
         }
 
@@ -101,8 +101,8 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
         if ($arrModule["module_version"] == "6.5") {
             $strReturn = "Updating to 6.5.1...\n";
 
-            $this->objDB->addColumn("mediamanager_file", "file_search_content", DbDatatypes::STR_TYPE_TEXT);
-            $this->objDB->addColumn("mediamanager_repo", "repo_search_index", DbDatatypes::STR_TYPE_INT);
+            $this->objDB->addColumn("agp_mediamanager_file", "file_search_content", DbDatatypes::STR_TYPE_TEXT);
+            $this->objDB->addColumn("agp_mediamanager_repo", "repo_search_index", DbDatatypes::STR_TYPE_INT);
 
             $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.1");
             $this->updateModuleVersion("folderview", "6.5.1");

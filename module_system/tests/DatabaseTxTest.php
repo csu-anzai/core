@@ -26,7 +26,7 @@ class DatabaseTxTest extends Testbase
         $arrFields["temp_char500"] = array("char500", true);
         $arrFields["temp_text"] = array("text", true);
 
-        $this->assertTrue($objDB->createTable("temp_autotest", $arrFields, array("temp_id")), "testTx createTable");
+        $this->assertTrue($objDB->createTable("agp_temp_autotest", $arrFields, array("temp_id")), "testTx createTable");
 
         
         $intI = 1;

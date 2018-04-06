@@ -40,7 +40,7 @@ class DatabaseTest extends Testbase
         $this->assertTrue(in_array("agp_temp_autotest", Carrier::getInstance()->getObjDB()->getTables()));
         $this->assertTrue(!in_array("agp_temp_autotest_new", Carrier::getInstance()->getObjDB()->getTables()));
 
-        $this->assertTrue($objDb->renameTable("temp_autotest", "temp_autotest_new"));
+        $this->assertTrue($objDb->renameTable("agp_temp_autotest", "agp_temp_autotest_new"));
         $this->flushDBCache();
 
         $this->assertTrue(!in_array("agp_temp_autotest", Carrier::getInstance()->getObjDB()->getTables()));
@@ -52,7 +52,7 @@ class DatabaseTest extends Testbase
         $objDb = Carrier::getInstance()->getObjDB();
         $this->createTable();
 
-        $bitResult = $objDb->createIndex("temp_autotest", "foo_index", ["temp_char10", "temp_char20"]);
+        $bitResult = $objDb->createIndex("agp_temp_autotest", "foo_index", ["temp_char10", "temp_char20"]);
 
         $this->assertTrue($bitResult);
     }
@@ -62,7 +62,7 @@ class DatabaseTest extends Testbase
         $objDb = Carrier::getInstance()->getObjDB();
         $this->createTable();
 
-        $bitResult = $objDb->createIndex("temp_autotest", "foo_index", ["temp_char10", "temp_char20"], true);
+        $bitResult = $objDb->createIndex("agp_temp_autotest", "foo_index", ["temp_char10", "temp_char20"], true);
 
         $this->assertTrue($bitResult);
     }
@@ -72,11 +72,11 @@ class DatabaseTest extends Testbase
         $objDb = Carrier::getInstance()->getObjDB();
         $this->createTable();
 
-        $this->assertFalse($objDb->hasIndex("temp_autotest", "foo_index"));
+        $this->assertFalse($objDb->hasIndex("agp_temp_autotest", "foo_index"));
 
-        $bitResult = $objDb->createIndex("temp_autotest", "foo_index", ["temp_char10", "temp_char20"]);
+        $bitResult = $objDb->createIndex("agp_temp_autotest", "foo_index", ["temp_char10", "temp_char20"]);
 
-        $this->assertTrue($objDb->hasIndex("temp_autotest", "foo_index"));
+        $this->assertTrue($objDb->hasIndex("agp_temp_autotest", "foo_index"));
         $this->assertTrue($bitResult);
     }
 
@@ -118,7 +118,7 @@ class DatabaseTest extends Testbase
         $this->assertTrue(in_array("temp_id", $arrColumnNames));
         $this->assertTrue(in_array("temp_long", $arrColumnNames));
 
-        $this->assertTrue($objDb->changeColumn("temp_autotest", "temp_long", "temp_long_new", DbDatatypes::STR_TYPE_INT));
+        $this->assertTrue($objDb->changeColumn("agp_temp_autotest", "temp_long", "temp_long_new", DbDatatypes::STR_TYPE_INT));
         $this->flushDBCache();
 
         $arrColumnNames = array_map(function ($arrValue) {
@@ -145,7 +145,7 @@ class DatabaseTest extends Testbase
         $this->createTable();
 
         // test changing a column type with the same column name
-        $this->assertTrue($objDb->changeColumn("temp_autotest", "temp_char10", "temp_char10", DbDatatypes::STR_TYPE_LONGTEXT));
+        $this->assertTrue($objDb->changeColumn("agp_temp_autotest", "temp_char10", "temp_char10", DbDatatypes::STR_TYPE_LONGTEXT));
     }
 
     public function testAddColumn()
@@ -162,10 +162,10 @@ class DatabaseTest extends Testbase
         $this->assertTrue(!in_array("temp_new_col3", $arrColumnNames));
         $this->assertTrue(!in_array("temp_new_col4", $arrColumnNames));
 
-        $this->assertTrue($objDb->addColumn("temp_autotest", "temp_new_col1", DbDatatypes::STR_TYPE_INT));
-        $this->assertTrue($objDb->addColumn("temp_autotest", "temp_new_col2", DbDatatypes::STR_TYPE_INT, true, "NULL"));
-        $this->assertTrue($objDb->addColumn("temp_autotest", "temp_new_col3", DbDatatypes::STR_TYPE_INT, false, "0"));
-        $this->assertTrue($objDb->addColumn("temp_autotest", "temp_new_col4", DbDatatypes::STR_TYPE_INT, true));
+        $this->assertTrue($objDb->addColumn("agp_temp_autotest", "temp_new_col1", DbDatatypes::STR_TYPE_INT));
+        $this->assertTrue($objDb->addColumn("agp_temp_autotest", "temp_new_col2", DbDatatypes::STR_TYPE_INT, true, "NULL"));
+        $this->assertTrue($objDb->addColumn("agp_temp_autotest", "temp_new_col3", DbDatatypes::STR_TYPE_INT, false, "0"));
+        $this->assertTrue($objDb->addColumn("agp_temp_autotest", "temp_new_col4", DbDatatypes::STR_TYPE_INT, true));
 
         $this->flushDBCache();
 
@@ -184,8 +184,8 @@ class DatabaseTest extends Testbase
         $objDb = Carrier::getInstance()->getObjDB();
         $this->createTable();
 
-        $this->assertTrue($objDb->hasColumn("temp_autotest", "temp_id"));
-        $this->assertFalse($objDb->hasColumn("temp_autotest", "temp_foo"));
+        $this->assertTrue($objDb->hasColumn("agp_temp_autotest", "temp_id"));
+        $this->assertFalse($objDb->hasColumn("agp_temp_autotest", "temp_foo"));
     }
 
     public function testRemoveColumn()
@@ -203,7 +203,7 @@ class DatabaseTest extends Testbase
         $objDb->_pQuery($strQuery, array("aaa", 111));
         $objDb->_pQuery($strQuery, array("bbb", 222));
 
-        $this->assertTrue($objDb->removeColumn("temp_autotest", "temp_long"));
+        $this->assertTrue($objDb->removeColumn("agp_temp_autotest", "temp_long"));
         $this->flushDBCache();
 
         $arrColumnNames = array_map(function ($arrValue) {
@@ -237,7 +237,7 @@ class DatabaseTest extends Testbase
         $arrFields["temp_char500"] = array("char500", true);
         $arrFields["temp_text"] = array("text", true);
 
-        $this->assertTrue($objDB->createTable("temp_autotest", $arrFields, array("temp_id")), "testDataBase createTable");
+        $this->assertTrue($objDB->createTable("agp_temp_autotest", $arrFields, array("temp_id")), "testDataBase createTable");
         $this->flushDBCache();
     }
 
@@ -312,7 +312,7 @@ class DatabaseTest extends Testbase
         $arrFields["temp_char500"] = array("char500", true);
         $arrFields["temp_text"] = array("text", true);
 
-        $this->assertTrue($objDB->createTable("temp_autotest", $arrFields, array("temp_id"), array(array("temp_id", "temp_char10", "temp_char100"), "temp_char254")), "testDataBase createTable");
+        $this->assertTrue($objDB->createTable("agp_temp_autotest", $arrFields, array("temp_id"), array(array("temp_id", "temp_char10", "temp_char100"), "temp_char254")), "testDataBase createTable");
         $this->flushDBCache();
     }
 
@@ -359,7 +359,7 @@ SQL;
             $arrData[] = array(generateSystemid(), $intI, $intI, $intI, $intI, $intI, $intI, $intI, $intI);
         }
 
-        $objDB->multiInsert("temp_autotest", array("temp_id", "temp_long", "temp_double", "temp_char10", "temp_char20", "temp_char100", "temp_char254", "temp_char500", "temp_text"), $arrData);
+        $objDB->multiInsert("agp_temp_autotest", array("temp_id", "temp_long", "temp_double", "temp_char10", "temp_char20", "temp_char100", "temp_char254", "temp_char500", "temp_text"), $arrData);
 
         $arrResult = $objDB->getPArray("SELECT * FROM agp_temp_autotest ORDER BY temp_long ASC", array(), 0, 0);
         $this->assertEquals(1, count($arrResult));
@@ -387,20 +387,20 @@ SQL;
         $arrFields["temp_id"] = array("char20", false);
         $arrFields["temp_char20"] = array("char20", true);
 
-        $this->assertTrue($objDB->createTable("temp_autotest_temp", $arrFields, array("temp_id")), "testDataBase createTable");
+        $this->assertTrue($objDB->createTable("agp_temp_autotest_temp", $arrFields, array("temp_id")), "testDataBase createTable");
         $this->flushDBCache();
 
         $strSystemId = generateSystemid();
 
         // insert which affects onw row
-        $objDB->multiInsert("temp_autotest_temp",
+        $objDB->multiInsert("agp_temp_autotest_temp",
             array("temp_id", "temp_char20"),
             array(array(generateSystemid(), $strSystemId))
         );
         $this->assertEquals(1, $objDB->getIntAffectedRows());
 
         // insert which affects two rows
-        $objDB->multiInsert("temp_autotest_temp",
+        $objDB->multiInsert("agp_temp_autotest_temp",
             array("temp_id", "temp_char20"),
             array(
                 array(generateSystemid(), $strSystemId),
@@ -470,7 +470,7 @@ SQL;
             $objDb->_pQuery("DROP TABLE " . $strTable, []);
         }
 
-        $this->assertTrue($objDb->createTable("temp_autotest_gen", $arrFields, array("temp_id")), "testDataBase createTable");
+        $this->assertTrue($objDb->createTable("agp_temp_autotest_gen", $arrFields, array("temp_id")), "testDataBase createTable");
         $this->flushDBCache();
 
         // insert which affects onw row
@@ -478,7 +478,7 @@ SQL;
         for ($intI = 0; $intI < 130; $intI++) {
             $arrData[] = [generateSystemid(), $intI, "text" . $intI];
         }
-        $this->assertTrue($objDb->multiInsert("temp_autotest_gen", array("temp_id", "temp_int", "temp_char20"), $arrData));
+        $this->assertTrue($objDb->multiInsert("agp_temp_autotest_gen", array("temp_id", "temp_int", "temp_char20"), $arrData));
 
         $objGenerator = $objDb->getGenerator("SELECT * FROM " . $strTable. " ORDER BY temp_int ASC", [], 32);
 
@@ -514,7 +514,7 @@ SQL;
         $objRightDate = new Date($longDate);
 
         $objDB = Database::getInstance();
-        $objDB->multiInsert("temp_autotest",
+        $objDB->multiInsert("agp_temp_autotest",
             ["temp_id", "temp_long"], [
                 [$strId, $objRightDate->getLongTimestamp()],
             ]

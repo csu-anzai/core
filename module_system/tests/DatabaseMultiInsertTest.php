@@ -40,7 +40,7 @@ class DatabaseMultiInsertTest extends Testbase
         $arrFields["temp_text"] = array("text", true);
         $arrFields["temp_longtext"] = array("longtext", true);
 
-        $this->assertTrue($objDB->createTable("temp_autotest", $arrFields, array("temp_id")), "testDataBase createTable");
+        $this->assertTrue($objDB->createTable("agp_agp_temp_autotest", $arrFields, array("temp_id")), "testDataBase createTable");
 
         $strQuery = "DELETE FROM agp_temp_autotest";
         $this->assertTrue($objDB->_pQuery($strQuery, array()), "testDataBase truncateTable");
@@ -63,7 +63,7 @@ class DatabaseMultiInsertTest extends Testbase
             );
         }
 
-        $this->assertTrue($objDB->multiInsert("temp_autotest", array_keys($arrFields), $arrValues));
+        $this->assertTrue($objDB->multiInsert("agp_temp_autotest", array_keys($arrFields), $arrValues));
 
         $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_temp_autotest", array());
         $this->assertEquals($arrRow["cnt"], 50);
@@ -96,7 +96,7 @@ class DatabaseMultiInsertTest extends Testbase
         for ($intI = 1; $intI <= 1200; $intI++) {
             $arrValues[] = array(generateSystemid(), "text long " . $intI, "text " . $intI);
         }
-        $this->assertTrue($objDB->multiInsert("temp_autotest", array("temp_id", "temp_char254", "temp_char100"), $arrValues));
+        $this->assertTrue($objDB->multiInsert("agp_temp_autotest", array("temp_id", "temp_char254", "temp_char100"), $arrValues));
         $strQuery = "SELECT COUNT(*) AS cnt FROM agp_temp_autotest";
         $this->assertEquals(1200, $objDB->getPRow($strQuery, array())["cnt"], "testDataBase countLimitReach");
 

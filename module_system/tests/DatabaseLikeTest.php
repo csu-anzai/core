@@ -42,11 +42,11 @@ class DatabaseLikeTest extends Testbase
         $arrFields["temp_name"] = array("char254", true);
         $arrFields["temp_text"] = array("text", true);
 
-        $objDB->createTable("temp_liketest", $arrFields, array("temp_id"));
+        $objDB->createTable("agp_temp_liketest", $arrFields, array("temp_id"));
 
         //insert a few rows
         $objDB->multiInsert(
-            "temp_liketest",
+            "agp_temp_liketest",
             array("temp_id", "temp_name", "temp_text"),
             array(
                 array(1, "lower", "abc die katze"),

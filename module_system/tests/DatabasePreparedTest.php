@@ -38,7 +38,7 @@ class DatabasePreparedTest extends Testbase
         $arrFields["temp_char500"] = array("char500", true);
         $arrFields["temp_text"] = array("text", true);
 
-        $this->assertTrue($objDB->createTable("temp_autotest", $arrFields, array("temp_id")), "testDataBase createTable");
+        $this->assertTrue($objDB->createTable("agp_temp_autotest", $arrFields, array("temp_id")), "testDataBase createTable");
 
 
         for ($intI = 1; $intI <= 50; $intI++) {
@@ -116,12 +116,12 @@ class DatabasePreparedTest extends Testbase
         $arrFields["temp_long"] = array("long", true);
         $arrFields["temp_double"] = array("double", true);
 
-        $this->assertTrue($objDB->createTable("temp_autotest_float", $arrFields, array("temp_id")), "testDataBase createTable");
+        $this->assertTrue($objDB->createTable("agp_temp_autotest_float", $arrFields, array("temp_id")), "testDataBase createTable");
 
         $objDB->_pQuery("DELETE FROM agp_temp_autotest_float WHERE 1 = 1", array());
 
         $objDB->multiInsert(
-            "temp_autotest_float",
+            "agp_temp_autotest_float",
             array("temp_id", "temp_long", "temp_double"),
             array(array("id1", 123456, 1.7), array("id2", "123456", "1.7"))
         );

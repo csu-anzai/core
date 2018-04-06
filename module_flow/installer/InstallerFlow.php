@@ -98,7 +98,7 @@ class InstallerFlow extends InstallerBase
     private function update_62_65()
     {
         $strReturn = "Updating flow transition table\n";
-        $this->objDB->addColumn("flow_step_transition", "transition_visible", DbDatatypes::STR_TYPE_INT);
+        $this->objDB->addColumn("agp_flow_step_transition", "transition_visible", DbDatatypes::STR_TYPE_INT);
 
         // make all existing transitions visible
         $this->objDB->_pQuery("UPDATE agp_flow_step_transition SET transition_visible = 1", []);
@@ -113,7 +113,7 @@ class InstallerFlow extends InstallerBase
 
         // add transition skip column
         $strReturn.= "Add transition skip column...\n";
-        $this->objDB->addColumn("flow_step_transition", "transition_skip", DbDatatypes::STR_TYPE_INT);
+        $this->objDB->addColumn("agp_flow_step_transition", "transition_skip", DbDatatypes::STR_TYPE_INT);
 
         // set all transitions skip to 0
         $this->objDB->_pQuery("UPDATE agp_flow_step_transition SET transition_skip = 0", []);
@@ -128,7 +128,7 @@ class InstallerFlow extends InstallerBase
 
         // add step roles column
         $strReturn.= "Add roles column...\n";
-        $this->objDB->addColumn("flow_step", "step_roles", DbDatatypes::STR_TYPE_TEXT);
+        $this->objDB->addColumn("agp_flow_step", "step_roles", DbDatatypes::STR_TYPE_TEXT);
 
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.1");
         return $strReturn;

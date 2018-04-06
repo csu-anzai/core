@@ -85,6 +85,6 @@ class SearchIndexqueue
      */
     public function addRowsToQueue($arrRows)
     {
-        return Carrier::getInstance()->getObjDB()->multiInsert("search_queue", array("search_queue_id", "search_queue_systemid", "search_queue_action"), $arrRows);
+        return Carrier::getInstance()->getObjDB()->multiInsert("agp_search_queue", array("search_queue_id", "search_queue_systemid", "search_queue_action"), $arrRows);
     }
 }

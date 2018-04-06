@@ -39,12 +39,12 @@ class DatabaseUpsertTest extends Testbase
         $arrFields["temp_int"] = array("int", true);
         $arrFields["temp_text"] = array("text", true);
 
-        $this->assertTrue($objDB->createTable("temp_upserttest", $arrFields, array("temp_id")));
+        $this->assertTrue($objDB->createTable("agp_temp_upserttest", $arrFields, array("temp_id")));
 
         $this->assertEquals(count($objDB->getPArray("SELECT * FROM agp_temp_upserttest", array())), 0);
 
         $strId1 = generateSystemid();
-        $objDB->insertOrUpdate("temp_upserttest", array("temp_id", "temp_int", "temp_text"), array($strId1, 1, "row 1"), array("temp_id"));
+        $objDB->insertOrUpdate("agp_temp_upserttest", array("temp_id", "temp_int", "temp_text"), array($strId1, 1, "row 1"), array("temp_id"));
 
         $this->assertEquals(count($objDB->getPArray("SELECT * FROM agp_temp_upserttest", array(), null, null, false)), 1);
         $arrRow = $objDB->getPRow("SELECT * FROM agp_temp_upserttest WHERE temp_id = ?", array($strId1));
@@ -53,22 +53,22 @@ class DatabaseUpsertTest extends Testbase
         $objDB->flushQueryCache();
 
         //first replace
-        $objDB->insertOrUpdate("temp_upserttest", array("temp_id", "temp_int", "temp_text"), array($strId1, 2, "row 2"), array("temp_id"));
+        $objDB->insertOrUpdate("agp_temp_upserttest", array("temp_id", "temp_int", "temp_text"), array($strId1, 2, "row 2"), array("temp_id"));
         $this->assertEquals(count($objDB->getPArray("SELECT * FROM agp_temp_upserttest", array(), null, null, false)), 1);
         $arrRow = $objDB->getPRow("SELECT * FROM agp_temp_upserttest WHERE temp_id = ?", array($strId1));
         $this->assertEquals($arrRow["temp_int"], 2); $this->assertEquals($arrRow["temp_text"], "row 2");
 
 
         $strId2 = generateSystemid();
-        $objDB->insertOrUpdate("temp_upserttest", array("temp_id", "temp_int", "temp_text"), array($strId2, 3, "row 3"), array("temp_id"));
+        $objDB->insertOrUpdate("agp_temp_upserttest", array("temp_id", "temp_int", "temp_text"), array($strId2, 3, "row 3"), array("temp_id"));
 
         $strId3 = generateSystemid();
-        $objDB->insertOrUpdate("temp_upserttest", array("temp_id", "temp_int", "temp_text"), array($strId3, 4, "row 4"), array("temp_id"));
+        $objDB->insertOrUpdate("agp_temp_upserttest", array("temp_id", "temp_int", "temp_text"), array($strId3, 4, "row 4"), array("temp_id"));
 
 
         $this->assertEquals(count($objDB->getPArray("SELECT * FROM agp_temp_upserttest", array(), null, null, false)), 3);
 
-        $objDB->insertOrUpdate("temp_upserttest", array("temp_id", "temp_int", "temp_text"), array($strId3, 5, "row 5"), array("temp_id"));
+        $objDB->insertOrUpdate("agp_temp_upserttest", array("temp_id", "temp_int", "temp_text"), array($strId3, 5, "row 5"), array("temp_id"));
 
         $this->assertEquals(count($objDB->getPArray("SELECT * FROM agp_temp_upserttest", array(), null, null, false)), 3);
 
@@ -112,7 +112,7 @@ class DatabaseUpsertTest extends Testbase
 
         $strId = generateSystemid();
 
-        $objDB->insertOrUpdate("temp_upserttest2", array("temp_id", "temp_id2", "temp_int", "temp_text"), array($strId, 1, 1, "row 1"), array("temp_id", "temp_id2"));
+        $objDB->insertOrUpdate("agp_temp_upserttest2", array("temp_id", "temp_id2", "temp_int", "temp_text"), array($strId, 1, 1, "row 1"), array("temp_id", "temp_id2"));
 
         $this->assertEquals(count($objDB->getPArray("SELECT * FROM agp_temp_upserttest2", array(), null, null, false)), 1);
         $arrRow = $objDB->getPRow("SELECT * FROM agp_temp_upserttest2 WHERE temp_id = ? AND temp_id2 = ?", array($strId, 1));
@@ -121,19 +121,19 @@ class DatabaseUpsertTest extends Testbase
         $objDB->flushQueryCache();
 
         //first replace
-        $objDB->insertOrUpdate("temp_upserttest2", array("temp_id", "temp_id2", "temp_int", "temp_text"), array($strId, 1, 2, "row 2"), array("temp_id", "temp_id2"));
+        $objDB->insertOrUpdate("agp_temp_upserttest2", array("temp_id", "temp_id2", "temp_int", "temp_text"), array($strId, 1, 2, "row 2"), array("temp_id", "temp_id2"));
         $this->assertEquals(count($objDB->getPArray("SELECT * FROM agp_temp_upserttest2", array(), null, null, false)), 1);
         $arrRow = $objDB->getPRow("SELECT * FROM agp_temp_upserttest2 WHERE temp_id = ? AND temp_id2 = ?", array($strId, 1));
         $this->assertEquals($arrRow["temp_int"], 2); $this->assertEquals($arrRow["temp_text"], "row 2");
 
 
-        $objDB->insertOrUpdate("temp_upserttest2", array("temp_id", "temp_id2", "temp_int", "temp_text"), array($strId, 2, 3, "row 3"), array("temp_id", "temp_id2"));
-        $objDB->insertOrUpdate("temp_upserttest2", array("temp_id", "temp_id2", "temp_int", "temp_text"), array($strId, 3, 4, "row 4"), array("temp_id", "temp_id2"));
+        $objDB->insertOrUpdate("agp_temp_upserttest2", array("temp_id", "temp_id2", "temp_int", "temp_text"), array($strId, 2, 3, "row 3"), array("temp_id", "temp_id2"));
+        $objDB->insertOrUpdate("agp_temp_upserttest2", array("temp_id", "temp_id2", "temp_int", "temp_text"), array($strId, 3, 4, "row 4"), array("temp_id", "temp_id2"));
 
 
         $this->assertEquals(count($objDB->getPArray("SELECT * FROM agp_temp_upserttest2", array(), null, null, false)), 3);
 
-        $objDB->insertOrUpdate("temp_upserttest2", array("temp_id", "temp_id2", "temp_int", "temp_text"), array($strId, 3, 5, "row 5"), array("temp_id", "temp_id2"));
+        $objDB->insertOrUpdate("agp_temp_upserttest2", array("temp_id", "temp_id2", "temp_int", "temp_text"), array($strId, 3, 5, "row 5"), array("temp_id", "temp_id2"));
 
         $this->assertEquals(count($objDB->getPArray("SELECT * FROM agp_temp_upserttest2", array(), null, null, false)), 3);
 
@@ -166,7 +166,7 @@ class DatabaseUpsertTest extends Testbase
         $arrFields["temp_int"] = array("int", true);
         $arrFields["temp_text"] = array("text", true);
 
-        $this->assertTrue($objDB->createTable("temp_upserttest3", $arrFields, array("temp_id", "temp_id2")));
+        $this->assertTrue($objDB->createTable("agp_temp_upserttest3", $arrFields, array("temp_id", "temp_id2")));
 
 
         $strId1 = generateSystemid();
@@ -218,7 +218,7 @@ class DatabaseUpsertTest extends Testbase
 
     private function runUpsert($intId, $intId2, $intInt, $strText)
     {
-        Carrier::getInstance()->getObjDB()->insertOrUpdate("temp_upserttest3", array("temp_id", "temp_id2", "temp_int", "temp_text"), array($intId, $intId2, $intInt, $strText), array("temp_id", "temp_id2"));
+        Carrier::getInstance()->getObjDB()->insertOrUpdate("agp_temp_upserttest3", array("temp_id", "temp_id2", "temp_int", "temp_text"), array($intId, $intId2, $intInt, $strText), array("temp_id", "temp_id2"));
     }
 
     private function runInsertAndUpdate($intId, $intId2, $intInt, $strText)
