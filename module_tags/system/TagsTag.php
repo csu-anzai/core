@@ -32,7 +32,7 @@ use Kajona\System\System\SystemSetting;
  * @author sidler@mulchprod.de
  * @since 3.4
  *
- * @targetTable tags_tag.tags_tag_id
+ * @targetTable agp_tags_tag.tags_tag_id
  * @module tags
  * @moduleId _tags_modul_id_
  */
@@ -40,7 +40,7 @@ class TagsTag extends Model implements ModelInterface, AdminListableInterface, S
 
     /**
      * @var string
-     * @tableColumn tags_tag.tags_tag_name
+     * @tableColumn agp_tags_tag.tags_tag_name
      * @tableColumnDatatype char254
      * @listOrder
      *
@@ -53,7 +53,7 @@ class TagsTag extends Model implements ModelInterface, AdminListableInterface, S
 
     /**
      * @var int
-     * @tableColumn tags_tag.tags_tag_private
+     * @tableColumn agp_tags_tag.tags_tag_private
      * @tableColumnDatatype int
      */
     private $intPrivate = 0;

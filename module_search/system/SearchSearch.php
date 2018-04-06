@@ -20,7 +20,7 @@ use Kajona\System\System\SystemModule;
  * @package module_search
  * @author tim.kiefer@kojikui.de
  * @since 3.4
- * @targetTable search_search.search_search_id
+ * @targetTable agp_search_search.search_search_id
  *
  * @module search
  * @moduleId _search_module_id_
@@ -29,7 +29,7 @@ class SearchSearch extends Model implements ModelInterface, AdminListableInterfa
 {
     /**
      * @var string
-     * @tableColumn search_search.search_search_query
+     * @tableColumn agp_search_search.search_search_query
      * @tableColumnDatatype char254
      * @listOrder
      * @fieldMandatory
@@ -39,14 +39,14 @@ class SearchSearch extends Model implements ModelInterface, AdminListableInterfa
 
     /**
      * @var string
-     * @tableColumn search_search.search_search_filter_modules
+     * @tableColumn agp_search_search.search_search_filter_modules
      * @tableColumnDatatype char254
      */
     private $strInternalFilterModules = "-1";
 
     /**
      * @var string
-     * @tableColumn search_search.search_search_private
+     * @tableColumn agp_search_search.search_search_private
      * @tableColumnDatatype int
      */
     private $intPrivate = 0;

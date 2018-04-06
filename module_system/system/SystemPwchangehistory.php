@@ -10,7 +10,7 @@ namespace Kajona\System\System;
 /**
  * @author christoph.kappestein@gmail.com
  *
- * @targetTable user_pwchangehistory.id
+ * @targetTable agp_user_pwchangehistory.id
  * @module system
  * @moduleId _system_modul_id_
  */
@@ -18,7 +18,7 @@ class SystemPwchangehistory extends Model implements ModelInterface, AdminListab
 {
     /**
      * @var string
-     * @tableColumn user_pwchangehistory.history_targetuser
+     * @tableColumn agp_user_pwchangehistory.history_targetuser
      * @tableColumnDatatype char20
      * @tableColumnIndex
      */
@@ -26,7 +26,7 @@ class SystemPwchangehistory extends Model implements ModelInterface, AdminListab
 
     /**
      * @var string
-     * @tableColumn user_pwchangehistory.history_link
+     * @tableColumn agp_user_pwchangehistory.history_link
      * @tableColumnDatatype char254
      * @tableColumnIndex
      */
@@ -34,7 +34,7 @@ class SystemPwchangehistory extends Model implements ModelInterface, AdminListab
 
     /**
      * @var Date
-     * @tableColumn user_pwchangehistory.history_changedate
+     * @tableColumn agp_user_pwchangehistory.history_changedate
      * @tableColumnDatatype long
      * @tableColumnIndex
      */

@@ -29,7 +29,7 @@ use ReflectionClass;
  * @author sidler@mulchprod.de
  * @since 3.4
  *
- * @targetTable workflows_handler.workflows_handler_id
+ * @targetTable agp_workflows_handler.workflows_handler_id
  *
  * @module workflows
  * @moduleId _workflows_module_id_
@@ -39,7 +39,7 @@ class WorkflowsHandler extends \Kajona\System\System\Model implements \Kajona\Sy
 
     /**
      * @var string
-     * @tableColumn workflows_handler.workflows_handler_class
+     * @tableColumn agp_workflows_handler.workflows_handler_class
      * @tableColumnDatatype char254
      * @listOrder
      */
@@ -47,7 +47,7 @@ class WorkflowsHandler extends \Kajona\System\System\Model implements \Kajona\Sy
 
     /**
      * @var string
-     * @tableColumn workflows_handler.workflows_handler_val1
+     * @tableColumn agp_workflows_handler.workflows_handler_val1
      * @tableColumnDatatype char254
      *
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
@@ -56,7 +56,7 @@ class WorkflowsHandler extends \Kajona\System\System\Model implements \Kajona\Sy
 
     /**
      * @var string
-     * @tableColumn workflows_handler.workflows_handler_val2
+     * @tableColumn agp_workflows_handler.workflows_handler_val2
      * @tableColumnDatatype char254
      *
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
@@ -65,7 +65,7 @@ class WorkflowsHandler extends \Kajona\System\System\Model implements \Kajona\Sy
 
     /**
      * @var string
-     * @tableColumn workflows_handler.workflows_handler_val3
+     * @tableColumn agp_workflows_handler.workflows_handler_val3
      * @tableColumnDatatype text
      *
      * @fieldType Kajona\System\Admin\Formentries\FormentryText

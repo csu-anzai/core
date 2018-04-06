@@ -15,7 +15,7 @@ namespace Kajona\System\System;
  *
  * @package module_languages
  * @author sidler@mulchprod.de
- * @targetTable languages.language_id
+ * @targetTable agp_languages.language_id
  *
  * @module languages
  * @moduleId _languages_modul_id_
@@ -25,7 +25,7 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
 
     /**
      * @var string
-     * @tableColumn languages.language_name
+     * @tableColumn agp_languages.language_name
      * @tableColumnDatatype char254
      *
      * @fieldType Kajona\System\Admin\Formentries\FormentryDropdown
@@ -39,7 +39,7 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
 
     /**
      * @var bool
-     * @tableColumn languages.language_default
+     * @tableColumn agp_languages.language_default
      * @tableColumnDatatype int
      * @tableColumnIndex
      *

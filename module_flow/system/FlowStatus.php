@@ -23,7 +23,7 @@ use Kajona\System\System\UserGroup;
  * FlowStatus
  *
  * @author christoph.kappestein@artemeon.de
- * @targetTable flow_step.step_id
+ * @targetTable agp_flow_step.step_id
  * @module flow
  * @moduleId _flow_module_id_
  * @formGenerator Kajona\Flow\Admin\FlowStatusFormgenerator
@@ -43,7 +43,7 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
 
     /**
      * @var string
-     * @tableColumn flow_step.step_name
+     * @tableColumn agp_flow_step.step_name
      * @tableColumnDatatype char254
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      * @fieldMandatory
@@ -52,14 +52,14 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
 
     /**
      * @var integer
-     * @tableColumn flow_step.step_index
+     * @tableColumn agp_flow_step.step_index
      * @tableColumnDatatype int
      */
     protected $intIndex;
 
     /**
      * @var string
-     * @tableColumn flow_step.step_icon
+     * @tableColumn agp_flow_step.step_icon
      * @tableColumnDatatype char20
      * @fieldType Kajona\System\Admin\Formentries\FormentryColorpicker
      * @fieldMandatory
@@ -68,14 +68,14 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
 
     /**
      * @var UserGroup[]
-     * @objectList flow_status2edit (source="status_system_id", target="usergroup_system_id", type={"Kajona\\System\\System\\UserGroup"})
+     * @objectList agp_flow_status2edit (source="status_system_id", target="usergroup_system_id", type={"Kajona\\System\\System\\UserGroup"})
      * @fieldType Kajona\System\Admin\Formentries\FormentryObjecttags
      */
     protected $arrEditGroups;
 
     /**
      * @var string
-     * @tableColumn flow_step.step_roles
+     * @tableColumn agp_flow_step.step_roles
      * @tableColumnDatatype text
      * @fieldType Kajona\Flow\Admin\Formentries\FormentryRoles
      * @blockEscaping

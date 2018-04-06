@@ -558,27 +558,27 @@ class OrmObjectlistTesthandler implements GenericeventListenerInterface
 /**
  * Class orm_schematest_testclass
  *
- * @targetTable testclass.testclass_id
+ * @targetTable agp_testclass.testclass_id
  */
 class OrmObjectlistTestclass extends Model implements ModelInterface
 {
 
     /**
      * @var array
-     * @objectList testclass_rel (source="testclass_source_id", target="testclass_target_id")
+     * @objectList agp_testclass_rel (source="testclass_source_id", target="testclass_target_id")
      */
     private $arrObject1 = array();
 
 
     /**
      * @var array
-     * @objectList testclass2_rel (source="testclass_source_id", target="testclass_target_id", type={"Kajona\\System\\System\\SystemAspect"})
+     * @objectList agp_testclass2_rel (source="testclass_source_id", target="testclass_target_id", type={"Kajona\\System\\System\\SystemAspect"})
      */
     private $arrObject2 = array();
 
     /**
      * @var string
-     * @tableColumn testclass.name
+     * @tableColumn agp_testclass.name
      * @tableColumnDatatype char254
      */
     private $strName = "";

@@ -25,7 +25,7 @@ use Kajona\System\System\SystemModule;
  * @package module_dashboard
  * @author sidler@mulchprod.de
  *
- * @targetTable dashboard.dashboard_id
+ * @targetTable agp_dashboard.dashboard_id
  * @module dashboard
  * @moduleId _dashboard_module_id_
  *
@@ -36,14 +36,14 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
 
     /**
      * @var string
-     * @tableColumn dashboard.dashboard_column
+     * @tableColumn agp_dashboard.dashboard_column
      * @tableColumnDatatype char254
      */
     private $strColumn = "";
 
     /**
      * @var string
-     * @tableColumn dashboard.dashboard_user
+     * @tableColumn agp_dashboard.dashboard_user
      * @tableColumnDatatype char20
      * @tableColumnIndex
      */
@@ -51,7 +51,7 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
 
     /**
      * @var string
-     * @tableColumn dashboard.dashboard_aspect
+     * @tableColumn agp_dashboard.dashboard_aspect
      * @tableColumnDatatype char254
      * @tableColumnIndex
      */
@@ -59,14 +59,14 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
 
     /**
      * @var string
-     * @tableColumn dashboard.dashboard_class
+     * @tableColumn agp_dashboard.dashboard_class
      * @tableColumnDatatype char254
      */
     private $strClass = "";
 
     /**
      * @var string
-     * @tableColumn dashboard.dashboard_content
+     * @tableColumn agp_dashboard.dashboard_content
      * @tableColumnDatatype text
      * @blockEscaping
      */

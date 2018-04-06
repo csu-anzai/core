@@ -16,7 +16,7 @@ use Kajona\System\System\Objectfactory;
  * FlowTransition
  *
  * @author christoph.kappestein@artemeon.de
- * @targetTable flow_step_transition.transition_id
+ * @targetTable agp_flow_step_transition.transition_id
  * @module flow
  * @moduleId _flow_module_id_
  * @formGenerator Kajona\Flow\Admin\FlowTransitionFormgenerator
@@ -25,7 +25,7 @@ class FlowTransition extends Model implements ModelInterface, AdminListableInter
 {
     /**
      * @var string
-     * @tableColumn flow_step_transition.target_step
+     * @tableColumn agp_flow_step_transition.target_step
      * @tableColumnDatatype char254
      * @fieldType Kajona\System\Admin\Formentries\FormentryDropdown
      * @fieldMandatory
@@ -34,7 +34,7 @@ class FlowTransition extends Model implements ModelInterface, AdminListableInter
 
     /**
      * @var int
-     * @tableColumn flow_step_transition.transition_visible
+     * @tableColumn agp_flow_step_transition.transition_visible
      * @tableColumnDatatype int
      * @fieldType Kajona\System\Admin\Formentries\FormentryDropdown
      * @fieldDDValues [0 => transition_visible_0],[1 => transition_visible_1]
@@ -44,7 +44,7 @@ class FlowTransition extends Model implements ModelInterface, AdminListableInter
 
     /**
      * @var int
-     * @tableColumn flow_step_transition.transition_skip
+     * @tableColumn agp_flow_step_transition.transition_skip
      * @tableColumnDatatype int
      * @fieldType Kajona\System\Admin\Formentries\FormentryDropdown
      * @fieldDDValues [0 => transition_skip_0],[1 => transition_skip_1]

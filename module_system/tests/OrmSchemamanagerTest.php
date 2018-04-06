@@ -166,27 +166,27 @@ class OrmSchemamanagerTest extends Testbase
 
 /**
  *
- * @targetTable ormtest.content_id
+ * @targetTable agp_ormtest.content_id
  */
 class OrmSchematestTestclass
 {
 
     /**
      * @var string
-     * @tableColumn ormtest.col1
+     * @tableColumn agp_ormtest.col1
      */
     private $strCol1 = "";
 
     /**
      * @var string
-     * @tableColumn ormtest.col2
+     * @tableColumn agp_ormtest.col2
      * @tableColumnDatatype text
      */
     private $strCol2 = "";
 
     /**
      * @var int
-     * @tableColumn ormtest.col3
+     * @tableColumn agp_ormtest.col3
      * @tableColumnDatatype long
      */
     private $longCol3 = 0;
@@ -194,14 +194,14 @@ class OrmSchematestTestclass
 
 /**
  *
- * @targetTable ormtest.content_id
+ * @targetTable agp_ormtest.content_id
  */
 class OrmSchematestTestclassDatatype
 {
 
     /**
      * @var int
-     * @tableColumn ormtest.col3
+     * @tableColumn agp_ormtest.col3
      * @tableColumnDatatype extralong
      */
     private $longCol3 = 0;
@@ -209,15 +209,15 @@ class OrmSchematestTestclassDatatype
 
 /**
  *
- * @targetTable ormtest.content_id
- * @targetTable ormtest2.content_id
+ * @targetTable agp_ormtest.content_id
+ * @targetTable agp_ormtest2.content_id
  */
 class OrmSchematestTestclassTablecolumn
 {
 
     /**
      * @var int
-     * @tableColumn ormtestcol3
+     * @tableColumn agp_ormtestcol3
      * @tableColumnDatatype long
      */
     private $longCol3 = 0;
@@ -234,7 +234,7 @@ class OrmSchematestTestclassTargettable1
 }
 
 /**
- * @targetTable ormtest
+ * @targetTable agp_ormtest
  */
 class OrmSchematestTestclassTargettable2
 {
@@ -244,21 +244,21 @@ class OrmSchematestTestclassTargettable2
 
 /**
  *
- * @targetTable testclass.testclass_id
+ * @targetTable agp_testclass.testclass_id
  */
 class OrmSchematestTestclassAssignments
 {
 
     /**
      * @var array
-     * @objectList testclass_rel (source="testclass_source_id", target="testclass_target_id")
+     * @objectList agp_testclass_rel (source="testclass_source_id", target="testclass_target_id")
      */
     private $arrObject1 = array();
 
 
     /**
      * @var array
-     * @objectList testclass2_rel (source="testclass_source_id", target="testclass_target_id")
+     * @objectList agp_testclass2_rel (source="testclass_source_id", target="testclass_target_id")
      */
     private $arrObject2 = array();
 

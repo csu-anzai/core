@@ -22,7 +22,7 @@ use Kajona\System\System\OrmObjectlist;
  * @author sidler@mulchprod.de
  * @since 4.0
  *
- * @targetTable tags_favorite.tags_fav_id
+ * @targetTable agp_tags_favorite.tags_fav_id
  *
  * @module tags
  * @moduleId _tags_modul_id_
@@ -31,14 +31,14 @@ class TagsFavorite extends Model implements ModelInterface, AdminListableInterfa
 
     /**
      * @var string
-     * @tableColumn tags_favorite.tags_fav_tagid
+     * @tableColumn agp_tags_favorite.tags_fav_tagid
      * @tableColumnDatatype char20
      */
     private $strTagId;
 
     /**
      * @var string
-     * @tableColumn tags_favorite.tags_fav_userid
+     * @tableColumn agp_tags_favorite.tags_fav_userid
      * @tableColumnDatatype char20
      */
     private $strUserId;

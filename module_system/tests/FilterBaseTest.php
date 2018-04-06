@@ -159,38 +159,38 @@ class FilterBaseTest extends Testbase
 class FilterBaseA extends FilterBase
 {
     /**
-     * @tableColumn filter.filter1
+     * @tableColumn agp_filter.filter1
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      */
     protected $strFilter1;
 
     /**
-     * @tableColumn filter.filter2
+     * @tableColumn agp_filter.filter2
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      */
     protected $intFilter2;
 
     /**
-     * @tableColumn filter.filter3
+     * @tableColumn agp_filter.filter3
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      */
     protected $floatFilter3;
 
     /**
-     * @tableColumn filter.filter4
+     * @tableColumn agp_filter.filter4
      * @fieldType Kajona\System\Admin\Formentries\FormentryDropdown
      */
     protected $arrFilter4;
 
     /**
-     * @tableColumn filter.filter5
+     * @tableColumn agp_filter.filter5
      * @fieldType Kajona\System\Admin\Formentries\FormentryDate
      */
     protected $objFilter5;
 
 
     /**
-     * @tableColumn filter.filter6
+     * @tableColumn agp_filter.filter6
      * @fieldType Kajona\System\Admin\Formentries\FormentryDate
      * @filterCompareOperator LE
      */
@@ -198,14 +198,14 @@ class FilterBaseA extends FilterBase
 
 
     /**
-     * @tableColumn filter.filter7
+     * @tableColumn agp_filter.filter7
      * @fieldType Kajona\System\Admin\Formentries\FormentryDate
      * @filterCompareOperator GE
      */
     protected $objFilter7;
 
     /**
-     * @tableColumn filter.filter8
+     * @tableColumn agp_filter.filter8
      * @fieldType Kajona\System\Admin\Formentries\FormentryDate
      * @filterCompareOperator LE
      */
@@ -213,14 +213,14 @@ class FilterBaseA extends FilterBase
 
 
     /**
-     * @tableColumn filter.filter9
+     * @tableColumn agp_filter.filter9
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      */
     protected $strFilter9;
 
 
     /**
-     * @tableColumn filter.filter10
+     * @tableColumn agp_filter.filter10
      * @fieldType Kajona\System\Admin\Formentries\FormentryDropdown
      * @filterCompareOperator IN_OR_EMPTY
      */

@@ -36,7 +36,7 @@ use Kajona\Tags\System\TagsTag;
  * @package module_tags
  * @author sidler@mulchprod.de
  *
- * @objectList Kajona\Tags\System\TagsTag
+ * @objectList agp_Kajona\Tags\System\TagsTag
  * @objectEdit Kajona\Tags\System\TagsTag
  *
  * @autoTestable list

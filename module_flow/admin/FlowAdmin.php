@@ -37,7 +37,7 @@ use Kajona\System\System\Objectfactory;
  *
  * @author christoph.kappestein@gmail.com
  *
- * @objectList Kajona\Flow\System\FlowConfig
+ * @objectList agp_Kajona\Flow\System\FlowConfig
  *
  * @objectListStep Kajona\Flow\System\FlowStatus
  * @objectNewStep Kajona\Flow\System\FlowStatus

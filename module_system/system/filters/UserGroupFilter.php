@@ -24,7 +24,7 @@ class UserGroupFilter extends FilterBase
 {
     /**
      * @var string
-     * @tableColumn group_name
+     * @tableColumn agp_group_name
      * @filterCompareOperator LIKE
      * @fieldLabel group_name
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
@@ -33,7 +33,7 @@ class UserGroupFilter extends FilterBase
 
     /**
      * @var int
-     * @tableColumn group_system_group
+     * @tableColumn agp_group_system_group
      * @filterCompareOperator EQ
      * @fieldType Kajona\System\Admin\Formentries\FormentryYesno
      */
@@ -43,7 +43,7 @@ class UserGroupFilter extends FilterBase
      * array of group system ids
      *
      * @var string
-     * @tableColumn system_id
+     * @tableColumn agp_system_id
      * @filterCompareOperator NOTIN
      */
     private $arrExcludedGroups = null;

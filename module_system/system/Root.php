@@ -68,7 +68,7 @@ abstract class Root
      * The records current systemid
      *
      * @var string
-     * @tableColumn system.system_id
+     * @tableColumn agp_system.system_id
      */
     private $strSystemid = "";
 
@@ -78,7 +78,7 @@ abstract class Root
      * @var string
      * @versionable
      *
-     * @tableColumn system.system_prev_id
+     * @tableColumn agp_system.system_prev_id
      */
     private $strPrevId = -1;
 
@@ -93,7 +93,7 @@ abstract class Root
      * The records module-number
      *
      * @var int
-     * @tableColumn system.system_module_nr
+     * @tableColumn agp_system.system_module_nr
      */
     private $intModuleNr = 0;
 
@@ -101,7 +101,7 @@ abstract class Root
      * The records sort-position relative to the parent record
      *
      * @var int
-     * @tableColumn system.system_sort
+     * @tableColumn agp_system.system_sort
      */
     private $intSort = -1;
 
@@ -110,7 +110,7 @@ abstract class Root
      *
      * @var string
      * @versionable
-     * @tableColumn system.system_owner
+     * @tableColumn agp_system.system_owner
      */
     private $strOwner = "";
 
@@ -118,7 +118,7 @@ abstract class Root
      * The id of the user last who did the last changes to the current record
      *
      * @var string
-     * @tableColumn system.system_lm_user
+     * @tableColumn agp_system.system_lm_user
      */
     private $strLmUser = "";
 
@@ -128,7 +128,7 @@ abstract class Root
      *
      * @todo migrate to long-timestamp
      * @var int
-     * @tableColumn system.system_lm_time
+     * @tableColumn agp_system.system_lm_time
      */
     private $intLmTime = 0;
 
@@ -136,7 +136,7 @@ abstract class Root
      * The id of the user locking the current record, empty otherwise
      *
      * @var string
-     * @tableColumn system.system_lock_id
+     * @tableColumn agp_system.system_lock_id
      */
     private $strLockId = "";
 
@@ -146,7 +146,7 @@ abstract class Root
      *
      * @todo migrate to long-timestamp
      * @var int
-     * @tableColumn system.system_lock_time
+     * @tableColumn agp_system.system_lock_time
      */
     private $intLockTime = 0;
 
@@ -155,7 +155,7 @@ abstract class Root
      *
      * @var int
      * @versionable
-     * @tableColumn system.system_status
+     * @tableColumn agp_system.system_status
      */
     private $intRecordStatus = 1;
 
@@ -171,7 +171,7 @@ abstract class Root
      *
      * @var int
      * @versionable
-     * @tableColumn system.system_deleted
+     * @tableColumn agp_system.system_deleted
      */
     private $intRecordDeleted = 0;
 
@@ -179,7 +179,7 @@ abstract class Root
      * Holds the current objects' class
      *
      * @var string
-     * @tableColumn system.system_class
+     * @tableColumn agp_system.system_class
      */
     private $strRecordClass = "";
 
@@ -187,7 +187,7 @@ abstract class Root
      * Long-based representation of the timestamp the record was created initially
      *
      * @var int
-     * @tableColumn system.system_create_date
+     * @tableColumn agp_system.system_create_date
      */
     private $longCreateDate = 0;
 
@@ -196,7 +196,7 @@ abstract class Root
      *
      * @var Date
      * @versionable
-     * @tableColumn system_date.system_date_start
+     * @tableColumn agp_system_date.system_date_start
      */
     private $objStartDate = null;
 
@@ -205,7 +205,7 @@ abstract class Root
      *
      * @var Date
      * @versionable
-     * @tableColumn system_date.system_date_end
+     * @tableColumn agp_system_date.system_date_end
      */
     private $objEndDate = null;
 
@@ -214,7 +214,7 @@ abstract class Root
      *
      * @var Date
      * @versionable
-     * @tableColumn system_date.system_date_special
+     * @tableColumn agp_system_date.system_date_special
      */
     private $objSpecialDate = null;
 

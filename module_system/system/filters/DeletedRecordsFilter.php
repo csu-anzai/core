@@ -27,14 +27,14 @@ class DeletedRecordsFilter extends FilterBase
 {
     /**
      * @var string
-     * @tableColumn system.system_id
+     * @tableColumn agp_system.system_id
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      */
     private $strSystemid;
 
     /**
      * @var string
-     * @tableColumn system.system_class
+     * @tableColumn agp_system.system_class
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      *
      * @filterCompareOperator LIKE
@@ -43,7 +43,7 @@ class DeletedRecordsFilter extends FilterBase
 
     /**
      * @var int
-     * @tableColumn system.system_deleted
+     * @tableColumn agp_system.system_deleted
      */
     private $intDeleted = 1;
 

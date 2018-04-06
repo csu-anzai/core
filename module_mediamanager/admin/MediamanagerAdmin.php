@@ -45,7 +45,7 @@ use Kajona\System\System\StringUtil;
  * @package module_mediamanager
  * @author sidler@mulchprod.de
  *
- * @objectList Kajona\Mediamanager\System\MediamanagerRepo
+ * @objectList agp_Kajona\Mediamanager\System\MediamanagerRepo
  * @objectEdit Kajona\Mediamanager\System\MediamanagerRepo
  * @objectNew Kajona\Mediamanager\System\MediamanagerRepo
  *
@@ -549,8 +549,8 @@ HTML;
                     imageeditor.fm_image_isScaled = true;
                     imageeditor.fm_file = '".$strFile."' ;
     
-                    imageeditor.init_fm_crop_save_warning_dialog = function () { jsDialog_1.setTitle('".$this->getLang("cropWarningDialogHeader")."'); jsDialog_1.setContent('".$this->getLang("cropWarningSaving")."', '".$this->getLang("cropWarningCrop")."', 'javascript:require(\'imageeditor\').saveCroppingToBackend()'); jsDialog_1.init(); }
-                    imageeditor.init_fm_screenlock_dialog = function () { jsDialog_3.init(); }
+                    imageeditor.init_fm_crop_save_warning_dialog = function () { jsDialog_1.setTitle('".$this->getLang("cropWarningDialogHeader")."'); jsDialog_1.setContent('".$this->getLang("cropWarningSaving")."', '".$this->getLang("cropWarningCrop")."', 'javascript:require(\'imageeditor\').saveCroppingToBackend()'); jsDialog_1.init(); };
+                    imageeditor.init_fm_screenlock_dialog = function () { jsDialog_3.init(); };
                     imageeditor.hide_fm_screenlock_dialog = function () { jsDialog_3.hide(); }
 
                 });

@@ -31,7 +31,7 @@ class OrmAssignmentConfig
     }
 
     /**
-     * Static factory to parse the @objectList annotation of a single property
+     * Static factory to parse the @objectList agp_annotation of a single property
      *
      * @param $objObject
      * @param $strProperty
@@ -49,7 +49,7 @@ class OrmAssignmentConfig
         $arrTypeFilter = isset($arrPropertyParams["type"]) ? $arrPropertyParams["type"] : null;
 
         if (!isset($arrPropertyParams["source"]) || !isset($arrPropertyParams["target"]) || empty($strTable)) {
-            throw new OrmException("@objectList annotation for ".$strProperty."@".get_class($objObject)." is malformed", OrmException::$level_FATALERROR);
+            throw new OrmException("@objectList agp_annotation for ".$strProperty."@".get_class($objObject)." is malformed", OrmException::$level_FATALERROR);
         }
 
         return new OrmAssignmentConfig($strTable, $arrPropertyParams["source"], $arrPropertyParams["target"], $arrTypeFilter);

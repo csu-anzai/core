@@ -22,19 +22,19 @@ class MediamanagerFileFilter extends FilterBase
 {
     /**
      * @var boolean
-     * @tableColumn file_search_content
+     * @tableColumn agp_file_search_content
      */
     private $bitIndexPending;
 
     /**
      * @var int
-     * @tableColumn file_type
+     * @tableColumn agp_file_type
      */
     private $intFileType;
 
     /**
      * @var string
-     * @tableColumn mediamanager_file.file_filename
+     * @tableColumn agp_mediamanager_file.file_filename
      * @tableColumnDatatype char254
      */
     private $strFilename;
