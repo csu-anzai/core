@@ -39,6 +39,12 @@ foreach ($objCoreDirs as $objCoreDir) {
 
                     if (isset($content["require"]) && is_array($content["require"])) {
                         foreach ($content["require"] as $name => $version) {
+                            if (strpos($name, "/") !== false && isset($composer["require"][$name])) {
+                                if ($composer["require"][$name] != $version) {
+                                    throw new \RuntimeException("Found dependency {$name} multiple times with different version {$composer["require"][$name]} vs {$version}");
+                                }
+                            }
+
                             $composer["require"][$name] = $version;
                         }
                     }
