@@ -39,7 +39,7 @@ use Kajona\System\System\SystemChangelog;
  * @module messaging
  * @moduleId _messaging_module_id_
  *
- * @objectList agp_Kajona\System\System\MessagingMessage
+ * @objectList Kajona\System\System\MessagingMessage
  * @objectNew Kajona\System\System\MessagingMessage
  * @objectEdit Kajona\System\System\MessagingMessage
  */

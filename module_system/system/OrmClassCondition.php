@@ -23,7 +23,7 @@ class OrmClassCondition extends OrmCondition
      * @param string $strClass
      * @param string $strTablePrefix
      */
-    public function __construct(string $strClass, string $strTablePrefix = "system.")
+    public function __construct(string $strClass, string $strTablePrefix = "agp_system.")
     {
         parent::__construct($strTablePrefix."system_class = ?", array($strClass));
     }

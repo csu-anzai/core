@@ -81,7 +81,7 @@ class OrmConditionTest extends Testbase
     {
         $objCondition = new OrmPropertyInCondition("intRecordStatus", array(1));
         $objCondition->setStrTargetClass("Kajona\\System\\System\\Root");
-        $this->assertEquals("system.system_status IN (?)", $objCondition->getStrWhere());
+        $this->assertEquals("agp_system.system_status IN (?)", $objCondition->getStrWhere());
 
         $objCondition = new OrmPropertyInCondition("intRecordStatus", array());
         $objCondition->setStrTargetClass("Kajona\\System\\System\\Root");

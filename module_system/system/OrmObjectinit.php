@@ -41,7 +41,7 @@ class OrmObjectinit extends OrmBase
             } else {
                 $strQuery = "SELECT *
                           ".$this->getQueryBase()."
-                           AND system.system_id = ? ";
+                           AND agp_system.system_id = ? ";
 
                 $arrRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, array($this->getObjObject()->getSystemid()));
             }
@@ -65,7 +65,7 @@ class OrmObjectinit extends OrmBase
                 }
 
                 //skip columns from the system-table, they are set later on
-                if (count($arrColumn) == 2 && $arrColumn[0] == "system") {
+                if (count($arrColumn) == 2 && $arrColumn[0] == "agp_system") {
                     continue;
                 }
 

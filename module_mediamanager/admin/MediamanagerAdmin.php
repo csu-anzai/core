@@ -45,7 +45,7 @@ use Kajona\System\System\StringUtil;
  * @package module_mediamanager
  * @author sidler@mulchprod.de
  *
- * @objectList agp_Kajona\Mediamanager\System\MediamanagerRepo
+ * @objectList Kajona\Mediamanager\System\MediamanagerRepo
  * @objectEdit Kajona\Mediamanager\System\MediamanagerRepo
  * @objectNew Kajona\Mediamanager\System\MediamanagerRepo
  *
