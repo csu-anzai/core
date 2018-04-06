@@ -12,6 +12,9 @@ use Kajona\System\System\Lang;
 use Kajona\System\View\Components\AbstractComponent;
 
 /**
+ * A list component with a search text field at the top. By default we query the general search endpoint but you can
+ * also specify a custom endpoint to implement a specific behaviour
+ *
  * @author christoph.kappestein@artemeon.de
  * @since 7.0
  * @componentTemplate template.twig

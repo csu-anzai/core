@@ -11,6 +11,8 @@ namespace Kajona\System\View\Components\Grid;
 use Kajona\System\View\Components\AbstractComponent;
 
 /**
+ * General grid component. You need to specify the column width, then you can add multiple rows.
+ *
  * @author christoph.kappestein@artemeon.de
  * @since 7.0
  * @componentTemplate template.twig
