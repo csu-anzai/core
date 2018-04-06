@@ -1,10 +1,6 @@
 #!groovy
 
-//@Library('art-shared@master') _
-//import static de.artemeon.Utilities.*
-
-//working as expected, but limited capabilities
-//defaultBuild antBuildTask: 'installProjectSqlite', buildNode: 'php7', checkoutDir: 'core'
+@Library('art-shared@master') _
 
 pipeline {  
         agent none
@@ -85,6 +81,7 @@ pipeline {
                                 step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']])])
                             }
                         }
+                        
                     }
 
                     
@@ -93,6 +90,15 @@ pipeline {
             }
 
         }
-
-
+        post {
+            failure {
+                sendNotification 'FAILURE'
+            }
+            unstable {
+                sendNotification 'UNSTABLE'
+            }
+            success {
+                sendNotification 'SUCCESS'
+            }
+        }
     }
