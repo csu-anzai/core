@@ -40,7 +40,7 @@ class DatabaseMultiInsertTest extends Testbase
         $arrFields["temp_text"] = array("text", true);
         $arrFields["temp_longtext"] = array("longtext", true);
 
-        $this->assertTrue($objDB->createTable("agp_agp_temp_autotest", $arrFields, array("temp_id")), "testDataBase createTable");
+        $this->assertTrue($objDB->createTable("agp_temp_autotest", $arrFields, array("temp_id")), "testDataBase createTable");
 
         $strQuery = "DELETE FROM agp_temp_autotest";
         $this->assertTrue($objDB->_pQuery($strQuery, array()), "testDataBase truncateTable");
