@@ -37,11 +37,11 @@ class Grid extends AbstractComponent
     {
         parent::__construct();
 
-        $this->columnWidths = $columnWidths;
-
         if (array_sum($columnWidths) != 12) {
             throw new \InvalidArgumentException("Sum of all columns must be 12");
         }
+
+        $this->columnWidths = $columnWidths;
     }
 
     public function addRow(array $row)
