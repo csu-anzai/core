@@ -190,7 +190,7 @@ class RequestDispatcher
                                 //login page required
                                 $bitLogin = true;
                             }
-                        } catch (\Exception $objEx) {
+                        } catch (\Throwable $objEx) {
                             if (!($objEx instanceof Exception)) {
                                 $objEx = new Exception($objEx->getMessage());
                             }
