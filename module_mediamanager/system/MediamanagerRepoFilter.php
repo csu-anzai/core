@@ -22,7 +22,7 @@ class MediamanagerRepoFilter extends FilterBase
 {
     /**
      * @var boolean
-     * @tableColumn agp_repo_search_index
+     * @tableColumn repo_search_index
      */
     private $bitSearchIndex;
 

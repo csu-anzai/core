@@ -264,7 +264,7 @@ class SearchIndexwriter
 
         //insert search document in a single query - much faster than single updates
         $this->objDB->multiInsert(
-            "search_ix_content",
+            "agp_search_ix_content",
             ["search_ix_content_id", "search_ix_content_field_name", "search_ix_content_content", "search_ix_content_score", "search_ix_content_document_id"],
             $arrValues
         );
