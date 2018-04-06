@@ -1029,7 +1029,7 @@ A list of checkbox for object elements
         require(["jquery"], function($) {
             $("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
                 var checkBoxes = $("input:checkbox[name^='%%name%%']").not("[disabled]");
-                checkBoxes.prop('checked', $("input:checkbox[name='checkAll_%%name%%']")).trigger('change');
+                checkBoxes.prop('checked', $("input:checkbox[name='checkAll_%%name%%']").prop('checked')).trigger('change');
             });
         });
     </script>
