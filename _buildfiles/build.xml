@@ -203,8 +203,9 @@
                 <exclude name="project/temp/**"/>		              
                 <include name="core*/module_*/*/**"/>		 
                 <include name="core*/_debugging/*/**"/>	
-                <!--<include name="core*/_buildfiles/*/**"/>-->	
-                <include name="core*/*.php"/>		 
+                <include name="core*/_buildfiles/bin/*/**"/>
+                <include name="core*/_buildfiles/jstests/*/**"/>
+                <include name="core*/*.php"/>
                 <include name="core*/*.htaccess"/>	
                 <include name="files/**"/>	
                 <include name="project/**"/>	
