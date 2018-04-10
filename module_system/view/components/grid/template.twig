@@ -3,7 +3,7 @@
     {% for row in rows %}
     <div class="row">
         {% for key, column in row %}
-        <div class="col-md-{{ column_widths[key] }}">
+        <div class="col-sm-{{ column_widths[key] }}">
             {{ column|raw }}
         </div>
         {% endfor %}
