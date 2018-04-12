@@ -63,7 +63,7 @@ file_put_contents($vendorComposer, json_encode($composer, JSON_PRETTY_PRINT));
 // install composer
 $arrOutput = array();
 $intReturn = 0;
-exec('composer install --prefer-dist --working-dir  ' . escapeshellarg(dirname($vendorComposer)), $arrOutput, $intReturn);
+exec('composer install --prefer-dist --optimize-autoloader --working-dir  ' . escapeshellarg(dirname($vendorComposer)), $arrOutput, $intReturn);
 if ($intReturn == 127) {
     echo "<span style='color: red;'>composer was not found. please run 'composer install --prefer-dist --working-dir " . dirname($vendorComposer) . "' manually</span>\n";
 }
