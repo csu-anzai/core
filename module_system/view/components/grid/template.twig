@@ -1,0 +1,12 @@
+
+<div class="core-component-grid">
+    {% for row in rows %}
+    <div class="row">
+        {% for key, column in row %}
+        <div class="col-sm-{{ column_widths[key] }}">
+            {{ column|raw }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>

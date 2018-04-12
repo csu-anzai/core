@@ -203,8 +203,9 @@
                 <exclude name="project/temp/**"/>		              
                 <include name="core*/module_*/*/**"/>		 
                 <include name="core*/_debugging/*/**"/>	
-                <!--<include name="core*/_buildfiles/*/**"/>-->	
-                <include name="core*/*.php"/>		 
+                <include name="core*/_buildfiles/bin/*/**"/>
+                <include name="core*/_buildfiles/jstests/*/**"/>
+                <include name="core*/*.php"/>
                 <include name="core*/*.htaccess"/>	
                 <include name="files/**"/>	
                 <include name="project/**"/>	
@@ -377,7 +378,7 @@
 
 
     <target name="lint" description="Perform syntax check of sourcecode files">
-        <apply executable="${path.php}" failonerror="true">
+        <apply executable="${path.php}" failonerror="true" output="${basedir}${buildPath}/logs/lint.log">
             <arg value="-l" />
 
             <fileset dir="${basedir}${projectPath}">

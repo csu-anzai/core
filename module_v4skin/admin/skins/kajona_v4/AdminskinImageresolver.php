@@ -178,6 +178,8 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_mail"                   => "<i class='kj-icon fa fa-envelope-o'></i>",
         "icon_mailDisabled"           => "<span class='kj-icon fa-stack'><i class='fa fa-envelope-o'></i><i class='fa fa-ban fa-stack-1x kj-stack' style='color: red'></i></span>",
         "icon_mailNew"                => "<i class='kj-icon fa fa-envelope'></i>",
+        "icon_missing"                => "<i class='kj-icon fa fa-times'></i>",
+        "icon_missingRed"             => "<i class='kj-icon fa fa-times' style='color: red'></i>",
         "icon_module"                 => "<i class='kj-icon fa fa-hdd-o'></i>",
         "icon_move"                   => "<i class='kj-icon fa fa-arrows'></i>",
         "icon_movie"                  => "<i class='kj-icon fa fa-film'></i>",
