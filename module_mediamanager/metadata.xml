@@ -16,4 +16,8 @@
     <requiredModules>
         <module name="system" version="7.0" />
     </requiredModules>
+    <constants>
+        <constant name="_mediamanager_module_id_" value="130" />
+        <constant name="_mediamanager_folderview_modul_id_" value="13" />
+    </constants>
 </package>

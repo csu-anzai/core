@@ -14,4 +14,11 @@ When updating from 5.0 to 5.1 or performing another major update from x.x to x.y
     <type>MODULE</type>
     <providesInstaller>TRUE</providesInstaller>
     <requiredModules />
+    <constants>
+        <constant name="_system_modul_id_" value="0" />
+        <constant name="_user_modul_id_" value="15" />
+        <constant name="_languages_modul_id_" value="65" />
+        <constant name="_messaging_module_id_" value="135" />
+    </constants>
+
 </package>

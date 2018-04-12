@@ -13,4 +13,7 @@
         <module name="system" version="7.0" />
         <module name="packagemanager" version="7.0" />
     </requiredModules>
+    <constants>
+        <constant name="_search_module_id_" value="55" />
+    </constants>
 </package>

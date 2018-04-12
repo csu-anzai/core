@@ -12,4 +12,7 @@
     <requiredModules>
         <module name="system" version="7.0" />
     </requiredModules>
+    <constants>
+        <constant name="_packagemanager_module_id_" value="2" />
+    </constants>
 </package>

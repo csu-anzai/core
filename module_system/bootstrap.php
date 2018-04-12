@@ -38,6 +38,7 @@ if (!include_once __DIR__."/system/Classloader.php") {
 // -- Auto-Loader for classes ------------------------------------------------------------------------------------------
 // Register autoloader
 spl_autoload_register(array(\Kajona\System\System\Classloader::getInstance(), "loadClass"));
+\Kajona\System\System\Classloader::getInstance()->bootstrapIncludeModuleIds();
 
 // -- Exception handler ------------------------------------------------------------------------------------------------
 // Register global exception handler for exceptions thrown but not catched (bad style ;) )

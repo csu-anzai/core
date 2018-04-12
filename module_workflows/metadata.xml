@@ -12,4 +12,7 @@
     <requiredModules>
         <module name="system" version="7.0" />
     </requiredModules>
+    <constants>
+        <constant name="_workflows_module_id_" value="115" />
+    </constants>
 </package>

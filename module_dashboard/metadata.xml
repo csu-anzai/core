@@ -12,4 +12,7 @@
     <requiredModules>
         <module name="system" version="7.0" />
     </requiredModules>
+    <constants>
+        <constant name="_dashboard_module_id_" value="90" />
+    </constants>
 </package>

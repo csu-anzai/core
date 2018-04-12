@@ -38,6 +38,7 @@ class PackagemanagerMetadata implements AdminListableInterface
     private $bitProvidesInstaller;
     private $arrRequiredModules = array();
     private $arrScreenshots = array();
+    private $constants = array();
 
     private $strContentprovider;
     private $strPath;
@@ -291,6 +292,29 @@ class PackagemanagerMetadata implements AdminListableInterface
             }
         }
 
+        if (is_array($arrXml["package"]["0"]["constants"])) {
+            foreach ($arrXml["package"]["0"]["constants"] as $constants) {
+                if (!is_array($constants)) {
+                    continue;
+                }
+
+                foreach ($constants as $constant) {
+                    if (!is_array($constant)) {
+                        continue;
+                    }
+
+                    foreach ($constant as $singleConstant) {
+                        if (isset($singleConstant["attributes"]["name"]) && isset($singleConstant["attributes"]["value"])) {
+                            $name = $singleConstant["attributes"]["name"];
+                            $value = $singleConstant["attributes"]["value"];
+
+                            $this->constants[$name] = $value;
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
 
@@ -490,5 +514,20 @@ class PackagemanagerMetadata implements AdminListableInterface
         return $this->bitIsPhar;
     }
 
+    /**
+     * @return array
+     */
+    public function getConstants(): array
+    {
+        return $this->constants;
+    }
+
+    /**
+     * @param array $constants
+     */
+    public function setConstants(array $constants)
+    {
+        $this->constants = $constants;
+    }
 
 }

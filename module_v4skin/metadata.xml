@@ -12,4 +12,7 @@
     <requiredModules>
         <module name="system" version="7.0" />
     </requiredModules>
+    <constants>
+        <constant name="_v4skin_module_id_" value="20170212" />
+    </constants>
 </package>
