@@ -31,6 +31,10 @@ class CleanCoreHelper {
 
             foreach($arrCores as $strCoreFolder) {
                 foreach(scandir(__DIR__."/".$this->strProjectPath."/".$strCoreFolder) as $strOneModule) {
+                    // special vendor module which can not be excluded
+                    if ($strOneModule == "module_vendor") {
+                        continue;
+                    }
 
                     if(preg_match("/^(module|element|_)+.*/i", $strOneModule)) {
 
