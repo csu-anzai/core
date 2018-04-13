@@ -26,9 +26,9 @@ class PharCreator
         foreach ($arrCores as $strOneCore) {
 
             if ($strOneCore === "project") {
-                // in the project folder we generate only the vendor folder as phar
+                // in the project folder we generate a zip file from the vendor folder
                 if (is_dir(__DIR__."/../".$strOneCore."/module_vendor")) {
-                    $this->generatePhar("module_vendor", "project");
+                    $this->generateZip("module_vendor", "project");
                     continue;
                 }
             }
@@ -76,6 +76,40 @@ class PharCreator
         if($this->bitRemoveSource) {
             $this->rrmdir(__DIR__."/../".$strOneCore."/module_".$strModuleName);
         }
+    }
+
+    public function generateZip($strFolder, $strOneCore)
+    {
+        $rootPath = realpath(__DIR__ . "/../" . $strOneCore . "/" . $strFolder);
+        $zipFile = $rootPath . ".zip";
+
+        // @see https://stackoverflow.com/questions/4914750/how-to-zip-a-whole-folder-using-php
+        // Initialize archive object
+        $zip = new ZipArchive();
+        $zip->open($zipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+        // Create recursive directory iterator
+        /** @var SplFileInfo[] $files */
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($rootPath),
+            RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        foreach ($files as $name => $file) {
+            // Skip directories (they would be added automatically)
+            if (!$file->isDir()) {
+                // Get real and relative path for current file
+                $filePath = $file->getRealPath();
+                $relativePath = substr($filePath, strlen($rootPath) + 1);
+
+                // Add current file to archive
+                $zip->addFile($filePath, $relativePath);
+            }
+        }
+
+        $zip->close();
+
+        echo 'Generated zip '.$zipFile."\n";
     }
 
     public function parseParams($arrParams) {
