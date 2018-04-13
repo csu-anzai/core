@@ -1688,6 +1688,18 @@ table.form-control {
         td.description {
             padding-top: 0;
             color: lighten(@text-color, 20);
+
+            a {
+                i {
+                    color: lighten(@text-color, 20);
+                }
+
+                &:hover {
+                    i {
+                        color: @text-color;
+                    }
+                }
+            }
         }
 
         tr[data-systemid='batchActionSwitch'] {
