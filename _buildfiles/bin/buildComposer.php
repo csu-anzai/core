@@ -20,7 +20,7 @@ $arrExcludedModules["core"][] = "module_v4skin";
 $vendorDir = $strRoot."/project/module_vendor";
 
 if (!is_dir($vendorDir)) {
-    mkdir($vendorDir);
+    mkdir($vendorDir, 0777, true);
 }
 
 $vendorComposer = $vendorDir."/composer.json";
