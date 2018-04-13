@@ -38,6 +38,7 @@ class Listsearch extends AbstractComponent
 
     /**
      * @param string $endpointUrl
+     * @param array $items
      */
     public function __construct($endpointUrl = null, array $items = [])
     {
