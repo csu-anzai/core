@@ -132,9 +132,13 @@ class PackagemanagerMetadata implements AdminListableInterface
      */
     public function autoInit($strPath)
     {
-        if (PharModule::isPhar($strPath)) {
+        if (StringUtil::substring($strPath, -4) == ".zip") {
+            $this->initFromPackage($strPath);
+        }
+        elseif (PharModule::isPhar($strPath)) {
             $this->initFromPhar($strPath);
-        } else {
+        }
+        else {
             $this->initFromFilesystem($strPath);
         }
 
