@@ -36,7 +36,7 @@ if (!include_once __DIR__."/system/Classloader.php") {
 }
 
 // add autoload
-require_once __DIR__ . "/../module_vendor/vendor/autoload.php";
+require_once __DIR__ . "/../../project/module_vendor/vendor/autoload.php";
 
 // -- Auto-Loader for classes ------------------------------------------------------------------------------------------
 // Prepend the autoloader so that we first try to use our autoload and then fallback to composer. Currently we load more
@@ -47,12 +47,6 @@ spl_autoload_register(array(\Kajona\System\System\Classloader::getInstance(), "l
 // -- Exception handler ------------------------------------------------------------------------------------------------
 // Register global exception handler for exceptions thrown but not catched (bad style ;) )
 set_exception_handler(array("Kajona\\System\\System\\Exception", "globalExceptionHandler"));
-
-// -- Custom bootstrap -------------------------------------------------------------------------------------------------
-// See if there's a custom bootstrap.php to include
-if (file_exists(_realpath_."project/bootstrap.php")) {
-    include_once _realpath_."project/bootstrap.php";
-}
 
 // -- The Path on web --------------------------------------------------------------------------------------------------
 defineWebPath();
