@@ -269,12 +269,12 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
             $objInstance = new $strTargetClass();
             $strName = Lang::getInstance()->getLang($this->strName, $objInstance->getArrModule("module"));
 
-            if ($strName[0] == "!") {
+            if ($strName[0] != "!") {
                 return $strName;
             }
 
             $strName = Lang::getInstance()->getLang($this->strName, "flow");
-            if ($strName[0] == "!") {
+            if ($strName[0] != "!") {
                 return $strName;
             }
         }
