@@ -17,6 +17,7 @@ use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Permissions\PermissionHandlerFactory;
 use Kajona\System\System\Permissions\PermissionHandlerInterface;
+use Kajona\System\System\Root;
 use Kajona\System\System\UserGroup;
 
 /**
@@ -259,9 +260,18 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
      */
     public function getStrDisplayName()
     {
-        $strName = Lang::getInstance()->getLang($this->strName, "flow");
+        /** @var FlowConfig $objFlow */
+        $objFlow = Objectfactory::getInstance()->getObject($this->getStrPrevId());
+        $strTargetClass = $objFlow->getStrTargetClass();
+        /** @var Root $objInstance */
+        $objInstance = new $strTargetClass();
+
+        $strName = Lang::getInstance()->getLang($this->strName, $objInstance->getArrModule("module"));
         if ($strName[0] == "!") {
-            $strName = $this->strName;
+            $strName = Lang::getInstance()->getLang($this->strName, "flow");
+            if ($strName[0] == "!") {
+                $strName = $this->strName;
+            }
         }
 
         return $strName;
