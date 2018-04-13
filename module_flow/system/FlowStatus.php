@@ -262,15 +262,17 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
     {
         /** @var FlowConfig $objFlow */
         $objFlow = Objectfactory::getInstance()->getObject($this->getStrPrevId());
-        $strTargetClass = $objFlow->getStrTargetClass();
-        /** @var Root $objInstance */
-        $objInstance = new $strTargetClass();
+        if ($objFlow !== null) {
+            $strTargetClass = $objFlow->getStrTargetClass();
+            /** @var Root $objInstance */
+            $objInstance = new $strTargetClass();
+            $strName = Lang::getInstance()->getLang($this->strName, $objInstance->getArrModule("module"));
 
-        $strName = Lang::getInstance()->getLang($this->strName, $objInstance->getArrModule("module"));
-        if ($strName[0] == "!") {
-            $strName = Lang::getInstance()->getLang($this->strName, "flow");
             if ($strName[0] == "!") {
-                $strName = $this->strName;
+                $strName = Lang::getInstance()->getLang($this->strName, "flow");
+                if ($strName[0] == "!") {
+                    $strName = $this->strName;
+                }
             }
         }
 
