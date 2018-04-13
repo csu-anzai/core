@@ -26,7 +26,7 @@
                 type: "POST",
                 dataType: "json",
                 data: {
-                    filter: request.term,
+                    search_query: request.term,
                 },
                 success: response
             });
@@ -39,9 +39,16 @@
         };
 
         searchEl.autocomplete(objConfig).data( 'ui-autocomplete' )._renderItem = function( ul, item ) {
+            var text;
+            if (item.icon) {
+                text = item.icon + '&nbsp;&nbsp;' + item.description;
+            } else {
+                text = item.description;
+            }
+
             return $( '<li></li>' )
                 .data('ui-autocomplete-item', item)
-                .append('<div class="ui-autocomplete-item">' + item.icon + '&nbsp;&nbsp;' + item.description + '</div>')
+                .append('<div class="ui-autocomplete-item">' + text + '</div>')
                 .appendTo(ul);
         } ;
     });
