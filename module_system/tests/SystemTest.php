@@ -125,7 +125,9 @@ class SystemTest extends Testbase
 
         //deleting all records
         foreach ($arrSysRecords as $strOneId) {
-            Objectfactory::getInstance()->getObject($strOneId)->deleteObjectFromDatabase();
+            if (Objectfactory::getInstance()->getObject($strOneId) !== null) {
+                Objectfactory::getInstance()->getObject($strOneId)->deleteObjectFromDatabase();
+            }
         }
 
     }
