@@ -78,7 +78,7 @@ interface WorkflowsHandlerInterface
      * This method is called by the controller. The workflows' state is set to scheduled afterwards.
      * The workflow-object itself is updated automatically, so no need to be done right here.
      *
-     * @see WorkflowsWorkflow::setObjTriggerDate
+     * @see WorkflowsWorkflow::setTriggerDate
      * @return void
      */
     public function schedule();

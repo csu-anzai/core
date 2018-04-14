@@ -236,7 +236,7 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
         $arrRows = array();
         $arrRows[] = array($this->getLang("workflow_class"), $objWorkflow->getStrClass());
         $arrRows[] = array($this->getLang("workflow_systemid"), $objWorkflow->getStrAffectedSystemid());
-        $arrRows[] = array($this->getLang("workflow_trigger"), dateToString($objWorkflow->getObjTriggerdate()));
+        $arrRows[] = array($this->getLang("workflow_trigger"), dateToString($objWorkflow->getTriggerDate()));
         $arrRows[] = array($this->getLang("workflow_runs"), $objWorkflow->getIntRuns());
         $arrRows[] = array($this->getLang("workflow_status"), $this->getLang("workflow_status_".$objWorkflow->getIntState()));
 

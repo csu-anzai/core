@@ -94,7 +94,7 @@ class WorkflowFileIndexer implements WorkflowsHandlerInterface
     public function schedule()
     {
         $objTriggerdate = new Date(time() + (60 * $this->intDelay));
-        $this->objWorkflow->setObjTriggerdate($objTriggerdate);
+        $this->objWorkflow->setTriggerdate($objTriggerdate);
     }
 
     public function getUserInterface()

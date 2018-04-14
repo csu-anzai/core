@@ -87,11 +87,9 @@ class WorkflowWorkflowsDbdump implements WorkflowsHandlerInterface
     public function schedule()
     {
 
-        $newTriggerdate = $this->objWorkflow->getObjTriggerdate()->getTimeInOldStyle();
+        $newTriggerdate = $this->objWorkflow->getTriggerDate()->getTimeInOldStyle();
         $newTriggerdate = $newTriggerdate + $this->intIntervalHours * 3600;
-
-        $this->objWorkflow->setObjTriggerdate(new \Kajona\System\System\Date($newTriggerdate));
-
+        $this->objWorkflow->setTriggerDate(new \Kajona\System\System\Date($newTriggerdate));
     }
 
     public function getUserInterface()

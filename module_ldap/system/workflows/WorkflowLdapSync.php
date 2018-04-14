@@ -102,7 +102,7 @@ class WorkflowLdapSync implements WorkflowsHandlerInterface
         $objDate->setNextDay();
         $objDate->setIntHour(3);
         $objDate->setIntMin(20);
-        $this->objWorkflow->setObjTriggerdate($objDate);
+        $this->objWorkflow->setTriggerdate($objDate);
     }
 
     /**
