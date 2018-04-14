@@ -1503,7 +1503,7 @@ abstract class Root
      * @todo find ussages and make private
      *
      */
-    final public function deleteSystemRecord($strSystemid, $bitRight = true, $bitDate = true)
+    final private function deleteSystemRecord($strSystemid, $bitRight = true, $bitDate = true)
     {
         $bitResult = true;
 

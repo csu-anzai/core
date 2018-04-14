@@ -77,17 +77,12 @@ abstract class AbstractComponent
      */
     private function newTwig()
     {
-        static $engine;
-
-        if ($engine) {
-            return $engine;
-        }
-
         $reflection = new \ReflectionObject($this);
         $classDir = dirname($reflection->getFileName());
         $loader = new \Twig_Loader_Filesystem($classDir);
         $engine = new \Twig_Environment($loader, array(
             'cache' => _realpath_ . 'project/temp/cache',
+            'debug' => true,
         ));
 
         return $engine;

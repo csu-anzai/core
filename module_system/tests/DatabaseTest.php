@@ -145,7 +145,7 @@ class DatabaseTest extends Testbase
         $this->createTable();
 
         // test changing a column type with the same column name
-        $this->assertTrue($objDb->changeColumn("agp_temp_autotest", "temp_char10", "temp_char10", DbDatatypes::STR_TYPE_LONGTEXT));
+        $this->assertTrue($objDb->changeColumn("agp_temp_autotest", "temp_char500", "temp_char500", DbDatatypes::STR_TYPE_CHAR10));
     }
 
     public function testAddColumn()

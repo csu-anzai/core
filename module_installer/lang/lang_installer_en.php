@@ -27,7 +27,7 @@ $lang["installer_dbdriver_oci8"]         = "Attention: The Oracle-driver is stil
 $lang["installer_dbdriver_sqlite3"]      = "The SQLite-driver creates a database stored at /project/dbdumps. Therefore the database name is used as the filename, all other values are not taken into account.";
 $lang["installer_elements_found"]        = "<b>Installation of the page elements</b><br /><br />Select which of the found page elements you want to install:<br /><br />";
 $lang["installer_finish_hints"]          = "<div class='alert alert-danger'><b>Heads up!</b> You should reset the write permission on /project/module_system/system/config/config.php to read-only permission.<br />Additionally, you should remove the file /installer.php completely out of security reasons.</div><br /><br />";
-$lang["installer_finish_intro"]          = "<b>Installation finshed</b><br /><br /><div class='alert alert-success'><b>Congratulations!</b> The installation finished successfully, Kajona is now ready for use.!</div>The administration backend is available at:<br />&nbsp;&nbsp;&nbsp;&nbsp;<a href=\""._webpath_."/admin\">"._webpath_."/admin</a><br /><br />The frontend is available at:<br />&nbsp;&nbsp;&nbsp;&nbsp;<a href=\""._webpath_."/\">"._webpath_."</a><br /><br />";
+$lang["installer_finish_intro"]          = "<b>Installation finshed</b><br /><br /><div class='alert alert-success'><b>Congratulations!</b> The installation finished successfully, Kajona is now ready for use!</div><br />The application is available at:<br />&nbsp;&nbsp;&nbsp;&nbsp;<a href=\""._webpath_."/\">"._webpath_."</a><br /><br />";
 $lang["installer_given"]                 = "given";
 $lang["installer_install"]               = "Install";
 $lang["installer_installpe"]             = "Install page elements";
