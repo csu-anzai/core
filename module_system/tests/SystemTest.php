@@ -5,6 +5,7 @@ namespace Kajona\System\Tests;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Database;
 use Kajona\System\System\Exception;
+use Kajona\System\System\Objectfactory;
 use Kajona\System\System\SystemAspect;
 
 class SystemTest extends Testbase
@@ -124,7 +125,7 @@ class SystemTest extends Testbase
 
         //deleting all records
         foreach ($arrSysRecords as $strOneId) {
-            $objAspect->deleteSystemRecord($strOneId);
+            Objectfactory::getInstance()->getObject($strOneId)->deleteObjectFromDatabase();
         }
 
     }
