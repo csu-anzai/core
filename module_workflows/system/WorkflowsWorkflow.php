@@ -11,6 +11,7 @@ namespace Kajona\Workflows\System;
 
 use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
 use Kajona\System\System\OrmComparatorEnum;
 use Kajona\System\System\OrmCondition;
@@ -152,6 +153,13 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
      */
     private $strText3 = "";
 
+    /**
+     * @var Date
+     * @tableColumn workflows.workflows_triggerdate
+     * @tableColumnDatatype long
+     */
+    private $triggerDate = null;
+
 
     /**
      * Returns the icon the be used in lists.
@@ -175,8 +183,7 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
     {
         if ($this->rightEdit()) {
             return dateToString($this->getObjTriggerDate());
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -192,8 +199,7 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
             if ($this->getObjWorkflowHandler() instanceof WorkflowsHandlerExtendedinfoInterface) {
                 return $this->getObjWorkflowHandler()->getInstanceInfo();
             }
-        }
-        catch(Exception $objEx) {
+        } catch (Exception $objEx) {
 
         }
 
@@ -209,7 +215,7 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
     {
         try {
             return $this->getObjWorkflowHandler()->getStrName();
-        } catch(Exception $objExc) {
+        } catch (Exception $objExc) {
             return $objExc->getMessage();
         }
     }
@@ -432,7 +438,6 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
     {
         $strClassname = $this->getStrClass();
         if (class_exists($strClassname)) {
-
             //load the config-object
             $objConfig = WorkflowsHandler::getHandlerByClass($strClassname);
 
@@ -444,11 +449,9 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
                 $objHandler->setConfigValues($objConfig->getStrConfigVal1(), $objConfig->getStrConfigVal2(), $objConfig->getStrConfigVal3());
             }
             return $objHandler;
-        }
-        else {
+        } else {
             throw new Exception("workflow handler ".$strClassname." not exisiting", Exception::$level_ERROR);
         }
-
     }
 
     /**
@@ -654,5 +657,19 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
         $this->strText3 = $strText3;
     }
 
+    /**
+     * @return Date
+     */
+    public function getTriggerDate()
+    {
+        return $this->triggerDate;
+    }
 
+    /**
+     * @param Date $triggerDate
+     */
+    public function setTriggerDate($triggerDate)
+    {
+        $this->triggerDate = $triggerDate;
+    }
 }

@@ -197,6 +197,7 @@ abstract class Root
      * @var Date
      * @versionable
      * @tableColumn system_date.system_date_start
+     * @deprecated
      */
     private $objStartDate = null;
 
@@ -206,6 +207,7 @@ abstract class Root
      * @var Date
      * @versionable
      * @tableColumn system_date.system_date_end
+     * @deprecated
      */
     private $objEndDate = null;
 
@@ -215,6 +217,7 @@ abstract class Root
      * @var Date
      * @versionable
      * @tableColumn system_date.system_date_special
+     * @deprecated
      */
     private $objSpecialDate = null;
 
@@ -1113,6 +1116,7 @@ abstract class Root
      * It replaces the old createDate and updateDate methods
      *
      * @return bool
+     * @deprecated
      */
     private function processDateChanges()
     {
@@ -2187,6 +2191,7 @@ abstract class Root
      * @param Date $objEndDate
      *
      * @return void
+     * @deprecated
      */
     public function setObjEndDate($objEndDate = null)
     {
@@ -2206,6 +2211,7 @@ abstract class Root
 
     /**
      * @return Date
+     * @deprecated
      */
     public function getObjEndDate()
     {
@@ -2216,6 +2222,7 @@ abstract class Root
      * @param Date $objSpecialDate
      *
      * @return void
+     * @deprecated
      */
     public function setObjSpecialDate($objSpecialDate = null)
     {
@@ -2234,6 +2241,7 @@ abstract class Root
 
     /**
      * @return Date
+     * @deprecated
      */
     public function getObjSpecialDate()
     {
@@ -2244,6 +2252,7 @@ abstract class Root
      * @param Date $objStartDate
      *
      * @return void
+     * @deprecated
      */
     public function setObjStartDate($objStartDate = null)
     {
@@ -2262,6 +2271,7 @@ abstract class Root
 
     /**
      * @return Date
+     * @deprecated
      */
     public function getObjStartDate()
     {
