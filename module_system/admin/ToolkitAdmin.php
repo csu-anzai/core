@@ -168,7 +168,16 @@ class ToolkitAdmin extends Toolkit
                 filebrowserBrowseUrl : '".StringUtil::replace("&amp;", "&", getLinkAdminHref("folderview", "browserChooser", "&form_element=ckeditor&download=1"))."',
                 filebrowserImageBrowseUrl : '".StringUtil::replace("&amp;", "&", getLinkAdminHref("mediamanager", "folderContentFolderviewMode", "systemid=".SystemSetting::getConfigValue("_mediamanager_default_imagesrepoid_")."&form_element=ckeditor&bit_link=1"))."'
 	        };
-            CKEDITOR.replace($(\"textarea[name='".$strName."'][data-kajona-editorid='".$arrTemplate["editorid"]."']\")[0], ckeditorConfig);
+            var curEditor = CKEDITOR.replace($(\"textarea[name='".$strName."'][data-kajona-editorid='".$arrTemplate["editorid"]."']\")[0], ckeditorConfig);
+            curEditor.on('change', function(event) {
+                $(\"textarea[name='".$strName."'][data-kajona-editorid='".$arrTemplate["editorid"]."']\").val(event.editor.getData());
+            });
+            curEditor.on('instanceReady', function(event) {
+                if($(\"textarea[name='".$strName."'][data-kajona-editorid='".$arrTemplate["editorid"]."']\").hasClass('mandatoryFormElement')) {
+                        event.editor.container.addClass('mandatoryFormElement')
+                }
+            });
+            
         ";
         $strReturn .= "</script>\n";
 
