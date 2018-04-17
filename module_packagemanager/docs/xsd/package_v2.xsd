@@ -26,7 +26,7 @@
             <xs:element name="constant" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                     <xs:attribute name="name" type="xs:string"/>
-                    <xs:attribute name="value" type="xs:string"/>
+                    <xs:attribute name="value" type="xs:integer"/>
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
