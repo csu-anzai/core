@@ -77,8 +77,6 @@ class PackagemanagerTest extends Testbase
         $this->assertEquals("", $objMetadata->getStrDescription());
         $this->assertEquals("3.9.1", $objMetadata->getStrVersion());
         $this->assertEquals("Kajona Team", $objMetadata->getStrAuthor());
-        $this->assertEquals("module_autotest", $objMetadata->getStrTarget());
-        $this->assertEquals(PackagemanagerManager::STR_TYPE_MODULE, $objMetadata->getStrType());
         $this->assertEquals(false, $objMetadata->getBitProvidesInstaller());
 
         $arrRequired = $objMetadata->getArrRequiredModules();

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://apidocs.kajona.de/xsd/package.xsd"
+        xsi:noNamespaceSchemaLocation="https://apidocs.kajona.de/xsd/package_v2.xsd"
         >
     <title>mediamanager</title>
     <description>
@@ -16,4 +16,8 @@
     <requiredModules>
         <module name="system" version="7.0" />
     </requiredModules>
+    <constants>
+        <constant name="_mediamanager_module_id_" value="130" />
+        <constant name="_mediamanager_folderview_modul_id_" value="13" />
+    </constants>
 </package>
