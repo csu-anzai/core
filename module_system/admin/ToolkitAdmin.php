@@ -35,6 +35,7 @@ use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\Toolkit;
 use Kajona\System\View\Components\Datatable\Datatable;
+use Kajona\System\View\Components\Popover\Popover;
 use Kajona\Tags\System\TagsFavorite;
 use Kajona\Tags\System\TagsTag;
 
@@ -120,7 +121,7 @@ class ToolkitAdmin extends Toolkit
      * @param bool $bitReadonly
      * @return string
      */
-    public function formWysiwygEditor($strName = "inhalt", $strTitle = "", $strContent = "", $strToolbarset = "standard", $bitReadonly = false)
+    public function formWysiwygEditor($strName = "inhalt", $strTitle = "", $strContent = "", $strToolbarset = "standard", $bitReadonly = false, $strOpener = "")
     {
         $strReturn = "";
 
@@ -128,6 +129,7 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate = array();
         $arrTemplate["name"] = $strName;
         $arrTemplate["title"] = $strTitle;
+        $arrTemplate["opener"] = $strOpener;
         $arrTemplate["editorid"] = generateSystemid();
         $arrTemplate["readonly"] = ($bitReadonly ? " readonly=\"readonly\" " : "");
         $arrTemplate["content"] = htmlentities($strContent, ENT_COMPAT, "UTF-8");
@@ -2843,10 +2845,13 @@ HTML;
      * @param string $strTrigger one of click | hover | focus | manual
      * @return string
      * @since 6.5
+     * @deprecated
      */
     public function getPopoverText($strText, $strPopoverTitle, $strPopoverContent, $strTrigger = "hover")
     {
-        return $this->objTemplate->fillTemplateFile(array("title" => $strPopoverTitle, "content" => $strPopoverContent, "link" => $strText, "trigger" => $strTrigger, "id" => generateSystemid()), "/admin/skins/kajona_v4/elements.tpl", "popover_text");
+        $popover = new Popover();
+        $popover->setTitle($strPopoverTitle)->setContent($strPopoverContent)->setTrigger($strTrigger)->setLink($strText);
+        return $popover->renderComponent();
     }
 
     // --- Calendar Fields ----------------------------------------------------------------------------------
