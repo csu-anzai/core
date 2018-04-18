@@ -1,0 +1,6 @@
+
+<div class="core-component-popover">
+    <span href="#" title="{{ title|escape("html_attr") }}%%title%%" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="{{ trigger|escape("html_attr") }}" id="{{ id|escape("html_attr") }}">{{ link|raw }}</span>
+    <div id="pc_{{ id|escape("html_attr") }}" class="hidden">{{ content|raw }}</div>
+    <script type="text/javascript">require(['jquery', 'bootstrap'], function($)  { $('#{{ id|escape("html_attr") }}').popover({ content: $('#pc_{{ id|escape("html_attr") }}').html()}); });</script>
+</div>
