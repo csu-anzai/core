@@ -35,6 +35,7 @@ pipeline {
                             always {
                                 junit 'core/_buildfiles/build/logs/junit.xml'
                                 step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']])])
+                                deleteDir()
                             }
                         }
                     }
@@ -57,6 +58,7 @@ pipeline {
                             always {
                                 junit 'core/_buildfiles/build/logs/junit.xml'
                                 step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']])])
+                                deleteDir()
                             }
                         }
                     }
@@ -79,6 +81,7 @@ pipeline {
                             always {
                                 junit 'core/_buildfiles/build/logs/junit.xml'
                                 step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']])])
+                                deleteDir()
                             }
                         }
                         
