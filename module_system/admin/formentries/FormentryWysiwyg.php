@@ -20,6 +20,7 @@ class FormentryWysiwyg extends FormentryBase implements FormentryPrintableInterf
 {
 
     protected $strToolbarset = "standard";
+    private $strOpener = "";
 
 
     const STR_CONFIG_ANNOTATION = "@wysiwygConfig";
@@ -59,7 +60,7 @@ class FormentryWysiwyg extends FormentryBase implements FormentryPrintableInterf
             $strReturn .= $objToolkit->formTextRow($this->getStrHint());
         }
 
-        $strReturn .= $objToolkit->formWysiwygEditor($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue(), $this->strToolbarset, $this->getBitReadonly());
+        $strReturn .= $objToolkit->formWysiwygEditor($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue(), $this->strToolbarset, $this->getBitReadonly(), $this->strOpener);
 
         return $strReturn;
     }
@@ -102,4 +103,14 @@ class FormentryWysiwyg extends FormentryBase implements FormentryPrintableInterf
         $this->strToolbarset = $strToolbarset;
         return $this;
     }
+
+    /**
+     * @param string $strOpener
+     */
+    public function setStrOpener(string $strOpener)
+    {
+        $this->strOpener = $strOpener;
+    }
+
+
 }

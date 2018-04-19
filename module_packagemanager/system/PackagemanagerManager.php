@@ -141,6 +141,7 @@ class PackagemanagerManager
      * @param string $strPath
      *
      * @return PackagemanagerPackagemanagerInterface|null
+     * @throws Exception
      */
     public function getPackageManagerForPath($strPath)
     {
@@ -149,15 +150,13 @@ class PackagemanagerManager
 
         $objManager = null;
 
-        if ($objMetadata->getStrType() == self::STR_TYPE_MODULE) {
-            if ($objMetadata->getBitIsPhar()) {
-                $objManager = new PackagemanagerPackagemanagerPharmodule();
-            } else {
-                $objManager = new PackagemanagerPackagemanagerModule();
-            }
-
-            $objManager->setObjMetadata($objMetadata);
+        if ($objMetadata->getBitIsPhar()) {
+            $objManager = new PackagemanagerPackagemanagerPharmodule();
+        } else {
+            $objManager = new PackagemanagerPackagemanagerModule();
         }
+
+        $objManager->setObjMetadata($objMetadata);
 
         return $objManager;
     }
@@ -171,6 +170,7 @@ class PackagemanagerManager
      * @deprecated
      *
      * @return PackagemanagerPackagemanagerInterface
+     * @throws Exception
      */
     public function extractPackage($strPackagePath)
     {
@@ -226,7 +226,6 @@ class PackagemanagerManager
         }
 
         return false;
-
     }
 
     /**
@@ -236,6 +235,7 @@ class PackagemanagerManager
      * In addition, the update-available messages are triggered internally.
      *
      * @return array
+     * @throws Exception
      */
     public function scanForUpdates()
     {
