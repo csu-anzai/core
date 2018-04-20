@@ -1,6 +1,6 @@
 <?php
 
-namespace Kajona\System\Tests;
+namespace Kajona\System\Tests\Filter;
 
 use Kajona\System\System\AbstractController;
 use Kajona\System\System\Classloader;
@@ -11,6 +11,7 @@ use Kajona\System\System\OrmInCondition;
 use Kajona\System\System\OrmInOrEmptyCondition;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\Resourceloader;
+use Kajona\System\Tests\Testbase;
 
 /**
  * Class class_test_functions
