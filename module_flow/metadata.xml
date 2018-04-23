@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://apidocs.kajona.de/xsd/package.xsd">
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://apidocs.kajona.de/xsd/package_v2.xsd">
     <title>flow</title>
     <description>Module which provides a status transition system.</description>
     <version>7.0.1</version>
@@ -9,4 +9,7 @@
     <requiredModules>
         <module name="system" version="7.0" />
     </requiredModules>
+    <constants>
+        <constant name="_flow_module_id_" value="1470996506" />
+    </constants>
 </package>

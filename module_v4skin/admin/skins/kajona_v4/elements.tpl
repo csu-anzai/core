@@ -1337,8 +1337,12 @@ The textarea field to replace by the editor. If the editor can't be loaded, a pl
 <div class="form-group">
     <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
     <div class="col-sm-6">
-        <textarea name="%%name%%" id="%%name%%" class="form-control inputWysiwyg" data-kajona-editorid="%%editorid%%" %%readonly%%>%%content%%</textarea></div><br />
+        <textarea name="%%name%%" id="%%name%%" class="form-control inputWysiwyg" data-kajona-editorid="%%editorid%%" %%readonly%%>%%content%%</textarea>
     </div>
+    <div class="col-sm-2 form-opener">
+        %%opener%%
+    </div>
+</div>
 </wysiwyg_ckeditor>
 
 A few settings to customize the editor. They are added right into the CKEditor configuration.
@@ -1667,12 +1671,6 @@ It containes a list of aspects and provides the possibility to switch the differ
 <tooltip_text>
     <span title="%%tooltip%%" rel="tooltip">%%text%%</span>
 </tooltip_text>
-
-<popover_text>
-    <span href="#" title="%%title%%" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="%%trigger%%" id="%%id%%">%%link%%</span>
-    <div id="pc_%%id%%" class="hidden">%%content%%</div>
-    <script type="text/javascript">require(['jquery', 'bootstrap'], function($)  { $('#%%id%%').popover({ content: $('#pc_%%id%%').html()}); });</script>
-</popover_text>
 
 
 ---------------------------------------------------------------------------------------------------------

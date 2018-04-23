@@ -91,22 +91,6 @@ class PharModule
         return $arrCodeFiles;
     }
 
-    public function loadModuleIds()
-    {
-        foreach ($this->getContentMap() as $strArchivePath => $strPharPath) {
-
-            if(substr($strArchivePath, -4) !== ".php") {
-                continue;
-            }
-
-            // Include the module ID
-            if (preg_match("/module\_([a-z0-9\_])+\_id\.php$/", $strPharPath)) {
-                include_once $strPharPath;
-            }
-        }
-    }
-
-
     /**
      * Return a file iterator
      *

@@ -53,6 +53,24 @@ In case a class implements an interface it is possible to use the `@inheritdoc` 
 description of the interface is also valid for this method. If the method has a special behaviour you should avoid the 
 `@inheritdoc` annotation and describe this behaviour in a separate php doc block.
 
+### Variables
+
+Previously we have used a type prefix (`str`, `int`, etc) for each variable to give the developer information about the 
+type of a variable. Since this information was not always correct and PHP has introduced scalar type hints we have now 
+deprecated this convention. New code should be always written without the type prefix.
+
+As example with the old style we would write the following method signature:
+
+```
+public function getStrBar($strFoo)
+```
+
+this should now look like: 
+
+```
+public function getBar(string $foo): string
+```
+
 #### Controller
 
 In general the controller contains methods which are accessible through an url. These methods must be prefixed with 
