@@ -121,7 +121,10 @@
                                                                            // 0: Nothing is logged to file
                                                                            // 1: Errors are logged
                                                                            // 2: Errors and warning
-                                                                           // 3: Errors, warnings and information are logged
+                                                                           // 3: Errors, warnings and information
+
+
+    //$debug['debuglogging_overwrite']['mail.log']          = 3;         //Overwrite the log level for some logfiles
 
 
 //--services --------------------------------------------------------------------------------------------
