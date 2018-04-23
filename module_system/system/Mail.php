@@ -266,7 +266,7 @@ class Mail
         if (!empty($this->strHtml)) {
             $objMail->isHTML(true);
             $objMail->Body = $this->strHtml;
-            $objMail->AltBody = strip_tags(($this->strText == "" ? str_replace(array("<br />", "<br />"), array("\n", "\n"), $this->strHtml) : $this->strText));
+            $objMail->AltBody = strip_tags(($this->strText == "" ? str_replace(array("<br />", "<br>"), array("\n", "\n"), $this->strHtml) : $this->strText));
         } else {
             $objMail->isHTML(false);
             $objMail->Body = $this->strText;
