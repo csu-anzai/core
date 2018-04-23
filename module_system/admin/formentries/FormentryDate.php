@@ -52,11 +52,7 @@ class FormentryDate extends FormentryBase implements FormentryPrintableInterface
             $objDate = new Date($this->getStrValue());
         }
 
-        if ($this->getBitReadonly()) {
-            $strReturn .= $objToolkit->formInputText($this->getStrEntryName(), $this->getStrLabel(), dateToString($objDate, false), "", "", true);
-        } else {
-            $strReturn .= $objToolkit->formDateSingle($this->getStrEntryName(), $this->getStrLabel(), $objDate, "", false, $this->getBitReadonly());
-        }
+        $strReturn .= $objToolkit->formDateSingle($this->getStrEntryName(), $this->getStrLabel(), $objDate, "", false, $this->getBitReadonly());
 
         return $strReturn;
     }

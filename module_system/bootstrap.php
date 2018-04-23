@@ -44,6 +44,7 @@ require_once __DIR__ . "/../../project/module_vendor/vendor/autoload.php";
 // order
 spl_autoload_register(array(\Kajona\System\System\Classloader::getInstance(), "loadClass"), true, true);
 
+
 // -- Exception handler ------------------------------------------------------------------------------------------------
 // Register global exception handler for exceptions thrown but not catched (bad style ;) )
 set_exception_handler(array("Kajona\\System\\System\\Exception", "globalExceptionHandler"));
@@ -54,6 +55,8 @@ defineWebPath();
 // -- Include needed classes of each module ----------------------------------------------------------------------------
 // This registers all service providers of each module
 \Kajona\System\System\Classloader::getInstance()->registerModuleServices(\Kajona\System\System\Carrier::getInstance()->getContainer());
+//scan module ids
+\Kajona\System\System\Classloader::getInstance()->bootstrapIncludeModuleIds();
 
 // Now we include all classes which i.e. register event listeners
 \Kajona\System\System\Classloader::getInstance()->includeClasses();

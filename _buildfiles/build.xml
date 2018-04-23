@@ -82,34 +82,34 @@
 		    								init,
 					    					buildProject, installProjectSqlite,
 					    					runFastTests,
-					    					buildFullZip" />
+					    					buildFullZip, postBuildWorkspaceClean" />
 
 
     <target name="buildSqliteFull" depends="
 		    								init,
 					    					buildProject, installProjectSqlite,
 					    					runFullTests,
-					    					buildFullZip" />
+					    					buildFullZip, postBuildWorkspaceClean" />
 
     <target name="buildMysql" depends="
 		    								init,
 					    					buildProject, installProjectMysql,
-					    					runFastTests" />
+					    					runFastTests, postBuildWorkspaceClean" />
 
     <target name="buildOracle" depends="
 		    								init,
 					    					buildProject, installProjectOracle,
-					    					runFastTests" />
+					    					runFastTests, postBuildWorkspaceClean" />
 
     <target name="buildPostgres" depends="
 		    								init,
 					    					buildProject, installProjectPostgres,
-					    					runFastTests" />
+					    					runFastTests, postBuildWorkspaceClean" />
 
     <target name="buildMssql" depends="
 		    								init,
 					    					buildProject, installProjectMssql,
-					    					runFastTests" />
+					    					runFastTests, postBuildWorkspaceClean" />
 
 
 
@@ -168,6 +168,11 @@
         </exec>
     </target>
 
+    <target name="postBuildWorkspaceClean" description="Deletes some folders created during the build to preserve diskspace">
+        <delete dir="${basedir}${tempPath}"/>
+        <delete dir="${basedir}${projectPath}"/>
+    </target>
+
 
     <!-- removes existing folders and creates them again -->
     <target name="cleanFilesystem">
@@ -204,6 +209,7 @@
                 <include name="core*/module_*/*/**"/>		 
                 <include name="core*/_debugging/*/**"/>	
                 <include name="core*/_buildfiles/bin/*/**"/>
+                <include name="core*/_buildfiles/*.xml"/>
                 <include name="core*/_buildfiles/jstests/*/**"/>
                 <include name="core*/*.php"/>
                 <include name="core*/*.htaccess"/>	

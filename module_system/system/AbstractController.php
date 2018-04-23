@@ -259,13 +259,23 @@ abstract class AbstractController
             throw new \RuntimeException("Permission annotation is required for a controller action");
         }
 
-
+        $strType = null;
         $strReturnType = $objReflection->getMethodAnnotationValue($strMethodName, self::STR_RESPONSETYPE_ANNOTATION);
         if ($strReturnType !== false) {
-            ResponseObject::getInstance()->setStrResponseType(HttpResponsetypes::getTypeForString(StringUtil::toLowerCase($strReturnType)));
+            $strType = HttpResponsetypes::getTypeForString(StringUtil::toLowerCase($strReturnType));
+            ResponseObject::getInstance()->setStrResponseType($strType);
         }
 
-        $this->strOutput = $this->$strMethodName();
+        $response = $this->$strMethodName();
+
+        // in case we want to return json serialize the response data to json in case it is not a string
+        if ($strType === HttpResponsetypes::STR_TYPE_JSON) {
+            if (is_array($response) || $response instanceof \stdClass) {
+                $response = json_encode($response, JSON_PRETTY_PRINT);
+            }
+        }
+
+        $this->strOutput = $response;
 
 
         return $this->strOutput;
