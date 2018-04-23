@@ -17,12 +17,7 @@ $arrExcludedModules["core"][] = "module_installer";
 $arrExcludedModules["core"][] = "module_v4skin";
 
 // merge composer files
-$vendorDir = $strRoot."/project/module_vendor";
-
-if (!is_dir($vendorDir)) {
-    mkdir($vendorDir, 0777, true);
-}
-
+$vendorDir = $strRoot."/project";
 $vendorComposer = $vendorDir."/composer.json";
 $vendorLock = $vendorDir."/composer.lock";
 

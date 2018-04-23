@@ -24,15 +24,6 @@ class PharCreator
         $arrCores = scandir("./../");
 
         foreach ($arrCores as $strOneCore) {
-
-            if ($strOneCore === "project") {
-                // in the project folder we generate a zip file from the vendor folder
-                if (is_dir(__DIR__."/../".$strOneCore."/module_vendor")) {
-                    $this->generateZip("module_vendor", "project");
-                    continue;
-                }
-            }
-
             if (strpos($strOneCore, "core") === false) {
                 continue;
             }
@@ -48,6 +39,7 @@ class PharCreator
             }
         }
 
+        $this->generateVendorZip();
     }
 
     public function generatePhar($strFile, $strOneCore)
@@ -78,9 +70,9 @@ class PharCreator
         }
     }
 
-    public function generateZip($strFolder, $strOneCore)
+    public function generateVendorZip()
     {
-        $rootPath = realpath(__DIR__ . "/../" . $strOneCore . "/" . $strFolder);
+        $rootPath = realpath(__DIR__ . "/../project/vendor");
         $zipFile = $rootPath . ".zip";
 
         // @see https://stackoverflow.com/questions/4914750/how-to-zip-a-whole-folder-using-php

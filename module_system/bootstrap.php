@@ -36,7 +36,7 @@ if (!include_once __DIR__."/system/Classloader.php") {
 }
 
 // add autoload
-require_once __DIR__ . "/../../project/module_vendor/vendor/autoload.php";
+require_once __DIR__ . "/../../project/vendor/autoload.php";
 
 // -- Auto-Loader for classes ------------------------------------------------------------------------------------------
 // Prepend the autoloader so that we first try to use our autoload and then fallback to composer. Currently we load more
