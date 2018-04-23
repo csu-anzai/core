@@ -63,7 +63,9 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
     forms.setFieldReadOnly = function(objField) {
         objField = util.getElement(objField);
 
-        if (objField.is('input:checkbox') || objField.is('select')) {
+        var isDatePicker = objField.data('datepicker') !== null;
+
+        if (objField.is('input:checkbox') || objField.is('select') || isDatePicker) {
             objField.prop("disabled", "disabled");
         }
         else {
@@ -79,7 +81,9 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
     forms.setFieldEditable = function(objField) {
         objField = util.getElement(objField);
 
-        if (objField.is('input:checkbox') || objField.is('select')) {
+        var isDatePicker = objField.data('datepicker') !== null;
+
+        if (objField.is('input:checkbox') || objField.is('select') || isDatePicker) {
             objField.removeProp("disabled");
         }
         else {
