@@ -4,41 +4,37 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "638e45a7cd205570b61c768e1b3c65da",
+    "content-hash": "0fb694af97a31ecafc8bf2f4bcdcc618",
     "packages": [
         {
             "name": "doctrine/cache",
-            "version": "v1.7.1",
+            "version": "v1.6.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:doctrine/cache.git",
-                "reference": "b3217d58609e9c8e661cd41357a54d926c4a2a1a"
+                "reference": "eb152c5100571c7a45470ff2a35095ab3f3b900b"
             },
             "dist": {
                 "type": "tar",
-                "url": "https://buildpackages.kajona.de:5443//dist/doctrine/cache/doctrine-cache-v1.7.1-f2ac20.tar",
-                "reference": "b3217d58609e9c8e661cd41357a54d926c4a2a1a",
-                "shasum": "7d6d8793086ecdc5f2534ef321f95bea2096e19c"
+                "url": "https://buildpackages.kajona.de:5443//dist/doctrine/cache/doctrine-cache-v1.6.2-d06c9d.tar",
+                "reference": "eb152c5100571c7a45470ff2a35095ab3f3b900b",
+                "shasum": "26b56bc88e3aad213c253d27ed30a56cb9078bd7"
             },
             "require": {
-                "php": "~7.1"
+                "php": "~5.5|~7.0"
             },
             "conflict": {
                 "doctrine/common": ">2.2,<2.4"
             },
             "require-dev": {
-                "alcaeus/mongo-php-adapter": "^1.1",
-                "mongodb/mongodb": "^1.1",
-                "phpunit/phpunit": "^5.7",
-                "predis/predis": "~1.0"
-            },
-            "suggest": {
-                "alcaeus/mongo-php-adapter": "Required to use legacy MongoDB driver"
+                "phpunit/phpunit": "~4.8|~5.0",
+                "predis/predis": "~1.0",
+                "satooshi/php-coveralls": "~0.6"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.7.x-dev"
+                    "dev-master": "1.6.x-dev"
                 }
             },
             "autoload": {
@@ -82,7 +78,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2017-08-25T07:02:50+00:00"
+            "time": "2017-07-22T12:49:21+00:00"
         },
         {
             "name": "phpmailer/phpmailer",
@@ -156,13 +152,13 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:silexphp/Pimple.git",
-                "reference": "59a4bc26bc19c09ebf9373ca6783a0fce0e04330"
+                "reference": "9e403941ef9d65d20cba7d54e29fe906db42cf32"
             },
             "dist": {
                 "type": "tar",
-                "url": "https://buildpackages.kajona.de:5443//dist/pimple-pimple-59a4bc26bc19c09ebf9373ca6783a0fce0e04330-zip-48c5a6.tar",
-                "reference": "59a4bc26bc19c09ebf9373ca6783a0fce0e04330",
-                "shasum": "29eda9281ef20c984a9bad053f95d24ad4189756"
+                "url": "https://buildpackages.kajona.de:5443//dist/pimple/pimple/pimple-pimple-v3.2.3-5b8b32.tar",
+                "reference": "9e403941ef9d65d20cba7d54e29fe906db42cf32",
+                "shasum": "765c8d9c44a6fb552be0c2c735ec73a6b66cf9eb"
             },
             "require": {
                 "php": ">=5.3.0",
@@ -208,10 +204,10 @@
                 "reference": "b7ce3b176482dbbc1245ebf52b181af44c2cf55f"
             },
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/container/zipball/b7ce3b176482dbbc1245ebf52b181af44c2cf55f",
+                "type": "tar",
+                "url": "https://buildpackages.kajona.de:5443//dist/psr/container/psr-container-1.0.0-34fef8.tar",
                 "reference": "b7ce3b176482dbbc1245ebf52b181af44c2cf55f",
-                "shasum": ""
+                "shasum": "75cf353e5082b3dc7cb995185a54be47b58b1c73"
             },
             "require": {
                 "php": ">=5.3.0"
@@ -227,7 +223,6 @@
                     "Psr\\Container\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -240,11 +235,11 @@
             "description": "Common Container Interface (PHP FIG PSR-11)",
             "homepage": "https://github.com/php-fig/container",
             "keywords": [
-                "PSR-11",
                 "container",
                 "container-interface",
                 "container-interop",
-                "psr"
+                "psr",
+                "psr-11"
             ],
             "time": "2017-02-14T16:28:37+00:00"
         },
@@ -257,10 +252,10 @@
                 "reference": "4ebe3a8bf773a19edfe0a84b6585ba3d401b724d"
             },
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/4ebe3a8bf773a19edfe0a84b6585ba3d401b724d",
+                "type": "tar",
+                "url": "https://buildpackages.kajona.de:5443//dist/psr/log/psr-log-1.0.2-6434e8.tar",
                 "reference": "4ebe3a8bf773a19edfe0a84b6585ba3d401b724d",
-                "shasum": ""
+                "shasum": "56863c396ca1a3554e76ad1b26fadfd815be92b2"
             },
             "require": {
                 "php": ">=5.3.0"
@@ -276,7 +271,6 @@
                     "Psr\\Log\\": "Psr/Log/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -304,10 +298,10 @@
                 "reference": "78be803ce01e55d3491c1397cf1c64beb9c1b63b"
             },
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/78be803ce01e55d3491c1397cf1c64beb9c1b63b",
+                "type": "tar",
+                "url": "https://buildpackages.kajona.de:5443//dist/symfony/polyfill-mbstring/symfony-polyfill-mbstring-v1.7.0-93441e.tar",
                 "reference": "78be803ce01e55d3491c1397cf1c64beb9c1b63b",
-                "shasum": ""
+                "shasum": "69874a846ba3d6708182acbed44a372060ef0c2a"
             },
             "require": {
                 "php": ">=5.3.3"
@@ -329,7 +323,6 @@
                     "bootstrap.php"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
