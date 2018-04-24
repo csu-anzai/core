@@ -219,7 +219,6 @@ class Mail
         }
 
         //generate a PHPMailer E-mail
-
         $objMail = new PHPMailer(true);
         $objMail->Debugoutput = Logger::getInstance("mail.log");
         $objMail->XMailer = 'ARTEMEON Core';

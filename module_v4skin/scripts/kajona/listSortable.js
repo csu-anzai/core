@@ -95,8 +95,9 @@ define(["jquery", "jquery-ui", "ajax", "statusDisplay", "tooltip", "util", "lang
                     if ($("#"+strListId).attr("data-kajona-pagenum") > 1)
                         $('#'+strListId+'_prev').css("display", "block");
 
-                    if ($('#'+strListId+' tbody:has(tr[data-systemid!=""])').length >= $("#"+strListId).attr("data-kajona-elementsperpage"))
-                        $('#'+strListId+'_next').css("display", "block");
+                    if (($('#'+strListId+' tbody:has(tr[data-systemid!=""][data-systemid!="batchActionSwitch"])').length -1 ) >= $("#"+strListId).attr("data-kajona-elementsperpage")) {
+                        $('#' + strListId + '_next').css("display", "block");
+                    }
 
                     oldPos = ui.item.index();
 
@@ -130,7 +131,7 @@ define(["jquery", "jquery-ui", "ajax", "statusDisplay", "tooltip", "util", "lang
                 delay: util.isTouchDevice() ? 500 : 0
             });
 
-            $('#'+strListId +' > tbody:has(tr[data-systemid!=""][data-deleted=""]) > tr').each(function (index) {
+            $('#'+strListId +' > tbody:has(tr[data-systemid!=""][data-deleted=""][data-systemid!="batchActionSwitch"]) > tr').each(function (index) {
                 $(this).find("td.listsorthandle").css('cursor', 'move').append("<i class='fa fa-arrows-v'></i>");
 
                 var self = this;

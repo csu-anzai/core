@@ -10,6 +10,7 @@
     "doctrine/cache": "1.6.*",
     "psr/log": "^1.0",
     "twig/twig": "^2.4",
-    "phpmailer/phpmailer": "~6.0"
+    "phpmailer/phpmailer": "~6.0",
+    "artemeon/image": "^0.1.1"
   }
 }
