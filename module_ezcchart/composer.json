@@ -6,6 +6,6 @@
     }
   ],
   "require": {
-    "zetacomponents/graph": "1.5.2"
+    "zetacomponents/graph": "1.5.*"
   }
 }
