@@ -5,16 +5,12 @@ echo "merge and install vendor dependencies".PHP_EOL;
 
 $strRoot = realpath(__DIR__."/../../..");
 
-$arrIncludedModules = [];
 if (is_file($strRoot."/project/packageconfig.php")) {
     include $strRoot."/project/packageconfig.php";
 }
 if (!isset($arrExcludedModules["core"])) {
     $arrExcludedModules["core"] = [];
 }
-$arrExcludedModules["core"][] = "_buildfiles";
-$arrExcludedModules["core"][] = "module_installer";
-$arrExcludedModules["core"][] = "module_v4skin";
 
 // merge composer files
 $vendorDir = $strRoot."/project";
@@ -47,26 +43,24 @@ JSON;
         if ($objCoreDir->isDir() && substr($objCoreDir->getFilename(), 0, 4) == 'core') {
             $objModuleDirs = new DirectoryIterator($objCoreDir->getRealPath());
             foreach ($objModuleDirs as $objDir) {
-                if (substr($objDir->getFilename(), 0, 7) == 'module_') {
-                    // exclude
-                    if (isset($arrExcludedModules[$objCoreDir->getFilename()]) && in_array($objDir->getFilename(), $arrExcludedModules[$objCoreDir->getFilename()])) {
-                        continue;
-                    }
+                // exclude
+                if (isset($arrExcludedModules[$objCoreDir->getFilename()]) && in_array($objDir->getFilename(), $arrExcludedModules[$objCoreDir->getFilename()])) {
+                    continue;
+                }
 
-                    $composerFile = $objDir->getRealPath() . '/composer.json';
-                    if (is_file($composerFile)) {
-                        $content = json_decode(file_get_contents($composerFile), true);
+                $composerFile = $objDir->getRealPath() . '/composer.json';
+                if (is_file($composerFile)) {
+                    $content = json_decode(file_get_contents($composerFile), true);
 
-                        if (isset($content["require"]) && is_array($content["require"])) {
-                            foreach ($content["require"] as $name => $version) {
-                                if (strpos($name, "/") !== false && isset($composer["require"][$name])) {
-                                    if ($composer["require"][$name] != $version) {
-                                        throw new \RuntimeException("Found dependency {$name} multiple times with different version {$composer["require"][$name]} vs {$version}");
-                                    }
+                    if (isset($content["require"]) && is_array($content["require"])) {
+                        foreach ($content["require"] as $name => $version) {
+                            if (strpos($name, "/") !== false && isset($composer["require"][$name])) {
+                                if ($composer["require"][$name] != $version) {
+                                    throw new \RuntimeException("Found dependency {$name} multiple times with different version {$composer["require"][$name]} vs {$version}");
                                 }
-
-                                $composer["require"][$name] = $version;
                             }
+
+                            $composer["require"][$name] = $version;
                         }
                     }
                 }
