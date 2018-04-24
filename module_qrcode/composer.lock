@@ -4,7 +4,6 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "cb800ddad75cfc5b1d6abc74d000dcfc",
     "content-hash": "2c6cfd7b4cd673f1065133d1686e0c11",
     "packages": [
         {
@@ -51,7 +50,7 @@
                 "source": "https://github.com/aferrandini/PHPQRCode/tree/1.0.1",
                 "issues": "https://github.com/aferrandini/PHPQRCode/issues"
             },
-            "time": "2013-07-08 09:39:08"
+            "time": "2013-07-08T09:39:08+00:00"
         }
     ],
     "packages-dev": [],
