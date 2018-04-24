@@ -302,8 +302,10 @@ class Pdf {
         $this->objPdf->addTOCPage();
         $this->objPdf->selectColumn(0);
 
-        $this->addMultiCell($strTitle);
-        $this->objPdf->Ln();
+        if ($strTitle !== "") {
+            $this->addMultiCell($strTitle);
+            $this->objPdf->Ln();
+        }
 
         // add table of content at page 1
         $this->setFont();

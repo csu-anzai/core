@@ -24,7 +24,6 @@ class PharCreator
         $arrCores = scandir("./../");
 
         foreach ($arrCores as $strOneCore) {
-
             if (strpos($strOneCore, "core") === false) {
                 continue;
             }
@@ -34,36 +33,75 @@ class PharCreator
             foreach ($arrFiles as $strFile) {
 
                 if (is_dir(__DIR__."/../".$strOneCore."/".$strFile) && (substr($strFile, 0, 7) == 'module_')) {
-
-                    $strModuleName = substr($strFile, 7);
-                    $strPharName = $strFile.".phar";
-                    
-
-                    $strTargetPath = __DIR__."/../".$strOneCore."/".$strPharName;
-                    if ($this->strDeployPath != "" && is_dir($this->strDeployPath."/".$strOneCore)) {
-                        $strTargetPath = $this->strDeployPath."/".$strOneCore."/".$strPharName;
-                    }
-
-                    $phar = new Phar(
-                        $strTargetPath,
-                        FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::KEY_AS_FILENAME,
-                        $strPharName
-                    );
-                    $phar->buildFromDirectory(__DIR__."/../".$strOneCore."/module_".$strModuleName);
-                    $phar->setStub($phar->createDefaultStub());
-                    // Compression with ZIP or GZ?
-                    //$phar->convertToExecutable(Phar::ZIP);
-                    //$phar->compress(Phar::GZ);
-                    echo 'Generated phar '.$strPharName."\n";
-
-                    if($this->bitRemoveSource) {
-                        $this->rrmdir(__DIR__."/../".$strOneCore."/module_".$strModuleName);
-                    }
+                    $this->generatePhar($strFile, $strOneCore);
                 }
 
             }
         }
 
+        $this->generateVendorZip();
+    }
+
+    public function generatePhar($strFile, $strOneCore)
+    {
+        $strModuleName = substr($strFile, 7);
+        $strPharName = $strFile.".phar";
+
+
+        $strTargetPath = __DIR__."/../".$strOneCore."/".$strPharName;
+        if ($this->strDeployPath != "" && is_dir($this->strDeployPath."/".$strOneCore)) {
+            $strTargetPath = $this->strDeployPath."/".$strOneCore."/".$strPharName;
+        }
+
+        $phar = new Phar(
+            $strTargetPath,
+            FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::KEY_AS_FILENAME,
+            $strPharName
+        );
+        $phar->buildFromDirectory(__DIR__."/../".$strOneCore."/module_".$strModuleName);
+        $phar->setStub($phar->createDefaultStub());
+        // Compression with ZIP or GZ?
+        //$phar->convertToExecutable(Phar::ZIP);
+        //$phar->compress(Phar::GZ);
+        echo 'Generated phar '.$strPharName."\n";
+
+        if($this->bitRemoveSource) {
+            $this->rrmdir(__DIR__."/../".$strOneCore."/module_".$strModuleName);
+        }
+    }
+
+    public function generateVendorZip()
+    {
+        $rootPath = realpath(__DIR__ . "/../project/vendor");
+        $zipFile = $rootPath . ".zip";
+
+        // @see https://stackoverflow.com/questions/4914750/how-to-zip-a-whole-folder-using-php
+        // Initialize archive object
+        $zip = new ZipArchive();
+        $zip->open($zipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+        // Create recursive directory iterator
+        /** @var SplFileInfo[] $files */
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($rootPath),
+            RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        foreach ($files as $name => $file) {
+            // Skip directories (they would be added automatically)
+            if (!$file->isDir()) {
+                // Get real and relative path for current file
+                $filePath = $file->getRealPath();
+                $relativePath = substr($filePath, strlen($rootPath) + 1);
+
+                // Add current file to archive
+                $zip->addFile($filePath, $relativePath);
+            }
+        }
+
+        $zip->close();
+
+        echo 'Generated zip '.$zipFile."\n";
     }
 
     public function parseParams($arrParams) {

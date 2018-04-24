@@ -28,8 +28,8 @@ use Kajona\System\System\Exception;
 use Kajona\System\System\Filesystem;
 use Kajona\System\System\History;
 use Kajona\System\System\HttpResponsetypes;
-use Kajona\System\System\Image2;
-use Kajona\System\System\Imageplugins\ImageScale;
+use Artemeon\Image\Image;
+use Artemeon\Image\Plugins\ImageScale;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
@@ -392,7 +392,7 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
             }
 
             if ($strImage != "" && is_file($strImage)) {
-                $objImage = new Image2();
+                $objImage = new Image(_images_cachepath_);
                 $objImage->load($strImage);
                 $objImage->addOperation(new ImageScale(300, 300));
                 $strImages .= "<img src='".$objImage->getAsBase64Src()."' alt='".$strOneScreenshot."' />&nbsp;";

@@ -35,20 +35,20 @@ if (!include_once __DIR__."/system/Classloader.php") {
     rawIncludeError(__DIR__."/system/Classloader.php");
 }
 
+// -- Composer Autoloader ----------------------------------------------------------------------------------------------
+// We always include the composer autoloader
+require_once _realpath_."project/vendor/autoload.php";
+
 // -- Auto-Loader for classes ------------------------------------------------------------------------------------------
-// Register autoloader
-spl_autoload_register(array(\Kajona\System\System\Classloader::getInstance(), "loadClass"));
+// Prepend the autoloader so that we first try to use our autoload and then fallback to composer. Currently we load more
+// classes through our autoloader, if we have moved enough classes into composer packages we might want to change this
+// order
+spl_autoload_register(array(\Kajona\System\System\Classloader::getInstance(), "loadClass"), true, true);
 
 
 // -- Exception handler ------------------------------------------------------------------------------------------------
 // Register global exception handler for exceptions thrown but not catched (bad style ;) )
 set_exception_handler(array("Kajona\\System\\System\\Exception", "globalExceptionHandler"));
-
-// -- Custom bootstrap -------------------------------------------------------------------------------------------------
-// See if there's a custom bootstrap.php to include
-if (file_exists(_realpath_."project/bootstrap.php")) {
-    include_once _realpath_."project/bootstrap.php";
-}
 
 // -- The Path on web --------------------------------------------------------------------------------------------------
 defineWebPath();

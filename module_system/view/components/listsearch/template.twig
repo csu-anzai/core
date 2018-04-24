@@ -3,58 +3,54 @@
     <div class="search">
         <input type="text" placeholder="{{ search_placeholder|escape("html_attr") }}" class="form-control">
     </div>
-    <div class="result"></div>
+    <div class="result">
+        {% for item in items %}
+        <div class="result-item">
+            {% if item.link %}
+                <a href="{{ item.link }}">{{ item.icon|raw }}&nbsp;&nbsp;{{ item.description }}</a>
+            {% else %}
+                <p>{{ item.description }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
 
     <script type="text/javascript">
-    require(["jquery", "workingIndicator"], function($, workingIndicator){
+    require(["jquery", "v4skin"], function($, v4skin){
         var searchEl = $("#{{ form_id }} > .search > input");
 
-        var config = {
-            source: function(request, response) {
-                $.ajax({
-                    url: "{{ endpoint_url|escape("js") }}",
-                    type: "POST",
-                    dataType: "json",
-                    data: {
-                        search_query: request.term
-                    },
-                    success: response
-                });
-            },
-            search: function(event, ui) {
-                $("#{{ form_id }} > .result").html("<div class='loadingContainer'></div>");
-                workingIndicator.getInstance().start();
-            },
-            response: function() {
-                $("#{{ form_id }} > .result").empty();
-                workingIndicator.getInstance().stop();
-            },
-            minLength: 0,
-            appendTo: "#{{ form_id }} > .result"
+        var objConfig = new v4skin.defaultAutoComplete();
+        objConfig.source = function(request, response) {
+            $.ajax({
+                url: "{{ endpoint_url|escape("js") }}",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    search_query: request.term,
+                },
+                success: response
+            });
         };
 
-        var auto = searchEl.autocomplete(config);
+        objConfig.select = function (event, ui) {
+            if (ui.item && ui.item.link) {
+                document.location = ui.item.link;
+            }
+        };
 
-        auto.autocomplete("instance")._renderItem = function(ul, item) {
-            var entry;
-            if (item.link) {
-                entry = $('<a>')
-                    .attr("href", item.link)
-                    .attr("rel", "tooltip")
-                    .attr("title", item.description)
-                    .html(item.icon + "&nbsp;&nbsp;" + item.description);
+        searchEl.autocomplete(objConfig).data( 'ui-autocomplete' )._renderItem = function( ul, item ) {
+            var text;
+            if (item.icon) {
+                text = item.icon + '&nbsp;&nbsp;' + item.description;
             } else {
-                entry = $('<p>')
-                    .html(item.description);
+                text = item.description;
             }
 
-            return $('<div class="result-item">')
-                .data('item.autocomplete', item)
-                .append(entry)
-                .appendTo($("#{{ form_id }} > .result"));
-        };
-
-        searchEl.autocomplete("search", "");
+            return $( '<li></li>' )
+                .data('ui-autocomplete-item', item)
+                .append('<div class="ui-autocomplete-item">' + text + '</div>')
+                .appendTo(ul);
+        } ;
     });
     </script>
 </div>

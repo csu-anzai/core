@@ -10,13 +10,13 @@ use Kajona\Mediamanager\System\MediamanagerFile;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\HttpStatuscodes;
-use Kajona\System\System\Image2;
-use Kajona\System\System\Imageplugins\ImageLine;
-use Kajona\System\System\Imageplugins\ImageOverlay;
-use Kajona\System\System\Imageplugins\ImageRectangle;
-use Kajona\System\System\Imageplugins\ImageScale;
-use Kajona\System\System\Imageplugins\ImageScaleAndCrop;
-use Kajona\System\System\Imageplugins\ImageText;
+use Artemeon\Image\Image;
+use Artemeon\Image\Plugins\ImageLine;
+use Artemeon\Image\Plugins\ImageOverlay;
+use Artemeon\Image\Plugins\ImageRectangle;
+use Artemeon\Image\Plugins\ImageScale;
+use Artemeon\Image\Plugins\ImageScaleAndCrop;
+use Artemeon\Image\Plugins\ImageText;
 use Kajona\System\System\RequestEntrypointEnum;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Session;
@@ -125,8 +125,8 @@ class Flyimage
                 return;
             }
 
-            $objImage = new Image2();
-            $objImage->load($this->strFilename);
+            $objImage = new Image(_images_cachepath_);
+            $objImage->load(_realpath_.$this->strFilename);
             $objImage->addOperation(new ImageScaleAndCrop($this->intFixedWidth, $this->intFixedHeight));
             $objImage->addOperation(new ImageScale($this->intMaxWidth, $this->intMaxHeight));
 
@@ -184,20 +184,20 @@ class Flyimage
         srand((double)microtime() * 1000000);
 
         //v2 version
-        $objImage2 = new Image2();
-        $objImage2->create($intWidth, $intHeight);
-        $objImage2->addOperation(new ImageRectangle(0, 0, $intWidth, $intHeight, "#FFFFFF"));
+        $objImage = new Image(_images_cachepath_);
+        $objImage->create($intWidth, $intHeight);
+        $objImage->addOperation(new ImageRectangle(0, 0, $intWidth, $intHeight, "#FFFFFF"));
 
         //draw vertical lines
         $intStart = 5;
         while ($intStart < $intWidth - 5) {
-            $objImage2->addOperation(new ImageLine($intStart, 0, $intStart, $intWidth, $this->generateGreyLikeColor()));
+            $objImage->addOperation(new ImageLine($intStart, 0, $intStart, $intWidth, $this->generateGreyLikeColor()));
             $intStart += rand(10, 17);
         }
         //draw horizontal lines
         $intStart = 5;
         while ($intStart < $intHeight - 5) {
-            $objImage2->addOperation(new ImageLine(0, $intStart, $intWidth, $intStart, $this->generateGreyLikeColor()));
+            $objImage->addOperation(new ImageLine(0, $intStart, $intWidth, $intStart, $this->generateGreyLikeColor()));
             $intStart += rand(10, 17);
         }
 
@@ -208,7 +208,7 @@ class Flyimage
             while ($intXPrev <= $intWidth) {
                 $intNewX = rand($intXPrev, $intXPrev + 50);
                 $intNewY = rand(0, $intHeight);
-                $objImage2->addOperation(new ImageLine($intXPrev, $intYPrev, $intNewX, $intNewY, $this->generateGreyLikeColor()));
+                $objImage->addOperation(new ImageLine($intXPrev, $intYPrev, $intNewX, $intNewY, $this->generateGreyLikeColor()));
                 $intXPrev = $intNewX;
                 $intYPrev = $intNewY;
             }
@@ -234,9 +234,9 @@ class Flyimage
             //the angle
             $intAngle = rand(-30, 30);
             //place the background character
-            $objImage2->addOperation(new ImageText($strCurrentChar, $intX, $intY, $intSize, "rgb(".$intCol1.",".$intCol2.",".$intCol3.")", "dejavusans.ttf", $intAngle));
+            $objImage->addOperation(new ImageText($strCurrentChar, $intX, $intY, $intSize, "rgb(".$intCol1.",".$intCol2.",".$intCol3.")", "dejavusans.ttf", $intAngle));
             //place the foreground charater
-            $objImage2->addOperation(new ImageText($strCurrentChar, $intX + $intForegroundOffset, $intY + $intForegroundOffset, $intSize, "rgb(".($intCol1 + 50).",".($intCol2 + 50).",".($intCol3 + 50).")", "dejavusans.ttf", $intAngle));
+            $objImage->addOperation(new ImageText($strCurrentChar, $intX + $intForegroundOffset, $intY + $intForegroundOffset, $intSize, "rgb(".($intCol1 + 50).",".($intCol2 + 50).",".($intCol3 + 50).")", "dejavusans.ttf", $intAngle));
         }
 
         //register placed string to session
@@ -249,8 +249,8 @@ class Flyimage
         ResponseObject::getInstance()->addHeader("Cache-Control: no-store, no-cache, must-revalidate, private");
         ResponseObject::getInstance()->addHeader("Pragma: no-cache");
 
-        $objImage2->setUseCache(false);
-        $objImage2->sendToBrowser(Image2::FORMAT_JPG);
+        $objImage->setUseCache(false);
+        $objImage->sendToBrowser(Image::FORMAT_JPG);
     }
 
     /**

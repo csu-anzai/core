@@ -45,8 +45,6 @@ class Tika implements ParserInterface
      */
     public function getText($strFile)
     {
-        require_once __DIR__ . "/../../vendor/autoload.php";
-
         $objBuilder = new ProcessBuilder();
         $objBuilder->setPrefix($this->strJava);
         $objBuilder->add("-jar");
