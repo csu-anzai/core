@@ -35,11 +35,9 @@ if (!include_once __DIR__."/system/Classloader.php") {
     rawIncludeError(__DIR__."/system/Classloader.php");
 }
 
-// add autoload
-// We always include the composer autoloader. Note our entry point is always the index.php file regardless whether we
-// are using .phar or not. Based on the location we can include the autoloader. Note we can not use __DIR__ in this case
-// since __DIR__ contains the phar:// prefix and the composer autoloader is always a normal file
-require_once "project/vendor/autoload.php";
+// -- Composer Autoloader ----------------------------------------------------------------------------------------------
+// We always include the composer autoloader
+require_once _realpath_."project/vendor/autoload.php";
 
 // -- Auto-Loader for classes ------------------------------------------------------------------------------------------
 // Prepend the autoloader so that we first try to use our autoload and then fallback to composer. Currently we load more
