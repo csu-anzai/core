@@ -106,6 +106,15 @@ class FilteListTest extends Testbase
                             "filter" => $arrValuesParams["values"][0]
                         ];
                     }
+
+                    //find also edit annotation
+                    if(array_key_exists(AdminEvensimpler::STR_OBJECT_EDIT_ANNOTATION.$strName, $arrAnnotations)) {
+                        $arrValuesListAnnotation = $arrAnnotations[AdminEvensimpler::STR_OBJECT_EDIT_ANNOTATION . $strName];
+                        $arrObject2Filter[] = [
+                            "model" => $arrValuesListAnnotation["values"][0],
+                            "filter" => $arrValuesParams["values"][0]
+                        ];
+                    }
                 }
             }
         }
