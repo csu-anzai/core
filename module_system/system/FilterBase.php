@@ -287,7 +287,6 @@ abstract class FilterBase
         $objReflection = new Reflection($this);
         $arrProperties = $objReflection->getPropertiesWithAnnotation(OrmBase::STR_ANNOTATION_TABLECOLUMN);
         $arrPropertiesFilterComparator = $objReflection->getPropertiesWithAnnotation(self::STR_ANNOTATION_FILTER_COMPARE_OPERATOR);
-        $arrFieldTypes = $objReflection->getPropertiesWithAnnotation(AdminFormgenerator::STR_TYPE_ANNOTATION);
 
         foreach ($arrProperties as $strAttributeName => $strTableColumn) {
             $strGetter = $objReflection->getGetter($strAttributeName);
@@ -295,13 +294,6 @@ abstract class FilterBase
             $enumFilterCompareOperator = null;
             if (array_key_exists($strAttributeName, $arrPropertiesFilterComparator)) {
                 $enumFilterCompareOperator = $this->getFilterCompareOperator($arrPropertiesFilterComparator[$strAttributeName]);
-
-            } elseif (array_key_exists($strAttributeName, $arrFieldTypes)) {
-                if ($arrFieldTypes[$strAttributeName] == FormentryDropdown::class) {
-                    $enumFilterCompareOperator = OrmComparatorEnum::Equal();
-                } elseif ($arrFieldTypes[$strAttributeName] == FormentryYesno::class) {
-                    $enumFilterCompareOperator = OrmComparatorEnum::Equal();
-                }
             }
 
             if ($strGetter !== null) {
