@@ -40,7 +40,7 @@ class Lockmanager
      */
     public function lockRecord()
     {
-        $strQuery = "UPDATE "._dbprefix_."system
+        $strQuery = "UPDATE agp_system
 						SET system_lock_id = ?,
 						    system_lock_time = ?
 						WHERE system_id =?";
@@ -76,7 +76,7 @@ class Lockmanager
     public function unlockRecord($bitForceUnlock = false)
     {
         if ($bitForceUnlock || $this->isLockedByCurrentUser()) {
-            $strQuery = "UPDATE "._dbprefix_."system
+            $strQuery = "UPDATE agp_system
                             SET system_lock_time = '0'
                             WHERE system_id=? ";
             if (Carrier::getInstance()->getObjDB()->_pQuery($strQuery, array($this->objSourceObject->getSystemid()))) {
@@ -210,7 +210,7 @@ class Lockmanager
      */
     public static function getLockedRecords($intStart = null, $intEnd = null)
     {
-        $strQuery = "SELECT system_id FROM "._dbprefix_."system WHERE system_lock_time > ? ORDER BY system_id DESC";
+        $strQuery = "SELECT system_id FROM agp_system WHERE system_lock_time > ? ORDER BY system_id DESC";
         $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, array(time() - (int)SystemSetting::getConfigValue("_system_lock_maxtime_")), $intStart, $intEnd);
 
         $arrReturn = array();
@@ -230,7 +230,7 @@ class Lockmanager
      */
     public static function getLockedRecordsForUser($strUserId)
     {
-        $strQuery = "SELECT system_id FROM "._dbprefix_."system WHERE system_lock_id = ? AND system_lock_time > ? ORDER BY system_id DESC";
+        $strQuery = "SELECT system_id FROM agp_system WHERE system_lock_id = ? AND system_lock_time > ? ORDER BY system_id DESC";
         $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, array($strUserId, time() - (int)SystemSetting::getConfigValue("_system_lock_maxtime_")));
 
         $arrReturn = array();
@@ -248,7 +248,7 @@ class Lockmanager
      */
     public static function getLockedRecordsCount()
     {
-        $strQuery = "SELECT COUNT(*) AS cnt FROM "._dbprefix_."system WHERE system_lock_time > ?";
+        $strQuery = "SELECT COUNT(*) AS cnt FROM agp_system WHERE system_lock_time > ?";
         $arrRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, array(time() - (int)SystemSetting::getConfigValue("_system_lock_maxtime_")));
         return $arrRow["cnt"];
     }

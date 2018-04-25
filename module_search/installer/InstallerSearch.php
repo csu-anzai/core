@@ -49,7 +49,7 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
 		$arrFields["search_log_query"] 	  = array("char254", true);
 		$arrFields["search_log_language"] = array("char10", true);
 
-		if(!$this->objDB->createTable("search_log", $arrFields, array("search_log_id")))
+		if(!$this->objDB->createTable("agp_search_log", $arrFields, array("search_log_id")))
 			$strReturn .= "An error occurred! ...\n";
 
         //Table for the index queue
@@ -60,7 +60,7 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
 		$arrFields["search_queue_systemid"] = array("char20", true);
 		$arrFields["search_queue_action"] 	= array("char20", true);
 
-		if(!$this->objDB->createTable("search_queue", $arrFields, array("search_queue_id")))
+		if(!$this->objDB->createTable("agp_search_queue", $arrFields, array("search_queue_id")))
 			$strReturn .= "An error occurred! ...\n";
 
 
@@ -120,7 +120,7 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
         //delete the tables
         foreach(array("search_search", "search_log", "search_ix_document", "search_ix_content") as $strOneTable) {
             $strReturn .= "Dropping table ".$strOneTable."...\n";
-            if(!$this->objDB->_pQuery("DROP TABLE ".$this->objDB->encloseTableName(_dbprefix_.$strOneTable), array())) {
+            if(!$this->objDB->_pQuery("DROP TABLE ".$this->objDB->encloseTableName($strOneTable), array())) {
                 $strReturn .= "Error deleting table, aborting.\n";
                 return false;
             }
@@ -163,8 +163,8 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
         $strReturn = "Update to 7.0".PHP_EOL;
 
         $strReturn .= "Updating schema".PHP_EOL;
-        $this->objDB->removeColumn("search_ix_document", "search_ix_content_lang");
-        $this->objDB->removeColumn("search_ix_document", "search_ix_portal_object");
+        $this->objDB->removeColumn("agp_search_ix_document", "search_ix_content_lang");
+        $this->objDB->removeColumn("agp_search_ix_document", "search_ix_portal_object");
 
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
 
@@ -189,7 +189,7 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
         $arrFields["search_ix_document_id"] 		= array("char20", false);
         $arrFields["search_ix_system_id"] 	        = array("char20", true);
 
-        if(!$this->objDB->createTable("search_ix_document", $arrFields, array("search_ix_document_id"), array("search_ix_system_id"), false))
+        if(!$this->objDB->createTable("agp_search_ix_document", $arrFields, array("search_ix_document_id"), array("search_ix_system_id"), false))
             $strReturn .= "An error occurred! ...\n";
 
         $strReturn .= "Installing table search_ix_content...\n";
@@ -201,7 +201,7 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
         $arrFields["search_ix_content_score"] 	    = array("int", true);
         $arrFields["search_ix_content_document_id"] = array("char20", true);
 
-        if(!$this->objDB->createTable("search_ix_content", $arrFields, array("search_ix_content_id"), array("search_ix_content_field_name", "search_ix_content_content", "search_ix_content_document_id"), false))
+        if(!$this->objDB->createTable("agp_search_ix_content", $arrFields, array("search_ix_content_id"), array("search_ix_content_field_name", "search_ix_content_content", "search_ix_content_document_id"), false))
            $strReturn .= "An error occurred! ...\n";
 
         return $strReturn;

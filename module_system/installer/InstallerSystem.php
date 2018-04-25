@@ -98,7 +98,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["right_right5"] = array("text", true);
         $arrFields["right_changelog"] = array("text", true);
 
-        if(!$this->objDB->createTable("system", $arrFields, array("system_id"), array("system_prev_id", "system_module_nr", "system_sort", "system_owner", "system_create_date", "system_status", "system_lm_time", "system_lock_time", "system_deleted")))
+        if(!$this->objDB->createTable("agp_system", $arrFields, array("system_id"), array("system_prev_id", "system_module_nr", "system_sort", "system_owner", "system_create_date", "system_status", "system_lm_time", "system_lock_time", "system_deleted")))
             $strReturn .= "An error occurred! ...\n";
 
 
@@ -116,7 +116,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["system_date_end"] = array("long", true);
         $arrFields["system_date_special"] = array("long", true);
 
-        if(!$this->objDB->createTable("system_date", $arrFields, array("system_date_id"), array("system_date_start", "system_date_end", "system_date_special")))
+        if(!$this->objDB->createTable("agp_system_date", $arrFields, array("system_date_id"), array("system_date_start", "system_date_end", "system_date_special")))
             $strReturn .= "An error occurred! ...\n";
 
         // Config table ---------------------------------------------------------------------------------
@@ -145,7 +145,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["user_date"] = array("long", true);
         $arrFields["user_specialconfig"] = array("text", true);
 
-        if(!$this->objDB->createTable("user_kajona", $arrFields, array("user_id")))
+        if(!$this->objDB->createTable("agp_user_kajona", $arrFields, array("user_id")))
             $strReturn .= "An error occurred! ...\n";
 
         // User group table -----------------------------------------------------------------------------
@@ -159,7 +159,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["group_desc"] = array("char254", true);
 
 
-        if(!$this->objDB->createTable("user_group_kajona", $arrFields, array("group_id")))
+        if(!$this->objDB->createTable("agp_user_group_kajona", $arrFields, array("group_id")))
             $strReturn .= "An error occurred! ...\n";
 
 
@@ -170,7 +170,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["group_member_group_kajona_id"] = array("char20", false);
         $arrFields["group_member_user_kajona_id"] = array("char20", false);
 
-        if(!$this->objDB->createTable("user_kajona_members", $arrFields, array("group_member_group_kajona_id", "group_member_user_kajona_id")))
+        if(!$this->objDB->createTable("agp_user_kajona_members", $arrFields, array("group_member_group_kajona_id", "group_member_user_kajona_id")))
             $strReturn .= "An error occurred! ...\n";
 
 
@@ -186,7 +186,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["user_log_sessid"]  = array("char20", true);
         $arrFields["user_log_enddate"] = array("long", true);
 
-        if(!$this->objDB->createTable("user_log", $arrFields, array("user_log_id"), array("user_log_sessid")))
+        if(!$this->objDB->createTable("agp_user_log", $arrFields, array("user_log_id"), array("user_log_sessid")))
             $strReturn .= "An error occurred! ...\n";
 
         // Sessionmgtm ----------------------------------------------------------------------------------
@@ -202,7 +202,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["session_userid"] = array("char20", true);
         $arrFields["session_resetuser"] = array("int", true);
 
-        if(!$this->objDB->createTable("session", $arrFields, array("session_id"), array("session_phpid", "session_releasetime")))
+        if(!$this->objDB->createTable("agp_session", $arrFields, array("session_id"), array("session_phpid", "session_releasetime")))
             $strReturn .= "An error occurred! ...\n";
 
         // caching --------------------------------------------------------------------------------------
@@ -218,7 +218,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["cache_leasetime"] = array("int", true);
         $arrFields["cache_hits"] = array("int", true);
 
-        if(!$this->objDB->createTable("cache", $arrFields, array("cache_id"), array("cache_source", "cache_hash1", "cache_leasetime", "cache_language"), false))
+        if(!$this->objDB->createTable("agp_cache", $arrFields, array("cache_id"), array("cache_source", "cache_hash1", "cache_leasetime", "cache_language"), false))
             $strReturn .= "An error occurred! ...\n";
 
         //languages -------------------------------------------------------------------------------------
@@ -231,7 +231,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["languageset_language"] = array("char20", true);
         $arrFields["languageset_systemid"] = array("char20", false);
 
-        if(!$this->objDB->createTable("languages_languageset", $arrFields, array("languageset_id", "languageset_systemid")))
+        if(!$this->objDB->createTable("agp_languages_languageset", $arrFields, array("languageset_id", "languageset_systemid")))
             $strReturn .= "An error occurred! ...\n";
 
         //aspects --------------------------------------------------------------------------------------
@@ -341,7 +341,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         //Create an root-record for the tree
         //So, lets generate the record
-        $strQuery = "INSERT INTO "._dbprefix_."system
+        $strQuery = "INSERT INTO agp_system
                      ( system_id, system_prev_id, system_module_nr, system_create_date, system_lm_time, system_status, system_sort, system_class,
                         right_inherit, right_view, right_edit, right_delete, right_right, right_right1, right_right2, right_right3, right_right4, right_right5, right_changelog
                      ) VALUES
@@ -476,7 +476,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["change_newvalue"]       = array("text", true);
 
 
-        $arrTables = array("changelog");
+        $arrTables = array("agp_changelog");
         $arrProvider = SystemChangelog::getAdditionalProviders();
         foreach($arrProvider as $objOneProvider) {
             $arrTables[] = $objOneProvider->getTargetTable();
@@ -484,7 +484,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $arrDbTables = $this->objDB->getTables();
         foreach($arrTables as $strOneTable) {
-            if(!in_array(_dbprefix_.$strOneTable, $arrDbTables)) {
+            if(!in_array($strOneTable, $arrDbTables)) {
                 if(!$this->objDB->createTable($strOneTable, $arrFields, array("change_id"), array("change_date", "change_user", "change_systemid", "change_property"), false))
                     $strReturn .= "An error occurred! ...\n";
             }
@@ -591,7 +591,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
 
         $strReturn .= "Removing system_comment column...\n";
-        $this->objDB->removeColumn("system", "system_comment");
+        $this->objDB->removeColumn("agp_system", "system_comment");
 
         Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBQUERIES | Carrier::INT_CACHE_TYPE_DBSTATEMENTS);
 
@@ -601,12 +601,12 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $objSchemamanager->createTable(IdGenerator::class);
 
         $strReturn .= "Altering group table...\n";
-        $this->objDB->addColumn("user_group", "group_short_id", DbDatatypes::STR_TYPE_INT);
+        $this->objDB->addColumn("agp_user_group", "group_short_id", DbDatatypes::STR_TYPE_INT);
 
         $strReturn .= "Adding ids to each group\n";
-        $strQuery = "SELECT group_id FROM "._dbprefix_."user_group WHERE group_short_id < 1 OR group_short_id IS NULL";
+        $strQuery = "SELECT group_id FROM agp_user_group WHERE group_short_id < 1 OR group_short_id IS NULL";
         foreach($this->objDB->getPArray($strQuery, array()) as $arrOneRow) {
-            $strQuery = "UPDATE "._dbprefix_."user_group set group_short_id = ? WHERE group_id = ?";
+            $strQuery = "UPDATE agp_user_group set group_short_id = ? WHERE group_id = ?";
             $this->objDB->_pQuery($strQuery, array(IdGenerator::generateNextId(UserGroup::INT_SHORTID_IDENTIFIER), $arrOneRow["group_id"]));
         }
 
@@ -622,24 +622,24 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $strReturn = "Updating 6.2.2 to 6.2.3...\n";
 
         $strReturn .= "Adding permission columns to system table";
-        $this->objDB->addColumn("system", "right_inherit", DbDatatypes::STR_TYPE_INT);
-        $this->objDB->addColumn("system", "right_view", DbDatatypes::STR_TYPE_TEXT);
-        $this->objDB->addColumn("system", "right_edit", DbDatatypes::STR_TYPE_TEXT);
-        $this->objDB->addColumn("system", "right_delete", DbDatatypes::STR_TYPE_TEXT);
-        $this->objDB->addColumn("system", "right_right", DbDatatypes::STR_TYPE_TEXT);
-        $this->objDB->addColumn("system", "right_right1", DbDatatypes::STR_TYPE_TEXT);
-        $this->objDB->addColumn("system", "right_right2", DbDatatypes::STR_TYPE_TEXT);
-        $this->objDB->addColumn("system", "right_right3", DbDatatypes::STR_TYPE_TEXT);
-        $this->objDB->addColumn("system", "right_right4", DbDatatypes::STR_TYPE_TEXT);
-        $this->objDB->addColumn("system", "right_right5", DbDatatypes::STR_TYPE_TEXT);
-        $this->objDB->addColumn("system", "right_changelog", DbDatatypes::STR_TYPE_TEXT);
+        $this->objDB->addColumn("agp_system", "right_inherit", DbDatatypes::STR_TYPE_INT);
+        $this->objDB->addColumn("agp_system", "right_view", DbDatatypes::STR_TYPE_TEXT);
+        $this->objDB->addColumn("agp_system", "right_edit", DbDatatypes::STR_TYPE_TEXT);
+        $this->objDB->addColumn("agp_system", "right_delete", DbDatatypes::STR_TYPE_TEXT);
+        $this->objDB->addColumn("agp_system", "right_right", DbDatatypes::STR_TYPE_TEXT);
+        $this->objDB->addColumn("agp_system", "right_right1", DbDatatypes::STR_TYPE_TEXT);
+        $this->objDB->addColumn("agp_system", "right_right2", DbDatatypes::STR_TYPE_TEXT);
+        $this->objDB->addColumn("agp_system", "right_right3", DbDatatypes::STR_TYPE_TEXT);
+        $this->objDB->addColumn("agp_system", "right_right4", DbDatatypes::STR_TYPE_TEXT);
+        $this->objDB->addColumn("agp_system", "right_right5", DbDatatypes::STR_TYPE_TEXT);
+        $this->objDB->addColumn("agp_system", "right_changelog", DbDatatypes::STR_TYPE_TEXT);
 
 
         $strReturn .= "Moving data...\n";
 
-        foreach ($this->objDB->getGenerator("SELECT * FROM "._dbprefix_."system_right ORDER BY right_id", []) as $arrResultSet) {
+        foreach ($this->objDB->getGenerator("SELECT * FROM agp_system_right ORDER BY right_id", []) as $arrResultSet) {
             foreach ($arrResultSet as $arrRow) {
-                $strQuery = "UPDATE "._dbprefix_."system 
+                $strQuery = "UPDATE agp_system 
                             SET right_inherit = ?, right_view = ?, right_edit = ?, right_delete = ?, right_right = ?, right_right1 = ?, 
                                 right_right2 = ?, right_right3 = ?, right_right4 = ?, right_right5 = ?, right_changelog = ? 
                           WHERE system_id = ?";
@@ -668,7 +668,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
 
         $strReturn .= "Dropping old permissions table...\n";
-        $this->objDB->_pQuery("DROP TABLE "._dbprefix_."system_right", array());
+        $this->objDB->_pQuery("DROP TABLE agp_system_right", array());
 
 
         $strReturn .= "Updating module-versions...\n";
@@ -681,16 +681,16 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $strReturn = "Updating 6.2.3 to 6.2.4...\n";
         $strReturn .= "Shifting settings to 'real' objects\n";
 
-        $arrSystemModule = $this->objDB->getPRow("SELECT module_id FROM "._dbprefix_."system_module WHERE module_name = 'system'", []);
+        $arrSystemModule = $this->objDB->getPRow("SELECT module_id FROM agp_system_module WHERE module_name = 'system'", []);
 
-        $strQuery = "SELECT system_config_id FROM "._dbprefix_."system_config";
+        $strQuery = "SELECT system_config_id FROM agp_system_config";
         foreach ($this->objDB->getPArray($strQuery, []) as $arrOneRow) {
 
-            if($this->objDB->getPRow("SELECT COUNT(*) as anz FROM "._dbprefix_."system WHERE system_id = ?", array($arrOneRow["system_config_id"]))["anz"] > 0) {
+            if($this->objDB->getPRow("SELECT COUNT(*) as anz FROM agp_system WHERE system_id = ?", array($arrOneRow["system_config_id"]))["anz"] > 0) {
                 continue;
             }
 
-            $strQuery = "INSERT INTO "._dbprefix_."system 
+            $strQuery = "INSERT INTO agp_system 
                 (system_id, system_prev_id, system_module_nr, system_sort, system_status, system_class, system_deleted, right_inherit) values 
                 (?, ?, ?, ?, ?, ?, ?, ?)";
             $this->objDB->_pQuery($strQuery, [
@@ -725,7 +725,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $objManager->createTable(MessagingAlert::class);
 
         $strReturn .= "Adding user group flag\n";
-        $this->objDB->addColumn("user_group", "group_system_group", DbDatatypes::STR_TYPE_INT);
+        $this->objDB->addColumn("agp_user_group", "group_system_group", DbDatatypes::STR_TYPE_INT);
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5");
@@ -773,8 +773,8 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $strReturn = "Updating 6.5.2 to 6.5.3...\n";
         $strReturn .= "Upgrade message queue\n";
 
-        if (!$this->objDB->hasColumn("messages_alert", "alert_priority")) {
-            $this->objDB->addColumn("messages_alert", "alert_priority", DbDatatypes::STR_TYPE_INT);
+        if (!$this->objDB->hasColumn("agp_messages_alert", "alert_priority")) {
+            $this->objDB->addColumn("agp_messages_alert", "alert_priority", DbDatatypes::STR_TYPE_INT);
         }
 
         $strReturn .= "Updating module-versions...\n";
@@ -803,7 +803,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         // password history
         $strReturn .= "Updating session table...\n";
-        $this->objDB->addColumn("session", "session_resetuser", DbDatatypes::STR_TYPE_INT);
+        $this->objDB->addColumn("agp_session", "session_resetuser", DbDatatypes::STR_TYPE_INT);
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
@@ -824,11 +824,11 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $strRun = "Migrating old permissions table to new table data...\n";
 
         $arrIdToInt = array();
-        foreach ($this->objDB->getPArray("SELECT group_id, group_short_id FROM "._dbprefix_."user_group ORDER BY group_id DESC", array()) as $arrOneRow) {
+        foreach ($this->objDB->getPArray("SELECT group_id, group_short_id FROM agp_user_group ORDER BY group_id DESC", array()) as $arrOneRow) {
             $arrIdToInt[$arrOneRow["group_id"]] = $arrOneRow["group_short_id"];
         }
 
-        $objGenerator = $this->objDB->getGenerator("SELECT * FROM "._dbprefix_."system_right ORDER BY right_id DESC", [], $intPagesize);
+        $objGenerator = $this->objDB->getGenerator("SELECT * FROM agp_system_right ORDER BY right_id DESC", [], $intPagesize);
         foreach ($objGenerator as $arrResultSet) {
             foreach ($arrResultSet as $arrSingleRow) {
                 $arrParams = array();
@@ -848,7 +848,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
                     $arrParams[] = $strNewString;
                 }
 
-                $strQuery = "UPDATE "._dbprefix_."system_right SET right_changelog = ?,right_delete = ?,right_edit = ?,right_right = ?,right_right1 = ?,right_right2 = ?,right_right3 = ?,right_right4 = ?,right_right5 = ?,right_view =? WHERE right_id = ?";
+                $strQuery = "UPDATE agp_system_right SET right_changelog = ?,right_delete = ?,right_edit = ?,right_right = ?,right_right1 = ?,right_right2 = ?,right_right3 = ?,right_right4 = ?,right_right5 = ?,right_view =? WHERE right_id = ?";
                 $arrParams[] = $arrSingleRow["right_id"];
 
                 $this->objDB->_pQuery($strQuery, $arrParams);

@@ -29,7 +29,7 @@ use Kajona\System\System\ServiceProvider;
  * @package module_workflows
  * @author sidler@mulchprod.de
  *
- * @targetTable workflows.workflows_id
+ * @targetTable agp_workflows.workflows_id
  *
  * @module workflows
  * @moduleId _workflows_module_id_
@@ -48,7 +48,7 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
 
     /**
      * @var string
-     * @tableColumn workflows.workflows_class
+     * @tableColumn agp_workflows.workflows_class
      * @tableColumnDatatype char254
      * @tableColumnIndex
      */
@@ -56,7 +56,7 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
 
     /**
      * @var string
-     * @tableColumn workflows.workflows_systemid
+     * @tableColumn agp_workflows.workflows_systemid
      * @tableColumnDatatype char20
      * @tableColumnIndex
      */
@@ -64,7 +64,7 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
 
     /**
      * @var int
-     * @tableColumn workflows.workflows_state
+     * @tableColumn agp_workflows.workflows_state
      * @tableColumnDatatype int
      * @tableColumnIndex
      */
@@ -72,14 +72,14 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
 
     /**
      * @var int
-     * @tableColumn workflows.workflows_runs
+     * @tableColumn agp_workflows.workflows_runs
      * @tableColumnDatatype int
      */
     private $intRuns = "0";
 
     /**
      * @var string
-     * @tableColumn workflows.workflows_responsible
+     * @tableColumn agp_workflows.workflows_responsible
      * @tableColumnDatatype char254
      * @tableColumnIndex
      */
@@ -87,21 +87,21 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
 
     /**
      * @var int
-     * @tableColumn workflows.workflows_int1
+     * @tableColumn agp_workflows.workflows_int1
      * @tableColumnDatatype int
      */
     private $intInt1 = null;
 
     /**
      * @var int
-     * @tableColumn workflows.workflows_int2
+     * @tableColumn agp_workflows.workflows_int2
      * @tableColumnDatatype int
      */
     private $intInt2 = null;
 
     /**
      * @var string
-     * @tableColumn workflows.workflows_char1
+     * @tableColumn agp_workflows.workflows_char1
      * @tableColumnDatatype char254
      * @blockEscaping
      */
@@ -109,7 +109,7 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
 
     /**
      * @var string
-     * @tableColumn workflows.workflows_char2
+     * @tableColumn agp_workflows.workflows_char2
      * @tableColumnDatatype char254
      * @blockEscaping
      */
@@ -117,21 +117,21 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
 
     /**
      * @var int
-     * @tableColumn workflows.workflows_date1
+     * @tableColumn agp_workflows.workflows_date1
      * @tableColumnDatatype long
      */
     private $longDate1 = 0;
 
     /**
      * @var int
-     * @tableColumn workflows.workflows_date2
+     * @tableColumn agp_workflows.workflows_date2
      * @tableColumnDatatype long
      */
     private $longDate2 = 0;
 
     /**
      * @var string
-     * @tableColumn workflows.workflows_text
+     * @tableColumn agp_workflows.workflows_text
      * @tableColumnDatatype text
      * @blockEscaping
      */
@@ -139,7 +139,7 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
 
     /**
      * @var string
-     * @tableColumn workflows.workflows_text2
+     * @tableColumn agp_workflows.workflows_text2
      * @tableColumnDatatype text
      * @blockEscaping
      */
@@ -147,7 +147,7 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
 
     /**
      * @var string
-     * @tableColumn workflows.workflows_text3
+     * @tableColumn agp_workflows.workflows_text3
      * @tableColumnDatatype text
      * @blockEscaping
      */

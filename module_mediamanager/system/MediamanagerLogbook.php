@@ -30,7 +30,7 @@ class MediamanagerLogbook extends \Kajona\System\System\Model implements \Kajona
     public static function generateDlLog(MediamanagerFile $objFile)
     {
         $objDB = Carrier::getInstance()->getObjDB();
-        $strQuery = "INSERT INTO "._dbprefix_."mediamanager_dllog
+        $strQuery = "INSERT INTO agp_mediamanager_dllog
 	                   (downloads_log_id, downloads_log_date, downloads_log_file, downloads_log_user, downloads_log_ip) VALUES
 	                   (?, ?, ?, ?, ?)";
 
@@ -53,7 +53,7 @@ class MediamanagerLogbook extends \Kajona\System\System\Model implements \Kajona
     public static function getLogbookData($intStart = null, $intEnd = null)
     {
         $strQuery = "SELECT *
-					  FROM "._dbprefix_."mediamanager_dllog
+					  FROM agp_mediamanager_dllog
 					  ORDER BY downloads_log_date DESC";
         return Carrier::getInstance()->getObjDB()->getPArray($strQuery, array(), $intStart, $intEnd);
 
@@ -67,7 +67,7 @@ class MediamanagerLogbook extends \Kajona\System\System\Model implements \Kajona
     public function getLogbookDataCount()
     {
         $strQuery = "SELECT COUNT(*) AS cnt
-					  FROM "._dbprefix_."mediamanager_dllog";
+					  FROM agp_mediamanager_dllog";
         $arrTemp = $this->objDB->getPRow($strQuery, array());
         return $arrTemp["cnt"];
 
@@ -85,7 +85,7 @@ class MediamanagerLogbook extends \Kajona\System\System\Model implements \Kajona
      */
     public static function deleteFromLogs($intOlderDate)
     {
-        $strSql = "DELETE FROM "._dbprefix_."mediamanager_dllog
+        $strSql = "DELETE FROM agp_mediamanager_dllog
 			           WHERE downloads_log_date < ?";
 
         return Carrier::getInstance()->getObjDB()->_pQuery($strSql, array((int)$intOlderDate));

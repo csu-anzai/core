@@ -726,7 +726,7 @@ final class Session
     {
 
         $arrTables = Database::getInstance()->getTables();
-        if (!in_array(_dbprefix_."session", $arrTables)) {
+        if (!in_array("agp_session", $arrTables)) {
             return;
         }
 

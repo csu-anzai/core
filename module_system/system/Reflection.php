@@ -757,4 +757,16 @@ class Reflection
         return $bitReturn;
     }
 
+    /**
+     * Returns all annotations form the given class.
+     * @internal
+     * @return mixed
+     */
+    public function getAnnotationsFromClass() {
+        $strClassDoc = $this->objReflectionClass->getDocComment();
+        $arrReturn = $this->searchAllAnnotationsInDoc($strClassDoc);
+        return $arrReturn;
+    }
+
+
 }

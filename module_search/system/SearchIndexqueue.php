@@ -30,7 +30,7 @@ class SearchIndexqueue
      */
     public function getRows(SearchEnumIndexaction $objAction, $intMin = null, $intMax = null)
     {
-        $strQuery = "SELECT search_queue_systemid FROM "._dbprefix_."search_queue WHERE search_queue_action = ? GROUP BY search_queue_systemid";
+        $strQuery = "SELECT search_queue_systemid FROM agp_search_queue WHERE search_queue_action = ? GROUP BY search_queue_systemid";
         return Carrier::getInstance()->getObjDB()->getPArray($strQuery, array($objAction.""), $intMin, $intMax);
     }
 
@@ -44,7 +44,7 @@ class SearchIndexqueue
      */
     public function getRowsBySystemid(SearchEnumIndexaction $objAction, $strSystemid)
     {
-        $strQuery = "SELECT search_queue_systemid FROM "._dbprefix_."search_queue WHERE search_queue_action = ? AND search_queue_systemid = ? GROUP BY search_queue_systemid";
+        $strQuery = "SELECT search_queue_systemid FROM agp_search_queue WHERE search_queue_action = ? AND search_queue_systemid = ? GROUP BY search_queue_systemid";
         return Carrier::getInstance()->getObjDB()->getPArray($strQuery, array($objAction."", $strSystemid));
     }
 
@@ -57,7 +57,7 @@ class SearchIndexqueue
      */
     public function deleteBySystemid($strSystemid)
     {
-        $strRemove = "DELETE FROM "._dbprefix_."search_queue WHERE search_queue_systemid = ?";
+        $strRemove = "DELETE FROM agp_search_queue WHERE search_queue_systemid = ?";
         return Carrier::getInstance()->getObjDB()->_pQuery($strRemove, array($strSystemid));
     }
 
@@ -72,7 +72,7 @@ class SearchIndexqueue
      */
     public function deleteBySystemidAndAction($strSystemid, SearchEnumIndexaction $objAction)
     {
-        $strRemove = "DELETE FROM "._dbprefix_."search_queue WHERE search_queue_systemid = ? AND search_queue_action = ?";
+        $strRemove = "DELETE FROM agp_search_queue WHERE search_queue_systemid = ? AND search_queue_action = ?";
         return Carrier::getInstance()->getObjDB()->_pQuery($strRemove, array($strSystemid, $objAction.""));
     }
 
@@ -85,6 +85,6 @@ class SearchIndexqueue
      */
     public function addRowsToQueue($arrRows)
     {
-        return Carrier::getInstance()->getObjDB()->multiInsert("search_queue", array("search_queue_id", "search_queue_systemid", "search_queue_action"), $arrRows);
+        return Carrier::getInstance()->getObjDB()->multiInsert("agp_search_queue", array("search_queue_id", "search_queue_systemid", "search_queue_action"), $arrRows);
     }
 }

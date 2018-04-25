@@ -58,7 +58,7 @@ class TagsRecorddeletedlistener implements GenericeventListenerInterface
                 if ($strEventName == SystemEventidentifier::EVENT_SYSTEM_RECORDDELETED) {
                     $bitReturn = $bitReturn && $objOneFavorite->deleteObjectFromDatabase();
 
-                    $bitReturn = $bitReturn && Carrier::getInstance()->getObjDB()->_pQuery("DELETE FROM "._dbprefix_."tags_member WHERE tags_tagid=?", array($strSystemid));
+                    $bitReturn = $bitReturn && Carrier::getInstance()->getObjDB()->_pQuery("DELETE FROM agp_tags_member WHERE tags_tagid=?", array($strSystemid));
                 }
 
             }
@@ -68,7 +68,7 @@ class TagsRecorddeletedlistener implements GenericeventListenerInterface
 
         //delete memberships. Fire a plain query, faster then searching.
         if ($strEventName == SystemEventidentifier::EVENT_SYSTEM_RECORDDELETED) {
-            $bitReturn = $bitReturn && Carrier::getInstance()->getObjDB()->_pQuery("DELETE FROM "._dbprefix_."tags_member WHERE tags_systemid=?", array($strSystemid));
+            $bitReturn = $bitReturn && Carrier::getInstance()->getObjDB()->_pQuery("DELETE FROM agp_tags_member WHERE tags_systemid=?", array($strSystemid));
         }
 
         return $bitReturn;

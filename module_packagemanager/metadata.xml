@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://apidocs.kajona.de/xsd/package.xsd"
+        xsi:noNamespaceSchemaLocation="https://apidocs.kajona.de/xsd/package_v2.xsd"
         >
     <title>packagemanager</title>
     <description>The packagemanager wraps all logic to handle packages on the client side. It queries remote-repositories and downloads new or updated packages from them. In addition, the packagemanager handles the local update and installation of packages.</description>
@@ -12,4 +12,7 @@
     <requiredModules>
         <module name="system" version="7.0" />
     </requiredModules>
+    <constants>
+        <constant name="_packagemanager_module_id_" value="2" />
+    </constants>
 </package>

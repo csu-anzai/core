@@ -18,7 +18,7 @@ use Kajona\System\System\Pluginmanager;
  * FlowConfig
  *
  * @author christoph.kappestein@artemeon.de
- * @targetTable flow.flow_id
+ * @targetTable agp_flow.flow_id
  * @module flow
  * @moduleId _flow_module_id_
  */
@@ -29,21 +29,21 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
 
     /**
      * @var string
-     * @tableColumn flow.flow_name
+     * @tableColumn agp_flow.flow_name
      * @tableColumnDatatype char100
      */
     protected $strName;
 
     /**
      * @var string
-     * @tableColumn flow.flow_target_class
+     * @tableColumn agp_flow.flow_target_class
      * @tableColumnDatatype char254
      */
     protected $strTargetClass;
 
     /**
      * @var string
-     * @tableColumn flow.flow_handler_class
+     * @tableColumn agp_flow.flow_handler_class
      * @tableColumnDatatype char254
      */
     protected $strHandlerClass;

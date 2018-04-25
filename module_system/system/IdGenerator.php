@@ -13,7 +13,7 @@ namespace Kajona\System\System;
  *
  * @package module_agp_commons
  * @author christoph.kappestein@artemeon.de
- * @targetTable idgenerator.id
+ * @targetTable agp_idgenerator.id
  *
  * @module system
  * @moduleId _system_modul_id_
@@ -23,7 +23,7 @@ class IdGenerator extends Model implements ModelInterface
 
     /**
      * @var string
-     * @tableColumn idgenerator.generator_key
+     * @tableColumn agp_idgenerator.generator_key
      * @tableColumnDatatype char20
      * @tableColumnIndex
      */
@@ -31,7 +31,7 @@ class IdGenerator extends Model implements ModelInterface
 
     /**
      * @var integer
-     * @tableColumn idgenerator.generator_count
+     * @tableColumn agp_idgenerator.generator_count
      * @tableColumnDatatype int
      */
     private $intCount = 0;

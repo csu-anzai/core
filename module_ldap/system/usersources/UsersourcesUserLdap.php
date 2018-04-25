@@ -53,7 +53,7 @@ class UsersourcesUserLdap extends \Kajona\System\System\Model implements \Kajona
      */
     public function initObjectInternal()
     {
-        $strQuery = "SELECT * FROM " . $this->objDB->dbsafeString(_dbprefix_ . "user_ldap") . " WHERE user_ldap_id=?";
+        $strQuery = "SELECT * FROM " . $this->objDB->dbsafeString("agp_user_ldap") . " WHERE user_ldap_id=?";
         $arrRow = $this->objDB->getPRow($strQuery, array($this->getSystemid()));
 
         if (count($arrRow) > 0) {
@@ -84,7 +84,7 @@ class UsersourcesUserLdap extends \Kajona\System\System\Model implements \Kajona
      */
     public function setNewRecordId($strId)
     {
-        $strQuery = "UPDATE " . _dbprefix_ . "user_ldap SET user_ldap_id = ? WHERE user_ldap_id = ?";
+        $strQuery = "UPDATE agp_user_ldap SET user_ldap_id = ? WHERE user_ldap_id = ?";
         $this->objDB->_pQuery($strQuery, array($strId, $this->getSystemid()));
         $this->setSystemid($strId);
     }
@@ -101,7 +101,7 @@ class UsersourcesUserLdap extends \Kajona\System\System\Model implements \Kajona
         if ($this->getSystemid() == "") {
             $strUserid = generateSystemid();
             $this->setSystemid($strUserid);
-            $strQuery = "INSERT INTO " . _dbprefix_ . "user_ldap (
+            $strQuery = "INSERT INTO agp_user_ldap (
                         user_ldap_id, 
                         user_ldap_email, user_ldap_familyname,
                         user_ldap_givenname, user_ldap_dn, user_ldap_cfg
@@ -119,7 +119,7 @@ class UsersourcesUserLdap extends \Kajona\System\System\Model implements \Kajona
                 $this->getIntCfg()
             ));
         } else {
-            $strQuery = "UPDATE " . _dbprefix_ . "user_ldap SET
+            $strQuery = "UPDATE agp_user_ldap SET
                         user_ldap_email=?, user_ldap_familyname=?, user_ldap_givenname=?, user_ldap_dn=?, user_ldap_cfg=? WHERE user_ldap_id = ?";
 
             $arrParams = array(
@@ -153,7 +153,7 @@ class UsersourcesUserLdap extends \Kajona\System\System\Model implements \Kajona
     public function deleteUser()
     {
         Logger::getInstance()->info("deleted ldap user with dn " . $this->getStrDN());
-        $strQuery = "DELETE FROM " . _dbprefix_ . "user_ldap WHERE user_ldap_id=?";
+        $strQuery = "DELETE FROM agp_user_ldap WHERE user_ldap_id=?";
         //call other models that may be interested
         $bitDelete = $this->objDB->_pQuery($strQuery, array($this->getSystemid()));
         CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_RECORDDELETED, array($this->getSystemid(), get_class($this)));

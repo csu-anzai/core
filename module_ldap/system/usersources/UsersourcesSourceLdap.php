@@ -133,7 +133,7 @@ class UsersourcesSourceLdap implements UsersourcesUsersourceInterface
      */
     public function getGroupById($strId)
     {
-        $strQuery = "SELECT group_id FROM " . _dbprefix_ . "user_group WHERE group_id = ? AND group_subsystem = 'ldap'";
+        $strQuery = "SELECT group_id FROM agp_user_group WHERE group_id = ? AND group_subsystem = 'ldap'";
 
         $arrIds = $this->objDB->getPRow($strQuery, array($strId));
         if (isset($arrIds["group_id"]) && validateSystemid($arrIds["group_id"])) {
@@ -176,9 +176,9 @@ class UsersourcesSourceLdap implements UsersourcesUsersourceInterface
     public function getUserById($strId, $bitIgnoreDeletedFlag = false)
     {
         if ($bitIgnoreDeletedFlag) {
-            $strQuery = "SELECT user_id FROM " . _dbprefix_ . "user, "._dbprefix_."system WHERE user_id = system_id AND user_id = ? AND user_subsystem = 'ldap'";
+            $strQuery = "SELECT user_id FROM agp_user, agp_system WHERE user_id = system_id AND user_id = ? AND user_subsystem = 'ldap'";
         } else {
-            $strQuery = "SELECT user_id FROM " . _dbprefix_ . "user, "._dbprefix_."system WHERE user_id = system_id AND user_id = ? AND user_subsystem = 'ldap' AND (system_deleted = 0 OR system_deleted IS NULL)";
+            $strQuery = "SELECT user_id FROM agp_user, agp_system WHERE user_id = system_id AND user_id = ? AND user_subsystem = 'ldap' AND (system_deleted = 0 OR system_deleted IS NULL)";
         }
 
         $arrIds = Carrier::getInstance()->getObjDB()->getPRow($strQuery, array($strId));
@@ -198,7 +198,7 @@ class UsersourcesSourceLdap implements UsersourcesUsersourceInterface
      */
     public function getUserByDn($strUserDn)
     {
-        $strQuery = "SELECT user_ldap_id FROM " . _dbprefix_ . "user_ldap WHERE user_ldap_dn = ?";
+        $strQuery = "SELECT user_ldap_id FROM agp_user_ldap WHERE user_ldap_dn = ?";
 
         $arrIds = Carrier::getInstance()->getObjDB()->getPRow($strQuery, array($strUserDn));
         if (isset($arrIds["user_ldap_id"]) && validateSystemid($arrIds["user_ldap_id"])) {
@@ -220,7 +220,7 @@ class UsersourcesSourceLdap implements UsersourcesUsersourceInterface
      */
     public function getUserByUsername($strUsername)
     {
-        $strQuery = "SELECT user_id FROM " . _dbprefix_ . "user, "._dbprefix_."system WHERE user_id = system_id AND user_username = ? AND user_subsystem = 'ldap' AND (system_deleted = 0 OR system_deleted IS NULL)";
+        $strQuery = "SELECT user_id FROM agp_user, agp_system WHERE user_id = system_id AND user_username = ? AND user_subsystem = 'ldap' AND (system_deleted = 0 OR system_deleted IS NULL)";
 
         $arrIds = Carrier::getInstance()->getObjDB()->getPRow($strQuery, array($strUsername));
         if (isset($arrIds["user_id"]) && validateSystemid($arrIds["user_id"])) {
@@ -266,8 +266,8 @@ class UsersourcesSourceLdap implements UsersourcesUsersourceInterface
     public function getAllGroupIds($bitIgnoreSystemGroups = false)
     {
         $strQuery = "SELECT group_id
-                       FROM " . _dbprefix_ . "user_group_ldap,
-                            " . _dbprefix_ . "user_group
+                       FROM agp_user_group_ldap,
+                            agp_user_group
                       WHERE group_id = group_ldap_id
                       ".($bitIgnoreSystemGroups ? " AND group_system_group != 1 " : "")."
                       ORDER BY group_name";
@@ -288,9 +288,9 @@ class UsersourcesSourceLdap implements UsersourcesUsersourceInterface
     public function getAllUserIds()
     {
         $strQuery = "SELECT user_id
-                       FROM " . _dbprefix_ . "user_ldap,
-                            " . _dbprefix_ . "user,
-                            " . _dbprefix_ . "system
+                       FROM agp_user_ldap,
+                            agp_user,
+                            agp_system
                       WHERE user_id = user_ldap_id
                         AND user_id = system_id
                         AND (system_deleted = 0 OR system_deleted IS NULL)

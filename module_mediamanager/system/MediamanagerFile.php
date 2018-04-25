@@ -30,7 +30,7 @@ use Kajona\System\System\Zip;
  *
  * @package module_mediamanager
  * @author sidler@mulchprod.de
- * @targetTable mediamanager_file.file_id
+ * @targetTable agp_mediamanager_file.file_id
  * @sortManager Kajona\System\System\CommonSortmanager
  *
  * @module mediamanager
@@ -47,7 +47,7 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
 
     /**
      * @var string
-     * @tableColumn mediamanager_file.file_name
+     * @tableColumn agp_mediamanager_file.file_name
      * @tableColumnDatatype char254
      *
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
@@ -58,7 +58,7 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
 
     /**
      * @var string
-     * @tableColumn mediamanager_file.file_filename
+     * @tableColumn agp_mediamanager_file.file_filename
      * @tableColumnDatatype char254
      *
      * @addSearchIndex
@@ -67,7 +67,7 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
 
     /**
      * @var string
-     * @tableColumn mediamanager_file.file_description
+     * @tableColumn agp_mediamanager_file.file_description
      * @tableColumnDatatype text
      * @blockEscaping
      *
@@ -80,7 +80,7 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
 
     /**
      * @var string
-     * @tableColumn mediamanager_file.file_subtitle
+     * @tableColumn agp_mediamanager_file.file_subtitle
      * @tableColumnDatatype char254
      *
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
@@ -91,7 +91,7 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
 
     /**
      * @var int
-     * @tableColumn mediamanager_file.file_hits
+     * @tableColumn agp_mediamanager_file.file_hits
      * @tableColumnDatatype int
      */
     private $intHits = 0;
@@ -100,14 +100,14 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
      * 0 = file, 1 = folder
      *
      * @var int
-     * @tableColumn mediamanager_file.file_type
+     * @tableColumn agp_mediamanager_file.file_type
      * @tableColumnDatatype int
      */
     private $intType = 0;
 
     /**
      * @var int
-     * @tableColumn mediamanager_file.file_ispackage
+     * @tableColumn agp_mediamanager_file.file_ispackage
      * @tableColumnDatatype int
      *
      * @addSearchIndex
@@ -116,7 +116,7 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
 
     /**
      * @var int
-     * @tableColumn mediamanager_file.file_cat
+     * @tableColumn agp_mediamanager_file.file_cat
      * @tableColumnDatatype char254
      *
      * @addSearchIndex
@@ -125,28 +125,28 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
 
     /**
      * @var string
-     * @tableColumn mediamanager_file.file_screen1
+     * @tableColumn agp_mediamanager_file.file_screen1
      * @tableColumnDatatype char254
      */
     private $strScreen1 = "";
 
     /**
      * @var string
-     * @tableColumn mediamanager_file.file_screen2
+     * @tableColumn agp_mediamanager_file.file_screen2
      * @tableColumnDatatype char254
      */
     private $strScreen2 = "";
 
     /**
      * @var string
-     * @tableColumn mediamanager_file.file_screen3
+     * @tableColumn agp_mediamanager_file.file_screen3
      * @tableColumnDatatype char254
      */
     private $strScreen3 = "";
 
     /**
      * @var string
-     * @tableColumn mediamanager_file.file_search_content
+     * @tableColumn agp_mediamanager_file.file_search_content
      * @tableColumnDatatype text
      * @blockEscaping
      */
@@ -283,8 +283,8 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
     private function countOtherFilesWithSamePath()
     {
         $strQuery = "SELECT COUNT(*) AS cnt
-                       FROM "._dbprefix_."system,
-                            "._dbprefix_."mediamanager_file
+                       FROM agp_system,
+                            agp_mediamanager_file
                     WHERE system_id = file_id
                       AND file_filename = ?
                       AND file_id != ?";
@@ -334,7 +334,7 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
     public function increaseHits()
     {
         $this->setIntHits($this->getIntHits() + 1);
-        $strQuery = "UPDATE "._dbprefix_."mediamanager_file SET file_hits = file_hits+1 WHERE file_id = ?";
+        $strQuery = "UPDATE agp_mediamanager_file SET file_hits = file_hits+1 WHERE file_id = ?";
         return $this->objDB->_pQuery($strQuery, array($this->getSystemid()));
     }
 

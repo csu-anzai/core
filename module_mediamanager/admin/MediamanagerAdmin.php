@@ -23,9 +23,9 @@ use Kajona\System\System\Exception;
 use Kajona\System\System\Filesystem;
 use Kajona\System\System\HttpResponsetypes;
 use Kajona\System\System\HttpStatuscodes;
-use Kajona\System\System\Image2;
-use Kajona\System\System\Imageplugins\ImageCrop;
-use Kajona\System\System\Imageplugins\ImageRotate;
+use Artemeon\Image\Image;
+use Artemeon\Image\Plugins\ImageCrop;
+use Artemeon\Image\Plugins\ImageRotate;
 use Kajona\System\System\Link;
 use Kajona\System\System\Logger;
 use Kajona\System\System\Model;
@@ -549,8 +549,8 @@ HTML;
                     imageeditor.fm_image_isScaled = true;
                     imageeditor.fm_file = '".$strFile."' ;
     
-                    imageeditor.init_fm_crop_save_warning_dialog = function () { jsDialog_1.setTitle('".$this->getLang("cropWarningDialogHeader")."'); jsDialog_1.setContent('".$this->getLang("cropWarningSaving")."', '".$this->getLang("cropWarningCrop")."', 'javascript:require(\'imageeditor\').saveCroppingToBackend()'); jsDialog_1.init(); }
-                    imageeditor.init_fm_screenlock_dialog = function () { jsDialog_3.init(); }
+                    imageeditor.init_fm_crop_save_warning_dialog = function () { jsDialog_1.setTitle('".$this->getLang("cropWarningDialogHeader")."'); jsDialog_1.setContent('".$this->getLang("cropWarningSaving")."', '".$this->getLang("cropWarningCrop")."', 'javascript:require(\'imageeditor\').saveCroppingToBackend()'); jsDialog_1.init(); };
+                    imageeditor.init_fm_screenlock_dialog = function () { jsDialog_3.init(); };
                     imageeditor.hide_fm_screenlock_dialog = function () { jsDialog_3.hide(); }
 
                 });
@@ -1339,11 +1339,11 @@ HTML;
 
         $strFile = $this->getParam("file");
 
-        $objImage = new Image2();
+        $objImage = new Image(_images_cachepath_);
         $objImage->setUseCache(false);
-        $objImage->load($strFile);
+        $objImage->load(_realpath_.$strFile);
         $objImage->addOperation(new ImageRotate($this->getParam("angle")));
-        if ($objImage->save($strFile)) {
+        if ($objImage->save(_realpath_.$strFile)) {
             Logger::getInstance()->info("rotated file ".$strFile);
             $strReturn .= "<message>".xmlSafeString($this->getLang("xml_rotate_success"))."</message>";
         } else {
@@ -1375,9 +1375,9 @@ HTML;
 
         $strFile = $this->getParam("file");
 
-        $objImage = new Image2();
+        $objImage = new Image(_images_cachepath_);
         $objImage->setUseCache(false);
-        $objImage->load($strFile);
+        $objImage->load(_realpath_.$strFile);
         $objImage->addOperation(new ImageCrop($this->getParam("intX"), $this->getParam("intY"), $this->getParam("intWidth"), $this->getParam("intHeight")));
         if ($objImage->save($strFile)) {
             Logger::getInstance()->info("cropped file ".$strFile);

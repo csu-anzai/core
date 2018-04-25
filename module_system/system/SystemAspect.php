@@ -17,7 +17,7 @@ namespace Kajona\System\System;
  * @package module_system
  * @since 3.4
  * @author sidler@mulchprod.de
- * @targetTable aspects.aspect_id
+ * @targetTable agp_aspects.aspect_id
  *
  * @module system
  * @moduleId _system_modul_id_
@@ -28,7 +28,7 @@ class SystemAspect extends Model implements ModelInterface, AdminListableInterfa
 {
     /**
      * @var string
-     * @tableColumn aspects.aspect_name
+     * @tableColumn agp_aspects.aspect_name
      * @tableColumnDatatype char254
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      * @fieldMandatory
@@ -40,7 +40,7 @@ class SystemAspect extends Model implements ModelInterface, AdminListableInterfa
 
     /**
      * @var bool
-     * @tableColumn aspects.aspect_default
+     * @tableColumn agp_aspects.aspect_default
      * @tableColumnDatatype int
      * @fieldType Kajona\System\Admin\Formentries\FormentryYesno
      * @fieldMandatory
@@ -166,7 +166,7 @@ class SystemAspect extends Model implements ModelInterface, AdminListableInterfa
      */
     public static function resetDefaultAspect()
     {
-        $strQuery = "UPDATE "._dbprefix_."aspects
+        $strQuery = "UPDATE agp_aspects
                      SET aspect_default = 0";
         return Carrier::getInstance()->getObjDB()->_pQuery($strQuery, array());
     }

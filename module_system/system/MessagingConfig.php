@@ -20,7 +20,7 @@ use ReflectionClass;
  * @since 4.0
  * @package module_messaging
  *
- * @targetTable messages_cfg.config_id
+ * @targetTable agp_messages_cfg.config_id
  *
  * @module messaging
  * @moduleId _messaging_module_id_
@@ -30,14 +30,14 @@ class MessagingConfig extends Model implements ModelInterface
 
     /**
      * @var string
-     * @tableColumn messages_cfg.config_provider
+     * @tableColumn agp_messages_cfg.config_provider
      * @tableColumnDatatype char254
      */
     private $strMessageprovider = "";
 
     /**
      * @var string
-     * @tableColumn messages_cfg.config_user
+     * @tableColumn agp_messages_cfg.config_user
      * @tableColumnDatatype char20
      * @tableColumnIndex
      */
@@ -45,14 +45,14 @@ class MessagingConfig extends Model implements ModelInterface
 
     /**
      * @var bool
-     * @tableColumn messages_cfg.config_enabled
+     * @tableColumn agp_messages_cfg.config_enabled
      * @tableColumnDatatype int
      */
     private $bitEnabled = true;
 
     /**
      * @var bool
-     * @tableColumn messages_cfg.config_bymail
+     * @tableColumn agp_messages_cfg.config_bymail
      * @tableColumnDatatype int
      */
     private $bitBymail = false;

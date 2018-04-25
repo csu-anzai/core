@@ -74,7 +74,7 @@ class SearchIndexwriter
             return 0;
         }
 
-        $arrRow = $this->objDB->getPRow("SELECT COUNT(*) AS cnt FROM "._dbprefix_."search_ix_document", []);
+        $arrRow = $this->objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_search_ix_document", []);
         return $arrRow["cnt"];
     }
 
@@ -88,7 +88,7 @@ class SearchIndexwriter
             return 0;
         }
 
-        $arrRow = $this->objDB->getPRow("SELECT COUNT(*) AS cnt FROM "._dbprefix_."search_ix_content", []);
+        $arrRow = $this->objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_search_ix_content", []);
         return $arrRow["cnt"];
     }
 
@@ -105,11 +105,11 @@ class SearchIndexwriter
             return true;
         }
 
-        $arrRow = $this->objDB->getPRow("SELECT * FROM "._dbprefix_."search_ix_document WHERE search_ix_system_id = ?", [$strSystemid]);
+        $arrRow = $this->objDB->getPRow("SELECT * FROM agp_search_ix_document WHERE search_ix_system_id = ?", [$strSystemid]);
 
         if (isset($arrRow["search_ix_document_id"])) {
-            $this->objDB->_pQuery("DELETE FROM "._dbprefix_."search_ix_content WHERE search_ix_content_document_id = ?", [$arrRow["search_ix_document_id"]]);
-            $this->objDB->_pQuery("DELETE FROM "._dbprefix_."search_ix_document WHERE search_ix_document_id = ?", [$arrRow["search_ix_document_id"]]);
+            $this->objDB->_pQuery("DELETE FROM agp_search_ix_content WHERE search_ix_content_document_id = ?", [$arrRow["search_ix_document_id"]]);
+            $this->objDB->_pQuery("DELETE FROM agp_search_ix_document WHERE search_ix_document_id = ?", [$arrRow["search_ix_document_id"]]);
         }
 
         return true;
@@ -191,7 +191,7 @@ class SearchIndexwriter
     private function getIndexableEntries()
     {
         //Load possible existing document if exists
-        $strQuery = "SELECT * FROM "._dbprefix_."system WHERE system_deleted = 0";
+        $strQuery = "SELECT * FROM agp_system WHERE system_deleted = 0";
         return $this->objDB->getPArray($strQuery, []);
     }
 
@@ -207,10 +207,10 @@ class SearchIndexwriter
         }
 
         // Delete existing entries
-        $strQuery = "DELETE FROM "._dbprefix_."search_ix_document";
+        $strQuery = "DELETE FROM agp_search_ix_document";
         $this->objDB->_pQuery($strQuery, []);
 
-        $strQuery = "DELETE FROM "._dbprefix_."search_ix_content";
+        $strQuery = "DELETE FROM agp_search_ix_content";
         $this->objDB->_pQuery($strQuery, []);
     }
 
@@ -235,7 +235,7 @@ class SearchIndexwriter
         }
 
         //insert search document
-        $strQuery = "INSERT INTO "._dbprefix_."search_ix_document
+        $strQuery = "INSERT INTO agp_search_ix_document
                         (search_ix_document_id, search_ix_system_id) VALUES
                         (?, ?)";
         $this->objDB->_pQuery($strQuery, [$objSearchDoc->getDocumentId(), $objSearchDoc->getStrSystemId()]);
@@ -264,7 +264,7 @@ class SearchIndexwriter
 
         //insert search document in a single query - much faster than single updates
         $this->objDB->multiInsert(
-            "search_ix_content",
+            "agp_search_ix_content",
             ["search_ix_content_id", "search_ix_content_field_name", "search_ix_content_content", "search_ix_content_score", "search_ix_content_document_id"],
             $arrValues
         );

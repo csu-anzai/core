@@ -30,7 +30,7 @@ use Kajona\System\System\Alert\MessagingAlertActionInterface;
  *
  * @author sidler@mulchprod.de
  * @since 7.0
- * @targetTable messages_alert.alert_id
+ * @targetTable agp_messages_alert.alert_id
  *
  * @module messaging
  * @moduleId _messaging_module_id_
@@ -43,7 +43,7 @@ class MessagingAlert extends Model implements ModelInterface, AdminListableInter
 {
     /**
      * @var string
-     * @tableColumn messages_alert.alert_user
+     * @tableColumn agp_messages_alert.alert_user
      * @tableColumnDatatype char20
      * @tableColumnIndex
      */
@@ -53,7 +53,7 @@ class MessagingAlert extends Model implements ModelInterface, AdminListableInter
      * A general reference to a database record or a generated id
      *
      * @var string
-     * @tableColumn messages_alert.alert_ref
+     * @tableColumn agp_messages_alert.alert_ref
      * @tableColumnDatatype char20
      * @tableColumnIndex
      */
@@ -61,14 +61,14 @@ class MessagingAlert extends Model implements ModelInterface, AdminListableInter
 
     /**
      * @var string
-     * @tableColumn messages_alert.alert_title
+     * @tableColumn agp_messages_alert.alert_title
      * @tableColumnDatatype char254
      */
     private $strTitle = "";
 
     /**
      * @var string
-     * @tableColumn messages_alert.alert_body
+     * @tableColumn agp_messages_alert.alert_body
      * @tableColumnDatatype longtext
      * @blockEscaping
      */
@@ -76,14 +76,14 @@ class MessagingAlert extends Model implements ModelInterface, AdminListableInter
 
     /**
      * @var bool
-     * @tableColumn messages_alert.alert_shown
+     * @tableColumn agp_messages_alert.alert_shown
      * @tableColumnDatatype int
      */
     private $bitShown = 0;
 
     /**
      * @var string
-     * @tableColumn messages_alert.alert_callback
+     * @tableColumn agp_messages_alert.alert_callback
      * @tableColumnDatatype longtext
      * @blockEscaping
      */
@@ -91,21 +91,21 @@ class MessagingAlert extends Model implements ModelInterface, AdminListableInter
 
     /**
      * @var Date
-     * @tableColumn messages_alert.alert_send
+     * @tableColumn agp_messages_alert.alert_send
      * @tableColumnDatatype long
      */
     private $objSendDate = null;
 
     /**
      * @var string
-     * @tableColumn messages_alert.alert_confirm_label
+     * @tableColumn agp_messages_alert.alert_confirm_label
      * @tableColumnDatatype char254
      */
     private $strConfirmLabel = "";
 
     /**
      * @var int
-     * @tableColumn messages_alert.alert_priority
+     * @tableColumn agp_messages_alert.alert_priority
      * @tableColumnDatatype int
      */
     private $intPriority = 1;

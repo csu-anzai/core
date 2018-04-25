@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://apidocs.kajona.de/xsd/package.xsd"
+        xsi:noNamespaceSchemaLocation="https://apidocs.kajona.de/xsd/package_v2.xsd"
     >
     <title>pdf</title>
     <description>A wrapper to tcpdf, providing a common way to generate pdfs.</description>
@@ -12,4 +12,5 @@
     <requiredModules>
         <module name="system" version="7.0" />
     </requiredModules>
+    <constants />
 </package>

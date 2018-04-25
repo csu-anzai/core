@@ -17,7 +17,7 @@ use Kajona\System\System\StringUtil;
  *
  * @package module_mediamanager
  * @author sidler@mulchprod.de
- * @targetTable mediamanager_repo.repo_id
+ * @targetTable agp_mediamanager_repo.repo_id
  *
  * @module mediamanager
  * @moduleId _mediamanager_module_id_
@@ -29,7 +29,7 @@ class MediamanagerRepo extends \Kajona\System\System\Model implements \Kajona\Sy
 
     /**
      * @var string
-     * @tableColumn mediamanager_repo.repo_title
+     * @tableColumn agp_mediamanager_repo.repo_title
      * @tableColumnDatatype char254
      * @listOrder
      * @fieldLabel commons_title
@@ -42,7 +42,7 @@ class MediamanagerRepo extends \Kajona\System\System\Model implements \Kajona\Sy
 
     /**
      * @var string
-     * @tableColumn mediamanager_repo.repo_path
+     * @tableColumn agp_mediamanager_repo.repo_path
      * @tableColumnDatatype char254
      * @fieldMandatory
      * @fieldValidator Kajona\System\System\Validators\FolderValidator
@@ -55,7 +55,7 @@ class MediamanagerRepo extends \Kajona\System\System\Model implements \Kajona\Sy
 
     /**
      * @var string
-     * @tableColumn mediamanager_repo.repo_upload_filter
+     * @tableColumn agp_mediamanager_repo.repo_upload_filter
      * @tableColumnDatatype char254
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      * @fieldLabel form_repo_uploadFilter
@@ -64,7 +64,7 @@ class MediamanagerRepo extends \Kajona\System\System\Model implements \Kajona\Sy
 
     /**
      * @var string
-     * @tableColumn mediamanager_repo.repo_view_filter
+     * @tableColumn agp_mediamanager_repo.repo_view_filter
      * @tableColumnDatatype char254
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      * @fieldLabel form_repo_viewFilter
@@ -73,7 +73,7 @@ class MediamanagerRepo extends \Kajona\System\System\Model implements \Kajona\Sy
 
     /**
      * @var int
-     * @tableColumn mediamanager_repo.repo_search_index
+     * @tableColumn agp_mediamanager_repo.repo_search_index
      * @tableColumnDatatype int
      * @fieldType Kajona\System\Admin\Formentries\FormentryYesno
      * @fieldLabel form_repo_searchindex

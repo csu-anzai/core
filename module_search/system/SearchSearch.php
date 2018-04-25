@@ -20,7 +20,7 @@ use Kajona\System\System\SystemModule;
  * @package module_search
  * @author tim.kiefer@kojikui.de
  * @since 3.4
- * @targetTable search_search.search_search_id
+ * @targetTable agp_search_search.search_search_id
  *
  * @module search
  * @moduleId _search_module_id_
@@ -29,7 +29,7 @@ class SearchSearch extends Model implements ModelInterface, AdminListableInterfa
 {
     /**
      * @var string
-     * @tableColumn search_search.search_search_query
+     * @tableColumn agp_search_search.search_search_query
      * @tableColumnDatatype char254
      * @listOrder
      * @fieldMandatory
@@ -39,14 +39,14 @@ class SearchSearch extends Model implements ModelInterface, AdminListableInterfa
 
     /**
      * @var string
-     * @tableColumn search_search.search_search_filter_modules
+     * @tableColumn agp_search_search.search_search_filter_modules
      * @tableColumnDatatype char254
      */
     private $strInternalFilterModules = "-1";
 
     /**
      * @var string
-     * @tableColumn search_search.search_search_private
+     * @tableColumn agp_search_search.search_search_private
      * @tableColumnDatatype int
      */
     private $intPrivate = 0;
@@ -147,7 +147,7 @@ class SearchSearch extends Model implements ModelInterface, AdminListableInterfa
      */
     private function getModuleNumbers()
     {
-        $strQuery = "SELECT DISTINCT system_module_nr FROM "._dbprefix_."system, "._dbprefix_."search_ix_document WHERE system_id = search_ix_system_id AND system_prev_id != '0' AND system_id != '0' AND system_deleted = 0";
+        $strQuery = "SELECT DISTINCT system_module_nr FROM agp_system, agp_search_ix_document WHERE system_id = search_ix_system_id AND system_prev_id != '0' AND system_id != '0' AND system_deleted = 0";
 
         $arrRows = $this->objDB->getPArray($strQuery, array());
 

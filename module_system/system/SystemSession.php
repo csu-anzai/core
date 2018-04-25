@@ -74,7 +74,7 @@ class SystemSession extends Model implements ModelInterface
      */
     public function forceUserReset()
     {
-        return $this->objDB->_pQuery("UPDATE "._dbprefix_."session SET session_resetuser = 1", []);
+        return $this->objDB->_pQuery("UPDATE agp_session SET session_resetuser = 1", []);
     }
 
     /**
@@ -83,7 +83,7 @@ class SystemSession extends Model implements ModelInterface
      */
     public function invalidateUserResetFlag()
     {
-        return $this->objDB->_pQuery("UPDATE "._dbprefix_."session SET session_resetuser = null WHERE session_id = ?", [$this->getSystemid()]);
+        return $this->objDB->_pQuery("UPDATE agp_session SET session_resetuser = null WHERE session_id = ?", [$this->getSystemid()]);
     }
 
     /**
@@ -94,7 +94,7 @@ class SystemSession extends Model implements ModelInterface
     protected function initObjectInternal()
     {
 
-        $strQuery = "SELECT * FROM "._dbprefix_."session WHERE session_id = ?";
+        $strQuery = "SELECT * FROM agp_session WHERE session_id = ?";
         $arrRow = $this->objDB->getPRow($strQuery, array($this->getSystemid()));
 
         //avoid useless query, set internal row
@@ -142,7 +142,7 @@ class SystemSession extends Model implements ModelInterface
             Logger::getInstance()->info("new session ".$this->getSystemid());
 
             //insert in session table
-            $strQuery = "INSERT INTO "._dbprefix_."session
+            $strQuery = "INSERT INTO agp_session
                          (session_id,
                           session_phpid,
                           session_userid,
@@ -167,7 +167,7 @@ class SystemSession extends Model implements ModelInterface
 
         } else {
             Logger::getInstance()->info("updated session ".$this->getSystemid());
-            $strQuery = "UPDATE "._dbprefix_."session SET
+            $strQuery = "UPDATE agp_session SET
                           session_phpid = ?,
                           session_userid = ?,
                           session_releasetime = ?,
@@ -213,7 +213,7 @@ class SystemSession extends Model implements ModelInterface
     {
         Logger::getInstance()->info("deleted session ".$this->getSystemid());
         //start with the module-table
-        $strQuery = "DELETE FROM "._dbprefix_."session WHERE session_id = ?";
+        $strQuery = "DELETE FROM agp_session WHERE session_id = ?";
         return $this->objDB->_pQuery($strQuery, array($this->getSystemid()));
     }
 
@@ -257,7 +257,7 @@ class SystemSession extends Model implements ModelInterface
     public static function getAllActiveSessions($intStart = null, $intEnd = null)
     {
 
-        $strQuery = "SELECT session_id FROM "._dbprefix_."session WHERE session_releasetime > ? ORDER BY session_releasetime DESC, session_id ASC";
+        $strQuery = "SELECT session_id FROM agp_session WHERE session_releasetime > ? ORDER BY session_releasetime DESC, session_id ASC";
         $arrIds = Carrier::getInstance()->getObjDB()->getPArray($strQuery, array(time()), $intStart, $intEnd);
 
         $arrReturn = array();
@@ -275,7 +275,7 @@ class SystemSession extends Model implements ModelInterface
      */
     public static function getNumberOfActiveSessions()
     {
-        $strQuery = "SELECT COUNT(*) AS cnt FROM "._dbprefix_."session WHERE session_releasetime > ?";
+        $strQuery = "SELECT COUNT(*) AS cnt FROM agp_session WHERE session_releasetime > ?";
 
         $arrRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, array(time()));
         return $arrRow["cnt"];
@@ -303,7 +303,7 @@ class SystemSession extends Model implements ModelInterface
      */
     public static function deleteInvalidSessions()
     {
-        $strSql = "DELETE FROM "._dbprefix_."session WHERE session_releasetime < ?";
+        $strSql = "DELETE FROM agp_session WHERE session_releasetime < ?";
         return Carrier::getInstance()->getObjDB()->_pQuery($strSql, array(time()));
     }
 

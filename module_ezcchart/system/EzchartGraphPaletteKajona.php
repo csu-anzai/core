@@ -2,7 +2,6 @@
 
 namespace Kajona\Ezcchart\System;
 
-require_once __DIR__."/../vendor/autoload.php";
 use ezcGraph;
 use ezcGraphColor;
 use ezcGraphPalette;

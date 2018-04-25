@@ -138,7 +138,7 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
      */
     protected function initObjectInternal()
     {
-        $strQuery = "SELECT * FROM ".$this->objDB->dbsafeString(_dbprefix_."user_kajona")." WHERE user_id=?";
+        $strQuery = "SELECT * FROM ".$this->objDB->dbsafeString("agp_user_kajona")." WHERE user_id=?";
         $arrRow = $this->objDB->getPRow($strQuery, array($this->getSystemid()));
 
         if (count($arrRow) > 0) {
@@ -172,7 +172,7 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
      */
     public function setNewRecordId($strId)
     {
-        $strQuery = "UPDATE "._dbprefix_."user_kajona SET user_id = ? WHERE user_id = ?";
+        $strQuery = "UPDATE agp_user_kajona SET user_id = ? WHERE user_id = ?";
         $this->objDB->_pQuery($strQuery, array($strId, $this->getSystemid()));
         $this->setSystemid($strId);
     }
@@ -191,7 +191,7 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
         if ($this->getSystemid() == "") {
             $strUserid = generateSystemid();
             $this->setSystemid($strUserid);
-            $strQuery = "INSERT INTO "._dbprefix_."user_kajona (
+            $strQuery = "INSERT INTO agp_user_kajona (
                         user_specialconfig, user_id,
                         user_pass, user_email, user_forename,
                         user_name, 	user_street,
@@ -225,7 +225,7 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
             $arrParams = array();
 
             if ($this->getStrPass() != "") {
-                $strQuery = "UPDATE "._dbprefix_."user_kajona SET user_specialconfig=?, 
+                $strQuery = "UPDATE agp_user_kajona SET user_specialconfig=?, 
                         user_pass=?, user_email=?, user_forename=?, user_name=?, user_street=?, user_postal=?, user_city=?, user_tel=?, user_mobile=?,
                         user_date=?, user_salt=?  WHERE user_id = ?";
                 $arrParams = array(
@@ -235,7 +235,7 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
                 );
 
             } else {
-                $strQuery = "UPDATE "._dbprefix_."user_kajona SET user_specialconfig=?,
+                $strQuery = "UPDATE agp_user_kajona SET user_specialconfig=?,
                         user_email=?, user_forename=?, user_name=?, user_street=?, user_postal=?, user_city=?, user_tel=?, user_mobile=?,
                         user_date=?, user_salt=? WHERE user_id = ?";
 
@@ -285,7 +285,7 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
     {
         Logger::getInstance(Logger::USERSOURCES)->info("deleted user with id ".$this->getSystemid());
         $this->deleteAllUserMemberships();
-        $strQuery = "DELETE FROM "._dbprefix_."user_kajona WHERE user_id=?";
+        $strQuery = "DELETE FROM agp_user_kajona WHERE user_id=?";
         //call other models that may be interested
         $bitDelete = $this->objDB->_pQuery($strQuery, array($this->getSystemid()));
         CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_RECORDDELETED, array($this->getSystemid(), get_class($this)));
@@ -310,7 +310,7 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
      */
     private function deleteAllUserMemberships()
     {
-        $strQuery = "DELETE FROM "._dbprefix_."user_kajona_members WHERE group_member_user_kajona_id=?";
+        $strQuery = "DELETE FROM agp_user_kajona_members WHERE group_member_user_kajona_id=?";
         return $this->objDB->_pQuery($strQuery, array($this->getSystemid()));
     }
 
@@ -332,8 +332,8 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
     public function getGroupIdsForUser()
     {
         $strQuery = "SELECT group_id, group_short_id
-                       FROM "._dbprefix_."user_group,
-                            "._dbprefix_."user_kajona_members
+                       FROM agp_user_group,
+                            agp_user_kajona_members
                       WHERE group_member_user_kajona_id= ?
                         AND group_id = group_member_group_kajona_id
                    ORDER BY group_name ASC  ";
@@ -354,8 +354,8 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
     public function getShortGroupIdsForUser()
     {
         $strQuery = "SELECT group_id, group_short_id
-                       FROM "._dbprefix_."user_group,
-                            "._dbprefix_."user_kajona_members
+                       FROM agp_user_group,
+                            agp_user_kajona_members
                       WHERE group_member_user_kajona_id= ?
                         AND group_id = group_member_group_kajona_id
                    ORDER BY group_name ASC  ";

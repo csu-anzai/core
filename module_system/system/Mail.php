@@ -7,12 +7,16 @@
 *	$Id$                                               *
 ********************************************************************************************************/
 
+declare(strict_types=1);
+
 namespace Kajona\System\System;
 
+use Kajona\System\System\Validators\EmailValidator;
+use PHPMailer\PHPMailer\PHPMailer;
 
 /**
  * This class can be used to generate and send emails
- * This class is able to send plaintext mails, html mails, mails with attachements and variations
+ * This class is able to send plaintext mails, html mails, mails with attachments and variations
  * of these. To send a mail, a call could be
  * $objMail = new Mail();
  * $objMail->setSender("test@kajona.de");
@@ -24,16 +28,13 @@ namespace Kajona\System\System;
  * $objMail->addAttachement("/portal/pics/kajona/login_logo.gif");
  * $objMail->addAttachement("/portal/pics/kajona/kajona_poweredby.png", "", true);
  * $objMail->sendMail();
- * The subject and the recipients name are encoded by a chunked utf-8 byte string.
- * If your system runs on php >= 5.3, all text-based content will be encoded by quoted printables.
  *
- * @package module_system
+ * Internally, the class uses PHPMailer since 7.0 in order to provide full SMTP support
+ *
  * @author sidler@mulchprod.de
  */
 class Mail
 {
-
-
     private $arrayTo = array();
     private $arrayCc = array();
     private $arrayBcc = array();
@@ -43,20 +44,7 @@ class Mail
     private $strSubject = "";
     private $strText = "";
     private $strHtml = "";
-    private $arrHeader = array();
     private $arrFiles = array();
-
-    private $bitMultipart = false;
-    private $bitFileAttached = false;
-
-    private $strEndOfLine = "\n";
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-    }
 
     /**
      * Adds a recipient to the to-list
@@ -65,7 +53,7 @@ class Mail
      *
      * @return void
      */
-    public function addTo($strMailaddress)
+    public function addTo(string $strMailaddress)
     {
         $this->arrayTo[] = $strMailaddress;
     }
@@ -77,7 +65,7 @@ class Mail
      *
      * @return void
      */
-    public function addCc($strMailaddress)
+    public function addCc(string $strMailaddress)
     {
         $this->arrayCc[] = $strMailaddress;
     }
@@ -89,21 +77,9 @@ class Mail
      *
      * @return void
      */
-    public function addBcc($strMailaddress)
+    public function addBcc(string $strMailaddress)
     {
         $this->arrayBcc[] = $strMailaddress;
-    }
-
-    /**
-     * Sets an email-header
-     *
-     * @param string $strHeader
-     *
-     * @return void
-     */
-    public function addHeader($strHeader)
-    {
-        $this->arrHeader[] = $strHeader;
     }
 
     /**
@@ -113,7 +89,7 @@ class Mail
      *
      * @return void
      */
-    public function setText($strText)
+    public function setText(string $strText)
     {
         $this->strText = html_entity_decode($strText);
     }
@@ -125,9 +101,8 @@ class Mail
      *
      * @return void
      */
-    public function setHtml($strHtml)
+    public function setHtml(string $strHtml)
     {
-        $this->bitMultipart = true;
         $this->strHtml = $strHtml;
     }
 
@@ -138,10 +113,9 @@ class Mail
      *
      * @return void
      */
-    public function setSubject($strSubject)
+    public function setSubject(string $strSubject)
     {
-        $strSubject = str_replace(array("\r", "\n"), array(" ", " "), $strSubject);
-        $this->strSubject = $strSubject;
+        $this->strSubject = str_replace(array("\r", "\n"), array(" ", " "), $strSubject);
     }
 
     /**
@@ -151,7 +125,7 @@ class Mail
      *
      * @return void
      */
-    public function setSender($strSender)
+    public function setSender(string $strSender)
     {
         $this->strSender = $strSender;
     }
@@ -163,7 +137,7 @@ class Mail
      *
      * @return void
      */
-    public function setSenderName($strSenderName)
+    public function setSenderName(string $strSenderName)
     {
         $this->strSenderName = $strSenderName;
     }
@@ -180,7 +154,7 @@ class Mail
      *
      * @return bool
      */
-    public function addAttachement($strFilename, $strContentType = "", $bitInline = false)
+    public function addAttachement(string $strFilename, string $strContentType = "", bool $bitInline = false): bool
     {
         if (is_file(_realpath_.$strFilename)) {
             $arrTemp = array();
@@ -197,226 +171,106 @@ class Mail
             $arrTemp["inline"] = $bitInline;
 
             $this->arrFiles[] = $arrTemp;
-            $this->bitFileAttached = true;
-            $this->bitMultipart = true;
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
 
+    /**
+     * Tries to resolve the sender, either by using the set sender or by overwriting wiht system defaults
+     * @param string $sender
+     * @return string
+     * @throws Exception
+     */
+    private function getResolvedSender(string $sender): string
+    {
+        if ($sender == "") {
+            //try to load the current users' mail adress
+            /** @var UserUser $objSenderUser */
+            $objSenderUser = Carrier::getInstance()->getObjSession()->getUser();
+            $validator = new EmailValidator();
+            if ($objSenderUser !== null) {
+                if ($validator->validate($objSenderUser->getStrEmail())) {
+                    $sender = $objSenderUser->getStrEmail();
+                }
+            }
+
+        }
+
+        if ($sender == "" || SystemSetting::getConfigValue("_system_email_forcesender_") == "true") {
+            $sender = SystemSetting::getConfigValue("_system_email_defaultsender_");
+        }
+
+        return $sender;
+    }
 
     /**
      * Sends, finally, the mail
      *
      * @return bool
+     * @throws Exception
+     * @throws \PHPMailer\PHPMailer\Exception
      */
-    public function sendMail()
+    public function sendMail(): bool
     {
-        $bitReturn = false;
-
-        //Do we have all neccessary arguments?
-        if (count($this->arrayTo) > 0) {
-            $bitReturn = true;
+        if (count($this->arrayTo) == 0) {
+            return false;
         }
 
-        if ($bitReturn) {
-            //Building the mail
-            $strTo = implode(", ", $this->arrayTo);
-            //Sender
-            if ($this->strSender == "") {
-                //try to load the current users' mail adress
-                /** @var UserUser $objSenderUser */
-                $objSenderUser = Carrier::getInstance()->getObjSession()->getUser();
-                if ($objSenderUser !== null) {
-                    if (checkEmailaddress($objSenderUser->getStrEmail())) {
-                        $this->strSender = $objSenderUser->getStrEmail();
-                    }
-                }
+        //generate a PHPMailer E-mail
+        $objMail = new PHPMailer(true);
+        $objMail->Debugoutput = Logger::getInstance("mail.log");
+        $objMail->XMailer = 'ARTEMEON Core';
+        $objMail->CharSet = 'UTF-8';
 
+        $cfg = Config::getInstance("module_system", "mail.php");
+
+        //set a possible imap config
+        if ($cfg->getConfig('smtp_enabled') === true) {
+            $objMail->SMTPDebug = $cfg->getConfig('smtp_debug');
+
+            $objMail->isSMTP();
+            $objMail->Host = $cfg->getConfig('smtp_host');
+            $objMail->Port = $cfg->getConfig('smtp_port');
+            $objMail->SMTPSecure = $cfg->getConfig('smtp_encryption');
+
+            if ($cfg->getConfig('smtp_auth_enabled') === true) {
+                $objMail->SMTPAuth = true;
+                $objMail->Username = $cfg->getConfig('smtp_auth_username');
+                $objMail->Password = $cfg->getConfig('smtp_auth_password');
             }
-
-            if ($this->strSender == "" || SystemSetting::getConfigValue("_system_email_forcesender_") == "true") {
-                $this->strSender = SystemSetting::getConfigValue("_system_email_defaultsender_");
-            }
-
-            if ($this->strSender != "") {
-                //build the from-arguments
-                if ($this->strSenderName != "") {
-                    $strFrom = $this->encodeText($this->strSenderName)." <".$this->strSender.">";
-                }
-                else {
-                    $strFrom = $this->strSender;
-                }
-
-                $this->arrHeader[] = "From: ".$strFrom.$this->strEndOfLine;
-                $this->arrHeader[] = "Reply-To: ".$this->strSender.$this->strEndOfLine;
-            }
-
-            //cc
-            if (count($this->arrayCc) > 0) {
-                $this->arrHeader[] = "Cc: ".implode(", ", $this->arrayCc).$this->strEndOfLine;
-            }
-
-            //bcc
-            if (count($this->arrayBcc) > 0) {
-                $this->arrHeader[] = "Bcc: ".implode(", ", $this->arrayBcc).$this->strEndOfLine;
-            }
-
-
-            //Kajona Headers to avoid being marked as spam
-            $this->arrHeader[] = "X-Mailer: Kajona Core Mailer V7".$this->strEndOfLine;
-            $this->arrHeader[] = "Message-ID: <".generateSystemid()."_kajona@".getServer("SERVER_NAME").">".$this->strEndOfLine;
-
-            //header for multipartmails?
-            $strBoundary = generateSystemid();
-
-            if ($this->bitMultipart || $this->bitFileAttached) {
-                $this->arrHeader[] = 'MIME-Version: 1.0'.$this->strEndOfLine;
-                //file attached?
-                if ($this->bitFileAttached) {
-                    $this->arrHeader[] = "Content-Type: multipart/related; boundary=\"".$strBoundary."\"".$this->strEndOfLine;
-                }
-                else {
-                    $this->arrHeader[] = "Content-Type: multipart/alternative; boundary=\"".$strBoundary."\"".$this->strEndOfLine;
-                }
-            }
-
-
-            //generate the mail-body
-            $strBody = "";
-
-            //multipart mail using html?
-            if ($this->bitMultipart) {
-                //multipart encoded mail
-                $strBoundaryAlt = generateSystemid();
-
-                //if a file should attached, a splitter is needed here
-                if ($this->bitFileAttached) {
-                    $strBody .= "--".$strBoundary.$this->strEndOfLine;
-                    $strBody .= "Content-Type: multipart/alternative; boundary=\"".$strBoundaryAlt."\"".$this->strEndOfLine;
-                }
-                else {
-                    //no new boundary-section, use old boundary instead
-                    $strBoundaryAlt = $strBoundary;
-                }
-
-                //place a body for strange mail-clients
-                $strBody .= "This is a multi-part message in MIME format.".$this->strEndOfLine.$this->strEndOfLine;
-
-                //text-version
-                $strBody .= "--".$strBoundaryAlt.$this->strEndOfLine;
-                $strBody .= "Content-Type: text/plain; charset=UTF-8".$this->strEndOfLine;
-
-                $strText = strip_tags(($this->strText == "" ? str_replace(array("<br />", "<br />"), array("\n", "\n"), $this->strHtml) : $this->strText));
-                if (function_exists("quoted_printable_encode")) {
-                    $strBody .= "Content-Transfer-Encoding: quoted-printable".$this->strEndOfLine.$this->strEndOfLine;
-                    $strBody .= quoted_printable_encode($strText);
-                }
-                else {
-                    $strBody .= "Content-Transfer-Encoding: 8bit".$this->strEndOfLine.$this->strEndOfLine;
-                    $strBody .= $strText;
-                }
-
-                $strBody .= $this->strEndOfLine.$this->strEndOfLine;
-
-
-                //html-version
-                if ($this->strHtml != "") {
-                    $strBody .= "--".$strBoundaryAlt.$this->strEndOfLine;
-                    $strBody .= "Content-Type: text/html; charset=UTF-8".$this->strEndOfLine;
-                    $strBody .= "Content-Transfer-Encoding: 8bit".$this->strEndOfLine.$this->strEndOfLine;
-                    $strBody .= $this->strHtml;
-                    $strBody .= $this->strEndOfLine.$this->strEndOfLine;
-                }
-
-                if ($this->bitFileAttached) {
-                    $strBody .= "--".$strBoundaryAlt."--".$this->strEndOfLine.$this->strEndOfLine;
-                }
-            }
-            else {
-                $this->arrHeader[] = "Content-Type: text/plain; charset=UTF-8".$this->strEndOfLine;
-
-                if (function_exists("quoted_printable_encode")) {
-                    $this->arrHeader[] = "Content-Transfer-Encoding: quoted-printable".$this->strEndOfLine;
-                    $strBody .= quoted_printable_encode($this->strText);
-                }
-                else {
-                    $strBody .= $this->strText;;
-                }
-            }
-
-
-            //any files to place in the mail body?
-            if ($this->bitFileAttached) {
-                foreach ($this->arrFiles as $arrOneFile) {
-                    $strFileContents = chunk_split(base64_encode(file_get_contents($arrOneFile["filename"])));
-                    //place file in mailbody
-                    $strBody .= "--".$strBoundary.$this->strEndOfLine;
-                    $strBody .= "Content-Type: ".$arrOneFile["mimetype"]."; name=\"".basename($arrOneFile["filename"])."\"".$this->strEndOfLine;
-                    $strBody .= "Content-Transfer-Encoding: base64".$this->strEndOfLine;
-                    if ($arrOneFile["inline"] === true) {
-                        $strBody .= "Content-Disposition: inline; filename=\"".basename($arrOneFile["filename"])."\"".$this->strEndOfLine;
-                        $strBody .= "Content-ID: <".basename($arrOneFile["filename"]).">".$this->strEndOfLine.$this->strEndOfLine;
-                    }
-                    else {
-                        $strBody .= "Content-Disposition: attachment; filename=\"".basename($arrOneFile["filename"])."\"".$this->strEndOfLine.$this->strEndOfLine;
-                    }
-                    $strBody .= $strFileContents;
-                    $strBody .= $this->strEndOfLine.$this->strEndOfLine;
-                }
-            }
-
-            //finish mail
-            if ($this->bitFileAttached || $this->bitMultipart) {
-                $strBody .= "--".$strBoundary."--".$this->strEndOfLine.$this->strEndOfLine;
-            }
-
-            //send mail
-            // in some cases, the optional param "-f test@kajona.de" may be added as mail()s' 5th param
-            Logger::getInstance()->info("sent mail to ".$strTo);
-            $bitReturn = mail(
-                $strTo,
-                $this->encodeText($this->strSubject),
-                $strBody,
-                implode("", $this->arrHeader)
-            );
 
         }
 
-        return $bitReturn;
+        $objMail->setFrom($this->getResolvedSender($this->strSender), $this->strSenderName);
+        //$objMail->addReplyTo($this->getResolvedSender($this->strSender));
+
+        foreach ($this->arrayTo as $to) {
+            $objMail->addAddress($to);
+        }
+        foreach ($this->arrayCc as $cc) {
+            $objMail->addCC($cc);
+        }
+        foreach ($this->arrayBcc as $bcc) {
+            $objMail->addBCC($bcc);
+        }
+
+        foreach ($this->arrFiles as $arrOneFile) {
+            $objMail->addAttachment($arrOneFile["filename"], basename($arrOneFile["filename"]), 'base64', $arrOneFile["mimetype"], $arrOneFile["inline"] === true ? 'inline' : 'attachment');
+        }
+
+        $objMail->Subject = $this->strSubject;
+        if (!empty($this->strHtml)) {
+            $objMail->isHTML(true);
+            $objMail->Body = $this->strHtml;
+            $objMail->AltBody = strip_tags(($this->strText == "" ? str_replace(array("<br />", "<br>"), array("\n", "\n"), $this->strHtml) : $this->strText));
+        } else {
+            $objMail->isHTML(false);
+            $objMail->Body = $this->strText;
+        }
+
+        Logger::getInstance('mail.log')->info("sending mail to ".implode(", ", $this->arrayTo));
+        return $objMail->send();
     }
-
-
-    /**
-     * Encodes some text to be places as encoded, chunked text-stream.
-     * All input must be encoded in UTF-8
-     *
-     * @param string $strText
-     *
-     * @return string
-     * @see http://www.php.net/manual/en/function.mail.php#27997, credits got to gordon at kanazawa-gu dot ac dot jp
-     */
-    private function encodeText($strText)
-    {
-
-        if (function_exists("mb_encode_mimeheader")) {
-            return mb_encode_mimeheader($strText, "UTF-8", "Q", "\r\n", strlen("subject: "));
-        }
-
-        $strStart = "=?UTF-8?B?";
-        $strEnd = "?=";
-        $strSpacer = $strEnd."\r\n ".$strStart;
-        $intLength = 74 - strlen($strStart) - strlen($strEnd) - strlen("subject: ");
-        $intLength = $intLength - ($intLength % 4);
-
-
-        $strText = chunk_split(base64_encode($strText), $intLength, $strSpacer);
-        $strText = $strStart.$strText.$strEnd;
-
-        return $strText;
-    }
-
 }
-

@@ -27,14 +27,14 @@ class DeletedRecordsFilter extends FilterBase
 {
     /**
      * @var string
-     * @tableColumn system.system_id
+     * @tableColumn agp_system.system_id
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      */
     private $strSystemid;
 
     /**
      * @var string
-     * @tableColumn system.system_class
+     * @tableColumn agp_system.system_class
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      *
      * @filterCompareOperator LIKE
@@ -43,7 +43,7 @@ class DeletedRecordsFilter extends FilterBase
 
     /**
      * @var int
-     * @tableColumn system.system_deleted
+     * @tableColumn agp_system.system_deleted
      */
     private $intDeleted = 1;
 
@@ -61,13 +61,13 @@ class DeletedRecordsFilter extends FilterBase
         OrmBase::setObjHandleLogicalDeletedGlobal(OrmDeletedhandlingEnum::INCLUDED);
 
         $objFilter->setIntDeleted(1);
-        $strQuery = "SELECT system_id FROM "._dbprefix_."system AS system WHERE ";
+        $strQuery = "SELECT system_id FROM agp_system AS agp_system WHERE ";
 
         $objCompound = new OrmCompositeCondition($objFilter->getOrmConditions());
         $strQuery .= $objCompound->getStrWhere();
         $arrParams = $objCompound->getArrParams();
 
-        $strQuery .= " ORDER BY system.system_id DESC";
+        $strQuery .= " ORDER BY agp_system.system_id DESC";
 
         $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, $arrParams, $intStart, $intEnd);
 
@@ -92,7 +92,7 @@ class DeletedRecordsFilter extends FilterBase
     public static function getDeletedRecordsCount(DeletedRecordsFilter $objFilter)
     {
         $objFilter->setIntDeleted(1);
-        $strQuery = "SELECT COUNT(*) AS cnt FROM "._dbprefix_."system AS system WHERE ";
+        $strQuery = "SELECT COUNT(*) AS cnt FROM agp_system AS agp_system WHERE ";
 
         $objCompound = new OrmCompositeCondition($objFilter->getOrmConditions());
         $strQuery .= $objCompound->getStrWhere();

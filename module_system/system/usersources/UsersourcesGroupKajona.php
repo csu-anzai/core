@@ -59,7 +59,7 @@ class UsersourcesGroupKajona extends Model implements ModelInterface, Usersource
      */
     protected function initObjectInternal()
     {
-        $strQuery = "SELECT * FROM "._dbprefix_."user_group_kajona WHERE group_id=?";
+        $strQuery = "SELECT * FROM agp_user_group_kajona WHERE group_id=?";
         $arrRow = $this->objDB->getPRow($strQuery, array($this->getSystemid()));
 
         if (count($arrRow) > 0) {
@@ -83,14 +83,14 @@ class UsersourcesGroupKajona extends Model implements ModelInterface, Usersource
             Logger::getInstance(Logger::USERSOURCES)->info("saved new kajona group ".$this->getStrSystemid());
             $strGrId = generateSystemid();
             $this->setSystemid($strGrId);
-            $strQuery = "INSERT INTO "._dbprefix_."user_group_kajona
+            $strQuery = "INSERT INTO agp_user_group_kajona
                           (group_id, group_desc) VALUES
                           (?, ?)";
             return $this->objDB->_pQuery($strQuery, array($strGrId, $this->getStrDesc()));
         }
         else {
             Logger::getInstance(Logger::USERSOURCES)->info("updated kajona group ".$this->getSystemid());
-            $strQuery = "UPDATE "._dbprefix_."user_group_kajona
+            $strQuery = "UPDATE agp_user_group_kajona
                             SET group_desc=?
                           WHERE group_id=?";
             return $this->objDB->_pQuery($strQuery, array($this->getStrDesc(), $this->getSystemid()));
@@ -122,7 +122,7 @@ class UsersourcesGroupKajona extends Model implements ModelInterface, Usersource
      */
     public function setNewRecordId($strId)
     {
-        $strQuery = "UPDATE "._dbprefix_."user_group_kajona SET group_id = ? WHERE group_id = ?";
+        $strQuery = "UPDATE agp_user_group_kajona SET group_id = ? WHERE group_id = ?";
         $this->objDB->_pQuery($strQuery, array($strId, $this->getSystemid()));
         $this->setSystemid($strId);
     }
@@ -138,10 +138,10 @@ class UsersourcesGroupKajona extends Model implements ModelInterface, Usersource
      */
     public function getUserIdsForGroup($intStart = null, $intEnd = null)
     {
-        $strQuery = "SELECT k_user.user_id FROM "._dbprefix_."user_kajona as k_user,
-                                         ".$this->objDB->encloseTableName(_dbprefix_."user")." as user2,
-									     "._dbprefix_."user_kajona_members,
-									     "._dbprefix_."system 
+        $strQuery = "SELECT k_user.user_id FROM agp_user_kajona as k_user,
+                                         ".$this->objDB->encloseTableName("agp_user")." as user2,
+									     agp_user_kajona_members,
+									     agp_system 
 								   WHERE group_member_group_kajona_id= ?
 								  	 AND k_user.user_id = group_member_user_kajona_id
                                      AND k_user.user_id = user2.user_id
@@ -167,8 +167,8 @@ class UsersourcesGroupKajona extends Model implements ModelInterface, Usersource
     public function getNumberOfMembers()
     {
         $strQuery = "SELECT COUNT(*) AS cnt
-                       FROM "._dbprefix_."user_kajona_members,
-                            "._dbprefix_."system 
+                       FROM agp_user_kajona_members,
+                            agp_system 
 					   WHERE group_member_group_kajona_id= ?
 					     AND group_member_user_kajona_id = system_id
 					     AND system_deleted = 0";
@@ -185,7 +185,7 @@ class UsersourcesGroupKajona extends Model implements ModelInterface, Usersource
     {
         Logger::getInstance(Logger::USERSOURCES)->info("deleted kajona group with id ".$this->getSystemid());
         $this->deleteAllUsersFromCurrentGroup();
-        $strQuery = "DELETE FROM "._dbprefix_."user_group_kajona WHERE group_id=?";
+        $strQuery = "DELETE FROM agp_user_group_kajona WHERE group_id=?";
         CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_RECORDDELETED, array($this->getSystemid(), get_class($this)));
         return $this->objDB->_pQuery($strQuery, array($this->getSystemid()));
     }
@@ -208,7 +208,7 @@ class UsersourcesGroupKajona extends Model implements ModelInterface, Usersource
      */
     private function deleteAllUsersFromCurrentGroup()
     {
-        $strQuery = "DELETE FROM "._dbprefix_."user_kajona_members WHERE group_member_group_kajona_id=?";
+        $strQuery = "DELETE FROM agp_user_kajona_members WHERE group_member_group_kajona_id=?";
         return $this->objDB->_pQuery($strQuery, array($this->getSystemid()));
     }
 
@@ -228,7 +228,7 @@ class UsersourcesGroupKajona extends Model implements ModelInterface, Usersource
         $objLog = new SystemChangelog();
         $objLog->processChanges(Objectfactory::getInstance()->getObject($this->getSystemid()), "editMemberships", [["property" => UserGroup::STR_ASSIGNMENT_PROPERTY, "oldvalue" => '', "newvalue" => $objUser->getSystemid()]]);
 
-        return $this->objDB->insertOrUpdate("user_kajona_members", ["group_member_group_kajona_id", "group_member_user_kajona_id"], [$this->getSystemid(), $objUser->getSystemid()], ["group_member_group_kajona_id", "group_member_user_kajona_id"]);
+        return $this->objDB->insertOrUpdate("agp_user_kajona_members", ["group_member_group_kajona_id", "group_member_user_kajona_id"], [$this->getSystemid(), $objUser->getSystemid()], ["group_member_group_kajona_id", "group_member_user_kajona_id"]);
     }
 
 
@@ -259,7 +259,7 @@ class UsersourcesGroupKajona extends Model implements ModelInterface, Usersource
             $objLog->processChanges(Objectfactory::getInstance()->getObject($this->getSystemid()), "editMemberships", [["property" => UserGroup::STR_ASSIGNMENT_PROPERTY, "oldvalue" => $objUser->getSystemid(), "newvalue" => '']]);
         }
 
-        $strQuery = "DELETE FROM "._dbprefix_."user_kajona_members
+        $strQuery = "DELETE FROM agp_user_kajona_members
 						WHERE group_member_group_kajona_id=?
 						  AND group_member_user_kajona_id=?";
         return $this->objDB->_pQuery($strQuery, array($this->getSystemid(), $objUser->getSystemid()));

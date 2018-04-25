@@ -19,7 +19,7 @@ class SystemTest extends Testbase
         //--- system kernel -------------------------------------------------------------------------------------
 
         //nr of records currently
-        $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM " . _dbprefix_ . "system", array(), 0, false);
+        $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_system", array(), 0, false);
         $intNrSystemRecords = $arrRow["cnt"];
         $objAspect = new SystemAspect();
         $arrSysRecords = array();
@@ -28,7 +28,7 @@ class SystemTest extends Testbase
             $objAspect->updateObjectToDb();
             $arrSysRecords[] = $objAspect->getSystemid();
 
-            $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM " . _dbprefix_ . "system", array(), 0, false);
+            $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_system", array(), 0, false);
             $this->assertEquals($arrRow["cnt"], $intI + $intNrSystemRecords + 1, __FILE__ . " checkCreateSysRecordsWithRights");
         }
 
@@ -37,7 +37,7 @@ class SystemTest extends Testbase
             $objAspect = new SystemAspect($strOneId);
             $objAspect->deleteObjectFromDatabase();
         }
-        $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM " . _dbprefix_ . "system", array(), 0, false);
+        $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_system", array(), 0, false);
         $this->assertEquals($arrRow["cnt"], $intNrSystemRecords, __FILE__ . " checkDeleteSysRecordsWithRights");
 
     }
@@ -61,8 +61,8 @@ class SystemTest extends Testbase
             $objAspect->updateObjectToDb($strBaseNodeId);
             $arrNodes[] = $objAspect->getSystemid();
         }
-        $arrNodes = $objDB->getPArray("SELECT system_id FROM " . _dbprefix_ . "system WHERE system_prev_id = ? ORDER BY system_sort ASC", array($strBaseNodeId));
-        $arrNodesSection = $objDB->getPArray("SELECT system_id FROM " . _dbprefix_ . "system WHERE system_prev_id = ? ORDER BY system_sort ASC", array($strBaseNodeId), 2, 4, false);
+        $arrNodes = $objDB->getPArray("SELECT system_id FROM agp_system WHERE system_prev_id = ? ORDER BY system_sort ASC", array($strBaseNodeId));
+        $arrNodesSection = $objDB->getPArray("SELECT system_id FROM agp_system WHERE system_prev_id = ? ORDER BY system_sort ASC", array($strBaseNodeId), 2, 4, false);
         $this->assertEquals($arrNodesSection[0]["system_id"], $arrNodes[2]["system_id"], __FILE__ . " checkSectionLoading");
         $this->assertEquals($arrNodesSection[1]["system_id"], $arrNodes[3]["system_id"], __FILE__ . " checkSectionLoading");
         $this->assertEquals($arrNodesSection[2]["system_id"], $arrNodes[4]["system_id"], __FILE__ . " checkSectionLoading");
@@ -84,7 +84,7 @@ class SystemTest extends Testbase
         $objDB = Carrier::getInstance()->getObjDB();
         //nr of records currently
         $arrSysRecords = array();
-        $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM " . _dbprefix_ . "system", array(), 0, false);
+        $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_system", array(), 0, false);
         $intNrSystemRecords = $arrRow["cnt"];
         //base-id
         $objAspect = new SystemAspect();
@@ -116,11 +116,11 @@ class SystemTest extends Testbase
         $intCount = $objAspect->getNumberOfSiblings($intSecOneId);
         $this->assertEquals($intCount, 22, __FILE__ . " checkNrOfSiblingsInTree");
         //check nr of childs
-        $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM " . _dbprefix_ . "system WHERE system_prev_id = ?", array($intBaseId));
+        $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_system WHERE system_prev_id = ?", array($intBaseId));
         $this->assertEquals($arrRow["cnt"], 22, __FILE__ . " checkNrOfChildsInTree1");
-        $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM " . _dbprefix_ . "system WHERE system_prev_id = ?", array($intSecOneId));
+        $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_system WHERE system_prev_id = ?", array($intSecOneId));
         $this->assertEquals($arrRow["cnt"], 20, __FILE__ . " checkNrOfChildsInTree2");
-        $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM " . _dbprefix_ . "system WHERE system_prev_id = ?", array($intSecTwoId));
+        $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_system WHERE system_prev_id = ?", array($intSecTwoId));
         $this->assertEquals($arrRow["cnt"], 20, __FILE__ . " checkNrOfChildsInTree3");
 
         //deleting all records

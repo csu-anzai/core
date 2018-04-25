@@ -32,7 +32,7 @@ use Kajona\System\System\SystemSetting;
  * @author sidler@mulchprod.de
  * @since 3.4
  *
- * @targetTable tags_tag.tags_tag_id
+ * @targetTable agp_tags_tag.tags_tag_id
  * @module tags
  * @moduleId _tags_modul_id_
  */
@@ -40,7 +40,7 @@ class TagsTag extends Model implements ModelInterface, AdminListableInterface, S
 
     /**
      * @var string
-     * @tableColumn tags_tag.tags_tag_name
+     * @tableColumn agp_tags_tag.tags_tag_name
      * @tableColumnDatatype char254
      * @listOrder
      *
@@ -53,7 +53,7 @@ class TagsTag extends Model implements ModelInterface, AdminListableInterface, S
 
     /**
      * @var int
-     * @tableColumn tags_tag.tags_tag_private
+     * @tableColumn agp_tags_tag.tags_tag_private
      * @tableColumnDatatype int
      */
     private $intPrivate = 0;
@@ -143,9 +143,9 @@ class TagsTag extends Model implements ModelInterface, AdminListableInterface, S
         }
 
         $strQuery = "SELECT DISTINCT(tags_tagid), tags_tag_name
-                       FROM "._dbprefix_."tags_member,
-                            "._dbprefix_."tags_tag,
-                            "._dbprefix_."system
+                       FROM agp_tags_member,
+                            agp_tags_tag,
+                            agp_system
                       WHERE tags_systemid = ?
                         AND tags_tag_id = tags_tagid
                         AND tags_tagid = system_id
@@ -196,9 +196,9 @@ class TagsTag extends Model implements ModelInterface, AdminListableInterface, S
     public static function getTagsWithAssignments() {
         $objORM = new OrmObjectlist();
         $strQuery = "SELECT DISTINCT(tags_tagid)
-                       FROM "._dbprefix_."tags_member,
-                            "._dbprefix_."tags_tag,
-                            "._dbprefix_."system
+                       FROM agp_tags_member,
+                            agp_tags_tag,
+                            agp_system
                       WHERE tags_tag_id = tags_tagid
                         AND tags_tag_id = system_id
                         AND (tags_tag_private IS NULL OR tags_tag_private != 1 OR (tags_owner IS NULL OR tags_owner = '' OR tags_owner = ?))
@@ -231,9 +231,9 @@ class TagsTag extends Model implements ModelInterface, AdminListableInterface, S
     public function getListOfAssignments() {
         $objORM = new OrmObjectlist();
         $strQuery = "SELECT member.*
-                       FROM "._dbprefix_."tags_member as member,
-                            "._dbprefix_."system as system,
-                            "._dbprefix_."tags_tag as tag
+                       FROM agp_tags_member as member,
+                            agp_system as system,
+                            agp_tags_tag as tag
                       WHERE tags_tagid = ?
                         AND system.system_id = member.tags_systemid
                         AND member.tags_tagid = tag.tags_tag_id
@@ -252,9 +252,9 @@ class TagsTag extends Model implements ModelInterface, AdminListableInterface, S
     public function getIntAssignments() {
         $objORM = new OrmObjectlist();
         $strQuery = "SELECT COUNT(*) AS cnt
-                       FROM "._dbprefix_."tags_member as member,
-                            "._dbprefix_."tags_tag as tag,
-                            "._dbprefix_."system as system
+                       FROM agp_tags_member as member,
+                            agp_tags_tag as tag,
+                            agp_system as system
                       WHERE member.tags_tagid = ?
                         AND member.tags_tagid = tag.tags_tag_id
                         ".$objORM->getDeletedWhereRestriction()."
@@ -275,9 +275,9 @@ class TagsTag extends Model implements ModelInterface, AdminListableInterface, S
     public function getArrAssignedRecords($intStart = null, $intEnd = null) {
         $objORM = new OrmObjectlist();
         $strQuery = "SELECT system.system_id
-                       FROM "._dbprefix_."tags_member as member,
-                            "._dbprefix_."tags_tag,
-                            "._dbprefix_."system as system
+                       FROM agp_tags_member as member,
+                            agp_tags_tag,
+                            agp_system as system
                       WHERE tags_tagid = ?
                         AND tags_tagid = tags_tag_id
                         AND system.system_id = member.tags_systemid
@@ -318,7 +318,7 @@ class TagsTag extends Model implements ModelInterface, AdminListableInterface, S
 
         //check if not already set
         $strQuery = "SELECT COUNT(*) AS cnt
-                       FROM "._dbprefix_."tags_member
+                       FROM agp_tags_member
                       WHERE tags_systemid= ?
                         AND tags_tagid = ?
                         AND tags_attribute = ?
@@ -327,7 +327,7 @@ class TagsTag extends Model implements ModelInterface, AdminListableInterface, S
         if($arrRow["cnt"] != 0)
             return true;
 
-        $strQuery = "INSERT INTO "._dbprefix_."tags_member
+        $strQuery = "INSERT INTO agp_tags_member
                       (tags_memberid, tags_systemid, tags_tagid, tags_attribute, tags_owner) VALUES
                       (?, ?, ?, ?, ?)";
 
@@ -362,7 +362,7 @@ class TagsTag extends Model implements ModelInterface, AdminListableInterface, S
             $arrParams[] = $this->objSession->getUserID();
         }
 
-        $strQuery = "DELETE FROM "._dbprefix_."tags_member
+        $strQuery = "DELETE FROM agp_tags_member
                            WHERE tags_systemid = ?
                              ".($strAttribute != null ? "AND tags_attribute = ?" : "")."
                              AND tags_tagid = ?
@@ -388,7 +388,7 @@ class TagsTag extends Model implements ModelInterface, AdminListableInterface, S
         $strPrefix = $this->getStrName()."_";
         $intCount = 1;
 
-        $strQuery = "SELECT COUNT(*) AS cnt FROM "._dbprefix_."tags_tag WHERE tags_tag_name = ?";
+        $strQuery = "SELECT COUNT(*) AS cnt FROM agp_tags_tag WHERE tags_tag_name = ?";
         $arrRow = $this->objDB->getPRow($strQuery, array($strPrefix.$intCount));
 
         while($arrRow["cnt"] > 0) {

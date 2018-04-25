@@ -17,7 +17,7 @@ use Kajona\System\System\Messageproviders\MessageproviderInterface;
  * @author sidler@mulchprod.de
  * @since 4.0
  * @package module_messaging
- * @targetTable messages.message_id
+ * @targetTable agp_messages.message_id
  *
  * @module messaging
  * @moduleId _messaging_module_id_
@@ -29,7 +29,7 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
 
     /**
      * @var string
-     * @tableColumn messages.message_user
+     * @tableColumn agp_messages.message_user
      * @tableColumnDatatype char20
      * @tableColumnIndex
      * @fieldType Kajona\System\Admin\Formentries\FormentryUser
@@ -40,7 +40,7 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
 
     /**
      * @var string
-     * @tableColumn messages.message_title
+     * @tableColumn agp_messages.message_title
      * @tableColumnDatatype char254
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      * @fieldLabel message_subject
@@ -52,7 +52,7 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
 
     /**
      * @var string
-     * @tableColumn messages.message_body
+     * @tableColumn agp_messages.message_body
      * @tableColumnDatatype longtext
      * @fieldType Kajona\System\Admin\Formentries\FormentryTextarea
      * @fieldLabel message_body
@@ -65,7 +65,7 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
 
     /**
      * @var bool
-     * @tableColumn messages.message_read
+     * @tableColumn agp_messages.message_read
      * @tableColumnDatatype int
      * @tableColumnIndex
      */
@@ -74,28 +74,28 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
 
     /**
      * @var string
-     * @tableColumn messages.message_internalidentifier
+     * @tableColumn agp_messages.message_internalidentifier
      * @tableColumnDatatype char254
      */
     private $strInternalIdentifier = "";
 
     /**
      * @var string
-     * @tableColumn messages.message_provider
+     * @tableColumn agp_messages.message_provider
      * @tableColumnDatatype char254
      */
     private $strMessageProvider = "";
 
     /**
      * @var string
-     * @tableColumn messages.message_sender
+     * @tableColumn agp_messages.message_sender
      * @tableColumnDatatype char20
      */
     private $strSenderId = "";
 
     /**
      * @var string
-     * @tableColumn messages.message_messageref
+     * @tableColumn agp_messages.message_messageref
      * @tableColumnDatatype char20
      * @fieldType Kajona\System\Admin\Formentries\FormentryHidden
      */

@@ -208,16 +208,15 @@ class MessagingTest extends Testbase
 
     private function removeAllQueueEntries()
     {
-        $strPrefix = _dbprefix_;
         $objDb = Database::getInstance();
 
-        $arrResult = $objDb->getPArray("SELECT message_id FROM {$strPrefix}messages", []);
+        $arrResult = $objDb->getPArray("SELECT message_id FROM agp_messages", []);
         foreach ($arrResult as $arrRow) {
             $objMessage = Objectfactory::getInstance()->getObject($arrRow["message_id"]);
             $objMessage->deleteObjectFromDatabase();
         }
 
-        $arrResult = $objDb->getPArray("SELECT queue_id FROM {$strPrefix}messages_queue", []);
+        $arrResult = $objDb->getPArray("SELECT queue_id FROM agp_messages_queue", []);
         foreach ($arrResult as $arrRow) {
             $objQueue = Objectfactory::getInstance()->getObject($arrRow["queue_id"]);
             $objQueue->deleteObjectFromDatabase();

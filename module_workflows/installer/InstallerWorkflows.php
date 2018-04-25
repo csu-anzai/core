@@ -45,7 +45,7 @@ class InstallerWorkflows extends InstallerBase implements InstallerRemovableInte
         $arrFields["wfc_id"]                     = array("char20", false);
         $arrFields["wfc_start"]                  = array("long", false);
         $arrFields["wfc_end"]                    = array("long", true);
-        if(!$this->objDB->createTable("workflows_stat_wfc", $arrFields, array("wfc_id"), array("wfc_start")))
+        if(!$this->objDB->createTable("agp_workflows_stat_wfc", $arrFields, array("wfc_id"), array("wfc_start")))
             $strReturn .= "An error occured! ...\n";
 
         $arrFields = array();
@@ -55,7 +55,7 @@ class InstallerWorkflows extends InstallerBase implements InstallerRemovableInte
         $arrFields["wfh_end"]                    = array("long", true);
         $arrFields["wfh_class"]                  = array("char254", false);
         $arrFields["wfh_result"]                 = array("char254", true);
-        if(!$this->objDB->createTable("workflows_stat_wfh", $arrFields, array("wfh_id"), array('wfh_start', 'wfh_result')))
+        if(!$this->objDB->createTable("agp_workflows_stat_wfh", $arrFields, array("wfh_id"), array('wfh_start', 'wfh_result')))
             $strReturn .= "An error occured! ...\n";
 
 		//register the module
@@ -132,7 +132,7 @@ class InstallerWorkflows extends InstallerBase implements InstallerRemovableInte
         //delete the tables
         foreach(array("workflows_handler", "workflows") as $strOneTable) {
             $strReturn .= "Dropping table ".$strOneTable."...\n";
-            if(!$this->objDB->_pQuery("DROP TABLE ".$this->objDB->encloseTableName(_dbprefix_.$strOneTable)."", array())) {
+            if(!$this->objDB->_pQuery("DROP TABLE ".$this->objDB->encloseTableName($strOneTable)."", array())) {
                 $strReturn .= "Error deleting table, aborting.\n";
                 return false;
             }
@@ -186,7 +186,7 @@ class InstallerWorkflows extends InstallerBase implements InstallerRemovableInte
         $arrFields["wfc_id"]                     = array("char20", false);
         $arrFields["wfc_start"]                  = array("long", false);
         $arrFields["wfc_end"]                    = array("long", true);
-        if(!$this->objDB->createTable("workflows_stat_wfc", $arrFields, array("wfc_id"), array("wfc_start")))
+        if(!$this->objDB->createTable("agp_workflows_stat_wfc", $arrFields, array("wfc_id"), array("wfc_start")))
             $strReturn .= "An error occured! ...\n";
 
         $arrFields = array();
@@ -196,7 +196,7 @@ class InstallerWorkflows extends InstallerBase implements InstallerRemovableInte
         $arrFields["wfh_end"]                    = array("long", true);
         $arrFields["wfh_class"]                  = array("char254", false);
         $arrFields["wfh_result"]                 = array("char254", true);
-        if(!$this->objDB->createTable("workflows_stat_wfh", $arrFields, array("wfh_id"), array('wfh_start', 'wfh_result')))
+        if(!$this->objDB->createTable("agp_workflows_stat_wfh", $arrFields, array("wfh_id"), array('wfh_start', 'wfh_result')))
             $strReturn .= "An error occured! ...\n";
 
         $strReturn .= "Updating module-versions...\n";
@@ -208,7 +208,7 @@ class InstallerWorkflows extends InstallerBase implements InstallerRemovableInte
 
     private function update_65_651() {
         $strReturn = "Changing stats schema\n";
-        $this->objDB->changeColumn("workflows_stat_wfc", "wfh_result", "wfh_result", DbDatatypes::STR_TYPE_CHAR254);
+        $this->objDB->changeColumn("agp_agp_workflows_stat_wfc", "wfh_result", "wfh_result", DbDatatypes::STR_TYPE_CHAR254);
 
             $strReturn .= "An error occured! ...\n";
 

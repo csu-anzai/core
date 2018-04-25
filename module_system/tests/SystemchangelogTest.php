@@ -229,7 +229,7 @@ class SystemchangelogTest extends Testbase
         $objChanges->createLogEntry(new DummyObject($strSystemid), 1);
         $objChanges->processCachedInserts();
 
-        $strQuery = "INSERT INTO " . _dbprefix_ . "changelog
+        $strQuery = "INSERT INTO agp_changelog
                      (change_id,
                       change_date,
                       change_systemid,

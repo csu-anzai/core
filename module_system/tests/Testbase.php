@@ -101,7 +101,7 @@ abstract class Testbase extends TestCase
      * @param string $strParentId - the parent id of the object to be created
      * @param array $arrExcludeFillProperty - array of poperty names which will not be set
      * @param array $arrPropertyValues - assoziative array which has as key the property name and as value the to be set for the property
-     * @param boolean $bitAutofillProperties - if true all properties which have annotation @tablecolumn will be filled with random values
+     * @param boolean $bitAutofillProperties - if true all properties which have annotation @tableColumn agp_will be filled with random values
      *
      * @return Model
      */

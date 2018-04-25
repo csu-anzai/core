@@ -37,7 +37,7 @@ class OrmObjectinitTest extends Testbase
     {
         parent::tearDown();
         $objDb = Carrier::getInstance()->getObjDB();
-        $objDb->_pQuery("DROP TABLE "._dbprefix_."inittestclass", array());
+        $objDb->_pQuery("DROP TABLE agp_inittestclass", array());
         Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBTABLES);
     }
 
@@ -113,7 +113,7 @@ class OrmObjectinitTest extends Testbase
 /**
  * Class orm_schematest_testclass
  *
- * @targetTable inittestclass.testclass_id
+ * @targetTable agp_inittestclass.testclass_id
  * @module system
  * @moduleId _system_modul_id_
  */
@@ -122,63 +122,63 @@ class OrmObjectinitTestclass extends Model implements ModelInterface
 
     /**
      * @var Date
-     * @tableColumn inittestclass.col1
+     * @tableColumn agp_inittestclass.col1
      * @tableColumnDatatype long
      */
     private $objDate = null;
 
     /**
      * @var string
-     * @tableColumn inittestclass.col2
+     * @tableColumn agp_inittestclass.col2
      * @tableColumnDatatype char20
      */
     private $strChar20 = null;
 
     /**
      * @var string
-     * @tableColumn inittestclass.col3
+     * @tableColumn agp_inittestclass.col3
      * @tableColumnDatatype char254
      */
     private $strChar254 = null;
 
     /**
      * @var string
-     * @tableColumn inittestclass.col4
+     * @tableColumn agp_inittestclass.col4
      * @tableColumnDatatype text
      */
     private $strText = null;
 
     /**
      * @var string
-     * @tableColumn inittestclass.col5
+     * @tableColumn agp_inittestclass.col5
      * @tableColumnDatatype longtext
      */
     private $strLongtext = null;
 
     /**
      * @var int
-     * @tableColumn inittestclass.col6
+     * @tableColumn agp_inittestclass.col6
      * @tableColumnDatatype int
      */
     private $intInteger = null;
 
     /**
      * @var bool
-     * @tableColumn inittestclass.col7
+     * @tableColumn agp_inittestclass.col7
      * @tableColumnDatatype int
      */
     private $bitBoolean = null;
 
     /**
      * @var int
-     * @tableColumn inittestclass.col8
+     * @tableColumn agp_inittestclass.col8
      * @tableColumnDatatype long
      */
     private $intBigint = null;
 
     /**
      * @var float
-     * @tableColumn inittestclass.col9
+     * @tableColumn agp_inittestclass.col9
      * @tableColumnDatatype double
      */
     private $floatDouble = null;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://apidocs.kajona.de/xsd/package.xsd"
+        xsi:noNamespaceSchemaLocation="https://apidocs.kajona.de/xsd/package_v2.xsd"
         >
     <title>fileindexer</title>
     <description>Tool to index file content.</description>
@@ -13,4 +13,5 @@
         <module name="mediamanager" version="7.0" />
         <module name="search" version="7.0" />
     </requiredModules>
+    <constants />
 </package>

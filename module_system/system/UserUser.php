@@ -22,14 +22,14 @@ use Kajona\System\System\Usersources\UsersourcesUserInterface;
  * @module user
  * @moduleId _user_modul_id_
  *
- * @targetTable user.user_id
+ * @targetTable agp_user.user_id
  */
 class UserUser extends Model implements ModelInterface, AdminListableInterface
 {
 
     /**
      * @var string
-     * @tableColumn user.user_subsystem
+     * @tableColumn agp_user.user_subsystem
      * @tableColumnDatatype char254
      * @tableColumnIndex
      */
@@ -43,7 +43,7 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
 
     /**
      * @var string
-     * @tableColumn user.user_username
+     * @tableColumn agp_user.user_username
      * @tableColumnDatatype char254
      * @tableColumnIndex
      * @listOrder ASC
@@ -52,63 +52,63 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
 
     /**
      * @var int
-     * @tableColumn user.user_logins
+     * @tableColumn agp_user.user_logins
      * @tableColumnDatatype int
      */
     private $intLogins = 0;
 
     /**
      * @var int
-     * @tableColumn user.user_lastlogin
+     * @tableColumn agp_user.user_lastlogin
      * @tableColumnDatatype int
      */
     private $intLastlogin = 0;
 
     /**
      * @var int
-     * @tableColumn user.user_admin
+     * @tableColumn agp_user.user_admin
      * @tableColumnDatatype int
      */
     private $intAdmin = 0;
 
     /**
      * @var int
-     * @tableColumn user.user_portal
+     * @tableColumn agp_user.user_portal
      * @tableColumnDatatype int
      */
     private $intPortal = 0;
 
     /**
      * @var string
-     * @tableColumn user.user_admin_skin
+     * @tableColumn agp_user.user_admin_skin
      * @tableColumnDatatype char254
      */
     private $strAdminskin = "";
 
     /**
      * @var string
-     * @tableColumn user.user_admin_language
+     * @tableColumn agp_user.user_admin_language
      * @tableColumnDatatype char254
      */
     private $strAdminlanguage = "";
 
     /**
      * @var string
-     * @tableColumn user.user_admin_module
+     * @tableColumn agp_user.user_admin_module
      * @tableColumnDatatype char254
      */
     private $strAdminModule = "";
 
     /**
      * @var string
-     * @tableColumn user.user_authcode
+     * @tableColumn agp_user.user_authcode
      * @tableColumnDatatype char20
      */
     private $strAuthcode = "";
 
     /**
      * @var int
-     * @tableColumn user.user_items_per_page
+     * @tableColumn agp_user.user_items_per_page
      * @tableColumnDatatype int
      */
     private $intItemsPerPage = 0;
@@ -202,11 +202,9 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
      */
     public static function getObjectListFiltered(FilterBase $objFilter = null, $strUsernameFilter = "", $intStart = null, $intEnd = null)
     {
-        $strDbPrefix = _dbprefix_;
-
         $strQuery = "SELECT user_tbl.user_id
-                      FROM {$strDbPrefix}system, ".Carrier::getInstance()->getObjDB()->encloseTableName(_dbprefix_."user")." AS user_tbl
-                      LEFT JOIN {$strDbPrefix}user_kajona AS user_kajona ON user_tbl.user_id = user_kajona.user_id
+                      FROM agp_system, ".Carrier::getInstance()->getObjDB()->encloseTableName("agp_user")." AS user_tbl
+                      LEFT JOIN agp_user_kajona AS user_kajona ON user_tbl.user_id = user_kajona.user_id
                       WHERE
                           (user_tbl.user_username LIKE ? OR user_kajona.user_forename LIKE ? OR user_kajona.user_name LIKE ?)
                           AND user_tbl.user_id = system_id
@@ -233,11 +231,9 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
      */
     public static function getObjectCountFiltered(FilterBase $objFilter = null, $strUsernameFilter = "")
     {
-        $strDbPrefix = _dbprefix_;
-
         $strQuery = "SELECT COUNT(*) AS cnt
-                      FROM {$strDbPrefix}system, {$strDbPrefix}user AS user_tbl 
-                      LEFT JOIN {$strDbPrefix}user_kajona AS user_kajona ON user_tbl.user_id = user_kajona.user_id
+                      FROM agp_system, agp_user AS user_tbl 
+                      LEFT JOIN agp_user_kajona AS user_kajona ON user_tbl.user_id = user_kajona.user_id
                       WHERE
                           (user_tbl.user_username LIKE ? OR user_kajona.user_forename LIKE ? OR user_kajona.user_name LIKE ?)
                           AND user_tbl.user_id = system_id

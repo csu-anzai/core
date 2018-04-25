@@ -42,7 +42,7 @@ class InstallerTags extends InstallerBase implements InstallerRemovableInterface
 		$arrFields["tags_attribute"]    = array("char254", true);
 		$arrFields["tags_owner"]        = array("char20", true);
 
-		if(!$this->objDB->createTable("tags_member", $arrFields, array("tags_memberid"), array("tags_systemid", "tags_tagid", "tags_attribute", "tags_owner")))
+		if(!$this->objDB->createTable("agp_tags_member", $arrFields, array("tags_memberid"), array("tags_systemid", "tags_tagid", "tags_attribute", "tags_owner")))
 			$strReturn .= "An error occurred! ...\n";
 
         $strReturn .= "Installing table tags_favorite...\n";
@@ -119,7 +119,7 @@ class InstallerTags extends InstallerBase implements InstallerRemovableInterface
         //delete the tables
         foreach(array("tags_tag", "tags_member", "tags_favorite") as $strOneTable) {
             $strReturn .= "Dropping table ".$strOneTable."...\n";
-            if(!$this->objDB->_pQuery("DROP TABLE ".$this->objDB->encloseTableName(_dbprefix_.$strOneTable), array())) {
+            if(!$this->objDB->_pQuery("DROP TABLE ".$this->objDB->encloseTableName($strOneTable), array())) {
                 $strReturn .= "Error deleting table, aborting.\n";
                 return false;
             }

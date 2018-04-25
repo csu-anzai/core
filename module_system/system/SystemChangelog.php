@@ -542,7 +542,7 @@ class SystemChangelog
 
         if (validateSystemid($strSystemidFilter)) {
             $strQuery = "SELECT change_date, change_systemid, change_user, change_class, change_action, change_property, change_oldvalue, change_newvalue
-                           FROM "._dbprefix_.self::getTableForClass(Objectfactory::getInstance()->getClassNameForId($strSystemidFilter))."
+                           FROM ".self::getTableForClass(Objectfactory::getInstance()->getClassNameForId($strSystemidFilter))."
                            WHERE change_systemid = ? ";
 
             $arrParams[] = $strSystemidFilter;
@@ -584,7 +584,7 @@ class SystemChangelog
 
         if (validateSystemid($strSystemidFilter)) {
             $strQuery = "SELECT COUNT(*) AS cnt
-                           FROM "._dbprefix_.self::getTableForClass(Objectfactory::getInstance()->getClassNameForId($strSystemidFilter))."
+                           FROM ".self::getTableForClass(Objectfactory::getInstance()->getClassNameForId($strSystemidFilter))."
                           WHERE change_systemid = ? ";
 
             $arrParams[] = $strSystemidFilter;
@@ -654,7 +654,7 @@ class SystemChangelog
 
 
         $strQuery = "SELECT *
-                       FROM "._dbprefix_.$strTable."
+                       FROM ".$strTable."
                       ".(count($arrWhere) > 0 ? " WHERE ".implode("AND", $arrWhere) : "")."
                    ORDER BY change_date DESC";
 
@@ -689,7 +689,7 @@ class SystemChangelog
      */
     public static function shiftLogEntries($strSystemid, $objNewDate)
     {
-        $strQuery = "UPDATE "._dbprefix_.self::getTableForClass(Objectfactory::getInstance()->getClassNameForId($strSystemid))."
+        $strQuery = "UPDATE ".self::getTableForClass(Objectfactory::getInstance()->getClassNameForId($strSystemid))."
                         SET change_date = ?
                       WHERE change_systemid = ? ";
         return Carrier::getInstance()->getObjDB()->_pQuery($strQuery, array($objNewDate->getLongTimestamp(), $strSystemid));
@@ -725,7 +725,7 @@ class SystemChangelog
         Logger::getInstance()->warning("changed time-based history-entry: ".$strSystemid."/".$strProperty." to ".$strNewValue." from ".$objStartDate." until ".$objEndDate);
 
         $strQuery = "SELECT *
-                       FROM "._dbprefix_.self::getTableForClass($strClass)."
+                       FROM ".self::getTableForClass($strClass)."
                       WHERE change_systemid = ?
                         AND change_property = ?
                         AND change_date <= ?
@@ -734,7 +734,7 @@ class SystemChangelog
         $arrStartRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, array($strSystemid, $strProperty, $objStartDate->getLongTimestamp()));
 
         $strQuery = "SELECT *
-                       FROM "._dbprefix_.self::getTableForClass($strClass)."
+                       FROM ".self::getTableForClass($strClass)."
                       WHERE change_systemid = ?
                         AND change_property = ?
                         AND change_date >= ?
@@ -743,7 +743,7 @@ class SystemChangelog
         $arrEndRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, array($strSystemid, $strProperty, $objEndDate->getLongTimestamp()));
 
         //drop all changes between the start / end date
-        $strQuery = "DELETE FROM "._dbprefix_.self::getTableForClass($strClass)."
+        $strQuery = "DELETE FROM ".self::getTableForClass($strClass)."
                            WHERE change_systemid = ?
                              AND change_property = ?
                              AND change_date >= ?
@@ -752,7 +752,7 @@ class SystemChangelog
 
 
         //adjust the start-row, see if the dates are matching (update vs insert)
-        $strQuery = "INSERT INTO "._dbprefix_.self::getTableForClass($strClass)."
+        $strQuery = "INSERT INTO ".self::getTableForClass($strClass)."
                  (change_id,
                   change_date,
                   change_systemid,
@@ -782,7 +782,7 @@ class SystemChangelog
         );
 
         //adjust the end-row, update vs insert
-        $strQuery = "INSERT INTO "._dbprefix_.self::getTableForClass($strClass)."
+        $strQuery = "INSERT INTO ".self::getTableForClass($strClass)."
                  (change_id,
                   change_date,
                   change_systemid,
@@ -828,7 +828,7 @@ class SystemChangelog
     public static function getValueForDate($strSystemid, $strProperty, Date $objDate)
     {
         $strQuery = "SELECT change_newvalue
-                       FROM "._dbprefix_.self::getTableForClass(Objectfactory::getInstance()->getClassNameForId($strSystemid))."
+                       FROM ".self::getTableForClass(Objectfactory::getInstance()->getClassNameForId($strSystemid))."
                       WHERE change_systemid = ?
                         AND change_property = ?
                         AND change_date <= ?
@@ -856,7 +856,7 @@ class SystemChangelog
     public static function getValuesForDateRange($strSystemid, $strProperty, Date $objDateFrom, Date $objDateTo)
     {
         $strQuery = "SELECT change_oldvalue, change_newvalue
-                       FROM "._dbprefix_.self::getTableForClass(Objectfactory::getInstance()->getClassNameForId($strSystemid))."
+                       FROM ".self::getTableForClass(Objectfactory::getInstance()->getClassNameForId($strSystemid))."
                       WHERE change_systemid = ?
                         AND change_property = ?
                         AND change_date >= ?
@@ -880,7 +880,7 @@ class SystemChangelog
     {
         $strQuery = "SELECT change_date,
                             COUNT(change_id) AS cnt
-                       FROM "._dbprefix_.self::getTableForClass(Objectfactory::getInstance()->getClassNameForId($strSystemid))."
+                       FROM ".self::getTableForClass(Objectfactory::getInstance()->getClassNameForId($strSystemid))."
                       WHERE change_systemid = ?
                         AND change_date >= ?
                         AND change_date <= ?
@@ -904,7 +904,7 @@ class SystemChangelog
     public static function getCountForDateRange($strClass, $strProperty, Date $objDateFrom, Date $objDateTo, array $arrNewValues = null, array $arrAllowedSystemIds = null)
     {
         $strQuery = "SELECT COUNT(DISTINCT change_systemid) AS num
-                       FROM "._dbprefix_.self::getTableForClass($strClass)."
+                       FROM ".self::getTableForClass($strClass)."
                       WHERE change_class = ?
                         AND change_property = ?
                         AND change_date >= ?
@@ -975,7 +975,7 @@ class SystemChangelog
 
         $strQuery = "  SELECT change_systemid,
                               change_newvalue
-                         FROM "._dbprefix_.self::getTableForClass($strClass)." log
+                         FROM ".self::getTableForClass($strClass)." log
                         WHERE log.change_class = ?
                           AND log.change_property = ?
                           {$strQueryCondition}
@@ -1071,7 +1071,7 @@ class SystemChangelog
         if ($strClass != null && $strClass != "" && isset(self::$arrTables[$strClass])) {
             return self::$arrTables[$strClass];
         } else {
-            return "changelog";
+            return "agp_changelog";
         }
     }
 }

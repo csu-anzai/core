@@ -120,7 +120,7 @@ class UsersourcesSourceKajona implements UsersourcesUsersourceInterface
      */
     public function getGroupById($strId)
     {
-        $strQuery = "SELECT group_id FROM "._dbprefix_."user_group_kajona WHERE group_id = ?";
+        $strQuery = "SELECT group_id FROM agp_user_group_kajona WHERE group_id = ?";
 
         $arrIds = $this->objDB->getPRow($strQuery, array($strId));
         if (isset($arrIds["group_id"]) && validateSystemid($arrIds["group_id"])) {
@@ -167,7 +167,7 @@ class UsersourcesSourceKajona implements UsersourcesUsersourceInterface
             return self::$arrUserCache[$strId];
         }
 
-        $strQuery = "SELECT user_id FROM "._dbprefix_."user_kajona  WHERE user_id = ? ";
+        $strQuery = "SELECT user_id FROM agp_user_kajona  WHERE user_id = ? ";
 
         $arrIds = Carrier::getInstance()->getObjDB()->getPRow($strQuery, array($strId));
         if (isset($arrIds["user_id"]) && validateSystemid($arrIds["user_id"])) {
@@ -189,7 +189,7 @@ class UsersourcesSourceKajona implements UsersourcesUsersourceInterface
      */
     public function getUserByUsername($strUsername)
     {
-        $strQuery = "SELECT user_id FROM "._dbprefix_."user, "._dbprefix_."system WHERE user_id = system_id AND user_username = ? AND user_subsystem = 'kajona' AND (system_deleted = 0 OR system_deleted IS NULL)";
+        $strQuery = "SELECT user_id FROM agp_user, agp_system WHERE user_id = system_id AND user_username = ? AND user_subsystem = 'kajona' AND (system_deleted = 0 OR system_deleted IS NULL)";
 
         $arrIds = Carrier::getInstance()->getObjDB()->getPRow($strQuery, array($strUsername));
         if (isset($arrIds["user_id"]) && validateSystemid($arrIds["user_id"])) {
@@ -213,9 +213,9 @@ class UsersourcesSourceKajona implements UsersourcesUsersourceInterface
     public function getUserByEmail($strEmail)
     {
         $strQuery = "SELECT sysuser.user_id 
-                       FROM "._dbprefix_."user as sysuser, 
-                            "._dbprefix_."user_kajona as kjuser, 
-                            "._dbprefix_."system 
+                       FROM agp_user as sysuser, 
+                            agp_user_kajona as kjuser, 
+                            agp_system 
                       WHERE sysuser.user_id = system_id 
                         AND sysuser.user_id = kjuser.user_id 
                         AND user_email = ? 
@@ -265,8 +265,8 @@ class UsersourcesSourceKajona implements UsersourcesUsersourceInterface
     public function getAllGroupIds($bitIgnoreSystemGroups = false)
     {
         $strQuery = "SELECT gk.group_id as group_id
-                       FROM "._dbprefix_."user_group_kajona AS gk,
-                            "._dbprefix_."user_group AS g
+                       FROM agp_user_group_kajona AS gk,
+                            agp_user_group AS g
                       WHERE g.group_id = gk.group_id
                            ".($bitIgnoreSystemGroups ? " AND g.group_system_group != 1 " : "")."
                       ORDER BY g.group_name";

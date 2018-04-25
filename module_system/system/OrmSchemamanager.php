@@ -14,13 +14,13 @@ namespace Kajona\System\System;
  *
  * As per Kajona 4.6, only the initial create table is supported.
  *
- * @todo extend the annotation system with version numbers, to that the schema-manager is able
- *       to generate alter-table statements, too.
+ * @todo extend the annotation system with version numbers, to that the schema-manager is able to generate alter-table statements, too.
  * @package module_system
  * @author sidler@mulchprod.de
  * @since 4.6
  */
-class OrmSchemamanager extends OrmBase {
+class OrmSchemamanager extends OrmBase
+{
 
     static $arrColumnDataTypes = array(
         DbDatatypes::STR_TYPE_INT,
@@ -36,9 +36,10 @@ class OrmSchemamanager extends OrmBase {
     );
 
 
-    public function createTable($strClass) {
+    public function createTable($strClass)
+    {
         $this->setObjObject($strClass);
-        if(!$this->hasTargetTable()) {
+        if (!$this->hasTargetTable()) {
             throw new OrmException("Class ".$strClass." provides no target-table!", OrmException::$level_ERROR);
         }
 
@@ -53,32 +54,32 @@ class OrmSchemamanager extends OrmBase {
      * @throws OrmException
      * @return void
      */
-    private function processTableDefinitions($arrTableDefinitions) {
-
-        foreach($arrTableDefinitions as $objOneTable) {
-
+    private function processTableDefinitions($arrTableDefinitions)
+    {
+        foreach ($arrTableDefinitions as $objOneTable) {
             $arrIndex = array();
             $arrPrimary = array();
 
             $arrFields = array();
             /** @var OrmSchemamanagerRow $objOneColumn */
-            foreach($objOneTable->getArrRows() as $objOneColumn) {
+            foreach ($objOneTable->getArrRows() as $objOneColumn) {
                 $arrFields[$objOneColumn->getStrName()] = array($objOneColumn->getStrDatatype(), $objOneColumn->getBitNull());
 
-                if($objOneColumn->getBitPrimaryKey())
+                if ($objOneColumn->getBitPrimaryKey()) {
                     $arrPrimary[] = $objOneColumn->getStrName();
+                }
 
-                if($objOneColumn->getBitIndex())
+                if ($objOneColumn->getBitIndex()) {
                     $arrIndex[] = $objOneColumn->getStrName();
+                }
             }
 
 
-            if(!Carrier::getInstance()->getObjDB()->createTable($objOneTable->getStrName(), $arrFields, $arrPrimary, $arrIndex, $objOneTable->getBitTxSafe()))
+            if (!Carrier::getInstance()->getObjDB()->createTable($objOneTable->getStrName(), $arrFields, $arrPrimary, $arrIndex, $objOneTable->getBitTxSafe())) {
                 throw new OrmException("error creating table ".$objOneTable->getStrName(), OrmException::$level_ERROR);
+            }
 
         }
-
-
     }
 
     /**
@@ -86,8 +87,10 @@ class OrmSchemamanager extends OrmBase {
      *
      * @return array
      * @throws OrmException
+     * @throws Exception
      */
-    private function collectTableDefinitions($strClass) {
+    private function collectTableDefinitions($strClass)
+    {
         $objReflection = new Reflection($strClass);
 
         $arrTargetTables = $objReflection->getAnnotationValuesFromClass(self::STR_ANNOTATION_TARGETTABLE);
@@ -97,15 +100,17 @@ class OrmSchemamanager extends OrmBase {
         /** @var OrmSchemamanagerTable[] $arrCreateTables */
         $arrCreateTables = array();
 
-        foreach($arrTargetTables as $strValue) {
+        foreach ($arrTargetTables as $strValue) {
             $arrTable = explode(".", $strValue);
 
-            if(count($arrTable) != 2)
+            if (count($arrTable) != 2) {
                 throw new OrmException("Target table for ".$strClass." is not in table.primaryColumn format", OrmException::$level_ERROR);
+            }
 
             $objTable = new OrmSchemamanagerTable($arrTable[0]);
-            if(count($arrTxSafe) == 1)
+            if (count($arrTxSafe) == 1) {
                 $objTable->setBitTxSafe($arrTxSafe[0] == "false" ? false : true);
+            }
 
             $objTable->addRow(new OrmSchemamanagerRow($arrTable[1], DbDatatypes::STR_TYPE_CHAR20, false, true));
             $arrCreateTables[$arrTable[0]] = $objTable;
@@ -113,21 +118,23 @@ class OrmSchemamanager extends OrmBase {
 
         //merge them with the list of mapped columns
         $arrProperties = $objReflection->getPropertiesWithAnnotation(self::STR_ANNOTATION_TABLECOLUMN);
-        foreach($arrProperties as $strProperty => $strTableColumn) {
+        foreach ($arrProperties as $strProperty => $strTableColumn) {
             //fetch the target data-type
             $strTargetDataType = $objReflection->getAnnotationValueForProperty($strProperty, self::STR_ANNOTATION_TABLECOLUMNDATATYPE);
-            if($strTargetDataType == null)
+            if ($strTargetDataType == null) {
                 $strTargetDataType = DbDatatypes::STR_TYPE_CHAR254;
+            }
 
-            if(!in_array($strTargetDataType, self::$arrColumnDataTypes))
+            if (!in_array($strTargetDataType, self::$arrColumnDataTypes)) {
                 throw new OrmException("Datatype ".$strTargetDataType." is unknown (".$strProperty."@".$strClass.")", OrmException::$level_ERROR);
+            }
 
             $arrColumn = explode(".", $strTableColumn);
 
-            if(count($arrColumn) != 2 && count($arrTargetTables) > 1) {
+            if (count($arrColumn) != 2 && count($arrTargetTables) > 1) {
                 throw new OrmException("Syntax for tableColumn annotation at property ".$strProperty."@".$strClass." not in format table.columnName", OrmException::$level_ERROR);
             }
-            if(count($arrColumn) == 1 && count($arrTargetTables) == 1) {
+            if (count($arrColumn) == 1 && count($arrTargetTables) == 1) {
                 //copy the column name, table is the current one
                 $arrTable = explode(".", $arrTargetTables[0]);
                 $arrColumn[1] = $arrColumn[0];
@@ -137,13 +144,15 @@ class OrmSchemamanager extends OrmBase {
 
             $objRow = new OrmSchemamanagerRow($arrColumn[1], $strTargetDataType);
 
-            if($objReflection->hasPropertyAnnotation($strProperty, OrmBase::STR_ANNOTATION_TABLECOLUMNINDEX))
+            if ($objReflection->hasPropertyAnnotation($strProperty, OrmBase::STR_ANNOTATION_TABLECOLUMNINDEX)) {
                 $objRow->setBitIndex(true);
+            }
 
-            if($objReflection->hasPropertyAnnotation($strProperty, OrmBase::STR_ANNOTATION_TABLECOLUMNPRIMARYKEY))
+            if ($objReflection->hasPropertyAnnotation($strProperty, OrmBase::STR_ANNOTATION_TABLECOLUMNPRIMARYKEY)) {
                 $objRow->setBitPrimaryKey(true);
+            }
 
-            if(isset($arrCreateTables[$arrColumn[0]])) {
+            if (isset($arrCreateTables[$arrColumn[0]])) {
                 $objTable = $arrCreateTables[$arrColumn[0]];
                 $objTable->addRow($objRow);
             }
@@ -159,8 +168,10 @@ class OrmSchemamanager extends OrmBase {
      * @param $strClass
      *
      * @return array
+     * @throws Exception
      */
-    private function collectAssignmentDefinitions($strClass) {
+    private function collectAssignmentDefinitions($strClass)
+    {
 
         $arrAssignmentTables = array();
         $objReflection = new Reflection($strClass);
@@ -168,11 +179,10 @@ class OrmSchemamanager extends OrmBase {
         //get the mapped properties
         $arrProperties = $objReflection->getPropertiesWithAnnotation(OrmBase::STR_ANNOTATION_OBJECTLIST, ReflectionEnum::PARAMS);
 
-        foreach($arrProperties as $strPropertyName => $arrValues) {
-
+        foreach ($arrProperties as $strPropertyName => $arrValues) {
             $strTableName = $objReflection->getAnnotationValueForProperty($strPropertyName, OrmBase::STR_ANNOTATION_OBJECTLIST);
 
-            if(!isset($arrValues["source"]) || !isset($arrValues["target"]) || empty($strTableName)) {
+            if (!isset($arrValues["source"]) || !isset($arrValues["target"]) || empty($strTableName)) {
                 continue;
             }
 

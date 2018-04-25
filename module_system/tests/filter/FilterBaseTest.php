@@ -1,6 +1,6 @@
 <?php
 
-namespace Kajona\System\Tests;
+namespace Kajona\System\Tests\Filter;
 
 use Kajona\System\System\AbstractController;
 use Kajona\System\System\Classloader;
@@ -11,6 +11,7 @@ use Kajona\System\System\OrmInCondition;
 use Kajona\System\System\OrmInOrEmptyCondition;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\Resourceloader;
+use Kajona\System\Tests\Testbase;
 
 /**
  * Class class_test_functions
@@ -47,51 +48,51 @@ class FilterBaseTest extends Testbase
 
         //Without annotation @filterCompareOperator
         $this->assertTrue($arrRestrictions[0] instanceof OrmCondition);
-        $this->assertEquals("filter.filter1 LIKE ?", $arrRestrictions[0]->getStrWhere());
+        $this->assertEquals("agp_filter.filter1 LIKE ?", $arrRestrictions[0]->getStrWhere());
         $this->assertCount(1, $arrRestrictions[0]->getArrParams());
         $this->assertEquals("%1%", $arrRestrictions[0]->getArrParams()[0]);
 
         $this->assertTrue($arrRestrictions[1] instanceof OrmCondition);
-        $this->assertEquals("filter.filter2 = ?", $arrRestrictions[1]->getStrWhere());
+        $this->assertEquals("agp_filter.filter2 = ?", $arrRestrictions[1]->getStrWhere());
         $this->assertCount(1, $arrRestrictions[1]->getArrParams());
         $this->assertEquals(1, $arrRestrictions[1]->getArrParams()[0]);
 
         $this->assertTrue($arrRestrictions[2] instanceof OrmCondition);
-        $this->assertEquals("filter.filter3 = ?", $arrRestrictions[2]->getStrWhere());
+        $this->assertEquals("agp_filter.filter3 = ?", $arrRestrictions[2]->getStrWhere());
         $this->assertCount(1, $arrRestrictions[2]->getArrParams());
         $this->assertEquals(1.0, $arrRestrictions[1]->getArrParams()[0]);
 
         $this->assertTrue($arrRestrictions[3] instanceof OrmInCondition);
-        $this->assertEquals("filter.filter4 IN (?,?,?,?)", $arrRestrictions[3]->getStrWhere());
+        $this->assertEquals("agp_filter.filter4 IN (?,?,?,?)", $arrRestrictions[3]->getStrWhere());
         $this->assertCount(4, $arrRestrictions[3]->getArrParams());
 
         $this->assertTrue($arrRestrictions[4] instanceof OrmCondition);
-        $this->assertEquals("filter.filter5 = ?", $arrRestrictions[4]->getStrWhere());
+        $this->assertEquals("agp_filter.filter5 = ?", $arrRestrictions[4]->getStrWhere());
         $this->assertCount(1, $arrRestrictions[4]->getArrParams());
         $this->assertEquals(20150101000001, $arrRestrictions[4]->getArrParams()[0]);
 
         $this->assertTrue($arrRestrictions[5] instanceof OrmCondition);
-        $this->assertEquals("filter.filter6 <= ?", $arrRestrictions[5]->getStrWhere());
+        $this->assertEquals("agp_filter.filter6 <= ?", $arrRestrictions[5]->getStrWhere());
         $this->assertEquals(12, $arrRestrictions[5]->getArrParams()[0]);
 
 
         //With annotation @filterCompareOperator
         $this->assertTrue($arrRestrictions[6] instanceof OrmCondition);
-        $this->assertEquals("filter.filter7 >= ?", $arrRestrictions[6]->getStrWhere());
+        $this->assertEquals("agp_filter.filter7 >= ?", $arrRestrictions[6]->getStrWhere());
         $this->assertEquals(20150101000000, $arrRestrictions[6]->getArrParams()[0]);
 
         $this->assertTrue($arrRestrictions[7] instanceof OrmCondition);
-        $this->assertEquals("filter.filter8 <= ?", $arrRestrictions[7]->getStrWhere());
+        $this->assertEquals("agp_filter.filter8 <= ?", $arrRestrictions[7]->getStrWhere());
         $this->assertEquals(20150101235959, $arrRestrictions[7]->getArrParams()[0]);
 
         //Filter by system id
         $this->assertTrue($arrRestrictions[8] instanceof OrmCondition);
-        $this->assertEquals("filter.filter9 = ?", $arrRestrictions[8]->getStrWhere());
+        $this->assertEquals("agp_filter.filter9 = ?", $arrRestrictions[8]->getStrWhere());
         $this->assertCount(1, $arrRestrictions[8]->getArrParams());
         $this->assertEquals($strSystemid, $arrRestrictions[8]->getArrParams()[0]);
 
         $this->assertTrue($arrRestrictions[9] instanceof OrmInOrEmptyCondition);
-        $this->assertEquals("((filter.filter10 IN (?,?,?,?)) OR (filter.filter10 IS NULL))", $arrRestrictions[9]->getStrWhere());
+        $this->assertEquals("((agp_filter.filter10 IN (?,?,?,?)) OR (agp_filter.filter10 IS NULL))", $arrRestrictions[9]->getStrWhere());
         $this->assertCount(4, $arrRestrictions[9]->getArrParams());
     }
 
@@ -159,38 +160,38 @@ class FilterBaseTest extends Testbase
 class FilterBaseA extends FilterBase
 {
     /**
-     * @tableColumn filter.filter1
+     * @tableColumn agp_filter.filter1
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      */
     protected $strFilter1;
 
     /**
-     * @tableColumn filter.filter2
+     * @tableColumn agp_filter.filter2
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      */
     protected $intFilter2;
 
     /**
-     * @tableColumn filter.filter3
+     * @tableColumn agp_filter.filter3
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      */
     protected $floatFilter3;
 
     /**
-     * @tableColumn filter.filter4
+     * @tableColumn agp_filter.filter4
      * @fieldType Kajona\System\Admin\Formentries\FormentryDropdown
      */
     protected $arrFilter4;
 
     /**
-     * @tableColumn filter.filter5
+     * @tableColumn agp_filter.filter5
      * @fieldType Kajona\System\Admin\Formentries\FormentryDate
      */
     protected $objFilter5;
 
 
     /**
-     * @tableColumn filter.filter6
+     * @tableColumn agp_filter.filter6
      * @fieldType Kajona\System\Admin\Formentries\FormentryDate
      * @filterCompareOperator LE
      */
@@ -198,14 +199,14 @@ class FilterBaseA extends FilterBase
 
 
     /**
-     * @tableColumn filter.filter7
+     * @tableColumn agp_filter.filter7
      * @fieldType Kajona\System\Admin\Formentries\FormentryDate
      * @filterCompareOperator GE
      */
     protected $objFilter7;
 
     /**
-     * @tableColumn filter.filter8
+     * @tableColumn agp_filter.filter8
      * @fieldType Kajona\System\Admin\Formentries\FormentryDate
      * @filterCompareOperator LE
      */
@@ -213,14 +214,14 @@ class FilterBaseA extends FilterBase
 
 
     /**
-     * @tableColumn filter.filter9
+     * @tableColumn agp_filter.filter9
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      */
     protected $strFilter9;
 
 
     /**
-     * @tableColumn filter.filter10
+     * @tableColumn agp_filter.filter10
      * @fieldType Kajona\System\Admin\Formentries\FormentryDropdown
      * @filterCompareOperator IN_OR_EMPTY
      */

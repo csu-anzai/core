@@ -44,10 +44,10 @@ class WorkflowsStats
     {
         return $this->objDb->getPArray(
             "SELECT controller.*, 
-                      (SELECT COUNT(*) AS anz FROM "._dbprefix_."workflows_stat_wfh WHERE wfh_wfc = controller.wfc_id ) as anzhandler,
-                       (SELECT COUNT(*) AS anz FROM "._dbprefix_."workflows_stat_wfh WHERE wfh_wfc = controller.wfc_id AND wfh_result = ? ) as anzexception
+                      (SELECT COUNT(*) AS anz FROM agp_workflows_stat_wfh WHERE wfh_wfc = controller.wfc_id ) as anzhandler,
+                       (SELECT COUNT(*) AS anz FROM agp_workflows_stat_wfh WHERE wfh_wfc = controller.wfc_id AND wfh_result = ? ) as anzexception
                        
-                       FROM "._dbprefix_."workflows_stat_wfc AS controller WHERE wfc_start >= ? AND wfc_start <= ? ORDER BY wfc_start",
+                       FROM agp_workflows_stat_wfc AS controller WHERE wfc_start >= ? AND wfc_start <= ? ORDER BY wfc_start",
             [WorkflowsResultEnum::EXCEPTION(), $objDate->setBeginningOfDay()->getLongTimestamp(), $objDate->setEndOfDay()->getLongTimestamp()],
             $intStart,
             $intEnd
@@ -62,7 +62,7 @@ class WorkflowsStats
     public function getControllerForDateCount(Date $objDate): int
     {
         return $this->objDb->getPRow(
-            "SELECT COUNT(*) AS cnt FROM "._dbprefix_."workflows_stat_wfc WHERE wfc_start >= ? AND wfc_start <= ?",
+            "SELECT COUNT(*) AS cnt FROM agp_workflows_stat_wfc WHERE wfc_start >= ? AND wfc_start <= ?",
             [$objDate->setBeginningOfDay()->getLongTimestamp(), $objDate->setEndOfDay()->getLongTimestamp()]
         )["cnt"];
     }
@@ -75,7 +75,7 @@ class WorkflowsStats
     public function getHandlerForController(string $strSystemid): array
     {
         return $this->objDb->getPArray(
-            "SELECT * FROM "._dbprefix_."workflows_stat_wfh WHERE wfh_wfc = ? ORDER BY wfh_start",
+            "SELECT * FROM agp_workflows_stat_wfh WHERE wfh_wfc = ? ORDER BY wfh_start",
             [$strSystemid]
         );
     }
@@ -105,10 +105,10 @@ class WorkflowsStats
 
             $strKey = $intI.":00";
 
-            $arrProcessedController[$strKey] = $objDb->getPRow("SELECT COUNT(*) as anz FROM "._dbprefix_."workflows_stat_wfc WHERE wfc_start >= ? AND wfc_start <= ? AND wfc_end IS NOT NULL", [$objStart, $objEnd])["anz"];
-            $arrBrokenController[$strKey]    = $objDb->getPRow("SELECT COUNT(*) as anz FROM "._dbprefix_."workflows_stat_wfc WHERE wfc_start >= ? AND wfc_start <= ? AND wfc_end IS NULL", [$objStart, $objEnd])["anz"];
-            $arrHandlers[$strKey]            = $objDb->getPRow("SELECT COUNT(*) as anz FROM "._dbprefix_."workflows_stat_wfh WHERE wfh_start >= ? AND wfh_start <= ?", [$objStart, $objEnd])["anz"];
-            $arrBrokenHandlers[$strKey]      = $objDb->getPRow("SELECT COUNT(*) as anz FROM "._dbprefix_."workflows_stat_wfh WHERE wfh_start >= ? AND wfh_start <= ?  AND wfh_result = ?", [$objStart, $objEnd, WorkflowsResultEnum::EXCEPTION()])["anz"];
+            $arrProcessedController[$strKey] = $objDb->getPRow("SELECT COUNT(*) as anz FROM agp_workflows_stat_wfc WHERE wfc_start >= ? AND wfc_start <= ? AND wfc_end IS NOT NULL", [$objStart, $objEnd])["anz"];
+            $arrBrokenController[$strKey]    = $objDb->getPRow("SELECT COUNT(*) as anz FROM agp_workflows_stat_wfc WHERE wfc_start >= ? AND wfc_start <= ? AND wfc_end IS NULL", [$objStart, $objEnd])["anz"];
+            $arrHandlers[$strKey]            = $objDb->getPRow("SELECT COUNT(*) as anz FROM agp_workflows_stat_wfh WHERE wfh_start >= ? AND wfh_start <= ?", [$objStart, $objEnd])["anz"];
+            $arrBrokenHandlers[$strKey]      = $objDb->getPRow("SELECT COUNT(*) as anz FROM agp_workflows_stat_wfh WHERE wfh_start >= ? AND wfh_start <= ?  AND wfh_result = ?", [$objStart, $objEnd, WorkflowsResultEnum::EXCEPTION()])["anz"];
 
         }
 

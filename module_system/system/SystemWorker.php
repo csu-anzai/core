@@ -29,8 +29,8 @@ class SystemWorker
     public function checkFirstLevelNodeConsistency()
     {
         $strQuery = "SELECT system_id
-                       FROM "._dbprefix_."system
-                       LEFT JOIN "._dbprefix_."system_module
+                       FROM agp_system
+                       LEFT JOIN agp_system_module
                         ON (system_id = module_id)
                        WHERE module_id IS NULL
                          AND system_prev_id = '0'
@@ -54,14 +54,14 @@ class SystemWorker
 
         //fetch all records
         $strQuery = "SELECT system_id, system_prev_id
-                       FROM "._dbprefix_."system
+                       FROM agp_system
                       WHERE system_id != '0'";
         $arrRecords = Carrier::getInstance()->getObjDB()->getPArray($strQuery, array(), null, null, false);
         //Check every record for its prev_id. To get valid results, flush the db-cache
         Carrier::getInstance()->getObjDB()->flushQueryCache();
         foreach ($arrRecords as $arrOneRecord) {
             $strQuery = "SELECT COUNT(*) AS number
-                           FROM "._dbprefix_."system
+                           FROM agp_system
                           WHERE system_id = ?";
             $arrRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, array($arrOneRecord["system_prev_id"]));
             if ($arrRow["number"] == "0") {
@@ -80,8 +80,8 @@ class SystemWorker
     public function checkDateSystemRelations()
     {
         $strQuery = "SELECT system_date_id
-                       FROM "._dbprefix_."system_date
-                       LEFT JOIN "._dbprefix_."system
+                       FROM agp_system_date
+                       LEFT JOIN agp_system
                         ON (system_date_id = system_id)
                        WHERE system_id IS NULL ";
         $arrReturn = Carrier::getInstance()->getObjDB()->getPArray($strQuery, array());

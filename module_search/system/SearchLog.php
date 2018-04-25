@@ -45,7 +45,7 @@ class SearchLog extends \Kajona\System\System\Model implements \Kajona\System\Sy
         $objLanguage = new LanguagesLanguage();
         $strLanguage = $objLanguage->getStrPortalLanguage();
 
-        $strQuery = "INSERT INTO "._dbprefix_."search_log 
+        $strQuery = "INSERT INTO agp_search_log 
                     (search_log_id, search_log_date, search_log_query, search_log_language) VALUES
                     (?, ?, ?, ? )";
 

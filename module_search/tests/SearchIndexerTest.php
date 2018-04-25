@@ -229,22 +229,22 @@ class SearchIndexerTest extends Testbase
         $objIndexWriter = new SearchIndexwriter();
         $objIndexWriter->indexObject($objMessage);
 
-        $arrRow = Database::getInstance()->getPRow("SELECT COUNT(*) as anz FROM " . _dbprefix_ . "search_ix_document WHERE search_ix_system_id = ?", array($objMessage->getSystemid()));
+        $arrRow = Database::getInstance()->getPRow("SELECT COUNT(*) as anz FROM agp_search_ix_document WHERE search_ix_system_id = ?", array($objMessage->getSystemid()));
         $this->assertEquals(1, $arrRow["anz"]);
 
-        $arrRow = Database::getInstance()->getPRow("SELECT search_ix_document_id FROM " . _dbprefix_ . "search_ix_document WHERE search_ix_system_id = ?", array($objMessage->getSystemid()));
+        $arrRow = Database::getInstance()->getPRow("SELECT search_ix_document_id FROM agp_search_ix_document WHERE search_ix_system_id = ?", array($objMessage->getSystemid()));
         $strDocumentId = $arrRow["search_ix_document_id"];
 
-//        $arrRow = Database::getInstance()->getPArray("SELECT * FROM "._dbprefix_."search_ix_content WHERE search_ix_content_document_id = ?", array($strDocumentId));
-        $arrRow = Database::getInstance()->getPRow("SELECT COUNT(*) as anz FROM " . _dbprefix_ . "search_ix_content WHERE search_ix_content_document_id = ?", array($strDocumentId));
+//        $arrRow = Database::getInstance()->getPArray("SELECT * FROM agp_search_ix_content WHERE search_ix_content_document_id = ?", array($strDocumentId));
+        $arrRow = Database::getInstance()->getPRow("SELECT COUNT(*) as anz FROM agp_search_ix_content WHERE search_ix_content_document_id = ?", array($strDocumentId));
         $this->assertEquals(7, $arrRow["anz"]);
 
         Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBQUERIES);
         $objIndexWriter->removeRecordFromIndex($objMessage->getSystemid());
-        $arrRow = Database::getInstance()->getPRow("SELECT COUNT(*) as anz FROM " . _dbprefix_ . "search_ix_document WHERE search_ix_system_id = ?", array($objMessage->getSystemid()));
+        $arrRow = Database::getInstance()->getPRow("SELECT COUNT(*) as anz FROM agp_search_ix_document WHERE search_ix_system_id = ?", array($objMessage->getSystemid()));
         $this->assertEquals(0, $arrRow["anz"]);
 
-        $arrRow = Database::getInstance()->getPRow("SELECT COUNT(*) as anz FROM " . _dbprefix_ . "search_ix_content WHERE search_ix_content_document_id = ?", array($strDocumentId));
+        $arrRow = Database::getInstance()->getPRow("SELECT COUNT(*) as anz FROM agp_search_ix_content WHERE search_ix_content_document_id = ?", array($strDocumentId));
         $this->assertEquals(0, $arrRow["anz"]);
 
 

@@ -15,9 +15,9 @@ class OrmSchemamanagerTest extends Testbase
     {
         $objDb = Carrier::getInstance()->getObjDB();
 
-        foreach (array("ormtest", "testclass", "testclass_rel", "testclass2_rel") as $strOneTable) {
-            if (in_array(_dbprefix_ . $strOneTable, $objDb->getTables())) {
-                $objDb->_pQuery("DROP TABLE " . _dbprefix_ . $strOneTable, array());
+        foreach (array("agp_ormtest", "agp_testclass", "agp_testclass_rel", "agp_testclass2_rel") as $strOneTable) {
+            if (in_array($strOneTable, $objDb->getTables())) {
+                $objDb->_pQuery("DROP TABLE " .$strOneTable, array());
                 Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBTABLES);
             }
         }
@@ -33,16 +33,16 @@ class OrmSchemamanagerTest extends Testbase
         $objManager = new OrmSchemamanager();
 
         $arrTables = $objDb->getTables();
-        $this->assertTrue(!in_array(_dbprefix_ . "ormtest", $arrTables));
+        $this->assertTrue(!in_array("agp_ormtest", $arrTables));
 
         $objManager->createTable("Kajona\\System\\Tests\\OrmSchematestTestclass");
         Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBTABLES);
 
         $arrTables = $objDb->getTables();
-        $this->assertTrue(in_array(_dbprefix_ . "ormtest", $arrTables));
+        $this->assertTrue(in_array("agp_ormtest", $arrTables));
 
         //fetch table informations
-        $arrTable = $objDb->getColumnsOfTable(_dbprefix_ . "ormtest");
+        $arrTable = $objDb->getColumnsOfTable("agp_ormtest");
 
         $arrColumnNamesToDatatype = array();
         array_walk($arrTable, function ($arrValue) use (&$arrColumnNamesToDatatype) {
@@ -128,20 +128,20 @@ class OrmSchemamanagerTest extends Testbase
         $objManager = new OrmSchemamanager();
 
         $arrTables = $objDb->getTables();
-        $this->assertTrue(!in_array(_dbprefix_ . "testclass", $arrTables));
-        $this->assertTrue(!in_array(_dbprefix_ . "testclass_rel", $arrTables));
-        $this->assertTrue(!in_array(_dbprefix_ . "testclass2_rel", $arrTables));
+        $this->assertTrue(!in_array("agp_testclass", $arrTables));
+        $this->assertTrue(!in_array("agp_testclass_rel", $arrTables));
+        $this->assertTrue(!in_array("agp_testclass2_rel", $arrTables));
 
         $objManager->createTable("Kajona\\System\\Tests\\OrmSchematestTestclassAssignments");
         Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBTABLES);
 
         $arrTables = $objDb->getTables();
-        $this->assertTrue(in_array(_dbprefix_ . "testclass", $arrTables));
-        $this->assertTrue(in_array(_dbprefix_ . "testclass_rel", $arrTables));
-        $this->assertTrue(in_array(_dbprefix_ . "testclass2_rel", $arrTables));
+        $this->assertTrue(in_array("agp_testclass", $arrTables));
+        $this->assertTrue(in_array("agp_testclass_rel", $arrTables));
+        $this->assertTrue(in_array("agp_testclass2_rel", $arrTables));
 
         //fetch table informations
-        $arrTable = $objDb->getColumnsOfTable(_dbprefix_ . "testclass_rel");
+        $arrTable = $objDb->getColumnsOfTable("agp_testclass_rel");
 
         $arrColumnNames = array_map(function ($arrValue) {
             return $arrValue["columnName"];
@@ -151,7 +151,7 @@ class OrmSchemamanagerTest extends Testbase
         $this->assertTrue(in_array("testclass_source_id", $arrColumnNames));
         $this->assertTrue(in_array("testclass_target_id", $arrColumnNames));
 
-        $arrTable = $objDb->getColumnsOfTable(_dbprefix_ . "testclass2_rel");
+        $arrTable = $objDb->getColumnsOfTable("agp_testclass2_rel");
 
         $arrColumnNames = array_map(function ($arrValue) {
             return $arrValue["columnName"];
@@ -166,27 +166,27 @@ class OrmSchemamanagerTest extends Testbase
 
 /**
  *
- * @targetTable ormtest.content_id
+ * @targetTable agp_ormtest.content_id
  */
 class OrmSchematestTestclass
 {
 
     /**
      * @var string
-     * @tableColumn ormtest.col1
+     * @tableColumn agp_ormtest.col1
      */
     private $strCol1 = "";
 
     /**
      * @var string
-     * @tableColumn ormtest.col2
+     * @tableColumn agp_ormtest.col2
      * @tableColumnDatatype text
      */
     private $strCol2 = "";
 
     /**
      * @var int
-     * @tableColumn ormtest.col3
+     * @tableColumn agp_ormtest.col3
      * @tableColumnDatatype long
      */
     private $longCol3 = 0;
@@ -194,14 +194,14 @@ class OrmSchematestTestclass
 
 /**
  *
- * @targetTable ormtest.content_id
+ * @targetTable agp_ormtest.content_id
  */
 class OrmSchematestTestclassDatatype
 {
 
     /**
      * @var int
-     * @tableColumn ormtest.col3
+     * @tableColumn agp_ormtest.col3
      * @tableColumnDatatype extralong
      */
     private $longCol3 = 0;
@@ -209,15 +209,15 @@ class OrmSchematestTestclassDatatype
 
 /**
  *
- * @targetTable ormtest.content_id
- * @targetTable ormtest2.content_id
+ * @targetTable agp_ormtest.content_id
+ * @targetTable agp_ormtest2.content_id
  */
 class OrmSchematestTestclassTablecolumn
 {
 
     /**
      * @var int
-     * @tableColumn ormtestcol3
+     * @tableColumn agp_ormtestcol3
      * @tableColumnDatatype long
      */
     private $longCol3 = 0;
@@ -234,7 +234,7 @@ class OrmSchematestTestclassTargettable1
 }
 
 /**
- * @targetTable ormtest
+ * @targetTable agp_ormtest
  */
 class OrmSchematestTestclassTargettable2
 {
@@ -244,21 +244,21 @@ class OrmSchematestTestclassTargettable2
 
 /**
  *
- * @targetTable testclass.testclass_id
+ * @targetTable agp_testclass.testclass_id
  */
 class OrmSchematestTestclassAssignments
 {
 
     /**
      * @var array
-     * @objectList testclass_rel (source="testclass_source_id", target="testclass_target_id")
+     * @objectList agp_testclass_rel (source="testclass_source_id", target="testclass_target_id")
      */
     private $arrObject1 = array();
 
 
     /**
      * @var array
-     * @objectList testclass2_rel (source="testclass_source_id", target="testclass_target_id")
+     * @objectList agp_testclass2_rel (source="testclass_source_id", target="testclass_target_id")
      */
     private $arrObject2 = array();
 

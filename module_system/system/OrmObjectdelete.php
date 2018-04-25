@@ -46,7 +46,7 @@ class OrmObjectdelete extends OrmBase
         if (count($arrTargetTables) > 0) {
             foreach ($arrTargetTables as $strOneTable) {
                 $arrSingleTable = explode(".", $strOneTable);
-                $strQuery = "DELETE FROM ".$objDB->encloseTableName(_dbprefix_.$arrSingleTable[0])."
+                $strQuery = "DELETE FROM ".$objDB->encloseTableName($arrSingleTable[0])."
                                    WHERE ".$objDB->encloseColumnName($arrSingleTable[1])." = ? ";
 
                 $bitReturn = $bitReturn && $objDB->_pQuery($strQuery, array($this->getObjObject()->getSystemid()));
@@ -76,7 +76,7 @@ class OrmObjectdelete extends OrmBase
             $objCfg = OrmAssignmentConfig::getConfigForProperty($this->getObjObject(), $strPropertyName);
 
             $bitReturn = $bitReturn && $objDB->_pQuery(
-                    "DELETE FROM ".$objDB->encloseTableName(_dbprefix_.$objCfg->getStrTableName())." WHERE ".$objDB->encloseColumnName($objCfg->getStrSourceColumn())." = ? ", array($this->getObjObject()->getSystemid())
+                    "DELETE FROM ".$objDB->encloseTableName($objCfg->getStrTableName())." WHERE ".$objDB->encloseColumnName($objCfg->getStrSourceColumn())." = ? ", array($this->getObjObject()->getSystemid())
                 );
         }
 

@@ -22,7 +22,7 @@ use Kajona\System\System\OrmObjectlist;
  * @author sidler@mulchprod.de
  * @since 4.0
  *
- * @targetTable tags_favorite.tags_fav_id
+ * @targetTable agp_tags_favorite.tags_fav_id
  *
  * @module tags
  * @moduleId _tags_modul_id_
@@ -31,14 +31,14 @@ class TagsFavorite extends Model implements ModelInterface, AdminListableInterfa
 
     /**
      * @var string
-     * @tableColumn tags_favorite.tags_fav_tagid
+     * @tableColumn agp_tags_favorite.tags_fav_tagid
      * @tableColumnDatatype char20
      */
     private $strTagId;
 
     /**
      * @var string
-     * @tableColumn tags_favorite.tags_fav_userid
+     * @tableColumn agp_tags_favorite.tags_fav_userid
      * @tableColumnDatatype char20
      */
     private $strUserId;
@@ -100,9 +100,9 @@ class TagsFavorite extends Model implements ModelInterface, AdminListableInterfa
 
         $objORM = new OrmObjectlist();
         $strQuery = "SELECT tags_fav_id
-                       FROM "._dbprefix_."tags_favorite,
-                            "._dbprefix_."tags_tag,
-                            "._dbprefix_."system
+                       FROM agp_tags_favorite,
+                            agp_tags_tag,
+                            agp_system
                      WHERE tags_fav_id = system_id
                        AND tags_fav_userid = ?
                        AND tags_fav_tagid = tags_tag_id
@@ -129,9 +129,9 @@ class TagsFavorite extends Model implements ModelInterface, AdminListableInterfa
     public static function getAllFavoritesForTag($strTagid) {
         $objORM = new OrmObjectlist();
         $strQuery = "SELECT tags_fav_id
-                       FROM "._dbprefix_."tags_favorite,
-                            "._dbprefix_."tags_tag,
-                            "._dbprefix_."system
+                       FROM agp_tags_favorite,
+                            agp_tags_tag,
+                            agp_system
                      WHERE tags_fav_id = system_id
                        AND tags_fav_tagid = ?
                        AND tags_fav_tagid = tags_tag_id
@@ -159,9 +159,9 @@ class TagsFavorite extends Model implements ModelInterface, AdminListableInterfa
     public static function getAllFavoritesForUser($strUserid, $intStart = null, $intEnd = null) {
         $objORM = new OrmObjectlist();
         $strQuery = "SELECT tags_fav_id
-                       FROM "._dbprefix_."tags_favorite,
-                            "._dbprefix_."tags_tag,
-                            "._dbprefix_."system
+                       FROM agp_tags_favorite,
+                            agp_tags_tag,
+                            agp_system
                      WHERE tags_fav_id = system_id
                        AND tags_fav_userid = ?
                        AND tags_fav_tagid = tags_tag_id
@@ -188,9 +188,9 @@ class TagsFavorite extends Model implements ModelInterface, AdminListableInterfa
 
         $objORM = new OrmObjectlist();
         $strQuery = "SELECT COUNT(*) AS cnt
-                       FROM "._dbprefix_."tags_favorite,
-                            "._dbprefix_."tags_tag,
-                            "._dbprefix_."system
+                       FROM agp_tags_favorite,
+                            agp_tags_tag,
+                            agp_system
                      WHERE tags_fav_id = system_id
                        AND tags_fav_userid = ?
                        AND tags_fav_tagid = tags_tag_id

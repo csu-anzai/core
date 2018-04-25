@@ -22,7 +22,7 @@ use Kajona\System\System\Usersources\UsersourcesGroupInterface;
  * @module user
  * @moduleId _user_modul_id_
  *
- * @targetTable user_group.group_id
+ * @targetTable agp_user_group.group_id
  */
 class UserGroup extends Model implements ModelInterface, AdminListableInterface, VersionableInterface
 {
@@ -38,7 +38,7 @@ class UserGroup extends Model implements ModelInterface, AdminListableInterface,
 
     /**
      * @var string
-     * @tableColumn user_group.group_subsystem
+     * @tableColumn agp_user_group.group_subsystem
      * @tableColumnDatatype char254
      * @tableColumnIndex
      */
@@ -46,7 +46,7 @@ class UserGroup extends Model implements ModelInterface, AdminListableInterface,
 
     /**
      * @var string
-     * @tableColumn user_group.group_name
+     * @tableColumn agp_user_group.group_name
      * @tableColumnDatatype char254
      * @tableColumnIndex
      * @listOrder ASC
@@ -56,14 +56,14 @@ class UserGroup extends Model implements ModelInterface, AdminListableInterface,
 
     /**
      * @var int
-     * @tableColumn user_group.group_short_id
+     * @tableColumn agp_user_group.group_short_id
      * @tableColumnDatatype int
      */
     private $intShortId = 0;
 
     /**
      * @var int
-     * @tableColumn user_group.group_system_group
+     * @tableColumn agp_user_group.group_system_group
      * @tableColumnDatatype int
      */
     private $intSystemGroup = 0;
@@ -268,7 +268,7 @@ class UserGroup extends Model implements ModelInterface, AdminListableInterface,
         }
 
         //not found in cache, refill
-        foreach (Carrier::getInstance()->getObjDB()->getPArray("SELECT group_id, group_short_id FROM "._dbprefix_."user_group", array()) as $arrOneRow) {
+        foreach (Carrier::getInstance()->getObjDB()->getPArray("SELECT group_id, group_short_id FROM agp_user_group", array()) as $arrOneRow) {
             self::$arrShortIds[$arrOneRow["group_id"]] = $arrOneRow["group_short_id"];
         }
 
@@ -300,7 +300,7 @@ class UserGroup extends Model implements ModelInterface, AdminListableInterface,
         }
 
         //fill the cache completely
-        foreach (Carrier::getInstance()->getObjDB()->getPArray("SELECT group_id, group_short_id FROM "._dbprefix_."user_group", array()) as $arrOneRow) {
+        foreach (Carrier::getInstance()->getObjDB()->getPArray("SELECT group_id, group_short_id FROM agp_user_group", array()) as $arrOneRow) {
             $arrIds[$arrOneRow["group_short_id"]] = $arrOneRow["group_id"];
         }
 

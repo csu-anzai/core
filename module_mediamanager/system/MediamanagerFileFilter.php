@@ -34,7 +34,7 @@ class MediamanagerFileFilter extends FilterBase
 
     /**
      * @var string
-     * @tableColumn mediamanager_file.file_filename
+     * @tableColumn agp_mediamanager_file.file_filename
      * @tableColumnDatatype char254
      */
     private $strFilename;

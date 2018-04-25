@@ -30,14 +30,25 @@ class PackagemanagerMetadata implements AdminListableInterface
 {
 
     private $strTitle;
+
+    /**
+     * @var
+     * @deprecated
+     */
     private $strTarget;
     private $strDescription;
     private $strVersion;
     private $strAuthor;
-    private $strType;
+
+    /**
+     * @var string
+     * @deprecated
+     */
+    private $strType = "MODULE";
     private $bitProvidesInstaller;
     private $arrRequiredModules = array();
     private $arrScreenshots = array();
+    private $constants = array();
 
     private $strContentprovider;
     private $strPath;
@@ -55,13 +66,7 @@ class PackagemanagerMetadata implements AdminListableInterface
      */
     public function getStrIcon()
     {
-        if ($this->getStrType() == "TEMPLATE") {
-            return "icon_dot";
-        }
-        else {
-            return "icon_module";
-        }
-
+        return "icon_module";
     }
 
     /**
@@ -123,6 +128,7 @@ class PackagemanagerMetadata implements AdminListableInterface
      * @param string $strPath
      *
      * @return void
+     * @throws Exception
      */
     public function autoInit($strPath)
     {
@@ -169,20 +175,19 @@ class PackagemanagerMetadata implements AdminListableInterface
 
         if (substr($strPackage, 0, 7) == "phar://") {
             $strFile = _realpath_.substr($strPackage, 7);
-        }
-        else {
+        } else {
             $strFile = _realpath_.$strPackage;
         }
 
         $strMetadata = "";
         //if its a project phar, we need to set another alias
-        if(StringUtil::indexOf($strPackage, "/project") !== false) {
+        if (StringUtil::indexOf($strPackage, "/project") !== false) {
             //load the metadata without registering the phar, this could lead to multiple registered aliases
             $strMetadata = file_get_contents("phar://{$strFile}/metadata.xml");
 
         } else {
             $objPhar = new Phar($strFile);
-            if(isset($objPhar["metadata.xml"])) {
+            if (isset($objPhar["metadata.xml"])) {
                 $strMetadata = file_get_contents($objPhar["metadata.xml"]->getPathname());
             }
         }
@@ -226,71 +231,40 @@ class PackagemanagerMetadata implements AdminListableInterface
      */
     private function parseXMLDocument($strXmlDocument)
     {
-        $objXml = new XmlParser();
-        $objXml->loadString($strXmlDocument);
-        $arrXml = $objXml->xmlToArray();
+        $xml = new \SimpleXMLElement($strXmlDocument);
 
+        $this->setStrTitle((string)$xml->title);
+        $this->setStrDescription((string)$xml->description);
+        $this->setStrVersion((string)$xml->version);
+        $this->setStrAuthor((string)$xml->author);
+        $this->setBitProvidesInstaller((string)$xml->providesInstaller == "TRUE");
 
-        $this->setStrTitle($arrXml["package"]["0"]["title"]["0"]["value"]);
-        $this->setStrDescription($arrXml["package"]["0"]["description"]["0"]["value"]);
-        $this->setStrVersion($arrXml["package"]["0"]["version"]["0"]["value"]);
-        $this->setStrAuthor($arrXml["package"]["0"]["author"]["0"]["value"]);
-        if (isset($arrXml["package"]["0"]["target"]["0"]["value"])) {
-            $this->setStrTarget($arrXml["package"]["0"]["target"]["0"]["value"]);
-        }
-
-        $this->setStrType($arrXml["package"]["0"]["type"]["0"]["value"]);
-        $this->setBitProvidesInstaller($arrXml["package"]["0"]["providesInstaller"]["0"]["value"] == "TRUE");
-
-        if (is_array($arrXml["package"]["0"]["requiredModules"])) {
-            foreach ($arrXml["package"]["0"]["requiredModules"] as $arrModules) {
-
-                if (!is_array($arrModules)) {
-                    continue;
-                }
-
-                foreach ($arrModules as $arrTempModule) {
-                    if (!is_array($arrTempModule)) {
-                        continue;
-                    }
-
-
-                    foreach ($arrTempModule as $arrOneModule) {
-                        if (isset($arrOneModule["attributes"]["name"])) {
-                            $strModule = $arrOneModule["attributes"]["name"];
-                            $strVersion = $arrOneModule["attributes"]["version"];
-                            $this->arrRequiredModules[$strModule] = $strVersion;
-                        }
-                    }
-                }
-
+        if (isset($xml->requiredModules)) {
+            foreach ($xml->requiredModules->module as $module) {
+                $strModule = (string)$module["name"];
+                $strVersion = (string)$module["version"];
+                $this->arrRequiredModules[$strModule] = $strVersion;
             }
         }
 
-        if (isset($arrXml["package"]["0"]["screenshots"]) && is_array($arrXml["package"]["0"]["screenshots"])) {
-            foreach ($arrXml["package"]["0"]["screenshots"] as $arrScreenshots) {
-                if (!is_array($arrScreenshots)) {
-                    continue;
-                }
+        if (isset($xml->screenshots)) {
+            foreach ($xml->screenshots->screenshot as $screenshot) {
+                $strImage = (string)$screenshot["path"];
 
-                foreach ($arrScreenshots as $arrTempImage) {
-                    if (!is_array($arrTempImage)) {
-                        continue;
-                    }
-
-                    foreach ($arrTempImage as $arrOneImage) {
-                        if (isset($arrOneImage["attributes"]["path"])) {
-                            $strImage = $arrOneImage["attributes"]["path"];
-
-                            if (in_array(StringUtil::toLowerCase(StringUtil::substring($strImage, -4)), array(".jpg", ".jpeg", ".gif", ".png"))) {
-                                $this->arrScreenshots[] = $strImage;
-                            }
-                        }
-                    }
+                if (in_array(StringUtil::toLowerCase(StringUtil::substring($strImage, -4)), array(".jpg", ".jpeg", ".gif", ".png"))) {
+                    $this->arrScreenshots[] = $strImage;
                 }
             }
+
         }
 
+        if (isset($xml->constants)) {
+            foreach ($xml->constants->constant as $constant) {
+                $name = (string)$constant["name"];
+                $value = (string)$constant["value"];
+                $this->constants[$name] = $value;
+            }
+        }
     }
 
 
@@ -406,6 +380,7 @@ class PackagemanagerMetadata implements AdminListableInterface
      * @param string $strType
      *
      * @return void
+     * @deprecated
      */
     public function setStrType($strType)
     {
@@ -414,6 +389,7 @@ class PackagemanagerMetadata implements AdminListableInterface
 
     /**
      * @return mixed
+     * @deprecated
      */
     public function getStrType()
     {
@@ -424,6 +400,7 @@ class PackagemanagerMetadata implements AdminListableInterface
      * @param string $strTarget
      *
      * @return void
+     * @deprecated
      */
     public function setStrTarget($strTarget)
     {
@@ -432,6 +409,7 @@ class PackagemanagerMetadata implements AdminListableInterface
 
     /**
      * @return mixed
+     * @deprecated
      */
     public function getStrTarget()
     {
@@ -490,5 +468,20 @@ class PackagemanagerMetadata implements AdminListableInterface
         return $this->bitIsPhar;
     }
 
+    /**
+     * @return array
+     */
+    public function getConstants(): array
+    {
+        return $this->constants;
+    }
+
+    /**
+     * @param array $constants
+     */
+    public function setConstants(array $constants)
+    {
+        $this->constants = $constants;
+    }
 
 }

@@ -68,7 +68,7 @@ abstract class Root
      * The records current systemid
      *
      * @var string
-     * @tableColumn system.system_id
+     * @tableColumn agp_system.system_id
      */
     private $strSystemid = "";
 
@@ -78,7 +78,7 @@ abstract class Root
      * @var string
      * @versionable
      *
-     * @tableColumn system.system_prev_id
+     * @tableColumn agp_system.system_prev_id
      */
     private $strPrevId = -1;
 
@@ -93,7 +93,7 @@ abstract class Root
      * The records module-number
      *
      * @var int
-     * @tableColumn system.system_module_nr
+     * @tableColumn agp_system.system_module_nr
      */
     private $intModuleNr = 0;
 
@@ -101,7 +101,7 @@ abstract class Root
      * The records sort-position relative to the parent record
      *
      * @var int
-     * @tableColumn system.system_sort
+     * @tableColumn agp_system.system_sort
      */
     private $intSort = -1;
 
@@ -110,7 +110,7 @@ abstract class Root
      *
      * @var string
      * @versionable
-     * @tableColumn system.system_owner
+     * @tableColumn agp_system.system_owner
      */
     private $strOwner = "";
 
@@ -118,7 +118,7 @@ abstract class Root
      * The id of the user last who did the last changes to the current record
      *
      * @var string
-     * @tableColumn system.system_lm_user
+     * @tableColumn agp_system.system_lm_user
      */
     private $strLmUser = "";
 
@@ -128,7 +128,7 @@ abstract class Root
      *
      * @todo migrate to long-timestamp
      * @var int
-     * @tableColumn system.system_lm_time
+     * @tableColumn agp_system.system_lm_time
      */
     private $intLmTime = 0;
 
@@ -136,7 +136,7 @@ abstract class Root
      * The id of the user locking the current record, empty otherwise
      *
      * @var string
-     * @tableColumn system.system_lock_id
+     * @tableColumn agp_system.system_lock_id
      */
     private $strLockId = "";
 
@@ -146,7 +146,7 @@ abstract class Root
      *
      * @todo migrate to long-timestamp
      * @var int
-     * @tableColumn system.system_lock_time
+     * @tableColumn agp_system.system_lock_time
      */
     private $intLockTime = 0;
 
@@ -155,7 +155,7 @@ abstract class Root
      *
      * @var int
      * @versionable
-     * @tableColumn system.system_status
+     * @tableColumn agp_system.system_status
      */
     private $intRecordStatus = 1;
 
@@ -171,7 +171,7 @@ abstract class Root
      *
      * @var int
      * @versionable
-     * @tableColumn system.system_deleted
+     * @tableColumn agp_system.system_deleted
      */
     private $intRecordDeleted = 0;
 
@@ -179,7 +179,7 @@ abstract class Root
      * Holds the current objects' class
      *
      * @var string
-     * @tableColumn system.system_class
+     * @tableColumn agp_system.system_class
      */
     private $strRecordClass = "";
 
@@ -187,7 +187,7 @@ abstract class Root
      * Long-based representation of the timestamp the record was created initially
      *
      * @var int
-     * @tableColumn system.system_create_date
+     * @tableColumn agp_system.system_create_date
      */
     private $longCreateDate = 0;
 
@@ -196,7 +196,7 @@ abstract class Root
      *
      * @var Date
      * @versionable
-     * @tableColumn system_date.system_date_start
+     * @tableColumn agp_system_date.system_date_start
      * @deprecated
      */
     private $objStartDate = null;
@@ -206,7 +206,7 @@ abstract class Root
      *
      * @var Date
      * @versionable
-     * @tableColumn system_date.system_date_end
+     * @tableColumn agp_system_date.system_date_end
      * @deprecated
      */
     private $objEndDate = null;
@@ -216,7 +216,7 @@ abstract class Root
      *
      * @var Date
      * @versionable
-     * @tableColumn system_date.system_date_special
+     * @tableColumn agp_system_date.system_date_special
      * @deprecated
      */
     private $objSpecialDate = null;
@@ -325,8 +325,8 @@ abstract class Root
                 $arrRow = $this->arrInitRow;
             } else {
                 $strQuery = "SELECT *
-                               FROM "._dbprefix_."system
-                          LEFT JOIN "._dbprefix_."system_date
+                               FROM agp_system
+                          LEFT JOIN agp_system_date
                                  ON system_id = system_date_id
                               WHERE system_id = ? ";
                 $arrRow = $this->objDB->getPRow($strQuery, array($this->getSystemid()));
@@ -526,7 +526,7 @@ abstract class Root
     protected function deleteChildObjects()
     {
         //validate, if there are subrecords, so child nodes to be deleted
-        $arrChilds = $this->objDB->getPArray("SELECT system_id FROM " . _dbprefix_ . "system where system_prev_id = ? ORDER BY system_sort DESC", array($this->getSystemid()));
+        $arrChilds = $this->objDB->getPArray("SELECT system_id FROM agp_system where system_prev_id = ? ORDER BY system_sort DESC", array($this->getSystemid()));
         foreach ($arrChilds as $arrOneChild) {
             if (validateSystemid($arrOneChild["system_id"])) {
                 $objInstance = Objectfactory::getInstance()->getObject($arrOneChild["system_id"]);
@@ -596,7 +596,7 @@ abstract class Root
     protected function deleteChildObjectsFromDatabase()
     {
         //validate, if there are subrecords, so child nodes to be deleted
-        $arrChilds = $this->objDB->getPArray("SELECT system_id FROM " . _dbprefix_ . "system where system_prev_id = ? ORDER BY system_sort DESC", array($this->getSystemid()));
+        $arrChilds = $this->objDB->getPArray("SELECT system_id FROM agp_system where system_prev_id = ? ORDER BY system_sort DESC", array($this->getSystemid()));
         foreach ($arrChilds as $arrOneChild) {
             if (validateSystemid($arrOneChild["system_id"])) {
                 $objInstance = Objectfactory::getInstance()->getObject($arrOneChild["system_id"]);
@@ -685,7 +685,7 @@ abstract class Root
                 if (count($arrTargetTables) > 0) {
                     foreach ($arrTargetTables as $strOneConfig) {
                         $arrSingleTable = explode(".", $strOneConfig);
-                        $strQuery = "INSERT INTO ".$this->objDB->encloseTableName(_dbprefix_.$arrSingleTable[0])."
+                        $strQuery = "INSERT INTO ".$this->objDB->encloseTableName($arrSingleTable[0])."
                                                 (".$this->objDB->encloseColumnName($arrSingleTable[1]).") VALUES
                                                 (?) ";
 
@@ -825,7 +825,7 @@ abstract class Root
         if ($bitCopyChilds) {
             //process subrecords
             //validate, if there are subrecords, so child nodes to be copied to the current record
-            $arrChilds = $this->objDB->getPArray("SELECT system_id FROM "._dbprefix_."system where system_prev_id = ? AND system_deleted = 0 ORDER BY CASE WHEN system_sort < 0 THEN 9999999 ELSE system_sort END ASC, system_create_date DESC", array($strOldSysid));
+            $arrChilds = $this->objDB->getPArray("SELECT system_id FROM agp_system where system_prev_id = ? AND system_deleted = 0 ORDER BY CASE WHEN system_sort < 0 THEN 9999999 ELSE system_sort END ASC, system_create_date DESC", array($strOldSysid));
             foreach ($arrChilds as $arrOneChild) {
                 if (validateSystemid($arrOneChild["system_id"])) {
                     $objInstance = Objectfactory::getInstance()->getObject($arrOneChild["system_id"]);
@@ -921,7 +921,7 @@ abstract class Root
 
         Logger::getInstance()->info("updated systemrecord ".$this->getStrSystemid()." data");
 
-        $strQuery = "UPDATE "._dbprefix_."system
+        $strQuery = "UPDATE agp_system
                 SET system_prev_id = ?,
                     system_module_nr = ?,
                     system_sort = ?,
@@ -992,9 +992,9 @@ abstract class Root
 
         //determine the correct new sort-id - append by default
         if (SystemModule::getModuleByName("system") != null && version_compare(SystemModule::getModuleByName("system")->getStrVersion(), "4.7.5", "lt")) {
-            $strQuery = "SELECT COUNT(*) AS cnt FROM "._dbprefix_."system WHERE system_prev_id = ? AND system_id != '0' AND system_sort > -1";
+            $strQuery = "SELECT COUNT(*) AS cnt FROM agp_system WHERE system_prev_id = ? AND system_id != '0' AND system_sort > -1";
         } else {
-            $strQuery = "SELECT COUNT(*) AS cnt FROM "._dbprefix_."system WHERE system_prev_id = ? AND system_id != '0' AND system_deleted = 0 AND system_sort > -1";
+            $strQuery = "SELECT COUNT(*) AS cnt FROM agp_system WHERE system_prev_id = ? AND system_id != '0' AND system_deleted = 0 AND system_sort > -1";
         }
         $arrRow = $this->objDB->getPRow($strQuery, array($strPrevId), 0, false);
         $intSiblings = $arrRow["cnt"];
@@ -1027,7 +1027,7 @@ abstract class Root
 
         if (SystemModule::getModuleByName("system") != null && version_compare(SystemModule::getModuleByName("system")->getStrVersion(), "6.2.3", "<")) {
             //So, lets generate the record
-            $strQuery = "INSERT INTO "._dbprefix_."system
+            $strQuery = "INSERT INTO agp_system
                  ( system_id, system_prev_id, system_module_nr, system_owner, system_create_date, system_lm_user,
                    system_lm_time, system_status, system_sort, system_class, system_deleted) VALUES
                  (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -1052,12 +1052,12 @@ abstract class Root
             );
 
             //we need a Rights-Record
-            $this->objDB->_pQuery("INSERT INTO "._dbprefix_."system_right (right_id, right_inherit) VALUES (?, 1)", array($strSystemId));
+            $this->objDB->_pQuery("INSERT INTO agp_system_right (right_id, right_inherit) VALUES (?, 1)", array($strSystemId));
 
         } else {
 
             //So, lets generate the record
-            $strQuery = "INSERT INTO "._dbprefix_."system
+            $strQuery = "INSERT INTO agp_system
                  ( system_id, 
                  system_prev_id, 
                  system_module_nr, 
@@ -1137,15 +1137,15 @@ abstract class Root
             $intSpecial = $this->objSpecialDate->getLongTimestamp();
         }
 
-        $arrRow = $this->objDB->getPRow("SELECT COUNT(*) AS cnt FROM "._dbprefix_."system_date WHERE system_date_id = ?", array($this->getSystemid()));
+        $arrRow = $this->objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_system_date WHERE system_date_id = ?", array($this->getSystemid()));
         if ($arrRow["cnt"] == 0) {
             //insert
-            $strQuery = "INSERT INTO "._dbprefix_."system_date
+            $strQuery = "INSERT INTO agp_system_date
                       (system_date_id, system_date_start, system_date_end, system_date_special) VALUES
                       (?, ?, ?, ?)";
             return $this->objDB->_pQuery($strQuery, array($this->getSystemid(), $intStart, $intEnd, $intSpecial));
         } else {
-            $strQuery = "UPDATE "._dbprefix_."system_date
+            $strQuery = "UPDATE agp_system_date
                       SET system_date_start = ?,
                           system_date_end = ?,
                           system_date_special = ?
@@ -1186,7 +1186,7 @@ abstract class Root
             $intSpecial = $objSpecialDate->getLongTimestamp();
         }
 
-        $strQuery = "INSERT INTO "._dbprefix_."system_date
+        $strQuery = "INSERT INTO agp_system_date
                       (system_date_id, system_date_start, system_date_end, system_date_special) VALUES
                       (?, ?, ?, ?)";
         return $this->objDB->_pQuery($strQuery, array($strSystemid, $intStart, $intEnd, $intSpecial));
@@ -1223,7 +1223,7 @@ abstract class Root
             $intSpecial = $objSpecialDate->getLongTimestamp();
         }
 
-        $strQuery = "UPDATE "._dbprefix_."system_date
+        $strQuery = "UPDATE agp_system_date
                       SET system_date_start = ?,
                           system_date_end = ?,
                           system_date_special = ?
@@ -1360,8 +1360,8 @@ abstract class Root
         }
 
         $strQuery = "SELECT COUNT(*) AS cnt
-                     FROM "._dbprefix_."system as sys1,
-                          "._dbprefix_."system as sys2
+                     FROM agp_system as sys1,
+                          agp_system as sys2
                      WHERE sys1.system_id=?
                        AND sys2.system_prev_id = sys1.system_prev_id";
         $arrRow = $this->objDB->getPRow($strQuery, array($strSystemid), 0, $bitUseCache);
@@ -1387,7 +1387,7 @@ abstract class Root
         $objORM = new OrmObjectlist();
 
         $strQuery = "SELECT system_id
-                     FROM "._dbprefix_."system
+                     FROM agp_system
                      WHERE system_prev_id=?
                        AND system_id != '0'
                        ".$objORM->getDeletedWhereRestriction()."
@@ -1473,8 +1473,8 @@ abstract class Root
         if ($strSystemid == "") {
             $strSystemid = $this->getSystemid();
         }
-        $strQuery = "SELECT * FROM "._dbprefix_."system
-                         LEFT JOIN "._dbprefix_."system_date
+        $strQuery = "SELECT * FROM agp_system
+                         LEFT JOIN agp_system_date
                               ON system_id = system_date_id
                              WHERE system_id = ?";
         return $this->objDB->getPRow($strQuery, array($strSystemid));
@@ -1514,11 +1514,11 @@ abstract class Root
         //Start a tx before deleting anything
         $this->objDB->transactionBegin();
 
-        $strQuery = "DELETE FROM "._dbprefix_."system WHERE system_id = ?";
+        $strQuery = "DELETE FROM agp_system WHERE system_id = ?";
         $bitResult = $bitResult && $this->objDB->_pQuery($strQuery, array($strSystemid));
 
         if ($bitDate) {
-            $strQuery = "DELETE FROM "._dbprefix_."system_date WHERE system_date_id = ?";
+            $strQuery = "DELETE FROM agp_system_date WHERE system_date_id = ?";
             $bitResult = $bitResult && $this->objDB->_pQuery($strQuery, array($strSystemid));
         }
 

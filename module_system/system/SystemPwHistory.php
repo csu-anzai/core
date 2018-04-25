@@ -13,7 +13,7 @@ use Kajona\System\System\Usersources\UsersourcesUserKajona;
 /**
  * @author christoph.kappestein@gmail.com
  *
- * @targetTable user_pwhistory.id
+ * @targetTable agp_user_pwhistory.id
  * @module system
  * @moduleId _system_modul_id_
  */
@@ -21,7 +21,7 @@ class SystemPwHistory extends Model implements ModelInterface, AdminListableInte
 {
     /**
      * @var string
-     * @tableColumn user_pwhistory.history_targetuser
+     * @tableColumn agp_user_pwhistory.history_targetuser
      * @tableColumnDatatype char20
      * @tableColumnIndex
      */
@@ -29,7 +29,7 @@ class SystemPwHistory extends Model implements ModelInterface, AdminListableInte
 
     /**
      * @var string
-     * @tableColumn user_pwhistory.history_pass
+     * @tableColumn agp_user_pwhistory.history_pass
      * @tableColumnDatatype char254
      * @tableColumnIndex
      */
@@ -37,7 +37,7 @@ class SystemPwHistory extends Model implements ModelInterface, AdminListableInte
 
     /**
      * @var string
-     * @tableColumn user_pwhistory.history_changedate
+     * @tableColumn agp_user_pwhistory.history_changedate
      * @tableColumnDatatype long
      * @tableColumnIndex
      */
@@ -126,8 +126,7 @@ class SystemPwHistory extends Model implements ModelInterface, AdminListableInte
      */
     public static function isPasswordInHistory(UsersourcesUserKajona $objUser, $strPassword, $intLength)
     {
-        $strPrefix = _dbprefix_;
-        $strQuery = "SELECT history_pass FROM {$strPrefix}user_pwhistory WHERE history_targetuser = ? ORDER BY history_changedate DESC";
+        $strQuery = "SELECT history_pass FROM agp_user_pwhistory WHERE history_targetuser = ? ORDER BY history_changedate DESC";
         $arrPwHistory = Database::getInstance()->getPArray($strQuery, [$objUser->getSystemid()], 0, $intLength);
 
         foreach ($arrPwHistory as $arrRow) {
@@ -147,8 +146,7 @@ class SystemPwHistory extends Model implements ModelInterface, AdminListableInte
      */
     public static function getLastChangeDate(UsersourcesUserKajona $objUser)
     {
-        $strPrefix = _dbprefix_;
-        $strQuery = "SELECT history_changedate FROM {$strPrefix}user_pwhistory WHERE history_targetuser = ? ORDER BY history_changedate DESC";
+        $strQuery = "SELECT history_changedate FROM agp_user_pwhistory WHERE history_targetuser = ? ORDER BY history_changedate DESC";
         $arrRow = Database::getInstance()->getPRow($strQuery, [$objUser->getSystemid()]);
         if (isset($arrRow["history_changedate"])) {
             return new Date($arrRow["history_changedate"]);
