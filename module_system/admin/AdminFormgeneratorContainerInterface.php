@@ -11,8 +11,8 @@ namespace Kajona\System\Admin;
 use Kajona\System\Admin\Formentries\FormentryBase;
 
 /**
- * Interface which indicates that a form entry contains other form entries. Through this it is possible to show
- * validation errors also for nested entries
+ * Interface which indicates that class contains form entries. Through this it is possible to show validation errors
+ * also for nested entries
  *
  * @author christoph.kappestein@gmail.com
  * @since 7.1
