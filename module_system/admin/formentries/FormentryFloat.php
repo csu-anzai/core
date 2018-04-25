@@ -21,7 +21,7 @@ use Kajona\System\System\Validators\NumericValidator;
  */
 class FormentryFloat extends FormentryBase implements FormentryPrintableInterface
 {
-
+    private $intNrOfDecimals = 2;
 
     public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
     {
@@ -57,7 +57,7 @@ class FormentryFloat extends FormentryBase implements FormentryPrintableInterfac
             $strReturn .= $objToolkit->formTextRow($this->getStrHint());
         }
 
-        $strValue = self::getStrUIValue($this->getStrValue());
+        $strValue = self::getStrUIValue($this->getStrValue(), $this->intNrOfDecimals);
         $strReturn .= $objToolkit->formInputText($this->getStrEntryName(), $this->getStrLabel(), $strValue, "inputText", "", $this->getBitReadonly());
 
         return $strReturn;
@@ -105,9 +105,10 @@ class FormentryFloat extends FormentryBase implements FormentryPrintableInterfac
      *
      * @param mixed $strInputValue
      *
+     * @param int $intNrOfDecimals
      * @return mixed
      */
-    public static function getStrUIValue($strInputValue)
+    public static function getStrUIValue($strInputValue, $intNrOfDecimals = 2)
     {
         $strValue = $strInputValue;
 
@@ -115,6 +116,16 @@ class FormentryFloat extends FormentryBase implements FormentryPrintableInterfac
             return $strValue;
         }
 
-        return numberFormat($strValue, 2);
+        return numberFormat($strValue, $intNrOfDecimals);
     }
+
+    /**
+     * @param int $intNrOfDecimals
+     */
+    public function setIntNrOfDecimals(int $intNrOfDecimals)
+    {
+        $this->intNrOfDecimals = $intNrOfDecimals;
+    }
+
+
 }
