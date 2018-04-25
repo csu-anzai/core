@@ -46,7 +46,7 @@ use Kajona\System\System\Validators\SystemidValidator;
  * @since  4.0
  * @module module_formgenerator
  */
-class AdminFormgenerator implements \Countable
+class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Countable
 {
     const STR_METHOD_POST = "POST";
     const STR_METHOD_GET = "GET";
@@ -232,14 +232,28 @@ class AdminFormgenerator implements \Countable
      */
     public function getRequiredFields()
     {
-        $arrReturn = array();
-        foreach ($this->arrFields as $objOneField) {
-            if ($objOneField->getBitMandatory()) {
-                $arrReturn[$objOneField->getStrEntryName()] = get_class($objOneField->getObjValidator());
+        return $this->getRequiredContainerFields($this);
+    }
+
+    /**
+     * @param AdminFormgeneratorContainerInterface $container
+     * @return array
+     */
+    private function getRequiredContainerFields(AdminFormgeneratorContainerInterface $container)
+    {
+        $return = [];
+        $fields = $container->getFields();
+        foreach ($fields as $field) {
+            if ($field->getBitMandatory()) {
+                $return[$field->getStrEntryName()] = get_class($field->getObjValidator());
+            }
+
+            if ($field instanceof AdminFormgeneratorContainerInterface) {
+                $return = array_merge($return, $this->getRequiredContainerFields($field));
             }
         }
 
-        return $arrReturn;
+        return $return;
     }
 
     /**
@@ -247,37 +261,8 @@ class AdminFormgenerator implements \Countable
      */
     public function getValidationErrorObjects()
     {
-        $arrErrors = [];
-
         //1. Validate fields
-        foreach ($this->arrFields as $objOneField) {
-            if ($objOneField->getBitSkipValidation()) {
-                continue;
-            }
-
-            $bitFieldIsEmpty = $objOneField->isFieldEmpty();
-
-            //mandatory field
-            if ($objOneField->getBitMandatory()) {
-                //if field is mandatory and empty -> validation error
-                if ($bitFieldIsEmpty) {
-                    $strErrorMessage = $objOneField->getStrLabel() != "" ? $this->objLang->getLang("commons_validator_field_empty", "system", array($objOneField->getStrLabel())) : "";
-                    $arrErrors[] = new ValidationError($strErrorMessage, $objOneField->getStrEntryName());
-                }
-            }
-
-            //if field is not empty -> validate
-            if (!$bitFieldIsEmpty) {
-                if (!$objOneField->validateValue()) {
-                    $arrErrorMessages = $objOneField->getValidationErrorMsg();
-                    foreach ($arrErrorMessages as $objValidationError) {
-                        $strFieldName = $objValidationError->getStrFieldName() === null ? $objOneField->getStrEntryName() : $objValidationError->getStrFieldName();
-                        $strMessage = $objOneField->getStrLabel() . ": " .$objValidationError->getStrErrorMessage();
-                        $arrErrors[] = new ValidationError($strMessage, $strFieldName);
-                    }
-                }
-            }
-        }
+        $arrErrors = $this->validateFields($this);
 
         //2. Validate complete object
         if ($this->getObjSourceobject() != null) {
@@ -326,6 +311,51 @@ class AdminFormgenerator implements \Countable
         }
 
         return $arrErrors;
+    }
+
+    /**
+     * @param AdminFormgeneratorContainerInterface $container
+     * @return ValidationError[]
+     */
+    private function validateFields(AdminFormgeneratorContainerInterface $container)
+    {
+        $errors = [];
+        $fields = $container->getFields();
+        foreach ($fields as $field) {
+            if ($field->getBitSkipValidation()) {
+                continue;
+            }
+
+            $isFieldEmpty = $field->isFieldEmpty();
+
+            // mandatory field
+            if ($field->getBitMandatory()) {
+                //if field is mandatory and empty -> validation error
+                if ($isFieldEmpty) {
+                    $errorMessage = $field->getStrLabel() != "" ? $this->objLang->getLang("commons_validator_field_empty", "system", array($field->getStrLabel())) : "";
+                    $errors[] = new ValidationError($errorMessage, $field->getStrEntryName());
+                }
+            }
+
+            // if field is not empty -> validate
+            if (!$isFieldEmpty) {
+                if (!$field->validateValue()) {
+                    $errorMessages = $field->getValidationErrorMsg();
+                    foreach ($errorMessages as $errorMessage) {
+                        $fieldName = $errorMessage->getStrFieldName() === null ? $field->getStrEntryName() : $errorMessage->getStrFieldName();
+                        $message = $field->getStrLabel() . ": " .$errorMessage->getStrErrorMessage();
+                        $errors[] = new ValidationError($message, $fieldName);
+                    }
+                }
+            }
+
+            // validate container fields
+            if ($field instanceof AdminFormgeneratorContainerInterface) {
+                $errors = array_merge($errors, $this->validateFields($field));
+            }
+        }
+
+        return $errors;
     }
 
     /**
@@ -1421,4 +1451,19 @@ class AdminFormgenerator implements \Countable
         $this->bitErrorsAsWarnings = $bitErrorsAsWarnings;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getFields(): array
+    {
+        return $this->arrFields;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function hasField($name): bool
+    {
+        return isset($this->arrFields[$name]);
+    }
 }
