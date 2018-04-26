@@ -159,6 +159,10 @@ class StringTest extends Testbase
             ["first=value&arr[]=foo+bar&arr[]=baz"],
             ["first=value&arr[2]=foo+bar&arr[3]=baz"],
             ["action=search&interest[0]=sports&interest[1]=music&sort=interest"],
+            ["first[0][1]=value&first[0][2]=foo"],
+            ["first[0][2]=value&first[0][1]=foo"],
+            ["first[1][2]=value&first[0][1]=foo"],
+            ["first[][source]=value&first[][source]=foo"],
         );
     }
 
