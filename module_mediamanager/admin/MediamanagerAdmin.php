@@ -1053,7 +1053,6 @@ HTML;
                         $objFile->setStrName(basename($strTargetFile));
                         $objFile->setIntType(MediamanagerFile::$INT_TYPE_FILE);
                         $this->objLifeCycleFactory->factory(get_class($objFile))->update($objFile, $objTargetMMFolder->getSystemid());
-                        $this->objLifeCycleFactory->factory(get_class($objFile))->update($objFile, $objTargetMMFolder->getSystemid());
                     } else {
                         //Oo. Need a full resync. Damn.
                         $objRepo->syncRepo();
