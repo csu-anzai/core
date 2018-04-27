@@ -11,6 +11,7 @@ use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminFormgeneratorFactory;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Lang;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Root;
 
 /**
@@ -92,10 +93,11 @@ class WizardPage implements WizardPageInterface
 
     /**
      * @inheritdoc
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
     public function onPersist(Root $objModel, array $arrObjects)
     {
-        $objModel->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objModel))->update($objModel);
     }
 
     /**
