@@ -894,7 +894,13 @@ JS;
         $objManager = new PackagemanagerManager();
         $arrToolbar = array();
         if ($objManager->getPackage("phpexcel") != null) {
-            $arrToolbar[] = Link::getLinkAdmin($this->getArrModule("modul"), "genericChangelogExportExcel", "&systemid=".$strSystemid, AdminskinHelper::getAdminImage("icon_excel")." ".$this->getLang("change_export_excel"), "", "", false);
+            $strLink = Link::getLinkAdminXml($this->getArrModule("modul"), "genericChangelogExportExcel", "&systemid=".$strSystemid);
+            $strLinkXml = Link::getLinkAdminManual(
+                "href='{$strLink}'",
+                AdminskinHelper::getAdminImage("icon_excel")." ".$this->getLang("change_export_excel")
+            );
+
+            $arrToolbar[] = $strLinkXml;
         }
 
         $arrToolbar[] = Link::getLinkAdmin($this->getArrModule("modul"), "changelogDiff", "&systemid=".$strSystemid."&bitBlockFolderview=".$this->getParam("bitBlockFolderview"), AdminskinHelper::getAdminImage("icon_aspect")." ".$this->getLang("change_diff"), "", "", false);
