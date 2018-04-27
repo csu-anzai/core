@@ -20,6 +20,7 @@ class FlowConfigTest extends FlowTestAbstract
         $objFlow->setIntRecordStatus(0);
         try {
             ServiceLifeCycleFactory::getLifeCycle(get_class($objFlow))->update($objFlow);
+            $this->assertTrue(true);
         } catch (ServiceLifeCycleUpdateException $e) {
             $this->fail("Saving flow not possible");
         }
@@ -28,6 +29,7 @@ class FlowConfigTest extends FlowTestAbstract
         $objFlow->setIntRecordStatus(1);
         try {
             ServiceLifeCycleFactory::getLifeCycle(get_class($objFlow))->update($objFlow);
+            $this->assertTrue(true);
         } catch (ServiceLifeCycleUpdateException $e) {
             $this->fail("Saving flow not possible");
         }
@@ -39,6 +41,7 @@ class FlowConfigTest extends FlowTestAbstract
 
         try {
             ServiceLifeCycleFactory::getLifeCycle(get_class($objFlow))->copy($objFlow);
+            $this->assertTrue(true);
         } catch (ServiceLifeCycleCopyException $e) {
             $this->fail("copy flow not possible");
         }
