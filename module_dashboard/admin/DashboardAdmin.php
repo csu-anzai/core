@@ -25,6 +25,7 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
 use Kajona\System\System\HttpStatuscodes;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException;
 use Kajona\System\System\Link;
 use Kajona\System\System\ResponseObject;
@@ -392,7 +393,7 @@ JS;
         $objWidget = new DashboardWidget($this->getSystemid());
         $intNewPos = $this->getParam("listPos");
         $objWidget->setStrColumn($this->getParam("listId"));
-        $objWidget->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objWidget))->update($objWidget);
         Carrier::getInstance()->getObjDB()->flushQueryCache();
 
         $objWidget = new DashboardWidget($this->getSystemid());
