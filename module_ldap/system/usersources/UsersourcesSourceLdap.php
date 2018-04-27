@@ -313,6 +313,8 @@ class UsersourcesSourceLdap implements UsersourcesUsersourceInterface
      * and not during common requests!
      *
      * @return bool
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleLogicDeleteException
      */
     public function updateUserData()
     {
@@ -352,12 +354,12 @@ class UsersourcesSourceLdap implements UsersourcesUsersourceInterface
                 $objSourceUser->setStrFamilyname($arrUserDetails["familyname"]);
                 $objSourceUser->setStrGivenname($arrUserDetails["givenname"]);
                 $objSourceUser->setStrEmail($arrUserDetails["mail"]);
-                $objSourceUser->updateObjectToDb();
+                ServiceLifeCycleFactory::getLifeCycle(get_class($objSourceUser))->update($objSourceUser);
 
                 $this->objDB->flushQueryCache();
             } else {
                 //user seems to be deleted, remove from system, too
-                $objUser->deleteObject();
+                ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->delete($objUser);
                 Logger::getInstance("ldapsync.log")->warning("Deleting user " . $strOneUserId . " / " . $objUser->getStrUsername() . " @ " . $objSourceUser->getStrDN());
             }
         }

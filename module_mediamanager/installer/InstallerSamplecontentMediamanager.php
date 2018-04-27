@@ -65,7 +65,7 @@ class InstallerSamplecontentMediamanager implements SamplecontentInstallerInterf
         $strReturn .= "Setting the repository as the default images repository\n";
         $objSetting = SystemSetting::getConfigByName("_mediamanager_default_imagesrepoid_");
         $objSetting->setStrValue($objRepo->getSystemid());
-        $objSetting->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objSetting))->update($objSetting);
 
         $strReturn .= "Creating new file repository\n";
         $objRepo = new MediamanagerRepo();
@@ -87,7 +87,7 @@ class InstallerSamplecontentMediamanager implements SamplecontentInstallerInterf
         $strReturn .= "Setting the repository as the default files repository\n";
         $objSetting = SystemSetting::getConfigByName("_mediamanager_default_filesrepoid_");
         $objSetting->setStrValue($objRepo->getSystemid());
-        $objSetting->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objSetting))->update($objSetting);
 
 
         return $strReturn;

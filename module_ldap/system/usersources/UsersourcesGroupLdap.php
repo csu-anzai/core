@@ -193,7 +193,7 @@ class UsersourcesGroupLdap extends \Kajona\System\System\Model implements \Kajon
                     $objSourceUser->setStrFamilyname($arrUserDetails["familyname"]);
                     $objSourceUser->setStrGivenname($arrUserDetails["givenname"]);
                     $objSourceUser->setStrEmail($arrUserDetails["mail"]);
-                    $objSourceUser->updateObjectToDb();
+                    ServiceLifeCycleFactory::getLifeCycle(get_class($objSourceUser))->update($objSourceUser);
 
                     $this->objDB->flushQueryCache();
                 }
