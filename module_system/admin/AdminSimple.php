@@ -15,10 +15,8 @@ use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\ArraySectionIterator;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Link;
-use Kajona\System\System\Lockmanager;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
-use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemModule;
@@ -37,11 +35,6 @@ abstract class AdminSimple extends AdminController
 
     private $strPeAddon = "";
 
-    /**
-     * @inject system_life_cycle_factory
-     * @var ServiceLifeCycleFactory
-     */
-    protected $objLifeCycleFactory;
 
     /**
      * @param string $strSystemid
