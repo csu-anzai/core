@@ -8,6 +8,9 @@
 
 namespace Kajona\Mediamanager\Admin;
 
+use Artemeon\Image\Image;
+use Artemeon\Image\Plugins\ImageCrop;
+use Artemeon\Image\Plugins\ImageRotate;
 use Kajona\Mediamanager\System\MediamanagerFile;
 use Kajona\Mediamanager\System\MediamanagerFileFilter;
 use Kajona\Mediamanager\System\MediamanagerLogbook;
@@ -21,17 +24,12 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Filesystem;
-use Kajona\System\System\HttpResponsetypes;
 use Kajona\System\System\HttpStatuscodes;
-use Artemeon\Image\Image;
-use Artemeon\Image\Plugins\ImageCrop;
-use Artemeon\Image\Plugins\ImageRotate;
 use Kajona\System\System\Link;
 use Kajona\System\System\Logger;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
-use Kajona\System\System\OrmObjectlistOrderby;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Rights;
@@ -1045,7 +1043,7 @@ HTML;
                         $objTargetMMFolder->setStrFilename($strFullTargetFolder);
                         $objTargetMMFolder->setStrName($strUploadFolder);
                         $objTargetMMFolder->setIntType(MediamanagerFile::$INT_TYPE_FOLDER);
-                        $objTargetMMFolder->updateObjectToDb($this->getSystemid());
+                        $this->objLifeCycleFactory->factory(get_class($objTargetMMFolder))->update($objTargetMMFolder, $this->getSystemid());
                     }
 
                     $objFile = null;

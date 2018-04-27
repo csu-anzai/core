@@ -7,6 +7,7 @@
 namespace Kajona\Mediamanager\Installer;
 
 use Kajona\Mediamanager\System\MediamanagerRepo;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\SamplecontentInstallerInterface;
 use Kajona\System\System\SystemSetting;
 
@@ -32,6 +33,7 @@ class InstallerSamplecontentMediamanager implements SamplecontentInstallerInterf
      * Does the hard work: installs the module and registers needed constants
      *
      * @return string
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
     public function install()
     {
@@ -55,7 +57,7 @@ class InstallerSamplecontentMediamanager implements SamplecontentInstallerInterf
         $objRepo->setStrPath(_filespath_."/images/upload");
         $objRepo->setStrUploadFilter(".jpg,.png,.gif,.jpeg");
         $objRepo->setStrViewFilter(".jpg,.png,.gif,.jpeg");
-        $objRepo->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objRepo))->update($objRepo);
         $objRepo->syncRepo();
 
         $strReturn .= "ID of new repo: ".$objRepo->getSystemid()."\n";
@@ -78,7 +80,7 @@ class InstallerSamplecontentMediamanager implements SamplecontentInstallerInterf
         $objRepo->setStrPath(_filespath_."/downloads/default");
         $objRepo->setStrUploadFilter(".zip,.pdf,.txt");
         $objRepo->setStrViewFilter(".zip,.pdf,.txt");
-        $objRepo->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objRepo))->update($objRepo);
         $objRepo->syncRepo();
         $strReturn .= "ID of new repo: ".$objRepo->getSystemid()."\n";
 
