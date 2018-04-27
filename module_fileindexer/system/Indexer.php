@@ -10,8 +10,8 @@ namespace Kajona\Fileindexer\System;
 use Kajona\Mediamanager\System\MediamanagerFile;
 use Kajona\Mediamanager\System\MediamanagerFileFilter;
 use Kajona\Mediamanager\System\MediamanagerRepo;
-use Kajona\Search\System\SearchStandardAnalyzer;
 use Kajona\System\System\CoreEventdispatcher;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -80,13 +80,13 @@ class Indexer
                     $strContent = implode(" ", array_keys($arrResults));
                     */
                     $objFile->setStrSearchContent($strContent);
-                    $objFile->updateObjectToDb();
+                    ServiceLifeCycleFactory::getLifeCycle(get_class($objFile))->update($objFile);
 
                     $arrResult[] = $objFile;
                 } else {
                     // we need to mark that we have scanned the file
                     $objFile->setStrSearchContent("-");
-                    $objFile->updateObjectToDb();
+                    ServiceLifeCycleFactory::getLifeCycle(get_class($objFile))->update($objFile);
                 }
             }
         }
