@@ -129,7 +129,8 @@ class SearchAdmin extends AdminSimple implements AdminInterface
 
             $objForm->updateSourceObject();
 
-            $objSearch->updateObjectToDb();
+
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objSearch))->update($objSearch);
 
             $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "", ($this->getParam("pe") != "" ? "&peClose=1&blockAction=1" : "")));
             return "";
