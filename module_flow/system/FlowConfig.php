@@ -10,6 +10,7 @@ namespace Kajona\Flow\System;
 use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Lang;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Pluginmanager;
@@ -139,10 +140,11 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
 
     /**
      * @param FlowStatus $objStatus
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
     public function addStep(FlowStatus $objStatus)
     {
-        $objStatus->updateObjectToDb($this->getSystemid());
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objStatus))->update($objStatus, $this->getSystemid());
     }
 
     /**
@@ -400,6 +402,7 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
      * @param string $strNewPrevid
      * @param bool $bitChangeTitle
      * @param bool $bitCopyChilds
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
     public function copyObject($strNewPrevid = "", $bitChangeTitle = true, $bitCopyChilds = true)
     {
@@ -427,7 +430,7 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
                 $strName = $arrSystemIdName[$objTransition->getStrTargetStatus()];
                 $strNewSystemId = $arrNameSystemId[$strName];
                 $objTransition->setStrTargetStatus($strNewSystemId);
-                $objTransition->updateObjectToDb();
+                ServiceLifeCycleFactory::getLifeCycle(get_class($objTransition))->update($objTransition);
             }
         }
 
@@ -452,6 +455,7 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
 
     /**
      * Reads all available handler from the file system and syncs them with the database
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
     public static function syncHandler()
     {
@@ -471,24 +475,24 @@ class FlowConfig extends Model implements ModelInterface, AdminListableInterface
                 $objFlow->setStrTargetClass($objHandler->getTargetClass());
                 $objFlow->setStrHandlerClass($strClass);
                 $objFlow->setIntRecordStatus(0);
-                $objFlow->updateObjectToDb();
+                ServiceLifeCycleFactory::getLifeCycle(get_class($objFlow))->update($objFlow);
 
                 // we create automatically the start and end status
                 $objRedStatus = new FlowStatus();
                 $objRedStatus->setStrName("In Bearbeitung");
                 $objRedStatus->setStrIconColor("#FF0000");
                 $objRedStatus->setIntIndex(0);
-                $objRedStatus->updateObjectToDb($objFlow->getSystemid());
+                ServiceLifeCycleFactory::getLifeCycle(get_class($objRedStatus))->update($objRedStatus, $objFlow->getSystemid());
 
                 $objGreenStatus = new FlowStatus();
                 $objGreenStatus->setStrName("Freigegeben");
                 $objGreenStatus->setStrIconColor("#00893d");
                 $objGreenStatus->setIntIndex(1);
-                $objGreenStatus->updateObjectToDb($objFlow->getSystemid());
+                ServiceLifeCycleFactory::getLifeCycle(get_class($objGreenStatus))->update($objGreenStatus, $objFlow->getSystemid());
 
                 $objTransition = new FlowTransition();
                 $objTransition->setStrTargetStatus($objGreenStatus->getSystemid());
-                $objTransition->updateObjectToDb($objRedStatus->getSystemid());
+                ServiceLifeCycleFactory::getLifeCycle(get_class($objTransition))->update($objTransition, $objRedStatus->getSystemid());
             } else {
                 // @TODO maybe update
             }

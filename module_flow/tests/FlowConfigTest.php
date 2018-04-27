@@ -4,6 +4,9 @@ namespace Kajona\Flow\Tests;
 
 // @TODO unfortunately we have no autoloading for the tests folder
 use Kajona\Flow\System\FlowTransition;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleCopyException;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException;
 
 require_once __DIR__ . "/FlowTestAbstract.php";
 
@@ -15,26 +18,32 @@ class FlowConfigTest extends FlowTestAbstract
 
         // deactivate config
         $objFlow->setIntRecordStatus(0);
-        $bitReturn = $objFlow->updateObjectToDb();
-
-        $this->assertTrue($bitReturn);
+        try {
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objFlow))->update($objFlow);
+        } catch (ServiceLifeCycleUpdateException $e) {
+            $this->fail("Saving flow not possible");
+        }
 
         // activate config
         $objFlow->setIntRecordStatus(1);
-        $bitReturn = $objFlow->updateObjectToDb();
-
-        $this->assertTrue($bitReturn);
+        try {
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objFlow))->update($objFlow);
+        } catch (ServiceLifeCycleUpdateException $e) {
+            $this->fail("Saving flow not possible");
+        }
     }
 
     public function testCopyObject()
     {
         $objFlow = $this->objManager->getFlowForClass(FlowModelTest::class);
 
-        $bitReturn = $objFlow->copyObject();
+        try {
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objFlow))->copy($objFlow);
+        } catch (ServiceLifeCycleCopyException $e) {
+            $this->fail("copy flow not possible");
+        }
 
-        $this->assertTrue($bitReturn);
-
-        $objFlow->deleteObjectFromDatabase();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objFlow))->deleteObjectFromDatabase($objFlow);
     }
 
     public function testHasTransition()
