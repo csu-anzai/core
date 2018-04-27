@@ -6,7 +6,10 @@
 
 namespace Kajona\System\System;
 
+use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminFormgeneratorFilter;
+use Kajona\System\Admin\Formentries\FormentryDropdown;
+use Kajona\System\Admin\Formentries\FormentryYesno;
 use ReflectionClass;
 
 
@@ -281,7 +284,7 @@ abstract class FilterBase
         $arrConditions = array();
 
         /*Handle configured conditions*/
-        $objReflection = new Reflection(get_class($this));
+        $objReflection = new Reflection($this);
         $arrProperties = $objReflection->getPropertiesWithAnnotation(OrmBase::STR_ANNOTATION_TABLECOLUMN);
         $arrPropertiesFilterComparator = $objReflection->getPropertiesWithAnnotation(self::STR_ANNOTATION_FILTER_COMPARE_OPERATOR);
 
