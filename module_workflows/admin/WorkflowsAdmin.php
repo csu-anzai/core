@@ -17,6 +17,7 @@ use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
 use Kajona\System\System\GraphFactory;
 use Kajona\System\System\HttpStatuscodes;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 use Kajona\System\System\Objectfactory;
@@ -413,7 +414,7 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
                 throw new Exception("Illegal state detected! Workflow was already saved before!");
             }
 
-            $objWorkflow->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objWorkflow))->update($objWorkflow);
 
             $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "myList"));
         } else {
@@ -635,7 +636,7 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
             }
 
             $objForm->updateSourceObject();
-            $objHandler->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objHandler))->update($objHandler);
 
             $this->adminReload(getLinkAdminHref($this->getArrModule("modul"), "listHandlers", ""));
             return "";
@@ -648,6 +649,7 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
     /**
      * @return string
      * @permissions right1
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
     protected function actionStartInstance()
     {
@@ -656,7 +658,7 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
         $objHandler = new WorkflowsHandler($this->getSystemid());
         $objWorkflow = new WorkflowsWorkflow();
         $objWorkflow->setStrClass($objHandler->getStrHandlerClass());
-        $objWorkflow->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objWorkflow))->update($objWorkflow);
         $this->adminReload(getLinkAdminHref($this->getArrModule("modul"), "list"));
 
         return $strReturn;
