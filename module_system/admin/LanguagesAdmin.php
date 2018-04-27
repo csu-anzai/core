@@ -14,6 +14,7 @@ use Kajona\System\System\ArraySectionIterator;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\LanguagesLanguage;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 
@@ -178,9 +179,7 @@ class LanguagesAdmin extends AdminSimple implements AdminInterface
             }
         }
 
-        if (!$objLanguage->updateObjectToDb()) {
-            throw new Exception("Error creating new language", Exception::$level_ERROR);
-        }
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objLanguage))->update($objLanguage);
 
         if ($this->getParam("mode") == "edit") {
             //move contents to a new language

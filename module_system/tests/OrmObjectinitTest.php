@@ -3,19 +3,12 @@
 namespace Kajona\System\Tests;
 
 use Kajona\System\System\Carrier;
-use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\Date;
-use Kajona\System\System\GenericeventListenerInterface;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
-use Kajona\System\System\OrmAssignmentArray;
-use Kajona\System\System\OrmBase;
-use Kajona\System\System\OrmDeletedhandlingEnum;
 use Kajona\System\System\OrmSchemamanager;
-use Kajona\System\System\SystemAspect;
-use Kajona\System\System\SystemEventidentifier;
-use Kajona\System\System\SystemModule;
 
 /**
  * Class class_test_orm_schemamanagerTest
@@ -57,7 +50,7 @@ class OrmObjectinitTest extends Testbase
 
         $longDate = 20160827011525;
         $objObject->setObjDate(new Date($longDate));
-        $objObject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objObject))->update($objObject);
 
         Objectfactory::getInstance()->flushCache();
 
@@ -77,7 +70,7 @@ class OrmObjectinitTest extends Testbase
         $this->assertEquals(false, $objObj->getBitBoolean());
 
         $objObj->setBitBoolean(true);
-        $objObj->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objObj))->update($objObj);
 
         $objObj = Objectfactory::getInstance()->getObject($objObject->getSystemid());
         $this->assertEquals(true, $objObj->getBitBoolean());
@@ -87,7 +80,7 @@ class OrmObjectinitTest extends Testbase
     public function testObjectInitNull()
     {
         $objObject = new OrmObjectinitTestclass();
-        $objObject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objObject))->update($objObject);
         Objectfactory::getInstance()->flushCache();
 
         /** @var OrmObjectinitTestclass $objObj */

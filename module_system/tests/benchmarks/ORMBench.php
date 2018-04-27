@@ -3,6 +3,7 @@
 namespace Kajona\System\Tests\Benchmarks;
 
 use AGP\Prozessverwaltung\System\ProzessverwaltungProzess;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\OrmObjectinit;
 
 /**
@@ -24,6 +25,6 @@ class ORMBench
     {
         $objObject = new ProzessverwaltungProzess();
         $objObject->setStrTitel("foobar");
-        $objObject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objObject))->update($objObject);
     }
 }

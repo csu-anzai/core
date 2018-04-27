@@ -10,6 +10,7 @@ namespace Kajona\System\System\Security;
 
 use Kajona\System\System\Date;
 use Kajona\System\System\Lang;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Link;
 use Kajona\System\System\Mail;
 use Kajona\System\System\SystemPwchangehistory;
@@ -93,7 +94,7 @@ class PasswordRotator
         // add a one-time token and reset the password
         $strToken = generateSystemid();
         $objUser->setStrAuthcode($strToken);
-        $objUser->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
 
         // @TODO change if we have a $strLang argument for the Lang::getLang method
         $strLang = $this->objLang->getStrTextLanguage();
@@ -123,6 +124,6 @@ class PasswordRotator
         $objPwChange->setStrTargetUser($objUser->getStrSystemid());
         $objPwChange->setStrActivationLink($strActivationLink);
         $objPwChange->setStrChangeDate($objNow->getLongTimestamp());
-        $objPwChange->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objPwChange))->update($objPwChange);
     }
 }

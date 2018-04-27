@@ -7,6 +7,7 @@ use Kajona\System\Admin\AdminInterface;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Classloader;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\RedirectException;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\Resourceloader;
@@ -25,7 +26,7 @@ class GeneralActionTest extends Testbase
         //Create a new user
         $objUser = new UserUser();
         $objUser->setStrUsername(__CLASS__);
-        $objUser->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
 
         $objAdminGroup = new UserGroup(SystemSetting::getConfigValue("_admins_group_id_"));
         $objAdminGroup->getObjSourceGroup()->addMember($objUser->getObjSourceUser());
