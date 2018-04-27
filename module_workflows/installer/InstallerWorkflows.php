@@ -221,7 +221,7 @@ class InstallerWorkflows extends InstallerBase implements InstallerRemovableInte
 
     private function update_70_71() {
         $strReturn = "Migrating date col\n";
-        $this->objDB->addColumn("workflows", "workflows_triggerdate",DbDatatypes::STR_TYPE_LONG);
+        $this->objDB->addColumn("agp_workflows", "workflows_triggerdate",DbDatatypes::STR_TYPE_LONG);
 
         foreach ($this->objDB->getGenerator("SELECT system_date_start, workflows_id FROM agp_system_date, agp_workflows WHERE system_date_id = workflows_id ORDER BY system_date_id DESC", []) as $sets) {
             foreach ($sets as $row) {
