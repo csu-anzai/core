@@ -155,7 +155,7 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
 
     /**
      * @var Date
-     * @tableColumn workflows.workflows_triggerdate
+     * @tableColumn agp_workflows.workflows_triggerdate
      * @tableColumnDatatype long
      */
     private $triggerDate = null;
