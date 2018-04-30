@@ -9,6 +9,8 @@
 
 namespace Kajona\System\System;
 
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
+
 
 /**
  * The top-level class for models, installers and top-level files
@@ -445,7 +447,13 @@ abstract class Root
         if ($this->objSortManager !== null) {
             $this->intSort = $this->getNextSortValue($this->getStrPrevId());
         }
-        $bitReturn = $this->updateObjectToDb();
+
+        $bitReturn = true;
+        try {
+            ServiceLifeCycleFactory::getLifeCycle(get_class($this))->update($this);
+        } catch (Lifecycle\ServiceLifeCycleUpdateException $e) {
+            $bitReturn = false;//TODO throw exception here?
+        };
 
         Objectfactory::getInstance()->removeFromCache($this->getSystemid());
         OrmRowcache::removeSingleRow($this->getSystemid());
@@ -493,7 +501,13 @@ abstract class Root
         $this->intRecordDeleted = 1;
         $intOldSortId = $this->intSort;
         $this->intSort = -1;
-        $bitReturn = $this->updateObjectToDb();
+
+        $bitReturn = true;
+        try {
+            ServiceLifeCycleFactory::getLifeCycle(get_class($this))->update($this);
+        } catch (Lifecycle\ServiceLifeCycleUpdateException $e) {
+            $bitReturn = false;//TODO throw exception here?
+        }
 
         Objectfactory::getInstance()->removeFromCache($this->getSystemid());
         OrmRowcache::removeSingleRow($this->getSystemid());
@@ -813,7 +827,15 @@ abstract class Root
         //prepare the current object
         $this->unsetSystemid();
         $this->arrInitRow = null;
-        $bitReturn = $this->updateObjectToDb($strNewPrevid);
+
+
+        $bitReturn = true;
+        try {
+            ServiceLifeCycleFactory::getLifeCycle(get_class($this))->update($this, $strNewPrevid);
+        } catch (Lifecycle\ServiceLifeCycleUpdateException $e) {
+            $bitReturn = false;//TODO throw exception here?
+        }
+
         Carrier::getInstance()->getObjRights()->copyPermissions($strOldSysid, $this->getSystemid());
         //call event listeners
         $bitReturn = $bitReturn && CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_RECORDCOPIED, array($strOldSysid, $this->getSystemid(), $this));
