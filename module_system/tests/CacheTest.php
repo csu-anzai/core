@@ -26,7 +26,7 @@ class CacheTest extends Testbase
 
         $objCache->setStrHash1("test");
         $objCache->setStrContent("test");
-        ServiceLifeCycleFactory::getLifeCycle(get_class($objCache))->update($objCache);
+        $objCache->updateObjectToDb();//do not use lifecycle here
 
         $this->flushDBCache();
 
@@ -43,7 +43,7 @@ class CacheTest extends Testbase
         $objCache->setStrHash1("testFlush");
         $objCache->setStrContent("test");
         $objCache->setIntLeasetime(time() + 2);
-        ServiceLifeCycleFactory::getLifeCycle(get_class($objCache))->update($objCache);
+        $objCache->updateObjectToDb();//do not use lifecycle here
         $this->flushDBCache();
         sleep(3);
 
@@ -63,7 +63,7 @@ class CacheTest extends Testbase
         $objCache->setStrHash1("testCache");
         $objCache->setStrContent("testContent");
         $objCache->setIntLeasetime(time() + 100);
-        ServiceLifeCycleFactory::getLifeCycle(get_class($objCache))->update($objCache);
+        $objCache->updateObjectToDb();//do not use lifecycle here
         $this->flushDBCache();
 
         Cache::cleanCache();
@@ -82,7 +82,7 @@ class CacheTest extends Testbase
         $objCache->setStrHash1("testClean");
         $objCache->setStrContent("test");
         $objCache->setIntLeasetime(time() + 2);
-        ServiceLifeCycleFactory::getLifeCycle(get_class($objCache))->update($objCache);
+        $objCache->updateObjectToDb();//do not use lifecycle here
         $this->flushDBCache();
 
         $objEntry = Cache::getCachedEntry(self::$strCacheSource, "testClean");
