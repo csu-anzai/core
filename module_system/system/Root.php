@@ -211,16 +211,6 @@ abstract class Root
      */
     private $objEndDate = null;
 
-    /**
-     * The special-date of the date-table
-     *
-     * @var Date
-     * @versionable
-     * @tableColumn agp_system_date.system_date_special
-     * @deprecated
-     */
-    private $objSpecialDate = null;
-
     private $bitDatesChanges = false;
 
 
@@ -228,6 +218,7 @@ abstract class Root
      * Constructor
      *
      * @param string $strSystemid
+     * @throws Exception
      */
     public function __construct($strSystemid = "")
     {
@@ -362,10 +353,6 @@ abstract class Root
 
                 if (!empty($arrRow["system_date_end"])) {
                     $this->objEndDate = new Date($arrRow["system_date_end"]);
-                }
-
-                if (!empty($arrRow["system_date_special"])) {
-                    $this->objSpecialDate = new Date($arrRow["system_date_special"]);
                 }
 
             }
@@ -784,7 +771,7 @@ abstract class Root
         }
 
         //any date-objects to copy?
-        if ($this->objStartDate != null || $this->objEndDate != null || $this->objSpecialDate != null) {
+        if ($this->objStartDate != null || $this->objEndDate != null) {
             $this->bitDatesChanges = true;
         }
 
@@ -1123,7 +1110,6 @@ abstract class Root
 
         $intStart = 0;
         $intEnd = 0;
-        $intSpecial = 0;
 
         if ($this->objStartDate != null && $this->objStartDate instanceof Date) {
             $intStart = $this->objStartDate->getLongTimestamp();
@@ -1133,110 +1119,28 @@ abstract class Root
             $intEnd = $this->objEndDate->getLongTimestamp();
         }
 
-        if ($this->objSpecialDate != null && $this->objSpecialDate instanceof Date) {
-            $intSpecial = $this->objSpecialDate->getLongTimestamp();
-        }
-
         $arrRow = $this->objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_system_date WHERE system_date_id = ?", array($this->getSystemid()));
         if ($arrRow["cnt"] == 0) {
             //insert
             $strQuery = "INSERT INTO agp_system_date
-                      (system_date_id, system_date_start, system_date_end, system_date_special) VALUES
-                      (?, ?, ?, ?)";
-            return $this->objDB->_pQuery($strQuery, array($this->getSystemid(), $intStart, $intEnd, $intSpecial));
+                      (system_date_id, system_date_start, system_date_end) VALUES
+                      (?, ?, ?)";
+            return $this->objDB->_pQuery($strQuery, array($this->getSystemid(), $intStart, $intEnd));
         } else {
             $strQuery = "UPDATE agp_system_date
                       SET system_date_start = ?,
-                          system_date_end = ?,
-                          system_date_special = ?
+                          system_date_end = ?
                     WHERE system_date_id = ?";
-            return $this->objDB->_pQuery($strQuery, array($intStart, $intEnd, $intSpecial, $this->getSystemid()));
+            return $this->objDB->_pQuery($strQuery, array($intStart, $intEnd, $this->getSystemid()));
         }
     }
-
-
-    /**
-     * Creates a record in the date table. Make sure to use a proper system-id!
-     * Up from Kajona V3.3, the signature changed. Pass instances of Date instead of
-     * int-values.
-     *
-     * @param string $strSystemid
-     * @param Date $objStartDate
-     * @param Date $objEndDate
-     * @param Date $objSpecialDate
-     *
-     * @deprecated use the internal date-objects to have all dates handled automatically
-     * @return bool
-     */
-    public function createDateRecord($strSystemid, Date $objStartDate = null, Date $objEndDate = null, Date $objSpecialDate = null)
-    {
-        $intStart = 0;
-        $intEnd = 0;
-        $intSpecial = 0;
-
-        if ($objStartDate != null && $objStartDate instanceof Date) {
-            $intStart = $objStartDate->getLongTimestamp();
-        }
-
-        if ($objEndDate != null && $objEndDate instanceof Date) {
-            $intEnd = $objEndDate->getLongTimestamp();
-        }
-
-        if ($objSpecialDate != null && $objSpecialDate instanceof Date) {
-            $intSpecial = $objSpecialDate->getLongTimestamp();
-        }
-
-        $strQuery = "INSERT INTO agp_system_date
-                      (system_date_id, system_date_start, system_date_end, system_date_special) VALUES
-                      (?, ?, ?, ?)";
-        return $this->objDB->_pQuery($strQuery, array($strSystemid, $intStart, $intEnd, $intSpecial));
-    }
-
-    /**
-     * Updates a record in the date table. Make sure to use a proper system-id!
-     * Up from Kajona V3.3, the signature changed. Pass instances of Date instead of
-     * int-values.
-     *
-     * @param string $strSystemid
-     * @param Date $objStartDate
-     * @param Date $objEndDate
-     * @param Date $objSpecialDate
-     *
-     * @deprecated use the internal date-objects to have all dates handled automatically
-     * @return bool
-     */
-    public function updateDateRecord($strSystemid, Date $objStartDate = null, Date $objEndDate = null, Date $objSpecialDate = null)
-    {
-        $intStart = 0;
-        $intEnd = 0;
-        $intSpecial = 0;
-
-        if ($objStartDate != null && $objStartDate instanceof Date) {
-            $intStart = $objStartDate->getLongTimestamp();
-        }
-
-        if ($objEndDate != null && $objEndDate instanceof Date) {
-            $intEnd = $objEndDate->getLongTimestamp();
-        }
-
-        if ($objSpecialDate != null && $objSpecialDate instanceof Date) {
-            $intSpecial = $objSpecialDate->getLongTimestamp();
-        }
-
-        $strQuery = "UPDATE agp_system_date
-                      SET system_date_start = ?,
-                          system_date_end = ?,
-                          system_date_special = ?
-                    WHERE system_date_id = ?";
-        return $this->objDB->_pQuery($strQuery, array($intStart, $intEnd, $intSpecial, $strSystemid));
-    }
-
 
     /**
      * Returns the bool-value for the right to view this record,
      * Systemid MUST be given, otherwise false
      *
      * @return bool
+     * @throws Exception
      */
     public function rightView()
     {
@@ -1248,6 +1152,7 @@ abstract class Root
      * Systemid MUST be given, otherwise false
      *
      * @return bool
+     * @throws Exception
      */
     public function rightEdit()
     {
@@ -1259,6 +1164,7 @@ abstract class Root
      * Systemid MUST be given, otherwise false
      *
      * @return bool
+     * @throws Exception
      */
     public function rightDelete()
     {
@@ -1270,6 +1176,7 @@ abstract class Root
      * Systemid MUST be given, otherwise false
      *
      * @return bool
+     * @throws Exception
      */
     public function rightRight()
     {
@@ -1281,6 +1188,7 @@ abstract class Root
      * Systemid MUST be given, otherwise false
      *
      * @return bool
+     * @throws Exception
      */
     public function rightRight1()
     {
@@ -1292,6 +1200,7 @@ abstract class Root
      * Systemid MUST be given, otherwise false
      *
      * @return bool
+     * @throws Exception
      */
     public function rightRight2()
     {
@@ -1303,6 +1212,7 @@ abstract class Root
      * Systemid MUST be given, otherwise false
      *
      * @return bool
+     * @throws Exception
      */
     public function rightRight3()
     {
@@ -1314,6 +1224,7 @@ abstract class Root
      * Systemid MUST be given, otherwise false
      *
      * @return bool
+     * @throws Exception
      */
     public function rightRight4()
     {
@@ -1325,6 +1236,7 @@ abstract class Root
      * Systemid MUST be given, otherwise false
      *
      * @return bool
+     * @throws Exception
      */
     public function rightRight5()
     {
@@ -1336,6 +1248,7 @@ abstract class Root
      * Systemid MUST be given, otherwise false
      *
      * @return bool
+     * @throws Exception
      */
     public function rightChangelog()
     {
@@ -1366,7 +1279,6 @@ abstract class Root
                        AND sys2.system_prev_id = sys1.system_prev_id";
         $arrRow = $this->objDB->getPRow($strQuery, array($strSystemid), 0, $bitUseCache);
         return $arrRow["cnt"];
-
     }
 
     /**
@@ -2216,36 +2128,6 @@ abstract class Root
     public function getObjEndDate()
     {
         return $this->objEndDate;
-    }
-
-    /**
-     * @param Date $objSpecialDate
-     *
-     * @return void
-     * @deprecated
-     */
-    public function setObjSpecialDate($objSpecialDate = null)
-    {
-
-        if ($objSpecialDate === 0 || $objSpecialDate === "0") {
-            $objSpecialDate = null;
-        }
-
-        if (!$objSpecialDate instanceof Date && $objSpecialDate != "" && $objSpecialDate != null) {
-            $objSpecialDate = new Date($objSpecialDate);
-        }
-
-        $this->objSpecialDate = $objSpecialDate;
-        $this->bitDatesChanges = true;
-    }
-
-    /**
-     * @return Date
-     * @deprecated
-     */
-    public function getObjSpecialDate()
-    {
-        return $this->objSpecialDate;
     }
 
     /**
