@@ -2076,7 +2076,6 @@ abstract class Root
      * triggering another query to the database.
      * On high-performance systems or large object-nets, this could reduce the amount of database-queries
      * fired drastically.
-     * For best performance, include the matching row of the tables system, system_date
      *
      * @param array $arrInitRow
      *
