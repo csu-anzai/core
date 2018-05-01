@@ -147,8 +147,6 @@ class WorkflowsHandler extends \Kajona\System\System\Model implements \Kajona\Sy
         $strQuery = "SELECT * FROM
                             agp_workflows_handler,
                             agp_system
-                   LEFT JOIN agp_system_date
-                            ON system_id = system_date_id
                       WHERE system_id = workflows_handler_id
                         AND workflows_handler_class = ?";
 

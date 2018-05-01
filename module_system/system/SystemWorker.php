@@ -71,22 +71,4 @@ class SystemWorker
         return $arrReturn;
     }
 
-    /**
-     * Checks, if all date-records have a corresponding system-record
-     * Returns an array of corrupted records
-     *
-     * @return array
-     */
-    public function checkDateSystemRelations()
-    {
-        $strQuery = "SELECT system_date_id
-                       FROM agp_system_date
-                       LEFT JOIN agp_system
-                        ON (system_date_id = system_id)
-                       WHERE system_id IS NULL ";
-        $arrReturn = Carrier::getInstance()->getObjDB()->getPArray($strQuery, array());
-
-        return $arrReturn;
-    }
-
 }
