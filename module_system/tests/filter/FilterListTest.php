@@ -17,7 +17,7 @@ use Kajona\System\Tests\Testbase;
 /**
  * Class class_test_functions
  */
-class FilteListTest extends Testbase
+class FilterListTest extends Testbase
 {
 
     /**
