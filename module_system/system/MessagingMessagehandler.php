@@ -104,6 +104,10 @@ class MessagingMessagehandler
         $objAlert->setStrUser($objUser->getSystemid());
         $objAlert->setObjSendDate(new Date());
 
+        if ($objUser->getSystemid() == Carrier::getInstance()->getObjSession()->getUserID()) {
+            ResponseObject::getInstance()->setBitForceMessagePollOnRedirect(true);
+        }
+
         $this->objLifeCycleFactory->factory(get_class($objAlert))->update($objAlert);
     }
 
