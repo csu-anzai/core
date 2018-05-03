@@ -283,7 +283,7 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
 
         if ($bitOnlyScheduled) {
             $objORM->addWhereRestriction(new OrmCondition("( workflows_state = ? OR workflows_state = ? )", array((int)self::$INT_STATE_SCHEDULED, (int)self::$INT_STATE_NEW)));
-            $objORM->addWhereRestriction(new OrmCondition("( workflows_triggerdate > ? OR workflows_triggerdate = 0 )", array(\Kajona\System\System\Date::getCurrentTimestamp())));
+            $objORM->addWhereRestriction(new OrmCondition("( workflows_triggerdate > ? OR workflows_triggerdate = 0 OR workflows_triggerdate IS NULL )", array(\Kajona\System\System\Date::getCurrentTimestamp())));
         }
 
         $objORM->addOrderBy(new OrmObjectlistOrderby("workflows_triggerdate DESC"));
@@ -311,7 +311,7 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
 
         if ($bitOnlyScheduled) {
             $objOrmMapper->addWhereRestriction(new OrmCondition("( workflows_state = ? OR workflows_state = ? )", array((int)self::$INT_STATE_SCHEDULED, (int)self::$INT_STATE_NEW)));
-            $objOrmMapper->addWhereRestriction(new OrmCondition("( workflows_triggerdate > ? OR workflows_triggerdate = 0 )", array(\Kajona\System\System\Date::getCurrentTimestamp())));
+            $objOrmMapper->addWhereRestriction(new OrmCondition("( workflows_triggerdate > ? OR workflows_triggerdate = 0 OR workflows_triggerdate IS NULL )", array(\Kajona\System\System\Date::getCurrentTimestamp())));
         }
 
         if (!empty($strText)) {
@@ -339,7 +339,7 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
 
         if ($bitOnlyScheduled) {
             $objOrmMapper->addWhereRestriction(new OrmCondition("( workflows_state = ? OR workflows_state = ? )", array((int)self::$INT_STATE_SCHEDULED, (int)self::$INT_STATE_NEW)));
-            $objOrmMapper->addWhereRestriction(new OrmCondition("( workflows_triggerdate > ? OR workflows_triggerdate = 0 )", array(\Kajona\System\System\Date::getCurrentTimestamp())));
+            $objOrmMapper->addWhereRestriction(new OrmCondition("( workflows_triggerdate > ? OR workflows_triggerdate = 0 OR workflows_triggerdate IS NULL )", array(\Kajona\System\System\Date::getCurrentTimestamp())));
         }
 
         $objOrmMapper->addWhereRestriction(new OrmPropertyCondition("strClass", OrmComparatorEnum::Equal(), $strClass));
@@ -378,6 +378,7 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
      * @param bool|int $intStart
      * @param bool|int $intEnd
      *
+     * @param array|null $arrClasses
      * @return WorkflowsWorkflow[]
      */
     public static function getPendingWorkflowsForUser($arrUserids, $intStart = false, $intEnd = false, array $arrClasses = null)
