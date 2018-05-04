@@ -5,6 +5,7 @@ namespace Kajona\System\System\Lifecycle;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Config;
 use Kajona\System\System\Reflection;
+use Kajona\System\System\Root;
 use Kajona\System\System\ServiceProvider;
 use Pimple\Container;
 
@@ -65,12 +66,15 @@ class ServiceLifeCycleFactory
      * context
      *
      * @deprecated
-     * @param string $strModelClass
+     * @param string|Root $model
      * @return ServiceLifeCycleInterface
      */
-    public static function getLifeCycle($strModelClass)
+    public static function getLifeCycle($model)
     {
+        if (is_object($model)) {
+            $model = get_class($model);
+        }
         /** @var ServiceLifeCycleFactory $objFactory */
-        return Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_LIFE_CYCLE_FACTORY)->factory($strModelClass);
+        return Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_LIFE_CYCLE_FACTORY)->factory($model);
     }
 }
