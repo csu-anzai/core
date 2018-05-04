@@ -33,7 +33,7 @@ class ObjectvalidatorFactory
                 throw new \RuntimeException("Object validator " . $validatorClass . " not existing");
             }
 
-            /** @var ObjectvalidatorBase $objValidator */
+            /** @var ObjectvalidatorBase $validator */
             $validator = new $validatorClass();
 
             // check whether we have an correct instance
