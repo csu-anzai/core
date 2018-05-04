@@ -15,11 +15,15 @@ use Kajona\System\System\Validators\ObjectvalidatorBase;
 
 /**
  * @author christoph.kappestein@artemeon.de
+ * @author stefan.meyer@artemeon.de
  * @since 7.1
  */
 class ObjectvalidatorFactory
 {
     /**
+     * Reads the @objectValidator annotation from the object and returns the fitting validator or null in case no
+     * annotation is set
+     *
      * @param Root $object
      * @return ObjectvalidatorBase|null
      */
