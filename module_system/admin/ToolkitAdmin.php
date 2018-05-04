@@ -2202,7 +2202,7 @@ HTML;
     {
         $strRows = "<script type=\"text/javascript\"> require(['breadcrumb'], function(breadcrumb) { breadcrumb.resetBar()}); </script>"; //TODO: das muss hier raus, falsche stelle?
         foreach ($arrEntries as $strOneEntry) {
-            $strRows .= $this->objTemplate->fillTemplateFile(array("pathlink" => addslashes($strOneEntry)), "/admin/skins/kajona_v4/elements.tpl", "path_entry");
+            $strRows .= $this->objTemplate->fillTemplateFile(array("pathlink" => json_encode($strOneEntry)), "/admin/skins/kajona_v4/elements.tpl", "path_entry");
         }
         return $strRows;
     }
