@@ -281,7 +281,7 @@ class AdminFormgenerator implements \Countable
 
         //2. Validate complete object
         if ($this->getObjSourceobject() != null) {
-            $objValidator = $this->getObjectValidatorForObject($this->getObjSourceobject());
+            $objValidator = ObjectvalidatorFactory::factory($this->getObjSourceobject());
             if ($objValidator !== null) {
                 //Keep the reference of the current object
                 $objSourceObjectTemp = $this->getObjSourceobject();
@@ -1371,38 +1371,6 @@ class AdminFormgenerator implements \Countable
     public function setIntButtonConfig($intButtonConfig)
     {
         $this->intButtonConfig = $intButtonConfig;
-    }
-
-    /**
-     * Returns the object validator for the given object
-     *
-     * @param Root $objObject
-     * @return ObjectvalidatorBase|null
-     * @throws Exception
-     */
-    private function getObjectValidatorForObject(Root $objObject)
-    {
-        $objReflection = new Reflection($objObject);
-        $arrObjectValidator = $objReflection->getAnnotationValuesFromClass(self::STR_OBJECTVALIDATOR_ANNOTATION);
-        if (count($arrObjectValidator) > 0) {
-            $strObjectValidator = $arrObjectValidator[0];
-            if (!class_exists($strObjectValidator)) {
-                throw new Exception("object validator " . $strObjectValidator . " not existing", Exception::$level_ERROR);
-            }
-
-            /** @var ObjectvalidatorBase $objValidator */
-            $objValidator = new $strObjectValidator();
-
-
-            // check whether we have an correct instance
-            if (!$objValidator instanceof ObjectvalidatorBase) {
-                throw new Exception("Provided object validator must be an instance of HierarchyValidatorInterface", Exception::$level_ERROR);
-            }
-
-            return $objValidator;
-        }
-
-        return null;
     }
 
     /**
