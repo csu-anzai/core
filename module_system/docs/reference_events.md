@@ -352,22 +352,21 @@ There are certain java script modules which throw custom (jQuery) events.
 	<tbody>
 		<tr>
 			<th>Identifier</th>
-			<th colspan="2" style="border-bottom: 1px solid #ccc;">
-Description</th>
+			<th>Arguments</th>
+			<th>Description</th>
+			<th>Since</th>
 		</tr>
 		<tr>
-			<td rowspan="3" style="border-right: 1px solid #ccc; vertical-align: top;">kajona.instantsave.updated</td>
-			<td style="border-top: 1px solid #ccc;">Since</td>
-			<td style="border-top: 1px solid #ccc;">6.5</td>
-		</tr>
-		<tr>
-			<td>Arguments</td>
-			<td>result<br />
-			systemid<br />
-		</tr>
-		<tr>
-			<td>Description</td>
+			<td>kajona.instantsave.updated</td>
+			<td>result, systemid</td>
 			<td>Fired as soon as the instantsave manager finished updating a property at the backend. The result is either `success`or `error`, the second params is the records systemid.</td>
+			<td>6.5</td>
 		</tr>
+		<tr>
+            <td>kajona.forms.mandatoryAdded</td>
+            <td></td>
+            <td>event thrown in case an element was added a `mandatoryFormElement` class, so marked as mandatory.</td>
+            <td>7.0</td>
+        </tr>
 	</tbody>
 </table>
