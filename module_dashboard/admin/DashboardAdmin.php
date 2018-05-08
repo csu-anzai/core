@@ -317,8 +317,6 @@ JS;
                 $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul")));
             } catch (ServiceLifeCycleUpdateException $e) {
                 return $this->getLang("errorSavingWidget");
-            } catch (Exception $e) {
-                return $this->getLang("errorSavingWidget");
             }
         }
 
