@@ -3,6 +3,7 @@
 namespace Kajona\System\Tests;
 
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Rights;
 use Kajona\System\System\SystemAspect;
 use Kajona\System\System\UserGroup;
@@ -29,77 +30,77 @@ class RightsTest extends Testbase
         //$objUser->setStrEmail(generateSystemid()."@".generateSystemid()."de");
         $strUsername = "user_" . generateSystemid();
         $objUser->setStrUsername($strUsername);
-        $objUser->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
         $this->strUserId = $objUser->getSystemid();
 
         $objGroup = new UserGroup();
         $strName = "name_" . generateSystemid();
         $objGroup->setStrName($strName);
-        $objGroup->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objGroup))->update($objGroup);
 
         $objGroup->getObjSourceGroup()->addMember($objUser->getObjSourceUser());
 
         $objAspect = new SystemAspect();
         $objAspect->setStrName("autotest 0");
-        $objAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
         $strRootId = $objAspect->getSystemid();
         $objAspect = new SystemAspect();
         $objAspect->setStrName("autotest 01");
-        $objAspect->updateObjectToDb($strRootId);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strRootId);
         $strSecOne = $objAspect->getSystemid();
         $objAspect = new SystemAspect();
         $objAspect->setStrName("autotest 02");
-        $objAspect->updateObjectToDb($strRootId);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strRootId);
         $strSecTwo = $objAspect->getSystemid();
 
         $objAspect = new SystemAspect();
         $objAspect->setStrName("autotest 011");
-        $objAspect->updateObjectToDb($strSecOne);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strSecOne);
         $strThirdOne1 = $objAspect->getSystemid();
         $objAspect = new SystemAspect();
         $objAspect->setStrName("autotest 012");
-        $objAspect->updateObjectToDb($strSecOne);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strSecOne);
         $strThirdOne2 = $objAspect->getSystemid();
         $objAspect = new SystemAspect();
         $objAspect->setStrName("autotest 021");
-        $objAspect->updateObjectToDb($strSecTwo);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strSecTwo);
         $strThirdTwo1 = $objAspect->getSystemid();
         $objAspect = new SystemAspect();
         $objAspect->setStrName("autotest 022");
-        $objAspect->updateObjectToDb($strSecTwo);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strSecTwo);
         $strThirdTwo2 = $objAspect->getSystemid();
 
         $objAspect = new SystemAspect();
         $objAspect->setStrName("autotest 0111");
-        $objAspect->updateObjectToDb($strThirdOne1);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strThirdOne1);
         $strThird111 = $objAspect->getSystemid();
         $objAspect = new SystemAspect();
         $objAspect->setStrName("autotest 0112");
-        $objAspect->updateObjectToDb($strThirdOne1);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strThirdOne1);
         $strThird112 = $objAspect->getSystemid();
         $objAspect = new SystemAspect();
         $objAspect->setStrName("autotest 0121");
-        $objAspect->updateObjectToDb($strThirdOne2);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strThirdOne2);
         $strThird121 = $objAspect->getSystemid();
         $objAspect = new SystemAspect();
         $objAspect->setStrName("autotest 0122");
-        $objAspect->updateObjectToDb($strThirdOne2);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strThirdOne2);
         $strThird122 = $objAspect->getSystemid();
         $objAspect = new SystemAspect();
         $objAspect->setStrName("autotest 0211");
-        $objAspect->updateObjectToDb($strThirdTwo1);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strThirdTwo1);
         $strThird211 = $objAspect->getSystemid();
         $objAspect = new SystemAspect();
         $objAspect->setStrName("autotest 0212");
-        $objAspect->updateObjectToDb($strThirdTwo1);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strThirdTwo1);
         $strThird212 = $objAspect->getSystemid();
         $objAspect = new SystemAspect();
         $objAspect->setStrName("autotest 0221");
-        $objAspect->updateObjectToDb($strThirdTwo2);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strThirdTwo2);
         $strThird221 = $objAspect->getSystemid();
         $objAspect = new SystemAspect();
         $objAspect->setStrName("autotest 0222");
-        $objAspect->updateObjectToDb($strThirdTwo2);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strThirdTwo2);
         $strThird222 = $objAspect->getSystemid();
         $arrThirdLevelNodes = array($strThird111, $strThird112, $strThird121, $strThird122, $strThird211, $strThird212, $strThird221, $strThird222);
 
@@ -136,8 +137,8 @@ class RightsTest extends Testbase
 
         $objTempCommons = new SystemAspect($strSecOne);
         $objTempCommons->setStrPrevId($strThird221);
-        $objTempCommons->updateObjectToDb();
-        
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTempCommons))->update($objTempCommons);
+
         $this->checkNodeRights($strRootId, true, true);
         $this->checkNodeRights($strSecOne, false, true);
         $this->checkNodeRights($strSecTwo, false, true);
@@ -176,7 +177,7 @@ class RightsTest extends Testbase
 
         $objTempCommons = new SystemAspect($strThirdOne1);
         $objTempCommons->setStrPrevId($strThird211);
-        $objTempCommons->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTempCommons))->update($objTempCommons);
         
         $this->checkNodeRights($strRootId, true, true);
         $this->checkNodeRights($strSecOne, false, true);
@@ -197,11 +198,11 @@ class RightsTest extends Testbase
 
         $objTempCommons = new SystemAspect($strSecOne);
         $objTempCommons->setStrPrevId($strRootId);
-        $objTempCommons->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTempCommons))->update($objTempCommons);
         //$objSystemCommon->setPrevId($strRootId, $strSecOne); //SecOne still inheriting
         $objTempCommons = new SystemAspect($strThirdOne1);
         $objTempCommons->setStrPrevId($strSecOne);
-        $objTempCommons->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTempCommons))->update($objTempCommons);
         //$objSystemCommon->setPrevId($strSecOne, $strThirdOne1);
         $objRights->setInherited(true, $strThirdOne1);
         $this->checkNodeRights($strRootId, true, true);
@@ -277,13 +278,13 @@ class RightsTest extends Testbase
     {
         $objAspect = new SystemAspect();
         $objAspect->setStrName("democase");
-        $objAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
 
 
         $objGroup = new UserGroup();
         $strName = "name_" . generateSystemid();
         $objGroup->setStrName($strName);
-        $objGroup->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objGroup))->update($objGroup);
         $strGroupId = $objGroup->getSystemid();
         $strGroupShortId = $objGroup->getIntShortId();
 

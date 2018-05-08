@@ -10,6 +10,7 @@
 namespace Kajona\System\Admin\Systemtasks;
 
 use Kajona\System\System\CacheManager;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
 
@@ -57,7 +58,7 @@ class SystemtaskFlushcache extends SystemtaskBase implements AdminSystemtaskInte
         //increase the cachebuster, so browsers are forced to reload JS and CSS files
         $objCachebuster = SystemSetting::getConfigByName("_system_browser_cachebuster_");
         $objCachebuster->setStrValue((int)$objCachebuster->getStrValue() + 1);
-        $objCachebuster->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objCachebuster))->update($objCachebuster);
 
         $intType = (int) $this->getParam("cache_source");
         $strNamespace = (int) $this->getParam("cache_namespace");

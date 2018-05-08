@@ -9,6 +9,7 @@
 
 namespace Kajona\System\System;
 
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Security\PasswordExpiredException;
 
 /**
@@ -138,7 +139,7 @@ final class Session
         $this->bitClosed = true;
         session_write_close();
         if ($this->objInternalSession != null && !$this->bitBlockDbUpdate) {
-            $this->objInternalSession->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($this->objInternalSession))->update($this->objInternalSession);
         }
     }
 
@@ -469,7 +470,7 @@ final class Session
 
                 $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $objTargetUser->getArrGroupIds()));
                 $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $objTargetUser->getArrShortGroupIds()));
-                $this->getObjInternalSession()->updateObjectToDb();
+                ServiceLifeCycleFactory::getLifeCycle(get_class($this->getObjInternalSession()))->update($this->getObjInternalSession());
                 $this->objUser = $objTargetUser;
 
                 return true;
@@ -501,7 +502,7 @@ final class Session
             $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $objUser->getArrShortGroupIds()));
             $this->setSession(self::STR_SESSION_ISADMIN, $objUser->getIntAdmin());
 
-            $this->getObjInternalSession()->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($this->getObjInternalSession()))->update($this->getObjInternalSession());
             $this->objUser = $objUser;
 
             //trigger listeners on first login
@@ -516,7 +517,7 @@ final class Session
                 //force an unlock, may be locked since the user is being edited in the backend
                 $objUser->getLockManager()->unlockRecord(true);
             }
-            $objUser->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
 
             //Drop a line to the logger
             Logger::getInstance()->info("User: ".$objUser->getStrUsername()." successfully logged in, login provider: ".$objUser->getStrSubsystem());

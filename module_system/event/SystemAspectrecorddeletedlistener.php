@@ -8,6 +8,8 @@ namespace Kajona\System\Event;
 
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\GenericeventListenerInterface;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException;
 use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemEventidentifier;
 
@@ -41,7 +43,11 @@ class SystemAspectrecorddeletedlistener implements GenericeventListenerInterface
                 $arrObjAspects = SystemAspect::getObjectListFiltered();
                 $objOneAspect = $arrObjAspects[0];
                 $objOneAspect->setBitDefault(1);
-                return $objOneAspect->updateObjectToDb();
+                try {
+                    ServiceLifeCycleFactory::getLifeCycle(get_class($objOneAspect))->update($objOneAspect);
+                } catch (ServiceLifeCycleUpdateException $e) {
+                    return false;
+                }
             }
         }
 

@@ -413,7 +413,7 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
                 throw new Exception("Illegal state detected! Workflow was already saved before!");
             }
 
-            $objWorkflow->updateObjectToDb();
+            $this->objLifeCycleFactory->factory(get_class($objWorkflow))->update($objWorkflow);
 
             $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "myList"));
         } else {
@@ -635,7 +635,7 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
             }
 
             $objForm->updateSourceObject();
-            $objHandler->updateObjectToDb();
+            $this->objLifeCycleFactory->factory(get_class($objHandler))->update($objHandler);
 
             $this->adminReload(getLinkAdminHref($this->getArrModule("modul"), "listHandlers", ""));
             return "";
@@ -648,6 +648,7 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
     /**
      * @return string
      * @permissions right1
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
     protected function actionStartInstance()
     {
@@ -656,7 +657,7 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
         $objHandler = new WorkflowsHandler($this->getSystemid());
         $objWorkflow = new WorkflowsWorkflow();
         $objWorkflow->setStrClass($objHandler->getStrHandlerClass());
-        $objWorkflow->updateObjectToDb();
+        $this->objLifeCycleFactory->factory(get_class($objWorkflow))->update($objWorkflow);
         $this->adminReload(getLinkAdminHref($this->getArrModule("modul"), "list"));
 
         return $strReturn;

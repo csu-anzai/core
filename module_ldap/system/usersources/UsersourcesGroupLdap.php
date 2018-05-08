@@ -13,6 +13,7 @@ use Kajona\Ldap\System\Ldap;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\Exception;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Logger;
 use Kajona\System\System\SystemEventidentifier;
 use Kajona\System\System\Usersources\UsersourcesGroupInterface;
@@ -136,6 +137,7 @@ class UsersourcesGroupLdap extends \Kajona\System\System\Model implements \Kajon
      * @param int $intEnd
      *
      * @return array
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
     public function getUserIdsForGroup($intStart = null, $intEnd = null)
     {
@@ -183,7 +185,7 @@ class UsersourcesGroupLdap extends \Kajona\System\System\Model implements \Kajon
                 $objUser->setStrUsername($arrUserDetails["username"]);
                 $objUser->setStrSubsystem("ldap");
                 $objUser->setIntAdmin(1);
-                $objUser->updateObjectToDb();
+                ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
 
                 $objSourceUser = $objUser->getObjSourceUser();
                 if ($objSourceUser instanceof UsersourcesUserLdap) {
@@ -191,7 +193,7 @@ class UsersourcesGroupLdap extends \Kajona\System\System\Model implements \Kajon
                     $objSourceUser->setStrFamilyname($arrUserDetails["familyname"]);
                     $objSourceUser->setStrGivenname($arrUserDetails["givenname"]);
                     $objSourceUser->setStrEmail($arrUserDetails["mail"]);
-                    $objSourceUser->updateObjectToDb();
+                    ServiceLifeCycleFactory::getLifeCycle(get_class($objSourceUser))->update($objSourceUser);
 
                     $this->objDB->flushQueryCache();
                 }

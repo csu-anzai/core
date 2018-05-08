@@ -1361,7 +1361,7 @@ Please refer to the CKEditor documentation to see what's possible here
 The following sections are used to display the path-navigations, e.g. used by the navigation module
 
 <path_entry>
-  <script type="text/javascript"> require(['breadcrumb'], function(breadcrumb) { breadcrumb.appendLinkToPathNavigation('%%pathlink%%') }); </script>
+  <script type="text/javascript"> require(['breadcrumb'], function(breadcrumb) { breadcrumb.appendLinkToPathNavigation(%%pathlink%%) }); </script>
 </path_entry>
 
 ---------------------------------------------------------------------------------------------------------

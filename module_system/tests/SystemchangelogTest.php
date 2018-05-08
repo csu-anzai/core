@@ -6,6 +6,7 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\Date;
 use Kajona\System\System\GenericeventListenerInterface;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Rights;
 use Kajona\System\System\SystemChangelog;
 use Kajona\System\System\SystemEventidentifier;
@@ -42,7 +43,7 @@ class SystemchangelogTest extends Testbase
         $objRecord->setStrValue("start");
         $objRecord->setStrName(generateSystemid());
         $objRecord->setIntModule(_system_modul_id_);
-        $objRecord->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objRecord))->update($objRecord);
 
         $objCL = new SystemChangelog();
         $objCL->processCachedInserts();
@@ -54,7 +55,7 @@ class SystemchangelogTest extends Testbase
 
         $objGroup = new UserGroup();
         $objGroup->setStrName("perm_test");
-        $objGroup->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objGroup))->update($objGroup);
 
         CoreEventdispatcher::getInstance()->addListener(SystemEventidentifier::EVENT_SYSTEM_RECORDUPDATED, (new class($objRecord) implements GenericeventListenerInterface {
 
@@ -79,7 +80,7 @@ class SystemchangelogTest extends Testbase
         }));
 
         $objRecord->setStrValue("start 2");
-        $objRecord->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objRecord))->update($objRecord);
 
         $objCL = new SystemChangelog();
         $objCL->processCachedInserts();

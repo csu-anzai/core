@@ -4,6 +4,7 @@ namespace Kajona\System\Tests;
 
 use DOMDocument;
 use DOMElement;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Model;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\UserUser;
@@ -189,7 +190,7 @@ abstract class TestbaseObject extends Testbase
             }
         }
 
-        $objObject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objObject))->update($objObject);
 
         // walk through child elements
         foreach ($objElement->childNodes as $objNode) {
@@ -263,13 +264,13 @@ abstract class TestbaseObject extends Testbase
         $objUser = new UserUser();
         $objUser->setIntAdmin(1);
         $objUser->setStrUsername($strUserName);
-        $objUser->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
         $objSourceUser = $objUser->getObjSourceUser();
         $objSourceUser->setStrPass($strUserName);
         $objSourceUser->setStrEmail("{$strUserName}@example");
         $objSourceUser->setStrForename($strUserName . "_Forname");
         $objSourceUser->setStrName($strUserName . "Lastname");
-        $objSourceUser->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objSourceUser))->update($objSourceUser);
 
         return $objUser;
     }

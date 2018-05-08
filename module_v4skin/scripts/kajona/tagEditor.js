@@ -10,6 +10,14 @@
 define(["jquery", "jquerytageditor", "v4skin", "workingIndicator", "forms"], function($, tagEditor, v4skin, workingIndicator, forms) {
 
 
+    updateMandatory = function($objInput) {
+        var $tagInput = $objInput.closest('.form-group').find('.tag-editor');
+        if ($tagInput && $objInput.hasClass('mandatoryFormElement')) {
+            $tagInput.addClass('mandatoryFormElement');
+        }
+    };
+
+
     return /** @alias module:tagEditor */ {
 
         /**
@@ -106,11 +114,11 @@ define(["jquery", "jquerytageditor", "v4skin", "workingIndicator", "forms"], fun
             });
             $objInput.parent().find('ul.tag-editor').after("<span class='form-control-feedback loading-feedback' style='right: 15px;'><i class='fa fa-keyboard-o'></i></span>");
 
-            forms.addMandatoryRenderingCallback(function() {
-                if($objInput.hasClass('mandatoryFormElement')) {
-                    $objInput.parent().find('ul.tag-editor').addClass('mandatoryFormElement');
-                }
+            //listen on mandatory change events
+            $objInput.on('kajona.forms.mandatoryAdded', function() {
+                updateMandatory($(this));
             });
+            updateMandatory($objInput);
 
             //hightlight current input
             $('#tageditor_'+strElementId+' .tag-editor').on("click", function () {

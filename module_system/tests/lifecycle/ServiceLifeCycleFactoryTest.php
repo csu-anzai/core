@@ -5,6 +5,7 @@ namespace Kajona\System\Tests\Lifecycle;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleImpl;
 use Kajona\System\System\Permissions\PermissionHandlerFactory;
+use Kajona\System\System\Root;
 use Kajona\System\System\ServiceProvider;
 use Kajona\System\Tests\Testbase;
 use Pimple\Container;
@@ -55,12 +56,35 @@ class ServiceLifeCycleFactoryTest extends Testbase
 
         $this->assertInstanceOf(ServiceLifeCycleImpl::class, $objService);
     }
+
+    public function testGetLifeCycleObject()
+    {
+        $objService = ServiceLifeCycleFactory::getLifeCycle(new ModelB());
+
+        $this->assertInstanceOf(ServiceLifeCycleImpl::class, $objService);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testGetLifeCycleInvalid()
+    {
+        ServiceLifeCycleFactory::getLifeCycle(new \stdClass());
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testGetLifeCycleInvalidArray()
+    {
+        ServiceLifeCycleFactory::getLifeCycle(['foo']);
+    }
 }
 
 /**
  * @lifeCycleService service_a
  */
-class ModelA
+class ModelA extends Root
 {
 }
 
@@ -68,7 +92,7 @@ class ServiceA extends ServiceLifeCycleImpl
 {
 }
 
-class ModelB
+class ModelB extends Root
 {
 }
 

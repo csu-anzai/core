@@ -10,27 +10,17 @@
 namespace Kajona\System\Admin;
 
 use Kajona\System\System\AbstractController;
-use Kajona\System\System\AdminskinHelper;
-use Kajona\System\System\Carrier;
 use Kajona\System\System\Classloader;
 use Kajona\System\System\Exception;
 use Kajona\System\System\History;
-use Kajona\System\System\HttpResponsetypes;
-use Kajona\System\System\HttpStatuscodes;
 use Kajona\System\System\LanguagesLanguage;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Link;
-use Kajona\System\System\Objectfactory;
-use Kajona\System\System\Reflection;
 use Kajona\System\System\RequestEntrypointEnum;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\ResponseObject;
-use Kajona\System\System\Rights;
-use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemModule;
-use Kajona\System\System\SystemSetting;
-use Kajona\System\Xml;
-use ReflectionClass;
 
 /**
  * The Base-Class for all admin-interface classes.
@@ -80,6 +70,11 @@ abstract class AdminController extends AbstractController
      */
     protected $objClassLoader;
 
+    /**
+     * @inject system_life_cycle_factory
+     * @var ServiceLifeCycleFactory
+     */
+    protected $objLifeCycleFactory;
 
     /**
      * Constructor

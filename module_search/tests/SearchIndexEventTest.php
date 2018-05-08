@@ -6,6 +6,7 @@ use Kajona\Search\Event\SearchObjectdeletedlistener;
 use Kajona\Search\Event\SearchRecordupdatedlistener;
 use Kajona\Search\System\SearchCommons;
 use Kajona\Search\System\SearchSearch;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Rights;
 use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemModule;
@@ -46,7 +47,8 @@ class SearchIndexEventTest extends Testbase
 
         $objAspect = new SystemAspect();
         $objAspect->setStrName($strSearchKey1);
-        $objAspect->updateObjectToDb();
+
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
 
         $objSearchCommons = new SearchCommons();
 
@@ -60,7 +62,7 @@ class SearchIndexEventTest extends Testbase
         $strSearchKey2 = generateSystemid();
         $objTag = new TagsTag();
         $objTag->setStrName($strSearchKey2);
-        $objTag->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTag))->update($objTag);
 
 
         $objSearchParams = new SearchSearch();

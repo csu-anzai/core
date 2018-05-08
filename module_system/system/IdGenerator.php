@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace Kajona\System\System;
 
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
+
 
 /**
  * Model for a idgenerator record object itself
@@ -56,13 +58,13 @@ class IdGenerator extends Model implements ModelInterface
             $objIdGenerator = new IdGenerator();
             $objIdGenerator->setStrKey($strKey);
             $objIdGenerator->setIntCount($intId);
-            $objIdGenerator->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objIdGenerator))->update($objIdGenerator);
         } else {
             /* @var IdGenerator $objIdGenerator */
             $objIdGenerator = current($arrResult);
             $intId = $objIdGenerator->getIntCount() + 1;
             $objIdGenerator->setIntCount($intId);
-            $objIdGenerator->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objIdGenerator))->update($objIdGenerator);
         }
 
         return $intId;

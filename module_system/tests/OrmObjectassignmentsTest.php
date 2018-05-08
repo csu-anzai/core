@@ -5,6 +5,7 @@ namespace Kajona\System\Tests;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\GenericeventListenerInterface;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
@@ -92,7 +93,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
 
 
         $objTestobject->setArrObject1($arrAspects);
-        $objTestobject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject);
 
         $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_testclass_rel WHERE testclass_source_id = ?", array($objTestobject->getSystemid()));
         $this->assertEquals(3, $arrRow["cnt"]);
@@ -104,7 +105,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
         $objTestobject = new OrmObjectlistTestclass($objTestobject->getSystemid());
         $this->assertEquals(count($objTestobject->getArrObject1()), 2);
         $objTestobject->setArrObject1(array($arrAspects[0], $arrAspects[2]));
-        $objTestobject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject);
 
         $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_testclass_rel WHERE testclass_source_id = ?", array($objTestobject->getSystemid()));
         $this->assertEquals(3, $arrRow["cnt"]);
@@ -121,7 +122,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
 
 
         $objTestobject->setArrObject1($arrAspects);
-        $objTestobject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject);
 
         $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_testclass_rel WHERE testclass_source_id = ?", array($objTestobject->getSystemid()));
         $this->assertEquals(3, $arrRow["cnt"]);
@@ -133,7 +134,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
         $objTestobject = new OrmObjectlistTestclass($objTestobject->getSystemid());
         $this->assertEquals(count($objTestobject->getArrObject1()), 2);
         $objTestobject->setArrObject1(array($arrAspects[0], $arrAspects[1]));
-        $objTestobject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject);
 
         $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_testclass_rel WHERE testclass_source_id = ?", array($objTestobject->getSystemid()));
         $this->assertEquals(2, $arrRow["cnt"]);
@@ -149,7 +150,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
 
 
         $objTestobject->setArrObject1($arrAspects);
-        $objTestobject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject);
 
         $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_testclass_rel WHERE testclass_source_id = ?", array($objTestobject->getSystemid()));
         $this->assertEquals(3, $arrRow["cnt"]);
@@ -161,7 +162,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
         $objTestobject = new OrmObjectlistTestclass($objTestobject->getSystemid());
         OrmBase::setObjHandleLogicalDeletedGlobal(null);
         $this->assertEquals(count($objTestobject->getArrObject1()), 3);
-        $objTestobject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject);
 
         $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_testclass_rel WHERE testclass_source_id = ?", array($objTestobject->getSystemid()));
         $this->assertEquals(3, $arrRow["cnt"]);
@@ -178,7 +179,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
 
 
         $objTestobject->setArrObject1($arrAspects);
-        $objTestobject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject);
 
         $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_testclass_rel WHERE testclass_source_id = ?", array($objTestobject->getSystemid()));
         $this->assertEquals(3, $arrRow["cnt"]);
@@ -221,7 +222,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
 
 
         $objTestobject->setArrObject1($arrAspects);
-        $objTestobject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject);
 
         $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_testclass_rel WHERE testclass_source_id = ?", array($objTestobject->getSystemid()));
         $this->assertEquals(2, $arrRow["cnt"]);
@@ -230,7 +231,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
         $objTestobject = $this->getObject("testobject");
         $arrAspects = array($this->getObject("aspect2"));
         $objTestobject->setArrObject1($arrAspects);
-        $objTestobject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject);
 
         $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_testclass_rel WHERE testclass_source_id = ?", array($objTestobject->getSystemid()));
         $this->assertEquals(1, $arrRow["cnt"]);
@@ -238,7 +239,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
         //change the assignments
         $objTestobject = $this->getObject("testobject");
         $objTestobject->setArrObject1(array());
-        $objTestobject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject);
 
         $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_testclass_rel WHERE testclass_source_id = ?", array($objTestobject->getSystemid()));
         $this->assertEquals(0, $arrRow["cnt"]);
@@ -247,7 +248,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
         $objTestobject = $this->getObject("testobject");
         $arrAspects = array($this->getObject("aspect2"), $this->getObject("aspect1")->getSystemid());
         $objTestobject->setArrObject1($arrAspects);
-        $objTestobject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject);
 
         $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_testclass_rel WHERE testclass_source_id = ?", array($objTestobject->getSystemid()));
         $this->assertEquals(2, $arrRow["cnt"]);
@@ -263,7 +264,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
         $arrAspects = array($this->getObject("aspect1"), $this->getObject("aspect2"));
 
         $objTestobject->setArrObject1($arrAspects);
-        $objTestobject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject);
         $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_testclass_rel WHERE testclass_source_id = ?", array($objTestobject->getSystemid()));
         $this->assertEquals(2, $arrRow["cnt"]);
         $strOldSystemid = $objTestobject->getSystemid();
@@ -293,7 +294,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
 
 
         $objTestobject->setArrObject1($arrAspects);
-        $objTestobject->updateObjectToDb(SystemModule::getModuleByName("system")->getSystemid());
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject, SystemModule::getModuleByName("system")->getSystemid());
 
         $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_testclass_rel WHERE testclass_source_id = ?", array($objTestobject->getSystemid()));
         $this->assertEquals(2, $arrRow["cnt"]);
@@ -318,8 +319,8 @@ class OrmObjectassignmentsTest extends TestbaseObject
 
 
         $objTestobject->setArrObject1($arrAspects);
-        $objTestobject->updateObjectToDb(SystemModule::getModuleByName("system")->getSystemid());
-        
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject, SystemModule::getModuleByName("system")->getSystemid());
+
         //we need a valid systemid now
         /** @var SystemAspect $objOneObject */
         foreach($objTestobject->getArrObject1() as $objOneObject) {
@@ -352,7 +353,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
         $arrAspects = array($this->getObject("aspect1"), $this->getObject("aspect2"));
 
         $objTestobject->setArrObject1($arrAspects);
-        $objTestobject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject);
 
         //reinit
         $objNewInstance = new OrmObjectlistTestclass($objTestobject->getSystemid());
@@ -390,7 +391,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
         $this->assertTrue($objHandler->arrRemovedAssignments == null);
         $this->assertTrue($objHandler->objObject == null);
         $this->assertTrue($objHandler->strProperty == null);
-        $objTestobject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject);
 
         $this->assertEquals(count($objHandler->arrNewAssignments), 2);
         $this->assertEquals(count($objHandler->arrRemovedAssignments), 0);
@@ -413,7 +414,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
         $this->assertTrue($objHandler->arrRemovedAssignments == null);
         $this->assertTrue($objHandler->objObject == null);
         $this->assertTrue($objHandler->strProperty == null);
-        $objTestobject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject);
 
         $this->assertEquals(count($objHandler->arrNewAssignments), 0);
         $this->assertEquals(count($objHandler->arrRemovedAssignments), 1);
@@ -434,7 +435,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
         $this->assertTrue($objHandler->arrRemovedAssignments == null);
         $this->assertTrue($objHandler->objObject == null);
         $this->assertTrue($objHandler->strProperty == null);
-        $objTestobject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject);
 
 
         $this->assertEquals(count($objHandler->arrNewAssignments), 0);
@@ -456,7 +457,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
         $this->assertTrue($objHandler->arrRemovedAssignments == null);
         $this->assertTrue($objHandler->objObject == null);
         $this->assertTrue($objHandler->strProperty == null);
-        $objTestobject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject);
 
         $this->assertEquals(count($objHandler->arrNewAssignments), 2);
         $this->assertEquals(count($objHandler->arrRemovedAssignments), 0);
@@ -481,7 +482,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
         $this->assertTrue($objHandler->arrRemovedAssignments == null);
         $this->assertTrue($objHandler->objObject == null);
         $this->assertTrue($objHandler->strProperty == null);
-        $objTestobject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject);
 
         $this->assertTrue($objHandler->arrCurrentAssignments == null);
         $this->assertTrue($objHandler->arrNewAssignments == null);
@@ -500,7 +501,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
         $objTestobject = $this->getObject("testobject");
         $arrAspects = array($this->getObject("aspect2"), $this->getObject("aspect1")->getSystemid());
         $objTestobject->setArrObject1($arrAspects);
-        $objTestobject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject);
 
         $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_testclass_rel WHERE testclass_source_id = ?", array($objTestobject->getSystemid()));
         $this->assertEquals(2, $arrRow["cnt"]);
@@ -520,7 +521,7 @@ class OrmObjectassignmentsTest extends TestbaseObject
         $objTestobject = $this->getObject("testobject");
         $arrAspects = array($this->getObject("aspect2"), $this->getObject("aspect1")->getSystemid(), $this->getObject("language"));
         $objTestobject->setArrObject2($arrAspects);
-        $objTestobject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTestobject))->update($objTestobject);
 
         $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_testclass2_rel WHERE testclass_source_id = ?", array($objTestobject->getSystemid()));
         $this->assertEquals(2, $arrRow["cnt"]);

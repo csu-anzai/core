@@ -10,6 +10,7 @@
 namespace Kajona\System\System;
 
 use Kajona\Packagemanager\System\PackagemanagerMetadata;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 
 /**
  * Base class for all installers. Provides some needed function to avoid multiple
@@ -111,7 +112,7 @@ abstract class InstallerBase implements InstallerInterface {
         $objModule->setIntDate(time());
         $objModule->setIntModuleNr($intModuleNr);
         $objModule->setArrModuleEntry("moduleId", $intModuleNr);
-        $objModule->updateObjectToDb($strPrevId);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objModule))->update($objModule, $strPrevId);
 
 		Logger::getInstance()->info("New module registered: ".$objModule->getSystemid(). "(".$strName.")");
 
@@ -135,7 +136,12 @@ abstract class InstallerBase implements InstallerInterface {
         if($objModule !== null) {
             $objModule->setStrVersion($strVersion);
             $objModule->setIntDate(time());
-            $bitReturn = $objModule->updateObjectToDb();
+            try {
+                ServiceLifeCycleFactory::getLifeCycle(get_class($objModule))->update($objModule);
+            } catch (Lifecycle\ServiceLifeCycleUpdateException $e) {
+                $bitReturn = false;
+            }
+
         }
 
 	    Logger::getInstance()->info("module ".$strModuleName." updated to ".$strVersion);
@@ -161,7 +167,12 @@ abstract class InstallerBase implements InstallerInterface {
     	    $objConstant->setStrValue($strValue);
     	    $objConstant->setIntType($intType);
     	    $objConstant->setIntModule($intModule);
-    	    $bitReturn = $objConstant->updateObjectToDb();
+            $bitReturn = true;
+            try {
+                ServiceLifeCycleFactory::getLifeCycle(get_class($objConstant))->update($objConstant);
+            } catch (Lifecycle\ServiceLifeCycleUpdateException $e) {
+                $bitReturn = false;
+            }
             $this->objDB->flushQueryCache();
             return $bitReturn;
 	    }

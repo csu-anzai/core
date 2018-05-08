@@ -11,15 +11,13 @@ namespace Kajona\System\Installer;
 
 use Kajona\Packagemanager\System\PackagemanagerManager;
 use Kajona\System\System\Carrier;
-use Kajona\System\System\Classloader;
 use Kajona\System\System\Date;
 use Kajona\System\System\DbDatatypes;
-use Kajona\System\System\Filesystem;
 use Kajona\System\System\IdGenerator;
 use Kajona\System\System\InstallerBase;
 use Kajona\System\System\InstallerInterface;
 use Kajona\System\System\LanguagesLanguage;
-use Kajona\System\System\Logger;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\MessagingAlert;
 use Kajona\System\System\MessagingConfig;
 use Kajona\System\System\MessagingMessage;
@@ -327,7 +325,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         //Creating the admin GROUP
         $objAdminGroup = new UserGroup();
         $objAdminGroup->setStrName("Admins");
-        $objAdminGroup->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAdminGroup))->update($objAdminGroup);
         $strReturn .= "Registered Group Admins...\n";
 
         //Systemid of admin group
@@ -384,7 +382,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             $objLanguage->setStrName("en");
 
         $objLanguage->setBitDefault(true);
-        $objLanguage->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objLanguage))->update($objLanguage);
         $strReturn .= "ID of new language: ".$objLanguage->getSystemid()."\n";
 
         //the admin-language
@@ -395,12 +393,12 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $objAspect = new SystemAspect();
         $objAspect->setStrName("content");
         $objAspect->setBitDefault(true);
-        $objAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
         SystemAspect::setCurrentAspectId($objAspect->getSystemid());
 
         $objAspect = new SystemAspect();
         $objAspect->setStrName("management");
-        $objAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
 
         $objManager = new PackagemanagerManager();
         if ($objManager->getPackage("agp_commons") === null) {
@@ -408,10 +406,10 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             $objUser->setStrUsername($strUsername);
             $objUser->setIntAdmin(1);
             $objUser->setStrAdminlanguage($strAdminLanguage);
-            $objUser->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
             $objUser->getObjSourceUser()->setStrPass($strPassword);
             $objUser->getObjSourceUser()->setStrEmail($strEmail);
-            $objUser->getObjSourceUser()->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objUser->getObjSourceUser()))->update($objUser->getObjSourceUser());
             $strReturn .= "Created User Admin: <strong>Username: ".$strUsername.", Password: ***********</strong> ...\n";
 
             //The Admin should belong to the admin-Group
@@ -424,15 +422,15 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $strReturn .= "Assigning modules to default aspects...\n";
         $objModule = SystemModule::getModuleByName("system");
         $objModule->setStrAspect(SystemAspect::getAspectByName("management")->getSystemid());
-        $objModule->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objModule))->update($objModule);
 
         $objModule = SystemModule::getModuleByName("user");
         $objModule->setStrAspect(SystemAspect::getAspectByName("management")->getSystemid());
-        $objModule->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objModule))->update($objModule);
 
         $objModule = SystemModule::getModuleByName("languages");
         $objModule->setStrAspect(SystemAspect::getAspectByName("management")->getSystemid());
-        $objModule->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objModule))->update($objModule);
 
 
         $strReturn .= "Trying to copy the *.root files to top-level...\n";
@@ -554,7 +552,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         }
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.5.3") {
+        if($arrModule["module_version"] == "6.5.3" || $arrModule["module_version"] == "6.5.4") {
             $strReturn .= "Updating to 6.6...\n";
             $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6");
         }
@@ -759,7 +757,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             if (WorkflowsWorkflow::getWorkflowsForClassCount(WorkflowMessageQueue::class, false) == 0) {
                 $objWorkflow = new WorkflowsWorkflow();
                 $objWorkflow->setStrClass(WorkflowMessageQueue::class);
-                $objWorkflow->updateObjectToDb();
+                ServiceLifeCycleFactory::getLifeCycle(get_class($objWorkflow))->update($objWorkflow);
             }
         }
 

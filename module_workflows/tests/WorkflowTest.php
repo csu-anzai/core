@@ -6,6 +6,7 @@
 
 namespace Kajona\Workflows\Tests;
 
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\Tests\Testbase;
 use Kajona\Workflows\System\WorkflowsWorkflow;
 
@@ -38,7 +39,7 @@ class WorkflowTest extends Testbase
                 $objWorkflow = new WorkflowsWorkflow();
                 $objWorkflow->setStrClass($arrInfo["class"]);
                 $objWorkflow->setStrAffectedSystemid($arrInfo["systemid"]);
-                $objWorkflow->updateObjectToDb();
+                ServiceLifeCycleFactory::getLifeCycle(get_class($objWorkflow))->update($objWorkflow);
                 $arrCreatedWorkflows[] = $objWorkflow;
             }
         }

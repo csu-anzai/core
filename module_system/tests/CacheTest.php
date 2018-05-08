@@ -3,6 +3,7 @@
 namespace Kajona\System\Tests;
 
 use Kajona\System\System\Cache;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 
 class CacheTest extends Testbase
 {
@@ -25,7 +26,7 @@ class CacheTest extends Testbase
 
         $objCache->setStrHash1("test");
         $objCache->setStrContent("test");
-        $objCache->updateObjectToDb();
+        $objCache->updateObjectToDb();//do not use lifecycle here
 
         $this->flushDBCache();
 
@@ -42,7 +43,7 @@ class CacheTest extends Testbase
         $objCache->setStrHash1("testFlush");
         $objCache->setStrContent("test");
         $objCache->setIntLeasetime(time() + 2);
-        $objCache->updateObjectToDb();
+        $objCache->updateObjectToDb();//do not use lifecycle here
         $this->flushDBCache();
         sleep(3);
 
@@ -62,7 +63,7 @@ class CacheTest extends Testbase
         $objCache->setStrHash1("testCache");
         $objCache->setStrContent("testContent");
         $objCache->setIntLeasetime(time() + 100);
-        $objCache->updateObjectToDb();
+        $objCache->updateObjectToDb();//do not use lifecycle here
         $this->flushDBCache();
 
         Cache::cleanCache();
@@ -81,7 +82,7 @@ class CacheTest extends Testbase
         $objCache->setStrHash1("testClean");
         $objCache->setStrContent("test");
         $objCache->setIntLeasetime(time() + 2);
-        $objCache->updateObjectToDb();
+        $objCache->updateObjectToDb();//do not use lifecycle here
         $this->flushDBCache();
 
         $objEntry = Cache::getCachedEntry(self::$strCacheSource, "testClean");

@@ -4,12 +4,12 @@ namespace Kajona\System\Tests;
 
 use Kajona\System\System\Database;
 use Kajona\System\System\Date;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Messageproviders\MessageproviderExceptions;
 use Kajona\System\System\MessagingMessage;
 use Kajona\System\System\MessagingMessagehandler;
 use Kajona\System\System\MessagingQueue;
 use Kajona\System\System\Objectfactory;
-use Kajona\System\System\Root;
 use Kajona\System\System\UserUser;
 use Kajona\System\System\Workflows\WorkflowMessageQueue;
 
@@ -42,7 +42,7 @@ class WorkflowMessageQueueTest extends Testbase
 
         $objUser = new UserUser();
         $objUser->setStrUsername(generateSystemid());
-        $objUser->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
 
         $objMessageHandler = new MessagingMessagehandler();
         $objMessageHandler->sendMessageObject($objMessage1, $objUser, $objSendDate1);

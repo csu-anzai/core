@@ -4,6 +4,7 @@ namespace Kajona\System\Tests;
 
 use Kajona\System\System\Database;
 use Kajona\System\System\Date;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Messageproviders\MessageproviderExceptions;
 use Kajona\System\System\MessagingMessage;
 use Kajona\System\System\MessagingMessagehandler;
@@ -91,7 +92,7 @@ class MessagingTest extends Testbase
         $objMessage = $this->newMessage();
         $objUser = new UserUser();
         $objUser->setStrUsername(generateSystemid());
-        $objUser->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
 
         $objMessageHandler = new MessagingMessagehandler();
         $objMessageHandler->sendMessageObject($objMessage, $objUser, $objSendDate);
@@ -131,7 +132,7 @@ class MessagingTest extends Testbase
         $objMessage = $this->newMessage();
         $objUser = new UserUser();
         $objUser->setStrUsername(generateSystemid());
-        $objUser->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
 
         $objMessageHandler = new MessagingMessagehandler();
         $objMessageHandler->sendMessageObject($objMessage, $objUser, $objSendDate);
@@ -177,7 +178,7 @@ class MessagingTest extends Testbase
         foreach ($arrMessages as $objOneMessage) {
             $bitFound = true;
             $objOneMessage->setBitRead(true);
-            $objOneMessage->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objOneMessage))->update($objOneMessage);
 
             $this->assertEquals(0, MessagingMessage::getNumberOfMessagesForUser($strUserId, true));
         }
