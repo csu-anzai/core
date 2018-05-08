@@ -12,7 +12,6 @@ namespace Kajona\System\Admin;
 use Kajona\System\System\AuthenticationException;
 use Kajona\System\System\Cookie;
 use Kajona\System\System\HttpStatuscodes;
-use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Link;
 use Kajona\System\System\Logger;
 use Kajona\System\System\RequestEntrypointEnum;
@@ -136,10 +135,11 @@ class LoginAdmin extends AdminController implements AdminInterface
                         if ($bitReturn) {
                             if ($objUser->getObjSourceUser()->isPasswordResettable() && method_exists($objUser->getObjSourceUser(), "setStrPass")) {
                                 $objUser->getObjSourceUser()->setStrPass($strPass1);
-                                ServiceLifeCycleFactory::getLifeCycle(get_class($objUser->getObjSourceUser()))->update($objUser->getObjSourceUser());
+                                $this->objLifeCycleFactory->factory(get_class($objUser->getObjSourceUser()))->update($objUser->getObjSourceUser());
                             }
                             $objUser->setStrAuthcode("");
-                            ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
+                            $this->objLifeCycleFactory->factory(get_class($objUser))->update($objUser);
+
                             Logger::getInstance()->info("changed password of user ".$objUser->getStrUsername());
 
                             return $this->objToolkit->warningBox($this->getLang("login_change_success", "user"));
@@ -274,7 +274,7 @@ try {
 
             $objUser = $this->objFactory->getObject($objEx->getStrUserId());
             $objUser->setStrAuthcode($strToken);
-            ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
+            $this->objLifeCycleFactory->factory(get_class($objUser))->update($objUser);
 
             return Link::clientRedirectHref("login", "pwdReset", ["systemid" => $objUser->getSystemid(), "authcode" => $strToken, "reason" => "expired"]);
         }

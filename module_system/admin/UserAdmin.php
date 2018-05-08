@@ -24,7 +24,6 @@ use Kajona\System\System\Exception;
 use Kajona\System\System\FilterBase;
 use Kajona\System\System\Filters\UserGroupFilter;
 use Kajona\System\System\LanguagesLanguage;
-use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
@@ -718,12 +717,12 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
         $objUser->setStrAdminModule($this->getParam("user_startmodule"));
         $objUser->setIntItemsPerPage($this->getParam("user_items_per_page"));
 
-        ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
+        $this->objLifeCycleFactory->factory(get_class($objUser))->update($objUser);
         /** @var UsersourcesUserInterface|ModelInterface $objSourceUser */
         $objSourceUser = $objUser->getObjSourceUser();
         $objForm = $this->getUserForm($objSourceUser, $bitSelfedit, $this->getParam("mode"));
         $objForm->updateSourceObject();
-        ServiceLifeCycleFactory::getLifeCycle(get_class($objSourceUser))->update($objSourceUser);
+        $this->objLifeCycleFactory->factory(get_class($objSourceUser))->update($objSourceUser);
 
         // assign user to the same groups if we have an user where we inherit the group settings
         if ($this->getParam("mode") == "new") {
@@ -963,14 +962,14 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
         }
 
         $objGroup->setStrName($this->getParam("group_name"));
-        ServiceLifeCycleFactory::getLifeCycle(get_class($objGroup))->update($objGroup);
+        $this->objLifeCycleFactory->factory(get_class($objGroup))->update($objGroup);
 
         $objSourceGroup = $objGroup->getObjSourceGroup();
 
         $objForm = $this->getGroupForm($objSourceGroup);
         $objForm->updateSourceObject();
 
-        ServiceLifeCycleFactory::getLifeCycle(get_class($objSourceGroup))->update($objSourceGroup);
+        $this->objLifeCycleFactory->factory(get_class($objSourceGroup))->update($objSourceGroup);
 
         $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "groupList", "&peClose=1&blockAction=1"));
         return "";

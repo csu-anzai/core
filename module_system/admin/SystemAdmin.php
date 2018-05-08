@@ -27,7 +27,6 @@ use Kajona\System\System\Filesystem;
 use Kajona\System\System\Filters\DeletedRecordsFilter;
 use Kajona\System\System\HttpStatuscodes;
 use Kajona\System\System\Lang;
-use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException;
 use Kajona\System\System\Link;
 use Kajona\System\System\Lockmanager;
@@ -113,7 +112,7 @@ class SystemAdmin extends AdminEvensimpler implements AdminInterface
         $objModule = new SystemModule($this->getSystemid());
         if ($objModule->rightEdit() && Carrier::getInstance()->getObjSession()->isSuperAdmin()) {
             $objModule->setIntRecordStatus($objModule->getIntRecordStatus() == 0 ? 1 : 0);
-            ServiceLifeCycleFactory::getLifeCycle(get_class($objModule))->update($objModule);
+            $this->objLifeCycleFactory->factory(get_class($objModule))->update($objModule);
             $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul")));
         }
     }
@@ -306,7 +305,7 @@ class SystemAdmin extends AdminEvensimpler implements AdminInterface
         $objModule = SystemModule::getModuleBySystemid($this->getSystemid());
         $objModule->setStrAspect(implode(",", $arrParams));
 
-        ServiceLifeCycleFactory::getLifeCycle(get_class($objModule))->update($objModule);
+        $this->objLifeCycleFactory->factory(get_class($objModule))->update($objModule);
         $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "list", "peClose=1&blockAction=1"));
     }
 
@@ -752,7 +751,7 @@ JS;
         if ($this->getParam("logout") == "true") {
             $objSession = new SystemSession($this->getSystemid());
             $objSession->setStrLoginstatus(SystemSession::$LOGINSTATUS_LOGGEDOUT);
-            ServiceLifeCycleFactory::getLifeCycle(get_class($objSession))->update($objSession);
+            $this->objLifeCycleFactory->factory(get_class($objSession))->update($objSession);
             Carrier::getInstance()->getObjDB()->flushQueryCache();
         }
 
@@ -1299,7 +1298,7 @@ JS;
         //check permissions
         if ($objObject != null && $objObject->rightEdit() && $intNewPos != "") {
             //store edit date
-            ServiceLifeCycleFactory::getLifeCycle(get_class($objObject))->update($objObject);
+            $this->objLifeCycleFactory->factory(get_class($objObject))->update($objObject);
             $objObject->setAbsolutePosition($intNewPos);
             $strReturn .= "<message>".$objObject->getStrDisplayName()." - ".$this->getLang("setAbsolutePosOk")."</message>";
         } else {
@@ -1328,7 +1327,7 @@ JS;
 
             try {
                 $objCommon->setIntRecordStatus($intNewStatus);
-                ServiceLifeCycleFactory::getLifeCycle(get_class($objCommon))->update($objCommon);
+                $this->objLifeCycleFactory->factory(get_class($objCommon))->update($objCommon);
                 $strReturn .= "<message>".$objCommon->getStrDisplayName()." - ".$this->getLang("setStatusOk")."<newstatus>".$intNewStatus."</newstatus></message>";
             } catch (\Exception $objE) {
                 ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_INTERNAL_SERVER_ERROR);
@@ -1368,7 +1367,7 @@ JS;
             $objObject->{$strSetter}($this->getParam("value"));
 
             try {
-                ServiceLifeCycleFactory::getLifeCycle(get_class($objObject))->update($objObject);
+                $this->objLifeCycleFactory->factory(get_class($objObject))->update($objObject);
                 $strReturn = "<message><success>object update succeeded</success></message>";
             } catch (ServiceLifeCycleUpdateException $e) {
                 $strReturn = "<message><error>object update failed</error></message>";
@@ -1427,7 +1426,7 @@ JS;
         //check permissions
         if ($objRecord != null && $objRecord->rightEdit() && validateSystemid($strNewPrevId)) {
             if ($objRecord->getStrPrevId() != $strNewPrevId) {
-                ServiceLifeCycleFactory::getLifeCycle(get_class($objRecord))->update($objRecord, $strNewPrevId);
+                $this->objLifeCycleFactory->factory(get_class($objRecord))->update($objRecord, $strNewPrevId);
             }
 
             $strReturn .= "<message>".$objRecord->getStrDisplayName()." - ".$this->getLang("setPrevIdOk")."</message>";

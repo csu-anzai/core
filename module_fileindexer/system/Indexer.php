@@ -37,15 +37,21 @@ class Indexer
      * @var LoggerInterface
      */
     protected $objLogger;
+    /**
+     * @var ServiceLifeCycleFactory
+     */
+    private $lifeCycleFactory;
 
     /**
      * @param ParserInterface $objParser
+     * @param ServiceLifeCycleFactory $lifeCycleFactory
      * @param LoggerInterface|null $objLogger
      */
-    public function __construct(ParserInterface $objParser, LoggerInterface $objLogger = null)
+    public function __construct(ParserInterface $objParser, ServiceLifeCycleFactory $lifeCycleFactory, LoggerInterface $objLogger = null)
     {
         $this->objParser = $objParser;
         $this->objLogger = $objLogger;
+        $this->lifeCycleFactory = $lifeCycleFactory;
     }
 
     /**
@@ -80,13 +86,13 @@ class Indexer
                     $strContent = implode(" ", array_keys($arrResults));
                     */
                     $objFile->setStrSearchContent($strContent);
-                    ServiceLifeCycleFactory::getLifeCycle(get_class($objFile))->update($objFile);
+                    $this->lifeCycleFactory->factory(get_class($objFile))->update($objFile);
 
                     $arrResult[] = $objFile;
                 } else {
                     // we need to mark that we have scanned the file
                     $objFile->setStrSearchContent("-");
-                    ServiceLifeCycleFactory::getLifeCycle(get_class($objFile))->update($objFile);
+                    $this->lifeCycleFactory->factory(get_class($objFile))->update($objFile);
                 }
             }
         }

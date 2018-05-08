@@ -2,7 +2,6 @@
 
 namespace Kajona\Flow\Tests;
 
-// @TODO unfortunately we have no autoloading for the tests folder
 use Kajona\Flow\System\FlowTransition;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleCopyException;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;

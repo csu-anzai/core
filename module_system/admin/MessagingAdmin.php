@@ -14,7 +14,6 @@ use Kajona\System\System\ArraySectionIterator;
 use Kajona\System\System\AuthenticationException;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
-use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Link;
 use Kajona\System\System\Messageproviders\MessageproviderExtendedInterface;
 use Kajona\System\System\Messageproviders\MessageproviderPersonalmessage;
@@ -196,7 +195,7 @@ JS;
             $objConfig = MessagingConfig::getConfigForUserAndProvider($this->objSession->getUserID(), $objOneProvider);
             $objConfig->setBitBymail($this->getParam($strClassname."_bymail") != "");
             $objConfig->setBitEnabled($this->getParam($strClassname."_enabled") != "");
-            ServiceLifeCycleFactory::getLifeCycle(get_class($objConfig))->update($objConfig);
+            $this->objLifeCycleFactory->factory(get_class($objConfig))->update($objConfig);
 
         }
 
@@ -228,14 +227,14 @@ JS;
                 if ($this->getParam($strClassname."_bymail") != "") {
                     $bitA = $this->getParam($strClassname."_bymail") == "true";
                     $objConfig->setBitBymail($bitA);
-                    ServiceLifeCycleFactory::getLifeCycle(get_class($objConfig))->update($objConfig);
+                    $this->objLifeCycleFactory->factory(get_class($objConfig))->update($objConfig);
                     $strMessage = $objOneProvider->getStrName()." ".$this->getLang("provider_bymail")."=".($bitA ? "enabled" : "disabled");
                     break;
 
                 } elseif ($this->getParam($strClassname."_enabled") != "") {
                     $bitA = $this->getParam($strClassname."_enabled") == "true";
                     $objConfig->setBitEnabled($bitA);
-                    ServiceLifeCycleFactory::getLifeCycle(get_class($objConfig))->update($objConfig);
+                    $this->objLifeCycleFactory->factory(get_class($objConfig))->update($objConfig);
                     $strMessage = $objOneProvider->getStrName()." ".$this->getLang("provider_enabled")."=".($bitA ? "enabled" : "disabled");
                     break;
                 }
@@ -384,7 +383,7 @@ JS;
         $objMessage = Objectfactory::getInstance()->getObject($this->getSystemid());
         if ($objMessage instanceof MessagingMessage) {
             $objMessage->setBitRead(true);
-            ServiceLifeCycleFactory::getLifeCycle(get_class($objMessage))->update($objMessage);
+            $this->objLifeCycleFactory->factory(get_class($objMessage))->update($objMessage);
 
             return "<message><success /></message>";
         }
@@ -404,7 +403,7 @@ JS;
         $objMessage = Objectfactory::getInstance()->getObject($this->getSystemid());
         if ($objMessage instanceof MessagingMessage) {
             $objMessage->setBitRead(false);
-            ServiceLifeCycleFactory::getLifeCycle(get_class($objMessage))->update($objMessage);
+            $this->objLifeCycleFactory->factory(get_class($objMessage))->update($objMessage);
 
             return "<message><success /></message>";
         }
@@ -508,7 +507,7 @@ JS;
             $strReturn = "";
             if (!$objMessage->getBitRead()) {
                 $objMessage->setBitRead(true);
-                ServiceLifeCycleFactory::getLifeCycle(get_class($objMessage))->update($objMessage);
+                $this->objLifeCycleFactory->factory(get_class($objMessage))->update($objMessage);
             }
 
             $objSender = Objectfactory::getInstance()->getObject($objMessage->getStrSenderId());
@@ -632,7 +631,7 @@ JS;
 
         if ($objMessage !== null && $objMessage instanceof MessagingMessage && $objMessage->getBitRead() == 0) {
             $objMessage->setBitRead(1);
-            ServiceLifeCycleFactory::getLifeCycle(get_class($objMessage))->update($objMessage);
+            $this->objLifeCycleFactory->factory(get_class($objMessage))->update($objMessage);
         }
 
         return base64_decode("R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
