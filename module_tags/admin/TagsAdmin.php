@@ -261,7 +261,7 @@ class TagsAdmin extends AdminEvensimpler implements AdminInterface
 
 
         try {
-            ServiceLifeCycleFactory::getLifeCycle(get_class($objFavorite))->update($objFavorite);
+            $this->objLifeCycleFactory->factory(get_class($objFavorite))->update($objFavorite);
         } catch (ServiceLifeCycleUpdateException $e) {
             return $strError;
         }
