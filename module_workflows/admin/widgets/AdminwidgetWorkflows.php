@@ -13,6 +13,7 @@ use Kajona\Dashboard\Admin\Widgets\Adminwidget;
 use Kajona\Dashboard\System\DashboardWidget;
 use Kajona\System\Admin\AdminInterface;
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemModule;
 use Kajona\Workflows\System\WorkflowsWorkflow;
@@ -70,6 +71,7 @@ class AdminwidgetWorkflows extends Adminwidget implements AdminInterface
      * @param $strUserid
      *
      * @return bool
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
     public function onFistLogin($strUserid)
     {
@@ -79,7 +81,7 @@ class AdminwidgetWorkflows extends Adminwidget implements AdminInterface
             $objDashboard->setStrUser($strUserid);
             $objDashboard->setStrClass(__CLASS__);
             $objDashboard->setStrContent("");
-            return $objDashboard->updateObjectToDb(DashboardWidget::getWidgetsRootNodeForUser($strUserid, SystemAspect::getAspectByName("management")->getSystemid()));
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objDashboard))->update($objDashboard, DashboardWidget::getWidgetsRootNodeForUser($strUserid, SystemAspect::getAspectByName("management")->getSystemid()));
         }
 
         return true;

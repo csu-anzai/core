@@ -11,6 +11,7 @@ namespace Kajona\Workflows\System;
 
 use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
 use Kajona\System\System\OrmComparatorEnum;
 use Kajona\System\System\OrmCondition;
@@ -152,6 +153,13 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
      */
     private $strText3 = "";
 
+    /**
+     * @var Date
+     * @tableColumn agp_workflows.workflows_triggerdate
+     * @tableColumnDatatype long
+     */
+    private $triggerDate = null;
+
 
     /**
      * Returns the icon the be used in lists.
@@ -174,9 +182,8 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
     public function getStrAdditionalInfo()
     {
         if ($this->rightEdit()) {
-            return dateToString($this->getObjTriggerDate());
-        }
-        else {
+            return dateToString($this->getTriggerDate());
+        } else {
             return false;
         }
     }
@@ -192,9 +199,7 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
             if ($this->getObjWorkflowHandler() instanceof WorkflowsHandlerExtendedinfoInterface) {
                 return $this->getObjWorkflowHandler()->getInstanceInfo();
             }
-        }
-        catch(Exception $objEx) {
-
+        } catch (Exception $objEx) {
         }
 
         return "";
@@ -209,23 +214,10 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
     {
         try {
             return $this->getObjWorkflowHandler()->getStrName();
-        } catch(Exception $objExc) {
+        } catch (Exception $objExc) {
             return $objExc->getMessage();
         }
     }
-
-
-    /**
-     * Creates the matching date-records
-     *
-     * @return bool
-     */
-    protected function onInsertToDb()
-    {
-        //the creation of a date-record is forced for workflows
-        return $this->createDateRecord($this->getSystemid());
-    }
-
 
     /**
      * Loads all workflows in a given state.
@@ -242,12 +234,11 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
         $objOrmMapper = new OrmObjectlist();
 
         if ($bitOnlyWithValidTriggerDate) {
-            $objOrmMapper->addWhereRestriction(new OrmPropertyCondition("objStartDate", OrmComparatorEnum::LessThen(), \Kajona\System\System\Date::getCurrentTimestamp()));
+            $objOrmMapper->addWhereRestriction(new OrmPropertyCondition("triggerDate", OrmComparatorEnum::LessThen(), \Kajona\System\System\Date::getCurrentTimestamp()));
         }
 
         $objOrmMapper->addWhereRestriction(new OrmPropertyCondition("intState", OrmComparatorEnum::Equal(), (int)$intType));
-        $objOrmMapper->addOrderBy(new OrmObjectlistOrderby("system_date_start DESC"));
-
+        $objOrmMapper->addOrderBy(new OrmObjectlistOrderby("workflows_triggerdate DESC"));
         return $objOrmMapper->getObjectList(__CLASS__);
     }
 
@@ -292,10 +283,10 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
 
         if ($bitOnlyScheduled) {
             $objORM->addWhereRestriction(new OrmCondition("( workflows_state = ? OR workflows_state = ? )", array((int)self::$INT_STATE_SCHEDULED, (int)self::$INT_STATE_NEW)));
-            $objORM->addWhereRestriction(new OrmCondition("( system_date_start > ? OR system_date_start = 0 )", array(\Kajona\System\System\Date::getCurrentTimestamp())));
+            $objORM->addWhereRestriction(new OrmCondition("( workflows_triggerdate > ? OR workflows_triggerdate = 0 OR workflows_triggerdate IS NULL )", array(\Kajona\System\System\Date::getCurrentTimestamp())));
         }
 
-        $objORM->addOrderBy(new OrmObjectlistOrderby("system_date_start DESC"));
+        $objORM->addOrderBy(new OrmObjectlistOrderby("workflows_triggerdate DESC"));
 
         if ($bitAsCount) {
             return $objORM->getObjectCount(get_called_class());
@@ -320,7 +311,7 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
 
         if ($bitOnlyScheduled) {
             $objOrmMapper->addWhereRestriction(new OrmCondition("( workflows_state = ? OR workflows_state = ? )", array((int)self::$INT_STATE_SCHEDULED, (int)self::$INT_STATE_NEW)));
-            $objOrmMapper->addWhereRestriction(new OrmCondition("( system_date_start > ? OR system_date_start = 0 )", array(\Kajona\System\System\Date::getCurrentTimestamp())));
+            $objOrmMapper->addWhereRestriction(new OrmCondition("( workflows_triggerdate > ? OR workflows_triggerdate = 0 OR workflows_triggerdate IS NULL )", array(\Kajona\System\System\Date::getCurrentTimestamp())));
         }
 
         if (!empty($strText)) {
@@ -328,7 +319,7 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
         }
 
         $objOrmMapper->addWhereRestriction(new OrmPropertyCondition("strClass", OrmComparatorEnum::Equal(), $strClass));
-        $objOrmMapper->addOrderBy(new OrmObjectlistOrderby("system_date_start DESC"));
+        $objOrmMapper->addOrderBy(new OrmObjectlistOrderby("workflows_triggerdate DESC"));
 
         return $objOrmMapper->getObjectList(__CLASS__);
     }
@@ -348,11 +339,11 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
 
         if ($bitOnlyScheduled) {
             $objOrmMapper->addWhereRestriction(new OrmCondition("( workflows_state = ? OR workflows_state = ? )", array((int)self::$INT_STATE_SCHEDULED, (int)self::$INT_STATE_NEW)));
-            $objOrmMapper->addWhereRestriction(new OrmCondition("( system_date_start > ? OR system_date_start = 0 )", array(\Kajona\System\System\Date::getCurrentTimestamp())));
+            $objOrmMapper->addWhereRestriction(new OrmCondition("( workflows_triggerdate > ? OR workflows_triggerdate = 0 OR workflows_triggerdate IS NULL )", array(\Kajona\System\System\Date::getCurrentTimestamp())));
         }
 
         $objOrmMapper->addWhereRestriction(new OrmPropertyCondition("strClass", OrmComparatorEnum::Equal(), $strClass));
-        $objOrmMapper->addOrderBy(new OrmObjectlistOrderby("system_date_start DESC"));
+        $objOrmMapper->addOrderBy(new OrmObjectlistOrderby("workflows_triggerdate DESC"));
 
         return $objOrmMapper->getObjectCount(__CLASS__);
     }
@@ -387,6 +378,7 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
      * @param bool|int $intStart
      * @param bool|int $intEnd
      *
+     * @param array|null $arrClasses
      * @return WorkflowsWorkflow[]
      */
     public static function getPendingWorkflowsForUser($arrUserids, $intStart = false, $intEnd = false, array $arrClasses = null)
@@ -399,8 +391,7 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
             $objOrmMapper->addWhereRestriction(new OrmPropertyInCondition("strClass", $arrClasses));
         }
 
-        $objOrmMapper->addOrderBy(new OrmObjectlistOrderby("system_date_start DESC"));
-        $objOrmMapper->addOrderBy(new OrmObjectlistOrderby("system_sort DESC"));
+        $objOrmMapper->addOrderBy(new OrmObjectlistOrderby("workflows_triggerdate DESC"));
 
         return $objOrmMapper->getObjectList(__CLASS__, "", $intStart, $intEnd);
     }
@@ -418,7 +409,7 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
     {
         $objOrmMapper = new OrmObjectlist();
         $objOrmMapper->addOrderBy(new OrmObjectlistOrderby("workflows_state ASC"));
-        $objOrmMapper->addOrderBy(new OrmObjectlistOrderby("system_date_start DESC"));
+        $objOrmMapper->addOrderBy(new OrmObjectlistOrderby("workflows_triggerdate DESC"));
         return $objOrmMapper->getObjectList(__CLASS__, "", $intStart, $intEnd);
     }
 
@@ -432,7 +423,6 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
     {
         $strClassname = $this->getStrClass();
         if (class_exists($strClassname)) {
-
             //load the config-object
             $objConfig = WorkflowsHandler::getHandlerByClass($strClassname);
 
@@ -444,11 +434,9 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
                 $objHandler->setConfigValues($objConfig->getStrConfigVal1(), $objConfig->getStrConfigVal2(), $objConfig->getStrConfigVal3());
             }
             return $objHandler;
-        }
-        else {
+        } else {
             throw new Exception("workflow handler ".$strClassname." not exisiting", Exception::$level_ERROR);
         }
-
     }
 
     /**
@@ -507,15 +495,20 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
     /**
      *
      * @return \Kajona\System\System\Date
+     * @deprecated
      */
     public function getObjTriggerdate()
     {
-        return $this->getObjStartDate();
+        return $this->getTriggerDate();
     }
 
+    /**
+     * @param $objTriggerdate
+     * @deprecated
+     */
     public function setObjTriggerdate($objTriggerdate)
     {
-        $this->setObjStartDate($objTriggerdate);
+        $this->setTriggerDate($objTriggerdate);
     }
 
     public function getStrResponsible()
@@ -654,5 +647,19 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
         $this->strText3 = $strText3;
     }
 
+    /**
+     * @return Date
+     */
+    public function getTriggerDate()
+    {
+        return $this->triggerDate;
+    }
 
+    /**
+     * @param Date $triggerDate
+     */
+    public function setTriggerDate($triggerDate)
+    {
+        $this->triggerDate = $triggerDate;
+    }
 }

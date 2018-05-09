@@ -5,12 +5,18 @@ namespace Kajona\Mediamanager\Tests;
 use Kajona\Mediamanager\System\MediamanagerFile;
 use Kajona\Mediamanager\System\MediamanagerRepo;
 use Kajona\System\System\Filesystem;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\Tests\Testbase;
 
 class MediamanagerTest extends Testbase
 {
 
 
+    /**
+     * @throws \Kajona\System\System\Exception
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleDeleteException
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
+     */
     public function testFileSync()
     {
 
@@ -37,17 +43,17 @@ class MediamanagerTest extends Testbase
         $objRepo->setStrPath(_filespath_ . "/images/autotest");
         $objRepo->setStrTitle("autotest repo");
         $objRepo->setStrViewFilter(".jpg,.png");
-        $objRepo->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objRepo))->update($objRepo);
         $objRepo->syncRepo();
 
         $arrFiles = MediamanagerFile::loadFilesDB($objRepo->getSystemid());
 
         $this->assertEquals(3, count($arrFiles));
         foreach ($arrFiles as $objOneFile) {
-            $objOneFile->deleteObjectFromDatabase();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objOneFile))->deleteObjectFromDatabase($objOneFile);
         }
 
-        $objRepo->deleteObjectFromDatabase();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objRepo))->deleteObjectFromDatabase($objRepo);
 
         $arrFiles = $objFilesystem->getFilelist(_filespath_ . "/images/autotest");
 

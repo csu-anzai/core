@@ -12,6 +12,7 @@ use Kajona\System\System\Classloader;
 use Kajona\System\System\Config;
 use Kajona\System\System\Database;
 use Kajona\System\System\Date;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Model;
 use Kajona\System\System\OrmBase;
 use Kajona\System\System\Reflection;
@@ -176,7 +177,7 @@ abstract class Testbase extends TestCase
         }
 
         //save it
-        $objObject->updateObjectToDb($strParentId);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objObject))->update($objObject, $strParentId);
         return $objObject;
     }
 

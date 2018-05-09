@@ -13,6 +13,7 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\GenericeventListenerInterface;
 use Kajona\System\System\LanguagesLanguage;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\SystemEventidentifier;
 
 
@@ -48,7 +49,7 @@ class LanguagesRecorddeletedlistener implements GenericeventListenerInterface {
             if(count($arrObjLanguages) == 1) {
                 $objOneLanguage = $arrObjLanguages[0];
                 $objOneLanguage->setBitDefault(1);
-                $objOneLanguage->updateObjectToDb();
+                ServiceLifeCycleFactory::getLifeCycle(get_class($objOneLanguage))->update($objOneLanguage);
             }
 
 

@@ -9,6 +9,7 @@
 namespace Kajona\System\System;
 
 use ArrayObject;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 
 /**
  * The objectupdate class is used to save an objects' state back to the database.
@@ -253,7 +254,7 @@ class OrmObjectupdate extends OrmBase
                 ) {
                     if ($bitCreateIfNotExisting && !validateSystemid($objOneValue->getSystemid())) {
                         //seems we need an insert right here!
-                        $objOneValue->updateObjectToDb();
+                        ServiceLifeCycleFactory::getLifeCycle(get_class($objOneValue))->update($objOneValue);
                     }
 
                     $arrReturn[] = $objOneValue->getSystemid();

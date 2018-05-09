@@ -104,6 +104,10 @@ class MessagingMessagehandler
         $objAlert->setStrUser($objUser->getSystemid());
         $objAlert->setObjSendDate(new Date());
 
+        if ($objUser->getSystemid() == Carrier::getInstance()->getObjSession()->getUserID()) {
+            ResponseObject::getInstance()->setBitForceMessagePollOnRedirect(true);
+        }
+
         $this->objLifeCycleFactory->factory(get_class($objAlert))->update($objAlert);
     }
 
@@ -147,7 +151,7 @@ class MessagingMessagehandler
                     $objMessageQueue->setStrRecipient($objOneUser->getSystemid());
                     $objMessageQueue->setObjSendDate($objSendDate);
                     $objMessageQueue->setMessage($objMessage);
-                    $objMessageQueue->updateObjectToDb();
+                    ServiceLifeCycleFactory::getLifeCycle(get_class($objMessageQueue))->update($objMessageQueue);
                 } else {
                     //clone the message
                     $objCurrentMessage = new MessagingMessage();
@@ -159,7 +163,7 @@ class MessagingMessagehandler
                     $objCurrentMessage->setStrMessageRefId($objMessage->getStrMessageRefId());
                     $objCurrentMessage->setStrSenderId(validateSystemid($objMessage->getStrSenderId()) ? $objMessage->getStrSenderId() : Carrier::getInstance()->getObjSession()->getUserID());
 
-                    $objCurrentMessage->updateObjectToDb();
+                    ServiceLifeCycleFactory::getLifeCycle(get_class($objCurrentMessage))->update($objCurrentMessage);
 
                     if ($objConfig->getBitBymail() && $objValidator->validate($objOneUser->getStrEmail())) {
                         $this->sendMessageByMail($objCurrentMessage, $objOneUser);

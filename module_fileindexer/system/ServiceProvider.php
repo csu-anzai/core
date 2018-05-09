@@ -28,7 +28,7 @@ class ServiceProvider implements ServiceProviderInterface
     public function register(Container $objContainer)
     {
         $objContainer[self::STR_INDEXER] = function ($c) {
-            return new Indexer($c[self::STR_PARSER], $c[\Kajona\System\System\ServiceProvider::STR_LOGGER]);
+            return new Indexer($c[self::STR_PARSER], $c[\Kajona\System\System\ServiceProvider::STR_LIFE_CYCLE_FACTORY], $c[\Kajona\System\System\ServiceProvider::STR_LOGGER]);
         };
 
         $objContainer[self::STR_PARSER] = function ($c) {

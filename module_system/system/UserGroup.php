@@ -9,6 +9,7 @@
 
 namespace Kajona\System\System;
 
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Usersources\UsersourcesGroupInterface;
 
 
@@ -133,7 +134,7 @@ class UserGroup extends Model implements ModelInterface, AdminListableInterface,
         $objSources = new UserSourcefactory();
         $objProvider = $objSources->getUsersource($this->getStrSubsystem());
         $objTargetGroup = $objProvider->getNewGroup();
-        $objTargetGroup->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTargetGroup))->update($objTargetGroup);
         $objTargetGroup->setNewRecordId($this->getSystemid());
         $this->objDB->flushQueryCache();
 

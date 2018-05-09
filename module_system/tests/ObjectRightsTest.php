@@ -3,6 +3,7 @@
 namespace Kajona\System\Tests;
 
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Rights;
 use Kajona\System\System\SystemModule;
@@ -29,13 +30,13 @@ class ObjectRightsTest extends Testbase
         $objUser = new UserUser();
         $strUsername = "user_" . generateSystemid();
         $objUser->setStrUsername($strUsername);
-        $objUser->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
         $this->strUserId = $objUser->getSystemid();
 
         $objGroup = new UserGroup();
         $strName = "name_" . generateSystemid();
         $objGroup->setStrName($strName);
-        $objGroup->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objGroup))->update($objGroup);
 
         $objGroup->getObjSourceGroup()->addMember($objUser->getObjSourceUser());
 
@@ -96,8 +97,8 @@ class ObjectRightsTest extends Testbase
 
         $objTempCommons = Objectfactory::getInstance()->getObject($strSecOne);
         $objTempCommons->setStrPrevId($strThird221);
-        $objTempCommons->updateObjectToDb();
-        
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTempCommons))->update($objTempCommons);
+
         $this->checkNodeRights($strRootId, true, true);
         $this->checkNodeRights($strSecOne, false, true);
         $this->checkNodeRights($strSecTwo, false, true);
@@ -137,7 +138,7 @@ class ObjectRightsTest extends Testbase
 
         $objTempCommons = Objectfactory::getInstance()->getObject($strThirdOne1);
         $objTempCommons->setStrPrevId($strThird211);
-        $objTempCommons->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTempCommons))->update($objTempCommons);
         
         $this->checkNodeRights($strRootId, true, true);
         $this->checkNodeRights($strSecOne, false, true);
@@ -158,10 +159,10 @@ class ObjectRightsTest extends Testbase
 
         $objTempCommons = Objectfactory::getInstance()->getObject($strSecOne);
         $objTempCommons->setStrPrevId($strRootId);
-        $objTempCommons->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTempCommons))->update($objTempCommons);
         $objTempCommons = Objectfactory::getInstance()->getObject($strThirdOne1);
         $objTempCommons->setStrPrevId($strSecOne);
-        $objTempCommons->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTempCommons))->update($objTempCommons);
         $objRights->setInherited(true, $strThirdOne1);
         $this->checkNodeRights($strRootId, true, true);
         $this->checkNodeRights($strSecOne, true, true);

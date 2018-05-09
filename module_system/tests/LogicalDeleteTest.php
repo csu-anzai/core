@@ -2,6 +2,7 @@
 
 namespace Kajona\System\Tests;
 
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\OrmBase;
 use Kajona\System\System\OrmDeletedhandlingEnum;
 use Kajona\System\System\SystemAspect;
@@ -25,12 +26,12 @@ class LogicalDeleteTest extends Testbase
 
         $objAspect1 = new SystemAspect();
         $objAspect1->setStrName("Dummy");
-        $objAspect1->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect1))->update($objAspect1);
 
 
         $objAspect = new SystemAspect();
         $objAspect->setStrName("logical delete");
-        $objAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
         $strAspectId = $objAspect->getSystemid();
 
         $this->assertEquals($intCountActive + 2, SystemAspect::getObjectCountFiltered());

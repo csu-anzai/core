@@ -6,6 +6,7 @@
 
 namespace Kajona\System\System;
 
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Messageproviders\MessageproviderInterface;
 
 
@@ -180,7 +181,7 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
         /** @var MessagingMessage $objOneMessage */
         foreach ($objORM->getObjectList(__CLASS__) as $objOneMessage) {
             $objOneMessage->setBitRead(true);
-            $objOneMessage->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objOneMessage))->update($objOneMessage);
         }
     }
 

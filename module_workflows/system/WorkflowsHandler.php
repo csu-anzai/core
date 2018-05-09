@@ -12,6 +12,7 @@ namespace Kajona\Workflows\System;
 use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Classloader;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\OrmRowcache;
 use Kajona\System\System\Resourceloader;
@@ -147,8 +148,6 @@ class WorkflowsHandler extends \Kajona\System\System\Model implements \Kajona\Sy
         $strQuery = "SELECT * FROM
                             agp_workflows_handler,
                             agp_system
-                   LEFT JOIN agp_system_date
-                            ON system_id = system_date_id
                       WHERE system_id = workflows_handler_id
                         AND workflows_handler_class = ?";
 
@@ -193,7 +192,7 @@ class WorkflowsHandler extends \Kajona\System\System\Model implements \Kajona\Sy
                         $objWorkflow->setStrConfigVal3($arrDefault[2]);
                     }
 
-                    $objWorkflow->updateObjectToDb();
+                    ServiceLifeCycleFactory::getLifeCycle(get_class($objWorkflow))->update($objWorkflow);
                 }
             }
         }

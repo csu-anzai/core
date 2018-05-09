@@ -9,6 +9,7 @@
 
 namespace Kajona\System\Admin\Systemtasks;
 
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\SystemCommon;
 use Kajona\System\System\SystemModule;
 
@@ -62,7 +63,7 @@ class SystemtaskSystemstatus extends SystemtaskBase implements AdminSystemtaskIn
         if (validateSystemid($this->getParam("systemstatus_systemid"))) {
             $objRecord = new SystemCommon($this->getParam("systemstatus_systemid"));
             $objRecord->setIntRecordStatus($this->getParam("systemstatus_status"));
-            $objRecord->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objRecord))->update($objRecord);
 
             return $this->objToolkit->getTextRow($this->getLang("systemtask_status_success"));
         }

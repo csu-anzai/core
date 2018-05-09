@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Kajona\System\Tests;
 
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Permissions\AddPermissionToGroup;
 use Kajona\System\System\Permissions\PermissionActionProcessor;
 use Kajona\System\System\Permissions\RemovePermissionFromGroup;
@@ -41,15 +42,15 @@ class PermissionActionProcessorTest extends Testbase
         parent::setUp();
 
         self::$aspectA = new SystemAspect();
-        self::$aspectA->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class(self::$aspectA))->update(self::$aspectA);
         self::$aspectB = new SystemAspect();
-        self::$aspectB->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class(self::$aspectB))->update(self::$aspectB);
 
         self::$groupA = new UserGroup();
-        self::$groupA->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class(self::$groupA))->update(self::$groupA);
 
         self::$groupB = new UserGroup();
-        self::$groupB->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class(self::$groupB))->update(self::$groupB);
 
     }
 

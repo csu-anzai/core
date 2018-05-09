@@ -329,3 +329,13 @@ $lang["cache_available"]  = "Available";
 $lang["workflow_messagequeue_title"]  = "Message-Queue sender";
 $lang["workflow_queue_sender_val1"]  = "Hours";
 $lang["workflow_queue_sender_val2"]  = "Minutes";
+
+$lang["smtp_config"]  = "SMTP-Config";
+$lang["smtp_enabled"]  = "SMTP enabled";
+$lang["smtp_host"]  = "Host";
+$lang["smtp_port"]  = "Port";
+$lang['smtp_encryption']      = "SMTP encryption";
+$lang['smtp_debug']           = "SMTP debug";
+$lang['smtp_auth_enabled']    = "SMTP auth_enabled";
+$lang['smtp_auth_username']   = "SMTP auth_username";
+$lang['smtp_auth_password']   = "SMTP auth_password";

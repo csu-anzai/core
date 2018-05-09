@@ -13,8 +13,6 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
     /** @exports forms */
     var forms = {};
 
-    var arrOnMandatoryRendering = [];
-
     /**
      * Hides a field in the form
      *
@@ -180,21 +178,16 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
 
 
     forms.renderMandatoryFields = function(arrFields) {
-
         for(var i=0; i<arrFields.length; i++) {
             var arrElement = arrFields[i];
             if(arrElement.length == 2) {
                 var $objElement = $("#" + arrElement[0]);
-                if($objElement)
+                if($objElement) {
                     $objElement.addClass("mandatoryFormElement");
+                    $objElement.trigger('kajona.forms.mandatoryAdded');
+                }
             }
         }
-
-        for(var i=0; i<arrOnMandatoryRendering.length; i++) {
-            arrOnMandatoryRendering[i]();
-        }
-
-        arrOnMandatoryRendering = [];
     };
 
     forms.renderMissingMandatoryFields = function(arrFields) {
@@ -267,17 +260,6 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
             $.ajax({url: KAJONA_WEBPATH + '/xml.php?admin=1&module=system&action=unlockRecord&systemid='+strId});
         });
     };
-
-
-    /**
-     * Adds a callback invoked as soon as the rendering of mandatory elements finished.
-     * Usefull to adjust some classes or other content afterwards
-     * @param objFn
-     */
-    forms.addMandatoryRenderingCallback = function(objFn) {
-        arrOnMandatoryRendering.push(objFn);
-    };
-
 
     return forms;
 

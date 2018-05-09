@@ -160,8 +160,6 @@ abstract class OrmBase
         //build the query
         $strQuery = "FROM  ".implode(", ", $arrTables)." ,
                             ".Carrier::getInstance()->getObjDB()->encloseTableName("agp_system")." AS agp_system
-                  LEFT JOIN agp_system_date AS agp_system_date
-                         ON system_id = system_date_id
                       WHERE 1=1
                             ".$strWhere."";
 

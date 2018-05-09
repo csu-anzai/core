@@ -227,6 +227,7 @@ class ServiceProvider implements ServiceProviderInterface
         $objContainer[self::STR_PASSWORD_ROTATOR] = function ($c) {
             return new PasswordRotator(
                 $c[self::STR_LANG],
+                $c[\Kajona\System\System\ServiceProvider::STR_LIFE_CYCLE_FACTORY],
                 $c[self::STR_CONFIG]->getConfig("password_rotation_days")
             );
         };

@@ -3,6 +3,7 @@
 namespace Kajona\System\Tests;
 
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserUser;
 
@@ -30,7 +31,7 @@ class UserTest extends Testbase
             //$objUser->setStrEmail(generateSystemid()."@".generateSystemid()."de");
             $strUsername = "user_" . generateSystemid();
             $objUser->setStrUsername($strUsername);
-            $objUser->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
             $arrUsersCreated[] = $objUser->getSystemid();
             $strID = $objUser->getSystemid();
             $objDB->flushQueryCache();
@@ -46,7 +47,7 @@ class UserTest extends Testbase
             $objGroup = new UserGroup();
             $strName = "name_" . generateSystemid();
             $objGroup->setStrName($strName);
-            $objGroup->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objGroup))->update($objGroup);
             $strID = $objGroup->getSystemid();
             $arrGroupsCreated[] = $objGroup->getSystemid();
             $objDB->flushQueryCache();
@@ -79,13 +80,13 @@ class UserTest extends Testbase
 
         $objGroup = new UserGroup();
         $objGroup->setStrName("AUTOTESTGROUP");
-        $objGroup->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objGroup))->update($objGroup);
 
         for ($intI = 0; $intI <= 10; $intI++) {
             $objUser = new UserUser();
             $objUser->setStrUsername("AUTOTESTUSER_" . $intI);
             //$objUser->setStrEmail("autotest_".$intI."@kajona.de");
-            $objUser->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
             //add user to group
             $objGroup->getObjSourceGroup()->addMember($objUser->getObjSourceUser());
             $arrUsersInGroup = $objGroup->getObjSourceGroup()->getUserIdsForGroup();

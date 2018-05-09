@@ -4,6 +4,7 @@ namespace Kajona\System\Tests;
 
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
@@ -17,7 +18,7 @@ class LockmanagerTest extends Testbase
     {
         $objAspect = new SystemAspect();
         $objAspect->setStrName("test");
-        $objAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
         $strAspectId = $objAspect->getSystemid();
 
 
@@ -26,7 +27,7 @@ class LockmanagerTest extends Testbase
 
         $objUser = new UserUser();
         $objUser->setStrUsername(generateSystemid());
-        $objUser->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
 
         $this->assertTrue(Carrier::getInstance()->getObjSession()->loginUser($objUser));
 
@@ -39,7 +40,7 @@ class LockmanagerTest extends Testbase
         $this->assertTrue($objAspect->getLockManager()->isLockedByCurrentUser());
 
         //updates should release the lock
-        $objAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
 
         $this->assertTrue($objAspect->getLockManager()->isAccessibleForCurrentUser());
         $this->assertTrue(!$objAspect->getLockManager()->isLocked());
@@ -57,7 +58,7 @@ class LockmanagerTest extends Testbase
     {
         $objAspect = new SystemAspect();
         $objAspect->setStrName("test");
-        $objAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
         $strAspectId = $objAspect->getSystemid();
 
 
@@ -66,7 +67,7 @@ class LockmanagerTest extends Testbase
 
         $objUser1 = new UserUser();
         $objUser1->setStrUsername(generateSystemid());
-        $objUser1->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objUser1))->update($objUser1);
 
         $this->assertTrue(Carrier::getInstance()->getObjSession()->loginUser($objUser1));
         $objAspect->getLockManager()->lockRecord();
@@ -79,7 +80,7 @@ class LockmanagerTest extends Testbase
 
         $objUser2 = new UserUser();
         $objUser2->setStrUsername(generateSystemid());
-        $objUser2->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objUser2))->update($objUser2);
 
 
         $this->assertTrue(Carrier::getInstance()->getObjSession()->loginUser($objUser2));
@@ -92,7 +93,7 @@ class LockmanagerTest extends Testbase
         //updates should release the lock
         $objException = null;
         try {
-            $objAspect->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
         } catch (Exception $objEx) {
             $objException = $objEx;
         }
@@ -148,12 +149,12 @@ class LockmanagerTest extends Testbase
     {
         $objAspect = new SystemAspect();
         $objAspect->setStrName("test");
-        $objAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
         $strAspectId = $objAspect->getSystemid();
 
         $objUser1 = new UserUser();
         $objUser1->setStrUsername(generateSystemid());
-        $objUser1->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objUser1))->update($objUser1);
 
         $this->assertTrue(Carrier::getInstance()->getObjSession()->loginUser($objUser1));
 
@@ -162,7 +163,7 @@ class LockmanagerTest extends Testbase
 
         $objUser2 = new UserUser();
         $objUser2->setStrUsername(generateSystemid());
-        $objUser2->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objUser2))->update($objUser2);
 
         $this->assertTrue(Carrier::getInstance()->getObjSession()->loginUser($objUser2));
         $this->assertTrue(!$objAspect->getLockManager()->isLockedByCurrentUser());

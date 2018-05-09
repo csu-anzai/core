@@ -16,6 +16,7 @@ use Kajona\System\System\Exception;
 use Kajona\System\System\Filesystem;
 use Kajona\System\System\InstallerInterface;
 use Kajona\System\System\InstallerRemovableInterface;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Logger;
 use Kajona\System\System\SamplecontentInstallerInterface;
 use Kajona\System\System\StringUtil;
@@ -102,7 +103,7 @@ class PackagemanagerPackagemanagerModule implements PackagemanagerPackagemanager
         $objSetting = SystemSetting::getConfigByName("_system_browser_cachebuster_");
         if ($objSetting != null) {
             $objSetting->setStrValue((int)$objSetting->getStrValue() + 1);
-            $objSetting->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objSetting))->update($objSetting);
         }
     }
 

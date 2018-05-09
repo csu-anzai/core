@@ -10,8 +10,8 @@ namespace Kajona\Fileindexer\System;
 use Kajona\Mediamanager\System\MediamanagerFile;
 use Kajona\Mediamanager\System\MediamanagerFileFilter;
 use Kajona\Mediamanager\System\MediamanagerRepo;
-use Kajona\Search\System\SearchStandardAnalyzer;
 use Kajona\System\System\CoreEventdispatcher;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -37,15 +37,21 @@ class Indexer
      * @var LoggerInterface
      */
     protected $objLogger;
+    /**
+     * @var ServiceLifeCycleFactory
+     */
+    private $lifeCycleFactory;
 
     /**
      * @param ParserInterface $objParser
+     * @param ServiceLifeCycleFactory $lifeCycleFactory
      * @param LoggerInterface|null $objLogger
      */
-    public function __construct(ParserInterface $objParser, LoggerInterface $objLogger = null)
+    public function __construct(ParserInterface $objParser, ServiceLifeCycleFactory $lifeCycleFactory, LoggerInterface $objLogger = null)
     {
         $this->objParser = $objParser;
         $this->objLogger = $objLogger;
+        $this->lifeCycleFactory = $lifeCycleFactory;
     }
 
     /**
@@ -80,13 +86,13 @@ class Indexer
                     $strContent = implode(" ", array_keys($arrResults));
                     */
                     $objFile->setStrSearchContent($strContent);
-                    $objFile->updateObjectToDb();
+                    $this->lifeCycleFactory->factory(get_class($objFile))->update($objFile);
 
                     $arrResult[] = $objFile;
                 } else {
                     // we need to mark that we have scanned the file
                     $objFile->setStrSearchContent("-");
-                    $objFile->updateObjectToDb();
+                    $this->lifeCycleFactory->factory(get_class($objFile))->update($objFile);
                 }
             }
         }

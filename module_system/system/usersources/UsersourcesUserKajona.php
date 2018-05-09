@@ -9,10 +9,11 @@
 
 namespace Kajona\System\System\Usersources;
 
-use Kajona\System\System\Date;
-use Kajona\System\System\Logger;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\System\CoreEventdispatcher;
+use Kajona\System\System\Date;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
+use Kajona\System\System\Logger;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\SystemEventidentifier;
@@ -257,7 +258,7 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
             $objHistory->setStrTargetUser($this->getSystemid());
             $objHistory->setStrPass($strPass);
             $objHistory->setStrChangeDate(new Date());
-            $objHistory->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objHistory))->update($objHistory);
         }
 
         return $bitReturn;

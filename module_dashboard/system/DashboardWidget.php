@@ -13,6 +13,7 @@ use Kajona\Dashboard\Admin\Widgets\Adminwidget;
 use Kajona\Dashboard\Admin\Widgets\AdminwidgetInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Classloader;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\OrmCondition;
 use Kajona\System\System\OrmObjectlist;
 use Kajona\System\System\Resourceloader;
@@ -190,7 +191,8 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
             $objWidget->setStrAspect($strAspectId);
             $objWidget->setStrUser($strUserid);
             $objWidget->setStrClass("root_node");
-            $objWidget->updateObjectToDb(SystemModule::getModuleByName("dashboard")->getSystemid());
+
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objWidget))->update($objWidget, SystemModule::getModuleByName("dashboard")->getSystemid());
 
             $strReturnId = $objWidget->getSystemid();
         }

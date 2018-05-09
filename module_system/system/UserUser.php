@@ -9,6 +9,7 @@
 
 namespace Kajona\System\System;
 
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Usersources\UsersourcesUserInterface;
 
 
@@ -184,7 +185,7 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
         $objSources = new UserSourcefactory();
         $objProvider = $objSources->getUsersource($this->getStrSubsystem());
         $objTargetUser = $objProvider->getNewUser();
-        $objTargetUser->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTargetUser))->update($objTargetUser);
         $objTargetUser->setNewRecordId($this->getSystemid());
         $this->objDB->flushQueryCache();
         $this->objSourceUser = $objTargetUser;

@@ -7,6 +7,7 @@ use Kajona\Flow\System\FlowHandlerAbstract;
 use Kajona\Flow\System\FlowManager;
 use Kajona\Flow\System\FlowStatus;
 use Kajona\Flow\System\FlowTransition;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\Tests\Testbase;
@@ -40,23 +41,23 @@ abstract class FlowTestAbstract extends Testbase
         $this->objFlow->setStrHandlerClass(FlowHandlerTest::class);
         $this->objFlow->setIntRecordStatus(1);
         $this->objFlow->setBitValidateConsistency(false);
-        $this->objFlow->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($this->objFlow))->update($this->objFlow);
 
         $objRedStatus = new FlowStatus();
         $objRedStatus->setStrName("In Bearbeitung");
         $objRedStatus->setStrIconColor("#FF0000");
         $objRedStatus->setIntIndex(0);
-        $objRedStatus->updateObjectToDb($this->objFlow->getSystemid());
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objRedStatus))->update($objRedStatus, $this->objFlow->getSystemid());
 
         $objGreenStatus = new FlowStatus();
         $objGreenStatus->setStrName("Freigegeben");
         $objGreenStatus->setStrIconColor("#00893d");
         $objGreenStatus->setIntIndex(1);
-        $objGreenStatus->updateObjectToDb($this->objFlow->getSystemid());
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objGreenStatus))->update($objGreenStatus, $this->objFlow->getSystemid());
 
         $objTransition = new FlowTransition();
         $objTransition->setStrTargetStatus($objGreenStatus->getSystemid());
-        $objTransition->updateObjectToDb($objRedStatus->getSystemid());
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTransition))->update($objTransition, $objRedStatus->getSystemid());
     }
 
     protected function tearDown()

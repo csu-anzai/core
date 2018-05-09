@@ -3,7 +3,7 @@
 namespace Kajona\System\Tests;
 
 use Kajona\System\System\Carrier;
-use Kajona\System\System\Database;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\OrmDeletedhandlingEnum;
 use Kajona\System\System\OrmObjectlist;
 use Kajona\System\System\SystemAspect;
@@ -16,14 +16,14 @@ class SortTest extends Testbase
     {
         $objRootAspect = new SystemAspect();
         $objRootAspect->setStrName("testroot");
-        $objRootAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objRootAspect))->update($objRootAspect);
 
         /** @var SystemAspect[] $arrAspects */
         $arrAspects = array();
         for ($intI = 0; $intI < 5; $intI++) {
             $objAspect = new SystemAspect();
             $objAspect->setStrName("autotest_" . $intI);
-            $objAspect->updateObjectToDb($objRootAspect->getSystemid());
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $objRootAspect->getSystemid());
             $arrAspects[] = $objAspect;
         }
 
@@ -126,14 +126,14 @@ class SortTest extends Testbase
     {
         $objRootAspect = new SystemAspect();
         $objRootAspect->setStrName("testroot");
-        $objRootAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objRootAspect))->update($objRootAspect);
 
         /** @var SystemAspect[] $arrAspects */
         $arrAspects = array();
         for ($intI = 0; $intI < 5; $intI++) {
             $objAspect = new SystemAspect();
             $objAspect->setStrName("autotest_" . $intI);
-            $objAspect->updateObjectToDb($objRootAspect->getSystemid());
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $objRootAspect->getSystemid());
             $arrAspects[] = $objAspect;
         }
 
@@ -162,7 +162,7 @@ class SortTest extends Testbase
         //add another record
         $objAspect = new SystemAspect();
         $objAspect->setStrName("autotest_" . $intI);
-        $objAspect->updateObjectToDb($objRootAspect->getSystemid());
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $objRootAspect->getSystemid());
         $arrAspects[] = $objAspect;
 
         $this->assertEquals(5, $objAspect->getIntSort());
@@ -180,14 +180,14 @@ class SortTest extends Testbase
 
         $objRootAspect = new SystemAspect();
         $objRootAspect->setStrName("testroot");
-        $objRootAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objRootAspect))->update($objRootAspect);
 
         /** @var SystemAspect[] $arrAspects */
         $arrAspects = array();
         for ($intI = 0; $intI < 10; $intI++) {
             $objAspect = new SystemAspect();
             $objAspect->setStrName("autotest_" . $intI);
-            $objAspect->updateObjectToDb($objRootAspect->getSystemid());
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $objRootAspect->getSystemid());
             $arrAspects[] = $objAspect;
         }
 
@@ -216,12 +216,12 @@ class SortTest extends Testbase
         //create 10 test records
         $objAspect = new SystemAspect();
         //new base-node
-        $objAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
         $strBaseNodeId = $objAspect->getSystemid();
         $arrNodes = array();
         for ($intI = 1; $intI <= 10; $intI++) {
             $objAspect = new SystemAspect();
-            $objAspect->updateObjectToDb($strBaseNodeId);
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strBaseNodeId);
             $arrNodes[] = $objAspect->getSystemid();
         }
 
@@ -298,7 +298,7 @@ class SortTest extends Testbase
         $this->assertEquals(1, $objSub2N1->getIntSort());
         $this->assertEquals(2, $objSub2N2->getIntSort());
 
-        $objSubNode2->updateObjectToDb($objSubNode1->getSystemid());
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objSubNode2))->update($objSubNode2, $objSubNode1->getSystemid());
 
 
         $this->assertEquals(1, $objSubNode1->getIntSort(), "t1");

@@ -12,6 +12,7 @@ namespace Kajona\Flow\Event;
 use Kajona\Flow\System\FlowConfig;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\GenericeventListenerInterface;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\SystemEventidentifier;
 
 
@@ -27,6 +28,7 @@ class FlowConfigStatusChange implements GenericeventListenerInterface
     /**
      * @param string $strEventName
      * @param array $arrArguments
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
     public function handleEvent($strEventName, array $arrArguments)
     {
@@ -40,7 +42,7 @@ class FlowConfigStatusChange implements GenericeventListenerInterface
                 if ($objConfig->getStrTargetClass() == $objObject->getStrTargetClass() && $objConfig->getSystemid() != $objObject->getSystemid() && $objConfig->getIntRecordStatus() == 1) {
                     $objConfig->setIntRecordStatus(0);
                     $objConfig->setBitValidateConsistency(false);
-                    $objConfig->updateObjectToDb();
+                    ServiceLifeCycleFactory::getLifeCycle(get_class($objConfig))->update($objConfig);
                 }
             }
         }
