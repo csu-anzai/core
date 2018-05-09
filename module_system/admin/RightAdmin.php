@@ -404,6 +404,6 @@ class RightAdmin extends AdminController implements AdminInterface
             $arrJsonReturn["error"] = 1;
         }
 
-        return json_encode($arrJsonReturn);
+        return $arrJsonReturn;
     }
 }
