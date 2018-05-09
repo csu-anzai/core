@@ -8,6 +8,8 @@ postgres, oracle, mssql.
 * Oracle: The table name length must not exceed 30 characters. Keep in mind that
   `_dbprefix_` adds also some characters to the table name so it is recommended that 
   the actual table name should not exceed 20 characters.
+* Oracle: When you an error 'ORA-00932: inconsistent datatypes: expected - got CLOB':
+It is not possible to filter for CLOB columns or use them in an ORDER BY
 * Mssql: When using aggregate functions you must specify an alias otherwise the result 
   of the function is placed in the result array as empty key
 * Mssql: If you use a sub-query like `SELECT COUNT(*) AS num FROM (...) result_count` 
