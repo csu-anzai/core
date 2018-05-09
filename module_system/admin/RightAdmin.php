@@ -285,7 +285,7 @@ class RightAdmin extends AdminController implements AdminInterface
      * Saves the rights passed by form
      *
      * @throws Exception
-     * @return string "" in case of success
+     * @return array
      * @permissions right
      * @responseType json
      */
