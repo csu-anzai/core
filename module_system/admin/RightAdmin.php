@@ -310,7 +310,10 @@ class RightAdmin extends AdminController implements AdminInterface
 
         //Special case: The root-record.
         if (!$objTarget->rightRight()) {
-            return $this->objToolkit->warningBox($this->getLang("commons_error_permissions"), "alert-danger");
+            return [
+                "message" => $this->getLang("commons_error_permissions"),
+                "error" => 1
+            ];
         }
 
         //Inheritance?
