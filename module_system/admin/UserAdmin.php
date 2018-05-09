@@ -1209,6 +1209,7 @@ HTML;
         if ($intCheckedGroups == 0) {
             $objForm->addField(new FormentryPlaintext(), "intro")->setStrValue($this->objToolkit->warningBox($this->getLang("form_user_hint_groups")));
             $objForm->setFieldToPosition("intro", 1);
+            $objForm->addField(new FormentryPlaintext())->setStrValue("<script type=\"text/javascript\"> require(['permissions'], function(permissions){ }); </script>");
         } else {
             $objForm->addField(new FormentryPlaintext())->setStrValue("<script type=\"text/javascript\">
             require(['permissions'], function(permissions){
