@@ -700,10 +700,12 @@ Upload-Field for multiple files with progress bar
 
 Regular Submit-Button
 <input_submit>
-        <button type="submit" class="btn btn-default savechanges %%class%%" name="%%name%%" value="%%value%%" %%disabled%% %%eventhandler%%>
+        <button id="savechangesbtn" type="submit" class="btn btn-default savechanges %%class%%" name="%%name%%" value="%%value%%" %%disabled%% %%eventhandler%%>
             <span class="btn-text">%%value%%</span>
             <span class="statusicon"></span>
         </button>
+        <div id="infoContainer">
+        </div>
 </input_submit>
 
 

@@ -395,13 +395,15 @@ class RightAdmin extends AdminController implements AdminInterface
         );
 
         //Pass to right-class
+        $arrJsonReturn = [];
         if ($objRights->setRights($arrReturn, $strSystemid)) {
-            $strReturn = $this->objToolkit->warningBox($this->getLang("permissions_success"), "alert-success");
+            $arrJsonReturn["message"] = $this->getLang("permissions_success");
+            $arrJsonReturn["error"] = 0;
         } else {
-            $strReturn = $this->objToolkit->warningBox($this->getLang("fehler_setzen"), "alert-danger");
+            $arrJsonReturn["message"] = $this->getLang("permissions_success");
+            $arrJsonReturn["error"] = 1;
         }
 
-
-        return json_encode(array("message" => $strReturn));
+        return json_encode($arrJsonReturn);
     }
 }
