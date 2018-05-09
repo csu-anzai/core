@@ -90,7 +90,7 @@ define("permissions", ["jquery"], function($){
             });
 
             $("#infoContainer").addClass("loadingContainer");
-            $("#savechangesbtn").attr('disabled', 'disabled');
+            $(".savechanges").attr('disabled', 'disabled');
 
             $.ajax({
                 url: KAJONA_WEBPATH + '/xml.php?admin=1&module=right&action=saveRights&systemid=' + $('#systemid').val(),
@@ -105,7 +105,7 @@ define("permissions", ["jquery"], function($){
                 }
             }).always(function () {
                 $("#infoContainer").removeClass("loadingContainer");
-                $("#savechangesbtn").removeAttr('disabled');
+                $(".savechanges").removeAttr('disabled');
             });
 
 

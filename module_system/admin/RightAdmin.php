@@ -403,7 +403,7 @@ class RightAdmin extends AdminController implements AdminInterface
             $arrJsonReturn["message"] = $this->getLang("permissions_success");
             $arrJsonReturn["error"] = 0;
         } else {
-            $arrJsonReturn["message"] = $this->getLang("permissions_success");
+            $arrJsonReturn["message"] = $this->getLang("fehler_setzen");
             $arrJsonReturn["error"] = 1;
         }
 

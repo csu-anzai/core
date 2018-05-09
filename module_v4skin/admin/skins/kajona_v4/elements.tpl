@@ -700,7 +700,7 @@ Upload-Field for multiple files with progress bar
 
 Regular Submit-Button
 <input_submit>
-        <button id="savechangesbtn" type="submit" class="btn btn-default savechanges %%class%%" name="%%name%%" value="%%value%%" %%disabled%% %%eventhandler%%>
+        <button type="submit" class="btn btn-default savechanges %%class%%" name="%%name%%" value="%%value%%" %%disabled%% %%eventhandler%%>
             <span class="btn-text">%%value%%</span>
             <span class="statusicon"></span>
         </button>
@@ -1262,8 +1262,6 @@ The following sections specify the layout of the rights-mgmt
     <div>
         %%desc%% %%record%% <br />
         <a href="javascript:require('permissions').toggleEmtpyRows('[lang,permissions_toggle_visible,system]', '[lang,permissions_toggle_hidden,system]', '#rightsForm tr');" id="rowToggleLink" class="rowsVisible">[lang,permissions_toggle_visible,system]</a><br /><br />
-    </div>
-    <div id="responseContainer">
     </div>
 </rights_form_header>
 
