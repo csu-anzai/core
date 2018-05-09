@@ -5,6 +5,7 @@ namespace Kajona\System\Tests\Permissions;
 use Kajona\Flow\System\FlowManager;
 use Kajona\Flow\System\FlowStatus;
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Permissions\PermissionHandlerAbstract;
 use Kajona\System\System\Rights;
@@ -40,14 +41,14 @@ class PermissionHandlerAbstractTest extends Testbase
         if (!$objGroupResp) {
             $objGroupResp = new UserGroup();
             $objGroupResp->setStrName(self::GROUP_RESP);
-            $objGroupResp->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objGroupResp))->update($objGroupResp);
         }
 
         $objGroupCompliance = UserGroup::getGroupByName(self::GROUP_COMPLIANCE);
         if (!$objGroupCompliance) {
             $objGroupCompliance = new UserGroup();
             $objGroupCompliance->setStrName(self::GROUP_COMPLIANCE);
-            $objGroupCompliance->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objGroupCompliance))->update($objGroupCompliance);
         }
 
         $this->strGroupRespId = $objGroupResp->getSystemid();

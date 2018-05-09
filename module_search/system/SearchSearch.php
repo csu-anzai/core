@@ -8,6 +8,7 @@
 namespace Kajona\Search\System;
 
 use Kajona\System\System\AdminListableInterface;
+use Kajona\System\System\Date;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\SortableRatingInterface;
@@ -70,14 +71,18 @@ class SearchSearch extends Model implements ModelInterface, AdminListableInterfa
     private $strFormFilterUser = null;
 
     /**
-     * @var null
+     * @var Date
      * @fieldType Kajona\System\Admin\Formentries\FormentryDate
+     * @tableColumn agp_search_search.search_change_start
+     * @tableColumnDatatype long
      */
     private $objChangeStartdate = null;
 
     /**
-     * @var null
+     * @var Date
      * @fieldType Kajona\System\Admin\Formentries\FormentryDate
+     * @tableColumn agp_search_search.search_change_end
+     * @tableColumnDatatype long
      */
     private $objChangeEnddate = null;
 
@@ -224,8 +229,7 @@ class SearchSearch extends Model implements ModelInterface, AdminListableInterfa
     {
         if ($this->strInternalFilterModules != "" && $this->strInternalFilterModules != "-1") {
             return explode(",", $this->strInternalFilterModules);
-        }
-        else {
+        } else {
             return $this->getModuleNumbers();
         }
     }
@@ -248,8 +252,7 @@ class SearchSearch extends Model implements ModelInterface, AdminListableInterfa
     {
         if ($this->strInternalFilterModules != "" && $this->strInternalFilterModules != "-1") {
             return explode(",", $this->strInternalFilterModules);
-        }
-        else {
+        } else {
             return array();
         }
     }
@@ -292,7 +295,7 @@ class SearchSearch extends Model implements ModelInterface, AdminListableInterfa
      */
     public function setObjChangeEnddate($objChangeEnddate)
     {
-        $this->setObjEndDate($objChangeEnddate);
+        $this->objChangeEnddate = $objChangeEnddate;
     }
 
     /**
@@ -300,7 +303,7 @@ class SearchSearch extends Model implements ModelInterface, AdminListableInterfa
      */
     public function getObjChangeEnddate()
     {
-        return $this->getObjEndDate();
+        return $this->objChangeEnddate;
     }
 
     /**
@@ -308,7 +311,7 @@ class SearchSearch extends Model implements ModelInterface, AdminListableInterfa
      */
     public function setObjChangeStartdate($objChangeStartdate)
     {
-        $this->setObjStartDate($objChangeStartdate);
+        $this->objChangeStartdate = $objChangeStartdate;
     }
 
     /**
@@ -316,7 +319,7 @@ class SearchSearch extends Model implements ModelInterface, AdminListableInterfa
      */
     public function getObjChangeStartdate()
     {
-        return $this->getObjStartDate();
+        return $this->objChangeStartdate;
     }
 
     /**
@@ -334,6 +337,4 @@ class SearchSearch extends Model implements ModelInterface, AdminListableInterfa
     {
         return $this->intPrivate;
     }
-
-
 }

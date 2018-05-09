@@ -6,6 +6,7 @@ use Kajona\Search\Event\SearchRequestEndprocessinglistener;
 use Kajona\Search\System\SearchEnumIndexaction;
 use Kajona\Search\System\SearchIndexqueue;
 use Kajona\System\System\Database;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\MessagingMessage;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\SystemChangelog;
@@ -21,13 +22,13 @@ class SearchDeferredIndexerTest extends Testbase
     {
         $objConfig = SystemSetting::getConfigByName("_search_deferred_indexer_");
         $objConfig->setStrValue("true");
-        $objConfig->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objConfig))->update($objConfig);
 
         $objObject = new MessagingMessage();
         $objObject->setStrTitle("unittest demo message");
         $objObject->setStrBody("unittest demo message body");
         $objObject->setStrMessageProvider("Kajona\\System\\System\\Messageproviders\\MessageproviderPersonalmessage");
-        $objObject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objObject))->update($objObject);
         $strObjectId = $objObject->getSystemid();
 
         //trigger the endprocessinglistener
@@ -54,7 +55,7 @@ class SearchDeferredIndexerTest extends Testbase
         $objConfig = SystemSetting::getConfigByName("_search_deferred_indexer_");
         $objQueue->deleteBySystemid($strObjectId);
         $objConfig->setStrValue("false");
-        $objConfig->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objConfig))->update($objConfig);
 
     }
 
@@ -73,7 +74,7 @@ class SearchDeferredIndexerTest extends Testbase
             $objObject->setStrTitle("unittest demo message");
             $objObject->setStrBody("unittest demo message body");
             $objObject->setStrMessageProvider("Kajona\\System\\System\\Messageproviders\\MessageproviderPersonalmessage");
-            $objObject->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objObject))->update($objObject);
             $arrObjectIds[] = $objObject->getSystemid();
         }
 
@@ -91,7 +92,7 @@ class SearchDeferredIndexerTest extends Testbase
         //echo "\nIndexing with deferred indexer...\n";
         $objConfig = SystemSetting::getConfigByName("_search_deferred_indexer_");
         $objConfig->setStrValue("true");
-        $objConfig->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objConfig))->update($objConfig);
 
         $intTimeStart = microtime(true);
         $intQueriesStart = Database::getInstance()->getNumber();
@@ -101,7 +102,7 @@ class SearchDeferredIndexerTest extends Testbase
             $objObject->setStrTitle("unittest demo message");
             $objObject->setStrBody("unittest demo message body");
             $objObject->setStrMessageProvider("Kajona\\System\\System\\Messageproviders\\MessageproviderPersonalmessage");
-            $objObject->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objObject))->update($objObject);
             $arrObjectIds[] = $objObject->getSystemid();
         }
 
@@ -119,7 +120,7 @@ class SearchDeferredIndexerTest extends Testbase
 
         $objConfig = SystemSetting::getConfigByName("_search_deferred_indexer_");
         $objConfig->setStrValue("false");
-        $objConfig->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objConfig))->update($objConfig);
 
         foreach ($arrObjectIds as $strObjectId) {
             Objectfactory::getInstance()->getObject($strObjectId)->deleteObjectFromDatabase();

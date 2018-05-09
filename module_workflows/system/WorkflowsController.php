@@ -11,6 +11,7 @@ namespace Kajona\Workflows\System;
 
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Date;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Logger;
 
 
@@ -55,6 +56,7 @@ class WorkflowsController
 
     /**
      * Searches for new workflows and forces them to schedule and initialize
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
     private function scheduleWorkflows()
     {
@@ -84,8 +86,8 @@ class WorkflowsController
 
             //trigger the workflow
             Logger::getInstance(self::STR_LOGFILE)->info("scheduling workflow ".$objOneWorkflow->getSystemid());
-            if ($objOneWorkflow->getObjTriggerdate() == null) {
-                $objOneWorkflow->setObjTriggerdate(new \Kajona\System\System\Date());
+            if ($objOneWorkflow->getTriggerDate() == null) {
+                $objOneWorkflow->setTriggerDate(new \Kajona\System\System\Date());
             }
             $objHandler->schedule();
 
@@ -93,7 +95,7 @@ class WorkflowsController
             $objOneWorkflow->setIntState(WorkflowsWorkflow::$INT_STATE_SCHEDULED);
 
             //init happened before
-            $objOneWorkflow->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objOneWorkflow))->update($objOneWorkflow);
 
             //unlock
             $objOneWorkflow->getLockManager()->unlockRecord(true);
@@ -106,6 +108,7 @@ class WorkflowsController
 
     /**
      * Triggers the workflows scheduled for running.
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
     private function runWorkflows()
     {
@@ -191,7 +194,7 @@ class WorkflowsController
 
 
             $objOneWorkflow->setIntRuns($objOneWorkflow->getIntRuns() + 1);
-            $objOneWorkflow->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objOneWorkflow))->update($objOneWorkflow);
 
             $objLockmanager->unlockRecord(true);
 

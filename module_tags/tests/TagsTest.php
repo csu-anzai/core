@@ -2,6 +2,7 @@
 
 namespace Kajona\Tags\Tests;
 
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
@@ -13,23 +14,27 @@ class TagsTest extends Testbase
 {
 
 
-
+    /**
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleCopyException
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleDeleteException
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
+     */
     public function testCopyRecordWithTag()
     {
 
         $objAspect = new SystemAspect();
         $objAspect->setStrName("autotest");
-        $objAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
 
         $objTag = new TagsTag();
         $objTag->setStrName("demo tag");
-        $objTag->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTag))->update($objTag);
 
         $objTag->assignToSystemrecord($objAspect->getStrSystemid());
 
         $objFirstAspect = new SystemAspect($objAspect->getSystemid());
 
-        $objAspect->copyObject();
+        $objAspect = ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->copy($objAspect);
 
         $this->assertNotEquals($objFirstAspect->getSystemid(), $objAspect->getSystemid());
 
@@ -42,24 +47,28 @@ class TagsTest extends Testbase
 
         $this->assertEquals($objFirstTag->getSystemid(), $objSecondTag->getSystemid());
 
-        $objFirstAspect->deleteObjectFromDatabase();
-        $objAspect->deleteObjectFromDatabase();
-        $objSecondTag->deleteObjectFromDatabase();
 
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objFirstAspect))->deleteObjectFromDatabase($objFirstAspect);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->deleteObjectFromDatabase($objAspect);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objSecondTag))->deleteObjectFromDatabase($objSecondTag);
     }
 
 
+    /**
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleDeleteException
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
+     */
     public function testTagAssignmentRemoval()
     {
         //related to checkin #6111
 
         $objTag = new TagsTag();
         $objTag->setStrName(generateSystemid());
-        $objTag->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTag))->update($objTag);
 
         $objAspect = new SystemAspect();
         $objAspect->setStrName(generateSystemid());
-        $objAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
 
         $objTag->assignToSystemrecord($objAspect->getSystemid());
 
@@ -75,11 +84,15 @@ class TagsTest extends Testbase
         $this->assertEquals(count($objTag->getArrAssignedRecords()), 0);
         $this->assertEquals(count(TagsTag::getTagsForSystemid($objAspect->getSystemid())), 0);
 
-        $objTag->deleteObjectFromDatabase();
-        $objAspect->deleteObjectFromDatabase();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTag))->deleteObjectFromDatabase($objTag);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->deleteObjectFromDatabase($objAspect);
     }
 
 
+    /**
+     * @throws \Kajona\System\System\Exception
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
+     */
     public function testTagAssignment()
     {
         $strName = generateSystemid();
@@ -91,7 +104,7 @@ class TagsTest extends Testbase
 
         $objTag = new TagsTag();
         $objTag->setStrName($strName);
-        $objTag->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTag))->update($objTag);
 
 
         foreach ($arrUsergroups as $objOnePage) {

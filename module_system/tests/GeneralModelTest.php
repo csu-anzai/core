@@ -4,6 +4,8 @@ namespace Kajona\System\Tests;
 
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Classloader;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException;
 use Kajona\System\System\Model;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Reflection;
@@ -53,7 +55,12 @@ class GeneralModelTest extends Testbase
             }
 
             //echo "testing object of type " . get_class($objOneInstance) . "@" . $objOneInstance->getSystemid() . "\n";
-            $this->assertTrue($objOneInstance->updateObjectToDb(), "saving object " . get_class($objOneInstance));
+            try {
+                ServiceLifeCycleFactory::getLifeCycle(get_class($objOneInstance))->update($objOneInstance);
+                $this->assertTrue(true);
+            } catch (ServiceLifeCycleUpdateException $e) {
+                $this->fail("error saving object " . get_class($objOneInstance));
+            }
             $arrSystemids[$objOneInstance->getSystemid()] = get_class($objOneInstance);
             //echo " ...saved object of type " . get_class($objOneInstance) . "@" . $objOneInstance->getSystemid() . "\n";
         }

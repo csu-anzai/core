@@ -5,6 +5,8 @@ namespace Kajona\System\Tests;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Database;
 use Kajona\System\System\Exception;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\SystemAspect;
 
@@ -25,7 +27,7 @@ class SystemTest extends Testbase
         $arrSysRecords = array();
         for ($intI = 0; $intI <= 100; $intI++) {
             $objAspect = new SystemAspect();
-            $objAspect->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
             $arrSysRecords[] = $objAspect->getSystemid();
 
             $arrRow = $objDB->getPRow("SELECT COUNT(*) AS cnt FROM agp_system", array(), 0, false);
@@ -52,13 +54,13 @@ class SystemTest extends Testbase
         //create 10 test records
         $objAspect = new SystemAspect();
         //new base-node
-        $objAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
         $strBaseNodeId = $objAspect->getSystemid();
         $arrNodes = array();
         for ($intI = 1; $intI <= 10; $intI++) {
             $objAspect = new SystemAspect();
             $objAspect->setStrName("sectionTest_" . $intI);
-            $objAspect->updateObjectToDb($strBaseNodeId);
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strBaseNodeId);
             $arrNodes[] = $objAspect->getSystemid();
         }
         $arrNodes = $objDB->getPArray("SELECT system_id FROM agp_system WHERE system_prev_id = ? ORDER BY system_sort ASC", array($strBaseNodeId));
@@ -88,14 +90,14 @@ class SystemTest extends Testbase
         $intNrSystemRecords = $arrRow["cnt"];
         //base-id
         $objAspect = new SystemAspect();
-        $objAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
         $intBaseId = $objAspect->getSystemid();
         //two under the base
         $objAspect = new SystemAspect();
-        $objAspect->updateObjectToDb($intBaseId);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $intBaseId);
         $intSecOneId = $objAspect->getSystemid();
         $objAspect = new SystemAspect();
-        $objAspect->updateObjectToDb($intBaseId);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $intBaseId);
         $intSecTwoId = $objAspect->getSystemid();
         $arrSysRecords[] = $intBaseId;
         $arrSysRecords[] = $intSecOneId;
@@ -103,13 +105,13 @@ class SystemTest extends Testbase
         //twenty under both levels
         for ($intI = 0; $intI < 20; $intI++) {
             $objAspect = new SystemAspect();
-            $objAspect->updateObjectToDb($intSecOneId);
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $intSecOneId);
             $arrSysRecords[] = $objAspect->getSystemid();
             $objAspect = new SystemAspect();
-            $objAspect->updateObjectToDb($intSecTwoId);
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $intSecTwoId);
             $arrSysRecords[] = $objAspect->getSystemid();
             $objAspect = new SystemAspect();
-            $objAspect->updateObjectToDb($intBaseId);
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $intBaseId);
             $arrSysRecords[] = $objAspect->getSystemid();
         }
         //check nr of records
@@ -137,30 +139,30 @@ class SystemTest extends Testbase
     {
 
         $objAspect = new SystemAspect();
-        $objAspect->updateObjectToDb("0");
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, "0");
         $strRootNodeId = $objAspect->getSystemid();
 
         $objAspect = new SystemAspect();
-        $objAspect->updateObjectToDb($strRootNodeId);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strRootNodeId);
         $strSub1Node1Id = $objAspect->getSystemid();
         $objAspect = new SystemAspect();
-        $objAspect->updateObjectToDb($strRootNodeId);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strRootNodeId);
         $strSub1Node2Id = $objAspect->getSystemid();
         $objAspect = new SystemAspect();
-        $objAspect->updateObjectToDb($strRootNodeId);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strRootNodeId);
         $strSub1Node2Id = $objAspect->getSystemid();
 
 
         $objAspect = new SystemAspect();
-        $objAspect->updateObjectToDb($strSub1Node1Id);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strSub1Node1Id);
         $strSub2Node1aId = $objAspect->getSystemid();
 
         $objAspect = new SystemAspect();
-        $objAspect->updateObjectToDb($strSub1Node1Id);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strSub1Node1Id);
         $strSub2Node1bId = $objAspect->getSystemid();
 
         $objAspect = new SystemAspect();
-        $objAspect->updateObjectToDb($strSub1Node1Id);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strSub1Node1Id);
         $strSub2Node1cId = $objAspect->getSystemid();
 
 
@@ -184,7 +186,7 @@ class SystemTest extends Testbase
 
         $bitThrown = false;
         try {
-            $objAspect->updateObjectToDb("invalid");
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, "invalid");
         } catch (Exception $objEx) {
             $bitThrown = true;
         }
@@ -193,7 +195,13 @@ class SystemTest extends Testbase
         $this->assertTrue(!validateSystemid($objAspect->getSystemid()));
         $this->assertTrue(!validateSystemid($objAspect->getStrPrevId()));
 
-        $this->assertTrue($objAspect->updateObjectToDb());
+        try {
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
+            $this->assertTrue(true);
+        } catch (ServiceLifeCycleUpdateException $e) {
+            $this->fail("Error savin aspect");
+        }
+
         $this->assertTrue($objAspect->getSystemid() != "");
         $this->assertTrue(validateSystemid($objAspect->getSystemid()));
         $this->assertTrue(validateSystemid($objAspect->getStrPrevId()));

@@ -3,6 +3,7 @@
 namespace Kajona\System\Tests\Benchmarks;
 
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Messageproviders\MessageproviderPersonalmessage;
 use Kajona\System\System\MessagingMessage;
 use Kajona\System\System\Objectfactory;
@@ -48,7 +49,7 @@ class MessagesListBenchmark
             $objMessage = new MessagingMessage();
             $objMessage->setStrUser(Carrier::getInstance()->getObjSession()->getUserID());
             $objMessage->setStrMessageProvider(MessageproviderPersonalmessage::class);
-            $objMessage->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objMessage))->update($objMessage);
 
             self::$arrIds[] = $objMessage->getSystemid();
         }

@@ -148,9 +148,15 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
             $strReturn .= "Updating to 6.6...\n";
             $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6");
         }
+
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "6.6") {
             $strReturn .= $this->update_66_70();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.0") {
+            $strReturn .= $this->update_70_71();
         }
 
 
@@ -170,6 +176,25 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
 
         return $strReturn;
 	}
+
+    private function update_70_71()
+    {
+        $strReturn = "Updating to 7.1...\n";
+
+        $strReturn .= "Migrating date col\n";
+        $this->objDB->addColumn("agp_search_search", "search_change_start",DbDatatypes::STR_TYPE_LONG);
+        $this->objDB->addColumn("agp_search_search", "search_change_end",DbDatatypes::STR_TYPE_LONG);
+
+        foreach ($this->objDB->getGenerator("SELECT system_date_start, system_date_end, search_search_id FROM agp_system_date, agp_search_search WHERE system_date_id = search_search_id ORDER BY system_date_id DESC", []) as $sets) {
+            foreach ($sets as $row) {
+                $this->objDB->_pQuery("UPDATE agp_search_search SET search_change_start = ?, search_change_end = ? WHERE search_search_id = ?", [$row["system_date_start"], $row["system_date_end"], $row["search_search_id"]]);
+                $this->objDB->_pQuery("DELETE FROM agp_system_date WHERE system_date_id = ?", [$row["search_search_id"]]);
+            }
+        }
+
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1");
+        return $strReturn;
+    }
 
 
     private function updateIndex() {

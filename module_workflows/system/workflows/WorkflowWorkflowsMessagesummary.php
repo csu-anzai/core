@@ -194,7 +194,7 @@ class WorkflowWorkflowsMessagesummary implements WorkflowsHandlerInterface
     public function schedule()
     {
 
-        $objDate = clone $this->objWorkflow->getObjTriggerdate();
+        $objDate = clone $this->objWorkflow->getTriggerDate();
         //reschedule
         for ($intI = 0; $intI < $this->intIntervalDays; $intI++) {
             $objDate->setNextDay();
@@ -207,8 +207,7 @@ class WorkflowWorkflowsMessagesummary implements WorkflowsHandlerInterface
             $objDate->setNextDay()->setIntHour($this->intSendTime)->setIntMin(0)->setIntSec(0);
         }
 
-        $this->objWorkflow->setObjTriggerdate($objDate);
-
+        $this->objWorkflow->setTriggerDate($objDate);
     }
 
     /**

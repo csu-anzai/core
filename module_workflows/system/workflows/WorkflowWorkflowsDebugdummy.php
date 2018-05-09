@@ -74,7 +74,7 @@ class WorkflowWorkflowsDebugdummy implements WorkflowsHandlerInterface
 
     public function schedule()
     {
-        $this->objWorkflow->setObjTriggerdate(new Date());
+        $this->objWorkflow->setTriggerdate(new Date());
     }
 
     public function getUserInterface()

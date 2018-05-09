@@ -12,6 +12,7 @@ namespace Kajona\Ldap\System\Usersources;
 use Kajona\Ldap\System\Ldap;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Logger;
 use Kajona\System\System\Usersources\UsersourcesGroupInterface;
 use Kajona\System\System\Usersources\UsersourcesUserInterface;
@@ -85,7 +86,7 @@ class UsersourcesSourceLdap implements UsersourcesUsersourceInterface
                         $objUser->setStrEmail($arrSingleUser["mail"]);
                         $objUser->setStrDN($arrSingleUser["identifier"]);
                         $objUser->setIntCfg($objSingleLdap->getIntCfgNr());
-                        $objUser->updateObjectToDb();
+                        ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
                         $this->objDB->flushQueryCache();
 
                     }
@@ -217,6 +218,7 @@ class UsersourcesSourceLdap implements UsersourcesUsersourceInterface
      * @param string $strUsername
      *
      * @return UsersourcesUserInterface or null
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
     public function getUserByUsername($strUsername)
     {
@@ -237,7 +239,7 @@ class UsersourcesSourceLdap implements UsersourcesUsersourceInterface
                 $objUser->setStrUsername($strUsername);
                 $objUser->setStrSubsystem("ldap");
                 $objUser->setIntAdmin(1);
-                $objUser->updateObjectToDb();
+                ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
 
                 /** @var $objSourceUser UsersourcesUserLdap */
                 $objSourceUser = $objUser->getObjSourceUser();
@@ -247,7 +249,7 @@ class UsersourcesSourceLdap implements UsersourcesUsersourceInterface
                     $objSourceUser->setStrGivenname($arrSingleUser["givenname"]);
                     $objSourceUser->setStrEmail($arrSingleUser["mail"]);
                     $objSourceUser->setIntCfg($objSingleLdap->getIntCfgNr());
-                    $objSourceUser->updateObjectToDb();
+                    ServiceLifeCycleFactory::getLifeCycle(get_class($objSourceUser))->update($objSourceUser);
 
                     $this->objDB->flushQueryCache();
 
@@ -311,6 +313,8 @@ class UsersourcesSourceLdap implements UsersourcesUsersourceInterface
      * and not during common requests!
      *
      * @return bool
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleLogicDeleteException
      */
     public function updateUserData()
     {
@@ -350,12 +354,12 @@ class UsersourcesSourceLdap implements UsersourcesUsersourceInterface
                 $objSourceUser->setStrFamilyname($arrUserDetails["familyname"]);
                 $objSourceUser->setStrGivenname($arrUserDetails["givenname"]);
                 $objSourceUser->setStrEmail($arrUserDetails["mail"]);
-                $objSourceUser->updateObjectToDb();
+                ServiceLifeCycleFactory::getLifeCycle(get_class($objSourceUser))->update($objSourceUser);
 
                 $this->objDB->flushQueryCache();
             } else {
                 //user seems to be deleted, remove from system, too
-                $objUser->deleteObject();
+                ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->delete($objUser);
                 Logger::getInstance("ldapsync.log")->warning("Deleting user " . $strOneUserId . " / " . $objUser->getStrUsername() . " @ " . $objSourceUser->getStrDN());
             }
         }

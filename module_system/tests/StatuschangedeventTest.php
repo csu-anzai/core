@@ -4,6 +4,7 @@ namespace Kajona\System\Tests;
 
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\GenericeventListenerInterface;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemEventidentifier;
 
@@ -19,14 +20,14 @@ class StatuschangedeventTest extends Testbase
 
         $objAspect = new SystemAspect();
         $objAspect->setStrName("test");
-        $objAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
 
         CoreEventdispatcher::getInstance()->addListener(SystemEventidentifier::EVENT_SYSTEM_STATUSCHANGED, new StatuchangedhandlerTestModel($objAspect->getSystemid(), $this));
 
         $this->assertTrue(!self::$bitHandled);
         $objAspect->setIntRecordStatus(0);
         $this->assertTrue(!self::$bitHandled);
-        $objAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
         $this->assertTrue(self::$bitHandled);
 
         $objAspect->deleteObjectFromDatabase();

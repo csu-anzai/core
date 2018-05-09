@@ -174,8 +174,10 @@ class OrmObjectlist extends OrmBase
      *
      * @return Model|ModelInterface|null
      *
-     * @see OrmObjectlist_restriction
-     * @see OrmObjectlist_orderby
+     * @throws Exception
+     * @throws OrmException
+     * @see OrmCondition
+     * @see OrmObjectlistOrderby
      */
     public function getSingleObject($strTargetClass, $strPrevid = "")
     {

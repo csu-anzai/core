@@ -16,12 +16,12 @@ use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\ArraySectionIterator;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
-use Kajona\System\System\HttpResponsetypes;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
-use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Session;
 use Kajona\System\System\SystemChangelog;
 use Kajona\System\System\SystemModule;
@@ -259,11 +259,14 @@ class TagsAdmin extends AdminEvensimpler implements AdminInterface
         $objFavorite->setStrUserId($this->objSession->getUserID());
         $objFavorite->setStrTagId($objTags->getSystemid());
 
-        if (!$objFavorite->updateObjectToDb()) {
+
+        try {
+            $this->objLifeCycleFactory->factory(get_class($objFavorite))->update($objFavorite);
+        } catch (ServiceLifeCycleUpdateException $e) {
             return $strError;
-        } else {
-            return $strSuccess;
         }
+
+        return $strSuccess;
     }
 
 
@@ -291,7 +294,7 @@ class TagsAdmin extends AdminEvensimpler implements AdminInterface
             if ($objTag == null) {
                 $objTag = new TagsTag();
                 $objTag->setStrName($strOneTag);
-                $objTag->updateObjectToDb();
+                ServiceLifeCycleFactory::getLifeCycle(get_class($objTag))->update($objTag);
             }
 
             //add the connection itself

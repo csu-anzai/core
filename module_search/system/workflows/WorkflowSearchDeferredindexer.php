@@ -124,7 +124,7 @@ class WorkflowSearchDeferredindexer implements WorkflowsHandlerInterface
      */
     public function schedule()
     {
-        $this->objWorkflow->setObjTriggerdate(new Date(time() + $this->intIntervall));
+        $this->objWorkflow->setTriggerdate(new Date(time() + $this->intIntervall));
     }
 
     /**

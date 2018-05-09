@@ -11,6 +11,7 @@ use Kajona\Search\System\SearchResult;
 use Kajona\System\System\AdminGridableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Filesystem;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
@@ -560,6 +561,7 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
      * @param MediamanagerRepo|null $objRepo
      *
      * @return array [insert, delete]
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
     public static function syncRecursive($strPrevID, $strPath, $bitRecursive = true, MediamanagerRepo $objRepo = null)
     {
@@ -638,7 +640,7 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
             $objFile->setStrName($strFileName);
             $objFile->setIntType(self::$INT_TYPE_FILE);
 
-            $objFile->updateObjectToDb($strPrevID);
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objFile))->update($objFile, $strPrevID);
             $arrReturn["insert"]++;
         }
 
@@ -649,7 +651,7 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
             $objFile->setStrFilename($strFileFilename);
             $objFile->setStrName($strFileName);
             $objFile->setIntType(self::$INT_TYPE_FOLDER);
-            $objFile->updateObjectToDb($strPrevID);
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objFile))->update($objFile, $strPrevID);
             $arrReturn["insert"]++;
         }
 

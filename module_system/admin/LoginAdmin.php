@@ -135,10 +135,11 @@ class LoginAdmin extends AdminController implements AdminInterface
                         if ($bitReturn) {
                             if ($objUser->getObjSourceUser()->isPasswordResettable() && method_exists($objUser->getObjSourceUser(), "setStrPass")) {
                                 $objUser->getObjSourceUser()->setStrPass($strPass1);
-                                $objUser->getObjSourceUser()->updateObjectToDb();
+                                $this->objLifeCycleFactory->factory(get_class($objUser->getObjSourceUser()))->update($objUser->getObjSourceUser());
                             }
                             $objUser->setStrAuthcode("");
-                            $objUser->updateObjectToDb();
+                            $this->objLifeCycleFactory->factory(get_class($objUser))->update($objUser);
+
                             Logger::getInstance()->info("changed password of user ".$objUser->getStrUsername());
 
                             return $this->objToolkit->warningBox($this->getLang("login_change_success", "user"));
@@ -273,7 +274,7 @@ try {
 
             $objUser = $this->objFactory->getObject($objEx->getStrUserId());
             $objUser->setStrAuthcode($strToken);
-            $objUser->updateObjectToDb();
+            $this->objLifeCycleFactory->factory(get_class($objUser))->update($objUser);
 
             return Link::clientRedirectHref("login", "pwdReset", ["systemid" => $objUser->getSystemid(), "authcode" => $strToken, "reason" => "expired"]);
         }

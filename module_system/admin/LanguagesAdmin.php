@@ -178,9 +178,7 @@ class LanguagesAdmin extends AdminSimple implements AdminInterface
             }
         }
 
-        if (!$objLanguage->updateObjectToDb()) {
-            throw new Exception("Error creating new language", Exception::$level_ERROR);
-        }
+        $this->objLifeCycleFactory->factory(get_class($objLanguage))->update($objLanguage);
 
         if ($this->getParam("mode") == "edit") {
             //move contents to a new language

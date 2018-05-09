@@ -8,6 +8,7 @@ use Kajona\Search\System\SearchIndexwriter;
 use Kajona\Search\System\SearchStandardAnalyzer;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Database;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\MessagingMessage;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\SystemChangelog;
@@ -172,7 +173,7 @@ class SearchIndexerTest extends Testbase
         $objObject->setStrTitle("unittest demo message");
         $objObject->setStrBody("unittest demo message body");
         $objObject->setStrMessageProvider("Kajona\\System\\System\\Messageproviders\\MessageproviderPersonalmessage");
-        $objObject->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objObject))->update($objObject);
         $strObjectId = $objObject->getSystemid();
 
         //echo "Status changes with disabled changelog indexer integration...\n";
@@ -182,7 +183,7 @@ class SearchIndexerTest extends Testbase
 
         for ($intI = 0; $intI < 150; $intI++) {
             $objObject->setIntRecordStatus($intI % 2);
-            $objObject->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objObject))->update($objObject);
         }
 
         $intTimeEnd = microtime(true);
@@ -198,7 +199,7 @@ class SearchIndexerTest extends Testbase
 
         for ($intI = 0; $intI < 150; $intI++) {
             $objObject->setIntRecordStatus($intI % 2);
-            $objObject->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objObject))->update($objObject);
         }
 
         $intTimeEnd = microtime(true);
@@ -207,7 +208,7 @@ class SearchIndexerTest extends Testbase
         //echo "Queries: ", Database::getInstance()->getNumber() - $intQueriesStart . " \n";
 
 
-        Objectfactory::getInstance()->getObject($strObjectId)->deleteObjectFromDatabase();
+        ServiceLifeCycleFactory::getLifeCycle(get_class(Objectfactory::getInstance()->getObject($strObjectId)))->deleteObjectFromDatabase(Objectfactory::getInstance()->getObject($strObjectId));
 
         $this->assertTrue(true);//dummy assertion to make test not risky. Until here no exception should have occurred
 
@@ -224,7 +225,7 @@ class SearchIndexerTest extends Testbase
         $objMessage->setStrTitle("unittest demo message");
         $objMessage->setStrBody("unittest demo message body");
         $objMessage->setStrMessageProvider("Kajona\\System\\System\\Messageproviders\\MessageproviderPersonalmessage");
-        $objMessage->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objMessage))->update($objMessage);
 
         $objIndexWriter = new SearchIndexwriter();
         $objIndexWriter->indexObject($objMessage);

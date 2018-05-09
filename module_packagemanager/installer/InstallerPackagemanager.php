@@ -11,10 +11,9 @@ namespace Kajona\Packagemanager\Installer;
 
 use Kajona\System\System\InstallerBase;
 use Kajona\System\System\InstallerInterface;
-use Kajona\System\System\OrmSchemamanager;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemModule;
-use Kajona\System\System\SystemSetting;
 
 /**
  * Class providing an install for the packagemanager module
@@ -41,7 +40,7 @@ class InstallerPackagemanager extends InstallerBase implements InstallerInterfac
         if(SystemAspect::getAspectByName("management") != null) {
             $objModule = SystemModule::getModuleByName($this->objMetadata->getStrTitle());
             $objModule->setStrAspect(SystemAspect::getAspectByName("management")->getSystemid());
-            $objModule->updateObjectToDb();
+            ServiceLifeCycleFactory::getLifeCycle(get_class($objModule))->update($objModule);
         }
 
 		return $strReturn;

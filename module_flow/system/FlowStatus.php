@@ -12,6 +12,7 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\Database;
 use Kajona\System\System\IdGenerator;
 use Kajona\System\System\Lang;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
@@ -218,10 +219,11 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
 
     /**
      * @param FlowTransition $objTransition
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
     public function addTransition(FlowTransition $objTransition)
     {
-        $objTransition->updateObjectToDb($this->getSystemid());
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objTransition))->update($objTransition, $this->getSystemid());
     }
 
     /**
@@ -369,7 +371,7 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
                 if ($objStatus instanceof FlowStatus) {
                     $objTransition = new FlowTransition();
                     $objTransition->setStrTargetStatus($objStatus->getSystemid());
-                    $objTransition->updateObjectToDb($this->getSystemid());
+                    ServiceLifeCycleFactory::getLifeCycle(get_class($objTransition))->update($objTransition, $this->getSystemid());
                 } else {
                     throw new \InvalidArgumentException("Provided value is no FlowStatus object");
                 }

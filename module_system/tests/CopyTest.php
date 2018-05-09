@@ -3,6 +3,7 @@
 namespace Kajona\System\Tests;
 
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Rights;
 use Kajona\System\System\SystemAspect;
 
@@ -16,7 +17,7 @@ class CopyTest extends Testbase
 
         $objAspect = new SystemAspect();
         $objAspect->setStrName("copytest");
-        $objAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
         $strSysid = $objAspect->getSystemid();
 
         $objAspect->copyObject();
@@ -42,10 +43,10 @@ class CopyTest extends Testbase
 
         $objAspect = new SystemAspect();
         $objAspect->setStrName("copytest");
-        $objAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
         $strSysid = $objAspect->getSystemid();
         $objAspect->setIntRecordStatus(0);
-        $objAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
 
         $objAspect->copyObject();
         $strCopyId = $objAspect->getSystemid();
@@ -70,7 +71,7 @@ class CopyTest extends Testbase
 
         $objAspect = new SystemAspect();
         $objAspect->setStrName("copytest");
-        $objAspect->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
         $strViewId = generateSystemid();
         $strSysid = $objAspect->getSystemid();
 

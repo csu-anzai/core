@@ -11,6 +11,7 @@ namespace Kajona\Tags\System;
 
 use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
@@ -301,6 +302,7 @@ class TagsTag extends Model implements ModelInterface, AdminListableInterface, S
      * @param string $strTargetSystemid
      * @param string $strAttribute
      * @return bool
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
     public function assignToSystemrecord($strTargetSystemid, $strAttribute = null) {
         if($strAttribute == null)
@@ -334,7 +336,8 @@ class TagsTag extends Model implements ModelInterface, AdminListableInterface, S
         $bitReturn = $this->objDB->_pQuery($strQuery, array(generateSystemid(), $strTargetSystemid, $this->getSystemid(), $strAttribute, $this->objSession->getUserID()));
 
         //trigger an object update
-        Objectfactory::getInstance()->getObject($strTargetSystemid)->updateObjectToDb();
+        $objObject = Objectfactory::getInstance()->getObject($strTargetSystemid);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objObject))->update($objObject);
 
         return $bitReturn;
     }
@@ -345,6 +348,7 @@ class TagsTag extends Model implements ModelInterface, AdminListableInterface, S
      * @param string $strTargetSystemid
      * @param string $strAttribute
      * @return bool
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
     public function removeFromSystemrecord($strTargetSystemid, $strAttribute = null) {
 
@@ -371,7 +375,8 @@ class TagsTag extends Model implements ModelInterface, AdminListableInterface, S
         $bitReturn = $this->objDB->_pQuery($strQuery, $arrParams);
 
         //trigger an object update
-        Objectfactory::getInstance()->getObject($strTargetSystemid)->updateObjectToDb();
+        $objObject = Objectfactory::getInstance()->getObject($strTargetSystemid);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objObject))->update($objObject);
 
         return $bitReturn;
     }

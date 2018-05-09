@@ -23,21 +23,17 @@ use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
 use Kajona\System\System\FilterBase;
 use Kajona\System\System\Filters\UserGroupFilter;
-use Kajona\System\System\HttpResponsetypes;
 use Kajona\System\System\LanguagesLanguage;
 use Kajona\System\System\Link;
-use Kajona\System\System\Mail;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Reflection;
-use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Security\PasswordRotator;
 use Kajona\System\System\Security\PasswordValidatorInterface;
 use Kajona\System\System\Security\ValidationException;
 use Kajona\System\System\Session;
 use Kajona\System\System\StringUtil;
-use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemPwchangehistory;
 use Kajona\System\System\SystemSetting;
@@ -721,12 +717,12 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
         $objUser->setStrAdminModule($this->getParam("user_startmodule"));
         $objUser->setIntItemsPerPage($this->getParam("user_items_per_page"));
 
-        $objUser->updateObjectToDb();
+        $this->objLifeCycleFactory->factory(get_class($objUser))->update($objUser);
         /** @var UsersourcesUserInterface|ModelInterface $objSourceUser */
         $objSourceUser = $objUser->getObjSourceUser();
         $objForm = $this->getUserForm($objSourceUser, $bitSelfedit, $this->getParam("mode"));
         $objForm->updateSourceObject();
-        $objSourceUser->updateObjectToDb();
+        $this->objLifeCycleFactory->factory(get_class($objSourceUser))->update($objSourceUser);
 
         // assign user to the same groups if we have an user where we inherit the group settings
         if ($this->getParam("mode") == "new") {
@@ -966,14 +962,14 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
         }
 
         $objGroup->setStrName($this->getParam("group_name"));
-        $objGroup->updateObjectToDb();
+        $this->objLifeCycleFactory->factory(get_class($objGroup))->update($objGroup);
 
         $objSourceGroup = $objGroup->getObjSourceGroup();
 
         $objForm = $this->getGroupForm($objSourceGroup);
         $objForm->updateSourceObject();
 
-        $objSourceGroup->updateObjectToDb();
+        $this->objLifeCycleFactory->factory(get_class($objSourceGroup))->update($objSourceGroup);
 
         $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "groupList", "&peClose=1&blockAction=1"));
         return "";

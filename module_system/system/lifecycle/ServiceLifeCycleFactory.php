@@ -71,10 +71,15 @@ class ServiceLifeCycleFactory
      */
     public static function getLifeCycle($model)
     {
-        if (is_object($model)) {
-            $model = get_class($model);
+        if (is_string($model)) {
+            $class = $model;
+        } elseif ($model instanceof Root) {
+            $class = get_class($model);
+        } else {
+            throw new \InvalidArgumentException("Model must be either a string or an instance of Root");
         }
+
         /** @var ServiceLifeCycleFactory $objFactory */
-        return Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_LIFE_CYCLE_FACTORY)->factory($model);
+        return Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_LIFE_CYCLE_FACTORY)->factory($class);
     }
 }

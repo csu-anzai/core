@@ -24,8 +24,9 @@ use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
-use Kajona\System\System\HttpResponsetypes;
 use Kajona\System\System\HttpStatuscodes;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException;
 use Kajona\System\System\Link;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\StringUtil;
@@ -310,9 +311,11 @@ JS;
             $objDashboard->setStrColumn($this->getParam("column"));
             $objDashboard->setStrUser($this->objSession->getUserID());
             $objDashboard->setStrAspect(SystemAspect::getCurrentAspectId());
-            if ($objDashboard->updateObjectToDb(DashboardWidget::getWidgetsRootNodeForUser($this->objSession->getUserID(), SystemAspect::getCurrentAspectId()))) {
+
+            try {
+                $this->objLifeCycleFactory->factory(get_class($objDashboard))->update($objDashboard, DashboardWidget::getWidgetsRootNodeForUser($this->objSession->getUserID(), SystemAspect::getCurrentAspectId()));
                 $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul")));
-            } else {
+            } catch (ServiceLifeCycleUpdateException $e) {
                 return $this->getLang("errorSavingWidget");
             }
         }
@@ -351,9 +354,8 @@ JS;
             $objConcreteWidget->loadFieldsFromArray($this->getAllParams());
 
             $objDashboardwidget->setStrContent($objConcreteWidget->getFieldsAsString());
-            if (!$objDashboardwidget->updateObjectToDb()) {
-                throw new Exception("Error updating widget to db!", Exception::$level_ERROR);
-            }
+
+            $this->objLifeCycleFactory->factory(get_class($objDashboardwidget))->update($objDashboardwidget);
 
             $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "", "&peClose=1&blockAction=1"));
         }
@@ -389,7 +391,7 @@ JS;
         $objWidget = new DashboardWidget($this->getSystemid());
         $intNewPos = $this->getParam("listPos");
         $objWidget->setStrColumn($this->getParam("listId"));
-        $objWidget->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objWidget))->update($objWidget);
         Carrier::getInstance()->getObjDB()->flushQueryCache();
 
         $objWidget = new DashboardWidget($this->getSystemid());
