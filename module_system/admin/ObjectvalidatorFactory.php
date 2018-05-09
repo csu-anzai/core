@@ -24,10 +24,10 @@ class ObjectvalidatorFactory
      * Reads the @objectValidator annotation from the object and returns the fitting validator or null in case no
      * annotation is set
      *
-     * @param Root $object
+     * @param object $object
      * @return ObjectvalidatorBase|null
      */
-    public static function factory(Root $object)
+    public static function factory($object)
     {
         $reflection = new Reflection($object);
         $annotation = $reflection->getAnnotationValuesFromClass(AdminFormgenerator::STR_OBJECTVALIDATOR_ANNOTATION);
