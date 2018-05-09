@@ -268,8 +268,8 @@ class UsersourcesSourceKajona implements UsersourcesUsersourceInterface
                        FROM agp_user_group_kajona AS gk,
                             agp_user_group AS g
                       WHERE g.group_id = gk.group_id
-                           ".($bitIgnoreSystemGroups ? " AND g.group_system_group != 1 " : "")."
-                      ORDER BY g.group_name";
+                           ".($bitIgnoreSystemGroups ? "AND (g.group_system_group != 1 OR g.group_system_group IS NULL) " : "")."
+                      ORDER BY g.group_name ASC";
         $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, array());
         $arrReturn = array();
         foreach ($arrRows as $arrOneRow) {
