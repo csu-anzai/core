@@ -13,6 +13,7 @@ use Kajona\Mediamanager\System\MediamanagerRepo;
 use Kajona\System\System\DbDatatypes;
 use Kajona\System\System\InstallerBase;
 use Kajona\System\System\InstallerInterface;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\OrmSchemamanager;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\SystemModule;
@@ -99,14 +100,14 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
         $objRepo->setStrPath(_filespath_."/images/upload");
         $objRepo->setStrUploadFilter(".jpg,.png,.gif,.jpeg");
         $objRepo->setStrViewFilter(".jpg,.png,.gif,.jpeg");
-        $objRepo->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objRepo))->update($objRepo);
         $objRepo->syncRepo();
         $strReturn .= "ID of new repo: ".$objRepo->getSystemid()."\n";
 
         $strReturn .= "Setting the repository as the default images repository\n";
         $objSetting = SystemSetting::getConfigByName("_mediamanager_default_imagesrepoid_");
         $objSetting->setStrValue($objRepo->getSystemid());
-        $objSetting->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objSetting))->update($objSetting);
 
         $strReturn .= "Creating new file repository\n";
         $objRepo = new MediamanagerRepo();
@@ -114,14 +115,14 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
         $objRepo->setStrPath(_filespath_."/downloads/default");
         $objRepo->setStrUploadFilter(".zip,.pdf,.txt");
         $objRepo->setStrViewFilter(".zip,.pdf,.txt");
-        $objRepo->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objRepo))->update($objRepo);
         $objRepo->syncRepo();
         $strReturn .= "ID of new repo: ".$objRepo->getSystemid()."\n";
 
         $strReturn .= "Setting the repository as the default files repository\n";
         $objSetting = SystemSetting::getConfigByName("_mediamanager_default_filesrepoid_");
         $objSetting->setStrValue($objRepo->getSystemid());
-        $objSetting->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objSetting))->update($objSetting);
 
 
 
@@ -129,16 +130,14 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
         $objRepo = new MediamanagerRepo();
         $objRepo->setStrTitle("Temp uploads");
         $objRepo->setStrPath(_filespath_."/temp");
-        $objRepo->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objRepo))->update($objRepo);
         $objRepo->syncRepo();
         $strReturn .= "ID of new repo: ".$objRepo->getSystemid()."\n";
 
         $strReturn .= "Setting the repository as the default files repository\n";
         $objSetting = SystemSetting::getConfigByName("_mediamanager_default_temprepoid_");
         $objSetting->setStrValue($objRepo->getSystemid());
-        $objSetting->updateObjectToDb();
-
-
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objSetting))->update($objSetting);
 
 
         return $strReturn;
