@@ -637,6 +637,7 @@ Upload-Field for multiple files with progress bar
                 baseElement: $('#%%name%%_upl'),
                 autoUpload: true,
                 readOnly: %%readOnly%%,
+                multiUpload: %%multiUpload%%,
                 paramName: '%%name%%_upl',
                 formData: [
                     {name: 'systemid', value: '%%mediamanagerRepoId%%'},

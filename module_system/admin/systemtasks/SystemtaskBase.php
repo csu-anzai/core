@@ -298,6 +298,7 @@ abstract class SystemtaskBase
      * for fileuploads)
      *
      * @param bool $bitMultipartform
+     * @deprecated switch to inline upload, plz
      */
     public function setBitMultipartform($bitMultipartform)
     {

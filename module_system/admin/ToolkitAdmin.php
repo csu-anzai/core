@@ -788,10 +788,12 @@ class ToolkitAdmin extends Toolkit
      * @param $strTitle
      * @param MediamanagerRepo $objRepo
      * @param $strTargetDir
+     * @param bool $bitReadonly
+     * @param bool $bitVersioning
      * @return string
      * @see FormentryMultiUpload
      */
-    public function formInputUploadInline($strName, $strTitle, MediamanagerRepo $objRepo, $strTargetDir, $bitReadonly = false)
+    public function formInputUploadInline($strName, $strTitle, MediamanagerRepo $objRepo, $strTargetDir, $bitReadonly = false, $bitVersioning = true, $bitMultiUpload = true)
     {
 
         if (SystemModule::getModuleByName("mediamanager") === null) {
@@ -807,8 +809,9 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["mediamanagerRepoId"] = $objRepo->getSystemid();
         $arrTemplate["folder"] = $strTargetDir;
         $arrTemplate["readOnly"] = $bitReadonly ? 'true' : 'false';
+        $arrTemplate["multiUpload"] = $bitMultiUpload ? 'true' : 'false';
         $arrTemplate["addButton"] = $bitReadonly ? "" : $this->listButton("<i class='kj-icon fa fa-plus-circle'></i>");//AdminskinHelper::getAdminImage("icon_new", $objText->getLang("mediamanager_upload", "mediamanager"));
-        $arrTemplate["moveButton"] = $bitReadonly ? "" : "<a id='version_{$strName}'>".$this->listButton(AdminskinHelper::getAdminImage("icon_archive", $objText->getLang("version_files", "mediamanager")))."</a>";
+        $arrTemplate["moveButton"] = $bitReadonly || !$bitVersioning ? "" : "<a id='version_{$strName}'>".$this->listButton(AdminskinHelper::getAdminImage("icon_archive", $objText->getLang("version_files", "mediamanager")))."</a>";
 
         $strAllowedFileRegex = StringUtil::replace(array(".", ","), array("", "|"), $objRepo->getStrUploadFilter());
         $strAllowedFileTypes = StringUtil::replace(array(".", ","), array("", "', '"), $objRepo->getStrUploadFilter());
