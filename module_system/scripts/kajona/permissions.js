@@ -8,7 +8,7 @@
  *
  * @module permissions
  */
-define("permissions", ["jquery"], function($){
+define("permissions", ["jquery", "forms"], function($, forms){
 
     /** @exports permissions */
     var perms = {
@@ -77,7 +77,7 @@ define("permissions", ["jquery"], function($){
             }
         },
 
-        submitForm : function() {
+        submitForm : function(objForm) {
             var objResponse = {
                 bitInherited : $("#inherit").is(":checked"),
                 arrConfigs : []
@@ -89,8 +89,7 @@ define("permissions", ["jquery"], function($){
                 }
             });
 
-            $("#infoContainer").addClass("loadingContainer");
-            $(".savechanges").attr('disabled', 'disabled');
+            forms.animateSubmitStart(objForm);
 
             $.ajax({
                 url: KAJONA_WEBPATH + '/xml.php?admin=1&module=right&action=saveRights&systemid=' + $('#systemid').val(),
@@ -104,8 +103,7 @@ define("permissions", ["jquery"], function($){
                     require('statusDisplay').messageError(data.message);
                 }
             }).always(function () {
-                $("#infoContainer").removeClass("loadingContainer");
-                $(".savechanges").removeAttr('disabled');
+                forms.animateSubmitStop(objForm);
             });
 
 

@@ -203,7 +203,7 @@ class RightAdmin extends AdminController implements AdminInterface
             $arrTemplate["desc"] = $this->getLang("desc");
             $strReturn .= $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "rights_form_header");
             //Followed by the form
-            $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "saverights"), "rightsForm", "", "require('permissions').submitForm(); return false;");
+            $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "saverights"), "rightsForm", "", "require('permissions').submitForm(this); return false;");
             $strReturn .= $this->objToolkit->formInputText("filter", $this->getLang("permissons_filter"));
             $strReturn .= $this->objTemplate->fillTemplateFile($arrTemplateTotal, "/elements.tpl", "rights_form_form");
             $strReturn .= $this->objToolkit->formInputHidden("systemid", $strSystemID);

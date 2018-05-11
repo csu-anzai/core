@@ -704,8 +704,6 @@ Regular Submit-Button
             <span class="btn-text">%%value%%</span>
             <span class="statusicon"></span>
         </button>
-        <div id="infoContainer">
-        </div>
 </input_submit>
 
 
