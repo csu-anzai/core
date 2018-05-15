@@ -1262,8 +1262,6 @@ The following sections specify the layout of the rights-mgmt
         %%desc%% %%record%% <br />
         <a href="javascript:require('permissions').toggleEmtpyRows('[lang,permissions_toggle_visible,system]', '[lang,permissions_toggle_hidden,system]', '#rightsForm tr');" id="rowToggleLink" class="rowsVisible">[lang,permissions_toggle_visible,system]</a><br /><br />
     </div>
-    <div id="responseContainer">
-    </div>
 </rights_form_header>
 
 <rights_form_form>

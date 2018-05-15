@@ -103,17 +103,26 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
         });
     };
 
-    forms.animateSubmit = function(objForm) {
-        //try to get the button currently clicked
+    forms.animateSubmitStart = function(objForm) {
+        var processingElemet = undefined;
 
+        //try to get the button currently clicked
         if($(document.activeElement).prop('tagName') == "BUTTON") {
-            $(document.activeElement).addClass('processing');
+            processingElemet = $(document.activeElement);
         }
         else {
-            $(objForm).find('.savechanges[name=submitbtn]').addClass('processing');
+            processingElemet = $(objForm).find('.savechanges[name=submitbtn]');
         }
+        processingElemet.addClass('processing');
+        processingElemet.attr('disabled', 'disabled');
     };
 
+    forms.animateSubmitStop = function(objForm) {
+        var processingElemet = $(objForm).find('.savechanges');
+
+        processingElemet.removeClass('processing');
+        processingElemet.removeAttr('disabled');
+    };
 
 
     forms.changeLabel = '';
@@ -220,7 +229,7 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
         KAJONA.admin.forms.submittedEl = objForm;
         $(window).off('unload');
 
-        this.animateSubmit(objForm);
+        this.animateSubmitStart(objForm);
 
         // disable polling on form submit
         messaging.setPollingEnabled(false);
