@@ -73,6 +73,7 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
             ).always(
                 function(response) {
                     workingIndicator.stop();
+                    objElement.css('opacity', '1');
                 }
             ).error(function(data) {
                 if (data.status === 500) {
@@ -81,7 +82,6 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
                     } else {
                         objElement.html("<div class=\"alert alert-danger\" role=\"alert\">An error occurred. Please contact the system admin.</div>");
                     }
-                    objElement.css('opacity', '1');
                 }
 
                 if (data.status === 401) {
