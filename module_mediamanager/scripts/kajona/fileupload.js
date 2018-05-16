@@ -31,7 +31,7 @@ define(["jquery", "ajax", "forms", "lang", 'blueimp-tmpl', 'jquery-ui/ui/widget'
         }, options );
 
 
-        var uploader = settings.baseElement.fileupload({
+        var optionsMerged = {
             url: settings.uploadUrl,
             dataType: 'json',
             dropZone: settings.baseElement.find('.drop-zone'),
@@ -45,30 +45,29 @@ define(["jquery", "ajax", "forms", "lang", 'blueimp-tmpl', 'jquery-ui/ui/widget'
             uploadTemplateId: null,
             downloadTemplateId: null,
             downloadTemplate: settings.downloadTemplate,
-            uploadTemplate: settings.uploadTemplate,
-            add: function(e, data) {
+            uploadTemplate: settings.uploadTemplate
+        };
 
-                //TODO: add count limit
+        if (settings.autoUpload && !settings.multiUpload) {
+            optionsMerged.add = function(e, data) {
 
                 if (!settings.multiUpload && (settings.baseElement.find('.drop-zone >').length >= 1 || data.originalFiles.length > 1)) {
-
-
-
                     forms.addHint(settings.baseElement.find('.files').attr('id'), "<span data-lang-property='mediamanager:upload_multiple_not_allowed'></span>");
                     lang.initializeProperties(settings.baseElement.find('.files').closest(".form-group"));
-
                     // alert('single upload only');
-                    return;
+                    e.preventDefault();
+                    return false;
                 }
 
-                if (data.autoUpload || (data.autoUpload !== false &&
-                    $(this).fileupload('option', 'autoUpload'))) {
+                if (data.autoUpload || (data.autoUpload !== false && $(this).fileupload('option', 'autoUpload'))) {
                     data.process().done(function () {
                         data.submit();
                     });
                 }
-            }
-        });
+            };
+        }
+
+        var uploader = settings.baseElement.fileupload(optionsMerged);
 
         if (settings.readOnly) {
             settings.baseElement.fileupload('disable');
