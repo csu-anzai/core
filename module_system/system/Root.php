@@ -829,8 +829,7 @@ abstract class Root
      */
     private function isSystemidChildNode($strBaseId, $strChildId)
     {
-
-        while (validateSystemid($strChildId)) {
+        if (validateSystemid($strChildId)) {
             $objCommon = Objectfactory::getInstance()->getObject($strChildId);
             if ($objCommon != null && $objCommon->getSystemid() == $strBaseId) {
                 return true;
