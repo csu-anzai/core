@@ -149,3 +149,6 @@ $lang["commons_login_footer"] = "<a href=\"https://github.com/artemeon/core\" ta
 $lang["commons_skin_header"] = "Kajona Core";
 $lang["commons_skin_title"] = "Kajona Core";
 $lang["commons_product_title"] = "V7";
+
+$lang["update_in_progress"] = "Bitte warten, Update läuft!";
+$lang["update_in_progress_to_long"] = "Bitte kontaktieren Sie den Systemadministrator, wenn es zu lange dauert.";
