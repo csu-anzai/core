@@ -151,5 +151,3 @@ $lang["commons_skin_header"] = "Kajona Core";
 $lang["commons_skin_title"] = "Kajona Core";
 $lang["commons_product_title"] = "V7";
 
-$lang["update_in_progress"] = "Wait please, update in progress!";
-$lang["update_in_progress_to_long"] = "Please contact the system admin if it continues too long.";
