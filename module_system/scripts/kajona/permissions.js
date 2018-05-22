@@ -8,7 +8,7 @@
  *
  * @module permissions
  */
-define("permissions", ["jquery"], function($){
+define("permissions", ["jquery", "forms"], function($, forms){
 
     /** @exports permissions */
     var perms = {
@@ -77,27 +77,33 @@ define("permissions", ["jquery"], function($){
             }
         },
 
-        submitForm : function() {
+        submitForm : function(objForm) {
             var objResponse = {
                 bitInherited : $("#inherit").is(":checked"),
                 arrConfigs : []
             };
 
-            $('#rightsForm table tr input:checked').each(function(){
-                if($(this).find("input:checked").length == 0) {
+            $('#rightsForm table tr input:checked').each(function () {
+                if ($(this).find("input:checked").length == 0) {
                     objResponse.arrConfigs.push($(this).attr('id'));
                 }
             });
 
-            $("#responseContainer").html('').addClass("loadingContainer");
+            forms.animateSubmitStart(objForm);
 
             $.ajax({
-                url: KAJONA_WEBPATH + '/xml.php?admin=1&module=right&action=saveRights&systemid='+ $('#systemid').val(),
+                url: KAJONA_WEBPATH + '/xml.php?admin=1&module=right&action=saveRights&systemid=' + $('#systemid').val(),
                 type: 'POST',
                 data: {json: JSON.stringify(objResponse)},
                 dataType: 'json'
-            }).done(function(data) {
-                $("#responseContainer").removeClass("loadingContainer").html(data.message);
+            }).done(function (data) {
+                if (!data.error) {
+                    require('statusDisplay').messageSuccess(data.message);
+                } else {
+                    require('statusDisplay').messageError(data.message);
+                }
+            }).always(function () {
+                forms.animateSubmitStop(objForm);
             });
 
 
@@ -109,7 +115,7 @@ define("permissions", ["jquery"], function($){
          * @param evt
          * @returns {boolean}
          */
-        filterMatrix : function(evt) {
+        filterMatrix: function (evt) {
 
             // If it's the propertychange event, make sure it's the value that changed.
             if (window.event && event.type == "propertychange" && event.propertyName != "value")
@@ -117,7 +123,7 @@ define("permissions", ["jquery"], function($){
 
 
             var strFilter = $('#filter').val().toLowerCase();
-            if(strFilter.length < 3 && strFilter.length > 0)
+            if (strFilter.length < 3 && strFilter.length > 0)
                 return false;
 
             // Clear any previously set timer before setting a fresh one, default delay are 500ms
@@ -127,10 +133,10 @@ define("permissions", ["jquery"], function($){
                 var strFilter = $('#filter').val().toLowerCase();
 
 
-                $('#rightsForm table tr').each(function() {
+                $('#rightsForm table tr').each(function () {
                     var $tr = $(this);
 
-                    if(strFilter.length > 0 && $tr.find("td:first-child").text().toLowerCase().indexOf(strFilter) === -1) {
+                    if (strFilter.length > 0 && $tr.find("td:first-child").text().toLowerCase().indexOf(strFilter) === -1) {
                         $tr.addClass("hidden")
                     }
                     else {

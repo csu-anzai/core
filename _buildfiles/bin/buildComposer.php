@@ -5,6 +5,7 @@ echo "merge and install vendor dependencies".PHP_EOL;
 
 $strRoot = realpath(__DIR__."/../../..");
 
+$arrIncludedModules = [];
 if (is_file($strRoot."/project/packageconfig.php")) {
     include $strRoot."/project/packageconfig.php";
 }
@@ -43,7 +44,13 @@ JSON;
         if ($objCoreDir->isDir() && substr($objCoreDir->getFilename(), 0, 4) == 'core') {
             $objModuleDirs = new DirectoryIterator($objCoreDir->getRealPath());
             foreach ($objModuleDirs as $objDir) {
-                // exclude
+
+                //defined as included?
+                if (isset($arrIncludedModules[$objCoreDir->getFilename()]) && !in_array($objDir->getFilename(), $arrIncludedModules[$objCoreDir->getFilename()])) {
+                    continue;
+                }
+
+                //defined as excluded?
                 if (isset($arrExcludedModules[$objCoreDir->getFilename()]) && in_array($objDir->getFilename(), $arrExcludedModules[$objCoreDir->getFilename()])) {
                     continue;
                 }

@@ -5,6 +5,11 @@
 ********************************************************************************************************/
 
 
+$config['mail_relay_enabled']   = true;                 //enables email-sending in general. if disabled, the mail subsystem
+                                                        //drops mails, but behaves as if sending was successful
+$config['mail_copy2file']       = false;                //if enabled, outgoing mail are copied to /project/log/mail for debugging purposes
+
+
 $config['smtp_enabled']         = false;                //if disabled, the local mail() command and php setting will be used
 $config['smtp_host']            = "mail.exmaple.com";   //with backup: mail1.test.com;mail2.test.com
 $config['smtp_port']            = 25;                   //default: 25, tls: 587, ssl: 465

@@ -13,10 +13,12 @@ namespace Kajona\System;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\HttpResponsetypes;
+use Kajona\System\System\Lang;
 use Kajona\System\System\RequestDispatcher;
 use Kajona\System\System\RequestEntrypointEnum;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\ServiceProvider;
+use Kajona\System\System\Session;
 use Kajona\System\System\SystemEventidentifier;
 
 define("_autotesting_", false);
@@ -55,6 +57,11 @@ class Index
         $this->objResponse->setObjEntrypoint(RequestEntrypointEnum::INDEX());
 
         $this->objBuilder = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_OBJECT_BUILDER);
+
+        if (is_file(_realpath_."/kajona.lock") && !Session::getInstance()->isSuperAdmin()) {
+            $waitMessage = Lang::getInstance()->getLang("update_in_progress", "system");
+            die("$waitMessage");
+        }
 
         $objDispatcher = new RequestDispatcher($this->objResponse, $this->objBuilder);
         $objDispatcher->processRequest($strModule, $strAction);
