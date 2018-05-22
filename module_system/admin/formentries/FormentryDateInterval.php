@@ -9,6 +9,7 @@ namespace Kajona\System\Admin\Formentries;
 use Kajona\System\Admin\FormentryPrintableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Lang;
+use Kajona\System\System\StringUtil;
 use Kajona\System\System\Validators\DateIntervalValidator;
 
 /**
@@ -65,13 +66,23 @@ class FormentryDateInterval extends FormentryBase implements FormentryPrintableI
         $arrParams = Carrier::getAllParams();
         $strName = $this->getStrEntryName();
 
-        $strUnit = isset($arrParams[$strName . "_unit"]) ? $arrParams[$strName . "_unit"] : null;
-        $strValue = isset($arrParams[$strName]) ? (int) $arrParams[$strName] : 0;
+        if (isset($arrParams[$strName . "_unit"]) && isset($arrParams[$strName])) {//form sent
+            $strUnit = null;
+            if (isset($arrParams[$strName . "_unit"])) {
+                $strUnit = $arrParams[$strName . "_unit"];
+            }
+            $strValue = null;
+            if (isset($arrParams[$strName])) {
+                $strValue = StringUtil::toInt($arrParams[$strName]);
+            }
 
-        if (in_array($strUnit, ["D", "W", "M", "Y"]) && $strValue > 0) {
-            $strDuration = "P" . $strValue . $strUnit;
-            $this->setStrValue($strDuration);
-        } else {
+            if (in_array($strUnit, ["D", "W", "M", "Y"]) && $strValue !== null && $strValue > 0) {
+                $strDuration = "P" . $strValue . $strUnit;
+                $this->setStrValue($strDuration);
+            } else {
+                $this->setStrValue(null);
+            }
+        } else {//no form sent
             $this->setStrValue($this->getValueFromObject());
         }
     }

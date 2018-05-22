@@ -244,7 +244,6 @@ class Mail
         }
 
         $objMail->setFrom($this->getResolvedSender($this->strSender), $this->strSenderName);
-        //$objMail->addReplyTo($this->getResolvedSender($this->strSender));
 
         foreach ($this->arrayTo as $to) {
             $objMail->addAddress($to);
@@ -271,6 +270,21 @@ class Mail
         }
 
         Logger::getInstance('mail.log')->info("sending mail to ".implode(", ", $this->arrayTo));
-        return $objMail->send();
+
+        if ($cfg->getConfig('mail_copy2file')) {
+            $strDebug  = "To:        ".implode(", ", $this->arrayTo).PHP_EOL;
+            $strDebug .= "CC:        ".implode(", ", $this->arrayCc).PHP_EOL;
+            $strDebug .= "BCC:       ".implode(", ", $this->arrayBcc).PHP_EOL;
+            $strDebug .= "Subject:   ".$objMail->Subject.PHP_EOL;
+            $strDebug .= "Body:      ".PHP_EOL.$objMail->Body.PHP_EOL;
+
+            $filesystem = new Filesystem();
+            $filesystem->folderCreate("project/log/mail", true);
+
+            file_put_contents(_realpath_."project/log/mail/".time()."_".generateSystemid().".txt", $strDebug);
+        }
+
+        //only send if enabled
+        return $cfg->getConfig('mail_relay_enabled') ? $objMail->send() : true;
     }
 }

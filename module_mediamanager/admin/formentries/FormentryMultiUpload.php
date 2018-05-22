@@ -35,6 +35,9 @@ class FormentryMultiUpload extends FormentryBase implements FormentryPrintableIn
 
     private $strRepoId = "";
 
+    private $showVersioning = true;
+    private $multiUpload = true;
+
 
     /**
      * @inheritDoc
@@ -103,7 +106,7 @@ class FormentryMultiUpload extends FormentryBase implements FormentryPrintableIn
         }
 
         //and render the multiupload fields
-        $strReturn .= $objToolkit->formInputUploadInline($this->getStrEntryName(), $this->getStrLabel(), $objRepo, $this->getStrValue(), $this->getBitReadonly());
+        $strReturn .= $objToolkit->formInputUploadInline($this->getStrEntryName(), $this->getStrLabel(), $objRepo, $this->getStrValue(), $this->getBitReadonly(), $this->getShowVersioning(), $this->isMultiUpload());
 
         return $strReturn;
     }
@@ -145,10 +148,12 @@ class FormentryMultiUpload extends FormentryBase implements FormentryPrintableIn
 
     /**
      * @param string $strRepoId
+     * @return FormentryMultiUpload
      */
     public function setStrRepoId(string $strRepoId)
     {
         $this->strRepoId = $strRepoId;
+        return $this;
     }
 
     /**
@@ -158,4 +163,42 @@ class FormentryMultiUpload extends FormentryBase implements FormentryPrintableIn
     {
         return $this->strRepoId;
     }
+
+    /**
+     * @return bool
+     */
+    public function getShowVersioning(): bool
+    {
+        return $this->showVersioning;
+    }
+
+    /**
+     * @param bool $showVersioning
+     * @return FormentryMultiUpload
+     */
+    public function setShowVersioning(bool $showVersioning)
+    {
+        $this->showVersioning = $showVersioning;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMultiUpload(): bool
+    {
+        return $this->multiUpload;
+    }
+
+    /**
+     * @param bool $multiUpload
+     */
+    public function setMultiUpload(bool $multiUpload)
+    {
+        $this->multiUpload = $multiUpload;
+        return $this;
+    }
+
+    
+
 }

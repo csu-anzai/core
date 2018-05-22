@@ -47,6 +47,17 @@ define('statusDisplay', ['jquery'], function ($) {
         },
 
         /**
+         * Creates a success message box contaning the passed content
+         *
+         * @param {String} strMessage
+         */
+        messageSuccess : function(strMessage) {
+            $("#"+this.idOfMessageBox).removeClass().addClass("alert alert-success");
+            this.timeToFadeOut = this.timeToFadeOutMessage;
+            this.startFadeIn(strMessage);
+        },
+
+        /**
          * Creates a informal message box contaning the passed content
          *
          * @param {String} strMessage

@@ -637,6 +637,7 @@ Upload-Field for multiple files with progress bar
                 baseElement: $('#%%name%%_upl'),
                 autoUpload: true,
                 readOnly: %%readOnly%%,
+                multiUpload: %%multiUpload%%,
                 paramName: '%%name%%_upl',
                 formData: [
                     {name: 'systemid', value: '%%mediamanagerRepoId%%'},
@@ -1260,8 +1261,6 @@ The following sections specify the layout of the rights-mgmt
     <div>
         %%desc%% %%record%% <br />
         <a href="javascript:require('permissions').toggleEmtpyRows('[lang,permissions_toggle_visible,system]', '[lang,permissions_toggle_hidden,system]', '#rightsForm tr');" id="rowToggleLink" class="rowsVisible">[lang,permissions_toggle_visible,system]</a><br /><br />
-    </div>
-    <div id="responseContainer">
     </div>
 </rights_form_header>
 

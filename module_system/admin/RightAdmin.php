@@ -203,7 +203,7 @@ class RightAdmin extends AdminController implements AdminInterface
             $arrTemplate["desc"] = $this->getLang("desc");
             $strReturn .= $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "rights_form_header");
             //Followed by the form
-            $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "saverights"), "rightsForm", "", "require('permissions').submitForm(); return false;");
+            $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "saverights"), "rightsForm", "", "require('permissions').submitForm(this); return false;");
             $strReturn .= $this->objToolkit->formInputText("filter", $this->getLang("permissons_filter"));
             $strReturn .= $this->objTemplate->fillTemplateFile($arrTemplateTotal, "/elements.tpl", "rights_form_form");
             $strReturn .= $this->objToolkit->formInputHidden("systemid", $strSystemID);
@@ -285,7 +285,7 @@ class RightAdmin extends AdminController implements AdminInterface
      * Saves the rights passed by form
      *
      * @throws Exception
-     * @return string "" in case of success
+     * @return array
      * @permissions right
      * @responseType json
      */
@@ -310,7 +310,10 @@ class RightAdmin extends AdminController implements AdminInterface
 
         //Special case: The root-record.
         if (!$objTarget->rightRight()) {
-            return $this->objToolkit->warningBox($this->getLang("commons_error_permissions"), "alert-danger");
+            return [
+                "message" => $this->getLang("commons_error_permissions"),
+                "error" => 1
+            ];
         }
 
         //Inheritance?
@@ -395,13 +398,15 @@ class RightAdmin extends AdminController implements AdminInterface
         );
 
         //Pass to right-class
+        $arrJsonReturn = [];
         if ($objRights->setRights($arrReturn, $strSystemid)) {
-            $strReturn = $this->objToolkit->warningBox($this->getLang("permissions_success"), "alert-success");
+            $arrJsonReturn["message"] = $this->getLang("permissions_success");
+            $arrJsonReturn["error"] = 0;
         } else {
-            $strReturn = $this->objToolkit->warningBox($this->getLang("fehler_setzen"), "alert-danger");
+            $arrJsonReturn["message"] = $this->getLang("fehler_setzen");
+            $arrJsonReturn["error"] = 1;
         }
 
-
-        return json_encode(array("message" => $strReturn));
+        return $arrJsonReturn;
     }
 }

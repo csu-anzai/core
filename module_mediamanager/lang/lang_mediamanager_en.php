@@ -16,6 +16,7 @@ $lang["permissions_header"]              = array(0 => "View", 1 => "Edit", 2 => 
 //editable entries
 $lang["_mediamanager_default_filesrepoid_"] = "Default file-repository";
 $lang["_mediamanager_default_imagesrepoid_"] = "Default images-repository";
+$lang["_mediamanager_default_temprepoid_"] = "Default temp-repository";
 $lang["action_download"]                 = "Download file";
 $lang["action_edit_image"]               = "Edit image";
 $lang["action_logbook"]                  = "Logfile";
@@ -82,6 +83,7 @@ $lang["upload_dropArea_extended"]        = "Upload files by choosing them using 
 $lang["upload_erfolg"]                   = "File was uploaded successfully";
 $lang["upload_fehler"]                   = "An error occurred while uploading file";
 $lang["upload_fehler_filter"]            = "The uploaded file type is not allowed";
+$lang["upload_multiple_not_allowed"]     = "Only a single file may be uploaded";
 $lang["upload_multiple_cancel"]          = "Cancel";
 $lang["upload_multiple_dialogHeader"]    = "Upload files";
 $lang["upload_multiple_errorFilesize"]   = "File is too large";

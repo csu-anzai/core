@@ -8,12 +8,17 @@ use Kajona\System\System\Exception;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException;
 use Kajona\System\System\Objectfactory;
+use Kajona\System\System\Root;
 use Kajona\System\System\SystemAspect;
 
 class SystemTest extends Testbase
 {
 
 
+    /**
+     * @throws Exception
+     * @throws ServiceLifeCycleUpdateException
+     */
     public function testKernel()
     {
         $objDB = Carrier::getInstance()->getObjDB();
@@ -45,6 +50,10 @@ class SystemTest extends Testbase
     }
 
 
+    /**
+     * @throws Exception
+     * @throws ServiceLifeCycleUpdateException
+     */
     function testSectionHandling()
     {
 
@@ -79,6 +88,10 @@ class SystemTest extends Testbase
     }
 
 
+    /**
+     * @throws Exception
+     * @throws ServiceLifeCycleUpdateException
+     */
     function testTreeBehaviour()
     {
 
@@ -131,6 +144,43 @@ class SystemTest extends Testbase
                 Objectfactory::getInstance()->getObject($strOneId)->deleteObjectFromDatabase();
             }
         }
+
+    }
+
+    public function testIsValidSystemidChildNode()
+    {
+        $objAspect = new SystemAspect();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, "0");
+        $strRootNodeId = $objAspect->getSystemid();
+
+        $objAspect = new SystemAspect();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strRootNodeId);
+        $strSub1Node1Id = $objAspect->getSystemid();
+
+        $objAspect = new SystemAspect();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strRootNodeId);
+        $strSub1Node2Id = $objAspect->getSystemid();
+
+        $objAspect = new SystemAspect();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect, $strRootNodeId);
+        $strSub1Node2Id = $objAspect->getSystemid();
+
+        $reflection = new \ReflectionClass(Root::class);
+        $method = new \ReflectionMethod(Root::class, "isSystemidChildNode");
+
+        $method->setAccessible(true);
+        $this->assertTrue($method->invoke($objAspect, $strRootNodeId, $strSub1Node1Id));
+        $this->assertTrue($method->invoke($objAspect, $strRootNodeId, $strSub1Node2Id));
+        $this->assertFalse($method->invoke($objAspect, $strSub1Node1Id, $strRootNodeId));
+        $this->assertFalse($method->invoke($objAspect, $strSub1Node1Id, $strSub1Node2Id));
+
+        $this->assertFalse($method->invoke($objAspect, generateSystemid(), $strSub1Node2Id));
+        $this->assertFalse($method->invoke($objAspect, generateSystemid(), generateSystemid()));
+
+
+        $objAspect = new SystemAspect($strRootNodeId);
+        $objAspect->deleteObjectFromDatabase();
+        Database::getInstance()->flushQueryCache();
 
     }
 

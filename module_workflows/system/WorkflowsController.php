@@ -86,8 +86,8 @@ class WorkflowsController
 
             //trigger the workflow
             Logger::getInstance(self::STR_LOGFILE)->info("scheduling workflow ".$objOneWorkflow->getSystemid());
-            if ($objOneWorkflow->getObjTriggerdate() == null) {
-                $objOneWorkflow->setObjTriggerdate(new \Kajona\System\System\Date());
+            if ($objOneWorkflow->getTriggerDate() == null) {
+                $objOneWorkflow->setTriggerDate(new \Kajona\System\System\Date());
             }
             $objHandler->schedule();
 

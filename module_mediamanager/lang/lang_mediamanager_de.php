@@ -16,6 +16,7 @@ $lang["permissions_header"]              = array(0 => "Anzeigen", 1 => "Bearbeit
 //editable entries
 $lang["_mediamanager_default_filesrepoid_"] = "Standard Dateien-Repository";
 $lang["_mediamanager_default_imagesrepoid_"] = "Standard Bilder-Repository";
+$lang["_mediamanager_default_temprepoid_"] = "Standard Temp-Repository";
 $lang["action_download"]                 = "Datei herunterladen";
 $lang["action_edit_image"]               = "Bild bearbeiten";
 $lang["action_logbook"]                  = "Logbuch";
@@ -82,6 +83,7 @@ $lang["upload_dropArea_extended"]        = "Dateien zum Upload über das Plus-Sy
 $lang["upload_erfolg"]                   = "Datei erfolgreich hochgeladen";
 $lang["upload_fehler"]                   = "Dateiupload fehlerhaft";
 $lang["upload_fehler_filter"]            = "Der hochgeladene Dateityp ist nicht erlaubt";
+$lang["upload_multiple_not_allowed"]     = "Es darf nur eine Datei hochgeladen werden";
 $lang["upload_multiple_cancel"]          = "Abbrechen";
 $lang["upload_multiple_dialogHeader"]    = "Dateien hochladen";
 $lang["upload_multiple_errorFilesize"]   = "Datei ist zu groß.";

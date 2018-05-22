@@ -74,8 +74,7 @@ class SystemtaskDbconsistency extends SystemtaskBase implements AdminSystemtaskI
                 $strReturn .= $this->objToolkit->genericAdminList(generateSystemid(), $arrRow["system_id"]." (".StringUtil::truncate(($objRecord != null ? $objRecord->getStrDisplayName() : ""), 20).")", "", "");
             }
             $strReturn .= $this->objToolkit->listFooter();
-        }
-        else {
+        } else {
             //no errors found
             $strReturn .= $this->objToolkit->listHeader();
             $strReturn .= $this->objToolkit->genericAdminList(generateSystemid(), $this->getLang("systemtask_dbconsistency_firstlevel_ok"), getImageAdmin("icon_enabled"), "");
@@ -94,31 +93,10 @@ class SystemtaskDbconsistency extends SystemtaskBase implements AdminSystemtaskI
                 $strReturn .= $this->objToolkit->genericAdminList(generateSystemid(), $strID." (".$strComment.")", "", "");
             }
             $strReturn .= $this->objToolkit->listFooter();
-        }
-        else {
+        } else {
             //no errors found
             $strReturn .= $this->objToolkit->listHeader();
             $strReturn .= $this->objToolkit->genericAdminList(generateSystemid(), $this->getLang("systemtask_dbconsistency_curprev_ok"), getImageAdmin("icon_enabled"), "");
-            $strReturn .= $this->objToolkit->listFooter();
-        }
-
-
-        //check if every date-record has a system-record
-        $arrCorruptedRecords = $objWorker->checkDateSystemRelations();
-        //create the output tables
-        if (count($arrCorruptedRecords) > 0) {
-            //ohoh. errors found. create tow tables
-            $strReturn .= $this->objToolkit->listHeader();
-            $strReturn .= $this->objToolkit->genericAdminList(generateSystemid(), $this->getLang("systemtask_dbconsistency_date_error"), getImageAdmin("icon_disabled"), "");
-            foreach ($arrCorruptedRecords as $arrOneRecords) {
-                $strReturn .= $this->objToolkit->genericAdminList(generateSystemid(), $arrOneRecords["system_date_id"], "", "");
-            }
-            $strReturn .= $this->objToolkit->listFooter();
-        }
-        else {
-            //no errors found
-            $strReturn .= $this->objToolkit->listHeader();
-            $strReturn .= $this->objToolkit->genericAdminList(generateSystemid(), $this->getLang("systemtask_dbconsistency_date_ok"), getImageAdmin("icon_enabled"), "");
             $strReturn .= $this->objToolkit->listFooter();
         }
 

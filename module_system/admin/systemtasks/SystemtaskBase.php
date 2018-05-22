@@ -108,8 +108,7 @@ abstract class SystemtaskBase
 
             if ($objInstance instanceof AdminSystemtaskInterface) {
                 $strOneFile = $objInstance;
-            }
-            else {
+            } else {
                 $strOneFile = null;
             }
 
@@ -152,6 +151,10 @@ abstract class SystemtaskBase
             $objAdminForm->addField(new FormentryHidden("", "execute"))->setStrValue("true");
             $objAdminForm->addField(new FormentryButton("", "systemtask_run"))->setStrLabel($this->objLang->getLang("systemtask_run", "system"))->setStrValue("submit");
 
+            if ($objAdminForm->getStrFormEncoding() == AdminFormgenerator::FORM_ENCTYPE_MULTIPART) {
+                $this->bitMultipartform = true;
+            }
+
             if ($this->bitMultipartform) {
                 $objAdminForm->setStrFormEncoding(AdminFormgenerator::FORM_ENCTYPE_MULTIPART);
                 $objAdminForm->setStrOnSubmit("");
@@ -159,12 +162,10 @@ abstract class SystemtaskBase
 
             $strLink = Link::getLinkAdminHref($strTargetModule, $strTargetAction, "task=".$this->getStrInternalTaskName(), true, !$this->bitMultipartform);
             $strReturn = $objAdminForm->renderForm($strLink, 0);
-        }
-        elseif ($objAdminForm != "") {
+        } elseif ($objAdminForm != "") {
             if ($this->bitMultipartform) {
                 $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($strTargetModule, $strTargetAction, "task=".$this->getStrInternalTaskName()), "taskParamForm", AdminFormgenerator::FORM_ENCTYPE_MULTIPART);
-            }
-            else {
+            } else {
                 $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($strTargetModule, $strTargetAction, "task=".$this->getStrInternalTaskName()), "taskParamForm");
             }
             $strReturn .= $objAdminForm;
@@ -243,8 +244,7 @@ abstract class SystemtaskBase
     {
         if ($this->strReloadParam != "") {
             return getLinkAdminHref("system", "systemTasks", "&task=".$this->getStrInternalTaskName().$this->strReloadParam);
-        }
-        else {
+        } else {
             return "";
         }
     }
@@ -298,6 +298,7 @@ abstract class SystemtaskBase
      * for fileuploads)
      *
      * @param bool $bitMultipartform
+     * @deprecated switch to inline upload, plz
      */
     public function setBitMultipartform($bitMultipartform)
     {
