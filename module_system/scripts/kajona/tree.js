@@ -327,6 +327,10 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
                                 }
                             }
 
+                            if(node.hasOwnProperty("data") && node.data.hasOwnProperty("loadall")) {
+                                data.loadall = true;
+                            }
+
                             return data;
                         }
                     },
@@ -470,10 +474,18 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
         //handle on click events
         if (event.type == "click") {
 
+            if (objNode.hasOwnProperty("data") && objNode.data.hasOwnProperty("loadall")) {
+                var parent = kajonatree.helper.getTreeInstance().get_parent(objNode);
+                var parentObj = kajonatree.helper.getTreeInstance().get_node(parent);
+                parentObj.data.loadall = true;
+                kajonatree.helper.getTreeInstance().load_node(parentObj);
+                return true;
+            }
+
             //if node contains a_attr with href -> relaod page
             if (objNode.a_attr) {
                 if (objNode.a_attr.href) {
-                    document.location.href = objNode.a_attr.href;//Document reload
+                   document.location.href = objNode.a_attr.href;//Document reload
                 }
             }
         }

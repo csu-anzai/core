@@ -54,6 +54,15 @@ class SystemJSTreeBuilder
         $strSystemId = array_shift($arrSystemIdPath);
         $arrChildren = $this->objNodeLoader->getChildNodes($strSystemId);
 
+        if(!empty($arrSystemIdPath) && !empty($arrSystemIdPath[0]) ) {
+            $selectedNode = $this->objNodeLoader->getNode($arrSystemIdPath[0]);
+            if (!in_array($selectedNode, $arrChildren)) {
+                $loadAllNode = array_pop($arrChildren);
+                $arrChildren[] = $selectedNode;
+                $arrChildren[] = $loadAllNode;
+            }
+        }
+
         $strSubId = array_key_exists(0, $arrSystemIdPath) ? $arrSystemIdPath[0] : null;
         foreach($arrChildren as $objChildNode) {
 
