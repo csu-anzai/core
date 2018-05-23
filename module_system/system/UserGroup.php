@@ -83,7 +83,13 @@ class UserGroup extends Model implements ModelInterface, AdminListableInterface,
      */
     public function getStrDisplayName()
     {
-        return $this->getStrName();
+        $strTitle = $this->getStrName();
+
+        if ($this->getIntRecordDeleted() == 1) {
+            $strTitle = "<span style=\"text-decoration: line-through;\">".$strTitle."</span>";
+        }
+
+        return $strTitle;
     }
 
     /**
