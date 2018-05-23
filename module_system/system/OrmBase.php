@@ -177,6 +177,12 @@ abstract class OrmBase
     final public function getAssignmentsFromDatabase($strPropertyName)
     {
         $objCfg = OrmAssignmentConfig::getConfigForProperty($this->getObjObject(), $strPropertyName);
+        $deleteHandlerOld = $this->getObjHandleLogicalDeleted();
+
+        if ($objCfg->isLoadDeleted()) {
+            $this->setObjHandleLogicalDeleted(OrmDeletedhandlingEnum::INCLUDED);
+        }
+
         $objDB = Carrier::getInstance()->getObjDB();
         $strQuery = " SELECT *
                         FROM ".$objDB->encloseTableName($objCfg->getStrTableName()).",
@@ -190,6 +196,8 @@ abstract class OrmBase
         array_walk($arrRows, function (array &$arrSingleRow) use ($strTargetCol) {
             $arrSingleRow = $arrSingleRow[$strTargetCol];
         });
+
+        $this->setObjHandleLogicalDeleted($deleteHandlerOld);
 
         return $arrRows;
     }

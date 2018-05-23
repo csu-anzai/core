@@ -1068,7 +1068,7 @@ HTML;
             foreach ($arrValues as $objValue) {
                 if ($objValue instanceof ModelInterface) {
                     $strData.= '<input type="hidden" name="' . $strName . '_id[]" value="' . $objValue->getStrSystemid() . '" data-title="' . htmlspecialchars($objValue->getStrDisplayName()) . '" />';
-                    $arrResult[] = $objValue->getStrDisplayName();
+                    $arrResult[] = strip_tags($objValue->getStrDisplayName());
                 }
             }
         }

@@ -21,13 +21,15 @@ class OrmAssignmentConfig
     private $strSourceColumn = "";
     private $strTargetColumn = "";
     private $arrTypeFilter = null;
+    private $loadDeleted = false;
 
-    function __construct($strTableName, $strSourceColumn, $strTargetColumn, $arrTypeFilter)
+    function __construct($strTableName, $strSourceColumn, $strTargetColumn, $arrTypeFilter, $includeDeleted)
     {
         $this->arrTypeFilter = $arrTypeFilter;
         $this->strSourceColumn = $strSourceColumn;
         $this->strTableName = $strTableName;
         $this->strTargetColumn = $strTargetColumn;
+        $this->loadDeleted = $includeDeleted;
     }
 
     /**
@@ -52,7 +54,9 @@ class OrmAssignmentConfig
             throw new OrmException("@objectList annotation for ".$strProperty."@".get_class($objObject)." is malformed", OrmException::$level_FATALERROR);
         }
 
-        return new OrmAssignmentConfig($strTable, $arrPropertyParams["source"], $arrPropertyParams["target"], $arrTypeFilter);
+        $includeDeleted = isset($arrPropertyParams["load_deleted"]) ? $arrPropertyParams["load_deleted"] === "true" : false;
+
+        return new OrmAssignmentConfig($strTable, $arrPropertyParams["source"], $arrPropertyParams["target"], $arrTypeFilter, $includeDeleted);
     }
 
     /**
@@ -87,5 +91,12 @@ class OrmAssignmentConfig
         return $this->strTargetColumn;
     }
 
+    /**
+     * @return bool
+     */
+    public function isLoadDeleted(): bool
+    {
+        return $this->loadDeleted;
+    }
 
 }

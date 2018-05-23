@@ -13,6 +13,8 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Link;
 use Kajona\System\System\Objectfactory;
+use Kajona\System\System\OrmBase;
+use Kajona\System\System\OrmDeletedhandlingEnum;
 use Kajona\System\System\SystemCommon;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
@@ -89,7 +91,12 @@ class RightAdmin extends AdminController implements AdminInterface
             //Get Rights
             $arrRights = $objRights->getArrayRights($objTargetRecord->getSystemid());
             //Get groups
+
+            //Also load deleted groups
+            $deletedHandlerOld = OrmBase::getObjHandleLogicalDeletedGlobal();
+            OrmBase::setObjHandleLogicalDeletedGlobal(OrmDeletedhandlingEnum::INCLUDED());
             $arrGroups = UserGroup::getObjectListFiltered();
+            OrmBase::setObjHandleLogicalDeletedGlobal($deletedHandlerOld);
 
             //Determine name of the record
             if ($objTargetRecord instanceof SystemModule) {
@@ -147,7 +154,7 @@ class RightAdmin extends AdminController implements AdminInterface
             foreach ($arrGroups as $objSingleGroup) {
                 $arrTemplateRow = array();
                 $arrSingleGroup = array();
-                $arrTemplateRow["group"] = $objSingleGroup->getStrName();
+                $arrTemplateRow["group"] = $objSingleGroup->getStrDisplayName();
                 $arrSingleGroup["group_id"] = $objSingleGroup->getIntShortId();
                 $arrSingleGroup["group_systemid"] = $objSingleGroup->getSystemid();
 

@@ -232,7 +232,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
             $strObjectName .= "[".$objObject->getVersionRecordName()."] ";
         }
 
-        $strObjectName .= $objObject->getStrDisplayName();
+        $strObjectName .= strip_tags($objObject->getStrDisplayName());
 
         return $strObjectName;
     }
