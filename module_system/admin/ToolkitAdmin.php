@@ -2781,47 +2781,6 @@ HTML;
 
 
     /**
-     * Renders the list of aspects available
-     *
-     * @param string $strLastModule
-     * @param string $strLastAction
-     * @param string $strLastSystemid
-     *
-     * @return string
-     * @todo param handling? remove params?
-     */
-    public function getAspectChooser($strLastModule, $strLastAction, $strLastSystemid)
-    {
-        $arrTemplate = array();
-        $arrTemplate["options"] = "";
-
-        //process rows
-        $strCurrentId = SystemAspect::getCurrentAspectId();
-        $arrAspects = SystemAspect::getActiveObjectList();
-
-        $intNrOfAspects = 0;
-        foreach ($arrAspects as $objSingleAspect) {
-            if ($objSingleAspect->rightView()) {
-                $arrSubtemplate = array();
-                //start on dashboard since the current module may not be visible in another aspect
-                $arrSubtemplate["value"] = getLinkAdminHref("dashboard", "", "&aspect=".$objSingleAspect->getSystemid());
-                $arrSubtemplate["value"] = $objSingleAspect->getSystemid();
-                $arrSubtemplate["name"] = $objSingleAspect->getStrDisplayName();
-                $arrSubtemplate["selected"] = $strCurrentId == $objSingleAspect->getSystemid() ? "selected=\"selected\"" : "";
-
-                $arrTemplate["options"] .= $this->objTemplate->fillTemplateFile($arrSubtemplate, "/admin/skins/kajona_v4/elements.tpl", "aspect_chooser_entry");
-                $intNrOfAspects++;
-            }
-        }
-
-        if ($arrTemplate["options"] == "" || $intNrOfAspects < 2) {
-            return "";
-        }
-
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "aspect_chooser");
-    }
-
-    /**
      * Creates a tooltip shown on hovering the passed text.
      * If both are the same, text and tooltip, only the plain text is returned.
      *

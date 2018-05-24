@@ -21,7 +21,8 @@ use Kajona\System\System\SystemEventidentifier;
  * @author sidler@mulchprod.de
  *
  */
-class SystemAspectrecorddeletedlistener implements GenericeventListenerInterface {
+class SystemAspectrecorddeletedlistener implements GenericeventListenerInterface
+{
 
 
     /**
@@ -31,14 +32,13 @@ class SystemAspectrecorddeletedlistener implements GenericeventListenerInterface
      *
      * @return bool
      */
-    public function handleEvent($strEventName, array $arrArguments) {
+    public function handleEvent($strEventName, array $arrArguments)
+    {
         //unwrap arguments
         list($strSystemid, $strSourceClass) = $arrArguments;
-
-        if($strSourceClass == 'Kajona\System\System\SystemAspect') {
-
+        if ($strSourceClass == SystemAspect::class) {
             //if we have just one aspect remaining, set this one as default
-            if(SystemAspect::getObjectCountFiltered() == 1) {
+            if (SystemAspect::getObjectCountFiltered() == 1) {
                 /** @var SystemAspect[] $arrObjAspects */
                 $arrObjAspects = SystemAspect::getObjectListFiltered();
                 $objOneAspect = $arrObjAspects[0];

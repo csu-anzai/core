@@ -58,14 +58,6 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
     {
         $arrTemplate = ["content" => $strContent];
 
-
-        //move to separate getters
-//        $arrTemplate["moduleSitemap"] = $this->objToolkit->getAdminSitemap();
-
-//        if (SystemAspect::getActiveObjectCount() > 1) {
-//            $arrTemplate["aspectChooser"] = $this->objToolkit->getAspectChooser($this->getArrModule("modul"), $this->getAction(), $this->getSystemid());
-//        }
-
         $arrTemplate["login"] = $this->getOutputLogin();
         $arrTemplate["quickhelp"] = $this->getQuickHelp();
 

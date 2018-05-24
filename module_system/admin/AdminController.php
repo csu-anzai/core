@@ -184,32 +184,6 @@ abstract class AdminController extends AbstractController
     }
 
     /**
-     * Validates if the requested module is valid for the current aspect.
-     * If necessary, the current aspect is updated.
-     *
-     * @return void
-     */
-    private function validateAndUpdateCurrentAspect()
-    {
-        if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::XML()) || $this->getArrModule("template") == "/folderview.tpl") {
-            return;
-        }
-
-        $objModule = $this->getObjModule();
-        $strCurrentAspect = SystemAspect::getCurrentAspectId();
-        if ($objModule != null && $objModule->getStrAspect() != "") {
-            $arrAspects = explode(",", $objModule->getStrAspect());
-            if (count($arrAspects) == 1 && $arrAspects[0] != $strCurrentAspect) {
-                $objAspect = new SystemAspect($arrAspects[0]);
-                if ($objAspect->rightView()) {
-                    SystemAspect::setCurrentAspectId($arrAspects[0]);
-                }
-            }
-
-        }
-    }
-
-    /**
      * Tries to generate a quick-help button.
      * Tests for exisiting help texts
      *
