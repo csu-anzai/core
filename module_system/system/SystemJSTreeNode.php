@@ -46,6 +46,7 @@ class SystemJSTreeNode implements JsonSerializable
 
     //attr atrributes
     const STR_NODE_LIATTR = "li_attr";
+    const STR_NODE_LIATTR_CLASS = "class";
 
     //state attributes
     const STR_NODE_STATE = "state";

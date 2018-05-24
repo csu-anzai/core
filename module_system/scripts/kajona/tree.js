@@ -399,6 +399,11 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
                     treeContext.selectNodesOnLoad(e, data);
                 });
 
+            $jsTree
+                .on('load_node.jstree', function (e, data) {
+                    treeContext.selectNodesOnLoad(e, data);
+                });
+
             //4. init jstree draggable for lists
             $('td.treedrag.jstree-listdraggable').on('mousedown', this.listDnd);
         };
@@ -478,7 +483,21 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
                 var parent = kajonatree.helper.getTreeInstance().get_parent(objNode);
                 var parentObj = kajonatree.helper.getTreeInstance().get_node(parent);
                 parentObj.data.loadall = true;
-                kajonatree.helper.getTreeInstance().load_node(parentObj);
+
+                kajonatree.openedNodes = [];
+                $("li.jstree-open").each(function () {
+                    var $this = $(this);
+                    kajonatree.openedNodes.push($this.attr("id"));
+                });
+
+                $('#' + objNode.id).addClass('jstree-loading');
+                kajonatree.helper.getTreeInstance().load_node(parentObj, function () {
+                    $.each(kajonatree.openedNodes, function (index, id) {
+                        var nodeObj = kajonatree.helper.getTreeInstance().get_node(id);
+                        kajonatree.helper.getTreeInstance().open_node(nodeObj);
+                    });
+                });
+
                 return true;
             }
 
