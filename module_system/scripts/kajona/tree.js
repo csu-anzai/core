@@ -454,6 +454,9 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
      * @param cb - callback function
      */
     kajonatree.contextmenu.createDefaultContextMenu = function (o, cb) {
+
+        if (o.data.hasOwnProperty("loadall")) return null;
+
         var objItems = {
             "expand_all": {
                 "label": "<span data-lang-property=\"system:commons_tree_contextmenu_loadallsubnodes\"></span>",
@@ -483,19 +486,11 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
                 var parent = kajonatree.helper.getTreeInstance().get_parent(objNode);
                 var parentObj = kajonatree.helper.getTreeInstance().get_node(parent);
                 parentObj.data.loadall = true;
-
-                kajonatree.openedNodes = [];
-                $("li.jstree-open").each(function () {
-                    var $this = $(this);
-                    kajonatree.openedNodes.push($this.attr("id"));
-                });
-
                 $('#' + objNode.id).addClass('jstree-loading');
+
+                var openNodes = kajonatree.getAllOpenNodes();
                 kajonatree.helper.getTreeInstance().load_node(parentObj, function () {
-                    $.each(kajonatree.openedNodes, function (index, id) {
-                        var nodeObj = kajonatree.helper.getTreeInstance().get_node(id);
-                        kajonatree.helper.getTreeInstance().open_node(nodeObj);
-                    });
+                    kajonatree.helper.getTreeInstance().open_node(openNodes);
                 });
 
                 return true;
@@ -510,6 +505,21 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
         }
 
         return true;
+    };
+
+    /**
+     * Function returns all opened nodes in the tree
+     *
+     * @returns {array}
+     */
+    kajonatree.getAllOpenNodes = function () {
+        var openedNodes = [];
+        $("li.jstree-open").each(function () {
+            var $this = $(this);
+            openedNodes.push($this.attr("id"));
+        });
+
+        return openedNodes;
     };
 
     /**
