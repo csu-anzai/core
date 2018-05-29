@@ -121,7 +121,7 @@ $lang["commons_object_validator_number_fieldcompare_lessequals_than"] = "'{0}' m
 $lang["commons_tree_contextmenu_loadallsubnodes"] = "Unterelemente aufklappen";
 $lang["commons_tree_error_invalid_drop_target_title"] = "Verschieben nicht möglich";
 $lang["commons_tree_error_invalid_drop_target_message"] = "Das Verschieben von '{0}' nach '{1}' ist nicht möglich";
-$lang["commons_tree_loadallnodes"] = "lade alle {0} Gegenstände";
+$lang["commons_tree_loadallnodes"] = "alle {0} Datensätze laden";
 
 $lang["commons_from"] = "Von";
 $lang["commons_to"] = "Bis";

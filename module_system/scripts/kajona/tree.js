@@ -455,7 +455,7 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
      */
     kajonatree.contextmenu.createDefaultContextMenu = function (o, cb) {
 
-        if (o.data.hasOwnProperty("loadall")) return null;
+        if (o.hasOwnProperty("data") && o.data.hasOwnProperty("loadall")) return null;
 
         var objItems = {
             "expand_all": {
@@ -482,6 +482,7 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
         //handle on click events
         if (event.type == "click") {
 
+            //if "load all" node was clicked
             if (objNode.hasOwnProperty("data") && objNode.data.hasOwnProperty("loadall")) {
                 var parent = kajonatree.helper.getTreeInstance().get_parent(objNode);
                 var parentObj = kajonatree.helper.getTreeInstance().get_node(parent);
@@ -491,6 +492,7 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
                 var openNodes = kajonatree.getAllOpenNodes();
                 kajonatree.helper.getTreeInstance().load_node(parentObj, function () {
                     kajonatree.helper.getTreeInstance().open_node(openNodes);
+                    parentObj.data.loadall = false;
                 });
 
                 return true;
