@@ -250,9 +250,9 @@ class MessagingMessagehandler
         $arrReturn = array();
 
         foreach ($arrRecipients as $objOneRecipient) {
-            if ($objOneRecipient instanceof UserUser) {
+            if ($objOneRecipient instanceof UserUser && $objOneRecipient->getIntRecordDeleted() != 1) {
                 $arrReturn[$objOneRecipient->getStrSystemid()] = $objOneRecipient;
-            } elseif ($objOneRecipient instanceof UserGroup) {
+            } elseif ($objOneRecipient instanceof UserGroup && $objOneRecipient->getIntRecordDeleted() != 1) {
                 $objUsersources = new UserSourcefactory();
                 if ($objUsersources->getSourceGroup($objOneRecipient) != null) {
                     $arrMembers = $objUsersources->getSourceGroup($objOneRecipient)->getUserIdsForGroup();
