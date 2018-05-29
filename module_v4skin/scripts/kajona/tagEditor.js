@@ -20,6 +20,10 @@ define(["jquery", "jquerytageditor", "v4skin", "workingIndicator", "forms"], fun
 
     return /** @alias module:tagEditor */ {
 
+        updateMandatoryRendering: function($objElement) {
+            return updateMandatory($objElement)
+        },
+
         /**
          * initializes the tag-editor for a given input element
          * @param strElementId
