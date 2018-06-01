@@ -63,7 +63,9 @@ abstract class AbstractComponent
             $classDir = dirname($reflection->getFileName());
             $classDir = str_replace(_realpath_, "", str_replace("\\", "/", $classDir));
 
-            return $this->newTwig()->render($classDir . "/" . $this->strTemplateName, $arrData);
+            /** @var \Twig_Environment $twig */
+            $twig = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);
+            return $twig->render($classDir . "/" . $this->strTemplateName, $arrData);
         } else {
             $objTemplate = Carrier::getInstance()->getObjTemplate();
             return $objTemplate->fillTemplateFile($arrData, "/view/components/".$this->strTemplateName, $strSection);
@@ -76,12 +78,4 @@ abstract class AbstractComponent
      * @return string
      */
     abstract public function renderComponent(): string;
-
-    /**
-     * @return \Twig_Environment
-     */
-    private function newTwig()
-    {
-        return Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);
-    }
 }
