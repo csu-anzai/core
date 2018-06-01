@@ -187,6 +187,9 @@ class ServiceProvider implements ServiceProviderInterface
                 return $c[self::STR_LANG]->getLang($text, $module, $parameters);
             }));
 
+            $twig->addFilter(new \Twig_Filter('date_to_string', 'dateToString'));
+            $twig->addFilter(new \Twig_Filter('number_format', 'numberFormat'));
+
             return $twig;
         };
 
