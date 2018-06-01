@@ -10,6 +10,7 @@ namespace Kajona\System\View\Components;
 
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Reflection;
+use Kajona\System\System\ServiceProvider;
 
 /**
  * Base class for view components
@@ -58,7 +59,10 @@ abstract class AbstractComponent
         $strExtension = pathinfo($this->strTemplateName, PATHINFO_EXTENSION);
 
         if ($strExtension == "twig") {
-            return $this->newTwig()->render($this->strTemplateName, $arrData);
+            $reflection = new \ReflectionObject($this);
+            $classDir = dirname($reflection->getFileName());
+
+            return $this->newTwig()->render($classDir . "/" . $this->strTemplateName, $arrData);
         } else {
             $objTemplate = Carrier::getInstance()->getObjTemplate();
             return $objTemplate->fillTemplateFile($arrData, "/view/components/".$this->strTemplateName, $strSection);
@@ -77,14 +81,6 @@ abstract class AbstractComponent
      */
     private function newTwig()
     {
-        $reflection = new \ReflectionObject($this);
-        $classDir = dirname($reflection->getFileName());
-        $loader = new \Twig_Loader_Filesystem($classDir);
-        $engine = new \Twig_Environment($loader, array(
-            'cache' => _realpath_ . 'project/temp/cache',
-            'debug' => true,
-        ));
-
-        return $engine;
+        return Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);
     }
 }
