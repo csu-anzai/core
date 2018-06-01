@@ -173,10 +173,21 @@ class ServiceProvider implements ServiceProviderInterface
             $debug = $c[self::STR_CONFIG]->getConfig("debuglevel") == 1;
             $loader = new \Twig_Loader_Filesystem(_realpath_);
 
-            return new \Twig_Environment($loader, array(
+            $twig = new \Twig_Environment($loader, array(
                 'cache' => _realpath_ . 'project/temp/cache',
                 'debug' => $debug,
             ));
+
+            /**
+             * Through this you can access any lang property inside a twig template i.e.:
+             *
+             * {{ "copy_document_hint"|lang("contracts") }}
+             */
+            $twig->addFilter(new \Twig_Filter('lang', function($text, $module, array $parameters = []) use ($c) {
+                return $c[self::STR_LANG]->getLang($text, $module, $parameters);
+            }));
+
+            return $twig;
         };
 
         $objContainer[self::STR_LANG] = function ($c) {
