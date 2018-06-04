@@ -178,15 +178,7 @@ class ServiceProvider implements ServiceProviderInterface
                 'debug' => $debug,
             ));
 
-            /**
-             * Through this you can access any lang property inside a twig template i.e.:
-             *
-             * {{ "copy_document_hint"|lang("contracts") }}
-             */
-            $twig->addFilter(new \Twig_Filter('lang', function($text, $module, array $parameters = []) use ($c) {
-                return $c[self::STR_LANG]->getLang($text, $module, $parameters);
-            }));
-
+            $twig->addFilter(new \Twig_Filter('lang', [$c[self::STR_LANG], "getLang"]));
             $twig->addFilter(new \Twig_Filter('date_to_string', 'dateToString'));
             $twig->addFilter(new \Twig_Filter('number_format', 'numberFormat'));
 
