@@ -231,7 +231,7 @@ HTML;
             }
         }
 
-        // get all status which are used in the flow yb walking through the flow
+        // get all status which are used in the flow
         $arrUsed = [];
         self::walkFlow($objFlow->getStatusByIndex(0), $arrUsed);
 
