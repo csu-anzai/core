@@ -8,6 +8,9 @@
 namespace Kajona\System\System;
 
 /**
+ * Base class for loading tree nodes.
+ * Class provides basic implementation for getNodesByPath.
+ *
  * @package module_system
  * @author andrii.konoval@artemeon.de
  *
@@ -16,8 +19,7 @@ abstract class JStreeNodeLoaderBaseClass implements JStreeNodeLoaderInterface
 {
 
     /**
-     * @param array $arrSystemIdPath
-     * @return mixed
+     * @inheritdoc
      */
     public function getNodesByPath($arrSystemIdPath)
     {
