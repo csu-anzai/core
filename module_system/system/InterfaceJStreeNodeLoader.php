@@ -17,5 +17,4 @@ namespace Kajona\System\System;
  */
 interface InterfaceJStreeNodeLoader extends JStreeNodeLoaderInterface
 {
-
 }

@@ -23,6 +23,11 @@ namespace Kajona\System\System;
  */
 interface JStreeNodeLoaderInterface
 {
+    /**
+     * @param array $arrSystemIdPath
+     * @return mixed
+     */
+    public function getNodesByPath($arrSystemIdPath);
 
     /**
      * Returns all child nodes for the given system id.
