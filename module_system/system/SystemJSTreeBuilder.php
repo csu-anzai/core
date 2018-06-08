@@ -38,38 +38,6 @@ class SystemJSTreeBuilder
     }
 
     /**
-     * Retrieves nodes for a tree by the given path.
-     *
-     * @param array $arrSystemIdPath - array of system id's, id's contained in this array will be loaded
-     *
-     * @return SystemJSTreeNode[]
-     */
-    public function getNodesByPath(array $arrSystemIdPath)
-    {
-
-        if(empty($arrSystemIdPath)) {
-            return true;
-        }
-
-        $strSystemId = array_shift($arrSystemIdPath);
-        $arrChildren = $this->objNodeLoader->getChildNodes($strSystemId);
-
-        $strSubId = array_key_exists(0, $arrSystemIdPath) ? $arrSystemIdPath[0] : null;
-        foreach($arrChildren as $objChildNode) {
-
-            if($strSubId !== null && $objChildNode->getStrId() == $strSubId) {
-                $objChildNode->addStateAttr(SystemJSTreeNode::STR_NODE_STATE_OPENED, true);
-
-                $arrSubchildNodes = $this->getNodesByPath($arrSystemIdPath);
-                $objChildNode->setArrChildren($arrSubchildNodes);
-            }
-        }
-
-        return $arrChildren;
-    }
-
-
-    /**
      * Method to get all child nodes for a given system id
      *
      * @param $strSystemId
@@ -101,7 +69,7 @@ class SystemJSTreeBuilder
      */
     public function getJson($arrSystemIdPath, $bitInitialLoading = false, $bitLoadAllSubnodes = false)
     {
-        $arrNodes = $this->getNodesByPath($arrSystemIdPath);
+        $arrNodes = $this->objNodeLoader->getNodesByPath($arrSystemIdPath);
 
         if($bitInitialLoading) {
             //root node is always first node in the array
@@ -118,7 +86,7 @@ class SystemJSTreeBuilder
                         $objSingleNode->setArrChildren($this->getChildAllNodes($objSingleNode->getStrId()));
                     }
                     else {
-                        $objSingleNode->setArrChildren($this->getNodesByPath(array($objSingleNode->getStrId())));
+                        $objSingleNode->setArrChildren($this->objNodeLoader->getNodesByPath(array($objSingleNode->getStrId())));
                     }
                 }
             }

@@ -32,6 +32,7 @@ class SystemJSTreeNode implements JsonSerializable
 
     //data attributes
     const STR_NODE_DATA = "data";
+    const STR_NODE_DATA_LOADALL = "loadall";
     const STR_NODE_DATA_RIGHTEDIT = "rightedit";
     const STR_NODE_DATA_DND_CHECK_PARENT_ID_ACTIVE = "check_parent_id_active";
     const STR_NODE_DATA_DND_IS_NOT_DRAGGABLE = "is_not_draggable";
@@ -45,6 +46,7 @@ class SystemJSTreeNode implements JsonSerializable
 
     //attr atrributes
     const STR_NODE_LIATTR = "li_attr";
+    const STR_NODE_LIATTR_CLASS = "class";
 
     //state attributes
     const STR_NODE_STATE = "state";

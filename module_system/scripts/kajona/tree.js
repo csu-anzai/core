@@ -327,6 +327,10 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
                                 }
                             }
 
+                            if (kajonatree.helper.isLoadAllNode(node)) {
+                                data.loadall = true;
+                            }
+
                             return data;
                         }
                     },
@@ -395,6 +399,11 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
                     treeContext.selectNodesOnLoad(e, data);
                 });
 
+            $jsTree
+                .on('load_node.jstree', function (e, data) {
+                    treeContext.selectNodesOnLoad(e, data);
+                });
+
             //4. init jstree draggable for lists
             $('td.treedrag.jstree-listdraggable').on('mousedown', this.listDnd);
         };
@@ -439,12 +448,25 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
     };
 
     /**
+     * Check if the node is a "load all" node
+     * @param objNode
+     *
+     * @returns {*}
+     */
+    kajonatree.helper.isLoadAllNode = function (objNode) {
+        return (objNode.hasOwnProperty("data") && objNode.data.hasOwnProperty("loadall"));
+    };
+
+    /**
      *  Creates the contextmenu
      *
      * @param o - the node
      * @param cb - callback function
      */
     kajonatree.contextmenu.createDefaultContextMenu = function (o, cb) {
+
+        if (kajonatree.helper.isLoadAllNode(o)) return null;
+
         var objItems = {
             "expand_all": {
                 "label": "<span data-lang-property=\"system:commons_tree_contextmenu_loadallsubnodes\"></span>",
@@ -470,15 +492,46 @@ define('tree', ['jquery', 'jstree', 'ajax', 'lang', 'cacheManager'], function ($
         //handle on click events
         if (event.type == "click") {
 
+            //if "load all" node was clicked
+            if (kajonatree.helper.isLoadAllNode(objNode)) {
+                var parent = kajonatree.helper.getTreeInstance().get_parent(objNode);
+                var parentObj = kajonatree.helper.getTreeInstance().get_node(parent);
+                parentObj.data.loadall = true;
+                $('#' + objNode.id).addClass('jstree-loading');
+
+                var openNodes = kajonatree.getAllOpenNodes();
+                kajonatree.helper.getTreeInstance().load_node(parentObj, function () {
+                    kajonatree.helper.getTreeInstance().open_node(openNodes);
+                    parentObj.data.loadall = false;
+                });
+
+                return true;
+            }
+
             //if node contains a_attr with href -> relaod page
             if (objNode.a_attr) {
                 if (objNode.a_attr.href) {
-                    document.location.href = objNode.a_attr.href;//Document reload
+                   document.location.href = objNode.a_attr.href;//Document reload
                 }
             }
         }
 
         return true;
+    };
+
+    /**
+     * Function returns all opened nodes in the tree
+     *
+     * @returns {array}
+     */
+    kajonatree.getAllOpenNodes = function () {
+        var openedNodes = [];
+        $("li.jstree-open").each(function () {
+            var $this = $(this);
+            openedNodes.push($this.attr("id"));
+        });
+
+        return openedNodes;
     };
 
     /**

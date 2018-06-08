@@ -23,6 +23,14 @@ namespace Kajona\System\System;
  */
 interface JStreeNodeLoaderInterface
 {
+    /**
+     * Retrieves nodes for a tree by the given path.
+     *
+     * @param array $arrSystemIdPath - array of system id's, id's contained in this array will be loaded
+     *
+     * @return SystemJSTreeNode[]
+     */
+    public function getNodesByPath($arrSystemIdPath);
 
     /**
      * Returns all child nodes for the given system id.
