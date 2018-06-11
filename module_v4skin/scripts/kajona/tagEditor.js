@@ -7,7 +7,7 @@
 /**
  * @module tagEditor
  */
-define(["jquery", "jquerytageditor", "v4skin", "workingIndicator", "forms"], function($, tagEditor, v4skin, workingIndicator, forms) {
+define(["jquery", "jquerytageditor", "v4skin", "workingIndicator", "forms", "util"], function($, tagEditor, v4skin, workingIndicator, forms, util) {
 
 
     updateMandatory = function($objInput) {
@@ -29,9 +29,9 @@ define(["jquery", "jquerytageditor", "v4skin", "workingIndicator", "forms"], fun
          * @param strElementId
          * @param strSource
          * @param initialTags
-         * @param onChange
+         * @param onChangeCallback
          */
-        init: function(strElementId, strSource, initialTags, onChange) {
+        init: function(strElementId, strSource, initialTags, onChangeCallback) {
 
             var objConfig = new v4skin.defaultAutoComplete();
 
@@ -95,8 +95,17 @@ define(["jquery", "jquerytageditor", "v4skin", "workingIndicator", "forms"], fun
             $objInput.tagEditor({
                 initialTags: initialTags,
                 forceLowercase: false,
+                sortable: false,
                 autocomplete: objConfig,
-                onChange: onChange,
+                onChange: function(field, editor, tags) {
+                    //sync with exiting list to remove hidden input elements
+                    $("#"+strElementId+"-list").find('input').each(function(){
+                        if (!util.inArray($(this).data('title'), tags)) {
+                            $(this).remove();
+                        }
+                    });
+                    onChangeCallback();
+                },
                 beforeTagSave: function(field, editor, tags, tag, val){
                     var found = false;
                     $("#"+strElementId+"-list").find('input').each(function(){
@@ -124,7 +133,7 @@ define(["jquery", "jquerytageditor", "v4skin", "workingIndicator", "forms"], fun
             });
             updateMandatory($objInput);
 
-            //hightlight current input
+            //highlight current input
             $('#tageditor_'+strElementId+' .tag-editor').on("click", function () {
                 $('#tageditor_'+strElementId).find('ul.tag-editor').addClass("active");
             });
