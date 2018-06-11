@@ -5,6 +5,10 @@
 pipeline {  
         agent none
 
+        options {
+            buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5'))
+        }
+
         triggers {
             pollSCM('H/5 * * * * ')
         }
