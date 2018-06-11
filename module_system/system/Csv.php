@@ -57,8 +57,9 @@ class Csv
         }
 
         // Try to overwrite PHP memory-limit so also large files can be processed
-        if (Carrier::getInstance()->getObjConfig()->getPhpIni("memory_limit") < 50) {
-            @ini_set("memory_limit", "50M");
+        $memoryLimit = Carrier::getInstance()->getObjConfig()->getPhpIni("memory_limit");
+        if ($memoryLimit < 128 && $memoryLimit > 0) {
+            @ini_set("memory_limit", "128M");
         }
     }
 
