@@ -180,7 +180,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
                             $objAdmin = $objModule->getAdminInstanceOfConcreteModule($objObject->getSystemid());
 
                             if ($objAdmin !== null && method_exists($objAdmin, "actionShowSummary")) {
-                                $strTitle = Link::getLinkAdmin($objObject->getArrModule("modul"), "showSummary", "&systemid=" . $objObject->getSystemid()."&folderview=".Carrier::getInstance()->getParam("folderview"), $strTitle);
+                                $strTitle = Link::getLinkAdminDialog($objObject->getArrModule("modul"), "showSummary", "&systemid=" . $objObject->getSystemid()."&folderview=".Carrier::getInstance()->getParam("folderview"), $strTitle);
                             }
                         }
                     }
