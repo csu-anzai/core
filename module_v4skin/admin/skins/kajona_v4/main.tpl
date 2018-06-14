@@ -33,10 +33,10 @@
                 <div class="sidebar-menu col-xs-1 col-sm-1 hidden-md hidden-lg">
                     <button type="button" class="" data-toggle="offcanvas"><i class="fa fa-bars"></i></button>
                 </div>
-                <div class="col-md-4 col-sm-2 col-xs-4">
+                <div class="col-md-4 col-sm-2 col-xs-11">
                     %%login%%
                 </div>
-                <div class="col-md-3 col-sm-3 hidden-xs" style="text-align: right;">
+                <div class="col-md-8 col-sm-9 hidden-xs" style="text-align: right;">
                     <form class="navbar-search pull-left" action="_indexpath_">
                         <input type="hidden" name="admin" value="1" >
                         <input type="hidden" name="module" value="search">
@@ -48,11 +48,6 @@
                         </div>
                     </form>
 
-                </div>
-                <div class="col-md-5 col-sm-6 col-xs-7 navbar-dropdown-section pull-right">
-                    <span class="languageSwitchContainer">%%languageswitch%%</span>
-                    <script type="text/javascript">
-                    </script>
                 </div>
             </div>
         </div>

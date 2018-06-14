@@ -1468,21 +1468,6 @@ abstract class Root
     }
 
 
-    // --- Portal-Language ------------------------------------------------------------------------------
-
-    /**
-     * Returns the language to display contents on the portal
-     *
-     * @return string
-     * @throws Exception
-     */
-    final public function getStrPortalLanguage()
-    {
-        $objLanguage = new LanguagesLanguage();
-        return $objLanguage->getPortalLanguage();
-    }
-
-
     // --- Admin-Language -------------------------------------------------------------------------------
 
     /**

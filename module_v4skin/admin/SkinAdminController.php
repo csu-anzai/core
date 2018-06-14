@@ -62,15 +62,10 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
         $arrTemplate["quickhelp"] = $this->getQuickHelp();
 
         $objAdminHelper = new AdminHelper();
-        $arrTemplate["languageswitch"] = (SystemModule::getModuleByName("languages") != null ? SystemModule::getModuleByName("languages")->getAdminInstanceOfConcreteModule()->getLanguageSwitch() : "");
         $arrTemplate["webpathTitle"] = urldecode(str_replace(["http://", "https://"], ["", ""], _webpath_));
         $arrTemplate["head"] = "<script type=\"text/javascript\">KAJONA_DEBUG = ".$this->objConfig->getDebug("debuglevel")."; KAJONA_WEBPATH = '"._webpath_."'; KAJONA_BROWSER_CACHEBUSTER = ".SystemSetting::getConfigValue("_system_browser_cachebuster_")."; KAJONA_LANGUAGE = '".Carrier::getInstance()->getObjSession()->getAdminLanguage()."';KAJONA_PHARMAP = ".json_encode(array_values(Classloader::getInstance()->getArrPharModules()))."; var require = {$objAdminHelper->generateRequireJsConfig()};</script>";
 
-        $strTemplate = AdminskinHelper::getPathForSkin().$this->getArrModule("template");
         $strTemplate = AdminskinHelper::getPathForSkin()."/main.tpl";
-        if ($this->getParam("peClose") == 1 || $this->getParam("pe") == 1) {
-//            $strTemplate = "/folderview.tpl";
-        }
         return $this->objTemplate->fillTemplateFile($arrTemplate, $strTemplate);
     }
 

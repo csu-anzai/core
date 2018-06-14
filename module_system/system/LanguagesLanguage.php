@@ -97,61 +97,26 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
      * saves the current object with all its params back to the database
      *
      * @return bool
+     * @throws Exception
      */
     protected function updateStateToDb()
     {
 
         //if no other language exists, we have a new default language
         $arrObjLanguages = LanguagesLanguage::getObjectListFiltered(null);
-        if(count($arrObjLanguages) == 0) {
+        if (count($arrObjLanguages) == 0) {
             $this->setBitDefault(1);
         }
 
-        if($this->getBitDefault() == 1) {
+        if ($this->getBitDefault() == 1) {
             self::resetAllDefaultLanguages();
         }
 
         return parent::updateStateToDb();
     }
 
-    /**
-     * Returns an array of all languages available
-     *
-     * @param FilterBase $objFilter
-     * @param bool $bitJustActive
-     * @param null $intStart
-     * @param null $intEnd
-     *
-     * @return LanguagesLanguage[]
-     * @static
-     */
-    public static function getObjectListFiltered(FilterBase $objFilter = null, $bitJustActive = false, $intStart = null, $intEnd = null)
-    {
-        $objOrmList = new OrmObjectlist();
-        if($bitJustActive) {
-            $objOrmList->addWhereRestriction(new OrmSystemstatusCondition(OrmComparatorEnum::NotEqual(), 0));
-        }
 
-        return $objOrmList->getObjectList(__CLASS__, "", $intStart, $intEnd);
-    }
 
-    /**
-     * Returns the number of languages installed in the system
-     *
-     * @param bool $bitJustActive
-     *
-     * @return int
-     */
-    public static function getNumberOfLanguagesAvailable($bitJustActive = false)
-    {
-
-        $objOrmList = new OrmObjectlist();
-        if($bitJustActive) {
-            $objOrmList->addWhereRestriction(new OrmSystemstatusCondition(OrmComparatorEnum::NotEqual(), 0));
-        }
-
-        return $objOrmList->getObjectCount(__CLASS__);
-    }
 
     /**
      * Returns the language requested.
@@ -168,10 +133,9 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
         $objOrmList = new OrmObjectlist();
         $objOrmList->addWhereRestriction(new OrmPropertyCondition("strName", OrmComparatorEnum::Equal(), $strName));
         $arrReturn = $objOrmList->getObjectList(__CLASS__);
-        if(count($arrReturn) > 0) {
+        if (count($arrReturn) > 0) {
             return $arrReturn[0];
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -190,119 +154,6 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
         return Carrier::getInstance()->getObjDB()->_pQuery($strQuery, array());
     }
 
-
-    /**
-     * Moves all contents created in a given language to the current langugage
-     *
-     * @param string $strSourceLanguage
-     *
-     * @return bool
-     */
-    public function moveContentsToCurrentLanguage($strSourceLanguage)
-    {
-        $this->objDB->transactionBegin();
-
-        $strQuery1 = "UPDATE agp_page_properties
-                        SET pageproperties_language = ?
-                        WHERE pageproperties_language = ?";
-
-        $strQuery2 = "UPDATE agp_page_element
-                        SET page_element_ph_language = ?
-                        WHERE page_element_ph_language = ?";
-
-
-        $bitCommit = (
-            $this->objDB->_pQuery($strQuery1, array($this->getStrName(), $strSourceLanguage))
-            && $this->objDB->_pQuery($strQuery2, array($this->getStrName(), $strSourceLanguage))
-        );
-
-        if($bitCommit) {
-            $this->objDB->transactionCommit();
-            Logger::getInstance()->info("moved contents from ".$strSourceLanguage." to ".$this->getStrName()." successfully");
-        }
-        else {
-            $this->objDB->transactionRollback();
-            Logger::getInstance()->error("moved contents from ".$strSourceLanguage." to ".$this->getStrName()." failed");
-        }
-
-        return $bitCommit;
-    }
-
-    /**
-     * Tries to determine the language currently active
-     * Looks up the session for previous languages,
-     * if no entry was found, the default language is being returned
-     * part for the portal
-     * tries to load the language, the browser sends as accept-language
-     *
-     * @return string
-     */
-    public function getPortalLanguage()
-    {
-        if($this->objSession->getSession("portalLanguage") !== false && $this->objSession->getSession("portalLanguage") != "") {
-            //Return language saved before in the session
-            return $this->objSession->getSession("portalLanguage");
-        }
-        else {
-            //try to load the default language
-            //maybe the user sent a wanted language
-            $strUserLanguages = str_replace(";", ",", getServer("HTTP_ACCEPT_LANGUAGE"));
-            if(StringUtil::length($strUserLanguages) > 0) {
-                $arrLanguages = explode(",", $strUserLanguages);
-                //check, if one of the requested languages is available on our system
-                foreach($arrLanguages as $strOneLanguage) {
-                    if(!preg_match("#q\=[0-9]\.[0-9]#i", $strOneLanguage)) {
-                        //search language
-                        $objORM = new OrmObjectlist();
-                        $objORM->addWhereRestriction(new OrmCondition("system_status = 1"));
-                        $objORM->addWhereRestriction(new OrmCondition("language_name = ?", array($strOneLanguage)));
-                        /** @var LanguagesLanguage $objLang */
-                        $objLang = $objORM->getSingleObject(get_called_class());
-
-                        if($objLang !== null) {
-                            //save to session
-                            if(!$this->objSession->getBitClosed()) {
-                                $this->objSession->setSession("portalLanguage", $objLang->getStrName());
-                            }
-                            return $objLang->getStrName();
-                        }
-                    }
-                }
-            }
-
-            $objORM = new OrmObjectlist();
-            $objORM->addWhereRestriction(new OrmCondition("system_status = 1"));
-            $objORM->addWhereRestriction(new OrmCondition("language_default = 1"));
-            /** @var LanguagesLanguage $objLang */
-            $objLang = $objORM->getSingleObject(get_called_class());
-
-            if($objLang !== null) {
-                //save to session
-                if(!$this->objSession->getBitClosed()) {
-                    $this->objSession->setSession("portalLanguage", $objLang->getStrName());
-                }
-                return $objLang->getStrName();
-            }
-            else {
-                $objORM = new OrmObjectlist();
-                $objORM->addWhereRestriction(new OrmCondition("system_status = 1"));
-                /** @var LanguagesLanguage $objLang */
-                $objLang = $objORM->getSingleObject(get_called_class());
-
-                if($objLang !== null) {
-                    //save to session
-                    if(!$this->objSession->getBitClosed()) {
-                        $this->objSession->setSession("portalLanguage", $objLang->getStrName());
-                    }
-                    return $objLang->getStrName();
-                }
-                else {
-                    return "";
-                }
-            }
-        }
-    }
-
     /**
      * Tries to determin the language currently active
      * Looks up the session for previous languages,
@@ -310,40 +161,38 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
      * part for the admin
      *
      * @return string
+     * @throws Exception
+     * @throws OrmException
      */
     public function getAdminLanguage()
     {
-        if($this->objSession->getSession("adminLanguage") !== false && $this->objSession->getSession("adminLanguage") != "") {
+        if ($this->objSession->getSession("adminLanguage") !== false && $this->objSession->getSession("adminLanguage") != "") {
             //Return language saved before in the session
             return $this->objSession->getSession("adminLanguage");
-        }
-        else {
-
+        } else {
             $objORM = new OrmObjectlist();
             $objORM->addWhereRestriction(new OrmCondition("language_default = 1"));
             /** @var LanguagesLanguage $objLang */
-            $objLang = $objORM->getSingleObject(get_called_class());
+            $objLang = $objORM->getSingleObject(LanguagesLanguage::class);
 
-            if($objLang !== null) {
+            if ($objLang !== null) {
                 //save to session
-                if(!$this->objSession->getBitClosed()) {
+                if (!$this->objSession->getBitClosed()) {
                     $this->objSession->setSession("adminLanguage", $objLang->getStrName());
                 }
                 return $objLang->getStrName();
-            }
-            else {
+            } else {
                 $objORM = new OrmObjectlist();
                 /** @var LanguagesLanguage $objLang */
-                $objLang = $objORM->getSingleObject(get_called_class());
+                $objLang = $objORM->getSingleObject(LanguagesLanguage::class);
 
-                if($objLang !== null) {
+                if ($objLang !== null) {
                     //save to session
-                    if(!$this->objSession->getBitClosed()) {
+                    if (!$this->objSession->getBitClosed()) {
                         $this->objSession->setSession("adminLanguage", $objLang->getStrName());
                     }
                     return $objLang->getStrName();
-                }
-                else {
+                } else {
                     return "";
                 }
             }
@@ -354,6 +203,8 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
      * Returns the default language, defined in the admin.
      *
      * @return LanguagesLanguage
+     * @throws Exception
+     * @throws OrmException
      */
     public static function getDefaultLanguage()
     {
@@ -364,34 +215,19 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
         return $objORM->getSingleObject(get_called_class());
     }
 
-    /**
-     * Writes the passed language to the session, if the language exists
-     *
-     * @param string $strLanguage
-     */
-    public function setStrPortalLanguage($strLanguage)
-    {
-        $objLanguage = LanguagesLanguage::getLanguageByName($strLanguage);
-        if($objLanguage !== false) {
-            if($objLanguage->getIntRecordStatus() != 0) {
-                if(!$this->objSession->getBitClosed()) {
-                    $this->objSession->setSession("portalLanguage", $objLanguage->getStrName());
-                }
-            }
-        }
-    }
 
     /**
      * Writes the passed language to the session, if the language exists
      *
      * @param string $strLanguage
+     * @throws Exception
      */
     public function setStrAdminLanguageToWorkOn($strLanguage)
     {
         $objLanguage = LanguagesLanguage::getLanguageByName($strLanguage);
-        if($objLanguage !== false) {
-            if($objLanguage->getIntRecordStatus() != 0) {
-                if(!$this->objSession->getBitClosed()) {
+        if ($objLanguage !== false) {
+            if ($objLanguage->getIntRecordStatus() != 0) {
+                if (!$this->objSession->getBitClosed()) {
                     $this->objSession->setSession("adminLanguage", $objLanguage->getStrName());
                 }
             }
