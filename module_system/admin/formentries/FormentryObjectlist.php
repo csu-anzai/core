@@ -7,7 +7,6 @@
 namespace Kajona\System\Admin\Formentries;
 
 use Kajona\System\Admin\FormentryPrintableInterface;
-use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Link;
@@ -16,9 +15,9 @@ use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\SystemModule;
+use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use ReflectionClass;
 use Traversable;
-
 
 /**
  * An list of objects which can be added or removed.
@@ -29,21 +28,50 @@ use Traversable;
  */
 class FormentryObjectlist extends FormentryBase implements FormentryPrintableInterface
 {
-
+    /**
+     * @var string
+     */
     protected $strAddLink;
+
+    /**
+     * @var string
+     */
+    protected $endpointUrl;
+
+    /**
+     * @var array
+     */
+    protected $objectTypes;
+
+    /**
+     * @var array
+     */
     protected $arrKeyValues = array();
 
+    /**
+     * @param string $strAddLink
+     */
     public function setStrAddLink($strAddLink)
     {
         $this->strAddLink = $strAddLink;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getStrAddLink()
     {
         return $this->strAddLink;
+    }
+
+    /**
+     * @param string $endpointUrl
+     * @param array $objectTypes
+     */
+    public function setEndpointUrl($endpointUrl, array $objectTypes = [])
+    {
+        $this->endpointUrl = $endpointUrl;
+        $this->objectTypes = $objectTypes;
     }
 
     protected function updateValue()
@@ -83,8 +111,12 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
             return $objObject->rightView();
         }));
 
-        $strReturn .= $objToolkit->formInputObjectList($this->getStrEntryName(), $this->getStrLabel(), $arrObjects, $this->strAddLink, $this->getBitReadonly());
-        $strReturn .= $objToolkit->formInputHidden($this->getStrEntryName()."_empty", "1");
+        $objectList = new Objectlist($this->getStrEntryName(), $this->getStrLabel(), $arrObjects);
+        $objectList->setReadOnly($this->getBitReadonly());
+        $objectList->setAddLink($this->strAddLink);
+        $objectList->setSearchInput($this->endpointUrl, $this->objectTypes);
+        $strReturn .= $objectList->renderComponent();
+
         return $strReturn;
     }
 
@@ -217,8 +249,8 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
      * Renders the display name for the object and, if possible, also the object type
      *
      * @param ModelInterface $objObject
-     *
      * @return string
+     * @deprecated
      */
     public static function getDisplayName(ModelInterface $objObject)
     {
@@ -242,6 +274,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
      * @param ModelInterface $objOneElement
      * @param string $intAllowedLevel
      * @return string
+     * @deprecated
      */
     public static function getPathName(ModelInterface $objOneElement)
     {
@@ -292,6 +325,4 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
     public function getArrKeyValues() {
         return $this->arrKeyValues;
     }
-
-
 }

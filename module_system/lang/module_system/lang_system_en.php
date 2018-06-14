@@ -329,3 +329,5 @@ $lang["cache_available"]  = "Available";
 $lang["workflow_messagequeue_title"]  = "Message-Queue sender";
 $lang["workflow_queue_sender_val1"]  = "Hours";
 $lang["workflow_queue_sender_val2"]  = "Minutes";
+
+$lang["form_objectlist_add_search"]  = "{0} add ...";
