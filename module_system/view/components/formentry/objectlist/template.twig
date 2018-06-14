@@ -1,0 +1,80 @@
+
+<div class="form-group form-list core-component-formentry-objectlist">
+    <label for="{{ name }}" class="col-sm-3 control-label">{{ title }}</label>
+    <div class="col-sm-6 inputText">
+        <div class="inputContainer">
+            <table id="{{ name }}" data-name="{{ name }}" class="table table-striped form-control">
+                <colgroup>
+                    <col width="20" />
+                    <col width="*" />
+                    <col width="20" />
+                </colgroup>
+                <tbody>
+                {% for row in rows %}
+                <tr>
+                    <td class="listimage">{{ row.icon|raw }}</td>
+                    <td class="title">{% if row.path %}<div class="smaller">{{ row.path }}</div>{% endif %} {{ row.displayName }} <input type="hidden" name="{{ name }}[]" value="{{ row.systemid }}" /></td>
+                    <td class="icon-cell">{% if not readOnly %}{{ row.removeLink|raw }}{% endif %}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <input type="hidden" name="{{ name }}_empty" value="1">
+        </div>
+        {% if endpointUrl and not readOnly %}
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="input-search">
+                    <input type="text" id="{{ name }}_search" name="{{ name }}_search" placeholder="{{ searchInputPlaceholder }}" class="form-control">
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <div class="col-sm-2 form-opener">
+        {% if addLink and not readOnly %}{{ addLink|raw }}{% endif %}
+        {% if removeAllLink and not readOnly %}{{ removeAllLink|raw }}{% endif %}
+    </div>
+
+    {% if endpointUrl and not readOnly %}
+    <script type="text/javascript">
+        require(['jquery', 'v4skin', 'folderview'], function($, v4skin, folderview) {
+            var objConfig = new v4skin.defaultAutoComplete();
+            objConfig.source = function(request, response) {
+                $.ajax({
+                    url: '{{ endpointUrl }}',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        filter: request.term,
+                        objecttypes: {{ objectTypes|raw }}
+                    },
+                    success: response
+                });
+            };
+
+            objConfig.select = function(event, ui) {
+                if (ui.item) {
+                    var path = $("<span/>").html(ui.item.path).text();
+                    folderview.setObjectListItems('{{ name }}', [{
+                        strSystemId: ui.item.systemid,
+                        strDisplayName: ui.item.title,
+                        strIcon: ui.item.icon,
+                        strPath: path,
+                    }], null, {{ deleteIcon|raw }});
+                    // clear input field and set focus
+                    $(this).val('').focus();
+                }
+                return false;
+            };
+
+            $('#{{ name }}_search').autocomplete(objConfig).data('ui-autocomplete')._renderItem = function( ul, item ) {
+                return $( '<li></li>' )
+                    .data('ui-autocomplete-item', item)
+                    .append("<div class='ui-autocomplete-item'><div class='smaller'>" + item.path + "</div>" + item.icon + " " + item.title + "</div>")
+                    .appendTo(ul);
+            } ;
+        });
+    </script>
+    {% endif %}
+</div>
