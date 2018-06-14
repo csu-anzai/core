@@ -809,7 +809,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
 
         <div class="col-sm-6 inputText inputTagEditor">
-            <input type="text" id="%%name%%" data-name="%%name%%" style="display:none" />
+            <input type="text" id="%%name%%" data-name="%%name%%" style="display:none" autocomplete="off"/>
         </div>
     </div>
     <script type="text/javascript">
@@ -837,7 +837,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
 
         <div class="col-sm-6 inputText inputTagEditor" id="tageditor_%%name%%">
-            <input type="text" id="%%name%%" data-name="%%name%%" style="display:none" class="form-control" />
+            <input type="text" id="%%name%%" data-name="%%name%%" style="display:none" class="form-control" autocomplete="off"/>
             <div id="%%name%%-list">%%data%%</div>
         </div>
     </div>
@@ -892,7 +892,7 @@ have a surrounding div with class "ac_container" and a div with id "%%name%%_con
     <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
 
     <div class="col-sm-6">
-        <input type="text" id="%%name%%" name="%%name%%" value="%%value%%" class="form-control %%class%%" %%readonly%% >
+        <input type="text" id="%%name%%" name="%%name%%" value="%%value%%" class="form-control %%class%%" %%readonly%% autocomplete="off">
         <input type="hidden" id="%%name%%_id" name="%%name%%_id" value="%%value_id%%" />
     </div>
     <div class="col-sm-2 form-opener">
