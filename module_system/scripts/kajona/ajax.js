@@ -46,7 +46,7 @@ define('ajax', ['jquery', 'statusDisplay', 'workingIndicator', 'tooltip', 'util'
             var target = strElementSelector;
             $.ajax({
                 type: strMethod,
-                url: KAJONA_WEBPATH+strUrl,
+                url: strUrl.indexOf(KAJONA_WEBPATH) > -1 ? strUrl : KAJONA_WEBPATH+strUrl,
                 data: strData
             }).done(
                 function(data, status, xhr) {
