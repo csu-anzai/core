@@ -6,7 +6,7 @@
         <div id="pc_{{ id|escape("html_attr") }}" class="hidden pc_{{ id|escape("html_attr") }}"><div class="lc_{{ id|escape("html_attr") }}"></div></div>
         <script type="text/javascript">require(['jquery', 'bootstrap'], function($)  { $('#{{ id|escape("html_attr") }}').popover({ content: function() { return $('#pc_{{ id|escape("html_attr") }}').html()}}).on('show.bs.popover', function() {
 
-                if($('#pc_{{ id|escape("html_attr") }}').hasClass('loadDone')) {
+                if($('#pc_{{ id|escape("js") }}').hasClass('loadDone')) {
                     return;
                 }
                 require(['jquery', 'bootstrap', 'ajax'], function($, bs, ajax)  {
