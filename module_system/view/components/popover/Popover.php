@@ -25,8 +25,19 @@ class Popover extends AbstractComponent
      */
     private $link = "";
     private $content = "";
+    private $contentEndpoint = "";
     private $trigger = "hover";
 
+    private $id = '';
+
+    /**
+     * Popover constructor.
+     */
+    public function __construct()
+    {
+        $this->id = generateSystemid();
+        parent::__construct();
+    }
 
 
     /**
@@ -37,9 +48,10 @@ class Popover extends AbstractComponent
         $data = [
             "title" => $this->title,
             "content" => $this->content,
+            "contentEndpoint" => $this->contentEndpoint,
             "link" => $this->link,
             "trigger" => $this->trigger,
-            "id" => generateSystemid()
+            "id" => $this->id,
         ];
 
         return $this->renderTemplate($data);
@@ -83,6 +95,50 @@ class Popover extends AbstractComponent
     public function setTrigger(string $trigger): Popover
     {
         $this->trigger = $trigger;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOnShow()
+    {
+        return $this->onShow;
+    }
+
+    /**
+     * @param mixed $onShow
+     * @return Popover
+     */
+    public function setOnShow($onShow)
+    {
+        $this->onShow = $onShow;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContentEndpoint(): string
+    {
+        return $this->contentEndpoint;
+    }
+
+    /**
+     * @param string $contentEndpoint
+     * @return Popover
+     */
+    public function setContentEndpoint(string $contentEndpoint): Popover
+    {
+        $this->contentEndpoint = $contentEndpoint;
         return $this;
     }
 
