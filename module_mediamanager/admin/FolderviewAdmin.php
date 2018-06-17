@@ -35,10 +35,8 @@ class FolderviewAdmin extends AdminController implements AdminInterface
      */
     public function __construct()
     {
-        $this->setArrModuleEntry("template", "/folderview.tpl");
         parent::__construct();
         $this->setStrLangBase("mediamanager");
-
     }
 
 

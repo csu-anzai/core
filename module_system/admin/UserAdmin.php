@@ -841,8 +841,6 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      */
     protected function actionGroupNew($strMode = "new", AdminFormgenerator $objForm = null)
     {
-
-        $this->setArrModuleEntry("template", "/folderview.tpl");
         $objUsersources = new UserSourcefactory();
 
         if ($strMode == "new") {
@@ -1051,7 +1049,6 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      */
     protected function actionAddUserToGroupForm(AdminFormgenerator $objForm = null)
     {
-        $this->setArrModuleEntry("template", "/folderview.tpl");
         $objGroup = new UserGroup($this->getSystemid());
 
         //validate possible blocked groups
@@ -1427,8 +1424,6 @@ HTML;
      */
     protected function actionUserBrowser()
     {
-
-        $this->setArrModuleEntry("template", "/folderview.tpl");
         $strReturn = "";
 
         if (validateSystemid($this->getParam("selectedGroup"))) {

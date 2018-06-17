@@ -474,12 +474,8 @@ HTML;
     {
         $strReturn = "";
 
-        //overlay-mode
-        $this->setArrModuleEntry("template", "/folderview.tpl");
-
         $strFile = $this->getParam("file");
         $strFile = StringUtil::replace(_webpath_, "", $strFile);
-
 
         if (is_file(_realpath_.$strFile)) {
             $objFilesystem = new Filesystem();
@@ -621,8 +617,6 @@ HTML;
 
         $strTargetfield = xssSafeString($this->getParam("form_element"));
 
-        $this->setArrModuleEntry("template", "/folderview.tpl");
-
         //list repos or contents?
         if ($this->getSystemid() == "") {
             //Load the repos
@@ -721,8 +715,6 @@ HTML;
      */
     protected function actionFolderListFolderview()
     {
-
-        $this->setArrModuleEntry("template", "/folderview.tpl");
         $strReturn = "";
 
         //param inits

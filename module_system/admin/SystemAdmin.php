@@ -271,7 +271,6 @@ class SystemAdmin extends AdminEvensimpler implements AdminInterface
      */
     protected function actionModuleAspect()
     {
-        $this->setArrModuleEntry("template", "/folderview.tpl");
         $strReturn = "";
         $objModule = SystemModule::getModuleBySystemid($this->getSystemid());
         $strReturn .= $this->objToolkit->formHeadline($objModule->getStrName());
@@ -861,11 +860,6 @@ JS;
      */
     public function actionGenericChangelog($strSystemid = "", $strSourceModule = "system", $strSourceAction = "genericChangelog", $bitBlockFolderview = false)
     {
-
-        if (!$bitBlockFolderview && $this->getParam("bitBlockFolderview") == "") {
-            $this->setArrModuleEntry("template", "/folderview.tpl");
-        }
-
         if ($strSystemid == "") {
             $strSystemid = $this->getSystemid();
         }
@@ -964,11 +958,6 @@ JS;
      */
     protected function actionChangelogDiff()
     {
-
-        if ($this->getParam("bitBlockFolderview") == "") {
-            $this->setArrModuleEntry("template", "/folderview.tpl");
-        }
-
         $strSystemId = $this->getSystemid();
         /** @var VersionableInterface $objObject */
         $objObject = Objectfactory::getInstance()->getObject($strSystemId);
@@ -1143,8 +1132,6 @@ JS;
      */
     protected function actionMailForm(AdminFormgenerator $objForm = null)
     {
-        $this->setArrModuleEntry("template", "/folderview.tpl");
-
         if ($objForm == null) {
             $objForm = $this->getMailForm();
         }
@@ -1169,7 +1156,6 @@ JS;
             return $this->actionMailForm($objForm);
         }
 
-        $this->setArrModuleEntry("template", "/folderview.tpl");
         $objUser = $this->objSession->getUser();
 
         //mail or internal message?

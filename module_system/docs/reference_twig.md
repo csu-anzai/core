@@ -33,3 +33,11 @@ Formats a number according to the current locale of the user.
 <span>{{ number|number_format }}</span>
 ```
 
+## `webpath`
+
+Returns the webpath of a module, so either the filesystem path or the extract path.
+
+```twig
+<span>{{ "module_name"|webpath }}</span>
+```
+

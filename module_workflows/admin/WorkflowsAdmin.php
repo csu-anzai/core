@@ -95,7 +95,6 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
     {
 
         if (validateSystemid($this->getSystemid())) {
-            $this->setArrModuleEntry("template", "/folderview.tpl");
 
             $objStats = new WorkflowsStats();
             $arrTableRows = [];

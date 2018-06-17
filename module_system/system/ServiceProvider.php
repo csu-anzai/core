@@ -181,6 +181,9 @@ class ServiceProvider implements ServiceProviderInterface
             $twig->addFilter(new \Twig_Filter('lang', [$c[self::STR_LANG], "getLang"]));
             $twig->addFilter(new \Twig_Filter('date_to_string', 'dateToString'));
             $twig->addFilter(new \Twig_Filter('number_format', 'numberFormat'));
+            $twig->addFilter(new \Twig_Filter('webpath', function ($module) {
+                return Resourceloader::getInstance()->getWebPathForModule($module);
+            }));
 
             return $twig;
         };
