@@ -48,6 +48,7 @@ class SystemChangelog
 
 
     public static $STR_ACTION_EDIT = "actionEdit";
+    public static $STR_ACTION_PERMISSIONS = "editPermissions";
     public static $STR_ACTION_DELETE = "actionDelete";
 
 
