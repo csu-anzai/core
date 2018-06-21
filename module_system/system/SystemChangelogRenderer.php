@@ -10,6 +10,7 @@ namespace Kajona\System\System;
 
 use AGP\Prozessverwaltung\Admin\Formentries\FormentryOe;
 use AGP\Prozessverwaltung\Admin\Formentries\FormentryProzess;
+use Kajona\Flow\System\FlowManager;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\Formentries\FormentryDate;
 use Kajona\System\Admin\Formentries\FormentryDatetime;
@@ -105,6 +106,9 @@ class SystemChangelogRenderer
                 $strType = FormentryObjectlist::class;
             } elseif (StringUtil::indexOf($strProperty, "date", false) !== false && Date::isDateValue($strValue)) {
                 $strType = FormentryDate::class;
+            } elseif ($strProperty == "intRecordStatus" && $strValue !== "") {
+                $statusValue = $this->getValueForStatus($strValue, $this->objReflection->getStrSourceClass());
+                return $this->objLang->getLang($statusValue, "gdpr");
             } else {
                 $strType = $this->getFallbackType($strProperty);
             }
@@ -188,6 +192,15 @@ class SystemChangelogRenderer
             case "strOwner":
                 return $this->objLang->getLang("commons_record_owner", "system");
 
+            case "intProcedureType":
+                return $this->objLang->getLang("commons_procedure_type", "system");
+
+            case "intValiduntildate":
+                return $this->objLang->getLang("commons_valid_until_date", "system");
+
+            case "strEvaltargetId":
+                return $this->objLang->getLang("commons_eval_target", "system");
+
             default:
                 return $strProperty;
         }
@@ -256,7 +269,10 @@ class SystemChangelogRenderer
             case FormentryDropdown::class:
                 if (!empty($arrDDValues) && array_key_exists($strValue, $arrDDValues)) {
                     return $arrDDValues[$strValue];
-                } else {
+                } elseif(validateSystemid($strValue)) {//in case it is a dropdown filed with system values
+                    return $this->getStrValueForObjects($strValue);
+                }
+                else {
                     return $strValue;
                 }
                 break;
@@ -344,6 +360,21 @@ class SystemChangelogRenderer
         }
 
         return dateToString($objDate, false);
+    }
+
+    /**
+     * Returns flow status by class name and staus number.
+     *
+     * @param sting $status
+     * @param string $className
+     * @return string
+     */
+    private function getValueForStatus($status, $className) {
+        $objFlowManager = new FlowManager();
+        $classFlow = $objFlowManager->getFlowForClass($className);
+        $flowStatus = $classFlow->getStatusByIndex($status);
+
+        return $flowStatus->getStrName();
     }
 
     /**

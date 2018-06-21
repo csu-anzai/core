@@ -133,6 +133,9 @@ $lang["commons_record_owner"] = "Ersteller des Datensatzes";
 $lang["commons_record_startdate"] = "Startdatum";
 $lang["commons_record_enddate"] = "Enddatum";
 $lang["commons_record_specialdate"] = "Sonder-Datum";
+$lang["commons_procedure_type"] = "Prozedurentyp";
+$lang["commons_valid_until_date"] = "Gültig bis Datum";
+$lang["commons_eval_target"] = "Bewertungsziel";
 
 $lang["commons_error_move_hierarchy"] = "Das Verschieben unterhalb des angegeben Objektes ist nicht möglich";
 

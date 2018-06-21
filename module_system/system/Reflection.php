@@ -769,4 +769,16 @@ class Reflection
     }
 
 
+    /**
+     * Returns strSourceClass.
+     *
+     * @return object|string
+     */
+    public function getStrSourceClass()
+    {
+        return $this->strSourceClass;
+    }
+
+
+
 }
