@@ -757,4 +757,16 @@ class Reflection
         return $bitReturn;
     }
 
+    /**
+     * Returns strSourceClass.
+     *
+     * @return object|string
+     */
+    public function getStrSourceClass()
+    {
+        return $this->strSourceClass;
+    }
+
+
+
 }
