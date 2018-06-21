@@ -536,7 +536,7 @@ class SystemChangelog
      *
      * @return ChangelogContainer[]
      */
-    public static function getLogEntries($strSystemidFilter, $intStart = null, $intEnd = null)
+    public static function getLogEntries($strSystemidFilter, $arrChangeActionsFilter, $intStart = null, $intEnd = null)
     {
 
         $arrParams = array();
@@ -547,6 +547,12 @@ class SystemChangelog
                            WHERE change_systemid = ? ";
 
             $arrParams[] = $strSystemidFilter;
+
+            if (!empty($arrChangeActionsFilter)) {
+                $strChangeActionParams = implode(',', array_fill(0, count($arrChangeActionsFilter), '?'));
+                $strQuery .= " AND change_action NOT IN (" . $strChangeActionParams . ")";
+                $arrParams = array_merge($arrParams, $arrChangeActionsFilter);
+            }
         } else {
             return array();
         }
@@ -578,7 +584,7 @@ class SystemChangelog
      *
      * @return int
      */
-    public static function getLogEntriesCount($strSystemidFilter)
+    public static function getLogEntriesCount($strSystemidFilter, $arrChangeActionsFilter = [])
     {
 
         $arrParams = array();
@@ -589,6 +595,13 @@ class SystemChangelog
                           WHERE change_systemid = ? ";
 
             $arrParams[] = $strSystemidFilter;
+
+            if (!empty($arrChangeActionsFilter)) {
+                $strChangeActionParams = implode(',', array_fill(0, count($arrChangeActionsFilter), '?'));
+                $strQuery .= " AND change_action NOT IN (" . $strChangeActionParams . ")";
+                $arrParams = array_merge($arrParams, $arrChangeActionsFilter);
+            }
+
 
         } else {
             return 0;

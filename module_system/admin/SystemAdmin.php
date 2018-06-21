@@ -40,6 +40,8 @@ use Kajona\System\System\Pluginmanager;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\RequestEntrypointEnum;
 use Kajona\System\System\ResponseObject;
+use Kajona\System\System\Rights;
+use Kajona\System\System\Session;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemChangelog;
@@ -887,9 +889,14 @@ JS;
 
         $strReturn = "";
         //showing a list using the pageview
-        $objArraySectionIterator = new ArraySectionIterator(SystemChangelog::getLogEntriesCount($strSystemid));
+        $arrChangeActionsFilter = [];
+        if (!Session::getInstance()->isSuperAdmin()
+            && !Rights::getInstance()->checkPermissionForUserId(Session::getInstance()->getUserID(), Rights::$STR_RIGHT_RIGHT, $strSystemid)) {
+            $arrChangeActionsFilter = ['editPermissions'];
+        }
+        $objArraySectionIterator = new ArraySectionIterator(SystemChangelog::getLogEntriesCount($strSystemid, $arrChangeActionsFilter));
         $objArraySectionIterator->setPageNumber((int)($this->getParam("pv") != "" ? $this->getParam("pv") : 1));
-        $objArraySectionIterator->setArraySection(SystemChangelog::getLogEntries($strSystemid, $objArraySectionIterator->calculateStartPos(), $objArraySectionIterator->calculateEndPos()));
+        $objArraySectionIterator->setArraySection(SystemChangelog::getLogEntries($strSystemid, $arrChangeActionsFilter, $objArraySectionIterator->calculateStartPos(), $objArraySectionIterator->calculateEndPos()));
 
         $objManager = new PackagemanagerManager();
         $arrToolbar = array();
