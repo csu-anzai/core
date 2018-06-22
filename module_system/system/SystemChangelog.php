@@ -527,16 +527,17 @@ class SystemChangelog
 
 
     /**
-     * Creates the list of logentries, either without a systemid-based filter
+     * Creates the list of logentries, either without a systemid-based and change-action-based filters
      * or limited to the given systemid.
      *
      * @param string $strSystemidFilter
      * @param null|int $intStart
      * @param null|int $intEnd
+     * @param array $arrChangeActionsFilter
      *
      * @return ChangelogContainer[]
      */
-    public static function getLogEntries($strSystemidFilter, $arrChangeActionsFilter, $intStart = null, $intEnd = null)
+    public static function getLogEntries($strSystemidFilter, $intStart = null, $intEnd = null, array $arrChangeActionsFilter = [])
     {
 
         $arrParams = array();
@@ -549,10 +550,17 @@ class SystemChangelog
             $arrParams[] = $strSystemidFilter;
 
             if (!empty($arrChangeActionsFilter)) {
-                $strChangeActionParams = implode(',', array_fill(0, count($arrChangeActionsFilter), '?'));
-                $strQuery .= " AND change_action NOT IN (" . $strChangeActionParams . ")";
-                $arrParams = array_merge($arrParams, $arrChangeActionsFilter);
+                if (count($arrChangeActionsFilter) > 1) {
+                    $objRestriction = new OrmInCondition("change_action", $arrChangeActionsFilter, OrmInCondition::STR_CONDITION_NOTIN);
+                    $strQuery .= " AND " . $objRestriction->getStrWhere();
+                    $arrParams = array_merge($arrParams, $objRestriction->getArrParams());
+                }
+                else {
+                    $strQuery .= " AND change_action != ?";
+                    $arrParams[] = current($arrChangeActionsFilter);
+                }
             }
+
         } else {
             return array();
         }
@@ -581,10 +589,11 @@ class SystemChangelog
      * Counts the number of logentries available
      *
      * @param string $strSystemidFilter
+     * @param array $arrChangeActionsFilter
      *
      * @return int
      */
-    public static function getLogEntriesCount($strSystemidFilter, $arrChangeActionsFilter = [])
+    public static function getLogEntriesCount($strSystemidFilter, array $arrChangeActionsFilter = [])
     {
 
         $arrParams = array();
@@ -597,9 +606,15 @@ class SystemChangelog
             $arrParams[] = $strSystemidFilter;
 
             if (!empty($arrChangeActionsFilter)) {
-                $strChangeActionParams = implode(',', array_fill(0, count($arrChangeActionsFilter), '?'));
-                $strQuery .= " AND change_action NOT IN (" . $strChangeActionParams . ")";
-                $arrParams = array_merge($arrParams, $arrChangeActionsFilter);
+                if (count($arrChangeActionsFilter) > 1) {
+                    $objRestriction = new OrmInCondition("change_action", $arrChangeActionsFilter, OrmInCondition::STR_CONDITION_NOTIN);
+                    $strQuery .= " AND " . $objRestriction->getStrWhere();
+                    $arrParams = array_merge($arrParams, $objRestriction->getArrParams());
+                }
+                else {
+                    $strQuery .= " AND change_action != ?";
+                    $arrParams[] = current($arrChangeActionsFilter);
+                }
             }
 
 

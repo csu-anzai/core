@@ -80,7 +80,7 @@ class SystemChangelogRenderer
 
         $strPropertyLabel = Carrier::getInstance()->getObjLang()->getLang($strKey, $strModule);
         if ($strPropertyLabel == "!{$strKey}!") {
-            $strKey = "form_".$this->strModule."_".Lang::getInstance()->propertyWithoutPrefix($strProperty);
+            $strKey = "form_" . $this->strModule . "_" . Lang::getInstance()->propertyWithoutPrefix($strProperty);
             $strPropertyLabel = Carrier::getInstance()->getObjLang()->getLang($strKey, $strModule);
         }
 
@@ -108,7 +108,7 @@ class SystemChangelogRenderer
                 $strType = FormentryDate::class;
             } elseif ($strProperty == "intRecordStatus" && $strValue !== "") {
                 $statusValue = $this->getValueForStatus($strValue, $this->objReflection->getStrSourceClass());
-                return $this->objLang->getLang($statusValue, "gdpr");
+                return !empty($statusValue) ? $this->objLang->getLang($statusValue, "gdpr") : $strValue;
             } else {
                 $strType = $this->getFallbackType($strProperty);
             }
@@ -192,15 +192,6 @@ class SystemChangelogRenderer
             case "strOwner":
                 return $this->objLang->getLang("commons_record_owner", "system");
 
-            case "intProcedureType":
-                return $this->objLang->getLang("commons_procedure_type", "system");
-
-            case "intValiduntildate":
-                return $this->objLang->getLang("commons_valid_until_date", "system");
-
-            case "strEvaltargetId":
-                return $this->objLang->getLang("commons_eval_target", "system");
-
             default:
                 return $strProperty;
         }
@@ -269,10 +260,9 @@ class SystemChangelogRenderer
             case FormentryDropdown::class:
                 if (!empty($arrDDValues) && array_key_exists($strValue, $arrDDValues)) {
                     return $arrDDValues[$strValue];
-                } elseif(validateSystemid($strValue)) {//in case it is a dropdown filed with system values
+                } elseif (validateSystemid($strValue)) {//in case it is a dropdown filed with system values
                     return $this->getStrValueForObjects($strValue);
-                }
-                else {
+                } else {
                     return $strValue;
                 }
                 break;
@@ -369,12 +359,18 @@ class SystemChangelogRenderer
      * @param string $className
      * @return string
      */
-    private function getValueForStatus($status, $className) {
-        $objFlowManager = new FlowManager();
-        $classFlow = $objFlowManager->getFlowForClass($className);
-        $flowStatus = $classFlow->getStatusByIndex($status);
+    private function getValueForStatus($status, $className)
+    {
+        if (SystemModule::getModuleByName("flow") !== null) {
+            $objFlowManager = new FlowManager();
+            $classFlow = $objFlowManager->getFlowForClass($className);
+            if ($classFlow !== null) {
+                $flowStatus = $classFlow->getStatusByIndex($status);
+                return $flowStatus->getStrName();
+            }
+        }
 
-        return $flowStatus->getStrName();
+        return "";
     }
 
     /**
@@ -394,7 +390,7 @@ class SystemChangelogRenderer
                 return validateSystemid($strSystemId);
             });
         } elseif (is_array($strObjectIds)) {
-            $arrSystemIds = array_filter(array_map(function($objValue){
+            $arrSystemIds = array_filter(array_map(function ($objValue) {
                 if (is_string($objValue)) {
                     return validateSystemid($objValue) ? $objValue : null;
                 } elseif ($objValue instanceof Model) {
@@ -410,8 +406,7 @@ class SystemChangelogRenderer
             $objObject = Objectfactory::getInstance()->getObject($strSystemId);
             if ($objObject instanceof ModelInterface) {
                 $arrNames[] = $objObject->getStrDisplayName();
-            }
-            else {
+            } else {
                 $arrNames[] = $strSystemId;
             }
         }
