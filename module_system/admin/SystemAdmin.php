@@ -892,11 +892,11 @@ JS;
         $arrChangeActionsFilter = [];
         if (!Session::getInstance()->isSuperAdmin()
             && !Rights::getInstance()->checkPermissionForUserId(Session::getInstance()->getUserID(), Rights::$STR_RIGHT_RIGHT, $strSystemid)) {
-            $arrChangeActionsFilter = ['editPermissions'];
+            $arrChangeActionsFilter = [SystemChangelog::$STR_ACTION_PERMISSIONS];
         }
         $objArraySectionIterator = new ArraySectionIterator(SystemChangelog::getLogEntriesCount($strSystemid, $arrChangeActionsFilter));
         $objArraySectionIterator->setPageNumber((int)($this->getParam("pv") != "" ? $this->getParam("pv") : 1));
-        $objArraySectionIterator->setArraySection(SystemChangelog::getLogEntries($strSystemid, $arrChangeActionsFilter, $objArraySectionIterator->calculateStartPos(), $objArraySectionIterator->calculateEndPos()));
+        $objArraySectionIterator->setArraySection(SystemChangelog::getLogEntries($strSystemid, $objArraySectionIterator->calculateStartPos(), $objArraySectionIterator->calculateEndPos(), $arrChangeActionsFilter));
 
         $objManager = new PackagemanagerManager();
         $arrToolbar = array();
