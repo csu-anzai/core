@@ -737,7 +737,8 @@ class Installer
                 $objManager = new PackagemanagerManager();
                 foreach ($objManager->getAvailablePackages() as $objOnePackage) {
 
-                    if (get_class($objOneInstaller) == get_class(SamplecontentInstallerHelper::getSamplecontentInstallerForPackage($objOnePackage))) {
+                    $object = SamplecontentInstallerHelper::getSamplecontentInstallerForPackage($objOnePackage);
+                    if ($object != null && $objOneInstaller != null && get_class($objOneInstaller) == get_class($object)) {
                         return json_encode(array("module" => $objOnePackage->getStrTitle()));
                     }
                 }

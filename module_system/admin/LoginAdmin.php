@@ -54,9 +54,6 @@ class LoginAdmin extends AdminController implements AdminInterface
 
     public function __construct()
     {
-
-        $this->setArrModuleEntry("template", "/login.tpl");
-
         parent::__construct();
 
         if (!in_array($this->getAction(), ["pwdReset", "login", "adminLogin", "adminLogout"])) {

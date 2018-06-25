@@ -68,6 +68,7 @@ class SearchCommons extends Model implements ModelInterface
      * @param null $intEnd
      *
      * @return SearchResult[]
+     * @throws \Kajona\System\System\Exception
      */
     public function doIndexedSearch($objSearch, $intStart = null, $intEnd = null)
     {

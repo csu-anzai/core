@@ -86,15 +86,6 @@ abstract class AdminController extends AbstractController
     {
         parent::__construct($strSystemid);
 
-        // default-template: main.tpl
-        if ($this->getArrModule("template") == "") {
-            $this->setArrModuleEntry("template", "/main.tpl");
-        }
-
-//        if ($this->getParam("folderview") != "") {
-//            $this->setArrModuleEntry("template", "/folderview.tpl");
-//        }
-
         //set the correct language to the text-object
         $this->getObjLang()->setStrTextLanguage($this->objSession->getAdminLanguage(true));
     }

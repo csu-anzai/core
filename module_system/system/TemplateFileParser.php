@@ -44,7 +44,7 @@ class TemplateFileParser
 
     private function getPathForTemplate($strTemplate)
     {
-        $strName = Resourceloader::getInstance()->getTemplate($strTemplate, true);
+        $strName = Resourceloader::getInstance()->getTemplate($strTemplate);
         return $strName;
     }
 

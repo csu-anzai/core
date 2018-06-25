@@ -187,7 +187,6 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
      */
     protected function actionShowInfo()
     {
-        $this->setArrModuleEntry("template", "/folderview.tpl");
         $objManager = new PackagemanagerManager();
         $objHandler = $objManager->getPackage($this->getParam("package"));
         if ($objHandler !== null) {
@@ -263,8 +262,6 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
      */
     protected function actionProcessPackage()
     {
-        $this->setArrModuleEntry("template", "/folderview.tpl");
-
         $strReturn = "";
         $strFile = $this->getParam("package");
 
@@ -449,8 +446,6 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
      */
     protected function actionInstallPackage()
     {
-        $this->setArrModuleEntry("template", "/folderview.tpl");
-
         $strReturn = "";
         $strLog = "";
         $strFile = $this->getParam("package");
@@ -516,8 +511,6 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
      */
     protected function actionAddPackage()
     {
-        $this->setArrModuleEntry("template", "/folderview.tpl");
-
         $strReturn = "";
 
         $objManager = new PackagemanagerManager();
@@ -564,8 +557,6 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
      */
     protected function actionUploadPackage()
     {
-        $this->setArrModuleEntry("template", "/folderview.tpl");
-
         $objManager = new PackagemanagerManager();
         $arrContentProvider = $objManager->getContentproviders();
 
@@ -607,12 +598,7 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
         $strError = $this->getLang($strLangName, $strLangModule);
         $objHistory = new History();
         $arrHistory = explode("&", $objHistory->getAdminHistory(0));
-
-        if ($this->getArrModule("template") == "/folderview.tpl") {
-            $strError .= ' '.Link::getLinkAdminManual('href="javascript:window.parent.location.reload();"', $this->getLang('commons_back'));
-        } else {
-            $strError .= ' '.Link::getLinkAdminManual("href=\"".$arrHistory[0]."&".$arrHistory[1]."\"", $this->getLang("commons_back"));
-        }
+        $strError .= ' '.Link::getLinkAdminManual("href=\"".$arrHistory[0]."&".$arrHistory[1]."\"", $this->getLang("commons_back"));
         return $this->objToolkit->warningBox($strError);
     }
 

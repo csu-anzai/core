@@ -1,6 +1,21 @@
 
 <div class="core-component-popover">
-    <span href="#" title="{{ title|escape("html_attr") }}%%title%%" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="{{ trigger|escape("html_attr") }}" id="{{ id|escape("html_attr") }}">{{ link|raw }}</span>
-    <div id="pc_{{ id|escape("html_attr") }}" class="hidden">{{ content|raw }}</div>
-    <script type="text/javascript">require(['jquery', 'bootstrap'], function($)  { $('#{{ id|escape("html_attr") }}').popover({ content: $('#pc_{{ id|escape("html_attr") }}').html()}); });</script>
+    <span href="#" title="{{ title|escape("html_attr") }}" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="{{ trigger|escape("html_attr") }}" id="{{ id|escape("html_attr") }}">{{ link|raw }}</span>
+
+    {% if contentEndpoint %}
+        <div id="pc_{{ id|escape("html_attr") }}" class="hidden pc_{{ id|escape("html_attr") }}"><div class="lc_{{ id|escape("html_attr") }}"></div></div>
+        <script type="text/javascript">require(['jquery', 'bootstrap'], function($)  { $('#{{ id|escape("html_attr") }}').popover({ content: function() { return $('#pc_{{ id|escape("html_attr") }}').html()}}).on('show.bs.popover', function() {
+
+                if($('#pc_{{ id|escape("js") }}').hasClass('loadDone')) {
+                    return;
+                }
+                require(['jquery', 'bootstrap', 'ajax'], function($, bs, ajax)  {
+                    ajax.loadUrlToElement('.lc_{{ id|escape("html_attr") }}', '{{ contentEndpoint }}', '', false, 'post', function() {});
+                });
+                $('#pc_{{ id|escape("html_attr") }}').addClass('loadDone');
+            }) });   </script>
+    {% else %}
+        <div id="pc_{{ id|escape("html_attr") }}" class="hidden pc_{{ id|escape("html_attr") }}">{{ content|raw }}sdf</div>
+        <script type="text/javascript">require(['jquery', 'bootstrap'], function($)  { $('#{{ id|escape("html_attr") }}').popover({ content: $('#pc_{{ id|escape("html_attr") }}').html()}) });</script>
+    {% endif %}
 </div>

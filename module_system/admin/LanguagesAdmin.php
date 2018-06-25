@@ -30,10 +30,6 @@ use Kajona\System\System\Model;
 class LanguagesAdmin extends AdminSimple implements AdminInterface
 {
 
-    private static $arrLanguageSwitchEntries = null;
-    private static $strActiveKey = "";
-
-
     public function getOutputModuleNavi()
     {
         $arrReturn = array();
@@ -48,16 +44,16 @@ class LanguagesAdmin extends AdminSimple implements AdminInterface
      * @return string
      * @autoTestable
      * @permissions view
+     * @throws Exception
      */
     protected function actionList()
     {
 
-        $objArraySectionIterator = new ArraySectionIterator(LanguagesLanguage::getNumberOfLanguagesAvailable());
+        $objArraySectionIterator = new ArraySectionIterator(LanguagesLanguage::getObjectCountFiltered());
         $objArraySectionIterator->setPageNumber((int)($this->getParam("pv") != "" ? $this->getParam("pv") : 1));
-        $objArraySectionIterator->setArraySection(LanguagesLanguage::getObjectListFiltered(null, false, $objArraySectionIterator->calculateStartPos(), $objArraySectionIterator->calculateEndPos()));
+        $objArraySectionIterator->setArraySection(LanguagesLanguage::getObjectListFiltered(null, "", $objArraySectionIterator->calculateStartPos(), $objArraySectionIterator->calculateEndPos()));
 
         return $this->renderList($objArraySectionIterator);
-
     }
 
     protected function renderCopyAction(Model $objListEntry)
@@ -69,6 +65,7 @@ class LanguagesAdmin extends AdminSimple implements AdminInterface
     /**
      * @return string
      * @permissions edit
+     * @throws Exception
      */
     protected function actionEdit()
     {
@@ -83,6 +80,7 @@ class LanguagesAdmin extends AdminSimple implements AdminInterface
      * @return string
      * @permissions edit
      * @autoTestable
+     * @throws Exception
      */
     protected function actionNew($strMode = "new", AdminFormgenerator $objForm = null)
     {
@@ -109,7 +107,6 @@ class LanguagesAdmin extends AdminSimple implements AdminInterface
 
         $objForm->addField(new FormentryHidden("", "mode"))->setStrValue($strMode);
         return $objForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "saveLanguage"));
-
     }
 
     /**
@@ -118,6 +115,7 @@ class LanguagesAdmin extends AdminSimple implements AdminInterface
      * @param LanguagesLanguage $objLanguage
      *
      * @return AdminFormgenerator
+     * @throws Exception
      */
     private function getAdminForm(LanguagesLanguage $objLanguage)
     {
@@ -145,12 +143,10 @@ class LanguagesAdmin extends AdminSimple implements AdminInterface
      */
     protected function actionSaveLanguage()
     {
-        $strOldLang = "";
         if ($this->getParam("mode") == "new") {
             $objLanguage = new LanguagesLanguage();
         } else {
             $objLanguage = new LanguagesLanguage($this->getSystemid());
-            $strOldLang = $objLanguage->getStrName();
             if (!$objLanguage->rightEdit()) {
                 return $this->getLang("commons_error_permissions");
             }
@@ -161,10 +157,7 @@ class LanguagesAdmin extends AdminSimple implements AdminInterface
         if (!$objForm->validateForm()) {
             return $this->actionNew($this->getParam("mode"), $objForm);
         }
-
-
         $objForm->updateSourceObject();
-
 
         if ($this->getParam("mode") == "new") {
             //language already existing?
@@ -179,102 +172,6 @@ class LanguagesAdmin extends AdminSimple implements AdminInterface
         }
 
         $this->objLifeCycleFactory->factory(get_class($objLanguage))->update($objLanguage);
-
-        if ($this->getParam("mode") == "edit") {
-            //move contents to a new language
-            if ($strOldLang != $objLanguage->getStrName()) {
-                if (!$objLanguage->moveContentsToCurrentLanguage($strOldLang)) {
-                    throw new Exception("Error moving contents to new language", Exception::$level_ERROR);
-                }
-            }
-        }
-
         $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul")));
     }
-
-
-    /**
-     * Creates a language-switch as ready-to-output html-code
-     * If there's just one language installed, an empty string is returned
-     *
-     * @return string
-     */
-    public function getLanguageSwitch()
-    {
-        $strReturn = "";
-        $strButtons = "";
-        if (self::$arrLanguageSwitchEntries != null && count(self::$arrLanguageSwitchEntries) > 1) {
-            foreach (self::$arrLanguageSwitchEntries as $strKey => $strValue) {
-                $strButtons .= $this->objToolkit->getLanguageButton(
-                    $strKey,
-                    $strValue,
-                    $strKey == self::$strActiveKey
-                );
-            }
-
-            $strReturn = $this->objToolkit->getLanguageSwitch($strButtons, self::$strOnChangeHandler);
-        }
-
-        return $strReturn;
-    }
-
-    /**
-     * Enables the common language switch, switching the backends language to work on.
-     * If you want to create a custom switch, use setArrLanguageSwitchEntries and setStrOnChangeHandler
-     * to customize all switch-content.
-     *
-     * @static
-     */
-    public static function enableLanguageSwitch()
-    {
-        if (self::$arrLanguageSwitchEntries == null) {
-            $arrObjLanguages = LanguagesLanguage::getObjectListFiltered(null, true);
-            if (count($arrObjLanguages) > 1) {
-                self::$arrLanguageSwitchEntries = array();
-                foreach ($arrObjLanguages as $objOneLang) {
-                    self::$arrLanguageSwitchEntries[$objOneLang->getStrName()] = Carrier::getInstance()->getObjLang()->getLang("lang_".$objOneLang->getStrName(), "languages");
-                }
-                $objLanguage = new LanguagesLanguage();
-                self::$strActiveKey = $objLanguage->getAdminLanguage();
-            }
-        }
-    }
-
-    /**
-     * Pass custom entries to the current switch, replacing the default ones.
-     * Schema key => value
-     *
-     * @static
-     *
-     * @param $arrLanguageSwitchEntries
-     */
-    public static function setArrLanguageSwitchEntries($arrLanguageSwitchEntries)
-    {
-        self::$arrLanguageSwitchEntries = $arrLanguageSwitchEntries;
-    }
-
-    /**
-     * Change the default on-change handler of the languages dropdown to a custom function.
-     *
-     * @static
-     *
-     * @param $onChangeHandler
-     */
-    public static function setStrOnChangeHandler($onChangeHandler)
-    {
-        self::$strOnChangeHandler = $onChangeHandler;
-    }
-
-    /**
-     * Set the currently active key for the language switch
-     *
-     * @static
-     *
-     * @param $strActiveKey
-     */
-    public static function setStrActiveKey($strActiveKey)
-    {
-        self::$strActiveKey = $strActiveKey;
-    }
-
 }

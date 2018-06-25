@@ -59,6 +59,11 @@ class ServiceProvider implements ServiceProviderInterface
     const STR_TEMPLATE = "system_template";
 
     /**
+     * @see \Twig_Environment
+     */
+    const STR_TEMPLATE_ENGINE = "system_template_engine";
+
+    /**
      * @see \Kajona\System\System\Lang
      */
     const STR_LANG = "system_lang";
@@ -162,6 +167,25 @@ class ServiceProvider implements ServiceProviderInterface
                 new TemplatePlaceholderParser(),
                 new TemplateBlocksParser()
             );
+        };
+
+        $objContainer[self::STR_TEMPLATE_ENGINE] = function ($c) {
+            $debug = $c[self::STR_CONFIG]->getConfig("debuglevel") == 1;
+            $loader = new \Twig_Loader_Filesystem(_realpath_);
+
+            $twig = new \Twig_Environment($loader, array(
+                'cache' => _realpath_ . 'project/temp/cache',
+                'debug' => $debug,
+            ));
+
+            $twig->addFilter(new \Twig_Filter('lang', [$c[self::STR_LANG], "getLang"]));
+            $twig->addFilter(new \Twig_Filter('date_to_string', 'dateToString'));
+            $twig->addFilter(new \Twig_Filter('number_format', 'numberFormat'));
+            $twig->addFilter(new \Twig_Filter('webpath', function ($module) {
+                return Resourceloader::getInstance()->getWebPathForModule($module);
+            }));
+
+            return $twig;
         };
 
         $objContainer[self::STR_LANG] = function ($c) {

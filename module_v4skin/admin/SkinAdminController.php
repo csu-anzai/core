@@ -14,6 +14,8 @@ use Kajona\System\Admin\AdminInterface;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Classloader;
+use Kajona\System\System\Resourceloader;
+use Kajona\System\System\ServiceProvider;
 use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
@@ -53,6 +55,10 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
      * @permissions view
      * @return string
      * @throws \Kajona\System\System\Exception
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     * @permissions view
      */
     public function actionGenerateMainTemplate($strContent)
     {
@@ -62,16 +68,15 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
         $arrTemplate["quickhelp"] = $this->getQuickHelp();
 
         $objAdminHelper = new AdminHelper();
-        $arrTemplate["languageswitch"] = (SystemModule::getModuleByName("languages") != null ? SystemModule::getModuleByName("languages")->getAdminInstanceOfConcreteModule()->getLanguageSwitch() : "");
         $arrTemplate["webpathTitle"] = urldecode(str_replace(["http://", "https://"], ["", ""], _webpath_));
         $arrTemplate["head"] = "<script type=\"text/javascript\">KAJONA_DEBUG = ".$this->objConfig->getDebug("debuglevel")."; KAJONA_WEBPATH = '"._webpath_."'; KAJONA_BROWSER_CACHEBUSTER = ".SystemSetting::getConfigValue("_system_browser_cachebuster_")."; KAJONA_LANGUAGE = '".Carrier::getInstance()->getObjSession()->getAdminLanguage()."';KAJONA_PHARMAP = ".json_encode(array_values(Classloader::getInstance()->getArrPharModules()))."; var require = {$objAdminHelper->generateRequireJsConfig()};</script>";
 
-        $strTemplate = AdminskinHelper::getPathForSkin().$this->getArrModule("template");
-        $strTemplate = AdminskinHelper::getPathForSkin()."/main.tpl";
-        if ($this->getParam("peClose") == 1 || $this->getParam("pe") == 1) {
-//            $strTemplate = "/folderview.tpl";
-        }
-        return $this->objTemplate->fillTemplateFile($arrTemplate, $strTemplate);
+        $strTemplate = AdminskinHelper::getPathForSkin()."/main.twig";
+        /** @var \Twig_Environment $twig */
+        $twig = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);
+        $strPath = Resourceloader::getInstance()->getTemplate($strTemplate);
+        $strPath = str_replace(_realpath_, "", str_replace("\\", "/", $strPath));
+        return $twig->render($strPath, $arrTemplate);
     }
 
     /**
@@ -79,10 +84,13 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
      * @permissions view
      * @return string
      * @throws \Kajona\System\System\Exception
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
     public function actionGenerateFolderviewTemplate($strContent)
     {
-        return $this->renderTemplate("/main.tpl", $strContent);
+        return $this->renderTemplate("/main.twig", $strContent);
     }
 
     /**
@@ -90,10 +98,13 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
      * @permissions view
      * @return string
      * @throws \Kajona\System\System\Exception
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
     public function actionGenerateLoginTemplate($strContent)
     {
-        return $this->renderTemplate("/login.tpl", $strContent);
+        return $this->renderTemplate("/login.twig", $strContent);
     }
 
     /**
@@ -101,10 +112,13 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
      * @permissions view
      * @return string
      * @throws \Kajona\System\System\Exception
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
     public function actionGenerateAnonymousTemplate($strContent)
     {
-        return $this->renderTemplate("/anonymous.tpl", $strContent);
+        return $this->renderTemplate("/anonymous.twig", $strContent);
     }
 
     /**
@@ -113,17 +127,30 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
      * @param $strContent
      * @return string
      * @throws \Kajona\System\System\Exception
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
     private function renderTemplate($strTemplate, $strContent)
     {
-        $arrTemplate = ["content" => $strContent];
 
+        $arrTemplate = ["content" => $strContent];
 
         $objAdminHelper = new AdminHelper();
         $arrTemplate["webpathTitle"] = urldecode(str_replace(["http://", "https://"], ["", ""], _webpath_));
         $arrTemplate["head"] = "<script type=\"text/javascript\">KAJONA_DEBUG = ".$this->objConfig->getDebug("debuglevel")."; KAJONA_WEBPATH = '"._webpath_."'; KAJONA_BROWSER_CACHEBUSTER = ".SystemSetting::getConfigValue("_system_browser_cachebuster_")."; KAJONA_LANGUAGE = '".Carrier::getInstance()->getObjSession()->getAdminLanguage()."';KAJONA_PHARMAP = ".json_encode(array_values(Classloader::getInstance()->getArrPharModules()))."; var require = {$objAdminHelper->generateRequireJsConfig()};</script>";
 
-        return $this->objTemplate->fillTemplateFile($arrTemplate, $strTemplate);
+
+        $extension = pathinfo($strTemplate, PATHINFO_EXTENSION);
+        if ($extension == "twig") {
+            /** @var \Twig_Environment $twig */
+            $twig = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);
+            $strPath = Resourceloader::getInstance()->getTemplate($strTemplate, true);
+            $strPath = str_replace(_realpath_, "", str_replace("\\", "/", $strPath));
+            return $twig->render($strPath, $arrTemplate);
+        } else {
+            return $this->objTemplate->fillTemplateFile($arrTemplate, $strTemplate);
+        }
     }
 
     /**

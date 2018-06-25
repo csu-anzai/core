@@ -454,8 +454,6 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
      */
     protected function actionStepBrowser()
     {
-        $this->setArrModuleEntry("template", "/folderview.tpl");
-
         $strReturn = "";
         $strFormElement = $this->getParam("form_element");
 

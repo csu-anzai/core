@@ -334,7 +334,6 @@ JS;
     protected function actionEditWidget()
     {
         $strReturn = "";
-        $this->setArrModuleEntry("template", "/folderview.tpl");
         if ($this->getParam("saveWidget") == "") {
             $objDashboardwidget = new DashboardWidget($this->getSystemid());
             $objWidget = $objDashboardwidget->getConcreteAdminwidget();

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{{ "commons_skin_title"|lang("commons") }} [{{ webpathTitle|raw }}]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="generator" content="Kajona Core, https://github.com/artemeon/core" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <link rel="stylesheet" href="_webpath_{{ "module_system"|webpath }}/scripts/jqueryui/css/smoothness/jquery-ui.custom.css?_system_browser_cachebuster_" type="text/css" />
+    <link rel="stylesheet" href="_webpath_{{ "module_system"|webpath }}/scripts/qtip2/jquery.qtip.min.css?_system_browser_cachebuster_" type="text/css" />
+    <link rel="stylesheet" href="_webpath_{{ "module_v4skin"|webpath }}/admin/skins/kajona_v4/less/styles.min.css?_system_browser_cachebuster_" type="text/css" />
+
+    <script src="_webpath_{{ "module_system"|webpath }}/scripts/jquery/jquery.min.js?_system_browser_cachebuster_"></script>
+    <script src="_webpath_{{ "module_system"|webpath }}/scripts/routie/routie.min.js?_system_browser_cachebuster_"></script>
+    {{ head|raw }}
+    <script src="_webpath_{{ "module_system"|webpath }}/scripts/requirejs/require.js?_system_browser_cachebuster_"></script>
+    <script type="text/javascript">
+        require(['app'], function() {});
+    </script>
+
+    <link rel="shortcut icon" href="_webpath_/{{ "module_v4skin"|webpath }}/admin/skins/kajona_v4/img/favicon.png">
+</head>
+
+<body class="login">
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-md-5 center-block" id="content">
+
+            <div class="panel panelDefault" id="loginContainer">
+                <div class="panel-header">
+                    <h3>{{ "commons_skin_header"|lang("commons") }}</h3>
+                </div>
+                <div class="panel-body">
+                    <!--[if lt IE 9]>
+                    <div class="alert alert-danger">
+                        You are using an outdated version of Internet Explorer. Please use a modern webbrowser like Mozilla Firefox or Google Chrome, or upgrade your Internet Explorer installation to access this application.<br /><br />
+                        Sie verwenden eine veraltete Version des Internet Explorers. Bitte verwenden Sie einen modernen Webbrowser wie Mozilla Firefox oder Google Chrome oder aktualisieren Sie Ihre Internet Explorer Installation um auf diese Anwendung zuzugreifen.
+                    </div>
+                    <![endif]-->
+                    <!--[if lt IE 9]><style type="text/css"> #moduleOutput {display: none;} </style><![endif]-->
+                    <div id="moduleOutput">{{ content|raw }}</div>
+                </div>
+                <div class="panel-footer">
+                    {{ "commons_login_footer"|lang("commons")|raw }}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
