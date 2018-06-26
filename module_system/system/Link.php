@@ -347,7 +347,6 @@ class Link
      */
     public static function getLinkAdminDialog($strModule, $strAction, $strParams = "", $strText = "", $strAlt = "", $strImage = "", $strTitle = "", $bitTooltip = true, $bitPortalEditor = false, $strOnClick = "")
     {
-        $strLink = "";
         $strTitle = addslashes(StringUtil::replace(array("\n", "\r"), array(), strip_tags(nl2br($strTitle))));
 
         if (is_string($strParams)) {
@@ -371,26 +370,18 @@ class Link
             $strOnClick = "require('dialogHelper').showIframeDialog('{$strLink}', '{$strTitle}'); return false;";
         }
 
-
-        if ($strImage != "") {
-            if ($strAlt == "") {
-                $strAlt = $strAction;
-            }
-
-            if (!$bitTooltip) {
-                $strLink = "<a href=\"#\" onclick=\"".$strOnClick."\" title=\"".strip_tags($strAlt)."\">".AdminskinHelper::getAdminImage($strImage, $strAlt, true)."</a>";
-            } else {
-                $strLink = "<a href=\"#\" onclick=\"".$strOnClick."\" title=\"".strip_tags($strAlt)."\" rel=\"tooltip\">".AdminskinHelper::getAdminImage($strImage, $strAlt, true)."</a>";
-            }
+        $strLinkContent = $strText;
+        if ($strAlt == "") {
+            $strAlt = $strText;
         }
 
-        if ($strImage == "" && $strText != "") {
-            if ($strAlt == "") {
-                $strAlt = $strText;
-            }
-            $strLink = "<a href=\"#\" ".($bitPortalEditor ? "class=\"pe_link\"" : "")." ".($bitTooltip ? "title=\"".strip_tags($strAlt)."\" rel=\"tooltip\" " : "")." onclick=\"".$strOnClick."\">".$strText."</a>";
+        if ($strImage !== "") {
+            $strLinkContent = AdminskinHelper::getAdminImage($strImage, $strAlt, true);
         }
-        return $strLink;
+
+
+
+        return "<a href=\"#\" onclick=\"".$strOnClick."\" title=\"".strip_tags($strAlt)."\" ".($bitTooltip ? " rel=\"tooltip\"" : "" )." >".$strLinkContent."</a>";
     }
 
     /**
