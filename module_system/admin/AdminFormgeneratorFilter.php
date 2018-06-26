@@ -118,6 +118,19 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
         return self::renderToolbarEntry($strReturn, $bitFilterActive, $this->getBitInitiallyVisible(), $this->getStrLangActive(), $this->getStrLangInactive());
     }
 
+    /**
+     * @inheritDoc
+     * The focus is only set in case the filter is visible
+     */
+    protected function renderBrowserFocus()
+    {
+        if ($this->getBitInitiallyVisible()) {
+            return parent::renderBrowserFocus();
+        }
+        return "";
+    }
+
+
     public static function renderToolbarEntry($strFilter, $bitFilterActive, $bitInitiallyVisible = false, $strLangActive = null, $strLangInactive = null)
     {
         $objLang = Carrier::getInstance()->getObjLang();
