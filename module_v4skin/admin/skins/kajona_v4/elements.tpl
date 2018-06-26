@@ -727,7 +727,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         <div class="col-sm-6">
             <div class="input-group">
                 <div class="input-group-addon"><i class="fa fa-calendar-o"></i></div>
-                <input id="%%calendarId%%" name="%%calendarId%%" class="form-control %%class%%" size="16" type="text" value="%%valuePlain%%" %%readonly%%>
+                <input id="%%calendarId%%" name="%%calendarId%%" class="form-control %%class%%" size="16" type="text" value="%%valuePlain%%" %%readonly%% autocomplete="off">
             </div>
             <script>
                 require(["bootstrap-datepicker"], function() {
@@ -763,7 +763,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         <div class="col-sm-2">
             <div class="input-group">
                 <div class="input-group-addon"><i class="fa fa-calendar-o"></i></div>
-                <input id="%%calendarId%%" name="%%calendarId%%" class="form-control" size="16" type="text" value="%%valuePlain%%" %%readonly%%>
+                <input id="%%calendarId%%" name="%%calendarId%%" class="form-control" size="16" type="text" value="%%valuePlain%%" %%readonly%% autocomplete="off">
             </div>
         </div>
 
