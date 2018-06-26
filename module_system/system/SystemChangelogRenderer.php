@@ -10,7 +10,7 @@ namespace Kajona\System\System;
 
 use AGP\Prozessverwaltung\Admin\Formentries\FormentryOe;
 use AGP\Prozessverwaltung\Admin\Formentries\FormentryProzess;
-use Kajona\Flow\System\FlowManager;
+use Kajona\Flow\System\ServiceProvider as FlowServiceProvider;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\Formentries\FormentryDate;
 use Kajona\System\Admin\Formentries\FormentryDatetime;
@@ -355,14 +355,14 @@ class SystemChangelogRenderer
     /**
      * Returns flow status by class name and staus number.
      *
-     * @param sting $status
+     * @param string $status
      * @param string $className
      * @return string
      */
     private function getValueForStatus($status, $className)
     {
         if (SystemModule::getModuleByName("flow") !== null) {
-            $objFlowManager = new FlowManager();
+            $objFlowManager =  Carrier::getInstance()->getContainer()->offsetGet(FlowServiceProvider::STR_MANAGER);
             $classFlow = $objFlowManager->getFlowForClass($className);
             if ($classFlow !== null) {
                 $flowStatus = $classFlow->getStatusByIndex($status);

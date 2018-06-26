@@ -889,14 +889,14 @@ JS;
 
         $strReturn = "";
         //showing a list using the pageview
-        $arrChangeActionsFilter = [];
+        $arrExcludeActionsFilter = [];
         if (!Session::getInstance()->isSuperAdmin()
             && !Rights::getInstance()->checkPermissionForUserId(Session::getInstance()->getUserID(), Rights::$STR_RIGHT_RIGHT, $strSystemid)) {
-            $arrChangeActionsFilter = [SystemChangelog::$STR_ACTION_PERMISSIONS];
+            $arrExcludeActionsFilter = [SystemChangelog::$STR_ACTION_PERMISSIONS];
         }
-        $objArraySectionIterator = new ArraySectionIterator(SystemChangelog::getLogEntriesCount($strSystemid, $arrChangeActionsFilter));
+        $objArraySectionIterator = new ArraySectionIterator(SystemChangelog::getLogEntriesCount($strSystemid, $arrExcludeActionsFilter));
         $objArraySectionIterator->setPageNumber((int)($this->getParam("pv") != "" ? $this->getParam("pv") : 1));
-        $objArraySectionIterator->setArraySection(SystemChangelog::getLogEntries($strSystemid, $objArraySectionIterator->calculateStartPos(), $objArraySectionIterator->calculateEndPos(), $arrChangeActionsFilter));
+        $objArraySectionIterator->setArraySection(SystemChangelog::getLogEntries($strSystemid, $objArraySectionIterator->calculateStartPos(), $objArraySectionIterator->calculateEndPos(), $arrExcludeActionsFilter));
 
         $objManager = new PackagemanagerManager();
         $arrToolbar = array();
