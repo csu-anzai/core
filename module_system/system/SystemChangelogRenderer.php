@@ -108,7 +108,7 @@ class SystemChangelogRenderer
                 $strType = FormentryDate::class;
             } elseif ($strProperty == "intRecordStatus" && $strValue !== "") {
                 $statusValue = $this->getValueForStatus($strValue, $this->objReflection->getStrSourceClass());
-                return !empty($statusValue) ? $this->objLang->getLang($statusValue, "gdpr") : $strValue;
+                return !empty($statusValue) ? $statusValue : $strValue;
             } else {
                 $strType = $this->getFallbackType($strProperty);
             }
@@ -366,7 +366,7 @@ class SystemChangelogRenderer
             $classFlow = $objFlowManager->getFlowForClass($className);
             if ($classFlow !== null) {
                 $flowStatus = $classFlow->getStatusByIndex($status);
-                return $flowStatus->getStrName();
+                return $flowStatus->getStrDisplayName();
             }
         }
 
