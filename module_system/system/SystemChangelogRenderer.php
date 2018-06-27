@@ -10,6 +10,7 @@ namespace Kajona\System\System;
 
 use AGP\Prozessverwaltung\Admin\Formentries\FormentryOe;
 use AGP\Prozessverwaltung\Admin\Formentries\FormentryProzess;
+use Kajona\Flow\System\ServiceProvider as FlowServiceProvider;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\Formentries\FormentryDate;
 use Kajona\System\Admin\Formentries\FormentryDatetime;
@@ -79,7 +80,7 @@ class SystemChangelogRenderer
 
         $strPropertyLabel = Carrier::getInstance()->getObjLang()->getLang($strKey, $strModule);
         if ($strPropertyLabel == "!{$strKey}!") {
-            $strKey = "form_".$this->strModule."_".Lang::getInstance()->propertyWithoutPrefix($strProperty);
+            $strKey = "form_" . $this->strModule . "_" . Lang::getInstance()->propertyWithoutPrefix($strProperty);
             $strPropertyLabel = Carrier::getInstance()->getObjLang()->getLang($strKey, $strModule);
         }
 
@@ -105,6 +106,9 @@ class SystemChangelogRenderer
                 $strType = FormentryObjectlist::class;
             } elseif (StringUtil::indexOf($strProperty, "date", false) !== false && Date::isDateValue($strValue)) {
                 $strType = FormentryDate::class;
+            } elseif ($strProperty == "intRecordStatus" && $strValue !== "") {
+                $statusValue = $this->getValueForStatus($strValue, $this->objReflection->getStrSourceClass());
+                return !empty($statusValue) ? $statusValue : $strValue;
             } else {
                 $strType = $this->getFallbackType($strProperty);
             }
@@ -256,6 +260,8 @@ class SystemChangelogRenderer
             case FormentryDropdown::class:
                 if (!empty($arrDDValues) && array_key_exists($strValue, $arrDDValues)) {
                     return $arrDDValues[$strValue];
+                } elseif (validateSystemid($strValue)) {//in case it is a dropdown filed with system values
+                    return $this->getStrValueForObjects($strValue);
                 } else {
                     return $strValue;
                 }
@@ -347,6 +353,27 @@ class SystemChangelogRenderer
     }
 
     /**
+     * Returns flow status by class name and staus number.
+     *
+     * @param string $status
+     * @param string $className
+     * @return string
+     */
+    private function getValueForStatus($status, $className)
+    {
+        if (SystemModule::getModuleByName("flow") !== null) {
+            $objFlowManager =  Carrier::getInstance()->getContainer()->offsetGet(FlowServiceProvider::STR_MANAGER);
+            $classFlow = $objFlowManager->getFlowForClass($className);
+            if ($classFlow !== null) {
+                $flowStatus = $classFlow->getStatusByIndex($status);
+                return $flowStatus->getStrDisplayName();
+            }
+        }
+
+        return "";
+    }
+
+    /**
      * Gets a string representation for a given object id.
      * If the given param $strObjectIds contains a comma separated value of system id's, all display name of the objects
      * will be returned. Does also work with  an array of objects or system ids
@@ -363,7 +390,7 @@ class SystemChangelogRenderer
                 return validateSystemid($strSystemId);
             });
         } elseif (is_array($strObjectIds)) {
-            $arrSystemIds = array_filter(array_map(function($objValue){
+            $arrSystemIds = array_filter(array_map(function ($objValue) {
                 if (is_string($objValue)) {
                     return validateSystemid($objValue) ? $objValue : null;
                 } elseif ($objValue instanceof Model) {
@@ -379,8 +406,7 @@ class SystemChangelogRenderer
             $objObject = Objectfactory::getInstance()->getObject($strSystemId);
             if ($objObject instanceof ModelInterface) {
                 $arrNames[] = $objObject->getStrDisplayName();
-            }
-            else {
+            } else {
                 $arrNames[] = $strSystemId;
             }
         }
