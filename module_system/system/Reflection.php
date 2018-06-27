@@ -358,12 +358,13 @@ class Reflection
      *
      * @param string $strAnnotation
      * @param integer $intEnum - whether to return annotation values or parameters, default is values
+     * @param bool $noParentParams - set "true" if parent parameters are not needed
      *
      * @return string[] ["propertyname" => "annotationvalue"]
      */
-    public function getPropertiesWithAnnotation($strAnnotation, $intEnum = ReflectionEnum::VALUES)
+    public function getPropertiesWithAnnotation($strAnnotation, $intEnum = ReflectionEnum::VALUES, $noParentParams = false)
     {
-        $strCacheKey = $strAnnotation . "_" . $intEnum;
+        $strCacheKey = $strAnnotation . "_" . $intEnum . (($noParentParams) ? "noParent" : "");
         if (isset($this->arrCurrentCache[self::$STR_PROPERTIES_CACHE][$strCacheKey])) {
             return $this->arrCurrentCache[self::$STR_PROPERTIES_CACHE][$strCacheKey];
         }
@@ -372,11 +373,13 @@ class Reflection
 
         $arrProperties = $this->objReflectionClass->getProperties();
 
-        //check if there's a base-class -> inheritance, so base class before extending class
-        $objBaseClass = $this->objReflectionClass->getParentClass();
-        if ($objBaseClass !== false) {
-            $objBaseAnnotations = new Reflection($objBaseClass->getName());
-            $arrReturn = array_merge($arrReturn, $objBaseAnnotations->getPropertiesWithAnnotation($strAnnotation, $intEnum));
+        if (!$noParentParams) {
+            //check if there's a base-class -> inheritance, so base class before extending class
+            $objBaseClass = $this->objReflectionClass->getParentClass();
+            if ($objBaseClass !== false) {
+                $objBaseAnnotations = new Reflection($objBaseClass->getName());
+                $arrReturn = array_merge($arrReturn, $objBaseAnnotations->getPropertiesWithAnnotation($strAnnotation, $intEnum));
+            }
         }
 
 
