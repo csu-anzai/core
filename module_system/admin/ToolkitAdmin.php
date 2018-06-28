@@ -34,7 +34,8 @@ use Kajona\System\System\SystemJSTreeConfig;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\Toolkit;
-use Kajona\System\View\Components\Datatable\Datatable;
+use Kajona\System\View\Components\Datatable\Model\DTable\DTable;
+use Kajona\System\View\Components\DTable\DTableComponent;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Popover\Popover;
 use Kajona\Tags\System\TagsFavorite;
@@ -1647,10 +1648,17 @@ HTML;
      */
     public function dataTable(array $arrHeader, array $arrValues, $strTableCssAddon = "", $bitWithTbody = false)
     {
-        $objTable = new Datatable($arrHeader, $arrValues);
-        $objTable->setStrTableCssAddon($strTableCssAddon);
-        $objTable->setBitWithTbody($bitWithTbody);
-        return $objTable->renderComponent();
+        // Alternative creation of the DTable object
+        // $objDTable = new DTable([$arrHeader], $arrValues);
+        $objDTable = new DTable();
+        $objDTable->addHeader($arrHeader);
+        $objDTable->setRows($arrValues);
+
+
+        $objDTableComponent = new DTableComponent($objDTable);
+        $objDTableComponent->setTableCssAddon($strTableCssAddon);
+        $objDTableComponent->setWithTbody($bitWithTbody);
+        return $objDTableComponent->renderComponent();
     }
 
 
