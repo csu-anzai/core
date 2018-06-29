@@ -1341,7 +1341,7 @@ HTML;
         $arrHeader[] = $this->getLang("login_ip");
         $arrHeader[] = $this->getLang("login_utrace");
         //and fetch the table
-        $strReturn .= $this->objToolkit->dataTable($arrHeader, $arrRows);
+        $strReturn .= $this->objToolkit->dTable([$arrHeader], $arrRows);
         $strReturn .= $this->objToolkit->getPageview($objIterator, "user", "loginlog");
 
         return $strReturn;

@@ -51,6 +51,8 @@ class DTable
     }
 
     /**
+     * Adds list of new header rows into list of headers.
+     *
      * @param array $headers
      */
     public function setHeaders(array $headers)
@@ -89,6 +91,8 @@ class DTable
     }
 
     /**
+     * Adds new header row into list of headers.
+     *
      * @param DRow|array $header
      */
     function addHeader($header)
