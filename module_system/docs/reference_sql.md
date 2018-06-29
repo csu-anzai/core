@@ -27,3 +27,5 @@ the `getGenerator()` method uses a paged query, e.g. by adding a `LIMIT` express
 Therefore it's essential to pass a SQL statement including an `ORDER BY` definition, 
 otherwise it it's not guaranteed to have unique entries per iteration.
  
+ ## Blocked Keywords
+ - Priority (Oracle)
