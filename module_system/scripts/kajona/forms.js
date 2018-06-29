@@ -21,7 +21,7 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
     forms.hideField = function(objField) {
         objField = util.getElement(objField);
 
-        var objFormGroup = objField.is('h3') || objField.is('h4') ? objField : objField.closest('.form-group');
+        var objFormGroup = objField.is('h3') || objField.is('h4') || objField.is('p') ? objField : objField.closest('.form-group');
 
         //1. Hide field
         objFormGroup.slideUp(0);
@@ -41,7 +41,7 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
     forms.showField = function(objField) {
         objField = util.getElement(objField);
 
-        var objFormGroup = objField.is('h3') || objField.is('h4') ? objField : objField.closest('.form-group');
+        var objFormGroup = objField.is('h3') || objField.is('h4') || objField.is('p') ? objField : objField.closest('.form-group');
 
         //1. Show field
         objFormGroup.slideDown(0);
