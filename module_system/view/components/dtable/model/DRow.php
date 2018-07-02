@@ -4,9 +4,7 @@
 *       Published under the GNU LGPL v2.1                                                               *
 ********************************************************************************************************/
 
-namespace Kajona\System\View\Components\DTable\Model\DRow;
-
-use Kajona\System\View\Components\DTable\Model\DCell\DCell;
+namespace Kajona\System\View\Components\DTable\Model;
 
 /**
  * DRow class.

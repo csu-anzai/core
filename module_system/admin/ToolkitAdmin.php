@@ -35,7 +35,7 @@ use Kajona\System\System\SystemSetting;
 use Kajona\System\System\Toolkit;
 use Kajona\System\View\Components\Datatable\Datatable;
 use Kajona\System\View\Components\DTable\DTableComponent;
-use Kajona\System\View\Components\DTable\Model\DTable\DTable;
+use Kajona\System\View\Components\DTable\Model\DTable;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Popover\Popover;
 use Kajona\Tags\System\TagsFavorite;
