@@ -9,7 +9,7 @@ declare(strict_types = 1);
 namespace Kajona\System\View\Components\DTable;
 
 use Kajona\System\View\Components\AbstractComponent;
-use Kajona\System\View\Components\Datatable\Model\DTable\DTable;
+use Kajona\System\View\Components\DTable\Model\DTable\DTable;
 
 
 /**

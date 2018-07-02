@@ -4,7 +4,7 @@
 *       Published under the GNU LGPL v2.1                                                               *
 ********************************************************************************************************/
 
-namespace Kajona\System\View\Components\Datatable\Model\DCell;
+namespace Kajona\System\View\Components\DTable\Model\DCell;
 
 /**
  * DCell class.
