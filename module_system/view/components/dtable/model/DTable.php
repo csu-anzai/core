@@ -71,18 +71,6 @@ class DTable
     }
 
     /**
-     * @return array
-     */
-    public function getRowsJson(): array
-    {
-        $jsonRows = [];
-        foreach ($this->rows as $row) {
-            $jsonRows[] = $row->getCellsJson();
-        }
-        return $jsonRows;
-    }
-
-    /**
      * @param DRow|array $row
      */
     function addRow($row)

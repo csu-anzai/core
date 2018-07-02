@@ -1674,11 +1674,6 @@ HTML;
      */
     public function dTable(array $arrHeaders, array $arrValues, $strTableCssAddon = "", $bitWithTbody = false)
     {
-        // Alternative creation of the DTable object
-//        $objDTable = new DTable();
-//        $objDTable->addHeader($arrHeader);
-//        $objDTable->setRows($arrValues);
-
         $objDTable = new DTable($arrHeaders, $arrValues);
         $objDTableComponent = new DTableComponent($objDTable);
         $objDTableComponent->setTableCssAddon($strTableCssAddon);

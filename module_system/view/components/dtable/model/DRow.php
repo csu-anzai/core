@@ -46,19 +46,6 @@ class DRow
     }
 
     /**
-     * @return string
-     */
-    function getCellsJson()
-    {
-        $cellsToReturn = [];
-        foreach ($this->getCells() as $cell) {
-            $cellsToReturn[] = $cell->getValue();
-        }
-
-        return json_encode($cellsToReturn);
-    }
-
-    /**
      * @param DCell|string $cell
      */
     function addCell($cell)
