@@ -455,6 +455,45 @@ SQL;
         ];
     }
 
+    public function testGetGeneratorLimit()
+    {
+        $this->createTable();
+
+        $maxCount = 60;
+        $chunkSize = 16;
+
+        $data = array();
+        for ($i = 0; $i < $maxCount; $i++) {
+            $data[] = array(generateSystemid(), $i, $i, $i, $i, $i, $i, $i, $i);
+        }
+
+        $database = Carrier::getInstance()->getObjDB();
+        $database->multiInsert("temp_autotest", array("temp_id", "temp_long", "temp_double", "temp_char10", "temp_char20", "temp_char100", "temp_char254", "temp_char500", "temp_text"), $data);
+
+        $result = $database->getGenerator("SELECT temp_char10 FROM " . _dbprefix_ . "temp_autotest ORDER BY temp_long ASC", [], $chunkSize);
+        $i = 0;
+        $page = 0;
+        $pages = floor($maxCount / $chunkSize);
+        $rest = $maxCount % $chunkSize;
+
+        foreach ($result as $rows) {
+            for ($j = 0; $j < $chunkSize; $j++) {
+                if ($page == $pages && $j >= $rest) {
+                    // if we have reached the last row of the last chunk break
+                    break 2;
+                }
+
+                $this->assertEquals($i, $rows[$j]["temp_char10"]);
+                $i++;
+            }
+
+            $page++;
+        }
+
+        $this->assertEquals($maxCount, $i);
+        $this->assertEquals($pages, $page);
+    }
+
     public function testGetGenerator()
     {
         $objDb = Database::getInstance();
