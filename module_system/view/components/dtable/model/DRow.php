@@ -21,14 +21,14 @@ class DRow
      * DRow constructor.
      * @param array $cells
      */
-    function __construct(array $cells = []) {
+    public function __construct(array $cells = []) {
         $this->setCells($cells);
     }
 
     /**
      * @param array $cells
      */
-    function setCells(array $cells)
+    public function setCells(array $cells)
     {
         foreach ($cells as $cell) {
             $this->addCell($cell);
@@ -38,7 +38,7 @@ class DRow
     /**
      * @return array
      */
-    function getCells()
+    public function getCells()
     {
         return $this->cells;
     }
@@ -46,7 +46,7 @@ class DRow
     /**
      * @param DCell|string $cell
      */
-    function addCell($cell)
+    public function addCell($cell)
     {
         $this->cells[] = (!is_object($cell)) ? new DCell($cell) : $cell;
     }

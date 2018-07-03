@@ -34,8 +34,6 @@ use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\Toolkit;
 use Kajona\System\View\Components\Datatable\Datatable;
-use Kajona\System\View\Components\DTable\DTableComponent;
-use Kajona\System\View\Components\DTable\Model\DTable;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Popover\Popover;
 use Kajona\Tags\System\TagsFavorite;
@@ -1646,40 +1644,16 @@ HTML;
      * @param boolean $bitWithTbody whether to render the table with a tbody element
      *
      * @return string
-     * @deprecated Deprecated, use 'DTableComponent" with "DTable" class or "dTable" method instead.
+     * @deprecated Deprecated, use 'DTableComponent" with "DTable" class.
      */
     public function dataTable(array $arrHeader, array $arrValues, $strTableCssAddon = "", $bitWithTbody = false)
     {
         $objTable = new Datatable($arrHeader, $arrValues);
         $objTable->setStrTableCssAddon($strTableCssAddon);
         $objTable->setBitWithTbody($bitWithTbody);
-        //$a = $objTable->renderComponent();
         return $objTable->renderComponent();
 
     }
-
-    /**
-     * Returns a table filled with infos.
-     * The headers may be build as array of DRow class objects and every DRow class object as array of DCell class objects.
-     * To build headers with collspan use setColspan() method of class DCell;
-     * Values may be build as array of  DRow class objects or array of array.
-     *
-     * @param mixed $arrHeaders the first rows to name the columns
-     * @param mixed $arrValues every entry is one row
-     * @param string $strTableCssAddon an optional css-class added to the table tag
-     * @param boolean $bitWithTbody whether to render the table with a tbody element
-     *
-     * @return string
-     */
-    public function dTable(array $arrHeaders, array $arrValues, $strTableCssAddon = "", $bitWithTbody = false)
-    {
-        $objDTable = new DTable($arrHeaders, $arrValues);
-        $objDTableComponent = new DTableComponent($objDTable);
-        $objDTableComponent->setTableCssAddon($strTableCssAddon);
-        $objDTableComponent->setWithTbody($bitWithTbody);
-        return $objDTableComponent->renderComponent();
-    }
-
 
     // --- Action-Elements ----------------------------------------------------------------------------------
 
