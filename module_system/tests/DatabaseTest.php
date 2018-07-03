@@ -469,7 +469,7 @@ SQL;
         $database = Carrier::getInstance()->getObjDB();
         $database->multiInsert("temp_autotest", array("temp_id", "temp_long", "temp_double", "temp_char10", "temp_char20", "temp_char100", "temp_char254", "temp_char500", "temp_text"), $data);
 
-        $result = $database->getGenerator("SELECT temp_char10 FROM " . _dbprefix_ . "temp_autotest ORDER BY temp_long ASC", [], $chunkSize);
+        $result = $database->getGenerator("SELECT temp_char10 FROM agp_temp_autotest ORDER BY temp_long ASC", [], $chunkSize);
         $i = 0;
         $page = 0;
         $pages = floor($maxCount / $chunkSize);
