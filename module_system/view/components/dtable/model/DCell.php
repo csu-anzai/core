@@ -29,10 +29,14 @@ class DCell
 
     /**
      * @param string $value
+     *
+     * @return DCell
      */
     public function setValue($value)
     {
         $this->value = $value;
+
+        return $this;
     }
 
     /**
@@ -53,10 +57,14 @@ class DCell
 
     /**
      * @param int $colspan
+     *
+     * @return DCell
      */
     public function setColspan(int $colspan)
     {
         $this->colspan = $colspan;
+
+        return $this;
     }
 
 }

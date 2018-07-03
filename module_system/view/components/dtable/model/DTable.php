@@ -15,16 +15,22 @@ namespace Kajona\System\View\Components\DTable\Model;
  */
 class DTable
 {
+    /**
+     * @var DRow[] $headers
+     */
     private $headers = [];
 
+    /**
+     * @var DRow[] $rows
+     */
     private $rows = [];
 
     /**
      * DTable constructor.
-     * @param array $headers
-     * @param array $rows
+     * @param DRow[]|array $headers
+     * @param DRow[]|array $rows
      */
-    public function __construct($headers=[], $rows=[])
+    public function __construct(array $headers=[], array $rows=[])
     {
         if (!empty($headers)) $this->setHeaders($headers);
         if (!empty($rows)) $this->setRows($rows);
@@ -32,12 +38,16 @@ class DTable
 
     /**
      * @param array $rows
+     *
+     * @return DTable
      */
     public function setRows(array $rows)
     {
         foreach ($rows as $row) {
             $this->addRow($row);
         }
+
+        return $this;
     }
 
     /**
@@ -52,12 +62,16 @@ class DTable
      * Adds list of new header rows into list of headers.
      *
      * @param array $headers
+     *
+     * @return DTable
      */
     public function setHeaders(array $headers)
     {
         foreach ($headers as $header) {
             $this->addHeader($header);
         }
+
+        return $this;
     }
 
     /**
@@ -70,20 +84,28 @@ class DTable
 
     /**
      * @param DRow|array $row
+     *
+     * @return DTable
      */
     function addRow($row)
     {
         $this->rows[] = (!is_object($row)) ? new DRow($row) : $row;
+
+        return $this;
     }
 
     /**
      * Adds new header row into list of headers.
      *
      * @param DRow|array $header
+     *
+     * @return DTable
      */
     function addHeader($header)
     {
         $this->headers[] = (!is_object($header)) ? new DRow($header) : $header;
+
+        return $this;
     }
 
 

@@ -27,12 +27,16 @@ class DRow
 
     /**
      * @param array $cells
+     *
+     * @return DRow
      */
     public function setCells(array $cells)
     {
         foreach ($cells as $cell) {
             $this->addCell($cell);
         }
+
+        return $this;
     }
 
     /**
@@ -45,9 +49,13 @@ class DRow
 
     /**
      * @param DCell|string $cell
+     *
+     * @return DRow
      */
     public function addCell($cell)
     {
         $this->cells[] = (!is_object($cell)) ? new DCell($cell) : $cell;
+
+        return $this;
     }
 }

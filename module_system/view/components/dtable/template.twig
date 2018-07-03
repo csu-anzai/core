@@ -24,7 +24,7 @@
         <tr data-systemid="{{ i }}">
             {% set j = 0 %}
             {% for cell in row.cells %}
-                <td class="row-{{ j }}">
+                <td {% if cell.colspan > 0 %} colspan="{{ cell.colspan }}" {% endif %} class="row-{{ j }}">
                     {{ cell.value | raw }}
                 </td>
                 {% set j = j + 1 %}
