@@ -8,6 +8,8 @@
 
 namespace Kajona\System\System\Template;
 
+use Kajona\System\System\Resourceloader;
+
 /**
  * Custom twig file loader which also tries to load a template inside a .phar archive
  *
@@ -20,35 +22,21 @@ class Loader extends \Twig_Loader_Filesystem
     protected function findTemplate($name, $throw = true)
     {
         $name = str_replace(_realpath_, "", str_replace("\\", "/", $name));
-        $phar = false;
+        $parts = explode("/", str_replace("\\", "/", $name));
 
-        if (substr($name, 0, 7) == "phar://") {
-            $name = substr($name, 7);
-            $phar = true;
+        $core = array_shift($parts);
+        $module = array_shift($parts);
+
+        $file = Resourceloader::getInstance()->getAbsolutePathForModule($module) . "/" . implode("/", $parts);
+
+        if (is_file($file)) {
+            return $this->cache[$name] = $file;
         }
 
-        if ($phar) {
-            // in case we have a phar use a special logic
-            $allFiles = [];
-            foreach ($this->paths as $namespace => $paths) {
-                foreach ($paths as $path) {
-                    $filePath = "phar://" . $path . "/" . $name;
-                    if (is_file($filePath)) {
-                        return $this->cache[$name] = $filePath;
-                    }
-
-                    $allFiles[] = $filePath;
-                }
-            }
-
-            if ($throw) {
-                throw new \Twig_Error_Loader(sprintf('Unable to find template "%s" (looked into phar: %s).', $name, implode(', ', $allFiles)));
-            } else {
-                return false;
-            }
+        if ($throw) {
+            throw new \Twig_Error_Loader(sprintf('Unable to find template "%s" (looked into: %s).', $name, $file));
         } else {
-            // in case we have no phar use the normal logic
-            return parent::findTemplate($name, $throw);
+            return false;
         }
     }
 }
