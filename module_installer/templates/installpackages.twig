@@ -15,11 +15,11 @@
 
 <table class="table table-striped">
     <tr>
-        <th>[lang,installer_package_title,installer]</th>
-        <th>[lang,installer_package_version,installer]</th>
-        <th>[lang,installer_package_installation,installer]</th>
-        <th>[lang,installer_package_samplecontent,installer]</th>
-        <th>[lang,installer_package_hint,installer]</th>
+        <th>{{ "installer_package_title"|lang("installer") }}</th>
+        <th>{{ "installer_package_version"|lang("installer") }}</th>
+        <th>{{ "installer_package_installation"|lang("installer") }}</th>
+        <th>{{ "installer_package_samplecontent"|lang("installer") }}</th>
+        <th>{{ "installer_package_hint"|lang("installer") }}</th>
     </tr>
 
     {% for i,v in packages %}
