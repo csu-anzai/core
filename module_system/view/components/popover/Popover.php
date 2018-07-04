@@ -15,7 +15,7 @@ use Kajona\System\View\Components\AbstractComponent;
  *
  * @author stefan.idler@artemeon.de
  * @since 7.0
- * @componentTemplate template.twig
+ * @componentTemplate core/module_system/view/components/popover/template.twig
  */
 class Popover extends AbstractComponent
 {
