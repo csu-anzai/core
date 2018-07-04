@@ -22,7 +22,7 @@ class Loader extends \Twig_Loader_Filesystem
     protected function findTemplate($name, $throw = true)
     {
         $name = str_replace(_realpath_, "", str_replace("\\", "/", $name));
-        $parts = explode("/", str_replace("\\", "/", $name));
+        $parts = explode("/", $name);
 
         $core = array_shift($parts);
         $module = array_shift($parts);
