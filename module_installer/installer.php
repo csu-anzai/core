@@ -206,8 +206,8 @@ class Installer
             "openssl"
         );
 
-        $phpcheck_intro = $this->getLang("installer_phpcheck_intro");
-        $phpcheck_lang = $this->getLang("installer_phpcheck_lang");
+        $phpcheckIntro = $this->getLang("installer_phpcheck_intro");
+        $phpcheckLang = $this->getLang("installer_phpcheck_lang");
 
         $arrChecksLanguages = [];
         //link to different languages
@@ -218,7 +218,7 @@ class Installer
             $arrChecksLanguages[$tmpCounter] = "<a href=\""._webpath_."/installer.php?language=".$strOneLang."\">".Carrier::getInstance()->getObjLang()->getLang("lang_".$strOneLang, "user")."</a>";
             if ($intLangCount++ < count($arrLangs)) {
                 $tmpCounter++;
-                $arrChecksLanguages[$tmpCounter] = " | ";
+                $arrChecksLanguages[$tmpCounter] .= " | ";
             }
             $tmpCounter++;
         }
@@ -261,8 +261,8 @@ class Installer
         $twig = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);
 
         $strReturn = $twig->render("core/module_installer/templates/phpsettings.twig" , [
-            "phpcheck_intro" => $phpcheck_intro,
-            "phpcheck_lang" => $phpcheck_lang,
+            "phpcheck_intro" => $phpcheckIntro,
+            "phpcheck_lang" => $phpcheckLang,
             "phpcheck_languages" => $arrChecksLanguages,
             "fileChecksFolder" => $arrChecksFolder,
             "fileChecksModules" => $arrChecksModules,
