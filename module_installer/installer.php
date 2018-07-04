@@ -249,7 +249,6 @@ class Installer
 
         $this->strForwardLink = $this->getForwardLink(_webpath_."/installer.php?step=config");
         $this->strBackwardLink = "";
-        Resourceloader::getInstance()->getAbsolutePathForModule("module_installer");
 
         /** @var \Twig_Environment $twig */
         $twig = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);
