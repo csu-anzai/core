@@ -478,7 +478,7 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
 
             $strAction = "";
             $strAction .= $this->objToolkit->listButton(
-                "<a href=\"#\" title=\"".$this->getLang("prozess_uebernehmen")."\" rel=\"tooltip\" onClick=\"require('v4skin').setObjectListItems(
+                "<a href=\"#\" title=\"".$this->getLang("prozess_uebernehmen")."\" rel=\"tooltip\" onClick=\"require('folderview').setObjectListItems(
                     '".$strFormElement."', [{strSystemId: '".$objStatus->getSystemid()."', strDisplayName: '".addslashes($objStatus->getStrName())."', strIcon:'".addslashes(getImageAdmin("icon_treeLeaf", "", true))."'}], null, '".addslashes(getImageAdmin("icon_delete", "", true))."'); parent.KAJONA.admin.folderview.dialog.hide();\">"
                 .AdminskinHelper::getAdminImage("icon_accept") . "</a>"
             );

@@ -727,7 +727,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         <div class="col-sm-6">
             <div class="input-group">
                 <div class="input-group-addon"><i class="fa fa-calendar-o"></i></div>
-                <input id="%%calendarId%%" name="%%calendarId%%" class="form-control %%class%%" size="16" type="text" value="%%valuePlain%%" %%readonly%%>
+                <input id="%%calendarId%%" name="%%calendarId%%" class="form-control %%class%%" size="16" type="text" value="%%valuePlain%%" %%readonly%% autocomplete="off">
             </div>
             <script>
                 require(["bootstrap-datepicker"], function() {
@@ -763,7 +763,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         <div class="col-sm-2">
             <div class="input-group">
                 <div class="input-group-addon"><i class="fa fa-calendar-o"></i></div>
-                <input id="%%calendarId%%" name="%%calendarId%%" class="form-control" size="16" type="text" value="%%valuePlain%%" %%readonly%%>
+                <input id="%%calendarId%%" name="%%calendarId%%" class="form-control" size="16" type="text" value="%%valuePlain%%" %%readonly%% autocomplete="off">
             </div>
         </div>
 
@@ -804,66 +804,30 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
     </div>
 </input_datetime_simple>
 
-<input_objectlist>
-    <div class="form-group form-list">
-        <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
-
-        <div class="col-sm-6 inputText">
-            <div class="inputContainer">
-                <table id="%%name%%" data-name="%%name%%" class="table table-striped form-control">
-                    <colgroup>
-                        <col width="20" />
-                        <col width="*" />
-                        <col width="20" />
-                    </colgroup>
-                    <tfoot>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td></td>
-                        <td class="icon-cell"></td>
-                    </tr>
-                    </tfoot>
-                    <tbody>
-                    %%table%%
-                    </tbody>
-                </table>
-            </div>
-            %%removeAllLink%%
-        </div>
-        <div class="col-sm-2 form-opener">
-            %%addLink%%
-        </div>
-    </div>
-</input_objectlist>
-
-<input_objectlist_row>
-    <tr>
-        <td class="listimage">%%icon%%</td>
-        <td class="title"><div class="smaller">%%path%%</div> %%displayName%% <input type="hidden" name="%%name%%[]" value="%%value%%" /></td>
-        <td class="icon-cell">%%removeLink%%</td>
-    </tr>
-</input_objectlist_row>
-
 <input_tageditor>
     <div class="form-group">
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
 
         <div class="col-sm-6 inputText inputTagEditor">
-            <input type="text" id="%%name%%" data-name="%%name%%" style="display:none" />
+            <input type="text" id="%%name%%" data-name="%%name%%" style="display:none" autocomplete="off"/>
         </div>
     </div>
     <script type="text/javascript">
-        require(["jquery", "jquerytageditor"], function($){
+        require(["jquery", "jquerytageditor", "tagEditor"], function($, jqTag, tagEditor){
             var onChange = %%onChange%%;
-            $("#%%name%%").tagEditor({
+            var $objInput = $("#%%name%%");
+            $objInput.tagEditor({
                 initialTags: %%values%%,
                 forceLowercase: false,
                 delimiter: %%delimiter%%,
                 maxLength: 250,
                 onChange: onChange
             });
-
-            onChange("#%%name%%", $("#%%name%%").tagEditor('getTags')[0].editor, %%values%%);
+            $objInput.on('kajona.forms.mandatoryAdded', function() {
+                tagEditor.updateMandatoryRendering($(this));
+            });
+            tagEditor.updateMandatoryRendering($objInput);
+            onChange("#%%name%%", $objInput.tagEditor('getTags')[0].editor, %%values%%);
         });
     </script>
 </input_tageditor>
@@ -873,7 +837,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
 
         <div class="col-sm-6 inputText inputTagEditor" id="tageditor_%%name%%">
-            <input type="text" id="%%name%%" data-name="%%name%%" style="display:none" class="form-control" />
+            <input type="text" id="%%name%%" data-name="%%name%%" style="display:none" class="form-control" autocomplete="off"/>
             <div id="%%name%%-list">%%data%%</div>
         </div>
     </div>
@@ -928,7 +892,7 @@ have a surrounding div with class "ac_container" and a div with id "%%name%%_con
     <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
 
     <div class="col-sm-6">
-        <input type="text" id="%%name%%" name="%%name%%" value="%%value%%" class="form-control %%class%%" %%readonly%% >
+        <input type="text" id="%%name%%" name="%%name%%" value="%%value%%" class="form-control %%class%%" %%readonly%% autocomplete="off">
         <input type="hidden" id="%%name%%_id" name="%%name%%_id" value="%%value_id%%" />
     </div>
     <div class="col-sm-2 form-opener">

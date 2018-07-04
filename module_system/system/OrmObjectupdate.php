@@ -162,7 +162,7 @@ class OrmObjectupdate extends OrmBase
             //if the delete handling was set to excluded when loading the assignment, the logically deleted nodes should be merged with the values from db
             if ($objAssignmentDeleteHandling === OrmDeletedhandlingEnum::EXCLUDED) {
                 $this->setObjHandleLogicalDeleted(OrmDeletedhandlingEnum::EXCLUSIVE);
-                $arrDeletedIds = $this->getAssignmentsFromDatabase($strPropertyName);
+                $arrDeletedIds = $this->getAssignmentsFromDatabase($strPropertyName, true);
                 $this->setObjHandleLogicalDeleted($objOldHandling);
 
                 foreach ($arrDeletedIds as $strOneId) {

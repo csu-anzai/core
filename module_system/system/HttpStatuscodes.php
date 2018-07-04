@@ -54,6 +54,11 @@ class HttpStatuscodes
     const SC_NOT_FOUND = "HTTP/1.1 404 Not Found";
 
     /**
+     * Status code (405) indicates that the endpoint does not support the provided method
+     */
+    const SC_METHOD_NOT_ALLOWED = "HTTP/1.1 405 Method Not Allowed";
+
+    /**
      * Status code (304) indicating that a conditional GET operation found that the resource was available and not modified.
      *
      */

@@ -1,5 +1,5 @@
 /*
-	jQuery tagEditor v1.0.19
+	jQuery tagEditor v1.0.20
     Copyright (c) 2014 Simon Steinberger / Pixabay
     GitHub: https://github.com/Pixabay/jQuery-tagEditor
 	License: http://www.opensource.org/licenses/mit-license.php
@@ -51,12 +51,12 @@
         }
 
         // delete selected tags on backspace, delete, ctrl+x
-        function delete_selected_tags(e){
+        if (window.getSelection) $(document).off('keydown.tag-editor').on('keydown.tag-editor', function(e){
             if (e.which == 8 || e.which == 46 || e.ctrlKey && e.which == 88) {
                 try {
-                    var sel = getSelection(), el = $(sel.getRangeAt(0).commonAncestorContainer);
+                    var sel = getSelection(), el = document.activeElement.tagName == 'BODY' ? $(sel.getRangeAt(0).startContainer.parentNode).closest('.tag-editor') : 0;
                 } catch(e){ el = 0; }
-                if (el && el.hasClass('tag-editor')) {
+                if (sel.rangeCount > 0 && el && el.length) {
                     var tags = [], splits = sel.toString().split(el.prev().data('options').dregex);
                     for (i=0; i<splits.length; i++){ var tag = $.trim(splits[i]); if (tag) tags.push(tag); }
                     $('.tag-editor-tag', el).each(function(){
@@ -65,9 +65,7 @@
                     return false;
                 }
             }
-        }
-
-        if (window.getSelection) $(document).off('keydown.tag-editor').on('keydown.tag-editor', delete_selected_tags);
+        });
 
         return selector.each(function(){
             var el = $(this), tag_list = []; // cache current tags
@@ -313,6 +311,10 @@
                 // enter key
                 else if (e.which == 13) {
                     ed.trigger('click', [$t.closest('li').next('li').find('.tag-editor-tag')]);
+
+                    // trigger blur if maxTags limit is reached
+                    if (o.maxTags && ed.data('tags').length >= o.maxTags) ed.find('input').blur();
+
                     return false;
                 }
                 // pos1

@@ -208,8 +208,6 @@ HTML;
         });
 
         $arrList = array("graph TD;");
-        $arrUsed = [];
-
         foreach ($arrStatus as $objStatus) {
             /** @var FlowStatus $objStatus */
             $arrTransitions = $objStatus->getArrTransitions();
@@ -229,10 +227,13 @@ HTML;
                     } else {
                         $arrList[] = $objStatus->getStrSystemid() . "[" . $objStatus->getStrDisplayName() . "]{$strLineStart} <span data-" . $objTransition->getSystemid() . ">______</span> {$strLineEnd}>" . $objTargetStatus->getSystemid() . "[" . $objTargetStatus->getStrDisplayName() . "];";
                     }
-                    $arrUsed[$objStatus->getStrSystemid()] = $objStatus;
                 }
             }
         }
+
+        // get all status which are used in the flow
+        $arrUsed = [];
+        self::walkFlow($objFlow->getStatusByIndex(0), $arrUsed);
 
         $strHighliteId = null;
         $strHighliteColor = null;
@@ -323,5 +324,36 @@ HTML;
 
 </style> 
 HTML;
+    }
+
+    /**
+     * Helper method to walk through the flow and collect every status which is connected with the "In Bearbeitung"
+     * status
+     *
+     * @param FlowStatus $status
+     * @param array $list
+     */
+    private static function walkFlow(FlowStatus $status, array &$list)
+    {
+        if (isset($list[$status->getSystemid()])) {
+            // we have already visited this status
+            return;
+        }
+
+        $list[$status->getSystemid()] = $status;
+
+        // get all connected status
+        $arrTransitions = $status->getArrTransitions();
+        foreach ($arrTransitions as $objTransition) {
+            if (!$objTransition->isVisible()) {
+                continue;
+            }
+
+            /** @var $objTransition FlowTransition */
+            $objTargetStatus = $objTransition->getTargetStatus();
+            if ($objTargetStatus instanceof FlowStatus) {
+                self::walkFlow($objTargetStatus, $list);
+            }
+        }
     }
 }

@@ -76,17 +76,68 @@ class StringTest extends Testbase
         $intResult = StringUtil::toInt($strString);
         $this->assertNull($intResult);
 
+        $strString = " ";
+        $intResult = StringUtil::toInt($strString);
+        $this->assertNull($intResult);
+
+        $strString = " 5 ";
+        $intResult = StringUtil::toInt($strString);
+        $this->assertNull($intResult);
+
         $strString = 0;
         $intResult = StringUtil::toInt($strString);
-        $this->assertEquals(0, $intResult);
+        $this->assertSame(0, $intResult);
 
         $strString = "0";
         $intResult = StringUtil::toInt($strString);
-        $this->assertEquals(0, $intResult);
+        $this->assertSame(0, $intResult);
 
         $strString = "-42";
         $intResult = StringUtil::toInt($strString);
-        $this->assertEquals(-42, $intResult);
+        $this->assertSame(-42, $intResult);
+    }
+
+    public function testStrToFloat()
+    {
+        $strString = "";
+        $intResult = StringUtil::toFloat($strString);
+        $this->assertNull($intResult);
+
+        $strString = " ";
+        $intResult = StringUtil::toFloat($strString);
+        $this->assertNull($intResult);
+
+        $strString = " 0 ";
+        $intResult = StringUtil::toFloat($strString);
+        $this->assertNull($intResult);
+
+        $strString = 0;
+        $intResult = StringUtil::toFloat($strString);
+        $this->assertSame(0.0, $intResult);
+
+        $strString = "0";
+        $intResult = StringUtil::toFloat($strString);
+        $this->assertSame(0.0, $intResult);
+
+        $strString = "0.0";
+        $intResult = StringUtil::toFloat($strString);
+        $this->assertSame(0.0, $intResult);
+
+        $strString = "-42";
+        $intResult = StringUtil::toFloat($strString);
+        $this->assertSame(-42.0, $intResult);
+
+        $strString = "1.2345";
+        $intResult = StringUtil::toFloat($strString);
+        $this->assertSame(1.2345, $intResult);
+
+        $strString = 1.2345;
+        $intResult = StringUtil::toFloat($strString);
+        $this->assertSame(1.2345, $intResult);
+
+        $strString = "1.2345456";
+        $intResult = StringUtil::toFloat($strString);
+        $this->assertSame(1.2345456, $intResult);
     }
 
     public function testStrToArray()

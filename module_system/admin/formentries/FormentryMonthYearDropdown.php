@@ -41,6 +41,12 @@ class FormentryMonthYearDropdown extends FormentryDate
         }
     }
 
+    public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
+    {
+        self::classInit();
+        parent::__construct($strFormName, $strSourceProperty, $objSourceObject);
+    }
+
 
     /**
      * Renders the field itself.
@@ -79,7 +85,7 @@ class FormentryMonthYearDropdown extends FormentryDate
         if ($this->bitRenderDay) {
             $strReturn .= $objToolkit->formInputText($this->getStrEntryName()."ph", $this->getStrLabel(), $intDay, "", "", true);
             $strReturn .= $objToolkit->formInputHidden($this->getStrEntryName().self::DAY_SUFFIX, $intDay);
-        } else {
+        } elseif (!$this->getBitReadonly()) {
             $strReturn .= $objToolkit->formInputHidden($this->getStrEntryName().self::DAY_SUFFIX, $intDay);
         }
         $strReturn .= $objToolkit->formInputDropdown(
@@ -115,7 +121,7 @@ class FormentryMonthYearDropdown extends FormentryDate
     /**
      * Creates an associative array of months. The first entry has as key "1" with value "January".
      * e.g.
-     * Format of the returned array is:     *
+     * Format of the returned array is:
      * "1" => "January",
      * "2" => "February",
      * "3" => "March",
@@ -186,6 +192,3 @@ class FormentryMonthYearDropdown extends FormentryDate
         return parent::validateValue();
     }
 }
-
-//TODO: remove, add to construct
-FormentryMonthYearDropdown::classInit();

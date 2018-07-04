@@ -327,7 +327,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
                         });
                     }
 
-                    require('v4skin').setObjectListItems(strElementName, arrItems, arrAvailableIds, strDeleteButton);
+                    require('folderview').setObjectListItems(strElementName, arrItems, arrAvailableIds, strDeleteButton);
 
                     jsDialog_1.hide();
                 }

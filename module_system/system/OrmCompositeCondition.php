@@ -87,6 +87,8 @@ class OrmCompositeCondition extends OrmCondition
                 throw new OrmException("no valid OrmCondition instance: ".get_class($objCondition), Exception::$level_FATALERROR);
             }
 
+            $objCondition->setStrTargetClass($this->getStrTargetClass());
+
             //only add if where is not empty
             $strWhere = $objCondition->getStrWhere();
             if ($strWhere != "") {

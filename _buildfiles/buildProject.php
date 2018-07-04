@@ -61,7 +61,7 @@ class BuildHelper {
         $strConfigfile = file_get_contents(__DIR__."/".$this->strProjectPath."/core/module_system/system/config/config.php");
         $strConfigfile = str_replace(
             array("%%defaulthost%%", "%%defaultusername%%", "%%defaultpassword%%", "%%defaultdbname%%", "%%defaultprefix%%", "%%defaultdriver%%", "%%defaultport%%"),
-            array(DB_HOST, DB_USER, DB_PASS, DB_DB, "autotest_", DB_DRIVER, ""),
+            array(DB_HOST, DB_USER, DB_PASS, DB_DB, "agp_", DB_DRIVER, ""),
             $strConfigfile
         );
 

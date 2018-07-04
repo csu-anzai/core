@@ -48,6 +48,7 @@ class SystemChangelog
 
 
     public static $STR_ACTION_EDIT = "actionEdit";
+    public static $STR_ACTION_PERMISSIONS = "editPermissions";
     public static $STR_ACTION_DELETE = "actionDelete";
 
 
@@ -526,16 +527,17 @@ class SystemChangelog
 
 
     /**
-     * Creates the list of logentries, either without a systemid-based filter
+     * Creates the list of logentries, either without a systemid-based and change-action-based filters
      * or limited to the given systemid.
      *
      * @param string $strSystemidFilter
      * @param null|int $intStart
      * @param null|int $intEnd
+     * @param array $arrExcludeActionsFilter
      *
      * @return ChangelogContainer[]
      */
-    public static function getLogEntries($strSystemidFilter, $intStart = null, $intEnd = null)
+    public static function getLogEntries($strSystemidFilter, $intStart = null, $intEnd = null, array $arrExcludeActionsFilter = [])
     {
 
         $arrParams = array();
@@ -546,6 +548,13 @@ class SystemChangelog
                            WHERE change_systemid = ? ";
 
             $arrParams[] = $strSystemidFilter;
+
+            if (!empty($arrExcludeActionsFilter)) {
+                    $objRestriction = new OrmInCondition("change_action", $arrExcludeActionsFilter, OrmInCondition::STR_CONDITION_NOTIN);
+                    $strQuery .= " AND " . $objRestriction->getStrWhere();
+                    $arrParams = array_merge($arrParams, $objRestriction->getArrParams());
+            }
+
         } else {
             return array();
         }
@@ -574,10 +583,11 @@ class SystemChangelog
      * Counts the number of logentries available
      *
      * @param string $strSystemidFilter
+     * @param array $arrExcludeActionsFilter
      *
      * @return int
      */
-    public static function getLogEntriesCount($strSystemidFilter)
+    public static function getLogEntriesCount($strSystemidFilter, array $arrExcludeActionsFilter = [])
     {
 
         $arrParams = array();
@@ -588,6 +598,13 @@ class SystemChangelog
                           WHERE change_systemid = ? ";
 
             $arrParams[] = $strSystemidFilter;
+
+            if (!empty($arrExcludeActionsFilter)) {
+                    $objRestriction = new OrmInCondition("change_action", $arrExcludeActionsFilter, OrmInCondition::STR_CONDITION_NOTIN);
+                    $strQuery .= " AND " . $objRestriction->getStrWhere();
+                    $arrParams = array_merge($arrParams, $objRestriction->getArrParams());
+            }
+
 
         } else {
             return 0;

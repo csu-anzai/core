@@ -173,15 +173,15 @@ abstract class OrmBase
      * Reads the assignment values currently stored in the database for a given property of the current object.
      *
      * @param string $strPropertyName
-     *
+     * @param bool $bitBlockConfigEvaluation
      * @return string[] array of systemids
+     * @throws OrmException
      */
-    final public function getAssignmentsFromDatabase($strPropertyName)
+    final public function getAssignmentsFromDatabase($strPropertyName, $bitBlockConfigEvaluation = false)
     {
-        $objCfg = OrmAssignmentConfig::getConfigForProperty($this->getObjObject(), $strPropertyName);
         $deleteHandlerOld = $this->getObjHandleLogicalDeleted();
-
-        if ($objCfg->isLoadDeleted()) {
+        $objCfg = OrmAssignmentConfig::getConfigForProperty($this->getObjObject(), $strPropertyName);
+        if (!$bitBlockConfigEvaluation && $objCfg->isLoadDeleted()) {
             $this->setObjHandleLogicalDeleted(OrmDeletedhandlingEnum::INCLUDED);
         }
 
