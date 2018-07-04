@@ -223,8 +223,8 @@ class Installer
             $tmpCounter++;
         }
 
-        $intro2 = "<br />".$this->getLang("installer_phpcheck_intro2")."<ul class='list-group'>";
-        $phpcheck_version = "<li class='list-group-item'>".$this->getLang("installer_phpcheck_version")." ";
+        $intro2 = $this->getLang("installer_phpcheck_intro2");
+        $phpcheck_version = $this->getLang("installer_phpcheck_version");
 
         if (version_compare(phpversion(), $this->strMinPhpVersion, "<")) {
             $minPhpVersion = "<span class=\"label label-danger label-as-badge\">&lt; ".$this->strMinPhpVersion."</span>";
