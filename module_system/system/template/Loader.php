@@ -28,12 +28,24 @@ class Loader extends \Twig_Loader_Filesystem
             $phar = true;
         }
 
-        $filePath = parent::findTemplate($name, $throw);
-
         if ($phar) {
-            $filePath = "phar://" . $filePath;
-        }
+            // in case we have a phar use a special logic
+            $allFiles = [];
+            foreach ($this->paths as $namespace => $paths) {
+                foreach ($paths as $path) {
+                    $filePath = "phar://" . $path . "/" . $name;
+                    if (is_file($filePath)) {
+                        return $this->cache[$name] = $filePath;
+                    }
 
-        return $filePath;
+                    $allFiles[] = $filePath;
+                }
+            }
+
+            throw new \Twig_Error_Loader(sprintf('Unable to find template "%s" (looked into phar: %s).', $name, implode(', ', $allFiles)));
+        } else {
+            // in case we have no phar use the normal logic
+            return parent::findTemplate($name, false);
+        }
     }
 }
