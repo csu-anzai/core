@@ -1,0 +1,34 @@
+<form action="_webpath_/installer.php?step=loginData" method="POST" class="form-horizontal col-sm-10">
+    <input type="hidden" name="write" value="true" />
+
+    <div class="form-group">
+        <label for="username" class="col-sm-4 control-label">{{ "installer_login_username"|lang("installer") }}</label>
+        <div class="col-sm-6">
+            <input type="text" id="username" name="username" value="" class="form-control">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="password" class="col-sm-4 control-label">{{ "installer_login_password"|lang("installer") }}</label>
+        <div class="col-sm-6">
+            <input type="password" id="password" name="password" value="" class="form-control">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="email" class="col-sm-4 control-label">{{ "installer_login_email"|lang("installer") }}</label>
+        <div class="col-sm-6">
+            <input type="text" id="email" name="email" value="" class="form-control">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-4 control-label"></label>
+        <div class="col-sm-6">
+            <button type="submit" class="btn savechanges">
+                <span class="btn-text">{{ "installer_login_save"|lang("installer") }}</span>
+                <span class="statusicon"></span>
+            </button>
+        </div>
+    </div>
+</form>

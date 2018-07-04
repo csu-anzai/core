@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Kajona Installer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="generator" content="Kajona, www.kajona.de" />
+
+    <link rel="stylesheet" href="_webpath_/[webpath,module_installer]/less/styles.min.css">
+    <link rel="stylesheet" href="_webpath_/[webpath,module_installer]/fonts/fontawesome/css/font-awesome.min.css">
+
+    <script src="_webpath_/[webpath,module_system]/scripts/jquery/jquery.min.js"></script>
+    <script src="_webpath_/[webpath,module_system]/scripts/jqueryui/jquery-ui.custom.min.js"></script>
+
+</head>
+<body>
+
+<div class="navbar navbar-fixed-top hidden-sm hidden-xs">
+    <div class="container">
+        <ul class="navbar-nav">
+
+            {# before [flag] true = class="done" (status) #}
+            {% set flag = false %}
+
+            {% for i,v in installer_sections %}
+
+                {% if currentCommand == i %}
+
+                    <li class="active"><a href="#">{{ v }}</a></li>
+                    {% set flag = true %}
+
+                {% else %}
+
+                    {% if flag %}
+                        <li><a href="#">{{ v }}</a></li>
+                    {% else %}
+                        <li class="done"><a href="#">{{ v }}</a></li>
+                    {% endif %}
+
+                {% endif %}
+
+            {% endfor %}
+
+            {{ installer_progress|raw }}
+        </ul>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- CONTENT CONTAINER -->
+        <div class="col-md-8 center-block" id="content">
+
+            <div class="panel panel-default" id="loginContainer">
+                <div class="panel-header">
+                    <h3 id="loginContainer_title">Kajona Installer {{ installer_version|raw }}</h3>
+                </div>
+                <div class="panel-body">
+                    <div id="loginContainer_content">
+
+                        {{ installer_output|raw }}
+
+                        {% if logfile %}
+                            <div class="col-sm-12" id="systemlog">
+                                <pre class="code pre-scrollable"><b>{{ systemlog|raw }}</b><br />{{ log_content|raw }}</pre>
+                            </div>
+                            <script type="text/javascript">
+                                var systemlogDiv = document.getElementById("systemlog");
+                                systemlogDiv.scrollTop = systemlogDiv.scrollHeight;
+                            </script>
+                        {% endif %}
+
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    {% if installer_backward %}
+                        <a href="{{ installer_backward['href'] }}" class="btn btn-default">{{ installer_backward['text'] }}</a>
+                    {% endif %}
+
+                    {% if installer_forward %}
+                        <a href="{{ installer_forward['href'] }}" class="btn btn-primary pull-right">{{ installer_forward['text'] }}</a>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <a href="http://www.kajona.de" target="_blank">Kajona - empowering your content</a>
+    </footer>
+
+</body>
+</html>

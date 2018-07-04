@@ -1,0 +1,31 @@
+{{ phpcheck_intro|raw }}
+{{ phpcheck_lang|raw }}
+
+{% for i,v in phpcheck_languages %}
+    {{ v|raw }}
+{% endfor %}
+
+{{ intro2|raw }}
+
+<br />
+
+{{ phpcheck_version|raw }}{{ minPhpVersion|raw }}
+{% for i,v in fileChecksFolder %}
+    <li class='list-group-item'>{{ "installer_phpcheck_folder"|lang("installer") }} {{ i }}
+    {% if v == 1 %}
+        <span class="label label-success label-as-badge">{{ "installer_given"|lang("installer") }}</span>
+    {% else %}
+        <span class="label label-danger label-as-badge">{{ "installer_missing"|lang("installer") }}</span>
+    {% endif %}
+    </li>
+{% endfor %}
+
+{% for i,v in fileChecksModules %}
+    <li class='list-group-item'>{{ "installer_phpcheck_module"|lang("installer") }} {{ i }}
+        {% if v == 1 %}
+            <span class="label label-success label-as-badge">{{ "installer_loaded"|lang("installer") }}</span>
+        {% else %}
+            <span class="label label-danger label-as-badge">{{ "installer_nloaded"|lang("installer") }}</span>
+        {% endif %}
+    </li>
+{% endfor %}
