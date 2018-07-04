@@ -432,7 +432,7 @@ class Installer
         $arrPackageMetadata = $objManager->getAvailablePackages();
 
         $strPackagetable = "";
-        $tmp_arrPackages = [];
+        $tmpArrayPackages = [];
         $tmpCounter = 0;
         foreach ($arrPackageMetadata as $objOnePackage) {
             $strSamplecontent = "";
@@ -462,24 +462,24 @@ class Installer
             }
 
             // fill (temp) array with package-data
-            $tmp_arrPackages[$tmpCounter]['packagename']           = $objOnePackage->getStrTitle();
-            $tmp_arrPackages[$tmpCounter]['packagestatus']         = $objOnePackage->getStrTitle();
-            $tmp_arrPackages[$tmpCounter]['packageuiname']         = $objOnePackage->getStrTitle();
-            $tmp_arrPackages[$tmpCounter]['packageversion']        = $objOnePackage->getStrVersion();
-            $tmp_arrPackages[$tmpCounter]['packagesamplecontent']  = $strSamplecontent;
-            $tmp_arrPackages[$tmpCounter]['packageinstaller']      = $strModuleInstaller;
-            $tmp_arrPackages[$tmpCounter]['packagehint']           = $strHint;
+            $tmpArrayPackages[$tmpCounter]['packagename']           = $objOnePackage->getStrTitle();
+            $tmpArrayPackages[$tmpCounter]['packagestatus']         = $objOnePackage->getStrTitle();
+            $tmpArrayPackages[$tmpCounter]['packageuiname']         = $objOnePackage->getStrTitle();
+            $tmpArrayPackages[$tmpCounter]['packageversion']        = $objOnePackage->getStrVersion();
+            $tmpArrayPackages[$tmpCounter]['packagesamplecontent']  = $strSamplecontent;
+            $tmpArrayPackages[$tmpCounter]['packageinstaller']      = $strModuleInstaller;
+            $tmpArrayPackages[$tmpCounter]['packagehint']           = $strHint;
             $tmpCounter++;
         }
 
         /** @var \Twig_Environment $twig */
         $twig = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);
         $this->strOutput .= $twig->render("core/module_installer/templates/installpackages.twig" , array(
-            "packages"              => $tmp_arrPackages,
+            "packages"              => $tmpArrayPackages,
             "link_autoinstall"      => _webpath_."/installer.php?step=finish&autoInstall=true",
             "link_manualinstall"    => _webpath_."/installer.php?step=install"
         ));
-        unset($tmp_arrPackages);
+        unset($tmpArrayPackages);
 
         $this->strBackwardLink = $this->getBackwardLink(_webpath_."/installer.php?step=loginData");
     }
