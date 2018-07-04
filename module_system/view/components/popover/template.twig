@@ -15,7 +15,7 @@
                 $('#pc_{{ id|escape("html_attr") }}').addClass('loadDone');
             }) });   </script>
     {% else %}
-        <div id="pc_{{ id|escape("html_attr") }}" class="hidden pc_{{ id|escape("html_attr") }}">{{ content|raw }}sdf</div>
+        <div id="pc_{{ id|escape("html_attr") }}" class="hidden pc_{{ id|escape("html_attr") }}">{{ content|raw }}</div>
         <script type="text/javascript">require(['jquery', 'bootstrap'], function($)  { $('#{{ id|escape("html_attr") }}').popover({ content: $('#pc_{{ id|escape("html_attr") }}').html()}) });</script>
     {% endif %}
 </div>
