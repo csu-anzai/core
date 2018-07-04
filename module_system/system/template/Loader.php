@@ -21,11 +21,19 @@ class Loader extends \Twig_Loader_Filesystem
     protected function findTemplate($name, $throw = true)
     {
         $name = str_replace(_realpath_, "", str_replace("\\", "/", $name));
+        $phar = false;
 
         if (substr($name, 0, 7) == "phar://") {
             $name = substr($name, 7);
+            $phar = true;
         }
 
-        return parent::findTemplate($name, $throw);
+        $filePath = parent::findTemplate($name, $throw);
+
+        if ($phar) {
+            $filePath = "phar://" . $filePath;
+        }
+
+        return $filePath;
     }
 }
