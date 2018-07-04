@@ -21,11 +21,12 @@ class Loader extends \Twig_Loader_Filesystem
 {
     protected function findTemplate($name, $throw = true)
     {
-        $parts = explode("/", $name);
+        $parts = explode("/", $name, 3);
         $core = array_shift($parts);
         $module = array_shift($parts);
+        $path = array_shift($parts);
 
-        $file = Resourceloader::getInstance()->getAbsolutePathForModule($module) . "/" . implode("/", $parts);
+        $file = Resourceloader::getInstance()->getAbsolutePathForModule($module) . "/" . $path;
 
         if (is_file($file)) {
             return $this->cache[$name] = $file;
