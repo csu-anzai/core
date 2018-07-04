@@ -9,8 +9,7 @@
 namespace Kajona\System\System\Template;
 
 /**
- * Custom twig file loader which also tries to load a template inside a .phar archive. This allows us to use a simple
- * template path like: core/module_system/view/components/listsearch/template.twig
+ * Custom twig file loader which also tries to load a template inside a .phar archive
  *
  * @package module_system
  * @author christoph.kappestein@artemeon.de
@@ -42,10 +41,14 @@ class Loader extends \Twig_Loader_Filesystem
                 }
             }
 
-            throw new \Twig_Error_Loader(sprintf('Unable to find template "%s" (looked into phar: %s).', $name, implode(', ', $allFiles)));
+            if ($throw) {
+                throw new \Twig_Error_Loader(sprintf('Unable to find template "%s" (looked into phar: %s).', $name, implode(', ', $allFiles)));
+            } else {
+                return false;
+            }
         } else {
             // in case we have no phar use the normal logic
-            return parent::findTemplate($name, false);
+            return parent::findTemplate($name, $throw);
         }
     }
 }
