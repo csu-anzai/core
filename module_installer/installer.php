@@ -206,9 +206,6 @@ class Installer
             "openssl"
         );
 
-        $phpcheckIntro = $this->getLang("installer_phpcheck_intro");
-        $phpcheckLang = $this->getLang("installer_phpcheck_lang");
-
         $arrChecksLanguages = [];
         //link to different languages
         $arrLangs = array("de", "en");
@@ -261,8 +258,6 @@ class Installer
         $twig = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);
 
         $strReturn = $twig->render("core/module_installer/templates/phpsettings.twig" , [
-            "phpcheck_intro" => $phpcheckIntro,
-            "phpcheck_lang" => $phpcheckLang,
             "phpcheck_languages" => $arrChecksLanguages,
             "fileChecksFolder" => $arrChecksFolder,
             "fileChecksModules" => $arrChecksModules,
