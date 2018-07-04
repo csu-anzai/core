@@ -61,7 +61,6 @@ abstract class AbstractComponent
         if ($strExtension == "twig") {
             $reflection = new \ReflectionObject($this);
             $classDir = dirname($reflection->getFileName());
-            $classDir = str_replace(_realpath_, "", str_replace("\\", "/", $classDir));
 
             /** @var \Twig_Environment $twig */
             $twig = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);

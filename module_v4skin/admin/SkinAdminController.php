@@ -75,7 +75,6 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
         /** @var \Twig_Environment $twig */
         $twig = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);
         $strPath = Resourceloader::getInstance()->getTemplate($strTemplate);
-        $strPath = str_replace(_realpath_, "", str_replace("\\", "/", $strPath));
         return $twig->render($strPath, $arrTemplate);
     }
 
@@ -146,7 +145,6 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
             /** @var \Twig_Environment $twig */
             $twig = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);
             $strPath = Resourceloader::getInstance()->getTemplate($strTemplate, true);
-            $strPath = str_replace(_realpath_, "", str_replace("\\", "/", $strPath));
             return $twig->render($strPath, $arrTemplate);
         } else {
             return $this->objTemplate->fillTemplateFile($arrTemplate, $strTemplate);
