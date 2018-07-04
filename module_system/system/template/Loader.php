@@ -23,7 +23,7 @@ class Loader extends \Twig_Loader_Filesystem
         $name = str_replace(_realpath_, "", str_replace("\\", "/", $name));
 
         if (substr($name, 0, 7) == "phar://") {
-            $name = substr($name, 8);
+            $name = substr($name, 7);
         }
 
         return parent::findTemplate($name, $throw);
