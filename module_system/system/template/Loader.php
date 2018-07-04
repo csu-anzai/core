@@ -20,20 +20,12 @@ class Loader extends \Twig_Loader_Filesystem
 {
     protected function findTemplate($name, $throw = true)
     {
-        $filePath = parent::findTemplate($name, false);
+        $name = str_replace(_realpath_, "", str_replace("\\", "/", $name));
 
-        if ($filePath === false) {
-            // in this case we try to load the file from an phar archive
-            $parts = explode("/", $name);
-
-            if (isset($parts[1]) && substr($parts[1], 0, 7) == "module_") {
-                $parts[1] = $parts[1] . ".phar";
-                $name = implode("/", $parts);
-
-                $filePath = parent::findTemplate($name, true);
-            }
+        if (substr($name, 0, 7) == "phar://") {
+            $name = substr($name, 8);
         }
 
-        return $filePath;
+        return parent::findTemplate($name, $throw);
     }
 }
