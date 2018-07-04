@@ -220,9 +220,6 @@ class Installer
             $tmpCounter++;
         }
 
-        $intro2 = $this->getLang("installer_phpcheck_intro2");
-        $phpcheck_version = $this->getLang("installer_phpcheck_version");
-
         if (version_compare(phpversion(), $this->strMinPhpVersion, "<")) {
             $minPhpVersion = "<span class=\"label label-danger label-as-badge\">&lt; ".$this->strMinPhpVersion."</span>";
         }
@@ -261,8 +258,6 @@ class Installer
             "phpcheck_languages" => $arrChecksLanguages,
             "fileChecksFolder" => $arrChecksFolder,
             "fileChecksModules" => $arrChecksModules,
-            "intro2" => $intro2,
-            "phpcheck_version" => $phpcheck_version,
             "minPhpVersion" => $minPhpVersion
         ]);
 

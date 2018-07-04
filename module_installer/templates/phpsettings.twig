@@ -5,9 +5,9 @@
     {{ v|raw }}
 {% endfor %}
 
-<br />{{ intro2|raw }}<ul class='list-group'><br />
+<br />{{ "installer_phpcheck_intro2"|lang("installer")|raw }}<ul class='list-group'><br />
 
-<li class='list-group-item'>{{ phpcheck_version|raw }} {{ minPhpVersion|raw }}
+<li class='list-group-item'>{{ "installer_phpcheck_version"|lang("installer")|raw }} {{ minPhpVersion|raw }}
 {% for i,v in fileChecksFolder %}
     <li class='list-group-item'>{{ "installer_phpcheck_folder"|lang("installer") }} {{ i }}
     {% if v == 1 %}
