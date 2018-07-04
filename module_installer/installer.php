@@ -537,7 +537,6 @@ class Installer
         $this->strLogfile = $strInstallLog;
         $strReturn .= $this->getLang("installer_modules_found");
 
-//        $strRows = "";
         $tmpCounter = 0;
         $tmpArray = [];
         //Loading each installer
