@@ -134,20 +134,13 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
      */
     private function renderTemplate($strTemplate, $strContent)
     {
-
         $arrTemplate = ["content" => $strContent];
 
         $objAdminHelper = new AdminHelper();
         $arrTemplate["webpathTitle"] = urldecode(str_replace(["http://", "https://"], ["", ""], _webpath_));
         $arrTemplate["head"] = "<script type=\"text/javascript\">KAJONA_DEBUG = ".$this->objConfig->getDebug("debuglevel")."; KAJONA_WEBPATH = '"._webpath_."'; KAJONA_BROWSER_CACHEBUSTER = ".SystemSetting::getConfigValue("_system_browser_cachebuster_")."; KAJONA_LANGUAGE = '".Carrier::getInstance()->getObjSession()->getAdminLanguage()."';KAJONA_PHARMAP = ".json_encode(array_values(Classloader::getInstance()->getArrPharModules()))."; var require = {$objAdminHelper->generateRequireJsConfig()};</script>";
 
-
-        $extension = pathinfo($strTemplate, PATHINFO_EXTENSION);
-        if ($extension == "twig") {
-            return $this->templateEngine->render($strTemplate, $arrTemplate);
-        } else {
-            return $this->objTemplate->fillTemplateFile($arrTemplate, $strTemplate);
-        }
+        return $this->templateEngine->render($strTemplate, $arrTemplate);
     }
 
     /**
