@@ -43,7 +43,7 @@ class RemovePermissionFromGroup implements PermissionActionInterface
      */
     public function getPriority(): int
     {
-        return 0;
+        return -62;
     }
 
     /**

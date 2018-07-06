@@ -117,6 +117,30 @@ always added.
 | 3 | protected methods | yes |
 | 4 | private methods | only required if the method is complex |
 
+### File header
+
+Every file must contain the following copyright header.
+
+`core/`  
+
+```
+<?php
+/*"******************************************************************************************************
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
+```
+
+`core_agp/`  
+`core_*/`  
+
+```
+<?php
+/*"******************************************************************************************************
+ *   (c) ARTEMEON Management Partner GmbH
+ ********************************************************************************************************/
+```
+
 # Javascript
 
 We use an AMD loader to split up our javascript code base into multiple modules. Each module must be documented using

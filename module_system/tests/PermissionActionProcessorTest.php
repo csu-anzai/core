@@ -84,7 +84,7 @@ class PermissionActionProcessorTest extends Testbase
         $permManager = new PermissionActionProcessor(Rights::getInstance());
         $permManager->addAction(new AddPermissionToGroup(self::$aspectA->getSystemid(), self::$groupA->getSystemid(), Rights::$STR_RIGHT_EDIT));
         $permManager->addAction(new RemovePermissionFromGroup(self::$aspectA->getSystemid(), self::$groupA->getSystemid(), Rights::$STR_RIGHT_EDIT));
-        $this->assertFalse($permManager->applyActions());
+        $this->assertTrue($permManager->applyActions());
     }
 
     /**
@@ -139,7 +139,7 @@ class PermissionActionProcessorTest extends Testbase
         $this->assertTrue(Rights::getInstance()->checkPermissionForGroup(self::$groupA->getSystemid(), Rights::$STR_RIGHT_EDIT, self::$aspectA->getSystemid()));
         $this->assertTrue(Rights::getInstance()->checkPermissionForGroup(self::$groupA->getSystemid(), Rights::$STR_RIGHT_DELETE, self::$aspectA->getSystemid()));
         $this->assertTrue(Rights::getInstance()->checkPermissionForGroup(self::$groupB->getSystemid(), Rights::$STR_RIGHT_EDIT, self::$aspectA->getSystemid()));
-        $this->assertFalse(Rights::getInstance()->checkPermissionForGroup(self::$groupB->getSystemid(), Rights::$STR_RIGHT_CHANGELOG, self::$aspectA->getSystemid()));
+        $this->assertTrue(Rights::getInstance()->checkPermissionForGroup(self::$groupB->getSystemid(), Rights::$STR_RIGHT_CHANGELOG, self::$aspectA->getSystemid()));
 
         $this->assertTrue(Rights::getInstance()->checkPermissionForGroup(self::$groupA->getSystemid(), Rights::$STR_RIGHT_EDIT, self::$aspectB->getSystemid()));
         $this->assertTrue(Rights::getInstance()->checkPermissionForGroup(self::$groupA->getSystemid(), Rights::$STR_RIGHT_DELETE, self::$aspectB->getSystemid()));
