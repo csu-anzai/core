@@ -54,7 +54,7 @@ class AddPermissionToGroup implements PermissionActionInterface
      */
     public function getPriority(): int
     {
-        return -32;
+        return 0;
     }
 
     /**

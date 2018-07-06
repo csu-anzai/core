@@ -20,8 +20,10 @@ use Kajona\System\System\Exception;
 use Kajona\System\System\HttpResponsetypes;
 use Kajona\System\System\Lang;
 use Kajona\System\System\RequestEntrypointEnum;
+use Kajona\System\System\Resourceloader;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\ScriptletHelper;
+use Kajona\System\System\ServiceProvider;
 use Kajona\System\System\Session;
 use Kajona\System\System\SystemEventidentifier;
 use Kajona\System\System\SystemModule;
@@ -146,7 +148,6 @@ class Installer
             $this->checkPHPSetting();
         }
 
-
         elseif ($_GET["step"] == "config" || !$this->checkDefaultValues()) {
             $this->configWizard();
         }
@@ -205,56 +206,60 @@ class Installer
             "openssl"
         );
 
-        $strReturn .= $this->getLang("installer_phpcheck_intro");
-        $strReturn .= $this->getLang("installer_phpcheck_lang");
-
+        $arrChecksLanguages = [];
         //link to different languages
         $arrLangs = array("de", "en");
         $intLangCount = 1;
+        $tmpCounter = 0;
         foreach ($arrLangs as $strOneLang) {
-            $strReturn .= "<a href=\""._webpath_."/installer.php?language=".$strOneLang."\">".Carrier::getInstance()->getObjLang()->getLang("lang_".$strOneLang, "user")."</a>";
+            $arrChecksLanguages[$tmpCounter] = "<a href=\""._webpath_."/installer.php?language=".$strOneLang."\">".Carrier::getInstance()->getObjLang()->getLang("lang_".$strOneLang, "user")."</a>";
             if ($intLangCount++ < count($arrLangs)) {
-                $strReturn .= " | ";
+                $tmpCounter++;
+                $arrChecksLanguages[$tmpCounter] .= " | ";
             }
+            $tmpCounter++;
         }
 
-        $strReturn .= "<br />".$this->getLang("installer_phpcheck_intro2")."<ul class='list-group'>";
-
-        $strReturn .= "<li class='list-group-item'>".$this->getLang("installer_phpcheck_version")." ";
         if (version_compare(phpversion(), $this->strMinPhpVersion, "<")) {
-            $strReturn .= "<span class=\"label label-danger label-as-badge\">&lt; ".$this->strMinPhpVersion."</span>";
+            $minPhpVersion = "<span class=\"label label-danger label-as-badge\">&lt; ".$this->strMinPhpVersion."</span>";
         }
         else {
-            $strReturn .= "<span class=\"label label-success label-as-badge\">".phpversion()."</span>";
+            $minPhpVersion = "<span class=\"label label-success label-as-badge\">".phpversion()."</span>";
         }
-        $strReturn .= "</li>";
 
+        $arrChecksFolder = [];
         foreach ($arrFilesAndFolders as $strOneFile) {
-            $strReturn .= "<li class='list-group-item'>".$this->getLang("installer_phpcheck_folder").$strOneFile." ";
             if (is_writable(_realpath_.$strOneFile)) {
-                $strReturn .= "<span class=\"label label-success label-as-badge\">".$this->getLang("installer_given")."</span>";
+                $arrChecksFolder[$strOneFile] = true;
             }
             else {
-                $strReturn .= "<span class=\"label label-danger label-as-badge\">".$this->getLang("installer_missing")."</span>";
+                $arrChecksFolder[$strOneFile] = false;
             }
-            $strReturn .= "</li>";
         }
 
+        $arrChecksModules = [];
         foreach ($arrModules as $strOneModule) {
-            $strReturn .= "<li class='list-group-item'>".$this->getLang("installer_phpcheck_module").$strOneModule." ";
             if (in_array($strOneModule, get_loaded_extensions())) {
-                $strReturn .= "<span class=\"label label-success label-as-badge\">".$this->getLang("installer_loaded")."</span></span>";
+                $arrChecksModules[$strOneFile] = true;
             }
             else {
-                $strReturn .= " <span class=\"label label-danger label-as-badge\">".$this->getLang("installer_nloaded")."</span>";
+                $arrChecksModules[$strOneFile] = false;
             }
-
-            $strReturn .= "</li>";
         }
 
-        $strReturn .= "</ul>";
         $this->strForwardLink = $this->getForwardLink(_webpath_."/installer.php?step=config");
         $this->strBackwardLink = "";
+
+        /** @var \Twig_Environment $twig */
+        $twig = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);
+
+        $strReturn = $twig->render("core/module_installer/templates/phpsettings.twig" , [
+            "phpcheck_languages" => $arrChecksLanguages,
+            "fileChecksFolder" => $arrChecksFolder,
+            "fileChecksModules" => $arrChecksModules,
+            "minPhpVersion" => $minPhpVersion
+        ]);
+
         $this->strOutput = $strReturn;
     }
 
@@ -274,20 +279,18 @@ class Installer
 
         if (isset($_POST["write"]) && $_POST["write"] == "true") {
 
-
             //try to validate the data passed
             $bitCxCheck = Carrier::getInstance()->getObjDB()->validateDbCxData($_POST["driver"], new DbConnectionParams($_POST["hostname"], $_POST["username"], $_POST["password"], $_POST["dbname"], $_POST["port"]));
 
             if ($bitCxCheck) {
                 $strFileContent = "<?php\n";
-                $strFileContent .= "/*\n Kajona V5 config-file.\n If you want to overwrite additional settings, copy them from /core/module_system/system/config/config.php into this file.\n*/";
+                $strFileContent .= "/*\n Kajona V7 config-file.\n If you want to overwrite additional settings, copy them from /core/module_system/system/config/config.php into this file.\n*/";
                 $strFileContent .= "\n\n\n";
                 $strFileContent .= "  \$config['dbhost']               = '".$_POST["hostname"]."';                   //Server name \n";
                 $strFileContent .= "  \$config['dbusername']           = '".$_POST["username"]."';                   //Username \n";
                 $strFileContent .= "  \$config['dbpassword']           = '".$_POST["password"]."';                   //Password \n";
                 $strFileContent .= "  \$config['dbname']               = '".$_POST["dbname"]."';                     //Database name \n";
                 $strFileContent .= "  \$config['dbdriver']             = '".$_POST["driver"]."';                     //DB-Driver \n";
-                $strFileContent .= "  \$config['dbprefix']             = '".$_POST["dbprefix"]."';                   //Table-prefix \n";
                 $strFileContent .= "  \$config['dbport']               = '".$_POST["port"]."';                       //Database port \n";
 
                 $strFileContent .= "\n";
@@ -303,7 +306,6 @@ class Installer
                 return;
             }
         }
-
 
         //check for available modules
         $strMysqliInfo = "";
@@ -338,26 +340,23 @@ class Installer
             $strCxWarning = "<div class=\"alert alert-danger\">".$this->getLang("installer_dbcx_error")."</div>";
         }
 
-        //configwizard_form
-        $strReturn .= $this->objTemplates->fillTemplateFile(
-            array(
-                "mysqliInfo"   => $strMysqliInfo,
-                "sqlite3Info"  => $strSqlite3Info,
-                "postgresInfo" => $strPostgresInfo,
-                "sqlsrvInfo"   => $strSqlsrvInfo,
-                "oci8Info"     => $strOci8Info,
-                "cxWarning"    => $strCxWarning,
-                "postHostname" => isset($_POST["hostname"]) ? $_POST["hostname"] : "",
-                "postUsername" => isset($_POST["username"]) ? $_POST["username"] : "",
-                "postDbname"   => isset($_POST["dbname"]) ? $_POST["dbname"] : "",
-                "postDbport"   => isset($_POST["port"]) ? $_POST["port"] : "",
-                "postDbdriver" => isset($_POST["driver"]) ? $_POST["driver"] : "",
-                "postPrefix"   => isset($_POST["dbprefix"]) != "" ? $_POST["dbprefix"] : "kajona_"
-            ),
-            "/templates/installer.tpl", "configwizard_form"
-        );
-        $this->strBackwardLink = $this->getBackwardLink(_webpath_."/installer.php");
+        /** @var \Twig_Environment $twig */
+        $twig = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);
+        $strReturn .= $twig->render("core/module_installer/templates/dbsettings.twig" , array(
+            "mysqliInfo"   => $strMysqliInfo,
+            "sqlite3Info"  => $strSqlite3Info,
+            "postgresInfo" => $strPostgresInfo,
+            "sqlsrvInfo"   => $strSqlsrvInfo,
+            "oci8Info"     => $strOci8Info,
+            "cxWarning"    => $strCxWarning,
+            "postHostname" => isset($_POST["hostname"]) ? $_POST["hostname"] : "",
+            "postUsername" => isset($_POST["username"]) ? $_POST["username"] : "",
+            "postDbname"   => isset($_POST["dbname"]) ? $_POST["dbname"] : "",
+            "postDbport"   => isset($_POST["port"]) ? $_POST["port"] : "",
+            "postDbdriver" => isset($_POST["driver"]) ? $_POST["driver"] : ""
+        ));
 
+        $this->strBackwardLink = $this->getBackwardLink(_webpath_."/installer.php");
 
         $this->strOutput = $strReturn;
     }
@@ -395,7 +394,9 @@ class Installer
         }
 
         if ($bitShowForm) {
-            $this->strOutput .= $this->objTemplates->fillTemplateFile(array(), "/templates/installer.tpl", "loginwizard_form");
+            /** @var \Twig_Environment $twig */
+            $twig = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);
+            $this->strOutput .= $twig->render("core/module_installer/templates/adminlogin.twig" , array());
         }
 
         $this->strBackwardLink = $this->getBackwardLink(_webpath_."/installer.php");
@@ -416,11 +417,12 @@ class Installer
         }
 
         //fetch the relevant installers
-
         $objManager = new PackagemanagerManager();
         $arrPackageMetadata = $objManager->getAvailablePackages();
 
         $strPackagetable = "";
+        $tmpArrayPackages = [];
+        $tmpCounter = 0;
         foreach ($arrPackageMetadata as $objOnePackage) {
             $strSamplecontent = "";
             $strHint = "";
@@ -448,33 +450,25 @@ class Installer
                 $strHint = $this->getLang("installer_package_hint_noinstaller");
             }
 
-            $strPackagetable .= $this->objTemplates->fillTemplateFile(
-
-
-                array(
-                    "packagename"          => $objOnePackage->getStrTitle(),
-                    "packagestatus"        => $objOnePackage->getStrTitle(),
-                    "packageuiname"        => $objOnePackage->getStrTitle(),
-                    "packageversion"       => $objOnePackage->getStrVersion(),
-                    "packagesamplecontent" => $strSamplecontent,
-                    "packageinstaller"     => $strModuleInstaller,
-                    "packagehint"          => $strHint
-                ),
-                "/templates/installer.tpl", "autoinstall_row"
-            );
+            // fill (temp) array with package-data
+            $tmpArrayPackages[$tmpCounter]['packagename']           = $objOnePackage->getStrTitle();
+            $tmpArrayPackages[$tmpCounter]['packagestatus']         = $objOnePackage->getStrTitle();
+            $tmpArrayPackages[$tmpCounter]['packageuiname']         = $objOnePackage->getStrTitle();
+            $tmpArrayPackages[$tmpCounter]['packageversion']        = $objOnePackage->getStrVersion();
+            $tmpArrayPackages[$tmpCounter]['packagesamplecontent']  = $strSamplecontent;
+            $tmpArrayPackages[$tmpCounter]['packageinstaller']      = $strModuleInstaller;
+            $tmpArrayPackages[$tmpCounter]['packagehint']           = $strHint;
+            $tmpCounter++;
         }
 
-
-        $this->strOutput .= $this->objTemplates->fillTemplateFile(
-            array(
-                "packagerows" => $strPackagetable,
-
-                "link_autoinstall"   => _webpath_."/installer.php?step=finish&autoInstall=true",
-                "link_manualinstall" => _webpath_."/installer.php?step=install"
-            ),
-            "/templates/installer.tpl", "modeselect_content"
-        );
-        $this->strOutput .= $this->objTemplates->fillTemplateFile(array(), "/templates/installer.tpl", "autoinstall_cli");
+        /** @var \Twig_Environment $twig */
+        $twig = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);
+        $this->strOutput .= $twig->render("core/module_installer/templates/installpackages.twig" , array(
+            "packages"              => $tmpArrayPackages,
+            "link_autoinstall"      => _webpath_."/installer.php?step=finish&autoInstall=true",
+            "link_manualinstall"    => _webpath_."/installer.php?step=install"
+        ));
+        unset($tmpArrayPackages);
 
         $this->strBackwardLink = $this->getBackwardLink(_webpath_."/installer.php?step=loginData");
     }
@@ -529,11 +523,11 @@ class Installer
         Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBQUERIES | Carrier::INT_CACHE_TYPE_ORMCACHE | Carrier::INT_CACHE_TYPE_OBJECTFACTORY | Carrier::INT_CACHE_TYPE_MODULES);
         $this->loadInstaller();
 
-
         $this->strLogfile = $strInstallLog;
         $strReturn .= $this->getLang("installer_modules_found");
 
-        $strRows = "";
+        $tmpCounter = 0;
+        $tmpArray = [];
         //Loading each installer
         foreach ($this->arrMetadata as $objOneMetadata) {
 
@@ -568,7 +562,6 @@ class Installer
                     if ($objPackage === null || $objPackage->getBitProvidesInstaller() || version_compare($strVersion, $objPackage->getStrVersion(), ">")) {
                         $arrTemplate["module_hint"] .= $this->getLang("installer_systemversion_needed").$strOneModule." >= ".$strVersion."<br />";
                     }
-
                 }
 
                 else if (version_compare($strVersion, SystemModule::getModuleByName(trim($strOneModule))->getStrVersion(), ">")) {
@@ -576,18 +569,26 @@ class Installer
                 }
             }
 
-
             if ($objHandler->isInstallable()) {
-                $strRows .= $this->objTemplates->fillTemplateFile($arrTemplate, "/templates/installer.tpl", "installer_modules_row_installable");
+                $tmpArray[$tmpCounter]['section'] = 1;
             }
             else {
-                $strRows .= $this->objTemplates->fillTemplateFile($arrTemplate, "/templates/installer.tpl", "installer_modules_row");
+                $tmpArray[$tmpCounter]['section'] = 2;
             }
+            $tmpArray[$tmpCounter]['module_name'] = $arrTemplate["module_name"];
+            $tmpArray[$tmpCounter]['module_nameShort'] = $arrTemplate["module_nameShort"];
+            $tmpArray[$tmpCounter]['module_version'] = $arrTemplate["module_version"];
+            $tmpArray[$tmpCounter]['module_hint'] = $arrTemplate["module_hint"];
 
+            $tmpCounter++;
         }
 
         //wrap in form
-        $strReturn .= $this->objTemplates->fillTemplateFile(array("module_rows" => $strRows), "/templates/installer.tpl", "installer_modules_form");
+        /** @var \Twig_Environment $twig */
+        $twig = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);
+        $strReturn .= $twig->render("core/module_installer/templates/updatepackages.twig" , array(
+            "section_array"     => $tmpArray
+        ));
 
         $this->strOutput .= $strReturn;
         if ($this->isInstalled()) {
@@ -596,109 +597,9 @@ class Installer
         else {
             $this->strBackwardLink = $this->getBackwardLink(_webpath_."/installer.php?step=modeSelect");
         }
-        $this->strForwardLink = $this->getForwardLink(_webpath_."/installer.php?step=samplecontent");
-    }
-
-
-    /**
-     * Installs, if available, the samplecontent
-     */
-    private function installSamplecontent()
-    {
-        $strReturn = "";
-        $strInstallLog = "";
-
-        $objManager = new PackagemanagerManager();
-
-        //Is there a module to be installed or updated?
-        if (isset($_GET["update"])) {
-            foreach ($this->arrMetadata as $objOneMetadata) {
-                if ($objOneMetadata->getStrTitle() != "samplecontent") {
-                    continue;
-                }
-
-                $objHandler = $objManager->getPackageManagerForPath($objOneMetadata->getStrPath());
-                $strInstallLog .= $objHandler->installOrUpdate();
-            }
-        }
-
-        //module-installs to loop?
-        if (isset($_POST["moduleInstallBox"]) && is_array($_POST["moduleInstallBox"])) {
-            foreach ($this->arrMetadata as $objOneMetadata) {
-                if ($objOneMetadata->getStrTitle() != "samplecontent") {
-                    continue;
-                }
-
-                $objHandler = $objManager->getPackageManagerForPath($objOneMetadata->getStrPath());
-                $strInstallLog .= $objHandler->installOrUpdate();
-            }
-        }
-
-        $this->strLogfile = $strInstallLog;
-        $strReturn .= $this->getLang("installer_samplecontent");
-
-        //Loading each installer
-        $strRows = "";
-
-        $bitInstallerFound = false;
-        foreach ($this->arrMetadata as $objOneMetadata) {
-
-            if ($objOneMetadata->getStrTitle() != "samplecontent") {
-                continue;
-            }
-
-            $bitInstallerFound = true;
-
-            $objHandler = $objManager->getPackageManagerForPath($objOneMetadata->getStrPath());
-
-            $arrTemplate = array();
-            $arrTemplate["module_nameShort"] = $objOneMetadata->getStrTitle();
-            $arrTemplate["module_name"] = $objOneMetadata->getStrTitle();
-            $arrTemplate["module_version"] = $objOneMetadata->getStrVersion();
-
-            //generate the hint
-            $arrTemplate["module_hint"] = "";
-
-            if ($objHandler->getVersionInstalled() !== null) {
-                $arrTemplate["module_hint"] = $this->getLang("installer_versioninstalled").$objHandler->getVersionInstalled();
-            }
-            else {
-                //check missing modules
-                $strRequired = "";
-                $arrModules = $objHandler->getObjMetadata()->getArrRequiredModules();
-                foreach ($arrModules as $strOneModule => $strVersion) {
-                    if (trim($strOneModule) != "" && SystemModule::getModuleByName(trim($strOneModule)) === null) {
-                        $strRequired .= $strOneModule.", ";
-                    }
-                }
-
-                if (trim($strRequired) != "") {
-                    $arrTemplate["module_hint"] = $this->getLang("installer_modules_needed").substr($strRequired, 0, -2);
-                }
-            }
-
-            if ($objHandler->isInstallable()) {
-                $strRows .= $this->objTemplates->fillTemplateFile($arrTemplate, "/templates/installer.tpl", "installer_modules_row_installable");
-            }
-            else {
-                $strRows .= $this->objTemplates->fillTemplateFile($arrTemplate, "/templates/installer.tpl", "installer_modules_row");
-            }
-
-        }
-
-        if (!$bitInstallerFound) {
-            $this->strOutput = "";
-            ResponseObject::getInstance()->setStrRedirectUrl(_webpath_."/installer.php?step=finish");
-            return;
-        }
-
-        //wrap in form
-        $strReturn .= $this->objTemplates->fillTemplateFile(array("module_rows" => $strRows), "/templates/installer.tpl", "installer_samplecontent_form");
-
-        $this->strOutput .= $strReturn;
-        $this->strBackwardLink = $this->getBackwardLink(_webpath_."/installer.php?step=install");
         $this->strForwardLink = $this->getForwardLink(_webpath_."/installer.php?step=finish");
     }
+
 
     /**
      * The last page of the installer, showing a few infos and links how to go on
@@ -823,16 +724,6 @@ class Installer
 
         CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_ENDPROCESSING, array());
 
-        if ($this->strLogfile != "") {
-            $this->strLogfile = $this->objTemplates->fillTemplateFile(
-                array(
-                    "log_content" => $this->strLogfile,
-                    "systemlog"   => $this->getLang("installer_systemlog")
-                ), "/templates/installer.tpl", "installer_log"
-            );
-        }
-
-
         //build the progress-entries
         $strCurrentCommand = (isset($_GET["step"]) ? $_GET["step"] : "");
         if ($strCurrentCommand == "") {
@@ -854,30 +745,22 @@ class Installer
 
         $strProgress = "";
 
-        $strSection = "installer_progress_entry_done";
-        foreach ($arrProgressEntries as $strKey => $strValue) {
-            $arrTemplateEntry = array();
-            $arrTemplateEntry["entry_name"] = $strValue;
+        /** @var \Twig_Environment $twig */
+        $twig = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);
+        $strReturn = $twig->render("core/module_installer/templates/base.twig" , array(
+            'installer_sections'    => $arrProgressEntries,
+            'currentCommand'        => $strCurrentCommand,
+            'installer_progress'    => $strProgress,
+            'installer_output'      => $this->strOutput,
+            'installer_logfile'     => $this->strLogfile,
+            'installer_backward'    => $this->strBackwardLink,
+            'installer_forward'     => $this->strForwardLink,
+            'installer_version'     => $this->strVersion,
+            'log_content'           => $this->strLogfile,
+            'systemlog'             => $this->getLang("installer_systemlog"),
+            'logfile'               => $this->strLogfile
+        ));
 
-            //choose the correct template section
-            if ($strCurrentCommand == $strKey) {
-                $strProgress .= $this->objTemplates->fillTemplateFile($arrTemplateEntry, "/templates/installer.tpl", "installer_progress_entry_current");
-                $strSection = "installer_progress_entry";
-            }
-            else {
-                $strProgress .= $this->objTemplates->fillTemplateFile($arrTemplateEntry, "/templates/installer.tpl", $strSection);
-            }
-
-        }
-        $arrTemplate = array();
-        $arrTemplate["installer_progress"] = $strProgress;
-        $arrTemplate["installer_version"] = $this->strVersion;
-        $arrTemplate["installer_output"] = $this->strOutput;
-        $arrTemplate["installer_forward"] = $this->strForwardLink;
-        $arrTemplate["installer_backward"] = $this->strBackwardLink;
-        $arrTemplate["installer_logfile"] = $this->strLogfile;
-
-        $strReturn = $this->objTemplates->fillTemplateFile($arrTemplate, "/templates/installer.tpl", "installer_main");
         $strReturn = $this->callScriptlets($strReturn);
         return $strReturn;
     }
@@ -916,7 +799,10 @@ class Installer
      */
     private function getForwardLink($strHref)
     {
-        return $this->objTemplates->fillTemplateFile(array("href" => $strHref, "text" => $this->getLang("installer_next")), "/templates/installer.tpl", "installer_forward_link");
+        return $link = [
+            'href' => $strHref,
+            'text' => $this->getLang("installer_next")
+        ];
     }
 
     /**
@@ -928,7 +814,10 @@ class Installer
      */
     private function getBackwardLink($strHref)
     {
-        return $this->objTemplates->fillTemplateFile(array("href" => $strHref, "text" => $this->getLang("installer_prev")), "/templates/installer.tpl", "installer_backward_link");
+        return $link = [
+            'href' => $strHref,
+            'text' => $this->getLang("installer_prev")
+        ];
     }
 
     /**

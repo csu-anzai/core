@@ -68,7 +68,7 @@ class CopyPermission implements PermissionActionInterface
      */
     public function getPriority(): int
     {
-        return 0;
+        return -128;
     }
 
     /**
