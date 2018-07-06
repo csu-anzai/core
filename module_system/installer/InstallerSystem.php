@@ -98,7 +98,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["right_right5"] = array("text", true);
         $arrFields["right_changelog"] = array("text", true);
 
-        if(!$this->objDB->createTable("system", $arrFields, array("system_id"), array("system_prev_id", "system_module_nr", "system_sort", "system_owner", "system_create_date", "system_status", "system_lm_time", "system_lock_time", "system_deleted")))
+        if(!$this->objDB->createTable("system", $arrFields, array("system_id"), array("system_prev_id", "system_module_nr", "system_sort", "system_owner", "system_create_date", "system_status", "system_lm_time", "system_lock_time", "system_deleted", "system_class")))
             $strReturn .= "An error occurred! ...\n";
 
 
@@ -569,6 +569,11 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             $strReturn .= $this->update_661_70();
         }
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.0") {
+            $strReturn .= $this->update_70_701();
+        }
+
         return $strReturn."\n\n";
     }
 
@@ -807,6 +812,19 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
+        return $strReturn;
+    }
+
+    private function update_70_701()
+    {
+        $strReturn = "Updating 7.0 to 7.0.1...\n";
+
+        // password history
+        $strReturn .= "Updating system table...\n";
+        $this->objDB->createIndex("system", "system_class", ["system_class"]);
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.1");
         return $strReturn;
     }
 
