@@ -11,7 +11,6 @@ namespace Kajona\System\Admin;
 
 use Kajona\Mediamanager\System\MediamanagerRepo;
 use Kajona\System\Admin\Formentries\FormentryCheckboxarray;
-use Kajona\System\Admin\Formentries\FormentryObjectlist;
 use Kajona\System\System\AdminGridableInterface;
 use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\AdminskinHelper;
@@ -1644,6 +1643,7 @@ HTML;
      * @param boolean $bitWithTbody whether to render the table with a tbody element
      *
      * @return string
+     * @deprecated Deprecated, use 'DTableComponent" with "DTable" class.
      */
     public function dataTable(array $arrHeader, array $arrValues, $strTableCssAddon = "", $bitWithTbody = false)
     {
