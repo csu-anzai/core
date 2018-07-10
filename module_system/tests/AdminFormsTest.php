@@ -42,6 +42,68 @@ class AdminFormsTest extends Testbase
         $this->assertEquals($arrKey[3], "fieldb2");
     }
 
+    public function testFloatCompleteness()
+    {
+
+        $objFormManager = new AdminFormgenerator("test", new AdminFormB());
+
+        $objFormManager->generateFieldsFromObject();
+
+        $fa1 = $objFormManager->getField("fielda1");
+        $fa2 = $objFormManager->getField("fielda2");
+        $fb1 = $objFormManager->getField("fieldb1");
+        $fb2 = $objFormManager->getField("fieldb2");
+        $fb3 = $objFormManager->getField("fieldb3");
+
+        $this->assertFalse($fa1->getBitMandatory());
+        $this->assertTrue($fa2->getBitMandatory());
+        $this->assertTrue($fb1->getBitMandatory());
+        $this->assertFalse($fb2->getBitMandatory());
+        $this->assertTrue($fb3->getBitMandatory());
+
+        $countRequiredFields = count($objFormManager->getRequiredFields()); // 3
+        $countErrorsFields = count($objFormManager->getValidationErrorObjects()); // 3
+        $completeness = ($countRequiredFields - $countErrorsFields)*100/$countRequiredFields; // 0%
+
+        $this->assertEquals($countRequiredFields, 3);
+        $this->assertEquals($countErrorsFields, 3);
+        $this->assertEquals($objFormManager->getFloatCompleteness(), $completeness);
+        $objFormManager->removeAllValidationError();
+
+        $fa1->setStrValue('fa1 value');
+        $countErrorsFields = count($objFormManager->getValidationErrorObjects()); // 3
+        $completeness = ($countRequiredFields - $countErrorsFields)*100/$countRequiredFields; // 0%
+
+        $this->assertEquals($countErrorsFields, 3);
+        $this->assertEquals($objFormManager->getFloatCompleteness(), $completeness);
+        $objFormManager->removeAllValidationError();
+
+        $fa2->setStrValue('fa2 value');
+        $countErrorsFields = count($objFormManager->getValidationErrorObjects()); // 2
+        $completeness = round(($countRequiredFields - $countErrorsFields)*100/$countRequiredFields, 2); // 33.33%
+
+        $this->assertEquals($countErrorsFields, 2);
+        $this->assertEquals($objFormManager->getFloatCompleteness(), $completeness);
+        $objFormManager->removeAllValidationError();
+
+        $fb1->setStrValue('fb1 value');
+        $fb2->setStrValue('fb2 value');
+        $countErrorsFields = count($objFormManager->getValidationErrorObjects()); // 1
+        $completeness = round(($countRequiredFields - $countErrorsFields)*100/$countRequiredFields, 2); // 66.66%
+
+        $this->assertEquals($countErrorsFields, 1);
+        $this->assertEquals($objFormManager->getFloatCompleteness(), $completeness);
+        $objFormManager->removeAllValidationError();
+
+        $fb3->setStrValue('fb3 value');
+        $countErrorsFields = count($objFormManager->getValidationErrorObjects()); // 0
+        $completeness = ($countRequiredFields - $countErrorsFields)*100/$countRequiredFields; // 100%
+
+        $this->assertEquals($countErrorsFields, 0);
+        $this->assertEquals($objFormManager->getFloatCompleteness(), $completeness);
+        $objFormManager->removeAllValidationError();
+    }
+
 }
 
 //set up test-structures
@@ -57,6 +119,7 @@ class AdminFormA extends Model
 
     /**
      * @var
+     * @fieldMandatory
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      */
     private $strFieldA2;
@@ -101,6 +164,7 @@ class AdminFormB extends AdminFormA
 
     /**
      * @var
+     * @fieldMandatory
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      */
     private $strFieldB1;
@@ -110,6 +174,13 @@ class AdminFormB extends AdminFormA
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      */
     private $strFieldB2;
+
+    /**
+     * @var
+     * @fieldMandatory
+     * @fieldType Kajona\System\Admin\Formentries\FormentryText
+     */
+    private $strFieldB3;
 
     /**
      * @param  $strFieldB1
@@ -143,6 +214,21 @@ class AdminFormB extends AdminFormA
         return $this->strFieldB2;
     }
 
+    /**
+     * @param  $strFieldB2
+     */
+    public function setStrFieldB3($strFieldB3)
+    {
+        $this->strFieldB3 = $strFieldB3;
+    }
+
+    /**
+     * @return
+     */
+    public function getStrFieldB3()
+    {
+        return $this->strFieldB3;
+    }
 
 }
 

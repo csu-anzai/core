@@ -1434,4 +1434,38 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
     {
         return isset($this->arrFields[$name]);
     }
+
+    /**
+     * Returns percent of completeness.
+     *
+     * @return float|int
+     * @throws Exception
+     */
+    public function getFloatCompleteness()
+    {
+        // To finish filling in the form client needs to set all mandatory fields + not mandatory with errors.
+        // 1. Collect all not mandatory fields.
+        $arrRequiredFields = $this->getRequiredFields();
+
+        // 2. Validate the form to fill $this->arrValidationErrors
+        $this->validateForm();
+
+        // 3. After merging we should receive all mandatory fields without errors + mandatory and not mandatory fields with errors.
+        $arrAllFieldsShouldBeCompleted = array_merge($arrRequiredFields, $this->arrValidationErrors);
+
+        // 4. Amount of all needed fields without amount of fields with errors
+        $countCompletedFields = count($arrAllFieldsShouldBeCompleted) - count($this->arrValidationErrors);
+
+        // Theoretically it should never happen, but ...
+        if ($countCompletedFields < 0) {
+            return 0;
+        }
+
+        $countFieldsShouldBeCompleted = count($arrAllFieldsShouldBeCompleted);
+        if ($countFieldsShouldBeCompleted === 0) {
+            return 100;
+        }
+
+        return round($countCompletedFields/$countFieldsShouldBeCompleted*100, 2);
+    }
 }
