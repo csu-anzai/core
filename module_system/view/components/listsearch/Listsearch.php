@@ -17,7 +17,7 @@ use Kajona\System\View\Components\AbstractComponent;
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.0
- * @componentTemplate template.twig
+ * @componentTemplate core/module_system/view/components/listsearch/template.twig
  */
 class Listsearch extends AbstractComponent
 {

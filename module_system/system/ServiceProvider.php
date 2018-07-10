@@ -6,6 +6,7 @@ use Kajona\System\System\Permissions\PermissionHandlerFactory;
 use Kajona\System\System\Security\PasswordRotator;
 use Kajona\System\System\Security\PasswordValidator;
 use Kajona\System\System\Security\Policy;
+use Kajona\System\System\Template\Loader;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
@@ -171,7 +172,7 @@ class ServiceProvider implements ServiceProviderInterface
 
         $objContainer[self::STR_TEMPLATE_ENGINE] = function ($c) {
             $debug = $c[self::STR_CONFIG]->getConfig("debuglevel") == 1;
-            $loader = new \Twig_Loader_Filesystem(_realpath_);
+            $loader = new Loader(_realpath_);
 
             $twig = new \Twig_Environment($loader, array(
                 'cache' => _realpath_ . 'project/temp/cache',

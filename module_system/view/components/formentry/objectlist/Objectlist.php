@@ -26,7 +26,7 @@ use Kajona\System\View\Components\Formentry\FormentryComponentAbstract;
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.0
- * @componentTemplate template.twig
+ * @componentTemplate core/module_system/view/components/formentry/objectlist/template.twig
  */
 class Objectlist extends FormentryComponentAbstract
 {
