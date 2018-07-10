@@ -6,10 +6,9 @@
 
 namespace Kajona\Workflows\System;
 
-use Kajona\Dashboard\System\TodoEntry;
+use Kajona\Dashboard\System\ObjectTodoEntry;
 use Kajona\Dashboard\System\TodoProviderInterface;
 use Kajona\System\System\Lang;
-use Kajona\System\System\Link;
 use Kajona\System\System\Session;
 
 
@@ -27,8 +26,7 @@ abstract class WorkflowsTodoProviderBase implements TodoProviderInterface
     {
         if (in_array($strCategory, array_keys($this->getWorkflowClasses()))) {
             return $this->getPendingWorkflows($strCategory, $bitLimited);
-        }
-        else {
+        } else {
             return array();
         }
     }
@@ -46,22 +44,15 @@ abstract class WorkflowsTodoProviderBase implements TodoProviderInterface
 
         if ($bitLimited) {
             $arrWorkflows = WorkflowsWorkflow::getPendingWorkflowsForUser($arrUsers, 0, self::LIMITED_COUNT, array($strWorkflowClass));
-        }
-        else {
+        } else {
             $arrWorkflows = WorkflowsWorkflow::getPendingWorkflowsForUser($arrUsers, false, false, array($strWorkflowClass));
         }
 
         foreach ($arrWorkflows as $objWorkflow) {
             if ($objWorkflow->getObjWorkflowHandler()->providesUserInterface()) {
                 /** @var WorkflowsWorkflow $objWorkflow */
-                $objTodo = new TodoEntry();
-                $objTodo->setStrIcon($objWorkflow->getStrIcon());
+                $objTodo = new ObjectTodoEntry($objWorkflow);
                 $objTodo->setStrCategory($strWorkflowClass);
-                $objTodo->setStrDisplayName($objWorkflow->getStrDisplayName());
-                $objTodo->setArrModuleNavi(array(
-                    Link::getLinkAdmin("workflows", "showUI", "&systemid=".$objWorkflow->getSystemid(), "", $objLang->getLang("workflow_ui", "workflows"), "icon_workflow_ui")
-                ));
-
                 $arrResult[] = $objTodo;
             }
         }
