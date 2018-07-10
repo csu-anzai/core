@@ -1631,6 +1631,7 @@ HTML;
         return $this->objTemplate->fillTemplateFile(array("entries" => $strEntries), "/admin/skins/kajona_v4/elements.tpl", "batchactions_wrapper");
     }
 
+
     /**
      * Returns a table filled with infos.
      * The header may be build using cssclass -> value or index -> value arrays
@@ -1651,8 +1652,8 @@ HTML;
         $objTable->setStrTableCssAddon($strTableCssAddon);
         $objTable->setBitWithTbody($bitWithTbody);
         return $objTable->renderComponent();
-    }
 
+    }
 
     // --- Action-Elements ----------------------------------------------------------------------------------
 

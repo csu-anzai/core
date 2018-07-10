@@ -44,6 +44,8 @@ use Kajona\System\System\Usersources\UsersourcesGroupInterface;
 use Kajona\System\System\Usersources\UsersourcesUserInterface;
 use Kajona\System\System\UserUser;
 use Kajona\System\System\Validators\EmailValidator;
+use Kajona\System\View\Components\DTable\DTableComponent;
+use Kajona\System\View\Components\DTable\Model\DTable;
 
 /**
  * This class provides the user and groupmanagement
@@ -1341,7 +1343,10 @@ HTML;
         $arrHeader[] = $this->getLang("login_ip");
         $arrHeader[] = $this->getLang("login_utrace");
         //and fetch the table
-        $strReturn .= $this->objToolkit->dataTable($arrHeader, $arrRows);
+
+        $objDTable = new DTable([$arrHeader], $arrRows);
+        $objDTableComponent = new DTableComponent($objDTable);
+        $strReturn .= $objDTableComponent->renderComponent();
         $strReturn .= $this->objToolkit->getPageview($objIterator, "user", "loginlog");
 
         return $strReturn;
