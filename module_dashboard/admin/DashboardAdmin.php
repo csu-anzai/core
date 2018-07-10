@@ -526,6 +526,8 @@ JS;
                 foreach ($arrModule as $strLink) {
                     $strActions .= $this->objToolkit->listButton($strLink);
                 }
+            } elseif (is_string($arrModule)) {
+                $strActions = $arrModule;
             }
 
             $strIcon = AdminskinHelper::getAdminImage($objTodo->getStrIcon());
@@ -571,5 +573,3 @@ JS;
         return $arrReturn;
     }
 }
-
-
