@@ -81,7 +81,7 @@ JSON;
 // install composer
 $arrOutput = array();
 $intReturn = 0;
-exec('composer install --prefer-dist --optimize-autoloader --working-dir  ' . escapeshellarg($vendorDir), $arrOutput, $intReturn);
+exec('composer install --no-dev --prefer-dist --optimize-autoloader --working-dir ' . escapeshellarg($vendorDir), $arrOutput, $intReturn);
 if ($intReturn == 127) {
     echo "<span style='color: red;'>composer was not found. please run 'composer install --prefer-dist --working-dir " . $vendorDir . "' manually</span>\n";
 }
