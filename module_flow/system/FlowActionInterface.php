@@ -20,6 +20,10 @@ use Kajona\System\System\Model;
  */
 interface FlowActionInterface
 {
+    const ORDER_PRE = 1;
+    const ORDER_DEFAULT = 2;
+    const ORDER_POST = 3;
+
     /**
      * @return string
      */
@@ -29,6 +33,16 @@ interface FlowActionInterface
      * @return string
      */
     public function getDescription();
+
+    /**
+     * By default every action is assigned to the default order which means there is no specified order. In most cases
+     * it is recommended to develop actions which are independent of a specific order. In case you have an action which
+     * must be executed before every other action you can use the PRE order. The order can be of type PRE or POST which
+     * guarantees that the action gets executed either before or after the normal actions
+     *
+     * @return int
+     */
+    public function getOrder();
 
     /**
      * Is called on a status change

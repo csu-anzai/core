@@ -96,6 +96,11 @@ abstract class FlowActionAbstract extends Model implements ModelInterface, Admin
         return "";
     }
 
+    public function getOrder()
+    {
+        return self::ORDER_DEFAULT;
+    }
+
     /**
      * @return FlowTransition
      */
