@@ -36,9 +36,10 @@ interface FlowActionInterface
 
     /**
      * By default every action is assigned to the default order which means there is no specified order. In most cases
-     * it is recommended to develop actions which are independent of a specific order. In case you have an action which
-     * must be executed before every other action you can use the PRE order. The order can be of type PRE or POST which
-     * guarantees that the action gets executed either before or after the normal actions
+     * it is recommended to develop actions which are independent of a specific order. The order can be of type PRE or
+     * POST which guarantees that the action gets executed either before or after the normal actions. In case multiple
+     * actions have a PRE/POST order there is no specified order within these actions, therefore it is recommended to
+     * use this flag only if necessary
      *
      * @return int
      */
