@@ -219,7 +219,22 @@ abstract class FlowHandlerAbstract implements FlowHandlerInterface
     {
         $arrActions = $objTransition->getArrActions();
         if (!empty($arrActions)) {
-            foreach ($arrActions as $objAction) {
+            // sort actions
+            $preActions = [];
+            $actions = [];
+            $postActions = [];
+            foreach ($arrActions as $action) {
+                if ($action->getOrder() === FlowActionInterface::ORDER_PRE) {
+                    $preActions[] = $action;
+                } elseif ($action->getOrder() === FlowActionInterface::ORDER_POST) {
+                    $postActions[] = $action;
+                } else {
+                    $actions[] = $action;
+                }
+            }
+
+            $sortedActions = array_merge($preActions, $actions, $postActions);
+            foreach ($sortedActions as $objAction) {
                 if ($objAction instanceof FlowActionInterface) {
                     $objAction->executeAction($objObject, $objTransition);
                 }
