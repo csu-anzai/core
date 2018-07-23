@@ -1,0 +1,27 @@
+
+<div class="core-component-rights">
+    <table class="table admintable table-striped kajona-data-table">
+        <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            {% for right, header in headerRows %}
+            <th data-right="{{ right }}">{{ header }}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for group in groups %}
+        <tr data-groupid="{{ group.systemId }}">
+            <td>
+                <a href="#" onclick="require('permissions').removeGroup('{{ group.systemId }}',this);return false;"><i class="kj-icon fa fa-trash-o"></i></a>
+            </td>
+            <td>{{ group.strDisplayName }}</td>
+            {% for right, header in headerRows %}
+            <td><input title="{{ header }}" rel="tooltip" type="checkbox" name="{{ right }},{{ group.systemId }}" id="{{ right }},{{ group.systemId }}" value="1" {% if group.systemId in rights[right]  %}checked="checked"{% endif %}></td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

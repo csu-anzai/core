@@ -1359,16 +1359,19 @@ HTML;
         $strFormElement = $this->getParam("form_element");
         if ($strListIdentifier == "userGroupList" && $this->getSystemid() == "" && $objOneIterable instanceof UserGroup) {
             $strAction = "";
-            $strAction .= $this->objToolkit->listButton(
-                Link::getLinkAdmin(
-                    "user",
-                    "userBrowser",
-                    "&form_element=".$this->getParam("form_element")."&systemid=".$objOneIterable->getSystemid()."&filter=".$this->getParam("filter")."&checkid=".$this->getParam("checkid"),
-                    $this->getLang("user_browser_show"),
-                    $this->getLang("user_browser_show"),
-                    "icon_folderActionOpen"
-                )
-            );
+
+            if ($this->getParam("allowUser") == "1") {
+                $strAction .= $this->objToolkit->listButton(
+                    Link::getLinkAdmin(
+                        "user",
+                        "userBrowser",
+                        "&form_element=".$this->getParam("form_element")."&systemid=".$objOneIterable->getSystemid()."&filter=".$this->getParam("filter")."&checkid=".$this->getParam("checkid"),
+                        $this->getLang("user_browser_show"),
+                        $this->getLang("user_browser_show"),
+                        "icon_folderActionOpen"
+                    )
+                );
+            }
 
             if ($this->getParam("allowGroup") == "1") {
                 $strAction .= $this->objToolkit->listButton(
@@ -1412,7 +1415,14 @@ HTML;
             return Link::getLinkAdmin(
                 $this->getArrModule("modul"),
                 "userBrowser",
-                "&form_element=".$this->getParam("form_element")."&filter=".$this->getParam("filter")."&allowGroup=".$this->getParam("allowGroup")."&checkid=".$this->getParam("checkid"),
+                [
+                    "form_element" => $this->getParam("form_element"),
+                    "filter" => $this->getParam("filter"),
+                    "allowUser" => $this->getParam("allowUser"),
+                    "allowGroup" => $this->getParam("allowGroup"),
+                    "checkid" => $this->getParam("checkid"),
+                    "selectedGroup" => $this->getParam("selectedGroup")
+                ],
                 $this->getLang("user_list_parent"),
                 $this->getLang("user_list_parent"),
                 "icon_folderActionLevelup"
@@ -1463,7 +1473,14 @@ HTML;
                 false,
                 "userGroupList",
                 false,
-                Link::sanitizeUrlParams(["form_element" => $this->getParam("form_element"), "filter" => $this->getParam("filter"), "allowGroup" => $this->getParam("allowGroup"), "checkid" => $this->getParam("checkid"), "selectedGroup" => $this->getParam("selectedGroup")]),
+                Link::sanitizeUrlParams([
+                    "form_element" => $this->getParam("form_element"),
+                    "filter" => $this->getParam("filter"),
+                    "allowUser" => $this->getParam("allowUser"),
+                    "allowGroup" => $this->getParam("allowGroup"),
+                    "checkid" => $this->getParam("checkid"),
+                    "selectedGroup" => $this->getParam("selectedGroup")
+                ]),
                 function() {return true; }
             );
         } else {
@@ -1486,7 +1503,14 @@ HTML;
                 false,
                 "userGroupUserList",
                 false,
-                Link::sanitizeUrlParams(["form_element" => $this->getParam("form_element"), "filter" => $this->getParam("filter"), "allowGroup" => $this->getParam("allowGroup"), "checkid" => $this->getParam("checkid"), "selectedGroup" => $this->getParam("selectedGroup")]),
+                Link::sanitizeUrlParams([
+                    "form_element" => $this->getParam("form_element"),
+                    "filter" => $this->getParam("filter"),
+                    "allowUser" => $this->getParam("allowUser"),
+                    "allowGroup" => $this->getParam("allowGroup"),
+                    "checkid" => $this->getParam("checkid"),
+                    "selectedGroup" => $this->getParam("selectedGroup")
+                ]),
                 function() {return true; }
             );
         }
