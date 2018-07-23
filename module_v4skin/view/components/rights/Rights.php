@@ -21,7 +21,7 @@ use Kajona\System\View\Components\AbstractComponent;
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.0
- * @componentTemplate template.twig
+ * @componentTemplate core/module_v4skin/view/components/rights/template.twig
  */
 class Rights extends AbstractComponent
 {
