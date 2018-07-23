@@ -15,8 +15,15 @@ namespace Kajona\System\View\Components\DTable\Model;
  */
 class DRow
 {
+    /**
+     * @var array
+     */
     private $cells = [];
 
+    /**
+     * @var string
+     */
+    private $classAddon = '';
     /**
      * DRow constructor.
      * @param array $cells
@@ -58,4 +65,26 @@ class DRow
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getClassAddon(): string
+    {
+        return $this->classAddon;
+    }
+
+    /**
+     * @param string $classAddon
+     *
+     * @return DRow
+     */
+    public function setClassAddon(string $classAddon)
+    {
+        $this->classAddon = $classAddon;
+
+        return $this;
+    }
+
+
 }
