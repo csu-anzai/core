@@ -11,6 +11,7 @@ namespace Kajona\System\Admin;
 
 use Kajona\Mediamanager\System\MediamanagerRepo;
 use Kajona\System\Admin\Formentries\FormentryCheckboxarray;
+use Kajona\System\Admin\Formentries\FormentryTageditor;
 use Kajona\System\System\AdminGridableInterface;
 use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\AdminskinHelper;
@@ -1026,10 +1027,16 @@ class ToolkitAdmin extends Toolkit
             }
 HTML;
 
+        // html decode comma value
+        $values = array_values($arrValues);
+        $values = array_map(function($value){
+            return FormentryTageditor::decodeValue($value);
+        }, $values);
+
         $arrTemplate = array();
         $arrTemplate["name"] = $strName;
         $arrTemplate["title"] = $strTitle;
-        $arrTemplate["values"] = json_encode(array_values($arrValues));
+        $arrTemplate["values"] = json_encode($values);
         $arrTemplate["delimiter"] = json_encode($strDelimiter);
         $arrTemplate["onChange"] = empty($strOnChange) ? $strJs : (string)$strOnChange;
 

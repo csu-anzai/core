@@ -115,4 +115,38 @@ class FormentryTageditor extends FormentryMultiselect
     {
         return implode(", ", $this->arrKeyValues);
     }
+
+    public function setStrValue($strValue)
+    {
+        if (is_array($strValue)) {
+            $strValue = array_map(function($value){
+                return self::encodeValue($value);
+            }, $strValue);
+            $strValue = implode(",", $strValue);
+        }
+
+        return parent::setStrValue($strValue);
+    }
+
+    /**
+     * Encodes a single tag editor value
+     *
+     * @param string $value
+     * @return string
+     */
+    public static function encodeValue($value)
+    {
+        return str_replace(',', '&#44;', $value);
+    }
+
+    /**
+     * Decodes a single tag editor value
+     *
+     * @param string $value
+     * @return string
+     */
+    public static function decodeValue($value)
+    {
+        return str_replace('&#44;', ',', $value);
+    }
 }
