@@ -21,10 +21,10 @@
     </thead>
     {% set i = 0 %}
     {% for row in rows %}
-        <tr data-systemid="{{ i }}">
+        <tr data-systemid="{{ i }}" {% if row.classAddon!="" %} class="{{ row.classAddon }}"{% endif %}>
             {% set j = 0 %}
             {% for cell in row.cells %}
-                <td {% if cell.colspan > 0 %} colspan="{{ cell.colspan }}" {% endif %} class="row-{{ j }}">
+                <td {% if cell.colspan > 0 %} colspan="{{ cell.colspan }}" {% endif %} class="row-{{ j }}{% if cell.classAddon!="" %} {{ cell.classAddon }}{% endif %}">
                     {{ cell.value | raw }}
                 </td>
                 {% set j = j + 1 %}

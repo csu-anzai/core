@@ -17,7 +17,7 @@ use Kajona\System\View\Components\DTable\Model\DTable;
  *
  * @author andrii.konoval@artemeon.de
  * @since 7.0
- * @componentTemplate core/module_system/view/components/dtable/template.twig
+ * @componentTemplate template.twig
  */
 class DTableComponent extends AbstractComponent
 {

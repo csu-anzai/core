@@ -15,9 +15,20 @@ namespace Kajona\System\View\Components\DTable\Model;
  */
 class DCell
 {
+    /**
+     * @var string
+     */
     private $value;
 
+    /**
+     * @var int
+     */
     private $colspan = 0;
+
+    /**
+     * @var string
+     */
+    private $classAddon = '';
 
     /**
      * DCell constructor.
@@ -63,6 +74,26 @@ class DCell
     public function setColspan(int $colspan)
     {
         $this->colspan = $colspan;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClassAddon(): string
+    {
+        return $this->classAddon;
+    }
+
+    /**
+     * @param string $classAddon
+     *
+     * @return DCell
+     */
+    public function setClassAddon(string $classAddon)
+    {
+        $this->classAddon = $classAddon;
 
         return $this;
     }
