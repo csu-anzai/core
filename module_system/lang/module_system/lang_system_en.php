@@ -167,6 +167,7 @@ $lang["permissions_toggle_visible"]                     = "Show non-configured r
 $lang["permissions_toggle_hidden"]                     = "Hide non-configured rows";
 $lang["permissions_success"]                     = "Permissions saved successfully.";
 $lang["permissons_filter"]                     = "Text-filter";
+$lang["permissons_add_group"]                     = "Add group";
 $lang["moduleRightsTitle"]               = "Permissions";
 $lang["numberStyleDecimal"]              = ".";
 $lang["numberStyleThousands"]            = ",";

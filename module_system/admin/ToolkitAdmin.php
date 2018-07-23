@@ -429,6 +429,23 @@ class ToolkitAdmin extends Toolkit
 
         $strCheckIds = json_encode($arrValidateSystemid);
 
+        $params = [
+            "form_element" => $strName,
+            "checkid" => $strCheckIds,
+        ];
+        if ($bitUser) {
+            $params["allowUser"] = "1";
+        }
+        if ($bitGroups) {
+            $params["allowGroup"] = "1";
+        }
+        if ($bitBlockCurrentUser) {
+            $params["filter"] = "current";
+        }
+        if (validateSystemid($strSelectedGroupId)) {
+            $params["selectedGroup"] = $strSelectedGroupId;
+        }
+
         $arrTemplate = array();
         $arrTemplate["name"] = $strName;
         $arrTemplate["value"] = htmlspecialchars($strUserName, ENT_QUOTES, "UTF-8", false);
@@ -438,7 +455,7 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["opener"] = $this->listButton(Link::getLinkAdminDialog(
             "user",
             "userBrowser",
-            "&form_element={$strName}&checkid={$strCheckIds}".($bitGroups ? "&allowGroup=1" : "").($bitBlockCurrentUser ? "&filter=current" : "").(validateSystemid($strSelectedGroupId) ? "&selectedGroup=" . $strSelectedGroupId : ""),
+            $params,
             Carrier::getInstance()->getObjLang()->getLang("user_browser", "user"),
             Carrier::getInstance()->getObjLang()->getLang("user_browser", "user"),
             "icon_externalBrowser",

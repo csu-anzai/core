@@ -275,6 +275,7 @@ $lang["permissions_toggle_visible"]                     = "Nicht-konfigurierte Z
 $lang["permissions_toggle_hidden"]                     = "Nicht-konfigurierte Zeilen ausblenden";
 $lang["permissions_success"]                     = "Die Berechtigungen wurden erfolgreich gespeichert.";
 $lang["permissons_filter"]                     = "Filter-Text";
+$lang["permissons_add_group"]                     = "Gruppe hinzufügen";
 $lang["titel_leer"]                      = "<em>Kein Titel hinterlegt</em>";
 $lang["titel_root"]                      = "Rechte-Root-Satz";
 $lang["titleTime"]                       = "Uhr";

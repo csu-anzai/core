@@ -9,17 +9,15 @@
 
 namespace Kajona\System\Admin;
 
-use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Link;
 use Kajona\System\System\Objectfactory;
-use Kajona\System\System\OrmBase;
-use Kajona\System\System\OrmDeletedhandlingEnum;
+use Kajona\System\System\Rights;
+use Kajona\System\System\Root;
 use Kajona\System\System\SystemCommon;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
-use Kajona\System\System\UserGroup;
-
+use Kajona\V4skin\View\Components\Rights\Rights as RightComponent;
 
 /**
  * This class handles the backend-part of permission-management
@@ -32,6 +30,11 @@ use Kajona\System\System\UserGroup;
  */
 class RightAdmin extends AdminController implements AdminInterface
 {
+    /**
+     * @inject system_rights
+     * @var \Kajona\System\System\Rights
+     */
+    protected $rights;
 
     /**
      * Constructor
@@ -46,12 +49,13 @@ class RightAdmin extends AdminController implements AdminInterface
         }
     }
 
-
+    /**
+     * @inheritdoc
+     */
     protected function getOutputModuleTitle()
     {
         return $this->getLang("moduleRightsTitle");
     }
-
 
     /**
      * Returns a form to modify the rights
@@ -62,7 +66,6 @@ class RightAdmin extends AdminController implements AdminInterface
      */
     protected function actionChange()
     {
-
         $strReturn = "";
         $strSystemID = $this->getParam("systemid");
         $objTargetRecord = null;
@@ -85,193 +88,33 @@ class RightAdmin extends AdminController implements AdminInterface
             return $this->getLang("commons_error_permissions");
         }
 
-        $objRights = Carrier::getInstance()->getObjRights();
-
         if ($objTargetRecord->rightRight()) {
             //Get Rights
-            $arrRights = $objRights->getArrayRights($objTargetRecord->getSystemid());
-            //Get groups
+            $arrRights = $this->rights->getArrayRights($objTargetRecord->getSystemid());
 
-            //Also load deleted groups
-            $deletedHandlerOld = OrmBase::getObjHandleLogicalDeletedGlobal();
-            OrmBase::setObjHandleLogicalDeletedGlobal(OrmDeletedhandlingEnum::INCLUDED());
-            $arrGroups = UserGroup::getObjectListFiltered();
-            OrmBase::setObjHandleLogicalDeletedGlobal($deletedHandlerOld);
-
-            //Determine name of the record
-            if ($objTargetRecord instanceof SystemModule) {
-                $strTitle = Carrier::getInstance()->getObjLang()->getLang("modul_titel", $objTargetRecord->getStrName())." (".$objTargetRecord->getStrDisplayName().")";
-            } elseif ($objTargetRecord->getStrDisplayName() == "") {
-                $strTitle = $this->getLang("titel_leer");
-            } else {
-                $strTitle = $objTargetRecord->getStrDisplayName()." ";
-            }
-
-            //Load the rights header-row
-            if ($objTargetRecord->getIntModuleNr() == 0) {
-                $strModule = "system";
-            } elseif ($objTargetRecord instanceof SystemModule) {
-                $strModule = $objTargetRecord->getStrName();
-            } else {
-                $strModule = $objTargetRecord->getArrModule("modul");
-            }
-
-            if ($objTargetRecord instanceof SystemModule) {
-                //try to find a module base header
-                $arrHeaderRow = $this->getLang("permissions_header_module", $strModule);
-                if ($arrHeaderRow == "!permissions_header_module!") {
-                    $arrHeaderRow = $this->getLang("permissions_header", $strModule);
-                }
-            } elseif ($strSystemID == "0") {
-                $arrHeaderRow = $this->getLang("permissions_root_header", "system");
-            } else {
-                $arrHeaderRow = $this->getLang("permissions_header", $strModule);
-            }
-
-            if ($arrHeaderRow == "!permissions_header!") {
-                $arrHeaderRow = $this->getLang("permissions_default_header", "system");
-            }
-
-            $arrTitles = $arrHeaderRow;
-
-            $arrTitles[9] = $arrTitles[9] ?? $this->getLang("permissions_default_header", "system")[9];
-
-            $arrTemplateTotal = array();
-            $arrTemplateTotal["title0"] = $arrTitles[0];
-            $arrTemplateTotal["title1"] = $arrTitles[1];
-            $arrTemplateTotal["title2"] = $arrTitles[2];
-            $arrTemplateTotal["title3"] = $arrTitles[3];
-            $arrTemplateTotal["title4"] = $arrTitles[4];
-            $arrTemplateTotal["title5"] = $arrTitles[5];
-            $arrTemplateTotal["title6"] = $arrTitles[6];
-            $arrTemplateTotal["title7"] = $arrTitles[7];
-            $arrTemplateTotal["title8"] = $arrTitles[8];
-            $arrTemplateTotal["title9"] = $arrTitles[9];
-
-            //Read the template
-            $arrTemplateTotal["rows"] = "";
-            //Inserting Rows
-            foreach ($arrGroups as $objSingleGroup) {
-                $arrTemplateRow = array();
-                $arrSingleGroup = array();
-                $arrTemplateRow["group"] = $objSingleGroup->getStrDisplayName();
-                $arrSingleGroup["group_id"] = $objSingleGroup->getIntShortId();
-                $arrSingleGroup["group_systemid"] = $objSingleGroup->getSystemid();
-
-                //hide the superglobal admin-row from non-members
-                if ($objSingleGroup->getSystemid() == SystemSetting::getConfigValue("_admins_group_id_") && !in_array(SystemSetting::getConfigValue("_admins_group_id_"), $this->objSession->getGroupIdsAsArray())) {
-                    continue;
-                }
-
-                //Building Checkboxes
-                $arrTemplateRow["box0"] = "<input title=\"".$arrTitles[0]."\" rel=\"tooltip\" type=\"checkbox\" name=\"1,".$arrSingleGroup["group_id"]."\" id=\"1,".$arrSingleGroup["group_id"]."\" value=\"1\" ".(in_array($arrSingleGroup["group_systemid"], $arrRights["view"]) ? " checked=\"checked\" " : "")." />";
-                $arrTemplateRow["box1"] = "<input title=\"".$arrTitles[1]."\" rel=\"tooltip\" type=\"checkbox\" name=\"2,".$arrSingleGroup["group_id"]."\" id=\"2,".$arrSingleGroup["group_id"]."\" value=\"1\" ".(in_array($arrSingleGroup["group_systemid"], $arrRights["edit"]) ? " checked=\"checked\" " : "")." />";
-                $arrTemplateRow["box2"] = "<input title=\"".$arrTitles[2]."\" rel=\"tooltip\" type=\"checkbox\" name=\"3,".$arrSingleGroup["group_id"]."\" id=\"3,".$arrSingleGroup["group_id"]."\" value=\"1\" ".(in_array($arrSingleGroup["group_systemid"], $arrRights["delete"]) ? " checked=\"checked\" " : "")." />";
-                $arrTemplateRow["box3"] = "<input title=\"".$arrTitles[3]."\" rel=\"tooltip\" type=\"checkbox\" name=\"4,".$arrSingleGroup["group_id"]."\" id=\"4,".$arrSingleGroup["group_id"]."\" value=\"1\" ".(in_array($arrSingleGroup["group_systemid"], $arrRights["right"]) ? " checked=\"checked\" " : "")." />";
-
-                //loop the module specific permissions
-                for ($intI = 1; $intI <= 5; $intI++) {
-                    if ($arrTemplateTotal["title".($intI + 3)] != "") {
-                        $arrTemplateRow["box".($intI + 3)] = "<input title=\"".$arrTitles[$intI + 3]."\" rel=\"tooltip\" type=\"checkbox\" name=\"".($intI + 4).",".$arrSingleGroup["group_id"]."\" id=\"".($intI + 4).",".$arrSingleGroup["group_id"]."\" value=\"1\" ".(in_array($arrSingleGroup["group_systemid"], $arrRights["right".$intI]) ? " checked=\"checked\" " : "")." />";
-                    } else {
-                        $arrTemplateRow["box".($intI + 3)] = "<input type=\"hidden\" name=\"".($intI + 4).",".$arrSingleGroup["group_id"]."\" id=\"".($intI + 4).",".$arrSingleGroup["group_id"]."\" value=\"1\" />";
-                    }
-                }
-
-                $arrTemplateRow["box9"] = "<input title=\"".$arrTitles[9]."\" rel=\"tooltip\" type=\"checkbox\" name=\"10,".$arrSingleGroup["group_id"]."\" id=\"10,".$arrSingleGroup["group_id"]."\" value=\"1\" ".(in_array($arrSingleGroup["group_systemid"], $arrRights["changelog"]) ? " checked=\"checked\" " : "")." />";
-
-                //And Print it to template
-                $arrTemplateTotal["rows"] .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/elements.tpl", "rights_form_row");
-            }
-
-            //Build the inherit-box
-            $arrTemplateInherit = array();
-            $arrTemplateInherit["title"] = $this->getLang("titel_erben");
-            $arrTemplateInherit["name"] = "inherit";
-            if (isset($arrRights["inherit"]) && $arrRights["inherit"] == 1) {
-                $arrTemplateInherit["checked"] = "checked=\"checked\"";
-            } else {
-                $arrTemplateInherit["checked"] = "";
-            }
-
-            $arrTemplateTotal["inherit"] = $this->objTemplate->fillTemplateFile($arrTemplateInherit, "/elements.tpl", "rights_form_inherit");
-
-            //Creating the output, starting with the header
-            $arrTemplate = array();
-            $arrTemplate["record"] = $strTitle;
-            //Backlink
-            $strUrlHistory = $this->getHistory(0);
-            //Buliding the right-matrix
-            $arrHistory = explode("&", $strUrlHistory);
-            if (isset($arrHistory[0]) && isset($arrHistory[1])) {
-                $arrTemplate["backlink"] = Link::getLinkAdminManual("href=\"".$arrHistory[0]."&".$arrHistory[1]."\"", $this->getLang("commons_back"));
-            }
-
-            $arrTemplate["desc"] = $this->getLang("desc");
-            $strReturn .= $this->objTemplate->fillTemplateFile($arrTemplate, "/elements.tpl", "rights_form_header");
             //Followed by the form
-            $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "saverights"), "rightsForm", "", "require('permissions').submitForm(this); return false;");
-            $strReturn .= $this->objToolkit->formInputText("filter", $this->getLang("permissons_filter"));
-            $strReturn .= $this->objTemplate->fillTemplateFile($arrTemplateTotal, "/elements.tpl", "rights_form_form");
+            $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "saverights"), "rightsForm", "", "require('permissions').submitForm();return false;");
+            $strReturn .= $this->objToolkit->formInputUserSelector("group_add", $this->getLang("permissons_add_group"), "", "", false, true);
+            $strReturn .= "<div id=\"rightsContainer\">" . $this->actionLoadRights() . "</div>";
+            $strReturn .= $this->objToolkit->formInputCheckbox("inherit", $this->getLang("titel_erben"), boolval($arrRights["inherit"]));
             $strReturn .= $this->objToolkit->formInputHidden("systemid", $strSystemID);
-
-            //place all inheritance-rights as hidden-fields to support the change-js script
-            $strPrevId = $objTargetRecord->getPrevId();
-            $arrRightsInherited = $objRights->getArrayRights($strPrevId);
-
-            foreach ($arrRightsInherited as $strRightName => $arrRightsPerAction) {
-                if ($strRightName != "inherit") {
-                    $intRightCounter = 0;
-                    if ($strRightName == "view") {
-                        $intRightCounter = 1;
-                    }
-                    if ($strRightName == "edit") {
-                        $intRightCounter = 2;
-                    }
-                    if ($strRightName == "delete") {
-                        $intRightCounter = 3;
-                    }
-                    if ($strRightName == "right") {
-                        $intRightCounter = 4;
-                    }
-                    if ($strRightName == "right1") {
-                        $intRightCounter = 5;
-                    }
-                    if ($strRightName == "right2") {
-                        $intRightCounter = 6;
-                    }
-                    if ($strRightName == "right3") {
-                        $intRightCounter = 7;
-                    }
-                    if ($strRightName == "right4") {
-                        $intRightCounter = 8;
-                    }
-                    if ($strRightName == "right5") {
-                        $intRightCounter = 9;
-                    }
-                    if ($strRightName == "changelog") {
-                        $intRightCounter = 10;
-                    }
-
-                    foreach ($arrRightsPerAction as $strOneGroupId) {
-                        if ($strOneGroupId === null) {
-                            continue;
-                        }
-                        //place hidden field
-                        $strReturn .= $this->objToolkit->formInputHidden("inherit,".$intRightCounter.",".UserGroup::getShortIdForGroupId($strOneGroupId), "1");
-                    }
-                }
-            }
 
             //Close the form
             $strReturn .= $this->objToolkit->formInputSubmit($this->getLang("commons_save"));
             $strReturn .= $this->objToolkit->formClose();
+
             $strReturn .= "<script type=\"text/javascript\">
                 require(['jquery', 'permissions'], function($, permissions){
-                    permissions.checkRightMatrix();
-                    permissions.toggleEmtpyRows('".$this->getLang("permissions_toggle_visible")."', '".$this->getLang("permissions_toggle_hidden")."', '#rightsForm tr');
-                    $('#filter').bind('input propertychange', permissions.filterMatrix);
+                    // add new group
+                    $('#group_add_id').on('change', function(){
+                        permissions.addGroup($('#group_add_id').val());
+                    });
 
+                    // toggle inherit checkbox
+                    $('#inherit').on('change', permissions.toggleInherit);
+                    permissions.toggleInherit();
+
+                    // ignore enter key press
                     $(document).ready(function() {
                         $(window).keydown(function(event){
                             if (event.keyCode == 13) {
@@ -289,22 +132,38 @@ class RightAdmin extends AdminController implements AdminInterface
     }
 
     /**
+     * Renders a right table containing the rights of the provided system id
+     *
+     * @permissions right
+     * @responseType html
+     * @return string
+     */
+    protected function actionLoadRights()
+    {
+        $object = $this->objFactory->getObject($this->getSystemid());
+
+        if (!$object instanceof Root) {
+            throw new \InvalidArgumentException("Invalid systemid");
+        }
+
+        return (new RightComponent($object))->renderComponent();
+    }
+
+    /**
      * Saves the rights passed by form
      *
      * @throws Exception
-     * @return array
+     * @return string "" in case of success
      * @permissions right
      * @responseType json
      */
     protected function actionSaveRights()
     {
-
-        $arrRequest = json_decode($this->getParam("json"));
+        $body = file_get_contents("php://input");
+        $arrRequest = json_decode($body);
 
         //Collecting & sorting the passed values
         $strSystemid = $this->getSystemid();
-
-        $objRights = Carrier::getInstance()->getObjRights();
 
         if ($this->getParam("systemid") == "0") {
             $objTarget = new SystemCommon("0");
@@ -317,10 +176,7 @@ class RightAdmin extends AdminController implements AdminInterface
 
         //Special case: The root-record.
         if (!$objTarget->rightRight()) {
-            return [
-                "message" => $this->getLang("commons_error_permissions"),
-                "error" => 1
-            ];
+            return $this->objToolkit->warningBox($this->getLang("commons_error_permissions"), "alert-danger");
         }
 
         //Inheritance?
@@ -335,85 +191,45 @@ class RightAdmin extends AdminController implements AdminInterface
             $intInherit = 0;
         }
 
-        $strAdminsGroupId = UserGroup::getShortIdForGroupId(SystemSetting::getConfigValue("_admins_group_id_"));
-        $strView = $strAdminsGroupId;
-        $strEdit = $strAdminsGroupId;
-        $strDelete = $strAdminsGroupId;
-        $strRight = $strAdminsGroupId;
-        $strRight1 = $strAdminsGroupId;
-        $strRight2 = $strAdminsGroupId;
-        $strRight3 = $strAdminsGroupId;
-        $strRight4 = $strAdminsGroupId;
-        $strRight5 = $strAdminsGroupId;
-        $strChangelog = $strAdminsGroupId;
+        $strAdminsGroupId = SystemSetting::getConfigValue("_admins_group_id_");
 
+        $permissionRow = [
+            Rights::$STR_RIGHT_VIEW => [$strAdminsGroupId],
+            Rights::$STR_RIGHT_EDIT => [$strAdminsGroupId],
+            Rights::$STR_RIGHT_DELETE => [$strAdminsGroupId],
+            Rights::$STR_RIGHT_RIGHT => [$strAdminsGroupId],
+            Rights::$STR_RIGHT_RIGHT1 => [$strAdminsGroupId],
+            Rights::$STR_RIGHT_RIGHT2 => [$strAdminsGroupId],
+            Rights::$STR_RIGHT_RIGHT3 => [$strAdminsGroupId],
+            Rights::$STR_RIGHT_RIGHT4 => [$strAdminsGroupId],
+            Rights::$STR_RIGHT_RIGHT5 => [$strAdminsGroupId],
+            Rights::$STR_RIGHT_CHANGELOG => [$strAdminsGroupId],
+        ];
 
         foreach ($arrRequest->arrConfigs as $strOneCfg) {
             $arrRow = explode(",", $strOneCfg);
+            $rightName = $arrRow[0];
+            $groupId = $arrRow[1];
 
-            if ($arrRow[1] == $strAdminsGroupId) {
+            if ($groupId == $strAdminsGroupId) {
                 continue;
             }
 
-            switch ($arrRow[0]) {
-                case "1":
-                    $strView .= ",".$arrRow[1];
-                    break;
-                case "2":
-                    $strEdit .= ",".$arrRow[1];
-                    break;
-                case "3":
-                    $strDelete .= ",".$arrRow[1];
-                    break;
-                case "4":
-                    $strRight .= ",".$arrRow[1];
-                    break;
-                case "5":
-                    $strRight1 .= ",".$arrRow[1];
-                    break;
-                case "6":
-                    $strRight2 .= ",".$arrRow[1];
-                    break;
-                case "7":
-                    $strRight3 .= ",".$arrRow[1];
-                    break;
-                case "8":
-                    $strRight4 .= ",".$arrRow[1];
-                    break;
-                case "9":
-                    $strRight5 .= ",".$arrRow[1];
-                    break;
-                case "10":
-                    $strChangelog .= ",".$arrRow[1];
-                    break;
+            if (isset($permissionRow[$rightName])) {
+                $permissionRow[$rightName][] = $groupId;
             }
-
         }
-
-        $arrReturn = array(
-            "inherit"   => $intInherit,
-            "view"      => $strView,
-            "edit"      => $strEdit,
-            "delete"    => $strDelete,
-            "right"     => $strRight,
-            "right1"    => $strRight1,
-            "right2"    => $strRight2,
-            "right3"    => $strRight3,
-            "right4"    => $strRight4,
-            "right5"    => $strRight5,
-            "changelog" => $strChangelog
-        );
 
         //Pass to right-class
-        $arrJsonReturn = [];
-        if ($objRights->setRights($arrReturn, $strSystemid)) {
-            $arrJsonReturn["message"] = $this->getLang("permissions_success");
-            $arrJsonReturn["error"] = 0;
+        $permissionRow[Rights::$STR_RIGHT_INHERIT] = $intInherit;
+        $rights = $this->rights->convertSystemidArrayToShortIdString($permissionRow);
+
+        if ($this->rights->setRights($rights, $strSystemid)) {
+            $strReturn = $this->objToolkit->warningBox($this->getLang("permissions_success"), "alert-success");
         } else {
-            $arrJsonReturn["message"] = $this->getLang("fehler_setzen");
-            $arrJsonReturn["error"] = 1;
+            $strReturn = $this->objToolkit->warningBox($this->getLang("fehler_setzen"), "alert-danger");
         }
 
-        return $arrJsonReturn;
+        return json_encode(array("message" => $strReturn));
     }
 }
