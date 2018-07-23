@@ -1422,25 +1422,40 @@ class AdminFormgenerator implements \Countable
     }
 
     /**
+     * Returns array of errors for the form.
+     *
+     * @return array
+     * @throws \Kajona\System\System\Exception
+     */
+    protected function getArrValidationFormErrors()
+    {
+        return $this->getValidationErrors();
+    }
+
+
+    /**
      * Returns percent of completeness.
      *
      * @return float|int
      * @throws Exception
      */
-    public function getFloatCompleteness()
+    public function getFloatFormCompleteness()
     {
         // To finish filling in the form client needs to set all mandatory fields + not mandatory with errors.
-        // 1. Collect all not mandatory fields.
-        $arrRequiredFields = $this->getRequiredFields();
-
-        // 2. Validate the form to fill $this->arrValidationErrors
+        // 1. Validate the form to fill $this->arrValidationErrors
         $this->validateForm();
 
-        // 3. After merging we should receive all mandatory fields without errors + mandatory and not mandatory fields with errors.
-        $arrAllFieldsShouldBeCompleted = array_merge($arrRequiredFields, $this->arrValidationErrors);
+        // 2. Collect validation errors, should be called before  $this->getRequiredFields(), because it updates form the fields
+        $arrErrors = $this->getArrValidationFormErrors();
 
-        // 4. Amount of all needed fields without amount of fields with errors
-        $countCompletedFields = count($arrAllFieldsShouldBeCompleted) - count($this->arrValidationErrors);
+        // 3. Collect all not mandatory fields.
+        $arrRequiredFields = $this->getRequiredFields();
+
+        // 4. After merging we should receive all mandatory fields without errors + mandatory and not mandatory fields with errors.
+        $arrAllFieldsShouldBeCompleted = array_merge($arrRequiredFields, $arrErrors);
+
+        // 5. Amount of all needed fields without amount of fields with errors
+        $countCompletedFields = count($arrAllFieldsShouldBeCompleted) - count($arrErrors);
 
         // Theoretically it should never happen, but ...
         if ($countCompletedFields < 0) {

@@ -208,9 +208,13 @@ class FormentryBase
      */
     public function isFieldEmpty()
     {
-        return (!is_array($this->getStrValue()) && trim($this->getStrValue()) === "")
-            || is_null($this->getStrValue())
-            || (is_array($this->getStrValue()) && count($this->getStrValue()) == 0); //if it is an array with no entries
+        $strValue = $this->getStrValue();
+        return (!is_array($strValue) && trim($strValue) === "")
+            || is_null($strValue)
+            || (is_array($strValue)
+                && (count($strValue) == 0 //if it is an array with no entries
+                    || (count($strValue) == 1 && $strValue[0] === "")) //if it is an array with only one empty value
+            );
     }
 
 

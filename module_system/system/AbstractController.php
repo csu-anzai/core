@@ -499,4 +499,12 @@ abstract class AbstractController
         $this->strLangBase = $strLangbase;
     }
 
+    /**
+     * @return string
+     */
+    public function getStrLangBase(): string
+    {
+        return $this->strLangBase;
+    }
+
 }

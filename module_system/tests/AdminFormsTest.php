@@ -67,7 +67,7 @@ class AdminFormsTest extends Testbase
 
         $this->assertEquals($countRequiredFields, 3);
         $this->assertEquals($countErrorsFields, 3);
-        $this->assertEquals($objFormManager->getFloatCompleteness(), $completeness);
+        $this->assertEquals($objFormManager->getFloatFormCompleteness(), $completeness);
         $objFormManager->removeAllValidationError();
 
         $fa1->setStrValue('fa1 value');
@@ -75,7 +75,7 @@ class AdminFormsTest extends Testbase
         $completeness = ($countRequiredFields - $countErrorsFields)*100/$countRequiredFields; // 0%
 
         $this->assertEquals($countErrorsFields, 3);
-        $this->assertEquals($objFormManager->getFloatCompleteness(), $completeness);
+        $this->assertEquals($objFormManager->getFloatFormCompleteness(), $completeness);
         $objFormManager->removeAllValidationError();
 
         $fa2->setStrValue('fa2 value');
@@ -83,7 +83,7 @@ class AdminFormsTest extends Testbase
         $completeness = round(($countRequiredFields - $countErrorsFields)*100/$countRequiredFields, 2); // 33.33%
 
         $this->assertEquals($countErrorsFields, 2);
-        $this->assertEquals($objFormManager->getFloatCompleteness(), $completeness);
+        $this->assertEquals($objFormManager->getFloatFormCompleteness(), $completeness);
         $objFormManager->removeAllValidationError();
 
         $fb1->setStrValue('fb1 value');
@@ -92,7 +92,7 @@ class AdminFormsTest extends Testbase
         $completeness = round(($countRequiredFields - $countErrorsFields)*100/$countRequiredFields, 2); // 66.66%
 
         $this->assertEquals($countErrorsFields, 1);
-        $this->assertEquals($objFormManager->getFloatCompleteness(), $completeness);
+        $this->assertEquals($objFormManager->getFloatFormCompleteness(), $completeness);
         $objFormManager->removeAllValidationError();
 
         $fb3->setStrValue('fb3 value');
@@ -100,7 +100,7 @@ class AdminFormsTest extends Testbase
         $completeness = ($countRequiredFields - $countErrorsFields)*100/$countRequiredFields; // 100%
 
         $this->assertEquals($countErrorsFields, 0);
-        $this->assertEquals($objFormManager->getFloatCompleteness(), $completeness);
+        $this->assertEquals($objFormManager->getFloatFormCompleteness(), $completeness);
         $objFormManager->removeAllValidationError();
     }
 
