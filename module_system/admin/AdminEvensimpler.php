@@ -107,8 +107,7 @@ abstract class AdminEvensimpler extends AdminSimple
 
             if($strAction == "new" && $objInstance == null) {
                 return $strAction.$this->getStrCurObjectTypeName();
-            }
-            else {
+            } else {
                 $objReflection = new Reflection($this);
 
                 $strClassName = $objInstance;

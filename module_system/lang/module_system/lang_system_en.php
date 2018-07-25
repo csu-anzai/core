@@ -332,3 +332,7 @@ $lang["workflow_queue_sender_val1"]  = "Hours";
 $lang["workflow_queue_sender_val2"]  = "Minutes";
 
 $lang["form_objectlist_add_search"]  = "{0} add ...";
+
+$lang["dialog_sendNotificationHeader"] = "Send Notification";
+$lang["dialog_sendNotificationMessage"] = "Would you like to trigger a message with {0} form to the appropriate processing owner?";
+$lang["dialog_dialog_sendNotificationButton"] = "Yes, send";
