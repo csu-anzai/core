@@ -337,3 +337,7 @@ $lang['smtp_auth_password']   = "SMTP auth_password";
 
 $lang["update_in_progress"] = "Das System wird gerade aktualisiert. Bitte warten Sie...";
 $lang["form_objectlist_add_search"]  = "{0} hinzufügen ...";
+
+$lang["dialog_sendNotificationHeader"] = "Benachrichtigung senden";
+$lang["dialog_sendNotificationMessage"] = "Möchten Sie eine Nachricht mit {0} formular an den entsprechenden Verarbeitungseigner auszulösen?";
+$lang["dialog_dialog_sendNotificationButton"] = "Ja, schicken";

@@ -152,3 +152,4 @@ $lang["commons_skin_header"] = "Kajona Core";
 $lang["commons_skin_title"] = "Kajona Core";
 $lang["commons_product_title"] = "V7";
 
+$lang["commons_send_notification"] = "Send notification";

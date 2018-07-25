@@ -1710,6 +1710,28 @@ HTML;
     }
 
     /**
+     * Generates a send-notification-button. The passed element name and question is shown as a modal dialog
+     * when the icon was clicked.
+     *
+     * @param string $strElementName
+     * @param string $strLinkHref
+     *
+     * @return string
+     */
+    public function listSendNotificationButton($strElementName, $strLinkHref)
+    {
+        $strElementName = StringUtil::replace(array('\''), array('\\\''), $strElementName);
+
+        return $this->listConfirmationButton(
+            Carrier::getInstance()->getObjLang()->getLang("dialog_sendNotificationMessage", "system", [$strElementName]),
+            $strLinkHref,
+            "icon_mail",
+            Carrier::getInstance()->getObjLang()->getLang("commons_send_notification", "system"),
+            Carrier::getInstance()->getObjLang()->getLang("dialog_sendNotificationHeader", "system"),
+            Carrier::getInstance()->getObjLang()->getLang("dialog_dialog_sendNotificationButton", "system"));
+    }
+
+    /**
      * Renders a button triggering a confirmation dialog. Useful if the loading of the linked pages
      * should be confirmed by the user
      *
