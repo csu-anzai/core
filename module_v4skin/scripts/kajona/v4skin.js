@@ -155,6 +155,10 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
 
             this.delay = 500;
 
+            this.position = {
+                collision: "flip"
+            };
+
             this.messages = {
                 noResults: '',
                 results: function() {return ''}
