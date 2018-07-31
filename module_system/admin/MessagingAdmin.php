@@ -249,9 +249,10 @@ JS;
      * @param Model $objListEntry
      * @param bool $bitDialog
      *
+     * @param array $arrParams
      * @return string
      */
-    protected function renderEditAction(Model $objListEntry, $bitDialog = false)
+    protected function renderEditAction(Model $objListEntry, $bitDialog = false, array $arrParams = null)
     {
         return "";
     }
