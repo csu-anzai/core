@@ -1775,7 +1775,9 @@ It containes a list of aspects and provides the possibility to switch the differ
 </sitemap_aspect_wrapper>
 
 <sitemap_combined_entry_header>
-    <a data-toggle="collapse" data-parent="#%%aspectId%%" href="#menu_%%systemid%%%%aspectId%%" rel="tooltip" title="%%moduleName%%" data-kajona-module="%%moduleTitle%%">
+    <a data-toggle="collapse" data-parent="#%%aspectId%%" href="#menu_%%systemid%%%%aspectId%%" rel="tooltip"
+       title="%%moduleName%%" data-kajona-module="%%moduleTitle%%"
+       onclick="require('moduleNavigation').combinedActive();">
         <i class="fa %%faicon%%"></i>
     </a>
 </sitemap_combined_entry_header>
@@ -1792,7 +1794,7 @@ It containes a list of aspects and provides the possibility to switch the differ
 <sitemap_combined_entry_wrapper>
     <div class="panel panel-default panel-combined">
         <div class="panel-heading">
-            <span class="linkcontainer ">
+            <span class="linkcontainer collapsed">
                 %%combined_header%%
             </span>
         </div>
@@ -1804,7 +1806,9 @@ It containes a list of aspects and provides the possibility to switch the differ
 <sitemap_module_wrapper>
     <div class="panel panel-default">
         <div class="panel-heading">
-            <a data-toggle="collapse" data-parent="#%%aspectId%%" href="#menu_%%systemid%%%%aspectId%%" data-kajona-module="%%moduleTitle%%" >
+            <a data-toggle="collapse" data-parent="#%%aspectId%%" href="#menu_%%systemid%%%%aspectId%%"
+               data-kajona-module="%%moduleTitle%%" class="collapsed"
+               onclick="require('moduleNavigation').combinedInactive();">
                 %%moduleName%%
             </a>
         </div>
