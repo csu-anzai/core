@@ -8,6 +8,17 @@ define('moduleNavigation', ['jquery', 'ajax'], function ($, ajax) {
 
     return /** @alias module:moduleNavigation */ {
 
+        combinedActive: function () {
+            $('#moduleNavigation').find('.panel .linkcontainer').removeClass('collapsed');
+        },
+        combinedInactive: function () {
+            $('#moduleNavigation').find('.panel .linkcontainer').addClass('collapsed');
+        },
+
+        /**
+         * @deprecated
+         * @param strModule
+         */
         setModuleActive : function (strModule) {
             var $moduleNavigation = $('#moduleNavigation');
             $moduleNavigation.find('a.active').removeClass('active');
@@ -36,6 +47,10 @@ define('moduleNavigation', ['jquery', 'ajax'], function ($, ajax) {
 
         },
 
+        /**
+         * @deprecated
+         * @param strTargetId
+         */
         switchAspect : function(strTargetId) {
             $('.mainnavi-container .aspect-container').addClass("hidden");
             $('.mainnavi-container .aspect-container[data-kajona-aspectid='+strTargetId+']').removeClass("hidden");

@@ -44,7 +44,7 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
             }
 
             cleanPage();
-            moduleNavigation.setModuleActive(objUrl.module);
+            //moduleNavigation.setModuleActive(objUrl.module);
 
             applyLoadCallbacks();
 

@@ -219,17 +219,18 @@ footer {
                 background-color: @kajona-gray;
                 margin-bottom:1px;
                 font-size:@font-size-base + 2;
-                color: @text-color;
                 border: 0 solid @kajona-brand-color;
                 border-left-width: 10px;
+              color: @white;
+              background: url(@kajona-navi-active-bg) -110px -35px no-repeat @kajona-brand-color;
 
-                &.active {
-                    color:@white;
-                    text-shadow:none;
-                    background:url(@kajona-navi-active-bg) -110px -35px no-repeat @kajona-brand-color;
+              &.collapsed {
+                color: @text-color;
+                background-color: @kajona-gray;
+                background-image: none;
 
                     a {
-                        color: @white;
+                      color: @text-color;
                     }
                 }
                 
@@ -238,12 +239,18 @@ footer {
                     border: none;
                     padding: 0 5px;
                     background-color: transparent;
+                  color: @text-color;
 
                     &:focus {
                         outline: none;
                     }
                 }
             }
+
+          span.linkcontainer a {
+            background-image: none;
+            color: @white;
+          }
         }
 
         .panel-body {
