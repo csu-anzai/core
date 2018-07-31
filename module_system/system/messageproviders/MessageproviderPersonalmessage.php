@@ -8,7 +8,6 @@ namespace Kajona\System\System\Messageproviders;
 
 use Kajona\System\System\Carrier;
 
-
 /**
  * This messageprovider may be used to send messages directly to a user, so with
  * a kind of "direct messaging" style.
@@ -17,16 +16,15 @@ use Kajona\System\System\Carrier;
  * @package module_messaging
  * @since 4.3
  */
-class MessageproviderPersonalmessage implements MessageproviderExtendedInterface {
-
-
-
+class MessageproviderPersonalmessage extends MessageproviderBase
+{
     /**
      * Returns the name of the message-provider
      *
      * @return string
      */
-    public function getStrName() {
+    public function getStrName()
+    {
         return Carrier::getInstance()->getObjLang()->getLang("messageprovider_personalmessage_name", "system");
     }
 
@@ -36,7 +34,8 @@ class MessageproviderPersonalmessage implements MessageproviderExtendedInterface
      *
      * @return bool
      */
-    public function isAlwaysActive() {
+    public function isAlwaysActive()
+    {
         return true;
     }
 
@@ -47,7 +46,8 @@ class MessageproviderPersonalmessage implements MessageproviderExtendedInterface
      *
      * @return mixed
      */
-    public function isAlwaysByMail() {
+    public function isAlwaysByMail()
+    {
         return false;
     }
 
@@ -58,8 +58,8 @@ class MessageproviderPersonalmessage implements MessageproviderExtendedInterface
      * @return mixed
      * @since 4.5
      */
-    public function isVisibleInConfigView() {
+    public function isVisibleInConfigView()
+    {
         return true;
     }
-
 }
