@@ -200,9 +200,11 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
      * @param \Kajona\System\System\Model $objListEntry
      * @param bool $bitDialog
      *
+     * @param array $arrParams
      * @return string
+     * @throws Exception
      */
-    protected function renderEditAction(\Kajona\System\System\Model $objListEntry, $bitDialog = false)
+    protected function renderEditAction(Model $objListEntry, $bitDialog = false, array $arrParams = null)
     {
         if ($objListEntry instanceof MediamanagerFile) {
             if ($objListEntry->rightEdit()) {
@@ -223,7 +225,7 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
 
             return "";
         } else {
-            return parent::renderEditAction($objListEntry, $bitDialog);
+            return parent::renderEditAction($objListEntry, $bitDialog, $arrParams);
         }
     }
 

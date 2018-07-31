@@ -160,7 +160,7 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
         return parent::renderCopyAction($objListEntry);
     }
 
-    protected function renderEditAction(Model $objListEntry, $bitDialog = false)
+    protected function renderEditAction(Model $objListEntry, $bitDialog = false, array $arrParams = null)
     {
         if ($objListEntry instanceof FlowConfig) {
             return "";
@@ -180,7 +180,7 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
             $objListEntry->setArrModuleEntry("modul", "flow");
         }
 
-        return parent::renderEditAction($objListEntry, $bitDialog);
+        return parent::renderEditAction($objListEntry, $bitDialog, $arrParams);
     }
 
     protected function renderDeleteAction(ModelInterface $objListEntry)
