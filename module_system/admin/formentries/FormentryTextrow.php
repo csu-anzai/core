@@ -20,6 +20,7 @@ use Kajona\System\System\Validators\DummyValidator;
  */
 class FormentryTextrow extends FormentryBase implements FormentryPrintableInterface {
 
+    private $bitFullWidth = false;
 
     public function __construct($strName = "") {
         if($strName == "")
@@ -39,9 +40,15 @@ class FormentryTextrow extends FormentryBase implements FormentryPrintableInterf
     public function renderField() {
         $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
         $strReturn = "";
-        if($this->getStrHint() != null)
+        if($this->getStrHint() != null) {
             $strReturn .= $objToolkit->formTextRow($this->getStrHint());
-        $strReturn .= $objToolkit->formTextRow($this->getStrValue());
+        }
+
+        if ($this->bitFullWidth) {
+            $strReturn .= $objToolkit->getTextRow($this->getStrValue());
+        } else {
+            $strReturn .= $objToolkit->formTextRow($this->getStrValue());
+        }
         return $strReturn;
     }
 
@@ -58,5 +65,15 @@ class FormentryTextrow extends FormentryBase implements FormentryPrintableInterf
     public function getValueAsText() {
         return $this->getStrValue();
     }
+
+    /**
+     * @param bool $bitFullWidth
+     */
+    public function setBitFullWidth(bool $bitFullWidth)
+    {
+        $this->bitFullWidth = $bitFullWidth;
+    }
+
+
 
 }
