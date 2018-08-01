@@ -36,8 +36,8 @@
         {% if removeAllLink and not readOnly %}{{ removeAllLink|raw }}{% endif %}
     </div>
 
-    {% if endpointUrl and not readOnly %}
     <script type="text/javascript">
+    {% if endpointUrl and not readOnly %}
         require(['jquery', 'v4skin', 'folderview'], function($, v4skin, folderview) {
             var objConfig = new v4skin.defaultAutoComplete();
             objConfig.source = function(request, response) {
@@ -74,7 +74,27 @@
                     .append("<div class='ui-autocomplete-item'><div class='smaller'>" + item.path + "</div>" + item.icon + " " + item.title + "</div>")
                     .appendTo(ul);
             } ;
+
+
+
+
+        });
+    {% endif %}
+
+        require(['jquery'], function($) {
+            var updateMandatory = function($objInput) {
+                var $input = $objInput.closest('.inputContainer');
+                if ($input && $objInput.hasClass('mandatoryFormElement')) {
+                    $input.addClass('mandatoryFormElement');
+                }
+            };
+
+            //listen on mandatory change events
+            var $objInput = $("#{{ name }}");
+            $objInput.on('kajona.forms.mandatoryAdded', function() {
+                updateMandatory($(this));
+            });
+            updateMandatory($objInput);
         });
     </script>
-    {% endif %}
 </div>
