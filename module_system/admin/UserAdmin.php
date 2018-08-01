@@ -322,9 +322,11 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * @param Model $objListEntry
      * @param bool $bitDialog
      *
+     * @param array $arrParams
      * @return string
+     * @throws Exception
      */
-    protected function renderEditAction(Model $objListEntry, $bitDialog = false)
+    protected function renderEditAction(Model $objListEntry, $bitDialog = false, array $arrParams = null)
     {
         if ($objListEntry instanceof UserGroup) {
             if ($objListEntry->getSystemid() != SystemSetting::getConfigValue("_admins_group_id_") && $this->isGroupEditable($objListEntry)) {
@@ -335,7 +337,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
                 return $this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_editDisabled", $this->getLang("gruppe_bearbeiten_x")));
             }
         }
-        return parent::renderEditAction($objListEntry);
+        return parent::renderEditAction($objListEntry, false, $arrParams);
     }
 
 

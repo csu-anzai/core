@@ -213,15 +213,17 @@ class SystemAdmin extends AdminEvensimpler implements AdminInterface
      * @param Model $objListEntry
      * @param bool $bitDialog
      *
+     * @param array $arrParams
      * @return string
+     * @throws Exception
      */
-    protected function renderEditAction(Model $objListEntry, $bitDialog = false)
+    protected function renderEditAction(Model $objListEntry, $bitDialog = false, array $arrParams = null)
     {
         if ($objListEntry instanceof SystemModule) {
             return "";
         }
 
-        return parent::renderEditAction($objListEntry);
+        return parent::renderEditAction($objListEntry, $bitDialog, $arrParams);
     }
 
 

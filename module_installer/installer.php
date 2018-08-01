@@ -209,15 +209,8 @@ class Installer
         $arrChecksLanguages = [];
         //link to different languages
         $arrLangs = array("de", "en");
-        $intLangCount = 1;
-        $tmpCounter = 0;
         foreach ($arrLangs as $strOneLang) {
-            $arrChecksLanguages[$tmpCounter] = "<a href=\""._webpath_."/installer.php?language=".$strOneLang."\">".Carrier::getInstance()->getObjLang()->getLang("lang_".$strOneLang, "user")."</a>";
-            if ($intLangCount++ < count($arrLangs)) {
-                $arrChecksLanguages[$tmpCounter] .= " | ";
-                $tmpCounter++;
-            }
-            $tmpCounter++;
+            $arrChecksLanguages[] = "<a href=\""._webpath_."/installer.php?language=".$strOneLang."\">".Carrier::getInstance()->getObjLang()->getLang("lang_".$strOneLang, "user")."</a>";
         }
 
         if (version_compare(phpversion(), $this->strMinPhpVersion, "<")) {
@@ -254,7 +247,7 @@ class Installer
         $twig = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);
 
         $strReturn = $twig->render("core/module_installer/templates/phpsettings.twig" , [
-            "phpcheck_languages" => $arrChecksLanguages,
+            "phpcheck_languages" => implode("|", $arrChecksLanguages),
             "fileChecksFolder" => $arrChecksFolder,
             "fileChecksModules" => $arrChecksModules,
             "minPhpVersion" => $minPhpVersion

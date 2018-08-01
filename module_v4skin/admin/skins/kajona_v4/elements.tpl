@@ -1477,7 +1477,7 @@ pe_iconbar, pe_disable
 </pageview_list_item>
 
 <pageview_list_item_active>
-    <li data-kajona-pagenum="%%pageNr%%" >
+    <li data-kajona-pagenum="%%pageNr%%" class="active" >
         <a href="%%href%%" class="active">%%pageNr%%</a>
     </li>
 </pageview_list_item_active>
