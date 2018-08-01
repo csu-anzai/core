@@ -214,8 +214,8 @@ class Installer
         foreach ($arrLangs as $strOneLang) {
             $arrChecksLanguages[$tmpCounter] = "<a href=\""._webpath_."/installer.php?language=".$strOneLang."\">".Carrier::getInstance()->getObjLang()->getLang("lang_".$strOneLang, "user")."</a>";
             if ($intLangCount++ < count($arrLangs)) {
-                $tmpCounter++;
                 $arrChecksLanguages[$tmpCounter] .= " | ";
+                $tmpCounter++;
             }
             $tmpCounter++;
         }
