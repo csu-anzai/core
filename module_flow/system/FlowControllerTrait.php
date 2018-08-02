@@ -252,16 +252,16 @@ require(["jquery", "ajax"], function($, ajax){
             }
         }
 
+        $menu = new Menu();
+
+        // flow chart
+        $strLink = htmlspecialchars(Link::getLinkAdminHref("flow", "showFlow", ["systemid" => $this->getSystemid(), "folderview" => "1"]));
+        $strTitle = $this->getLang("flow_current_status", "flow");
+        $menuItem = new MenuItem();
+        $menuItem->setFullEntry('<li><a href="#" onclick="require(\'dialogHelper\').showIframeDialog(\''.$strLink.'\', \''.$strTitle.'\'); return false;">'.$strTitle.'</a></li>');
+        $menu->addItem($menuItem);
+
         if (count($statusItems) > 0) {
-            $menu = new Menu();
-
-            // flow chart
-            $strLink = htmlspecialchars(Link::getLinkAdminHref("flow", "showFlow", ["systemid" => $this->getSystemid(), "folderview" => "1"]));
-            $strTitle = $this->getLang("flow_current_status", "flow");
-            $menuItem = new MenuItem();
-            $menuItem->setFullEntry('<li><a href="#" onclick="require(\'dialogHelper\').showIframeDialog(\''.$strLink.'\', \''.$strTitle.'\'); return false;">'.$strTitle.'</a></li>');
-            $menu->addItem($menuItem);
-
             // status
             $menu->addItem(new Separator());
             $menu->addItem(new Headline($this->getLang("flow_controller_trait_headline_status", "flow")));
@@ -273,15 +273,19 @@ require(["jquery", "ajax"], function($, ajax){
                 $menu->addItem(new Headline($this->getLang("flow_controller_trait_headline_action", "flow")));
                 $menu->addItems($actionItems);
             }
+        } else {
+            $menu->addItem(new Separator());
+            $menu->addItem(new Headline($this->getLang("list_flow_no_status", "flow")));
+        }
 
-            $strHtml = $menu->renderComponent();
+        $strHtml = $menu->renderComponent();
 
-            // hack to remove the div around the ul since the div is already in the html
-            preg_match("#<ul>(.*)</ul>#ims", $strHtml, $arrMatches);
+        // hack to remove the div around the ul since the div is already in the html
+        preg_match("#<ul>(.*)</ul>#ims", $strHtml, $arrMatches);
 
-            // js to init the tooltip for validation errors
-            $strTitle = json_encode($objObject->getStrDisplayName());
-            $strJs = <<<HTML
+        // js to init the tooltip for validation errors
+        $strTitle = json_encode($objObject->getStrDisplayName());
+        $strJs = <<<HTML
 <script type='text/javascript'>
     require(['jquery', 'dialogHelper'], function($, dialogHelper){
         $('.{$strClass}').parent().on('click', function(){
@@ -294,10 +298,7 @@ require(["jquery", "ajax"], function($, ajax){
 </script>
 HTML;
 
-            return $arrMatches[0] . $strJs;
-        } else {
-            return "<ul><li class='dropdown-header'>" . $this->getLang("list_flow_no_status", "flow") . "</li></ul>";
-        }
+        return $arrMatches[0] . $strJs;
     }
 
     /**
