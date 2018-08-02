@@ -3,13 +3,11 @@
     <div class="core-component-menu dropdown-menu generalContextMenu" role="menu">
         <ul>
             {% for item in items %}
-            <li class="core-component-menu-item">
                 {% if item.fullEntry %}
-                    {{ item.fullEntry|raw }}
+                {{ item.fullEntry|raw }}
                 {% else %}
-                    <a href="{{ item.link }}" onclick="{{ item.onClick }}">{{ item.name|raw }}</a>
+                <li class="core-component-menu-item"><a href="{{ item.link }}" onclick="{{ item.onClick }}">{{ item.name|raw }}</a></li>
                 {% endif %}
-            </li>
             {% endfor %}
         </ul>
     </div>
