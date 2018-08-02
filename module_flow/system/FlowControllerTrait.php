@@ -21,6 +21,8 @@ use Kajona\System\System\Objectfactory;
 use Kajona\System\System\RedirectException;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Session;
+use Kajona\System\View\Components\Menu\Item\Headline;
+use Kajona\System\View\Components\Menu\Item\Separator;
 use Kajona\System\View\Components\Menu\Menu;
 use Kajona\System\View\Components\Menu\MenuItem;
 use Kajona\System\Xml;
@@ -69,7 +71,7 @@ trait FlowControllerTrait
         $strMenuId = "status-menu-" . generateSystemid();
         $strDropdownId = "status-dropdown-" . generateSystemid();
         $strReturn = $this->objToolkit->listButton(
-            "<span class='dropdown status-dropdown' id='" . $strDropdownId . "'><a href='#' data-toggle='dropdown' role='button'>" . $strIcon . "</a><div class='dropdown-menu generalContextMenu' role='menu' id='" . $strMenuId . "'></div></span>"
+            "<span class='dropdown status-dropdown' id='" . $strDropdownId . "'><a href='#' data-toggle='dropdown' role='button'>" . $strIcon . "</a><div class='core-component-menu dropdown-menu generalContextMenu' role='menu' id='" . $strMenuId . "'></div></span>"
         );
 
         $strParams = http_build_query(["admin" => 1, "module" => $objListEntry->getArrModule('module'), "action" => "showStatusMenu", "systemid" => $objListEntry->getSystemid()], null, "&");
@@ -191,9 +193,12 @@ require(["jquery", "ajax"], function($, ajax){
         $strTitle = $this->getLang("flow_current_status", "flow");
 
         $menuItem = new MenuItem();
-        $menuItem->setFullEntry('<li><a href="#" onclick="require(\'dialogHelper\').showIframeDialog(\''.$strLink.'\', \''.$strTitle.'\'); return false;">'.$strTitle.'</a></li><li role="separator" class="divider"></li>');
+        $menuItem->setFullEntry('<li><a href="#" onclick="require(\'dialogHelper\').showIframeDialog(\''.$strLink.'\', \''.$strTitle.'\'); return false;">'.$strTitle.'</a></li>');
 
         $menu->addItem($menuItem);
+
+        $menu->addItem(new Separator());
+        $menu->addItem(new Headline($this->getLang("flow_controller_trait_headline_status", "flow")));
 
         $strClass = $objObject->getSystemid() . "-errors";
         $arrTransitions = $this->objFlowManager->getPossibleTransitionsForModel($objObject, false);
@@ -261,9 +266,8 @@ require(["jquery", "ajax"], function($, ajax){
 
         if ($menu->hasItems()) {
             if (count($actionMenu) > 0) {
-                $menuItem = new MenuItem();
-                $menuItem->setFullEntry('<li role="separator" class="divider"></li><li><a href="" onclick="return false;">Aktionen</a></li><li role="separator" class="divider"></li>');
-                $menu->addItem($menuItem);
+                $menu->addItem(new Separator());
+                $menu->addItem(new Headline($this->getLang("flow_controller_trait_headline_action", "flow")));
                 $menu->addItems($actionMenu);
             }
 
