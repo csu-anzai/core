@@ -37,7 +37,12 @@ class Menu extends AbstractComponent
      */
     public function addItem(MenuItem $item)
     {
-        $this->items[] = $item;
+        $id = $item->getId();
+        if (!empty($id)) {
+            $this->items[$id] = $item;
+        } else {
+            $this->items[] = $item;
+        }
     }
 
     /**
