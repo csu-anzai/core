@@ -21,6 +21,8 @@ use Kajona\System\System\Objectfactory;
 use Kajona\System\System\RedirectException;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Session;
+use Kajona\System\View\Components\Menu\Menu;
+use Kajona\System\View\Components\Menu\MenuItem;
 use Kajona\System\Xml;
 
 /**
@@ -183,13 +185,15 @@ require(["jquery", "ajax"], function($, ajax){
             return "<ul><li class='dropdown-header'>" . $this->getLang("list_flow_no_right", "flow") . "</li></ul>";
         }
 
-        $arrMenu = array();
+        $menu = new Menu();
 
         $strLink = htmlspecialchars(Link::getLinkAdminHref("flow", "showFlow", ["systemid" => $this->getSystemid(), "folderview" => "1"]));
         $strTitle = $this->getLang("flow_current_status", "flow");
-        $arrMenu[] = array(
-            "fullentry" => '<li><a href="#" onclick="require(\'dialogHelper\').showIframeDialog(\''.$strLink.'\', \''.$strTitle.'\'); return false;">'.$strTitle.'</a></li><li role="separator" class="divider"></li>',
-        );
+
+        $menuItem = new MenuItem();
+        $menuItem->setFullEntry('<li><a href="#" onclick="require(\'dialogHelper\').showIframeDialog(\''.$strLink.'\', \''.$strTitle.'\'); return false;">'.$strTitle.'</a></li><li role="separator" class="divider"></li>');
+
+        $menu->addItem($menuItem);
 
         $strClass = $objObject->getSystemid() . "-errors";
         $arrTransitions = $this->objFlowManager->getPossibleTransitionsForModel($objObject, false);
@@ -201,6 +205,8 @@ require(["jquery", "ajax"], function($, ajax){
         } else {
             $bitHasRight = $objObject->rightEdit();
         }
+
+        $actionMenu = [];
 
         if (!empty($arrTransitions) && $bitHasRight) {
             foreach ($arrTransitions as $objTransition) {
@@ -237,22 +243,31 @@ require(["jquery", "ajax"], function($, ajax){
                 }
 
                 if (!empty($strValidation)) {
-                    $arrMenu[] = array(
-                        "name" => AdminskinHelper::getAdminImage("icon_flag_hex_disabled_" . $objTargetStatus->getStrIconColor()) . " " . $objTargetStatus->getStrDisplayName() . $strValidation,
-                        "link" => "#",
-                        "onclick" => "return false;",
-                    );
+                    $menuItem = new MenuItem();
+                    $menuItem->setName(AdminskinHelper::getAdminImage("icon_flag_hex_disabled_" . $objTargetStatus->getStrIconColor()) . " " . $objTargetStatus->getStrDisplayName() . $strValidation);
+                    $menuItem->setLink("#");
+                    $menuItem->setOnClick("return false;");
+                    $menu->addItem($menuItem);
+
+                    $actionMenu = array_merge($actionMenu, $objResult->getMenuItems());
                 } else {
-                    $arrMenu[] = array(
-                        "name" => AdminskinHelper::getAdminImage($objTargetStatus->getStrIcon()) . " " . $objTargetStatus->getStrDisplayName(),
-                        "link" => Link::getLinkAdminHref($this->getArrModule("modul"), "setStatus", "&systemid=" . $objObject->getStrSystemid() . "&transition_id=" . $objTransition->getSystemid()),
-                    );
+                    $menuItem = new MenuItem();
+                    $menuItem->setName(AdminskinHelper::getAdminImage($objTargetStatus->getStrIcon()) . " " . $objTargetStatus->getStrDisplayName());
+                    $menuItem->setLink(Link::getLinkAdminHref($this->getArrModule("modul"), "setStatus", "&systemid=" . $objObject->getStrSystemid() . "&transition_id=" . $objTransition->getSystemid()));
+                    $menu->addItem($menuItem);
                 }
             }
         }
 
-        if (!empty($arrMenu)) {
-            $strHtml = $this->objToolkit->registerMenu(generateSystemid(), $arrMenu);
+        if ($menu->hasItems()) {
+            if (count($actionMenu) > 0) {
+                $menuItem = new MenuItem();
+                $menuItem->setFullEntry('<li role="separator" class="divider"></li><li><a href="" onclick="return false;">Aktionen</a></li><li role="separator" class="divider"></li>');
+                $menu->addItem($menuItem);
+                $menu->addItems($actionMenu);
+            }
+
+            $strHtml = $menu->renderComponent();
 
             // hack to remove the div around the ul since the div is already in the html
             preg_match("#<ul>(.*)</ul>#ims", $strHtml, $arrMatches);
