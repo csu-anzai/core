@@ -7,6 +7,8 @@
 
 namespace Kajona\Flow\System;
 
+use Kajona\System\View\Components\Menu\MenuItem;
+
 /**
  * A result object of a condition
  *
@@ -25,10 +27,16 @@ class FlowConditionResult
      */
     protected $arrErrors;
 
+    /**
+     * @var MenuItem[]
+     */
+    protected $menuItems;
+
     public function __construct($bitValid = null)
     {
         $this->bitValid = $bitValid;
         $this->arrErrors = [];
+        $this->menuItems = [];
     }
 
     public function isValid()
@@ -41,14 +49,34 @@ class FlowConditionResult
         $this->arrErrors[] = $strError;
     }
 
+    /**
+     * @param MenuItem $menuItem
+     */
+    public function addMenuItem(MenuItem $menuItem)
+    {
+        $this->menuItems[] = $menuItem;
+    }
+
+    /**
+     * @return array
+     */
     public function getErrors()
     {
         return $this->arrErrors;
+    }
+
+    /**
+     * @return MenuItem[]
+     */
+    public function getMenuItems()
+    {
+        return $this->menuItems;
     }
 
     public function merge(FlowConditionResult $objResult)
     {
         $this->bitValid = $this->bitValid === null ? $objResult->isValid() : ($this->bitValid && $objResult->isValid());
         $this->arrErrors = array_merge($this->arrErrors, $objResult->getErrors());
+        $this->menuItems = array_merge($this->menuItems, $objResult->getMenuItems());
     }
 }
