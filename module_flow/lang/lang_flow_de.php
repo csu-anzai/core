@@ -73,3 +73,6 @@ $lang["action_status_change_title"]   = "Rückmeldung";
 $lang["action_status_change_success"]   = "Statuswechsel erfolgreich durchgeführt.";
 $lang["action_status_change_redirect"]   = "Das System benötigt eine Benutzereingabe um den Statusübergang durchzuführen.";
 
+$lang["flow_controller_trait_headline_status"]   = "Statuswechsel";
+$lang["flow_controller_trait_headline_action"]   = "Aktionen";
+
