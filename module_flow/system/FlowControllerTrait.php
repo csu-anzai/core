@@ -187,19 +187,6 @@ require(["jquery", "ajax"], function($, ajax){
             return "<ul><li class='dropdown-header'>" . $this->getLang("list_flow_no_right", "flow") . "</li></ul>";
         }
 
-        $menu = new Menu();
-
-        $strLink = htmlspecialchars(Link::getLinkAdminHref("flow", "showFlow", ["systemid" => $this->getSystemid(), "folderview" => "1"]));
-        $strTitle = $this->getLang("flow_current_status", "flow");
-
-        $menuItem = new MenuItem();
-        $menuItem->setFullEntry('<li><a href="#" onclick="require(\'dialogHelper\').showIframeDialog(\''.$strLink.'\', \''.$strTitle.'\'); return false;">'.$strTitle.'</a></li>');
-
-        $menu->addItem($menuItem);
-
-        $menu->addItem(new Separator());
-        $menu->addItem(new Headline($this->getLang("flow_controller_trait_headline_status", "flow")));
-
         $strClass = $objObject->getSystemid() . "-errors";
         $arrTransitions = $this->objFlowManager->getPossibleTransitionsForModel($objObject, false);
         $objFlow = $this->objFlowManager->getFlowForModel($objObject);
@@ -211,7 +198,8 @@ require(["jquery", "ajax"], function($, ajax){
             $bitHasRight = $objObject->rightEdit();
         }
 
-        $actionMenu = [];
+        $actionItems = [];
+        $statusItems = [];
 
         if (!empty($arrTransitions) && $bitHasRight) {
             foreach ($arrTransitions as $objTransition) {
@@ -252,23 +240,38 @@ require(["jquery", "ajax"], function($, ajax){
                     $menuItem->setName(AdminskinHelper::getAdminImage("icon_flag_hex_disabled_" . $objTargetStatus->getStrIconColor()) . " " . $objTargetStatus->getStrDisplayName() . $strValidation);
                     $menuItem->setLink("#");
                     $menuItem->setOnClick("return false;");
-                    $menu->addItem($menuItem);
-
-                    $actionMenu = array_merge($actionMenu, $objResult->getMenuItems());
+                    $statusItems[] = $menuItem;
                 } else {
                     $menuItem = new MenuItem();
                     $menuItem->setName(AdminskinHelper::getAdminImage($objTargetStatus->getStrIcon()) . " " . $objTargetStatus->getStrDisplayName());
                     $menuItem->setLink(Link::getLinkAdminHref($this->getArrModule("modul"), "setStatus", "&systemid=" . $objObject->getStrSystemid() . "&transition_id=" . $objTransition->getSystemid()));
-                    $menu->addItem($menuItem);
+                    $statusItems[] = $menuItem;
                 }
+
+                $actionItems = array_merge($actionItems, $objResult->getMenuItems());
             }
         }
 
-        if ($menu->hasItems()) {
-            if (count($actionMenu) > 0) {
+        if (count($statusItems) > 0) {
+            $menu = new Menu();
+
+            // flow chart
+            $strLink = htmlspecialchars(Link::getLinkAdminHref("flow", "showFlow", ["systemid" => $this->getSystemid(), "folderview" => "1"]));
+            $strTitle = $this->getLang("flow_current_status", "flow");
+            $menuItem = new MenuItem();
+            $menuItem->setFullEntry('<li><a href="#" onclick="require(\'dialogHelper\').showIframeDialog(\''.$strLink.'\', \''.$strTitle.'\'); return false;">'.$strTitle.'</a></li>');
+            $menu->addItem($menuItem);
+
+            // status
+            $menu->addItem(new Separator());
+            $menu->addItem(new Headline($this->getLang("flow_controller_trait_headline_status", "flow")));
+            $menu->addItems($statusItems);
+
+            if (count($actionItems) > 0) {
+                // actions
                 $menu->addItem(new Separator());
                 $menu->addItem(new Headline($this->getLang("flow_controller_trait_headline_action", "flow")));
-                $menu->addItems($actionMenu);
+                $menu->addItems($actionItems);
             }
 
             $strHtml = $menu->renderComponent();
