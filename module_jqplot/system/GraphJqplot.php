@@ -582,7 +582,7 @@ class GraphJqplot implements GraphInterface
             //Swap X and Y Axis
             if (!empty($this->arrXAxisTickLabels) || $this->intNrOfWrittenLabelsXAxis == 0) {
                 //keep xaxis and yaxis information
-                $arrXLabelsTemp = $this->arrXAxisTickLabels;
+                $arrXLabelsTemp = $this->arrXAxisTickLabels ?? [];
                 $intXNumberLabelsTemp = $this->intNrOfWrittenLabelsXAxis;
 
                 //set y-Axis options - reverse the array
