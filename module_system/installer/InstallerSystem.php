@@ -819,7 +819,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         // password history
         $strReturn .= "Updating system table...\n";
-        $this->objDB->createIndex("system", "system_class", ["system_class"]);
+        $this->objDB->createIndex("agp_system", "system_class", ["system_class"]);
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.1");

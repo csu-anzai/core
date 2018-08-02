@@ -245,7 +245,7 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
         $fields = $container->getFields();
         foreach ($fields as $field) {
             if ($field->getBitMandatory()) {
-                $return[$field->getStrEntryName()] = get_class($field->getObjValidator());
+                $return[$field->getStrEntryName()] = $field->getObjValidator() !== null ? get_class($field->getObjValidator()) : "";
             }
 
             if ($field instanceof AdminFormgeneratorContainerInterface) {
