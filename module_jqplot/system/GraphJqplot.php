@@ -580,9 +580,9 @@ class GraphJqplot implements GraphInterface
         //1. Special handling if horizontal flag for bar charts is set
         if ($this->bitIsHorizontalBar) {
             //Swap X and Y Axis
-            if (count($this->arrXAxisTickLabels) > 0 || $this->intNrOfWrittenLabelsXAxis == 0) {
+            if (!empty($this->arrXAxisTickLabels) || $this->intNrOfWrittenLabelsXAxis == 0) {
                 //keep xaxis and yaxis information
-                $arrXLabelsTemp = $this->arrXAxisTickLabels;
+                $arrXLabelsTemp = $this->arrXAxisTickLabels ?? [];
                 $intXNumberLabelsTemp = $this->intNrOfWrittenLabelsXAxis;
 
                 //set y-Axis options - reverse the array

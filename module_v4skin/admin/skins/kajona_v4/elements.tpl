@@ -1477,7 +1477,7 @@ pe_iconbar, pe_disable
 </pageview_list_item>
 
 <pageview_list_item_active>
-    <li data-kajona-pagenum="%%pageNr%%" >
+    <li data-kajona-pagenum="%%pageNr%%" class="active" >
         <a href="%%href%%" class="active">%%pageNr%%</a>
     </li>
 </pageview_list_item_active>
@@ -1762,7 +1762,9 @@ place ajaxScript before the closing input_tagselector-tag.
 </sitemap_aspect_wrapper>
 
 <sitemap_combined_entry_header>
-    <a data-toggle="collapse" data-parent="#%%aspectId%%" href="#menu_%%systemid%%%%aspectId%%" rel="tooltip" title="%%moduleName%%" data-kajona-module="%%moduleTitle%%">
+    <a data-toggle="collapse" data-parent="#%%aspectId%%" href="#menu_%%systemid%%%%aspectId%%" rel="tooltip"
+       title="%%moduleName%%" data-kajona-module="%%moduleTitle%%"
+       onclick="require('moduleNavigation').combinedActive();">
         <i class="fa %%faicon%%"></i>
     </a>
 </sitemap_combined_entry_header>
@@ -1779,7 +1781,7 @@ place ajaxScript before the closing input_tagselector-tag.
 <sitemap_combined_entry_wrapper>
     <div class="panel panel-default panel-combined">
         <div class="panel-heading">
-            <span class="linkcontainer ">
+            <span class="linkcontainer collapsed">
                 %%combined_header%%
             </span>
         </div>
@@ -1791,7 +1793,9 @@ place ajaxScript before the closing input_tagselector-tag.
 <sitemap_module_wrapper>
     <div class="panel panel-default">
         <div class="panel-heading">
-            <a data-toggle="collapse" data-parent="#%%aspectId%%" href="#menu_%%systemid%%%%aspectId%%" data-kajona-module="%%moduleTitle%%" >
+            <a data-toggle="collapse" data-parent="#%%aspectId%%" href="#menu_%%systemid%%%%aspectId%%"
+               data-kajona-module="%%moduleTitle%%" class="collapsed"
+               onclick="require('moduleNavigation').combinedInactive();">
                 %%moduleName%%
             </a>
         </div>

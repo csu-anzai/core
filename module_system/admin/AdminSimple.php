@@ -33,6 +33,10 @@ use Kajona\System\System\VersionableInterface;
 abstract class AdminSimple extends AdminController
 {
 
+    /**
+     * @var string
+     * @deprecated
+     */
     private $strPeAddon = "";
 
 
@@ -43,10 +47,6 @@ abstract class AdminSimple extends AdminController
     public function __construct($strSystemid = "")
     {
         parent::__construct($strSystemid);
-
-        if ($this->getParam("pe") == "1") {
-            $this->strPeAddon = "&pe=1";
-        }
 
         if ($this->getParam("unlockid") != "") {
             $objUnlock = Objectfactory::getInstance()->getObject($this->getParam("unlockid"));
@@ -260,7 +260,7 @@ abstract class AdminSimple extends AdminController
             $strReturn .= $this->objToolkit->gridFooter();
         }
 
-        $strReturn .= $this->objToolkit->getPageview($objArraySectionIterator, $this->getArrModule("modul"), $this->getAction(), "&systemid=".$this->getSystemid().$this->strPeAddon.$strPagerAddon);
+        $strReturn .= $this->objToolkit->getPageview($objArraySectionIterator, $this->getArrModule("modul"), $this->getAction(), "&systemid=".$this->getSystemid().$strPagerAddon);
 
         return $strReturn;
     }
@@ -354,7 +354,7 @@ abstract class AdminSimple extends AdminController
         }
 
         $objArraySectionIterator->setIntTotalElements($intTotalNrOfElements);
-        $strReturn .= $this->objToolkit->getPageview($objArraySectionIterator, $this->getArrModule("modul"), $this->getAction(), "&systemid=".$this->getSystemid().$this->strPeAddon.$strPagerAddon);
+        $strReturn .= $this->objToolkit->getPageview($objArraySectionIterator, $this->getArrModule("modul"), $this->getAction(), "&systemid=".$this->getSystemid().$strPagerAddon);
 
         return $strReturn;
     }
@@ -422,28 +422,32 @@ abstract class AdminSimple extends AdminController
      *
      * @param Model|AdminListableInterface|ModelInterface $objListEntry
      * @param bool $bitDialog opens the linked page in a js-based dialog
-     *
+     * @param array $arrParams
      * @return string
+     * @throws Exception
      */
-    protected function renderEditAction(Model $objListEntry, $bitDialog = false)
+    protected function renderEditAction(Model $objListEntry, $bitDialog = false, array $arrParams = null)
     {
         if ($objListEntry->getIntRecordDeleted() == 1) {
             return "";
         }
 
-        if ($objListEntry->rightEdit()) {
+        $arrParams = $arrParams ?? [];
+        $arrParams["systemid"]  = $objListEntry->getSystemid();
 
+        if ($objListEntry->rightEdit()) {
             $objLockmanager = $objListEntry->getLockManager();
             if (!$objLockmanager->isAccessibleForCurrentUser()) {
                 return $this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_editLocked", $this->getLang("commons_locked")));
             }
 
             if ($bitDialog) {
+                $arrParams["folderview"] = "1";
                 return $this->objToolkit->listButton(
                     Link::getLinkAdminDialog(
                         $objListEntry->getArrModule("modul"),
                         $this->getActionNameForClass("edit", $objListEntry),
-                        "folderview=1&systemid=".$objListEntry->getSystemid().$this->strPeAddon,
+                        $arrParams,
                         $this->getLang("commons_list_edit"),
                         $this->getLang("commons_list_edit"),
                         "icon_edit",
@@ -456,7 +460,7 @@ abstract class AdminSimple extends AdminController
                     Link::getLinkAdmin(
                         $objListEntry->getArrModule("modul"),
                         $this->getActionNameForClass("edit", $objListEntry),
-                        "&systemid=".$objListEntry->getSystemid().$this->strPeAddon,
+                        $arrParams,
                         $this->getLang("commons_list_edit"),
                         $this->getLang("commons_list_edit"),
                         "icon_edit"
@@ -516,7 +520,7 @@ abstract class AdminSimple extends AdminController
             return $this->objToolkit->listDeleteButton(
                 strip_tags($objListEntry->getStrDisplayName()),
                 $this->getLang($this->getObjLang()->stringToPlaceholder($this->getActionNameForClass("delete", $objListEntry)."_question"), $objListEntry->getArrModule("modul")),
-                Link::getLinkAdminHref($objListEntry->getArrModule("modul"), $this->getActionNameForClass("delete", $objListEntry), "&systemid=".$objListEntry->getSystemid().$this->strPeAddon)
+                Link::getLinkAdminHref($objListEntry->getArrModule("modul"), $this->getActionNameForClass("delete", $objListEntry), "&systemid=".$objListEntry->getSystemid())
             );
         }
         return "";
@@ -537,7 +541,7 @@ abstract class AdminSimple extends AdminController
             return "";
         }
 
-        if ($objListEntry->rightEdit() && $this->strPeAddon == "") {
+        if ($objListEntry->rightEdit()) {
             return $this->objToolkit->listStatusButton($objListEntry, false, $strAltActive, $strAltInactive);
         }
         return "";
@@ -552,12 +556,12 @@ abstract class AdminSimple extends AdminController
      */
     protected function renderPermissionsAction(Model $objListEntry)
     {
-        if ($objListEntry->rightRight() && $this->strPeAddon == "") {
+        if ($objListEntry->rightRight()) {
             return $this->objToolkit->listButton(
                 Link::getLinkAdminDialog(
                     "right",
                     $this->getActionNameForClass("change", $objListEntry),
-                    "&systemid=".$objListEntry->getSystemid().$this->strPeAddon,
+                    "&systemid=".$objListEntry->getSystemid(),
                     "",
                     $this->getLang("commons_edit_permissions"),
                     getRightsImageAdminName($objListEntry->getSystemid()),
@@ -614,9 +618,9 @@ abstract class AdminSimple extends AdminController
             return "";
         }
 
-        if ($objListEntry->rightEdit() && $this->strPeAddon == "") {
+        if ($objListEntry->rightEdit()) {
             $strQuestion = $this->getLang("commons_copy_record_question", "system", array(StringUtil::jsSafeString($objListEntry->getStrDisplayName())));
-            $strHref = Link::getLinkAdminHref($objListEntry->getArrModule("modul"), $this->getActionNameForClass("copyObject", $objListEntry), "&systemid=".$objListEntry->getSystemid().$this->strPeAddon);
+            $strHref = Link::getLinkAdminHref($objListEntry->getArrModule("modul"), $this->getActionNameForClass("copyObject", $objListEntry), "&systemid=".$objListEntry->getSystemid());
             return $this->objToolkit->listConfirmationButton($strQuestion, $strHref, "icon_copy", $this->getLang("commons_edit_copy", "system"), $this->getLang("dialog_copyHeader", "system"), $this->getLang("dialog_copyButton", "system"));
         }
         return "";
@@ -659,14 +663,14 @@ abstract class AdminSimple extends AdminController
             if ($bitDialog) {
                 return $this->objToolkit->listButton(
                     Link::getLinkAdminDialog(
-                        $this->getArrModule("modul"), $this->getActionNameForClass("new", null), "&folderview=1&systemid=".$this->getSystemid().$this->strPeAddon, $this->getLang("commons_list_new"), $this->getLang("commons_list_new"), "icon_new"
+                        $this->getArrModule("modul"), $this->getActionNameForClass("new", null), "&folderview=1&systemid=".$this->getSystemid(), $this->getLang("commons_list_new"), $this->getLang("commons_list_new"), "icon_new"
                     )
                 );
             }
             else {
                 return $this->objToolkit->listButton(
                     Link::getLinkAdmin(
-                        $this->getArrModule("modul"), $this->getActionNameForClass("new", null), "&systemid=".$this->getSystemid().$this->strPeAddon, $this->getLang("commons_list_new"), $this->getLang("commons_list_new"), "icon_new"
+                        $this->getArrModule("modul"), $this->getActionNameForClass("new", null), "&systemid=".$this->getSystemid(), $this->getLang("commons_list_new"), $this->getLang("commons_list_new"), "icon_new"
                     )
                 );
             }
@@ -778,6 +782,7 @@ abstract class AdminSimple extends AdminController
      * @param string $strPeAddon
      *
      * @return void
+     * @deprecated
      */
     public function setStrPeAddon($strPeAddon)
     {
@@ -786,6 +791,7 @@ abstract class AdminSimple extends AdminController
 
     /**
      * @return string
+     * @deprecated
      */
     public function getStrPeAddon()
     {

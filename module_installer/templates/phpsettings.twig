@@ -1,9 +1,7 @@
 {{ "installer_phpcheck_intro"|lang("installer")|raw }}
 {{ "installer_phpcheck_lang"|lang("installer")|raw }}
 
-{% for i,v in phpcheck_languages %}
-    {{ v|raw }}
-{% endfor %}
+    {{ phpcheck_languages|raw }}
 
 <br />{{ "installer_phpcheck_intro2"|lang("installer")|raw }}<ul class='list-group'><br />
 

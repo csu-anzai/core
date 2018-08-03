@@ -322,9 +322,11 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * @param Model $objListEntry
      * @param bool $bitDialog
      *
+     * @param array $arrParams
      * @return string
+     * @throws Exception
      */
-    protected function renderEditAction(Model $objListEntry, $bitDialog = false)
+    protected function renderEditAction(Model $objListEntry, $bitDialog = false, array $arrParams = null)
     {
         if ($objListEntry instanceof UserGroup) {
             if ($objListEntry->getSystemid() != SystemSetting::getConfigValue("_admins_group_id_") && $this->isGroupEditable($objListEntry)) {
@@ -335,7 +337,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
                 return $this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_editDisabled", $this->getLang("gruppe_bearbeiten_x")));
             }
         }
-        return parent::renderEditAction($objListEntry);
+        return parent::renderEditAction($objListEntry, false, $arrParams);
     }
 
 
@@ -1119,15 +1121,15 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
     protected function actionGroupMemberDelete()
     {
         $strReturn = "";
-        $objGroup = new UserGroup($this->getParam("groupid"));
+        $objGroup = Objectfactory::getInstance()->getObject($this->getParam("groupid"));
         //validate possible blocked groups
-        if (!$this->isGroupEditable($objGroup)) {
+        if ($objGroup == null || !$this->isGroupEditable($objGroup)) {
             return $this->getLang("commons_error_permissions");
         }
 
         /** @var UserUser $objUser */
         $objUser = Objectfactory::getInstance()->getObject($this->getParam("userid"));
-        if ($objGroup->getObjSourceGroup()->removeMember($objUser->getObjSourceUser())) {
+        if ($objUser != null && $objGroup->getObjSourceGroup()->removeMember($objUser->getObjSourceUser())) {
             $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "groupMember", "systemid=".$this->getParam("groupid")));
         } else {
             throw new Exception($this->getLang("member_delete_error"), Exception::$level_ERROR);
@@ -1136,6 +1138,58 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
         return $strReturn;
     }
 
+    /**
+     * Removes a user from a group
+     * @return array
+     * @throws Exception
+     * @responseType json
+     * @permissions delete
+     */
+    protected function actionApiGroupMemberDelete()
+    {
+        $objGroup = Objectfactory::getInstance()->getObject($this->getParam("groupid"));
+        //validate possible blocked groups
+        if ($objGroup == null || !$this->isGroupEditable($objGroup)) {
+            throw new Exception($this->getLang("commons_error_permissions"), Exception::$level_ERROR);
+        }
+
+        /** @var UserUser $objUser */
+        $objUser = Objectfactory::getInstance()->getObject($this->getParam("userid"));
+        if ($objUser != null && $objGroup->getObjSourceGroup()->removeMember($objUser->getObjSourceUser())) {
+            return json_encode(["state" => "ok"]);
+        } else {
+            throw new Exception($this->getLang("member_delete_error"), Exception::$level_ERROR);
+        }
+    }
+
+
+    /**
+     * Adds a user to a group
+     * @return array
+     * @throws Exception
+     * @responseType json
+     * @permissions delete
+     */
+    protected function actionApiGroupMemberAdd()
+    {
+        $objGroup = Objectfactory::getInstance()->getObject($this->getParam("groupid"));
+        //validate possible blocked groups
+        if ($objGroup == null || !$this->isGroupEditable($objGroup)) {
+            throw new Exception($this->getLang("commons_error_permissions"), Exception::$level_ERROR);
+        }
+
+        /** @var UserUser $objUser */
+        $objUser = Objectfactory::getInstance()->getObject($this->getParam("userid"));
+        if ($objUser != null && $objGroup->getObjSourceGroup()->addMember($objUser->getObjSourceUser())) {
+            $strAction = $this->objToolkit->listDeleteButton($objGroup->getStrName(), $this->getLang('mitglied_loeschen_frage'), "javascript:require(\'user\').removeGroupFromUser(\'".$objGroup->getSystemid()."\', \'".$objUser->getSystemid()."\');");
+            $strReturn = $this->objToolkit->genericAdminList($objGroup->getSystemid(), $objGroup->getStrName(), AdminskinHelper::getAdminImage($objGroup->getStrIcon()), $strAction);
+
+
+            return json_encode(["state" => "ok", "row" => $strReturn]);
+        } else {
+            throw new Exception($this->getLang("mitglied_speichern_fehler"), Exception::$level_ERROR);
+        }
+    }
 
     /**
      * Deletes a group and all memberships
@@ -1163,7 +1217,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
     }
 
     /**
-     * Shows a form to manage memberships of a user in groups
+     * Shows a list to manage memberships of a user in groups
      *
      * @return string
      * @throws Exception
@@ -1181,14 +1235,11 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
         $arrGroups = $objSourcesytem->getAllGroupIds(true);
         $arrUserGroups = $objUser->getArrGroupIds();
 
-        $objForm = new AdminFormgenerator("user", $objUser);
-
-        $strJs = <<<HTML
-            <a href="javascript:require('permissions').toggleEmtpyRows('[lang,permissions_toggle_visible,system]', '[lang,permissions_toggle_hidden,system]', 'form .form-group');" id="rowToggleLink" class="rowsVisible">[lang,permissions_toggle_visible,system]</a><br /><br />
-HTML;
-        $objForm->addField(new FormentryPlaintext())->setStrValue($strJs);
-
-
+        $strReturn = "";
+        $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "editMemberships"), "userForm", "", "return false;");
+        $strReturn .= $this->objToolkit->formInputUserSelector("group_add", $this->getLang("group_name"), "", "", false, true);
+        $strReturn .= $this->objToolkit->formClose();
+        $strReturn .= $this->objToolkit->listHeader();
 
         $intCheckedGroups = 0;
         foreach ($arrGroups as $strSingleGroup) {
@@ -1200,26 +1251,39 @@ HTML;
 
             if (in_array($strSingleGroup, $arrUserGroups)) {
                 $intCheckedGroups++;
+                $strAction = $this->objToolkit->listDeleteButton($objSingleGroup->getStrName(), $this->getLang('mitglied_loeschen_frage'), "javascript:require(\'user\').removeGroupFromUser(\'".$objSingleGroup->getSystemid()."\', \'".$objUser->getSystemid()."\');");
+                $strReturn .= $this->objToolkit->genericAdminList($objSingleGroup->getSystemid(), $objSingleGroup->getStrName(), AdminskinHelper::getAdminImage($objSingleGroup->getStrIcon()), $strAction);
             }
-            $objForm->addField(new FormentryCheckbox("user", "group[".$objSingleGroup->getSystemid()."]"))->setStrLabel($objSingleGroup->getStrName())->setStrValue(in_array($strSingleGroup, $arrUserGroups));
         }
 
+        $strReturn .= $this->objToolkit->listFooter();
 
         if ($intCheckedGroups == 0) {
-            $objForm->addField(new FormentryPlaintext(), "intro")->setStrValue($this->objToolkit->warningBox($this->getLang("form_user_hint_groups")));
-            $objForm->setFieldToPosition("intro", 1);
-            $objForm->addField(new FormentryPlaintext())->setStrValue("<script type=\"text/javascript\"> require(['permissions'], function(permissions){ }); </script>");
-        } else {
-            $objForm->addField(new FormentryPlaintext())->setStrValue("<script type=\"text/javascript\">
-            require(['permissions'], function(permissions){
-                permissions.toggleEmtpyRows('".$this->getLang("permissions_toggle_visible", "system")."', '".$this->getLang("permissions_toggle_hidden", "system")."', 'form .form-group');
-            });
-            </script>");
+            $strReturn = $this->objToolkit->warningBox($this->getLang("form_user_hint_groups")).$strReturn;
         }
 
+        $strReturn .= "<script type=\"text/javascript\">
+                require(['jquery', 'user'], function($, user) {
+                    // add new group
+                    $('#group_add_id').on('change', function(){
+                        if ($('#group_add_id').val() != '') {
+                            user.addGroupToUser($('#group_add_id').val(), '".$objUser->getSystemid()."');
+                        }
+                    });
 
-        $objForm->addField(new FormentryHidden("", "redirecttolist"))->setStrValue($this->getParam("redirecttolist"));
-        return $objForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "saveMembership"));
+                    // ignore enter key press
+                    $(document).ready(function() {
+                        $(window).keydown(function(event){
+                            if (event.keyCode == 13) {
+                                event.preventDefault();
+                                return false;
+                            }
+                        });
+                    });
+                });
+                </script>";
+
+        return $strReturn;
     }
 
     /**
@@ -1244,54 +1308,6 @@ HTML;
         }
         return $strReturn;
     }
-
-
-    /**
-     * Saves the memberships passed by param
-     *
-     * @return string "" in case of success
-     * @permissions edit
-     */
-    protected function actionSaveMembership()
-    {
-
-        $objUser = new UserUser($this->getSystemid());
-        $arrAssignedUserGroups = $objUser->getArrGroupIds();
-
-        $arrNewAssignment = [];
-
-        //loop old assignemts in order to create a filter
-        foreach ($arrAssignedUserGroups as $strOldId) {
-            /** @var UserGroup $objGroup */
-            $objGroup = Objectfactory::getInstance()->getObject($strOldId);
-            if (!$this->isGroupEditable($objGroup)) {
-                $arrNewAssignment[] = $strOldId;
-            }
-        }
-
-        //loop the post result
-        $arrPost = is_array($this->getParam("user_group")) ? array_keys($this->getParam("user_group")) : [];
-        foreach ($arrPost as $strGroup) {
-            $arrNewAssignment[] = $strGroup;
-        }
-
-        //create memberships
-        foreach ($arrNewAssignment as $strGroupId) {
-            $objGroup = Objectfactory::getInstance()->getObject($strGroupId);
-            $objGroup->getObjSourceGroup()->addMember($objUser->getObjSourceUser());
-        }
-
-        foreach ($arrAssignedUserGroups as $strOneGroup) {
-            if (!in_array($strOneGroup, $arrNewAssignment)) {
-                $objGroup = Objectfactory::getInstance()->getObject($strOneGroup);
-                $objGroup->getObjSourceGroup()->removeMember($objUser->getObjSourceUser());
-            }
-        }
-
-
-        return "<script type='text/javascript'>parent.KAJONA.admin.folderview.dialog.hide();</script>";
-    }
-
 
     /**
      * returns a list of the last logins
