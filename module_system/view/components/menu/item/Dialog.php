@@ -20,8 +20,8 @@ class Dialog extends MenuItem
 {
     public function __construct($title, $link)
     {
-        $title = htmlspecialchars($title);
-        $link = htmlspecialchars($link);
+        $title = htmlspecialchars($title, ENT_QUOTES);
+        $link = htmlspecialchars($link, ENT_QUOTES);
 
         $this->setFullEntry("<li class=\"core-component-menu-item\"><a href=\"#\" onclick='require(\"dialogHelper\").showIframeDialog(\"{$link}\", \"{$title}\"); return false;'>{$title}</a></li>");
     }
