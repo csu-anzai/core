@@ -26,9 +26,10 @@ class Cookie
      * @param string $strValue
      * @param int $intTime
      *
+     * @param bool $httpOnly
      * @return bool
      */
-    public function setCookie($strName, $strValue, $intTime = 0)
+    public function setCookie($strName, $strValue, $intTime = 0, $httpOnly = true)
     {
         //cookie is 30 days valid
         if ($intTime == 0) {
@@ -40,7 +41,7 @@ class Cookie
             $strPath = "/".$strPath;
         }
 
-        return setcookie($strName, $strValue, $intTime, $strPath, null, SystemSetting::getConfigValue("_cookies_only_https_") == "true", true);
+        return setcookie($strName, $strValue, $intTime, $strPath, null, SystemSetting::getConfigValue("_cookies_only_https_") == "true", $httpOnly);
     }
 
     /**
