@@ -203,34 +203,9 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         if(!$this->objDB->createTable("agp_session", $arrFields, array("session_id"), array("session_phpid", "session_releasetime")))
             $strReturn .= "An error occurred! ...\n";
 
-        // caching --------------------------------------------------------------------------------------
-        $strReturn .= "Installing table cache...\n";
-
-        $arrFields = array();
-        $arrFields["cache_id"] = array("char20", false);
-        $arrFields["cache_source"] = array("char254", true);
-        $arrFields["cache_hash1"] = array("char254", true);
-        $arrFields["cache_hash2"] = array("char254", true);
-        $arrFields["cache_language"] = array("char20", true);
-        $arrFields["cache_content"] = array("longtext", true);
-        $arrFields["cache_leasetime"] = array("int", true);
-        $arrFields["cache_hits"] = array("int", true);
-
-        if(!$this->objDB->createTable("agp_cache", $arrFields, array("cache_id"), array("cache_source", "cache_hash1", "cache_leasetime", "cache_language"), false))
-            $strReturn .= "An error occurred! ...\n";
-
         //languages -------------------------------------------------------------------------------------
         $strReturn .= "Installing table languages...\n";
         $objManager->createTable(LanguagesLanguage::class);
-
-        $strReturn .= "Installing table languages_languageset...\n";
-        $arrFields = array();
-        $arrFields["languageset_id"] = array("char20", false);
-        $arrFields["languageset_language"] = array("char20", true);
-        $arrFields["languageset_systemid"] = array("char20", false);
-
-        if(!$this->objDB->createTable("agp_languages_languageset", $arrFields, array("languageset_id", "languageset_systemid")))
-            $strReturn .= "An error occurred! ...\n";
 
         //aspects --------------------------------------------------------------------------------------
         $strReturn .= "Installing table aspects...\n";
@@ -572,6 +547,11 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             $strReturn .= $this->update_70_701();
         }
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.0.1") {
+            $strReturn .= $this->update_701_71();
+        }
+
         return $strReturn."\n\n";
     }
 
@@ -823,6 +803,21 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.1");
+        return $strReturn;
+    }
+
+    private function update_701_71()
+    {
+        $strReturn = "Updating 7.0.1 to 7.1...\n";
+
+        $strReturn .= "Removing languageset table".PHP_EOL;
+        $this->objDB->_pQuery("DROP TABLE agp_languages_languageset", []);
+
+        $strReturn .= "Removing cache table".PHP_EOL;
+        $this->objDB->_pQuery("DROP TABLE agp_cache", []);
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1");
         return $strReturn;
     }
 
