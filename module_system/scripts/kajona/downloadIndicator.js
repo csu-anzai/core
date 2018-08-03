@@ -27,7 +27,7 @@ define(['jquery', 'dialogHelper', 'workingIndicator'], function ($, dh, wi) {
      * Internal model for a single download indicator
      * @constructor
      */
-    DownloadIndicator = function() {
+    var DownloadIndicator = function() {
 
         this.key = null;
         this.cookieName = null;
@@ -108,7 +108,7 @@ define(['jquery', 'dialogHelper', 'workingIndicator'], function ($, dh, wi) {
      * @param indicator
      * @constructor
      */
-    ProgressChecker = function(indicator) {
+    var ProgressChecker = function(indicator) {
         /**
          * @var DownloadIndicator
          */
