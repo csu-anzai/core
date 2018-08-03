@@ -20,6 +20,7 @@
     "changelog": "kajona/changelog",
     "dashboardCalendar": "kajona/dashboardCalendar",
     "desktopNotification": "kajona/desktopNotification",
+    "downloadIndicator": "kajona/downloadIndicator",
     "folderview": "kajona/folderview",
     "forms": "kajona/forms",
     "instantSave": "kajona/instantSave",
