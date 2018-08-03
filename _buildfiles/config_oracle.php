@@ -2,8 +2,8 @@
 
 //database-settings
 define("DB_HOST",				                "192.168.60.207");
-define("DB_USER",                               "kajona");
-define("DB_PASS",                               "kajona");
+define("DB_USER",                               "kajona_build");
+define("DB_PASS",                               "agp");
 define("DB_DB",                                 "ora12");
 define("DB_DRIVER",                             "oci8");
 //define("DB_DRIVER",                             "mysql");
