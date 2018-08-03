@@ -32,6 +32,9 @@ class FlowConditionResult
      */
     protected $menuItems;
 
+    /**
+     * @param bool|null $bitValid
+     */
     public function __construct($bitValid = null)
     {
         $this->bitValid = $bitValid;
@@ -39,11 +42,20 @@ class FlowConditionResult
         $this->menuItems = [];
     }
 
+    /**
+     * In case no explicit valid status is set the result depends on the error count. If we have an explicit valid
+     * status the result is independent of the error count
+     *
+     * @return bool
+     */
     public function isValid()
     {
         return $this->bitValid === null ? count($this->arrErrors) === 0 : $this->bitValid;
     }
 
+    /**
+     * @param string $strError
+     */
     public function addError(string $strError)
     {
         $this->arrErrors[] = $strError;
@@ -73,6 +85,13 @@ class FlowConditionResult
         return $this->menuItems;
     }
 
+    /**
+     * Merges the status of another result object into this object. If both conditions have an explicit valid status
+     * both conditions must also be true otherwise the valid status will be false. If this object has no explicit valid
+     * status we take the status from the provided object
+     *
+     * @param FlowConditionResult $objResult
+     */
     public function merge(FlowConditionResult $objResult)
     {
         $this->bitValid = $this->bitValid === null ? $objResult->isValid() : ($this->bitValid && $objResult->isValid());
