@@ -96,7 +96,8 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["right_right5"] = array("text", true);
         $arrFields["right_changelog"] = array("text", true);
 
-        if(!$this->objDB->createTable("agp_system", $arrFields, array("system_id"), array("system_prev_id", "system_module_nr", "system_sort", "system_owner", "system_create_date", "system_status", "system_lm_time", "system_lock_time", "system_deleted", "system_class")))
+        //TODO: remove system deleted index
+        if(!$this->objDB->createTable("agp_system", $arrFields, array("system_id"), array("system_prev_id", "system_module_nr", "system_sort", "system_owner", "system_create_date", "system_status", "system_lm_time", "system_lock_time", "system_class")))
             $strReturn .= "An error occurred! ...\n";
 
 
