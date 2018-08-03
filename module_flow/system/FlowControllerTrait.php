@@ -21,6 +21,7 @@ use Kajona\System\System\Objectfactory;
 use Kajona\System\System\RedirectException;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Session;
+use Kajona\System\View\Components\Menu\Item\Dialog;
 use Kajona\System\View\Components\Menu\Item\Headline;
 use Kajona\System\View\Components\Menu\Item\Separator;
 use Kajona\System\View\Components\Menu\Menu;
@@ -255,11 +256,7 @@ require(["jquery", "ajax"], function($, ajax){
         $menu = new Menu();
 
         // flow chart
-        $strLink = htmlspecialchars(Link::getLinkAdminHref("flow", "showFlow", ["systemid" => $this->getSystemid(), "folderview" => "1"]));
-        $strTitle = $this->getLang("flow_current_status", "flow");
-        $menuItem = new MenuItem();
-        $menuItem->setFullEntry('<li><a href="#" onclick="require(\'dialogHelper\').showIframeDialog(\''.$strLink.'\', \''.$strTitle.'\'); return false;">'.$strTitle.'</a></li>');
-        $menu->addItem($menuItem);
+        $menu->addItem(new Dialog($this->getLang("flow_current_status", "flow"), Link::getLinkAdminHref("flow", "showFlow", ["systemid" => $this->getSystemid(), "folderview" => "1"])));
 
         if (count($statusItems) > 0) {
             // status
