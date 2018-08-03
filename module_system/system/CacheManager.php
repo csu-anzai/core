@@ -62,7 +62,7 @@ class CacheManager
      *
      * @var integer
      */
-    const TYPE_FILESYSTEM = 8;
+    const TYPE_FILESYSTEM = 4;
 
     /**
      * Stores the data in a PHP file where the data is exported through var_export. Might be faster then the filesystem
@@ -70,7 +70,7 @@ class CacheManager
      *
      * @var integer
      */
-    const TYPE_PHPFILE = 16;
+    const TYPE_PHPFILE = 8;
 
     /**
      * Namespace of the global cache. This cache is flushed more often in case changes happen to the db
