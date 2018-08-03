@@ -58,13 +58,6 @@ class CacheManager
     const TYPE_APC = 2;
 
     /**
-     * Uses the Cache to store the data in a database table
-     *
-     * @var integer
-     */
-    const TYPE_DATABASE = 4;
-
-    /**
      * Stores the data in the temp folder
      *
      * @var integer
@@ -249,10 +242,6 @@ class CacheManager
             }
         }
 
-        if ($intType & self::TYPE_DATABASE) {
-            $arrDriver[] = new CacheDatabase();
-        }
-
         if ($intType & self::TYPE_FILESYSTEM) {
             try {
                 $arrDriver[] = new FilesystemCache(_realpath_."project/temp/cache", ".cache");
@@ -307,7 +296,6 @@ class CacheManager
     {
         return array(
             self::TYPE_APC => "APC",
-            self::TYPE_DATABASE => "Database",
             self::TYPE_FILESYSTEM => "Filesystem",
             self::TYPE_PHPFILE => "PHP-File",
         );

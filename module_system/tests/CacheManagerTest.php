@@ -129,17 +129,17 @@ class CacheManagerTest extends TestCase
 
     public function testGetInstance()
     {
-        $this->assertInstanceOf('Kajona\\System\\System\\CacheManager', CacheManager::getInstance());
+        $this->assertInstanceOf(CacheManager::class, CacheManager::getInstance());
     }
 
     public function testGetAvailableDriver()
     {
-        $this->assertEquals(array(CacheManager::TYPE_APC, CacheManager::TYPE_DATABASE, CacheManager::TYPE_FILESYSTEM, CacheManager::TYPE_PHPFILE), array_keys(CacheManager::getAvailableDriver()));
+        $this->assertEquals(array(CacheManager::TYPE_APC, CacheManager::TYPE_FILESYSTEM, CacheManager::TYPE_PHPFILE), array_keys(CacheManager::getAvailableDriver()));
     }
 
     public function typeDataProvider()
     {
-        $intMax = CacheManager::TYPE_ARRAY | CacheManager::TYPE_APC | CacheManager::TYPE_DATABASE | CacheManager::TYPE_FILESYSTEM | CacheManager::TYPE_PHPFILE;
+        $intMax = CacheManager::TYPE_ARRAY | CacheManager::TYPE_APC | CacheManager::TYPE_FILESYSTEM | CacheManager::TYPE_PHPFILE;
         $arrTypes = array();
         for ($intI = 0; $intI <= $intMax; $intI++) {
             $arrTypes[] = array($intI);

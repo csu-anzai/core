@@ -7,6 +7,7 @@
  * Dashboard calendar functions
  *
  * @module dashboardCalendar
+ * @deprecated
  */
 define("dashboardCalendar", ["jquery"], function($){
 
