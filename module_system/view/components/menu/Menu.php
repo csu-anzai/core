@@ -11,7 +11,7 @@ namespace Kajona\System\View\Components\Menu;
 use Kajona\System\View\Components\AbstractComponent;
 
 /**
- * Renders a simple popover
+ * Simple menu component which renders a dropdown menu
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.1
