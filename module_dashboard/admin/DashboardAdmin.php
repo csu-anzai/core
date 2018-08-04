@@ -16,6 +16,8 @@ use Kajona\Dashboard\System\EventEntry;
 use Kajona\Dashboard\System\EventRepository;
 use Kajona\Dashboard\System\TodoJstreeNodeLoader;
 use Kajona\Dashboard\System\TodoRepository;
+use Kajona\Dashboard\View\Components\Dashboard\Dashboard;
+use Kajona\Dashobard\View\Components\Widget\Widget;
 use Kajona\System\Admin\AdminController;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminInterface;
@@ -34,6 +36,7 @@ use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemChangelog;
 use Kajona\System\System\SystemJSTreeBuilder;
 use Kajona\System\System\SystemJSTreeConfig;
+
 
 /**
  * The dashboard admin class
@@ -83,28 +86,28 @@ class DashboardAdmin extends AdminController implements AdminInterface
      * @return string
      * @autoTestable
      * @permissions view
+     * @throws Exception
      */
     protected function actionList()
     {
-        $strReturn = "";
+
+        $board = new Dashboard();
+
+        $widgets = [];
+
         //load the widgets for each column. currently supporting 3 columns on the dashboard.
         $objDashboardmodel = new DashboardWidget();
-        $arrColumns = array();
         //build each row
         foreach ($this->arrColumnsOnDashboard as $strColumnName) {
-            $strColumnContent = $this->objToolkit->getDashboardColumnHeader($strColumnName);
-            $strWidgetContent = "";
+            $widgets[$strColumnName] = [];
+
             foreach ($objDashboardmodel->getWidgetsForColumn($strColumnName, SystemAspect::getCurrentAspectId()) as $objOneSystemmodel) {
-                $strWidgetContent .= $this->layoutAdminWidget($objOneSystemmodel);
+                $widgets[$strColumnName][] = $this->layoutAdminWidget($objOneSystemmodel)->renderComponent();
             }
-
-            $strColumnContent .= $strWidgetContent;
-            $strColumnContent .= $this->objToolkit->getDashboardColumnFooter();
-            $arrColumns[] = $strColumnContent;
         }
-        $strReturn .= $this->objToolkit->getMainDashboard($arrColumns);
 
-        return $strReturn;
+        $board->setWidgets($widgets);
+        return $board->renderComponent();
     }
 
     /**
@@ -112,22 +115,16 @@ class DashboardAdmin extends AdminController implements AdminInterface
      *
      * @param DashboardWidget $objDashboardWidget
      *
-     * @return string
+     * @return Widget
      */
-    protected function layoutAdminWidget($objDashboardWidget)
+    protected function layoutAdminWidget($objDashboardWidget): Widget
     {
-        $strWidgetContent = "";
         $objConcreteWidget = $objDashboardWidget->getConcreteAdminwidget();
-
-        $strWidgetId = $objConcreteWidget->getSystemid();
-        $strWidgetName = $objConcreteWidget->getWidgetName();
-        $strWidgetNameAdditionalContent = $objConcreteWidget->getWidgetNameAdditionalContent();
-
 
         $arrActions = array();
         if ($objDashboardWidget->rightEdit()) {
-            $arrActions[] = array(
-                "fullentry" => Link::getLinkAdminDialog(
+            $arrActions[] =
+                Link::getLinkAdminDialog(
                     "dashboard",
                     "editWidget",
                     "&systemid=".$objDashboardWidget->getSystemid(),
@@ -136,40 +133,32 @@ class DashboardAdmin extends AdminController implements AdminInterface
                     "",
                     $objDashboardWidget->getConcreteAdminwidget()->getWidgetName(),
                     false
-                )
+
             );
         }
         if ($objDashboardWidget->rightDelete()) {
-            $strQuestion = StringUtil::replace("%%element_name%%", StringUtil::jsSafeString($strWidgetName), $this->getLang("widgetDeleteQuestion"));
+            $strQuestion = StringUtil::replace("%%element_name%%", StringUtil::jsSafeString($objConcreteWidget->getWidgetName()), $this->getLang("widgetDeleteQuestion"));
 
             $strHeader = Carrier::getInstance()->getObjLang()->getLang("dialog_deleteHeader", "system");
             $strConfirmationButtonLabel = Carrier::getInstance()->getObjLang()->getLang("dialog_deleteButton", "system");
             $strConfirmationLinkHref = "javascript:require(\'dashboard\').removeWidget(\'".$objDashboardWidget->getSystemid()."\');";
 
-            $arrActions[] = array(
-                "fullentry" => Link::getLinkAdminManual(
+            $arrActions[] =
+                Link::getLinkAdminManual(
                     "href=\"#\" onclick=\"require(['dialogHelper'], function(dialog) { dialog.showConfirmationDialog('{$strHeader}', '{$strQuestion}', '{$strConfirmationButtonLabel}', '{$strConfirmationLinkHref}'); } ); return false;\"",
                     (AdminskinHelper::getAdminImage("icon_delete")). " ". Carrier::getInstance()->getObjLang()->getLang("commons_delete", "system"), "", "", "", "", false
-                )
+
             );
         }
 
+        $widget = new Widget();
+        $widget
+            ->setTitle($objConcreteWidget->getWidgetName())
+            ->setSubTitle($objConcreteWidget->getWidgetNameAdditionalContent())
+            ->setActions($arrActions)
+            ->setId($objConcreteWidget->getSystemid());
 
-        $strWidgetContent .= $this->objToolkit->getDashboardWidgetEncloser(
-            $objDashboardWidget->getSystemid(),
-            $this->objToolkit->getAdminwidget(
-                $strWidgetId,
-                $strWidgetName,
-                $strWidgetNameAdditionalContent,
-                $this->objToolkit->listButton(
-                    "<span class='dropdown'><a href='#' data-toggle='dropdown' role='button'>".AdminskinHelper::getAdminImage("icon_submenu")."</a>".$this->objToolkit->registerMenu($objDashboardWidget->getSystemid(), $arrActions, true)."</span>"
-                ),
-                "",
-                $objDashboardWidget->getConcreteAdminwidget()->getLayoutSection()
-            )
-        );
-
-        return $strWidgetContent;
+        return $widget;
     }
 
     /**

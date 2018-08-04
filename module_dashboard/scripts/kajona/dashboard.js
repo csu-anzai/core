@@ -24,11 +24,11 @@ define(["jquery", "jquery-ui", "ajax", "statusDisplay", "tooltip", "util"], func
 
         init : function() {
 
-            $('.adminwidgetColumn > div.dbEntry').each(function () {
+            $('.adminwidgetColumn > div.core-component-widget').each(function () {
                 var systemId = $(this).data('systemid');
                 ajax.genericAjaxCall('dashboard', 'getWidgetContent', systemId, function(data, status, jqXHR) {
 
-                    content = $("div.dbEntry[data-systemid='"+systemId+"'] .content");
+                    content = $("div.core-component-widget[data-systemid='"+systemId+"'] .content");
 
                     if (status == 'success') {
                         var $parent = content.parent();
@@ -50,7 +50,7 @@ define(["jquery", "jquery-ui", "ajax", "statusDisplay", "tooltip", "util"], func
             $("div.adminwidgetColumn").each(function(index) {
 
                 $(this).sortable({
-                    items: 'div.dbEntry',
+                    items: 'div.core-component-widget',
                     handle: 'h2',
                     forcePlaceholderSize: true,
                     cursor: 'move',

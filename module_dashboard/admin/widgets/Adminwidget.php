@@ -237,7 +237,7 @@ abstract class Adminwidget
      */
     protected final function widgetText($strText)
     {
-        return $this->objToolkit->adminwidgetText($strText);
+        return $this->objToolkit->getTextRow($strText, "widgetText");
     }
 
     /**
@@ -248,7 +248,7 @@ abstract class Adminwidget
      */
     protected final function widgetSeparator()
     {
-        return $this->objToolkit->adminwidgetSeparator();
+        return $this->objToolkit->divider();
     }
 
     public function setBitBlockSessionClose($bitBlockSessionClose)

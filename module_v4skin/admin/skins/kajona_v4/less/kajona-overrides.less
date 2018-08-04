@@ -1431,62 +1431,6 @@ footer {
         background-color: @kajona-brand-color;
     }
 
-
-    /* DASHBOARD */
-    .dashBoard {
-        .adminwidgetColumn {
-
-            @media (min-width: @screen-md-min) {
-                min-height: 150px;
-            }
-
-            .dbEntry {
-
-                h2 {
-                    margin: 0 0 5px 0;
-                }
-
-                div.contentSeparator {
-                    z-index: 298;
-                    height: 8px;
-                    position: relative;
-
-                    background-image: linear-gradient(to top, rgba(234, 234, 234, 0.02), rgba(245, 245, 245, 0.99));
-
-                    //background-image: -webkit-linear-gradient(top, rgba(255,255,255,0.001) 0%, #fff 5%, #fff 100%);
-
-                }
-
-                .adminwidgetactions {
-                    display: inline;
-                    margin-top: -27px;
-                }
-
-                .additionalNameContent {
-                    font-size: @font-size-small - 1;
-                    margin-top: -6px;
-                }
-
-                .content {
-                    margin-top: -8px;
-                    padding-top: 8px;
-                    max-height: 500px;
-
-                    &.loaded {
-                        overflow-x: auto;
-                    }
-                }
-
-                &.sortActive {
-                    .opacity(0.7);
-                }
-            }
-
-
-
-        }
-    }
-
     /* general dnd placeholder */
     .dndPlaceholder {
         background-image: repeating-linear-gradient(-45deg, transparent, transparent 8px, rgba(0,0,0,.05) 8px, rgba(0,0,0,.05) 16px);
