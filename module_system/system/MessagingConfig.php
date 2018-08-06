@@ -120,6 +120,23 @@ class MessagingConfig extends Model implements ModelInterface
         if ($objConfig === null) {
             $objConfig = new MessagingConfig();
             $objConfig->setStrUser($strUserid);
+
+            if ($objProvider instanceof MessageproviderExtendedInterface) {
+                $initialStatus = $objProvider->getInitialStatus();
+
+                if ($initialStatus & MessageproviderExtendedInterface::INITIAL_STATUS_ACTIVE) {
+                    $objConfig->setBitEnabled(true);
+                } elseif ($initialStatus & MessageproviderExtendedInterface::INITIAL_STATUS_INACTIVE) {
+                    $objConfig->setBitEnabled(false);
+                }
+
+                if ($initialStatus & MessageproviderExtendedInterface::INITIAL_EMAIL_ACTIVE) {
+                    $objConfig->setBitBymail(true);
+                } elseif ($initialStatus & MessageproviderExtendedInterface::INITIAL_EMAIL_INACTIVE) {
+                    $objConfig->setBitBymail(false);
+                }
+            }
+
             $objConfig->setStrMessageprovider(get_class($objProvider));
         }
         return $objConfig;

@@ -20,12 +20,11 @@ use Kajona\System\System\SystemEventidentifier;
 class DebugHelper
 {
 
-    private $arrTimestampStart = null;
+    private $startTime = null;
 
-    function __construct()
+    public function __construct()
     {
-        $this->arrTimestampStart = gettimeofday();
-
+        $this->startTime = microtime(true);
         ResponseObject::getInstance()->setObjEntrypoint(RequestEntrypointEnum::DEBUG());
     }
 
@@ -36,8 +35,6 @@ class DebugHelper
         echo "<b>Kajona Core V7 Debug Subsystem</b>\n\n";
 
         if (getGet("debugfile") != "") {
-
-
             echo "Loading path for ".getGet("debugfile")."\n";
             $strPath = array_search(getGet("debugfile"), Resourceloader::getInstance()->getFolderContent("/debug", array(".php")));
             if ($strPath !== false) {
@@ -49,9 +46,7 @@ class DebugHelper
                     echo Exception::renderException($objEx);
                 }
             }
-
-        }
-        else {
+        } else {
             echo "Searching for debug-scripts available...\n";
 
             $arrFiles = \Kajona\System\System\Resourceloader::getInstance()->getFolderContent("/debug", array(".php"));
@@ -64,13 +59,11 @@ class DebugHelper
             echo "</ul>";
         }
 
-
-        $arrTimestampEnde = gettimeofday();
-        $intTimeUsed = (($arrTimestampEnde['sec'] * 1000000 + $arrTimestampEnde['usec'])
-                - ($this->arrTimestampStart['sec'] * 1000000 + $this->arrTimestampStart['usec'])) / 1000000;
-
-
-        echo "\n\n<b>PHP-Time:</b>                              ".number_format($intTimeUsed, 6)." sec \n";
+        $time_start = microtime(true);
+        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_ENDPROCESSING, array(RequestEntrypointEnum::DEBUG()));
+        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_AFTERCONTENTSEND, array(RequestEntrypointEnum::DEBUG()));
+        echo "\n\n<b>End-Processing handler time:</b>           ".number_format((microtime(true) - $time_start), 6)." sec \n";
+        echo "<b>Total PHP-Time:</b>                        ".number_format((microtime(true) - $this->startTime), 6)." sec \n";
         echo "<b>Queries db/cachesize/cached/fired:</b>     ".Carrier::getInstance()->getObjDB()->getNumber()."/".
             Carrier::getInstance()->getObjDB()->getCacheSize()."/".
             Carrier::getInstance()->getObjDB()->getNumberCache()."/".
@@ -80,9 +73,7 @@ class DebugHelper
         echo "<b>Classes Loaded:</b>                        ".Classloader::getInstance()->getIntNumberOfClassesLoaded()." \n";
 
         echo "</pre>";
-
     }
-
 }
 
 header("Content-Type: text/html; charset=utf-8");
@@ -90,5 +81,3 @@ header("Content-Type: text/html; charset=utf-8");
 $objDebug = new DebugHelper();
 $objDebug->debugHelper();
 
-CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_ENDPROCESSING, array(RequestEntrypointEnum::DEBUG()));
-CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_AFTERCONTENTSEND, array(RequestEntrypointEnum::DEBUG()));

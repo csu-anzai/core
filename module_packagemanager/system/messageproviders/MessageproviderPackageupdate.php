@@ -7,9 +7,8 @@
 namespace Kajona\Packagemanager\System\Messageproviders;
 
 use Kajona\System\System\Carrier;
-use Kajona\System\System\Messageproviders\MessageproviderExtendedInterface;
+use Kajona\System\System\Messageproviders\MessageproviderBase;
 use Kajona\System\System\SystemModule;
-
 
 /**
  * The exceptions-messageprovider sends messages in case of exceptions.
@@ -19,10 +18,8 @@ use Kajona\System\System\SystemModule;
  * @package module_messaging
  * @since 4.0
  */
-class MessageproviderPackageupdate implements MessageproviderExtendedInterface
+class MessageproviderPackageupdate extends MessageproviderBase
 {
-
-
     /**
      * Returns the name of the message-provider
      *
@@ -67,5 +64,4 @@ class MessageproviderPackageupdate implements MessageproviderExtendedInterface
     {
         return SystemModule::getModuleByName("packagemanager")->rightView();
     }
-
 }

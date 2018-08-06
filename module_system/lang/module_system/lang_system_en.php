@@ -344,7 +344,3 @@ $lang['smtp_auth_password']   = "SMTP auth_password";
 $lang["update_in_progress"] = "System update in progress, please wait...";
 
 $lang["form_objectlist_add_search"]  = "{0} add ...";
-
-$lang["dialog_sendNotificationHeader"] = "Send Notification";
-$lang["dialog_sendNotificationMessage"] = "Would you like to trigger a message with {0} form to the appropriate processing owner?";
-$lang["dialog_dialog_sendNotificationButton"] = "Yes, send";
