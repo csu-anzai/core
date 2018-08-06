@@ -80,8 +80,8 @@ system($strUglifyjsBin . " tsc.js -o tsc.min.js");
 
 // merge type script and js files
 echo "Build agp js\n";
-$plain = file_get_contents("plain.min.js");
-$tsc = file_get_contents("tsc.min.js");
+$plain = is_file("plain.min.js") ? file_get_contents("plain.min.js") : "";
+$tsc = is_file("tsc.min.js") ? file_get_contents("tsc.min.js") : "";
 
 file_put_contents($strRoot . "/core/module_system/scripts/agp.min.js", $plain . "\n\n" . $tsc);
 
