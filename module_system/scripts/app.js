@@ -1,5 +1,5 @@
 
-require(['router', 'jquery', 'jquery-ui', 'jquery-touchPunch', 'bootstrap', 'v4skin', 'loader', 'dialog', 'folderview', 'lists', 'dialogHelper', 'ajax'],
+define("app", ['router', 'jquery', 'jquery-ui', 'jquery-touchPunch', 'bootstrap', 'v4skin', 'loader', 'dialog', 'folderview', 'lists', 'dialogHelper', 'ajax'],
     function(router, jquery, jqueryui, touch, bootstrap, v4skin, loader, Dialog, folderview, lists, dialogHelper, ajax) {
 
     //backwards compatibility
@@ -40,9 +40,5 @@ require(['router', 'jquery', 'jquery-ui', 'jquery-touchPunch', 'bootstrap', 'v4s
     jsDialog_3 = new Dialog('jsDialog_3', 3);
 
     KAJONA.admin.forms.submittedEl = null;
-
-
-
-
 
 });
