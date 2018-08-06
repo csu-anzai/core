@@ -59,7 +59,6 @@ class BootstrapCache
             self::CACHE_OBJECTS,
             self::CACHE_SERVICES,
             self::CACHE_MODULEIDS,
-            self::CACHE_REQUIREJS,
         );
     }
 
