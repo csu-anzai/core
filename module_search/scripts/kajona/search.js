@@ -1,7 +1,7 @@
 //   (c) 2013-2016 by Kajona, www.kajona.de
 //       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt
 
-define(['jquery', 'ajax', 'tooltip', 'statusDisplay'], function ($, ajax, tooltip, statusDisplay) {
+define("search", ['jquery', 'ajax', 'tooltip', 'statusDisplay'], function ($, ajax, tooltip, statusDisplay) {
 
 
     var search = {

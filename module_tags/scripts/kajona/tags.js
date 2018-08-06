@@ -5,7 +5,7 @@
 /**
  * Tags-handling
  */
-define(['jquery', 'qtip', 'ajax', 'tooltip', 'statusDisplay', 'util'], function ($, qtip, ajax, tooltip, statusDisplay, util) {
+define("tags", ['jquery', 'qtip', 'ajax', 'tooltip', 'statusDisplay', 'util'], function ($, qtip, ajax, tooltip, statusDisplay, util) {
     var tags = {};
 
     tags.createFavorite = function(strSystemid, objLink) {

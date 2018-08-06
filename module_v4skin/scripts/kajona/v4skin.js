@@ -1,5 +1,5 @@
 
-define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'statusDisplay', 'messaging', 'ajax', 'util', 'folderview', 'breadcrumb', 'lang'], function ($, bootstrap, jqueryui, workingIndicator, tooltip, statusDisplay, messaging, ajax, util, folderview, breadcrumb, lang) {
+define("v4skin", ['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'statusDisplay', 'messaging', 'ajax', 'util', 'folderview', 'breadcrumb', 'lang'], function ($, bootstrap, jqueryui, workingIndicator, tooltip, statusDisplay, messaging, ajax, util, folderview, breadcrumb, lang) {
 
 
 

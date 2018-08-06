@@ -16,7 +16,7 @@
     'use strict';
     if (typeof define === 'function' && define.amd) {
         // Register as an anonymous AMD module:
-        define([
+        define("jquery.fileupload-ui", [
             'jquery',
             'blueimp-tmpl',
             './jquery.fileupload-image',

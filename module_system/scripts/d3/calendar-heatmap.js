@@ -2,7 +2,7 @@
 // based on https://github.com/DKirwan/calendar-heatmap
 
 
-define(['jquery', 'moment', 'd3'], function ($, moment, d3) {
+define("calendar-heatmap", ['jquery', 'moment', 'd3'], function ($, moment, d3) {
 
     var calendarHeatmap = function() {
         // defaults

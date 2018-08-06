@@ -10,7 +10,7 @@
  *
  * @module fileupload
  */
-define(["jquery", "ajax", "forms", "lang", 'blueimp-tmpl', 'jquery-ui/ui/widget', 'jquery.iframe-transport', 'jquery.fileupload', 'jquery.fileupload-process', 'jquery.fileupload-ui'], function($, ajax, forms, lang) {
+define("fileupload", ["jquery", "ajax", "forms", "lang", 'blueimp-tmpl', 'jquery-ui/ui/widget', 'jquery.iframe-transport', 'jquery.fileupload', 'jquery.fileupload-process', 'jquery.fileupload-ui'], function($, ajax, forms, lang) {
 
 
     var UploadManager = function (options) {

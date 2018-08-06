@@ -3,7 +3,7 @@
 //       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt
 
 
-define(["jquery", "ajax", "statusDisplay"], function($, ajax, statusDisplay) {
+define("mediamanager", ["jquery", "ajax", "statusDisplay"], function($, ajax, statusDisplay) {
 
 
 

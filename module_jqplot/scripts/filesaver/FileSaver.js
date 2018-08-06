@@ -274,7 +274,7 @@ var saveAs = saveAs || (function(view) {
 if (typeof module !== "undefined" && module.exports) {
     module.exports.saveAs = saveAs;
 } else if ((typeof define !== "undefined" && define !== null) && (define.amd !== null)) {
-    define([], function() {
+    define("filesaver", [], function() {
         return saveAs;
     });
 }

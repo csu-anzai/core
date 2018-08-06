@@ -3,7 +3,7 @@
 //       $Id$
 
 
-define(["jquery", "ajax", "statusDisplay", "tooltip", "util"], function($, ajax, statusDisplay, tooltip, util) {
+define("packagemanager", ["jquery", "ajax", "statusDisplay", "tooltip", "util"], function($, ajax, statusDisplay, tooltip, util) {
 
     var packagemanager = {
 
