@@ -2,7 +2,7 @@
  * Russian translation for bootstrap-datepicker
  * Victor Taranenko <darwin@snowdale.com>
  */
-;(function($){
+define("bootstrap-datepicker-ru", ["jquery"], function($){
 	$.fn.datepicker.dates['ru'] = {
 		days: ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"],
 		daysShort: ["Вск", "Пнд", "Втр", "Срд", "Чтв", "Птн", "Суб"],
@@ -14,4 +14,4 @@
 		format: "dd.mm.yyyy",
 		weekStart: 1
 	};
-}(jQuery));
+});

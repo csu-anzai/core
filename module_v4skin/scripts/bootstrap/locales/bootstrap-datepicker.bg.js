@@ -2,7 +2,7 @@
  * Bulgarian translation for bootstrap-datepicker
  * Apostol Apostolov <apostol.s.apostolov@gmail.com>
  */
-;(function($){
+define("bootstrap-datepicker-bg", ["jquery"], function($){
 	$.fn.datepicker.dates['bg'] = {
 		days: ["Неделя", "Понеделник", "Вторник", "Сряда", "Четвъртък", "Петък", "Събота"],
 		daysShort: ["Нед", "Пон", "Вто", "Сря", "Чет", "Пет", "Съб"],
@@ -11,4 +11,4 @@
 		monthsShort: ["Ян", "Фев", "Мар", "Апр", "Май", "Юни", "Юли", "Авг", "Сеп", "Окт", "Ное", "Дек"],
 		today: "днес"
 	};
-}(jQuery));
+});
