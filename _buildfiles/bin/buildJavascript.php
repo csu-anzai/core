@@ -75,7 +75,7 @@ foreach ($jsFiles as $name => $file) {
     if (pathinfo($file, PATHINFO_EXTENSION) == "js") {
         $js = file_get_contents($file);
 
-        // in case the js has no define make a wrapper this shoudl be roughly the same behaviour as the requirejs loader
+        // in case the js has no define make a wrapper this should be roughly the same behaviour as the requirejs loader
         if (strpos($js, "define(") === false) {
             $js = 'define("' . $name . '", [], function(){ ' . "\n" . $js . "\n" . ' });';
         }
