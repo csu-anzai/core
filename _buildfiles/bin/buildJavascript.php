@@ -54,6 +54,22 @@ foreach ($objCoreDirs as $objCoreDir) {
 echo "merge all js files\n";
 
 $content = "";
+
+// add global js libs
+$globals = [
+    __DIR__ . "/../../module_system/scripts/jquery/jquery.min.js",
+    __DIR__ . "/../../module_system/scripts/routie/routie.min.js",
+    __DIR__ . "/../../module_system/scripts/requirejs/require.js",
+];
+
+foreach ($globals as $file) {
+    $js = file_get_contents($file);
+
+    $content.= "\n/* -- {$file} */\n\n";
+    $content.= $js;
+}
+
+// requirejs libs
 foreach ($jsFiles as $name => $file) {
 
     if (pathinfo($file, PATHINFO_EXTENSION) == "js") {
