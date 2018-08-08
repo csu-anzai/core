@@ -12,7 +12,6 @@
     "moment": "moment/moment.min",
     "qtip": "qtip2/jquery.qtip.min",
     "domReady": "requirejs/domReady",
-    "vue": "vue/vue.min",
 
     "ajax": "kajona/ajax",
     "cacheManager": "kajona/cacheManager",
