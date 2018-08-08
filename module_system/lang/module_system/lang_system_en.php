@@ -344,14 +344,3 @@ $lang['smtp_auth_password']   = "SMTP auth_password";
 $lang["update_in_progress"] = "System update in progress, please wait...";
 
 $lang["form_objectlist_add_search"]  = "{0} add ...";
-
-
-$lang["schema_columns"] = "Columns";
-$lang["schema_indexes"] = "Indexes";
-$lang["schema_keys"] = "Primary Keys";
-$lang["schema_header_name"] = "Name";
-$lang["schema_header_type_int"] = "Internal datatype";
-$lang["schema_header_type_db"] = "DB datatype";
-$lang["schema_header_type_null"] = "Null";
-$lang["schema_header_type_def"] = "Description";
-$lang["schema_tables"] = "Tables";

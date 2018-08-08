@@ -92,7 +92,6 @@ class SystemAdmin extends AdminEvensimpler implements AdminInterface
         $arrReturn[] = array("view", Link::getLinkAdmin($this->getArrModule("modul"), "list", "", $this->getLang("action_list")));
         $arrReturn[] = array("edit", Link::getLinkAdmin($this->getArrModule("modul"), "systemInfo", "", $this->getLang("action_system_info")));
         $arrReturn[] = array("right1", Link::getLinkAdmin($this->getArrModule("modul"), "systemSettings", "", $this->getLang("action_system_settings")));
-        $arrReturn[] = array("right1", Link::getLinkAdmin($this->getArrModule("modul"), "systemSchema", "", $this->getLang("action_system_schema")));
         $arrReturn[] = array("right2", Link::getLinkAdmin($this->getArrModule("modul"), "systemTasks", "", $this->getLang("action_system_tasks")));
         $arrReturn[] = array("right3", Link::getLinkAdmin($this->getArrModule("modul"), "systemlog", "", $this->getLang("action_systemlog")));
         if (SystemSetting::getConfigValue("_system_changehistory_enabled_") != "false") {
@@ -346,116 +345,6 @@ class SystemAdmin extends AdminEvensimpler implements AdminInterface
     }
 
     // -- SystemSettings ------------------------------------------------------------------------------------
-
-    /**
-     * Creates a form to edit systemsettings or updates them
-     *
-     * @return string "" in case of success
-     * @autoTestable
-     * @permissions right1
-     * @throws Exception
-     */
-    protected function actionSystemSchema()
-    {
-        $return = $this->objToolkit->formHeadline($this->getLang("schema_tables"));
-        $return .= $this->objToolkit->listHeader();
-        foreach (Carrier::getInstance()->getObjDB()->getTables() as $tableName) {
-            $details = Link::getLinkAdminXml("system", "apiSystemSchema", ["table" => $tableName]);
-            $link = Link::getLinkAdminManual("href=\"#\" onclick=\"require('ajax').loadUrlToElement('.schemaDetails', '{$details}'); return false;\"", $tableName);
-            $return .= $this->objToolkit->genericAdminList("", $link, AdminskinHelper::getAdminImage("icon_table"), "");
-        }
-        $return .= $this->objToolkit->listFooter();
-
-        $grid = new Grid([3, 9]);
-        $grid->setBitLimitHeight(true);
-        $grid->addRow([$return, "<div class='schemaDetails'></div>"]);
-        return $grid->renderComponent();
-    }
-
-    /**
-     * Creates a form to edit systemsettings or updates them
-     *
-     * @return string "" in case of success
-     * @permissions right1
-     * @throws Exception
-     * @responseType html
-     */
-    protected function actionApiSystemSchema()
-    {
-        $tableName = $this->getParam("table");
-        $details = Carrier::getInstance()->getObjDB()->getTableInformation($tableName);
-
-
-        $arrIndexPlain = array_map(function(TableKey $key) {
-            return $key->getName();
-        }, $details->getPrimaryKeys());
-
-        $tableColumns = new DTable();
-        $tableColumns->addHeader(new DRow([
-            "",
-            "",
-            $this->getLang("schema_header_name"),
-            $this->getLang("schema_header_type_int"),
-            $this->getLang("schema_header_type_db"),
-            $this->getLang("schema_header_type_null"),
-            ""
-        ]));
-        foreach ($details->getColumns() as $column) {
-            $tableColumns->addRow(
-                new DRow([
-                    (new DCell(AdminskinHelper::getAdminImage("icon_column")))->setClassAddon("width-20-px"),
-                    (new DCell(in_array($column->getName(), $arrIndexPlain) ? AdminskinHelper::getAdminImage("icon_key") : ""))->setClassAddon("width-20-px"),
-                    $column->getName(),
-                    $column->getInternalType(),
-                    $column->getDatabaseType(),
-                    $column->isNullable() === true ? "null" : "not null",
-                    (new DCell($this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_index"))))->setClassAddon("align-right")
-                ])
-            );
-        }
-
-        $tableKeys = new DTable();
-        $tableKeys->addHeader(new DRow([
-            "",
-            $this->getLang("schema_header_name"),
-        ]));
-        foreach ($details->getPrimaryKeys() as $key) {
-            $tableKeys->addRow(
-                new DRow([
-                    (new DCell(AdminskinHelper::getAdminImage("icon_key")))->setClassAddon("width-20-px"),
-                    $key->getName()
-                ])
-            );
-        }
-
-        $tableIndex = new DTable();
-        $tableIndex->addHeader(new DRow([
-            "",
-            $this->getLang("schema_header_name"),
-            $this->getLang("schema_header_type_def"),
-            ""
-        ]));
-        foreach ($details->getIndexes() as $index) {
-            $tableIndex->addRow(
-                new DRow([
-                    (new DCell(AdminskinHelper::getAdminImage("icon_index")))->setClassAddon("width-20-px"),
-                    $index->getName(),
-                    $index->getDescription(),
-                    (new DCell($this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_delete")).
-                    $this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_sync"))))->setClassAddon("align-right")
-                ])
-            );
-        }
-
-        $return = "";
-        $return .= $this->objToolkit->formHeadline($tableName);
-        $return .= $this->objToolkit->getFieldset($this->getLang("schema_columns"), (new DTableComponent($tableColumns))->renderComponent());
-        $return .= $this->objToolkit->getFieldset($this->getLang("schema_keys"), (new DTableComponent($tableKeys))->renderComponent());
-        $return .= $this->objToolkit->getFieldset($this->getLang("schema_indexes"), (new DTableComponent($tableIndex))->renderComponent());
-
-        return $return;
-    }
-
 
     /**
      * Creates a form to edit systemsettings or updates them
