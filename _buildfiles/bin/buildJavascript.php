@@ -74,6 +74,11 @@ foreach ($jsFiles as $name => $file) {
 
     if (pathinfo($file, PATHINFO_EXTENSION) == "js") {
         $js = file_get_contents($file);
+        $size = filesize($file);
+
+        if ($size > (1024 * 100)) {
+            echo "NOTICE: {$name} is larger then 100kb ... got " . round($size / 1024) . "kb\n";
+        }
 
         // in case the js has no define make a wrapper this should be roughly the same behaviour as the requirejs loader
         if (strpos($js, "define(") === false) {
