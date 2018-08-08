@@ -56,8 +56,6 @@ $lang["transition_skip_1"] = "Keinen";
 
 $lang["flow_step_no_delete"] = "Dieser Status kann nicht gelöscht werden";
 
-$lang["flow_current_status"]   = "Aktueller Status";
-
 $lang["delete_step_question"]   = "Möchten Sie den Schritt &quot;<b>%%element_name%%</b>&quot; wirklich löschen?";
 $lang["delete_transition_question"]   = "Möchten Sie den Übergang &quot;<b>%%element_name%%</b>&quot; wirklich löschen?";
 $lang["delete_transition_action_question"]   = "Möchten Sie die Aktion &quot;<b>%%element_name%%</b>&quot; wirklich löschen?";
