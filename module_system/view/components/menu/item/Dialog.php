@@ -8,6 +8,7 @@ declare(strict_types = 1);
 
 namespace Kajona\System\View\Components\Menu\Item;
 
+use Kajona\System\System\AdminskinHelper;
 use Kajona\System\View\Components\Menu\MenuItem;
 
 /**
@@ -18,11 +19,16 @@ use Kajona\System\View\Components\Menu\MenuItem;
  */
 class Dialog extends MenuItem
 {
-    public function __construct($title, $link)
+    public function __construct($title, $link, $icon = null)
     {
         $title = htmlspecialchars($title, ENT_QUOTES);
         $link = htmlspecialchars($link, ENT_QUOTES);
 
-        $this->setFullEntry("<li class=\"core-component-menu-item\"><a href=\"#\" onclick='require(\"dialogHelper\").showIframeDialog(\"{$link}\", \"{$title}\"); return false;'>{$title}</a></li>");
+        $linkTitle = $title;
+        if ($icon !== null) {
+            $linkTitle = AdminskinHelper::getAdminImage($icon) . " " . $title;
+        }
+
+        $this->setFullEntry("<li class=\"core-component-menu-item\"><a href=\"#\" onclick='require(\"dialogHelper\").showIframeDialog(\"{$link}\", \"{$title}\"); return false;'>{$linkTitle}</a></li>");
     }
 }

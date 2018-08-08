@@ -256,7 +256,8 @@ require(["jquery", "ajax"], function($, ajax){
         $menu = new Menu();
 
         // flow chart
-        $menu->addItem(new Dialog($this->getLang("flow_current_status", "flow"), Link::getLinkAdminHref("flow", "showFlow", ["systemid" => $this->getSystemid(), "folderview" => "1"])));
+        $currentStatus = $objFlow->getStatusByIndex($objObject->getIntRecordStatus());
+        $menu->addItem(new Dialog($currentStatus->getStrName(), Link::getLinkAdminHref("flow", "showFlow", ["systemid" => $this->getSystemid(), "folderview" => "1"]), $currentStatus->getStrIcon()));
 
         if (count($statusItems) > 0) {
             // status
