@@ -39,7 +39,7 @@ class Breadcrumb {
         }
     };
 
-    private static getUnusedSpace(intMaxWidth: number) {
+    private static getUnusedSpace(intMaxWidth: number): number {
         let intTotalUnused = 0;
         $(".pathNaviContainer  .breadcrumb  li.pathentry").each(function () {
             let $li = $(this);
@@ -50,7 +50,6 @@ class Breadcrumb {
 
         return intTotalUnused;
     };
-
 }
 
 export = Breadcrumb
