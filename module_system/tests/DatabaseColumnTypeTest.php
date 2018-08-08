@@ -65,8 +65,7 @@ class DatabaseColumnTypeTest extends Testbase
             );
         }
 
-        $strQuery = "DROP TABLE ".self::TEST_TABLE_NAME;
-        $this->assertTrue($objDB->_pQuery($strQuery, array()));
+
 
     }
 
