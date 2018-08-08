@@ -337,3 +337,14 @@ $lang['smtp_auth_password']   = "SMTP auth_password";
 
 $lang["update_in_progress"] = "Das System wird gerade aktualisiert. Bitte warten Sie...";
 $lang["form_objectlist_add_search"]  = "{0} hinzufügen ...";
+
+
+$lang["schema_columns"] = "Spalten";
+$lang["schema_indexes"] = "Indexe";
+$lang["schema_keys"] = "Primary Keys";
+$lang["schema_header_name"] = "Name";
+$lang["schema_header_type_int"] = "Datentyp intern";
+$lang["schema_header_type_db"] = "Datentyp DB";
+$lang["schema_header_type_null"] = "Null";
+$lang["schema_header_type_def"] = "Beschreibung";
+$lang["schema_tables"] = "Tabellen";
