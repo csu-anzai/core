@@ -9,28 +9,12 @@ declare(strict_types = 1);
 
 namespace Kajona\Dbbrowser\Admin;
 
-use Kajona\Search\System\SearchCommons;
-use Kajona\Search\System\SearchResult;
-use Kajona\Search\System\SearchSearch;
 use Kajona\System\Admin\AdminEvensimpler;
-use Kajona\System\Admin\AdminFormgenerator;
-use Kajona\System\Admin\AdminInterface;
-use Kajona\System\Admin\AdminSimple;
-use Kajona\System\Admin\Formentries\FormentryHidden;
-use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\AdminskinHelper;
-use Kajona\System\System\ArraySectionIterator;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Db\Schema\TableKey;
 use Kajona\System\System\Exception;
-use Kajona\System\System\HttpResponsetypes;
 use Kajona\System\System\Link;
-use Kajona\System\System\Model;
-use Kajona\System\System\ModelInterface;
-use Kajona\System\System\Resourceloader;
-use Kajona\System\System\ResponseObject;
-use Kajona\System\System\StringUtil;
-use Kajona\System\System\SystemModule;
 use Kajona\System\View\Components\DTable\DTableComponent;
 use Kajona\System\View\Components\DTable\Model\DCell;
 use Kajona\System\View\Components\DTable\Model\DRow;
@@ -80,7 +64,7 @@ class DbbrowserController extends AdminEvensimpler
 
         $grid = new Grid([3, 9]);
         $grid->setBitLimitHeight(true);
-        $grid->addRow([$return, "<div class='schemaDetails'></div>"]);
+        $grid->addRow([$return, "<div class='schemaDetails'></div><script>require(['dbbrowser']);</script>"]);
         return $grid->renderComponent();
     }
 
@@ -98,7 +82,7 @@ class DbbrowserController extends AdminEvensimpler
         $details = Carrier::getInstance()->getObjDB()->getTableInformation($tableName);
 
 
-        $arrIndexPlain = array_map(function(TableKey $key) {
+        $arrIndexPlain = array_map(function (TableKey $key) {
             return $key->getName();
         }, $details->getPrimaryKeys());
 
@@ -121,7 +105,7 @@ class DbbrowserController extends AdminEvensimpler
                     $column->getInternalType(),
                     $column->getDatabaseType(),
                     $column->isNullable() === true ? "null" : "not null",
-                    (new DCell($this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_index"))))->setClassAddon("align-right")
+                    (new DCell($this->objToolkit->listConfirmationButton($this->getLang("create_index_question", [$column->getName()]), "javascript:require(\'dbbrowser\').addIndex(\'{$tableName}\', \'{$column->getName()}\');", "icon_index", $this->getLang("action_index_create"), $this->getLang("action_index_create"))))->setClassAddon("align-right")
                 ])
             );
         }
@@ -153,8 +137,10 @@ class DbbrowserController extends AdminEvensimpler
                     (new DCell(AdminskinHelper::getAdminImage("icon_index")))->setClassAddon("width-20-px"),
                     $index->getName(),
                     $index->getDescription(),
-                    (new DCell($this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_delete")).
-                        $this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_sync"))))->setClassAddon("align-right")
+                    (new DCell(
+                        $this->objToolkit->listDeleteButton($index->getName(), $this->getLang("index_delete_question"), "javascript:require(\'dbbrowser\').deleteIndex(\'{$tableName}\', \'{$index->getName()}\');").
+                        $this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_sync")))
+                    )->setClassAddon("align-right")
                 ])
             );
         }
@@ -166,6 +152,31 @@ class DbbrowserController extends AdminEvensimpler
         $return .= $this->objToolkit->getFieldset($this->getLang("schema_indexes"), (new DTableComponent($tableIndex))->renderComponent());
 
         return $return;
+    }
+
+
+    /**
+     * @permissions edit
+     * @responseType json
+     */
+    protected function actionApiAddIndex()
+    {
+        $table = $this->getParam("table");
+        $column = $this->getParam("column");
+
+        return ["status" => Carrier::getInstance()->getObjDB()->createIndex($table, "ix_".generateSystemid(), [$column])];
+    }
+
+    /**
+     * @permissions delete
+     * @responseType json
+     */
+    protected function actionApiDeleteIndex()
+    {
+        $table = $this->getParam("table");
+        $index = $this->getParam("index");
+
+        return ["status" => Carrier::getInstance()->getObjDB()->deleteIndex($table, $index)];
     }
 
 
