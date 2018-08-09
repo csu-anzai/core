@@ -80,6 +80,19 @@ class DatabaseTest extends Testbase
         $this->assertTrue($bitResult);
     }
 
+    public function testDropIndex()
+    {
+        $objDb = Carrier::getInstance()->getObjDB();
+        $this->createTable();
+
+        $this->assertFalse($objDb->hasIndex("agp_temp_autotest", "foo_index2"));
+        $this->assertTrue($objDb->createIndex("agp_temp_autotest", "foo_index2", ["temp_char10", "temp_char20"]));
+        $this->assertTrue($objDb->hasIndex("agp_temp_autotest", "foo_index2"));
+
+        $this->assertTrue($objDb->deleteIndex("agp_temp_autotest", "foo_index2"));
+        $this->assertFalse($objDb->hasIndex("agp_temp_autotest", "foo_index2"));
+    }
+
     public function testFloatHandling()
     {
         $objDb = Carrier::getInstance()->getObjDB();
