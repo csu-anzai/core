@@ -14,7 +14,9 @@ use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Db\Schema\TableKey;
 use Kajona\System\System\Exception;
+use Kajona\System\System\HttpStatuscodes;
 use Kajona\System\System\Link;
+use Kajona\System\System\ResponseObject;
 use Kajona\System\View\Components\DTable\DTableComponent;
 use Kajona\System\View\Components\DTable\Model\DCell;
 use Kajona\System\View\Components\DTable\Model\DRow;
@@ -44,7 +46,7 @@ class DbbrowserController extends AdminEvensimpler
 
 
     /**
-     * Creates a form to edit systemsettings or updates them
+     * Creates the main view of the dbbrowser
      *
      * @return string "" in case of success
      * @autoTestable
@@ -64,12 +66,13 @@ class DbbrowserController extends AdminEvensimpler
 
         $grid = new Grid([3, 9]);
         $grid->setBitLimitHeight(true);
-        $grid->addRow([$return, "<div class='schemaDetails'></div><script>require(['dbbrowser']);</script>"]);
+        $details = Link::getLinkAdminXml($this->getArrModule("module"), "apiSystemSchema", ["table" => Carrier::getInstance()->getObjDB()->getTables()[0]]);
+        $grid->addRow([$return, "<div class='schemaDetails'></div><script>require(['dbbrowser', 'ajax'], function(b, ajax) { ajax.loadUrlToElement('.schemaDetails', '{$details}')});</script>"]);
         return $grid->renderComponent();
     }
 
     /**
-     * Creates a form to edit systemsettings or updates them
+     * The backend call to render a single table
      *
      * @return string "" in case of success
      * @permissions view
@@ -139,7 +142,7 @@ class DbbrowserController extends AdminEvensimpler
                     $index->getDescription(),
                     (new DCell(
                         $this->objToolkit->listDeleteButton($index->getName(), $this->getLang("index_delete_question"), "javascript:require(\'dbbrowser\').deleteIndex(\'{$tableName}\', \'{$index->getName()}\');").
-                        $this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_sync")))
+                        $this->objToolkit->listConfirmationButton($this->getLang("recreate_index_question", [$index->getName()]), "javascript:require(\'dbbrowser\').recreateIndex(\'{$tableName}\', \'{$index->getName()}\');", "icon_sync", $this->getLang("action_index_recreate"), $this->getLang("action_index_recreate")))
                     )->setClassAddon("align-right")
                 ])
             );
@@ -156,6 +159,7 @@ class DbbrowserController extends AdminEvensimpler
 
 
     /**
+     * Adds a new index for a given column
      * @permissions edit
      * @responseType json
      */
@@ -168,6 +172,7 @@ class DbbrowserController extends AdminEvensimpler
     }
 
     /**
+     * Deletes an index from the database
      * @permissions delete
      * @responseType json
      */
@@ -177,6 +182,29 @@ class DbbrowserController extends AdminEvensimpler
         $index = $this->getParam("index");
 
         return ["status" => Carrier::getInstance()->getObjDB()->deleteIndex($table, $index)];
+    }
+
+    /**
+     * Recreates an index
+     * @permissions edit
+     * @responseType json
+     */
+    protected function actionApiRecreateIndex()
+    {
+        $table = $this->getParam("table");
+        $index = $this->getParam("index");
+
+        //fetch the relevant metadata
+        $tableDef = Carrier::getInstance()->getObjDB()->getTableInformation($table);
+        foreach ($tableDef->getIndexes() as $indexDef) {
+            if ($indexDef->getName() == $index) {
+                Carrier::getInstance()->getObjDB()->deleteIndex($table, $index);
+                return ["status" => Carrier::getInstance()->getObjDB()->addIndex($table, $indexDef)];
+            }
+        }
+
+        ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_BADREQUEST);
+        return ["status" => "index not found"];
     }
 
 
