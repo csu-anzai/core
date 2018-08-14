@@ -17,82 +17,82 @@ class WorkflowsFilter extends FilterBase
 
     /**
      * @var string
-     * @tableColumn workflows.workflows_class
+     * @tableColumn agp_workflows.workflows_class
      * @filterCompareOperator EQ
      */
     private $strClass = null;
 
     /**
      * @var string
-     * @tableColumn workflows.workflows_systemid
+     * @tableColumn agp_workflows.workflows_systemid
      */
     private $strAffectedSystemid = null;
 
     /**
      * @var array
-     * @tableColumn workflows.workflows_state
+     * @tableColumn agp_workflows.workflows_state
      * @filterCompareOperator IN
      */
     private $arrState = null;
 
     /**
      * @var string
-     * @tableColumn workflows.workflows_responsible
+     * @tableColumn agp_workflows.workflows_responsible
      */
     private $strResponsible = null;
 
     /**
      * @var int
-     * @tableColumn workflows.workflows_int1
+     * @tableColumn agp_workflows.workflows_int1
      */
     private $intInt1 = null;
 
     /**
      * @var int
-     * @tableColumn workflows.workflows_int2
+     * @tableColumn agp_workflows.workflows_int2
      */
     private $intInt2 = null;
 
     /**
      * @var string
-     * @tableColumn workflows.workflows_char1
+     * @tableColumn agp_workflows.workflows_char1
      */
     private $strChar1 = null;
 
     /**
      * @var string
-     * @tableColumn workflows.workflows_char2
+     * @tableColumn agp_workflows.workflows_char2
      */
     private $strChar2 = null;
 
     /**
      * @var int
-     * @tableColumn workflows.workflows_date1
+     * @tableColumn agp_workflows.workflows_date1
      */
     private $longDate1 = null;
 
     /**
      * @var int
-     * @tableColumn workflows.workflows_date2
+     * @tableColumn agp_workflows.workflows_date2
      */
     private $longDate2 = null;
 
     /**
      * @var string
-     * @tableColumn workflows.workflows_text
+     * @tableColumn agp_workflows.workflows_text
      * @filterCompareOperator LIKE
      */
     private $strText = null;
 
     /**
      * @var string
-     * @tableColumn workflows.workflows_text2
+     * @tableColumn agp_workflows.workflows_text2
      */
     private $strText2 = null;
 
     /**
      * @var string
-     * @tableColumn workflows.workflows_text3
+     * @tableColumn agp_workflows.workflows_text3
      */
     private $strText3 = null;
 
