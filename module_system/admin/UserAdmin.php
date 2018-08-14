@@ -23,7 +23,7 @@ use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
 use Kajona\System\System\FilterBase;
 use Kajona\System\System\Filters\UserGroupFilter;
-use Kajona\System\System\LanguagesLanguage;
+use Kajona\System\System\Lang;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
@@ -621,10 +621,9 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
             ->setStrLabel($this->getLang("user_skin"));
 
 
-        $objLanguage = new LanguagesLanguage();
         $objForm->addField(new FormentryDropdown("user", "language"))
             ->setArrKeyValues($arrLang)
-            ->setStrValue(($this->getParam("user_language") != "" ? $this->getParam("user_language") : $objLanguage->getAdminLanguage()))
+            ->setStrValue(($this->getParam("user_language") != "" ? $this->getParam("user_language") : Lang::getInstance()->getStrTextLanguage()))
             ->setStrLabel($this->getLang("user_language"))
             ->setBitMandatory(true);
 

@@ -58,18 +58,11 @@ class CacheManager
     const TYPE_APC = 2;
 
     /**
-     * Uses the Cache to store the data in a database table
-     *
-     * @var integer
-     */
-    const TYPE_DATABASE = 4;
-
-    /**
      * Stores the data in the temp folder
      *
      * @var integer
      */
-    const TYPE_FILESYSTEM = 8;
+    const TYPE_FILESYSTEM = 4;
 
     /**
      * Stores the data in a PHP file where the data is exported through var_export. Might be faster then the filesystem
@@ -77,7 +70,7 @@ class CacheManager
      *
      * @var integer
      */
-    const TYPE_PHPFILE = 16;
+    const TYPE_PHPFILE = 8;
 
     /**
      * Namespace of the global cache. This cache is flushed more often in case changes happen to the db
@@ -249,10 +242,6 @@ class CacheManager
             }
         }
 
-        if ($intType & self::TYPE_DATABASE) {
-            $arrDriver[] = new CacheDatabase();
-        }
-
         if ($intType & self::TYPE_FILESYSTEM) {
             try {
                 $arrDriver[] = new FilesystemCache(_realpath_."project/temp/cache", ".cache");
@@ -307,7 +296,6 @@ class CacheManager
     {
         return array(
             self::TYPE_APC => "APC",
-            self::TYPE_DATABASE => "Database",
             self::TYPE_FILESYSTEM => "Filesystem",
             self::TYPE_PHPFILE => "PHP-File",
         );

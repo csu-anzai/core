@@ -81,7 +81,7 @@ class SystemtaskFlushcache extends SystemtaskBase implements AdminSystemtaskInte
         // show dropdown to select cache-source
         $arrSources = CacheManager::getAvailableDriver();
         $arrOptions = array();
-        $arrOptions[CacheManager::TYPE_APC | CacheManager::TYPE_FILESYSTEM | CacheManager::TYPE_DATABASE | CacheManager::TYPE_PHPFILE] = $this->getLang("systemtask_flushcache_all");
+        $arrOptions[CacheManager::TYPE_APC | CacheManager::TYPE_FILESYSTEM | CacheManager::TYPE_PHPFILE] = $this->getLang("systemtask_flushcache_all");
         foreach ($arrSources as $intValue => $strLabel) {
             $arrOptions[$intValue] = $strLabel;
         }

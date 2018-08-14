@@ -29,6 +29,7 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
      * @tableColumnDatatype char254
      *
      * @fieldType Kajona\System\Admin\Formentries\FormentryDropdown
+     * @fieldDDValues [ar => lang_ar],[bg => lang_bg],[cs => lang_cs],[da => lang_da],[de => lang_de],[el => lang_el],[en => lang_en],[es => lang_es],[fi => lang_fi],[fr => lang_fr],[ga => lang_ga],[he => lang_he],[hr => lang_hr],[hu => lang_hu],[hy => lang_hy],[id => lang_id],[it => lang_it],[ja => lang_ja],[ko => lang_ko],[nl => lang_nl],[no => lang_no],[pl => lang_pl],[pt => lang_pt],[ro => lang_ro],[ru => lang_ru],[sk => lang_sk],[sl => lang_sl],[sv => lang_sv],[th => lang_th],[tr => lang_tr],[uk => lang_uk],[zh => lang_zh]
      * @fieldLabel commons_title
      * @fieldMandatory
      * @fieldValidator Kajona\System\System\Validators\TwocharsValidator
@@ -43,7 +44,8 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
      * @tableColumnDatatype int
      * @tableColumnIndex
      *
-     * @fieldType Kajona\System\Admin\Formentries\FormentryYesno
+     * @XXXfieldType Kajona\System\Admin\Formentries\FormentryYesno
+     * @todo currently hidden
      * @fieldMandatory
      */
     private $bitDefault = false;
@@ -90,33 +92,8 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
      */
     public function getStrDisplayName()
     {
-        return $this->getLang("lang_".$this->getStrName(), "languages").($this->getBitDefault() == 1 ? " (".$this->getLang("language_isDefault", "languages").")" : "");
+        return $this->getLang("lang_".$this->getStrName(), "languages");
     }
-
-    /**
-     * saves the current object with all its params back to the database
-     *
-     * @return bool
-     * @throws Exception
-     */
-    protected function updateStateToDb()
-    {
-
-        //if no other language exists, we have a new default language
-        $arrObjLanguages = LanguagesLanguage::getObjectListFiltered(null);
-        if (count($arrObjLanguages) == 0) {
-            $this->setBitDefault(1);
-        }
-
-        if ($this->getBitDefault() == 1) {
-            self::resetAllDefaultLanguages();
-        }
-
-        return parent::updateStateToDb();
-    }
-
-
-
 
     /**
      * Returns the language requested.
@@ -125,7 +102,7 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
      * @param string $strName
      *
      * @static
-     * @return  LanguagesLanguage or false
+     * @return  LanguagesLanguage|null
      */
     public static function getLanguageByName($strName)
     {
@@ -136,101 +113,7 @@ class LanguagesLanguage extends Model implements ModelInterface, AdminListableIn
         if (count($arrReturn) > 0) {
             return $arrReturn[0];
         } else {
-            return false;
-        }
-    }
-
-
-    /**
-     * Resets all default languages.
-     * Afterwards, no default language is available!
-     *
-     * @return bool
-     */
-    public static function resetAllDefaultLanguages()
-    {
-        $strQuery = "UPDATE agp_languages
-                     SET language_default = 0";
-        return Carrier::getInstance()->getObjDB()->_pQuery($strQuery, array());
-    }
-
-    /**
-     * Tries to determin the language currently active
-     * Looks up the session for previous languages,
-     * if no entry was found, the default language is being returned
-     * part for the admin
-     *
-     * @return string
-     * @throws Exception
-     * @throws OrmException
-     */
-    public function getAdminLanguage()
-    {
-        if ($this->objSession->getSession("adminLanguage") !== false && $this->objSession->getSession("adminLanguage") != "") {
-            //Return language saved before in the session
-            return $this->objSession->getSession("adminLanguage");
-        } else {
-            $objORM = new OrmObjectlist();
-            $objORM->addWhereRestriction(new OrmCondition("language_default = 1"));
-            /** @var LanguagesLanguage $objLang */
-            $objLang = $objORM->getSingleObject(LanguagesLanguage::class);
-
-            if ($objLang !== null) {
-                //save to session
-                if (!$this->objSession->getBitClosed()) {
-                    $this->objSession->setSession("adminLanguage", $objLang->getStrName());
-                }
-                return $objLang->getStrName();
-            } else {
-                $objORM = new OrmObjectlist();
-                /** @var LanguagesLanguage $objLang */
-                $objLang = $objORM->getSingleObject(LanguagesLanguage::class);
-
-                if ($objLang !== null) {
-                    //save to session
-                    if (!$this->objSession->getBitClosed()) {
-                        $this->objSession->setSession("adminLanguage", $objLang->getStrName());
-                    }
-                    return $objLang->getStrName();
-                } else {
-                    return "";
-                }
-            }
-        }
-    }
-
-    /**
-     * Returns the default language, defined in the admin.
-     *
-     * @return LanguagesLanguage
-     * @throws Exception
-     * @throws OrmException
-     */
-    public static function getDefaultLanguage()
-    {
-        $objORM = new OrmObjectlist();
-        $objORM->addWhereRestriction(new OrmCondition("system_status = 1"));
-        $objORM->addWhereRestriction(new OrmCondition("language_default = 1"));
-        /** @var LanguagesLanguage $objLang */
-        return $objORM->getSingleObject(get_called_class());
-    }
-
-
-    /**
-     * Writes the passed language to the session, if the language exists
-     *
-     * @param string $strLanguage
-     * @throws Exception
-     */
-    public function setStrAdminLanguageToWorkOn($strLanguage)
-    {
-        $objLanguage = LanguagesLanguage::getLanguageByName($strLanguage);
-        if ($objLanguage !== false) {
-            if ($objLanguage->getIntRecordStatus() != 0) {
-                if (!$this->objSession->getBitClosed()) {
-                    $this->objSession->setSession("adminLanguage", $objLanguage->getStrName());
-                }
-            }
+            return null;
         }
     }
 
