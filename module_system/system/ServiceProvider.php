@@ -118,6 +118,11 @@ class ServiceProvider implements ServiceProviderInterface
      */
     const STR_PERMISSION_HANDLER_FACTORY = "system_permission_handler_factory";
 
+    /**
+     * @see \Kajona\System\System\DropdownLoaderInterface
+     */
+    const STR_DROPDOWN_LOADER = "system_dropdown_loader";
+
     public function register(Container $objContainer)
     {
         $objContainer[self::STR_DB] = function ($c) {
@@ -233,6 +238,10 @@ class ServiceProvider implements ServiceProviderInterface
 
         $objContainer[self::STR_PERMISSION_HANDLER_FACTORY] = function ($c) {
             return new PermissionHandlerFactory($c);
+        };
+
+        $objContainer[self::STR_DROPDOWN_LOADER] = function ($c) {
+            return new DropdownConfigLoader();
         };
     }
 }

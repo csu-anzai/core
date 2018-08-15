@@ -581,5 +581,22 @@ SQL;
             ["a113", 20170101000000, 20170201000000-20170101000000],
         ];
     }
+
+    /**
+     * This test checks whether we can safely use CONCAT on all database drivers
+     */
+    public function testSqlConcat()
+    {
+        $this->createTable();
+
+        $systemId = generateSystemid();
+        $connection = Database::getInstance();
+        $connection->multiInsert("temp_autotest", ["temp_id"], [[$systemId]]);
+
+        $query = "SELECT CONCAT(',', temp_id, ',') AS val FROM " . _dbprefix_ . "temp_autotest";
+        $row = $connection->getPRow($query, []);
+
+        $this->assertEquals(",{$systemId},", $row["val"]);
+    }
 }
 
