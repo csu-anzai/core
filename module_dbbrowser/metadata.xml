@@ -3,7 +3,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="https://apidocs.kajona.de/xsd/package_v2.xsd"
     >
-    <title>dbrowser</title>
+    <title>dbbrowser</title>
     <description>Visualizes the current database structure</description>
     <version>7.0</version>
     <author>Kajona Team</author>
