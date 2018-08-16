@@ -11,6 +11,7 @@ namespace Kajona\System\System;
  * Base filter class
  *
  * @author stefan.idler@artemeon.de
+ * @module system
 */
 class SystemFilter extends FilterBase
 {
