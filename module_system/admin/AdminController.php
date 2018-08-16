@@ -300,17 +300,4 @@ abstract class AdminController extends AbstractController
         }
     }
 
-    /**
-     * Loads the language to edit content
-     *
-     * @return string
-     * @deprecated use LanguagesLanguage directly
-     */
-    public function getLanguageToWorkOn()
-    {
-        $objLanguage = new LanguagesLanguage();
-        return $objLanguage->getAdminLanguage();
-    }
-
 }
-

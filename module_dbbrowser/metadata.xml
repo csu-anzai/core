@@ -3,14 +3,15 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="https://apidocs.kajona.de/xsd/package_v2.xsd"
     >
-    <title>pdf</title>
-    <description>A wrapper to tcpdf, providing a common way to generate pdfs.</description>
+    <title>dbbrowser</title>
+    <description>Visualizes the current database structure</description>
     <version>7.0</version>
     <author>Kajona Team</author>
-    <type>MODULE</type>
-    <providesInstaller>FALSE</providesInstaller>
+    <providesInstaller>TRUE</providesInstaller>
     <requiredModules>
-        <module name="system" version="7.0" />
+        <module name="system" version="7.0.1" />
     </requiredModules>
-    <constants />
+    <constants>
+        <constant name="_dbbrowser_module_id_" value="20180808" />
+    </constants>
 </package>

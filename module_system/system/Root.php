@@ -1468,22 +1468,6 @@ abstract class Root
     }
 
 
-    // --- Admin-Language -------------------------------------------------------------------------------
-
-    /**
-     * Returns the language to display contents or to edit contents on adminside
-     * NOTE: THIS ARE THE CONTENTS, NOT THE TEXTS
-     *
-     * @return string
-     * @throws Exception
-     */
-    final public function getStrAdminLanguageToWorkOn()
-    {
-        $objLanguage = new LanguagesLanguage();
-        return $objLanguage->getAdminLanguage();
-    }
-
-
     // --- GETTERS / SETTERS ----------------------------------------------------------------------------
 
     /**

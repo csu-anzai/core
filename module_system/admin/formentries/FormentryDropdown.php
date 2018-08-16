@@ -8,8 +8,10 @@ namespace Kajona\System\Admin\Formentries;
 
 use Kajona\System\Admin\FormentryPrintableInterface;
 use Kajona\System\System\Carrier;
+use Kajona\System\System\DropdownLoaderInterface;
 use Kajona\System\System\Link;
 use Kajona\System\System\Reflection;
+use Kajona\System\System\ServiceProvider;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\Validators\TextValidator;
 
@@ -24,12 +26,15 @@ use Kajona\System\System\Validators\TextValidator;
  */
 class FormentryDropdown extends FormentryBase implements FormentryPrintableInterface
 {
-
     /**
      * a list of [key=>value],[key=>value] pairs, resolved from the language-files
      */
     const STR_DDVALUES_ANNOTATION = "@fieldDDValues";
 
+    /**
+     * A string where to load the fitting dd values
+     */
+    const STR_DDPROVIDER_ANNOTATION = "@fieldDDProvider";
 
     private $arrKeyValues = array();
     private $strAddons = "";
@@ -85,17 +90,34 @@ class FormentryDropdown extends FormentryBase implements FormentryPrintableInter
             //try to find the matching source property
             $strSourceProperty = $this->getCurrentProperty(self::STR_DDVALUES_ANNOTATION);
             if ($strSourceProperty == null) {
-                return;
+                $strSourceProperty = $this->getCurrentProperty(self::STR_DDPROVIDER_ANNOTATION);
+                if ($strSourceProperty == null) {
+                    return;
+                }
             }
 
-            //set dd values
-            $strDDValues = $objReflection->getAnnotationValueForProperty($strSourceProperty, self::STR_DDVALUES_ANNOTATION);
-            $strModule = $this->getAnnotationParamValueForCurrentProperty("module", self::STR_DDVALUES_ANNOTATION);
-            if($strModule === null) {
-                $strModule = $this->getObjSourceObject()->getArrModule("modul");
+            // check whether dd provider is available and load values
+            $arrDDValues = null;
+            $strDDProvider = $objReflection->getAnnotationValueForProperty($strSourceProperty, self::STR_DDPROVIDER_ANNOTATION);
+
+            if (!empty($strDDProvider)) {
+                // load values through the dropdown loader
+                /** @var DropdownLoaderInterface $loader */
+                $loader = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_DROPDOWN_LOADER);
+
+                $arrParams = $this->getAnnotationParamsForCurrentProperty(self::STR_DDPROVIDER_ANNOTATION);
+                $arrDDValues = $loader->fetchValues($strDDProvider, is_array($arrParams) ? $arrParams : []);
+            } else {
+                // load values from the annotations
+                $strDDValues = $objReflection->getAnnotationValueForProperty($strSourceProperty, self::STR_DDVALUES_ANNOTATION);
+                $strModule = $this->getAnnotationParamValueForCurrentProperty("module", self::STR_DDVALUES_ANNOTATION);
+                if ($strModule === null) {
+                    $strModule = $this->getObjSourceObject()->getArrModule("modul");
+                }
+
+                $arrDDValues = self::convertDDValueStringToArray($strDDValues, $strModule);
             }
 
-            $arrDDValues = self::convertDDValueStringToArray($strDDValues, $strModule);
             if ($arrDDValues !== null) {
                 $this->setArrKeyValues($arrDDValues);
             }
