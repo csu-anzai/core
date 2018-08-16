@@ -602,7 +602,7 @@ SQL;
 
         $systemId = generateSystemid();
         $connection = Database::getInstance();
-        $connection->multiInsert("temp_autotest", ["temp_id"], [[$systemId]]);
+        $connection->multiInsert("agp_temp_autotest", ["temp_id"], [[$systemId]]);
 
         $query = "SELECT " . $connection->getConcatExpression(["','", "temp_id", "','"]) . " AS val FROM agp_temp_autotest";
         $row = $connection->getPRow($query, []);
