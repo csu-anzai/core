@@ -457,7 +457,17 @@ JS;
 
         $objMessageHandler = new MessagingMessagehandler();
         $objMessage->setObjMessageProvider(new MessageproviderPersonalmessage());
-        $objMessageHandler->sendMessageObject($objMessage, Objectfactory::getInstance()->getObject($objMessage->getStrUser()));
+
+        $arrTo = [];
+        if (!is_array($objMessage->getStrUser())) {
+            $arrTo[] = Objectfactory::getInstance()->getObject($objMessage->getStrUser());
+        } elseif (is_array($objMessage->getStrUser())) {
+            foreach ($objMessage->getStrUser() as $userId) {
+                $arrTo[] = Objectfactory::getInstance()->getObject($userId);
+            }
+        }
+
+        $objMessageHandler->sendMessageObject($objMessage, $arrTo);
 
 
         return $this->objToolkit->warningBox($this->getLang("message_sent_success")).
