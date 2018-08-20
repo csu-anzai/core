@@ -76,6 +76,8 @@ JSON;
     }
 
     file_put_contents($vendorComposer, json_encode($composer, JSON_PRETTY_PRINT));
+} else {
+    echo "Composer lock file already exists dont update dependencies\n";
 }
 
 // install composer
