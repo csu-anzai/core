@@ -207,6 +207,7 @@ To avoid side-effects, no line-break in this case -> not needed by default, but 
                 forms.initForm('%%name%%');
                 forms.changeLabel = '[lang,commons_form_entry_changed,system]';
                 forms.changeConfirmation = '[lang,commons_form_entry_changed_conf,system]';
+                forms.leaveUnsaved = '[lang,commons_form_unchanged,system]';
             });
         });
     </script>
@@ -837,7 +838,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
 
         <div class="col-sm-6 inputText inputTagEditor" id="tageditor_%%name%%">
-            <input type="text" id="%%name%%" data-name="%%name%%" style="display:none" class="form-control" autocomplete="off"/>
+            <input type="text" id="%%name%%" data-name="%%name%%" style="display:none" class="form-control" autocomplete="off" data-kajona-block-initval="true"/>
             <div id="%%name%%-list">%%data%%</div>
         </div>
     </div>

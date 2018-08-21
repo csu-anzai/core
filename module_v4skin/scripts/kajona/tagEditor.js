@@ -57,7 +57,7 @@ define(["jquery", "jquerytageditor", "v4skin", "workingIndicator", "forms", "uti
                     }
                 });
                 if (!found) {
-                    $("#"+strElementId+"-list").append('<input type="hidden" name="'+strElementId+'_id[]" value="' + ui.item.systemid + '" data-title="' + ui.item.title + '" />');
+                    $("#"+strElementId+"-list").append('<input type="hidden" name="'+strElementId+'_id[]" value="' + ui.item.systemid + '" data-title="' + ui.item.title + '" data-kajona-initval="" />');
                 }
             };
 
