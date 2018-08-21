@@ -52,10 +52,22 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
             if (KAJONA.admin.forms.submittedEl != null) {
                 var data = $(KAJONA.admin.forms.submittedEl).serialize();
                 KAJONA.admin.forms.submittedEl = null;
+                KAJONA.admin.forms.monitoredEl = null;
                 ajax.loadUrlToElement('#moduleOutput', objUrl.url, data, false, 'POST', function(){
                     applyFormCallbacks();
                 });
             } else {
+
+                if (KAJONA.admin.forms.monitoredEl != null) {
+                    if (require('forms').hasChanged(KAJONA.admin.forms.monitoredEl)) {
+                        var doLeave = confirm(require('forms').leaveUnsaved);
+                        if (!doLeave) {
+                            return;
+                        }
+                        KAJONA.admin.forms.monitoredEl = null;
+                    }
+                }
+
                 ajax.loadUrlToElement('#moduleOutput', objUrl.url, null, true);
             }
 

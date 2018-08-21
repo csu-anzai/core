@@ -40,6 +40,7 @@ require(['router', 'jquery', 'jquery-ui', 'jquery-touchPunch', 'bootstrap', 'v4s
     jsDialog_3 = new Dialog('jsDialog_3', 3);
 
     KAJONA.admin.forms.submittedEl = null;
+    KAJONA.admin.forms.monitoredEl = null;
 
 
 
