@@ -194,36 +194,41 @@ class PackagemanagerPackagemanagerModule implements PackagemanagerPackagemanager
             if (trim($strOneModule) != "") {
                 $objModule = SystemModule::getModuleByName(trim($strOneModule));
                 if ($objModule === null) {
-
+                    //module seems to be missing in the database, maybe it's a module without the requirement to be installed
+                    //therefore: scan the filesystem
                     $arrModules = Classloader::getInstance()->getArrModules();
                     $objMetadata = null;
                     foreach ($arrModules as $strPath => $strOneFolder) {
                         if (StringUtil::indexOf($strOneFolder, $strOneModule) !== false) {
+                            //ok, we found the required module
                             $objMetadata = new PackagemanagerMetadata();
                             $objMetadata->autoInit("/".$strPath);
 
-                            //but: if the package provides an installer and was not resolved by the previous calls,
-                            //we shouldn't include it here
                             if ($objMetadata->getBitProvidesInstaller()) {
-                                $objMetadata = null;
+                                //but: if the package provides an installer and was not resolved by the previous calls,
+                                //we shouldn't include it here
+                                return false;
+                            } else {
+                                //we found the module and it seems to be fine
+                                break;
                             }
                         }
 
                     }
 
-                    //no package found
                     if ($objMetadata === null) {
+                        //no package found
                         return false;
                     }
 
-                    //package found, but wrong version
                     if (version_compare($strMinVersion, $objMetadata->getStrVersion(), ">")) {
+                        //package found, but wrong version
                         return false;
                     }
 
                 }
-                //module found, but wrong version
                 elseif (version_compare($strMinVersion, $objModule->getStrVersion(), ">")) {
+                    //module found, but wrong version
                     return false;
                 }
             }
