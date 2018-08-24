@@ -23,6 +23,16 @@ define("folderview", ["jquery", "util"], function($, util){
         selectCallbackCKEditorFuncNum: 0,
 
         /**
+         * Loads the passed url to the parent frame and closes the dialog
+         * @param url
+         */
+        loadParentUrl: function (url) {
+            var context =  window.opener ? window.opener : parent;
+            context.location = url;
+            this.close();
+        },
+
+        /**
          * To be called when the user selects an page/folder/file out of a folderview dialog/popup
          * Detects if the folderview is embedded in a dialog or popup to find the right context
          *
@@ -178,7 +188,7 @@ define("folderview", ["jquery", "util"], function($, util){
         },
 
         /**
-         * fills the form fields with the selected values
+         * closes the current dialog
          */
         close: function () {
             if (window.opener) {
