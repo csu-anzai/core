@@ -38,6 +38,11 @@ class Objectselector extends FormentryComponentAbstract
     protected $addLink;
 
     /**
+     * @var array
+     */
+    protected $objectTypes;
+
+    /**
      * @param string $name
      * @param string $title
      * @param string $endpointUrl
@@ -58,6 +63,14 @@ class Objectselector extends FormentryComponentAbstract
     public function setAddLink(string $addLink)
     {
         $this->addLink = $addLink;
+    }
+
+    /**
+     * @param array $objectTypes
+     */
+    public function setObjectTypes(array $objectTypes)
+    {
+        $this->objectTypes = $objectTypes;
     }
 
     /**
@@ -82,8 +95,9 @@ class Objectselector extends FormentryComponentAbstract
 
         $context["endpoint_url"] = $endpointUrl;
         $context["object"] = $this->object;
-        $context["addLink"] = $this->addLink;
-        $context["resetLink"] = $resetLink;
+        $context["add_link"] = $this->addLink;
+        $context["reset_link"] = $resetLink;
+        $context["object_types"] = !empty($this->objectTypes) ? json_encode($this->objectTypes) : 'null';
 
         return $context;
     }
