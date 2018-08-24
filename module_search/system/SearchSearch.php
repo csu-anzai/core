@@ -86,6 +86,10 @@ class SearchSearch extends Model implements ModelInterface, AdminListableInterfa
      */
     private $objChangeEnddate = null;
 
+    /**
+     * @var array
+     */
+    private $arrObjectTypes;
 
     public function getStrDisplayName()
     {
@@ -221,6 +225,21 @@ class SearchSearch extends Model implements ModelInterface, AdminListableInterfa
         $this->strQuery = trim($strQuery);
     }
 
+    /**
+     * @return array
+     */
+    public function getArrObjectTypes()
+    {
+        return $this->arrObjectTypes;
+    }
+
+    /**
+     * @param array $arrObjectTypes
+     */
+    public function setArrObjectTypes(array $arrObjectTypes)
+    {
+        $this->arrObjectTypes = $arrObjectTypes;
+    }
 
     /**
      * @return array
