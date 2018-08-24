@@ -1115,7 +1115,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      *
      * @throws Exception
      * @return string "" in case of success
-     * @permissions delete
+     * @permissions edit
      */
     protected function actionGroupMemberDelete()
     {
@@ -1142,7 +1142,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * @return array
      * @throws Exception
      * @responseType json
-     * @permissions delete
+     * @permissions edit
      */
     protected function actionApiGroupMemberDelete()
     {
@@ -1167,7 +1167,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * @return array
      * @throws Exception
      * @responseType json
-     * @permissions delete
+     * @permissions edit
      */
     protected function actionApiGroupMemberAdd()
     {
