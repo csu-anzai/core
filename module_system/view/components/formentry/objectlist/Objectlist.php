@@ -98,7 +98,7 @@ class Objectlist extends FormentryComponentAbstract
         $rows = [];
         foreach ($this->items as $item) {
             /** @var $item Model */
-            if ($item instanceof ModelInterface && $item->rightView()) {
+            if ($item instanceof ModelInterface) {
                 $deleteAlt = Carrier::getInstance()->getObjLang()->getLang("commons_remove_assignment", "system");
                 $attributes = [
                     "href"    => "#",
