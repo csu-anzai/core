@@ -112,7 +112,7 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
             $(this).attr("data-kajona-initval", $(this).val());
         });
 
-        KAJONA.admin.forms.monitoredEl = $('#'+strFormid);
+        router.markerElements.forms.monitoredEl = $('#'+strFormid);
 
     };
 
@@ -250,7 +250,7 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
         $(objForm).on('submit', function() {
             return false;
         });
-        KAJONA.admin.forms.submittedEl = objForm;
+        router.markerElements.forms.submittedEl = objForm;
         $(window).off('unload');
 
         this.animateSubmit(objForm);
