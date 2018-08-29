@@ -333,9 +333,12 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
     {
         $strQuery = "SELECT group_id, group_short_id
                        FROM "._dbprefix_."user_group,
-                            "._dbprefix_."user_kajona_members
+                            "._dbprefix_."user_kajona_members,
+                            "._dbprefix_."system
                       WHERE group_member_user_kajona_id= ?
                         AND group_id = group_member_group_kajona_id
+                        AND group_id = system_id
+                        AND system_deleted != 1
                    ORDER BY group_name ASC  ";
 
         $arrIds = $this->objDB->getPArray($strQuery, array($this->getSystemid()));
@@ -355,9 +358,12 @@ class UsersourcesUserKajona extends Model implements ModelInterface, Usersources
     {
         $strQuery = "SELECT group_id, group_short_id
                        FROM "._dbprefix_."user_group,
-                            "._dbprefix_."user_kajona_members
+                            "._dbprefix_."user_kajona_members,
+                            "._dbprefix_."system
                       WHERE group_member_user_kajona_id= ?
                         AND group_id = group_member_group_kajona_id
+                        AND group_id = system_id
+                        AND system_deleted != 1
                    ORDER BY group_name ASC  ";
 
         $arrIds = $this->objDB->getPArray($strQuery, array($this->getSystemid()));
