@@ -1381,7 +1381,15 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
                     Link::getLinkAdmin(
                         "user",
                         "userBrowser",
-                        "&form_element=".$this->getParam("form_element")."&systemid=".$objOneIterable->getSystemid()."&filter=".$this->getParam("filter")."&checkid=".$this->getParam("checkid"),
+                        [
+                            "form_element" => $this->getParam("form_element"),
+                            "filter" => $this->getParam("filter"),
+                            "allowUser" => $this->getParam("allowUser"),
+                            "allowGroup" => $this->getParam("allowGroup"),
+                            "checkid" => $this->getParam("checkid"),
+                            "systemid" => $objOneIterable->getSystemid(),
+                            "selectedGroup" => $this->getParam("selectedGroup")
+                        ],
                         $this->getLang("user_browser_show"),
                         $this->getLang("user_browser_show"),
                         "icon_folderActionOpen"
@@ -1530,6 +1538,8 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
                 function() {return true; }
             );
         }
+
+        $strReturn .= "<script type='text/javascript'>require(['folderview'], function(f) { f.initRowClick(); });</script>";
 
         return $strReturn;
     }

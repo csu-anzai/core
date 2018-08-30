@@ -110,6 +110,7 @@ class FolderviewAdmin extends AdminController implements AdminInterface
         }
 
         $strReturn .= $this->objToolkit->listFooter();
+        $strReturn .= "<script type='text/javascript'>require(['folderview'], function(f) { f.initRowClick(); });</script>";
         return $strReturn;
     }
 
