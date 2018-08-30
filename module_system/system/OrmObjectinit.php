@@ -73,8 +73,8 @@ class OrmObjectinit extends OrmBase
                 if ($strSetter !== null) {
                     //some properties may be set converted, e.g. a date object
                     $strVar = $objReflection->getAnnotationValueForProperty($strPropertyName, "@var");
-                    if (StringUtil::indexOf($strVar, "Date") !== false && $arrRow[$strColumn] > 0) {
-                        $arrRow[$strColumn] = new Date($arrRow[$strColumn]);
+                    if (StringUtil::indexOf($strVar, "Date") !== false) {
+                        $arrRow[$strColumn] = !empty($arrRow[$strColumn]) ? new Date($arrRow[$strColumn]) : null;
                     } elseif ($arrRow[$strColumn] != null && (StringUtil::toLowerCase(StringUtil::substring($strSetter, 0, 6)) == "setint" || StringUtil::toLowerCase(StringUtil::substring($strSetter, 0, 7)) == "setlong")) {
                         //different casts on 32bit / 64bit
                         if ($arrRow[$strColumn] > PHP_INT_MAX) {
