@@ -1,0 +1,55 @@
+
+<div class="form-group core-component-formentry-listeditor">
+    <label for="{{ name }}" class="col-sm-3 control-label">{{ title }}</label>
+    <div class="col-sm-6">
+        <div id="{{ name }}-container">
+            {% for key, item in items %}
+            <div class="item">
+                {% if not readOnly %}
+                <div class="input-group">
+                    <input type="text" name="{{ name }}[{{ key }}]" value="{{ item }}" class="form-control">
+                    <div class="input-group-addon">
+                        <a href="#" onclick="$(this).closest('.item').remove();return false;">
+                            <span class="kj-icon fa fa-trash-o"></span>
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <input type="text" name="{{ name }}[{{ key }}]" value="{{ item }}" readonly class="form-control">
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% if not readOnly %}
+        <span class="listButton">
+            <a href="#" id="{{ name }}-add"><span class="kj-icon fa fa-plus-circle"></span></a>
+        </span>
+        {% endif %}
+    </div>
+    <div class="col-sm-2 form-opener">
+    </div>
+
+    {% if not readOnly %}
+    <script type="text/javascript">
+        require(['jquery', 'util'], function($, util) {
+            $("#{{ name }}-add").click(function(){
+                var id = util.generateSystemId();
+                var html = "<div class=\"item\">";
+                html+= "<div class=\"input-group\">";
+                html+= "    <input type=\"text\" name=\"{{ name }}[" + id + "]\" value=\"\" class=\"form-control\">";
+                html+= "    <div class=\"input-group-addon\">";
+                html+= "        <a href=\"#\" onclick=\"$(this).closest('.item').remove();return false;\">";
+                html+= "            <span class=\"kj-icon fa fa-trash-o\"></span>";
+                html+= "        </a>";
+                html+= "    </div>";
+                html+= "</div>";
+                html+= "</div>";
+
+                $("#{{ name }}-container").append(html);
+
+                return false;
+            });
+        });
+    </script>
+    {% endif %}
+</div>
