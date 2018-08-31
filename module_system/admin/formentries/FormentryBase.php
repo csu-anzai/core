@@ -213,7 +213,7 @@ class FormentryBase
             || is_null($strValue)
             || (is_array($strValue)
                 && (count($strValue) == 0 //if it is an array with no entries
-                    || (count($strValue) == 1 && $strValue[0] === "")) //if it is an array with only one empty value
+                    || (count($strValue) == 1 && isset($strValue[0]) && $strValue[0] === "")) //if it is an array with only one empty value
             );
     }
 
