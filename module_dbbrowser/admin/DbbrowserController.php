@@ -17,10 +17,10 @@ use Kajona\System\System\Exception;
 use Kajona\System\System\HttpStatuscodes;
 use Kajona\System\System\Link;
 use Kajona\System\System\ResponseObject;
-use Kajona\System\View\Components\DTable\DTableComponent;
-use Kajona\System\View\Components\DTable\Model\DCell;
-use Kajona\System\View\Components\DTable\Model\DRow;
-use Kajona\System\View\Components\DTable\Model\DTable;
+use Kajona\System\View\Components\Dtable\DTableComponent;
+use Kajona\System\View\Components\Dtable\Model\DCell;
+use Kajona\System\View\Components\Dtable\Model\DRow;
+use Kajona\System\View\Components\Dtable\Model\DTable;
 use Kajona\System\View\Components\Grid\Grid;
 
 
