@@ -48,7 +48,7 @@
     <!-- composer-folder, required for composer dependcy management -->
     <property name="composerPath"     value="/composer" />
     <!-- path to the composer binaries -->
-    <property name="composerBinariesPath" value="${basedir}${buildPath}/composerbuild/vendor/bin" />
+    <property name="composerBinariesPath" value="${basedir}/composer/vendor/bin" />
     <!-- npm local cache registry -->
     <property name="npmLocalRegistry" value="http://packages.artemeon.int:4873/" />
 
@@ -141,15 +141,15 @@
     <target name="installComposerBuildDependencies">
         <!--echo>Composer Build Dependencies</echo>
         <echo>Copy composer.json and composer.lock to ${basedir}${tempPath}</echo-->
-        <copy todir="${basedir}${buildPath}/composerbuild" overwrite="true"  includeEmptyDirs="true" >
-            <fileset id="composer.dirs" dir="${basedir}${composerPath}">
-                <include name="composer.json"/>
-                <include name="composer.lock"/>
-            </fileset>
-        </copy>
+        <!--<copy todir="${basedir}${buildPath}/composerbuild" overwrite="true"  includeEmptyDirs="true" >-->
+            <!--<fileset id="composer.dirs" dir="${basedir}${composerPath}">-->
+                <!--<include name="composer.json"/>-->
+                <!--<include name="composer.lock"/>-->
+            <!--</fileset>-->
+        <!--</copy>-->
 
         <!--echo>Execute composer</echo-->
-        <exec dir="${basedir}${buildPath}/composerbuild" executable="${path.composer}" failonerror="on" >
+        <exec dir="${basedir}${composerPath}" executable="${path.composer}" failonerror="on" >
             <arg line=" install"/>
             <arg line=" --no-dev"/>
             <arg line=" --quiet"/>
