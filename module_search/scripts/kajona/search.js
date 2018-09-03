@@ -1,7 +1,7 @@
 //   (c) 2013-2016 by Kajona, www.kajona.de
 //       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt
 
-define(['jquery', 'ajax', 'tooltip', 'statusDisplay'], function ($, ajax, tooltip, statusDisplay) {
+define(['jquery', 'ajax', 'tooltip', 'statusDisplay', 'router'], function ($, ajax, tooltip, statusDisplay, router) {
 
 
     var search = {
@@ -27,6 +27,8 @@ define(['jquery', 'ajax', 'tooltip', 'statusDisplay'], function ($, ajax, toolti
             var startdate = $('#search_changestartdate').val();
             var enddate = $('#search_changeenddate').val();
             var userfilter = $('#search_formfilteruser_id').val();
+
+            router.markerElements.forms.monitoredEl = null;
 
             ajax.genericAjaxCall("search", "renderSearch", "&search_query=" + encodeURIComponent(strQuery) + "&filtermodules=" + filtermodules + "&search_changestartdate=" + startdate + "&search_changeenddate=" + enddate + "&search_formfilteruser_id=" + userfilter + "", function (data, status, jqXHR) {
                 if (status == 'success') {
