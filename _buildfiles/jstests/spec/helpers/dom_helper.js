@@ -55,6 +55,7 @@ global.kajonaPaths = {
     tooltip : "module_system/scripts/kajona/tooltip",
     workingIndicator : "module_system/scripts/kajona/workingIndicator",
     util : "module_system/scripts/kajona/util",
+    router : "module_system/scripts/kajona/router",
     qtip : "_buildfiles/jstests/spec/helpers/qtip-faker",
     jcrop : "_buildfiles/jstests/spec/helpers/jcrop-faker"
 
