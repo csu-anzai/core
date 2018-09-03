@@ -40,5 +40,6 @@ define("app", ['router', 'jquery', 'jquery-ui', 'jquery-touchPunch', 'bootstrap'
     jsDialog_3 = new Dialog('jsDialog_3', 3);
 
     KAJONA.admin.forms.submittedEl = null;
+    KAJONA.admin.forms.monitoredEl = null;
 
 });

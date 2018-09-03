@@ -83,22 +83,22 @@ class SystemAdmin extends AdminEvensimpler implements AdminInterface
     public function getOutputModuleNavi()
     {
         $arrReturn = array();
-        $arrReturn[] = array("view", Link::getLinkAdmin($this->getArrModule("modul"), "list", "", $this->getLang("action_list"), "", "", true, "adminnavi"));
-        $arrReturn[] = array("edit", Link::getLinkAdmin($this->getArrModule("modul"), "systemInfo", "", $this->getLang("action_system_info"), "", "", true, "adminnavi"));
-        $arrReturn[] = array("right1", Link::getLinkAdmin($this->getArrModule("modul"), "systemSettings", "", $this->getLang("action_system_settings"), "", "", true, "adminnavi"));
-        $arrReturn[] = array("right2", Link::getLinkAdmin($this->getArrModule("modul"), "systemTasks", "", $this->getLang("action_system_tasks"), "", "", true, "adminnavi"));
-        $arrReturn[] = array("right3", Link::getLinkAdmin($this->getArrModule("modul"), "systemlog", "", $this->getLang("action_systemlog"), "", "", true, "adminnavi"));
+        $arrReturn[] = array("view", Link::getLinkAdmin($this->getArrModule("modul"), "list", "", $this->getLang("action_list")));
+        $arrReturn[] = array("edit", Link::getLinkAdmin($this->getArrModule("modul"), "systemInfo", "", $this->getLang("action_system_info")));
+        $arrReturn[] = array("right1", Link::getLinkAdmin($this->getArrModule("modul"), "systemSettings", "", $this->getLang("action_system_settings")));
+        $arrReturn[] = array("right2", Link::getLinkAdmin($this->getArrModule("modul"), "systemTasks", "", $this->getLang("action_system_tasks")));
+        $arrReturn[] = array("right3", Link::getLinkAdmin($this->getArrModule("modul"), "systemlog", "", $this->getLang("action_systemlog")));
         if (SystemSetting::getConfigValue("_system_changehistory_enabled_") != "false") {
-            $arrReturn[] = array("right3", Link::getLinkAdmin($this->getArrModule("modul"), "genericChangelog", "&bitBlockFolderview=true", $this->getLang("action_changelog"), "", "", true, "adminnavi"));
+            $arrReturn[] = array("right3", Link::getLinkAdmin($this->getArrModule("modul"), "genericChangelog", "&bitBlockFolderview=true", $this->getLang("action_changelog")));
         }
-        $arrReturn[] = array("right5", Link::getLinkAdmin($this->getArrModule("modul"), "listAspect", "", $this->getLang("action_list_aspect"), "", "", true, "adminnavi"));
-        $arrReturn[] = array("right1", Link::getLinkAdmin($this->getArrModule("modul"), "systemSessions", "", $this->getLang("action_system_sessions"), "", "", true, "adminnavi"));
-        $arrReturn[] = array("right1", Link::getLinkAdmin($this->getArrModule("modul"), "lockedRecords", "", $this->getLang("action_locked_records"), "", "", true, "adminnavi"));
-        $arrReturn[] = array("right1", Link::getLinkAdmin($this->getArrModule("modul"), "deletedRecords", "", $this->getLang("action_deleted_records"), "", "", true, "adminnavi"));
+        $arrReturn[] = array("right5", Link::getLinkAdmin($this->getArrModule("modul"), "listAspect", "", $this->getLang("action_list_aspect")));
+        $arrReturn[] = array("right1", Link::getLinkAdmin($this->getArrModule("modul"), "systemSessions", "", $this->getLang("action_system_sessions")));
+        $arrReturn[] = array("right1", Link::getLinkAdmin($this->getArrModule("modul"), "lockedRecords", "", $this->getLang("action_locked_records")));
+        $arrReturn[] = array("right1", Link::getLinkAdmin($this->getArrModule("modul"), "deletedRecords", "", $this->getLang("action_deleted_records")));
         $arrReturn[] = array("", "");
-        $arrReturn[] = array("", Link::getLinkAdmin($this->getArrModule("modul"), "about", "", $this->getLang("action_about"), "", "", true, "adminnavi"));
+        //$arrReturn[] = array("", Link::getLinkAdmin($this->getArrModule("modul"), "about", "", $this->getLang("action_about")));
         $arrReturn[] = array("", "");
-        $arrReturn[] = array("right", Link::getLinkAdmin("right", "change", "&systemid=0", $this->getLang("modul_rechte_root"), "", "", true, "adminnavi"));
+        $arrReturn[] = array("right", Link::getLinkAdmin("right", "change", "&systemid=0", $this->getLang("modul_rechte_root")));
         return $arrReturn;
     }
 
@@ -120,12 +120,12 @@ class SystemAdmin extends AdminEvensimpler implements AdminInterface
     }
 
 
-
     /**
      * Renders the form to edit an existing entry
      *
      * @permissions edit
      * @return string
+     * @throws Exception
      */
     protected function actionEdit()
     {
@@ -149,6 +149,7 @@ class SystemAdmin extends AdminEvensimpler implements AdminInterface
      * @return string
      * @permissions view
      * @autoTestable
+     * @throws Exception
      */
     protected function actionList()
     {
@@ -170,6 +171,7 @@ class SystemAdmin extends AdminEvensimpler implements AdminInterface
      * @param Model $objListEntry
      *
      * @return array
+     * @throws Exception
      */
     protected function renderAdditionalActions(Model $objListEntry)
     {
@@ -295,6 +297,7 @@ class SystemAdmin extends AdminEvensimpler implements AdminInterface
     /**
      * @return string
      * @permissions right5
+     * @throws ServiceLifeCycleUpdateException
      */
     protected function actionSaveModuleAspect()
     {
@@ -343,6 +346,7 @@ class SystemAdmin extends AdminEvensimpler implements AdminInterface
      * @return string "" in case of success
      * @autoTestable
      * @permissions right1
+     * @throws Exception
      */
     protected function actionSystemSettings()
     {
@@ -495,6 +499,7 @@ class SystemAdmin extends AdminEvensimpler implements AdminInterface
      * @param bool $bitExecuteDirectly
      *
      * @return string
+     * @throws Exception
      */
     public static function getTaskDialogExecuteCode($bitExecute, SystemtaskBase $objTask, $strModule = "", $strAction = "", $bitExecuteDirectly = false)
     {
@@ -619,6 +624,7 @@ JS;
      * @permissions right1
      * @return string
      * @autoTestable
+     * @throws Exception
      */
     protected function actionDeletedRecords()
     {
@@ -746,6 +752,7 @@ JS;
      * @autoTestable
      * @return string
      * @permissions right1
+     * @throws ServiceLifeCycleUpdateException
      */
     protected function actionSystemSessions()
     {
@@ -861,6 +868,7 @@ JS;
      * @since 3.4.0
      * @autoTestable
      * @permissions changelog
+     * @throws Exception
      */
     public function actionGenericChangelog($strSystemid = "", $strSourceModule = "system", $strSourceAction = "genericChangelog", $bitBlockFolderview = false)
     {
@@ -964,6 +972,7 @@ JS;
      * @permissions changelog
      * @since 5.1
      * @return string
+     * @throws Exception
      */
     protected function actionChangelogDiff()
     {
@@ -1052,6 +1061,7 @@ JS;
      * @since 4.6.6
      * @permissions changelog
      * @return string
+     * @throws Exception
      */
     protected function actionGenericChangelogExportExcel($strSystemid = "")
     {
@@ -1113,6 +1123,7 @@ JS;
      * Creates a form to send mails to specific users.
      *
      * @return AdminFormgenerator
+     * @throws Exception
      */
     private function getMailForm()
     {
@@ -1138,6 +1149,7 @@ JS;
      * @since 3.4
      * @autoTestable
      * @permissions view
+     * @throws Exception
      */
     protected function actionMailForm(AdminFormgenerator $objForm = null)
     {
@@ -1262,6 +1274,7 @@ JS;
      *
      * @permissions edit
      * @return string
+     * @throws Exception
      */
     protected function actionUnlockRecord()
     {
@@ -1309,6 +1322,7 @@ JS;
      *
      * @return string
      * @permissions edit
+     * @throws Exception
      */
     protected function actionSetStatus()
     {
@@ -1340,6 +1354,7 @@ JS;
      * Updates a single property of an object. used by the js-insite-editor.
      * @permissions edit
      * @return string
+     * @throws Exception
      */
     protected function actionUpdateObjectProperty()
     {
@@ -1380,6 +1395,7 @@ JS;
      *
      * @return string
      * @permissions delete
+     * @throws Exception
      */
     protected function actionDelete()
     {

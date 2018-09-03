@@ -325,8 +325,14 @@ class SearchAdmin extends AdminSimple implements AdminInterface
             $strSearchterm = htmlToString(urldecode($this->getParam("search_query")), false);
         }
 
+        $objectTypes = $this->getParam("object_types") ?: null;
+
         $objSearch = new SearchSearch();
         $objSearch->setStrQuery($strSearchterm);
+
+        if (is_array($objectTypes)) {
+            $objSearch->setArrObjectTypes($objectTypes);
+        }
 
         $arrResult = array();
         $objSearchCommons = new SearchCommons();

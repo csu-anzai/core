@@ -56,8 +56,6 @@ $lang["transition_skip_1"] = "None";
 
 $lang["flow_step_no_delete"] = "It is not possible to delete this status";
 
-$lang["flow_current_status"]   = "Current status";
-
 $lang["delete_step_question"]   = "Do you really want to delete the step &quot;<b>%%element_name%%</b>&quot;?";
 $lang["delete_transition_question"]   = "Do you really want to delete the transition &quot;<b>%%element_name%%</b>&quot;?";
 $lang["delete_transition_action_question"]   = "Do you really want to delete the action &quot;<b>%%element_name%%</b>&quot;?";
@@ -72,3 +70,6 @@ $lang["form_next_status_description"]   = "Please select the next status for the
 $lang["action_status_change_title"]   = "Response";
 $lang["action_status_change_success"]   = "Status change was successful.";
 $lang["action_status_change_redirect"]   = "The system needs user input in order to execute the status change.";
+
+$lang["flow_controller_trait_headline_status"]   = "Status change";
+$lang["flow_controller_trait_headline_action"]   = "Actions";

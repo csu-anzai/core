@@ -2971,6 +2971,7 @@ HTML;
      * @param bool $bitOpenToLeft
      *
      * @return string
+     * @deprecated - please use the Menu component
      */
     public function registerMenu($strIdentifier, array $arrEntries, $bitOpenToLeft = false)
     {

@@ -1,0 +1,21 @@
+
+<div class="core-component-menu">
+    <div class="core-component-menu dropdown-menu generalContextMenu" role="menu">
+        <ul>
+            {% for item in items %}
+                {% if item.fullEntry %}
+                {{ item.fullEntry|raw }}
+                {% else %}
+                <li class="core-component-menu-item"><a href="{{ item.link }}" onclick="{{ item.onClick }}">{{ item.name|raw }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    <script type="text/javascript">
+        require(['jquery'], function($) {
+            $('.dropdown-menu .dropdown-submenu a').click(function (e) {
+                e.stopPropagation();
+            });
+        });
+    </script>
+</div>

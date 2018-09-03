@@ -49,13 +49,25 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
             applyLoadCallbacks();
 
             //split between post and get
-            if (KAJONA.admin.forms.submittedEl != null) {
-                var data = $(KAJONA.admin.forms.submittedEl).serialize();
-                KAJONA.admin.forms.submittedEl = null;
+            if (markedElements.forms.submittedEl != null) {
+                var data = $(markedElements.forms.submittedEl).serialize();
+                markedElements.forms.submittedEl = null;
+                markedElements.forms.monitoredEl = null;
                 ajax.loadUrlToElement('#moduleOutput', objUrl.url, data, false, 'POST', function(){
                     applyFormCallbacks();
                 });
             } else {
+
+                if (markedElements.forms.monitoredEl != null) {
+                    if (require('forms').hasChanged(markedElements.forms.monitoredEl)) {
+                        var doLeave = confirm(require('forms').leaveUnsaved);
+                        if (!doLeave) {
+                            return;
+                        }
+                        markedElements.forms.monitoredEl = null;
+                    }
+                }
+
                 ajax.loadUrlToElement('#moduleOutput', objUrl.url, null, true);
             }
 
@@ -159,6 +171,17 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
         }
     };
 
+    /**
+     * Global markers to reference on leave / save monitored elements
+     * @type {{forms: {monitoredEl: null, submittedEl: null}}}
+     */
+    var markedElements = {
+        forms : {
+            monitoredEl : null,
+            submittedEl : null
+        }
+    };
+
     /** @alias module:router */
     return {
 
@@ -225,8 +248,12 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
          */
         removeFormCallback: function (strName) {
             delete arrFormCallbacks[strName];
-        }
+        },
 
+        /**
+         * Global namespace to store some montitored elements
+         */
+        markerElements : markedElements,
     };
 
 

@@ -80,6 +80,19 @@ class DatabaseTest extends Testbase
         $this->assertTrue($bitResult);
     }
 
+    public function testDropIndex()
+    {
+        $objDb = Carrier::getInstance()->getObjDB();
+        $this->createTable();
+
+        $this->assertFalse($objDb->hasIndex("agp_temp_autotest", "foo_index2"));
+        $this->assertTrue($objDb->createIndex("agp_temp_autotest", "foo_index2", ["temp_char10", "temp_char20"]));
+        $this->assertTrue($objDb->hasIndex("agp_temp_autotest", "foo_index2"));
+
+        $this->assertTrue($objDb->deleteIndex("agp_temp_autotest", "foo_index2"));
+        $this->assertFalse($objDb->hasIndex("agp_temp_autotest", "foo_index2"));
+    }
+
     public function testFloatHandling()
     {
         $objDb = Carrier::getInstance()->getObjDB();
@@ -578,6 +591,23 @@ SQL;
             ["a113", 20171231000000, 20180131000000-20171231000000],
             ["a113", 20170101000000, 20170201000000-20170101000000],
         ];
+    }
+
+    /**
+     * This test checks whether we can safely use CONCAT on all database drivers
+     */
+    public function testSqlConcat()
+    {
+        $this->createTable();
+
+        $systemId = generateSystemid();
+        $connection = Database::getInstance();
+        $connection->multiInsert("agp_temp_autotest", ["temp_id"], [[$systemId]]);
+
+        $query = "SELECT " . $connection->getConcatExpression(["','", "temp_id", "','"]) . " AS val FROM agp_temp_autotest";
+        $row = $connection->getPRow($query, []);
+
+        $this->assertEquals(",{$systemId},", $row["val"]);
     }
 }
 

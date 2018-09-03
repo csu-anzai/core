@@ -169,8 +169,7 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_image"                  => "<i class='kj-icon fa fa-picture-o'></i>",
         "icon_install"                => "<i class='kj-icon fa fa-download'></i>",
         "icon_installDisabled"        => "<span class='kj-icon fa-stack'><i class='fa fa-download'></i><i class='fa fa-ban fa-stack-1x kj-stack' style='color: red'></i></span>",
-        "icon_key"                    => "<span class='kj-icon fa-stack'><i class='fa fa-users'></i><i class='fa fa-star fa-stack-1x kj-stack' style='color: #ffa500;'></i></span>",
-        "icon_key_inherited"          => "<i class='kj-icon fa fa-users'></i>",
+        "icon_key"                    => "<i class='kj-icon fa fa-key'></i>",
         "icon_language"               => "<i class='kj-icon fa fa-microphone'></i>",
         "icon_lens"                   => "<i class='kj-icon fa fa-search'></i>",
         "icon_lockerOpen"             => "<i class='kj-icon fa fa-unlock'></i>",
@@ -190,6 +189,8 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_page"                   => "<i class='kj-icon fa fa-file-o'></i>",
         "icon_pageLocked"             => "<span class='kj-icon fa-stack'><i class='fa fa-file-o'></i><i class='fa fa-lock fa-stack-1x kj-stack' style='color: red'></i></span>",
         "icon_page_alias"             => "<span class='kj-icon fa-stack'><i class='fa fa-file-o'></i><i class='fa fa-chevron-right fa-stack-1x kj-stack'></i></span>",
+        "icon_permissions"            => "<span class='kj-icon fa-stack'><i class='fa fa-users'></i><i class='fa fa-star fa-stack-1x kj-stack' style='color: #ffa500;'></i></span>",
+        "icon_permissions_inherited"  => "<i class='kj-icon fa fa-users'></i>",
         "icon_phar"                   => "<i class='kj-icon fa fa-file-archive-o'></i>",
         "icon_powerpoint"             => "<i class='kj-icon fa fa-file-powerpoint-o'></i>",
         "icon_progressbar"            => "<i class='kj-icon fa fa-spinner icon-spin'></i>",
@@ -245,6 +246,7 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_subentity" => "<i class='kj-icon fa fa-building-o'></i>",
         "icon_chart" => "<i class='kj-icon fa fa-line-chart'></i>",
         "icon_checkbox" => "<i class='kj-icon fa fa-check-square'></i>",
+        "icon_column" => "<i class='kj-icon fa fa-columns'></i>",
         "icon_dimension" => "<i class='kj-icon fa fa-bar-chart'></i>",
         "icon_document" => "<i class='kj-icon fa fa-file-archive-o'></i>",
         "icon_dropdown" => "<i class='kj-icon fa fa-caret-square-o-down'></i>",
@@ -289,6 +291,7 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_compliance" => "<i class='kj-icon fa fa-gavel'></i>",
         "icon_complianceDisabled" => "<span class='kj-icon fa-stack'><i class='fa fa-gavel'></i><i class='fa fa-ban fa-stack-1x kj-stack' style='color: red;'></i></span>",
         "icon_complianceDone" => "<span class='kj-icon fa-stack'><i class='fa fa-gavel'></i><i class='fa fa-check fa-stack-1x kj-stack' style='color: green;'></i></span>",
+        "icon_index" => "<i class='kj-icon fa fa-bolt'></i>",
         "icon_inventar" => "<i class='kj-icon fa fa-archive'></i>",
         "icon_inventarDisabled" => "<span class='kj-icon fa-stack'><i class='fa fa-archive'></i><i class='fa fa-ban fa-stack-1x kj-stack' style='color: red;'></i></span>",
         "icon_inventarReview" => "<span class='kj-icon fa-stack'><i class='fa fa-archive'></i><i class='fa fa-pause fa-stack-1x kj-stack' style='color: orange;'></i></span>",
@@ -310,6 +313,7 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_ampel_gruen" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_gruen'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle green'></i></span>",
         "icon_ampel_grau" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_grau'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i></span>",
         "icon_ampel_lavendel" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_lavendel'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle lavendel'></i><i class='kj-icon fa fa-circle-thin'></i></span>",
+        "icon_it_sytems" => "<i class='kj-icon fa fa-cogs'></i>",
 
     ];
 

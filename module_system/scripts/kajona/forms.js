@@ -13,6 +13,10 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
     /** @exports forms */
     var forms = {};
 
+    forms.changeLabel = '';
+    forms.changeConfirmation = '';
+    forms.leaveUnsaved = '';
+
     /**
      * Hides a field in the form
      *
@@ -96,16 +100,45 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
         return util.getElement(objField);
     };
 
-
+    /**
+     * Internal callback to initialize a form
+     * @param strFormid
+     */
     forms.initForm = function(strFormid) {
         $('#'+strFormid+' input , #'+strFormid+' select , #'+strFormid+' textarea ').each(function() {
+            if ($(this).attr('data-kajona-block-initval')) {
+                return true;
+            }
             $(this).attr("data-kajona-initval", $(this).val());
         });
+
+        router.markerElements.forms.monitoredEl = $('#'+strFormid);
+
     };
 
+    /**
+     * May be triggered to determine whether a form has been changed or not
+     * @param $objForm
+     */
+    forms.hasChanged = function($objForm) {
+        var changed = false;
+        $objForm.find('[data-kajona-initval]').each(function() {
+            var el = $(this);
+            if (el.val() != el.attr('data-kajona-initval')) {
+                changed = true;
+                return false;
+            }
+        });
+
+        return changed;
+    };
+
+    /**
+     * Fires the animation on the submit button
+     * @param objForm
+     */
     forms.animateSubmitStart = function(objForm) {
         var processingElemet = undefined;
-
         //try to get the button currently clicked
         if($(document.activeElement).prop('tagName') == "BUTTON") {
             processingElemet = $(document.activeElement);
@@ -125,8 +158,7 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
     };
 
 
-    forms.changeLabel = '';
-    forms.changeConfirmation = '';
+
 
     /**
      * Adds an onchange listener to the formentry with the passed ID. If the value is changed, a warning is rendered below the field.
@@ -226,7 +258,7 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
         $(objForm).on('submit', function() {
             return false;
         });
-        KAJONA.admin.forms.submittedEl = objForm;
+        router.markerElements.forms.submittedEl = objForm;
         $(window).off('unload');
 
         this.animateSubmitStart(objForm);

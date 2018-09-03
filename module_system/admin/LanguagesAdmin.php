@@ -26,8 +26,12 @@ use Kajona\System\System\Model;
  *
  * @module languages
  * @moduleId _languages_modul_id_
+ *
+ * @objectList Kajona\System\System\LanguagesLanguage
+ * @objectEdit Kajona\System\System\LanguagesLanguage
+ * @objectNew Kajona\System\System\LanguagesLanguage
  */
-class LanguagesAdmin extends AdminSimple implements AdminInterface
+class LanguagesAdmin extends AdminEvensimpler implements AdminInterface
 {
 
     public function getOutputModuleNavi()
@@ -38,23 +42,6 @@ class LanguagesAdmin extends AdminSimple implements AdminInterface
     }
 
 
-    /**
-     * Returns a list of the languages
-     *
-     * @return string
-     * @autoTestable
-     * @permissions view
-     * @throws Exception
-     */
-    protected function actionList()
-    {
-
-        $objArraySectionIterator = new ArraySectionIterator(LanguagesLanguage::getObjectCountFiltered());
-        $objArraySectionIterator->setPageNumber((int)($this->getParam("pv") != "" ? $this->getParam("pv") : 1));
-        $objArraySectionIterator->setArraySection(LanguagesLanguage::getObjectListFiltered(null, "", $objArraySectionIterator->calculateStartPos(), $objArraySectionIterator->calculateEndPos()));
-
-        return $this->renderList($objArraySectionIterator);
-    }
 
     protected function renderCopyAction(Model $objListEntry)
     {
@@ -62,116 +49,4 @@ class LanguagesAdmin extends AdminSimple implements AdminInterface
     }
 
 
-    /**
-     * @return string
-     * @permissions edit
-     * @throws Exception
-     */
-    protected function actionEdit()
-    {
-        return $this->actionNew("edit");
-    }
-
-    /**
-     * Creates the form to edit an existing language, or to create a new language
-     *
-     * @param string $strMode
-     *
-     * @return string
-     * @permissions edit
-     * @autoTestable
-     * @throws Exception
-     */
-    protected function actionNew($strMode = "new", AdminFormgenerator $objForm = null)
-    {
-
-        $objLang = new LanguagesLanguage();
-        $arrLanguages = $objLang->getAllLanguagesAvailable();
-        $arrLanguagesDD = array();
-        foreach ($arrLanguages as $strLangShort) {
-            $arrLanguagesDD[$strLangShort] = $this->getLang("lang_".$strLangShort);
-        }
-
-        if ($strMode == "new") {
-            $objLanguage = new LanguagesLanguage();
-        } else {
-            $objLanguage = new LanguagesLanguage($this->getSystemid());
-            if (!$objLanguage->rightEdit()) {
-                return $this->getLang("commons_error_permissions");
-            }
-        }
-
-        if ($objForm == null) {
-            $objForm = $this->getAdminForm($objLanguage);
-        }
-
-        $objForm->addField(new FormentryHidden("", "mode"))->setStrValue($strMode);
-        return $objForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "saveLanguage"));
-    }
-
-    /**
-     * Creates the admin-form object
-     *
-     * @param LanguagesLanguage $objLanguage
-     *
-     * @return AdminFormgenerator
-     * @throws Exception
-     */
-    private function getAdminForm(LanguagesLanguage $objLanguage)
-    {
-
-        $objLang = new LanguagesLanguage();
-        $arrLanguages = $objLang->getAllLanguagesAvailable();
-        $arrLanguagesDD = array();
-        foreach ($arrLanguages as $strLangShort) {
-            $arrLanguagesDD[$strLangShort] = $this->getLang("lang_".$strLangShort);
-        }
-
-        $objForm = new AdminFormgenerator("language", $objLanguage);
-        $objForm->addDynamicField("strName")->setArrKeyValues($arrLanguagesDD);
-        $objForm->addDynamicField("bitDefault");
-
-        return $objForm;
-    }
-
-    /**
-     * saves the submitted form-data as a new language, oder updates the corresponding language
-     *
-     * @throws Exception
-     * @return string, "" in case of success
-     * @permissions edit
-     */
-    protected function actionSaveLanguage()
-    {
-        if ($this->getParam("mode") == "new") {
-            $objLanguage = new LanguagesLanguage();
-        } else {
-            $objLanguage = new LanguagesLanguage($this->getSystemid());
-            if (!$objLanguage->rightEdit()) {
-                return $this->getLang("commons_error_permissions");
-            }
-        }
-
-        $objForm = $this->getAdminForm($objLanguage);
-
-        if (!$objForm->validateForm()) {
-            return $this->actionNew($this->getParam("mode"), $objForm);
-        }
-        $objForm->updateSourceObject();
-
-        if ($this->getParam("mode") == "new") {
-            //language already existing?
-            if (LanguagesLanguage::getLanguageByName($objLanguage->getStrName()) !== false) {
-                return $this->getLang("language_existing");
-            }
-        } elseif ($this->getParam("mode") == "edit") {
-            $objTestLang = LanguagesLanguage::getLanguageByName($objLanguage->getStrName());
-            if ($objTestLang !== false && $objTestLang->getSystemid() != $objLanguage->getSystemid()) {
-                return $this->getLang("language_existing");
-            }
-        }
-
-        $this->objLifeCycleFactory->factory(get_class($objLanguage))->update($objLanguage);
-        $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul")));
-    }
 }
