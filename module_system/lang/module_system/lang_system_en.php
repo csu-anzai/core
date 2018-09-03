@@ -344,3 +344,5 @@ $lang['smtp_auth_password']   = "SMTP auth_password";
 $lang["update_in_progress"] = "System update in progress, please wait...";
 
 $lang["form_objectlist_add_search"]  = "{0} add ...";
+
+$lang["object_browser_reset"] = "Remove object";

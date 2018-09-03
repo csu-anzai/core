@@ -201,6 +201,28 @@ define("folderview", ["jquery", "util"], function($, util){
                     context.dialog.setContentRaw("");
                 }
             }
+        },
+
+        /**
+         * Enables selection by clicking a row-entry
+         */
+        initRowClick : function() {
+            var tds = $('#moduleOutput .admintable tr td:not(.actions)');
+            tds.addClass('clickable');
+            tds.on('click', function(e) {
+                var row = $(this).parent('tr');
+
+
+                var callbacks = row.find('td.actions .listButton a[onclick*="selectCallback"]');
+                if (callbacks.length) {
+                    callbacks[0].click();
+                    return;
+                }
+                var lastButton = row.find('td.actions .listButton:last a');
+                if (lastButton.length) {
+                    lastButton[0].click();
+                }
+            });
         }
     };
 

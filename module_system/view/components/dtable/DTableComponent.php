@@ -6,10 +6,10 @@
 
 declare(strict_types = 1);
 
-namespace Kajona\System\View\Components\DTable;
+namespace Kajona\System\View\Components\Dtable;
 
 use Kajona\System\View\Components\AbstractComponent;
-use Kajona\System\View\Components\DTable\Model\DTable;
+use Kajona\System\View\Components\Dtable\Model\DTable;
 
 
 /**
