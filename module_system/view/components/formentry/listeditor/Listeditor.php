@@ -50,8 +50,12 @@ class Listeditor extends FormentryComponentAbstract
      */
     public function buildContext()
     {
+        // decode previous tag editor encoded commas which are not needed anymore at the listeditor since we dont need
+        // a separator value
+        $items = array_map('Kajona\System\Admin\Formentries\FormentryTageditor::decodeValue', $this->items);
+
         $context = parent::buildContext();
-        $context["items"] = $this->items;
+        $context["items"] = $items;
 
         return $context;
     }
