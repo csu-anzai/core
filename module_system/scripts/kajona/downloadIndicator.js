@@ -21,7 +21,7 @@
  *
  * @module downloadIndicator
  */
-define(['jquery', 'dialogHelper', 'workingIndicator'], function ($, dh, wi) {
+define("downloadIndicator", ['jquery', 'dialogHelper', 'workingIndicator'], function ($, dh, wi) {
 
     /**
      * Internal model for a single download indicator
