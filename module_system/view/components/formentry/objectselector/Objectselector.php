@@ -14,7 +14,8 @@ use Kajona\System\System\Root;
 use Kajona\System\View\Components\Formentry\FormentryComponentAbstract;
 
 /**
- * Objectselector
+ * General formentry which can be used to select a specific object. By default it uses the search engine endpoint to
+ * find the fitting objects but you can also provide a custom endpoint. It is also possible to specify object types.
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.1
