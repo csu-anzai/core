@@ -28,6 +28,8 @@ use Traversable;
  */
 class FormentryObjectlist extends FormentryBase implements FormentryPrintableInterface
 {
+    const OPTION_SKIP_RIGHT_CHECK = 1;
+
     /**
      * @var string
      */
@@ -47,6 +49,11 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
      * @var array
      */
     protected $arrKeyValues = array();
+
+    /**
+     * @var int
+     */
+    protected $options = 0;
 
     /**
      * @param string $strAddLink
@@ -72,6 +79,16 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
     {
         $this->endpointUrl = $endpointUrl;
         $this->objectTypes = $objectTypes;
+    }
+
+    /**
+     * Bitmask consisting of OPTION_SKIP_RIGHT_CHECK
+     *
+     * @param int $options
+     */
+    public function setOptions(int $options)
+    {
+        $this->options = $options;
     }
 
     protected function updateValue()
@@ -107,9 +124,15 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         }
 
         // filter objects
-        $arrObjects = array_values(array_filter($this->arrKeyValues, function ($objObject) {
-            return $objObject->rightView();
-        }));
+        $skipRightCheck = $this->options & self::OPTION_SKIP_RIGHT_CHECK;
+
+        if ($skipRightCheck) {
+            $arrObjects = $this->arrKeyValues;
+        } else {
+            $arrObjects = array_values(array_filter($this->arrKeyValues, function ($objObject) {
+                return $objObject->rightView();
+            }));
+        }
 
         $objectList = new Objectlist($this->getStrEntryName(), $this->getStrLabel(), $arrObjects);
         $objectList->setReadOnly($this->getBitReadonly());
