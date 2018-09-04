@@ -60,6 +60,7 @@ global.kajonaPaths = {
     quickhelp : "module_system/scripts/kajona/quickhelp",
     util : "module_system/scripts/kajona/util",
     router : "module_system/scripts/kajona/router",
+    bootstrap : "module_v4skin/scripts/bootstrap/bootstrap.min",
     qtip : "_buildfiles/jstests/spec/helpers/qtip-faker",
     jcrop : "_buildfiles/jstests/spec/helpers/jcrop-faker"
 
