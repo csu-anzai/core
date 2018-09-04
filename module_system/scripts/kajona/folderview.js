@@ -220,6 +220,12 @@ define("folderview", ["jquery", "util"], function($, util){
                 }
                 var lastButton = row.find('td.actions .listButton:last a');
                 if (lastButton.length) {
+                    var attr = lastButton.attr('data-toggle');
+                    if (typeof attr !== typeof undefined && attr !== false) {
+                        e.stopPropagation();
+                        lastButton.dropdown('toggle');
+                    }
+
                     lastButton[0].click();
                 }
             });
