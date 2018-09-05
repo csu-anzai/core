@@ -117,7 +117,6 @@
         <parallel>
             <antcall target="lint" />
             <antcall target="phpunitFast" />
-            <antcall target="jasmine" />
         </parallel>
     </target>
 
@@ -127,7 +126,6 @@
             <antcall target="phpunit" />
             <antcall target="phpmd-ci" />
             <antcall target="phpcs-ci" />
-            <antcall target="jasmine" />
         </parallel>
     </target>
 
@@ -427,14 +425,6 @@
     <target name="phpunitFast" description="Run unit tests with PHPUnit">
         <exec executable="${path.phpunit}" failonerror="true">
             <arg line="--configuration '${basedir}/phpunit_fast.xml' " />
-        </exec>
-    </target>
-
-    <!-- executes javascript jasmine tests -->
-    <target name="jasmine">
-        <!--currently disabled due to requirejs migration-->
-        <exec dir="${basedir}${jsPath}" executable="${path.node}" failonerror="on">
-            <arg line="./node_modules/jasmine/bin/jasmine.js"/>
         </exec>
     </target>
 
