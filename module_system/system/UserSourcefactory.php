@@ -110,10 +110,14 @@ class UserSourcefactory
 
         //since some login-provides may trigger additional searches, query them now
         foreach ($this->arrSubsystemsAvailable as $strOneSubsystem) {
-            $objUser = $this->getUsersource($strOneSubsystem)->getUserByUsername($strName);
-            //convert the user to a real one
-            if ($objUser != null) {
-                return Objectfactory::getInstance()->getObject($objUser->getSystemid());
+            try {
+                $objUser = $this->getUsersource($strOneSubsystem)->getUserByUsername($strName);
+                //convert the user to a real one
+                if ($objUser != null) {
+                    return Objectfactory::getInstance()->getObject($objUser->getSystemid());
+                }
+            } catch (Exception $e) {
+                Logger::getInstance(Logger::USERSOURCES)->critical($e->getMessage());
             }
         }
 
