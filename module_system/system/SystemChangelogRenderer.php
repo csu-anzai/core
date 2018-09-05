@@ -300,7 +300,7 @@ class SystemChangelogRenderer
                     return $this->getStrValueForObjects($strValue);
                 }
                 $arrJson = json_decode($strValue, true);
-                if ($arrJson !== false) {
+                if (!empty($arrJson)) {
                     $strValue = print_r($arrJson, true);
                 }
                 return $strValue;
