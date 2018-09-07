@@ -7,7 +7,10 @@ declare(strict_types=1);
 
 namespace Kajona\Flow\System\Flow\Condition;
 
+use Kajona\Flow\System\FlowConditionInterface;
 use Kajona\Flow\System\FlowConditionResult;
+use Kajona\Flow\System\FlowTransition;
+use Kajona\System\System\Model;
 
 /**
  * Meta condition which returns true in case either left or right is true but not both
@@ -36,12 +39,15 @@ class XorCondition extends LogicConditionAbstract
     /**
      * @inheritdoc
      */
-    protected function evaluate(FlowConditionResult $left, FlowConditionResult $right)
+    protected function evaluate(FlowConditionInterface $left, FlowConditionInterface $right, Model $object, FlowTransition $transition)
     {
-        $errors = array_merge($left->getErrors(), $right->getErrors());
-        $menuItems = array_merge($left->getMenuItems(), $right->getMenuItems());
+        $leftResult = $left->validateCondition($object, $transition);
+        $rightResult = $left->validateCondition($object, $transition);
 
-        return new FlowConditionResult($left->isValid() xor $right->isValid(), $errors, $menuItems);
+        $errors = array_merge($leftResult->getErrors(), $rightResult->getErrors());
+        $menuItems = array_merge($leftResult->getMenuItems(), $rightResult->getMenuItems());
+
+        return new FlowConditionResult($leftResult->isValid() xor $rightResult->isValid(), $errors, $menuItems);
     }
 }
 

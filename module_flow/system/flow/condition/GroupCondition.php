@@ -42,37 +42,37 @@ class GroupCondition extends FlowConditionAbstract
     /**
      * Returns true in case all conditions under this condition are valid
      *
-     * @param Model $objObject
-     * @param FlowTransition $objTransition
+     * @param Model $object
+     * @param FlowTransition $transition
      * @return FlowConditionResult
      */
-    public function validateCondition(Model $objObject, FlowTransition $objTransition)
+    public function validateCondition(Model $object, FlowTransition $transition)
     {
         $conditions = FlowConditionAbstract::getObjectListFiltered(null, $this->getSystemid());
 
-        return $this->validateConditions($conditions, $objObject, $objTransition);
+        return $this->validateConditions($conditions, $object, $transition);
     }
 
     /**
      * @inheritdoc
      */
-    public function configureForm(AdminFormgenerator $objForm)
+    public function configureForm(AdminFormgenerator $form)
     {
     }
 
     /**
      * @param array $conditions
-     * @param Model $objObject
-     * @param FlowTransition $objTransition
+     * @param Model $object
+     * @param FlowTransition $transition
      * @return FlowConditionResult
      */
-    protected function validateConditions(array $conditions, Model $objObject, FlowTransition $objTransition)
+    protected function validateConditions(array $conditions, Model $object, FlowTransition $transition)
     {
         $result = new FlowConditionResult();
 
         foreach ($conditions as $condition) {
             /** @var FlowConditionAbstract $condition */
-            $result->merge($condition->validateCondition($objObject, $objTransition));
+            $result->merge($condition->validateCondition($object, $transition));
         }
 
         return $result;

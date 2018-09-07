@@ -40,17 +40,17 @@ class InvertCondition extends FlowConditionAbstract
     /**
      * Uses the first sub condition and negates the result
      *
-     * @param Model $objObject
-     * @param FlowTransition $objTransition
+     * @param Model $object
+     * @param FlowTransition $transition
      * @return FlowConditionResult
      */
-    public function validateCondition(Model $objObject, FlowTransition $objTransition)
+    public function validateCondition(Model $object, FlowTransition $transition)
     {
         $conditions = FlowConditionAbstract::getObjectListFiltered(null, $this->getSystemid());
         $condition = array_shift($conditions);
 
         if ($condition instanceof FlowConditionAbstract) {
-            $result = $condition->validateCondition($objObject, $objTransition);
+            $result = $condition->validateCondition($object, $transition);
 
             return new FlowConditionResult(!$result->isValid(), $result->getErrors(), $result->getMenuItems());
         }
@@ -61,7 +61,7 @@ class InvertCondition extends FlowConditionAbstract
     /**
      * @inheritdoc
      */
-    public function configureForm(AdminFormgenerator $objForm)
+    public function configureForm(AdminFormgenerator $form)
     {
     }
 }

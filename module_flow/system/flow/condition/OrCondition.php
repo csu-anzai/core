@@ -7,7 +7,10 @@ declare(strict_types=1);
 
 namespace Kajona\Flow\System\Flow\Condition;
 
+use Kajona\Flow\System\FlowConditionInterface;
 use Kajona\Flow\System\FlowConditionResult;
+use Kajona\Flow\System\FlowTransition;
+use Kajona\System\System\Model;
 
 /**
  * Meta condition which returns true in case either left or right is true
@@ -36,12 +39,26 @@ class OrCondition extends LogicConditionAbstract
     /**
      * @inheritdoc
      */
-    protected function evaluate(FlowConditionResult $left, FlowConditionResult $right)
+    protected function evaluate(FlowConditionInterface $left, FlowConditionInterface $right, Model $object, FlowTransition $transition)
     {
-        $errors = array_merge($left->getErrors(), $right->getErrors());
-        $menuItems = array_merge($left->getMenuItems(), $right->getMenuItems());
+        $errors = [];
+        $menuItems = [];
 
-        return new FlowConditionResult($left->isValid() || $right->isValid(), $errors, $menuItems);
+        $leftResult = $left->validateCondition($object, $transition);
+        $errors = array_merge($errors, $leftResult->getErrors());
+        $menuItems = array_merge($menuItems, $leftResult->getMenuItems());
+
+        if ($leftResult->isValid()) {
+            // in case the left condition is true we dont evaluate the right condition since the result is always true
+            // so we return true
+            return new FlowConditionResult(true, $errors, $menuItems);
+        }
+
+        $rightResult = $left->validateCondition($object, $transition);
+        $errors = array_merge($errors, $rightResult->getErrors());
+        $menuItems = array_merge($menuItems, $rightResult->getMenuItems());
+
+        return new FlowConditionResult($leftResult->isValid() || $rightResult->isValid(), $errors, $menuItems);
     }
 }
 

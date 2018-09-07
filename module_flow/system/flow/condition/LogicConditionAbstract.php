@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Kajona\Flow\System\Flow\Condition;
 
 use Kajona\Flow\System\FlowConditionAbstract;
+use Kajona\Flow\System\FlowConditionInterface;
 use Kajona\Flow\System\FlowConditionResult;
 use Kajona\Flow\System\FlowTransition;
 use Kajona\System\Admin\AdminFormgenerator;
@@ -29,20 +30,22 @@ abstract class LogicConditionAbstract extends FlowConditionAbstract
     /**
      * Uses the first and second sub condition and calls the abstract evaluate method which does a logic operation
      *
-     * @param Model $objObject
-     * @param FlowTransition $objTransition
+     * @param Model $object
+     * @param FlowTransition $transition
      * @return FlowConditionResult
      */
-    public function validateCondition(Model $objObject, FlowTransition $objTransition)
+    public function validateCondition(Model $object, FlowTransition $transition)
     {
         $conditions = FlowConditionAbstract::getObjectListFiltered(null, $this->getSystemid());
         $leftCondition = array_shift($conditions);
         $rightCondition = array_shift($conditions);
 
-        if ($leftCondition instanceof FlowConditionAbstract && $rightCondition instanceof FlowConditionAbstract) {
+        if ($leftCondition instanceof FlowConditionInterface && $rightCondition instanceof FlowConditionInterface) {
             return $this->evaluate(
-                $leftCondition->validateCondition($objObject, $objTransition),
-                $rightCondition->validateCondition($objObject, $objTransition)
+                $leftCondition,
+                $rightCondition,
+                $object,
+                $transition
             );
         }
 
@@ -52,15 +55,19 @@ abstract class LogicConditionAbstract extends FlowConditionAbstract
     /**
      * @inheritdoc
      */
-    public function configureForm(AdminFormgenerator $objForm)
+    public function configureForm(AdminFormgenerator $form)
     {
     }
 
     /**
-     * @param FlowConditionResult $left
-     * @param FlowConditionResult $right
+     * Evaluates the left and right condition in a specific logic
+     *
+     * @param FlowConditionInterface $left
+     * @param FlowConditionInterface $right
+     * @param Model $object
+     * @param FlowTransition $transition
      * @return FlowConditionResult
      */
-    abstract protected function evaluate(FlowConditionResult $left, FlowConditionResult $right);
+    abstract protected function evaluate(FlowConditionInterface $left, FlowConditionInterface $right, Model $object, FlowTransition $transition);
 }
 

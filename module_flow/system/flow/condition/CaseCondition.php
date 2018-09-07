@@ -41,20 +41,20 @@ class CaseCondition extends FlowConditionAbstract
     /**
      * Returns true in case the user is in a specific user group
      *
-     * @param Model $objObject
-     * @param FlowTransition $objTransition
+     * @param Model $object
+     * @param FlowTransition $transition
      * @return FlowConditionResult
      */
-    public function validateCondition(Model $objObject, FlowTransition $objTransition)
+    public function validateCondition(Model $object, FlowTransition $transition)
     {
         $conditions = FlowConditionAbstract::getObjectListFiltered(null, $this->getSystemid());
         $leftCondition = array_shift($conditions);
         $rightCondition = array_shift($conditions);
 
         if ($leftCondition instanceof FlowConditionAbstract && $rightCondition instanceof FlowConditionAbstract) {
-            if ($leftCondition->validateCondition($objObject, $objTransition)) {
+            if ($leftCondition->validateCondition($object, $transition)) {
                 // we validate the right condition only in case the left condition is true
-                return $rightCondition->validateCondition($objObject, $objTransition);
+                return $rightCondition->validateCondition($object, $transition);
             }
         }
 
@@ -64,7 +64,7 @@ class CaseCondition extends FlowConditionAbstract
     /**
      * @inheritdoc
      */
-    public function configureForm(AdminFormgenerator $objForm)
+    public function configureForm(AdminFormgenerator $form)
     {
     }
 }
