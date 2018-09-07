@@ -17,6 +17,8 @@ class AdminwidgetCat extends Adminwidget implements AdminwidgetInterface
 {
 
     private $arrCats = [
+        //"<img src="._webpath_."/#/core/module_dashboard/img/AdminwidgetCat/acrobat.gif' style='float: right;'/>",
+        //"<img src='" . _webpath_. "'//#//core/module_dashboard/img/AdminwidgetCat/acrobat.gif' style='float: right;'/>",
         "<img src='http://icons.iconarchive.com/icons/iconka/saint-whiskers/256/cat-food-hearts-icon.png' style='float: right;'/>",
         "<img src='http://icons.iconarchive.com/icons/iconka/meow/256/cat-tied-icon.png' style='float: right;'/>",
         "<img src='http://icons.iconarchive.com/icons/iconka/meow/256/cat-drunk-icon.png' style='float: right;'/>"
