@@ -42,7 +42,7 @@ class XorCondition extends LogicConditionAbstract
     protected function evaluate(FlowConditionInterface $left, FlowConditionInterface $right, Model $object, FlowTransition $transition)
     {
         $leftResult = $left->validateCondition($object, $transition);
-        $rightResult = $left->validateCondition($object, $transition);
+        $rightResult = $right->validateCondition($object, $transition);
 
         $errors = array_merge($leftResult->getErrors(), $rightResult->getErrors());
         $menuItems = array_merge($leftResult->getMenuItems(), $rightResult->getMenuItems());

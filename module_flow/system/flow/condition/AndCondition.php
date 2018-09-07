@@ -54,7 +54,7 @@ class AndCondition extends LogicConditionAbstract
             return new FlowConditionResult(false, $errors, $menuItems);
         }
 
-        $rightResult = $left->validateCondition($object, $transition);
+        $rightResult = $right->validateCondition($object, $transition);
         $errors = array_merge($errors, $rightResult->getErrors());
         $menuItems = array_merge($menuItems, $rightResult->getMenuItems());
 
