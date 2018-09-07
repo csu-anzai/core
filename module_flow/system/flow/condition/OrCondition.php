@@ -49,8 +49,7 @@ class OrCondition extends LogicConditionAbstract
         $menuItems = array_merge($menuItems, $leftResult->getMenuItems());
 
         if ($leftResult->isValid()) {
-            // in case the left condition is true we dont evaluate the right condition since the result is always true
-            // so we return true
+            // short-circuit evaluation in case the left condition is true we dont evaluate the right condition
             return new FlowConditionResult(true, $errors, $menuItems);
         }
 

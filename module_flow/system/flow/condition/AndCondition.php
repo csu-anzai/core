@@ -49,8 +49,7 @@ class AndCondition extends LogicConditionAbstract
         $menuItems = array_merge($menuItems, $leftResult->getMenuItems());
 
         if (!$leftResult->isValid()) {
-            // in case the left condition is false we dont evaluate the right condition since the result can never be
-            // true so we return false
+            // short-circuit evaluation in case the left condition is false we dont evaluate the right condition
             return new FlowConditionResult(false, $errors, $menuItems);
         }
 
