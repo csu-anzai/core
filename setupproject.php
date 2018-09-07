@@ -196,7 +196,7 @@ TEXT;
         echo "Installing node dependencies" . PHP_EOL;
 
         //only if required
-        if (is_dir(self::$strRealPath."/core/_buildfiles/jstests/node_modules/clean-css") && is_dir(self::$strRealPath."/core/_buildfiles/jstests/node_modules/less")) {
+        if (is_dir(self::$strRealPath."/core/_buildfiles/jstests/node_modules/clean-css") && is_dir(self::$strRealPath."/core/_buildfiles/jstests/node_modules/less") && is_dir( self::$strRealPath . "/core/_buildfiles/jstests/node_modules/typescript/")) {
             echo "  not required".PHP_EOL;
             return;
         }
