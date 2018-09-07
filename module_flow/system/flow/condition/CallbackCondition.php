@@ -14,7 +14,7 @@ use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\System\Model;
 
 /**
- * A condition mainly used for testing
+ * A condition where you can provide a custom callback. This is mainly used for testing purpose
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.1
@@ -45,7 +45,7 @@ class CallbackCondition implements FlowConditionInterface
     }
 
     /**
-     * Uses the first sub condition and negates the result
+     * Uses the provided callback for validation
      *
      * @param Model $object
      * @param FlowTransition $transition
