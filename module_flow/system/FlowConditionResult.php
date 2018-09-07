@@ -20,12 +20,12 @@ class FlowConditionResult
     /**
      * @var bool
      */
-    protected $bitValid;
+    protected $isValid;
 
     /**
      * @var array
      */
-    protected $arrErrors;
+    protected $errors;
 
     /**
      * @var MenuItem[]
@@ -35,11 +35,11 @@ class FlowConditionResult
     /**
      * @param bool|null $bitValid
      */
-    public function __construct($bitValid = null)
+    public function __construct($bitValid = null, array $errors = [], array $menuItems = [])
     {
-        $this->bitValid = $bitValid;
-        $this->arrErrors = [];
-        $this->menuItems = [];
+        $this->isValid = $bitValid;
+        $this->errors = $errors;
+        $this->menuItems = $menuItems;
     }
 
     /**
@@ -50,7 +50,7 @@ class FlowConditionResult
      */
     public function isValid()
     {
-        return $this->bitValid === null ? count($this->arrErrors) === 0 : $this->bitValid;
+        return $this->isValid === null ? count($this->errors) === 0 : $this->isValid;
     }
 
     /**
@@ -58,7 +58,7 @@ class FlowConditionResult
      */
     public function addError(string $strError)
     {
-        $this->arrErrors[] = $strError;
+        $this->errors[] = $strError;
     }
 
     /**
@@ -74,7 +74,7 @@ class FlowConditionResult
      */
     public function getErrors()
     {
-        return $this->arrErrors;
+        return $this->errors;
     }
 
     /**
@@ -94,8 +94,8 @@ class FlowConditionResult
      */
     public function merge(FlowConditionResult $objResult)
     {
-        $this->bitValid = $this->bitValid === null ? $objResult->isValid() : ($this->bitValid && $objResult->isValid());
-        $this->arrErrors = array_merge($this->arrErrors, $objResult->getErrors());
+        $this->isValid = $this->isValid === null ? $objResult->isValid() : ($this->isValid && $objResult->isValid());
+        $this->errors = array_merge($this->errors, $objResult->getErrors());
         $this->menuItems = array_merge($this->menuItems, $objResult->getMenuItems());
     }
 }

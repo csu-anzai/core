@@ -74,3 +74,9 @@ $lang["action_status_change_redirect"]   = "Das System benötigt eine Benutzerei
 $lang["flow_controller_trait_headline_status"]   = "Statuswechsel";
 $lang["flow_controller_trait_headline_action"]   = "Aktionen";
 
+$lang["flow_condition_and_title"]   = "AND Bedingung";
+$lang["flow_condition_case_title"]   = "Case Bedingung";
+$lang["flow_condition_group_title"]   = "Group Bedingung";
+$lang["flow_condition_invert_title"]   = "Invert Bedingung";
+$lang["flow_condition_or_title"]   = "OR Bedingung";
+$lang["flow_condition_xor_title"]   = "XOR Bedingung";
