@@ -47,7 +47,7 @@ class CaseCondition extends FlowConditionAbstract
      */
     public function validateCondition(Model $object, FlowTransition $transition)
     {
-        $conditions = FlowConditionAbstract::getObjectListFiltered(null, $this->getSystemid());
+        $conditions = $this->getChildConditions();
         $leftCondition = array_shift($conditions);
         $rightCondition = array_shift($conditions);
 

@@ -46,7 +46,7 @@ class InvertCondition extends FlowConditionAbstract
      */
     public function validateCondition(Model $object, FlowTransition $transition)
     {
-        $conditions = FlowConditionAbstract::getObjectListFiltered(null, $this->getSystemid());
+        $conditions = $this->getChildConditions();
         $condition = array_shift($conditions);
 
         if ($condition instanceof FlowConditionAbstract) {

@@ -48,9 +48,7 @@ class GroupCondition extends FlowConditionAbstract
      */
     public function validateCondition(Model $object, FlowTransition $transition)
     {
-        $conditions = FlowConditionAbstract::getObjectListFiltered(null, $this->getSystemid());
-
-        return $this->validateConditions($conditions, $object, $transition);
+        return $this->validateConditions($this->getChildConditions(), $object, $transition);
     }
 
     /**
