@@ -199,7 +199,7 @@ To avoid side-effects, no line-break in this case -> not needed by default, but 
     <script type="text/javascript">
         require(["forms"], function(forms) {
             $(function() {
-                forms.initForm('%%name%%');
+                forms.initForm('%%name%%', %%onchangedetection%%);
                 forms.changeLabel = '[lang,commons_form_entry_changed,system]';
                 forms.changeConfirmation = '[lang,commons_form_entry_changed_conf,system]';
                 forms.leaveUnsaved = '[lang,commons_form_unchanged,system]';

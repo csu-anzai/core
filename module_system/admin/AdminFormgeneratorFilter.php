@@ -85,6 +85,7 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
     {
         $objCarrier = Carrier::getInstance();
         $objFilter = $this->getObjSourceobject();
+        $this->setBitOnLeaveChangeDetection(false);
 
         /* Check if post request was send? */
         if ($objCarrier->getParam($this->getFormElementName(self::STR_FORM_PARAM_FILTER)) == "true") {
