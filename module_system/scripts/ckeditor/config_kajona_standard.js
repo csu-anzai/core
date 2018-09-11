@@ -46,7 +46,7 @@ CKEDITOR.editorConfig = function(config) {
         [
             ['Undo','Redo','-','RemoveFormat'],
             ['Bold','Italic','Underline'],
-            ['NumberedList','BulletedList','-','Outdent','Indent']
+            ['NumberedList','BulletedList','-','Outdent','Indent', 'Link']
         ];
 
     //limited toolbar, e.g. used for the downloads and the gallery
