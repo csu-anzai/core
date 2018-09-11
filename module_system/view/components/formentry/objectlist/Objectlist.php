@@ -50,6 +50,12 @@ class Objectlist extends FormentryComponentAbstract
      */
     protected $objectTypes;
 
+    /** @var bool  */
+    protected $showAddButton = true;
+
+    /** @var bool  */
+    protected $showDeleteAllButton = true;
+
     /**
      * @param string $name
      * @param string $title
@@ -130,8 +136,12 @@ class Objectlist extends FormentryComponentAbstract
         $searchInputPlaceholder = Lang::getInstance()->getLang("form_objectlist_add_search", "system", [$this->title]);
 
         $context["rows"] = $rows;
-        $context["addLink"] = $this->addLink;
-        $context["removeAllLink"] = $removeAllLink;
+        if ($this->showAddButton) {
+            $context["addLink"] = $this->addLink;
+        }
+        if ($this->showDeleteAllButton) {
+            $context["removeAllLink"] = $removeAllLink;
+        }
         $context["deleteIcon"] = json_encode($deleteIcon);
         $context["endpointUrl"] = $this->endpointUrl;
         $context["objectTypes"] = json_encode(implode(",", $this->objectTypes ?: []));
@@ -193,7 +203,7 @@ class Objectlist extends FormentryComponentAbstract
                 break;
             }
 
-            $objObject = Objectfactory::getInstance()->getObject($strPathId);
+            $objObject = strip_tags(Objectfactory::getInstance()->getObject($strPathId));
             $arrPath[] = $objObject->getStrDisplayName();
         }
 
@@ -204,4 +214,38 @@ class Objectlist extends FormentryComponentAbstract
         $strPath = implode(" > ", array_reverse($arrPath));
         return $strPath;
     }
+
+    /**
+     * @return bool
+     */
+    public function isShowAddButton(): bool
+    {
+        return $this->showAddButton;
+    }
+
+    /**
+     * @param bool $showAddButton
+     */
+    public function setShowAddButton(bool $showAddButton)
+    {
+        $this->showAddButton = $showAddButton;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowDeleteAllButton(): bool
+    {
+        return $this->showDeleteAllButton;
+    }
+
+    /**
+     * @param bool $showDeleteAllButton
+     */
+    public function setShowDeleteAllButton(bool $showDeleteAllButton)
+    {
+        $this->showDeleteAllButton = $showDeleteAllButton;
+    }
+
+
 }
