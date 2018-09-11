@@ -52,7 +52,7 @@ class InvertCondition extends FlowConditionAbstract
         if ($condition instanceof FlowConditionAbstract) {
             $result = $condition->validateCondition($object, $transition);
 
-            return new FlowConditionResult(!$result->isValid(), $result->getErrors(), $result->getMenuItems());
+            return new FlowConditionResult(!$result->isValid());
         }
 
         return new FlowConditionResult(true);
