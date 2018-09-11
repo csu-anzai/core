@@ -183,6 +183,12 @@ class AdminFormgenerator implements \Countable
     private $bitErrorsAsWarnings = false;
 
     /**
+     * Enables / disables the on-leave change detection
+     * @var bool
+     */
+    private $bitOnLeaveChangeDetection = true;
+
+    /**
      * Creates a new instance of the form-generator.
      *
      * @param string $strFormname
@@ -401,7 +407,7 @@ class AdminFormgenerator implements \Countable
         }
 
         if ($strTargetURI !== null) {
-            $strReturn .= $this->objToolkit->formHeader($strTargetURI, $strGeneratedFormname, $this->strFormEncoding, $this->strOnSubmit, $this->strMethod);
+            $strReturn .= $this->objToolkit->formHeader($strTargetURI, $strGeneratedFormname, $this->strFormEncoding, $this->strOnSubmit, $this->strMethod, $this->bitOnLeaveChangeDetection);
         }
 
         $strReturn .= $this->objToolkit->getValidationErrors($this, $this->getBitErrorsAsWarnings());
@@ -1431,6 +1437,23 @@ class AdminFormgenerator implements \Countable
     {
         return $this->getValidationErrors();
     }
+
+    /**
+     * @return bool
+     */
+    public function isBitOnLeaveChangeDetection(): bool
+    {
+        return $this->bitOnLeaveChangeDetection;
+    }
+
+    /**
+     * @param bool $bitOnLeaveChangeDetection
+     */
+    public function setBitOnLeaveChangeDetection(bool $bitOnLeaveChangeDetection)
+    {
+        $this->bitOnLeaveChangeDetection = $bitOnLeaveChangeDetection;
+    }
+
 
 
     /**

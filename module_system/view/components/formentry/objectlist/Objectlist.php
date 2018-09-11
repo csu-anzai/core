@@ -96,6 +96,7 @@ class Objectlist extends FormentryComponentAbstract
         $context = parent::buildContext();
 
         $rows = [];
+        $ids = [];
         foreach ($this->items as $item) {
             /** @var $item Model */
             if ($item instanceof ModelInterface) {
@@ -116,6 +117,7 @@ class Objectlist extends FormentryComponentAbstract
                     'icon'        => AdminskinHelper::getAdminImage($icon),
                     'removeLink'  => $removeLink,
                 ];
+                $ids[] = $item->getSystemid();
             }
         }
 
@@ -136,6 +138,7 @@ class Objectlist extends FormentryComponentAbstract
         $context["endpointUrl"] = $this->endpointUrl;
         $context["objectTypes"] = json_encode(implode(",", $this->objectTypes ?: []));
         $context["searchInputPlaceholder"] = $searchInputPlaceholder;
+        $context["initval"] = implode(",", $ids);
 
         return $context;
     }
