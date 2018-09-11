@@ -16,7 +16,8 @@ use Kajona\System\System\Model;
 
 /**
  * A meta condition which can be used to apply a condition only in a specific case. Therefor the condition uses the
- * first condition which is stored below this condition to check whether we should validate all following conditions
+ * first condition which is stored below this condition to check whether we should validate the second condition. In
+ * case you need to execute multiple conditions you can use a group condition
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.1
