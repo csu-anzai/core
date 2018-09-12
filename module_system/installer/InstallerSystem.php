@@ -574,6 +574,11 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             $strReturn .= $this->update_70_701();
         }
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.0.1") {
+            $strReturn .= $this->update_701_702();
+        }
+
         return $strReturn."\n\n";
     }
 
@@ -825,6 +830,19 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.1");
+        return $strReturn;
+    }
+
+    private function update_701_702()
+    {
+        $strReturn = "Updating 7.0.1 to 7.0.2...\n";
+
+        $strReturn .= "Adding list clickable setting".PHP_EOL;
+        $this->registerConstant("_system_lists_clickable_", "false", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
+
+        $strReturn .= "Upating module version".PHP_EOL;
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.2");
+
         return $strReturn;
     }
 

@@ -674,7 +674,7 @@ HTML;
             $strReturn .= $this->renderFloatingGrid($objIterator, MediamanagerAdmin::INT_LISTTYPE_FOLDERVIEW, "&form_element=".$strTargetfield."&download=".$this->getParam("download"), false);
         }
 
-        $strReturn .= "<script type='text/javascript'>require(['folderview'], function(f) { f.initRowClick(); });</script>";
+        $strReturn .= "<script type='text/javascript'>require(['lists'], function(l) { l.initRowClick(); });</script>";
         return $strReturn;
     }
 
