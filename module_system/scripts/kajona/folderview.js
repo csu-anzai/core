@@ -119,7 +119,7 @@ define("folderview", ["jquery", "util", "lists"], function($, util, lists){
                     var html = '';
                     html+= '<tr>';
                     html+= '    <td class="listimage">' + arrItems[i].strIcon + '</td>';
-                    html+= '    <td class="title"><div class="smaller">'+strEscapedPath+'</div>' + strEscapedTitle + ' <input type="hidden" name="' + strElementName + '[]" value="' + arrItems[i].strSystemId + '" /></td>';
+                    html+= '    <td class="title"><div class="smaller">'+strEscapedPath+'</div>' + strEscapedTitle + ' <input type="hidden" name="' + strElementName + '[]" value="' + arrItems[i].strSystemId + '" data-kajona-initval="" /></td>';
                     html+= '    <td class="icon-cell">';
                     html+= '        <a href="#" class="removeLink" onclick="require(\'v4skin\').removeObjectListItem(this);return false">' + strDeleteButton + '</a>';
                     html+= '    </td>';
@@ -170,7 +170,7 @@ define("folderview", ["jquery", "util", "lists"], function($, util, lists){
                         value = 'on';
                     }
 
-                    html+= '    <td class="listcheckbox"><input type="checkbox" name="' + formElementName + '" value="' + value + '" data-systemid="' + arrItems[i].strSystemId + '" checked></td>';
+                    html+= '    <td class="listcheckbox"><input type="checkbox" name="' + formElementName + '" value="' + value + '" data-systemid="' + arrItems[i].strSystemId + '" data-kajona-initval="" checked></td>';
                     html+= '    <td class="listimage">' + arrItems[i].strIcon + '</td>';
                     html+= '    <td class="title">';
                     html+= '        <div class="small text-muted">' + arrItems[i].strPath + '</div>';

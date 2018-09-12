@@ -1320,9 +1320,10 @@ HTML;
      * @param string $strOnSubmit
      * @param string $strMethod
      *
+     * @param bool $onLeaveChangeDetection
      * @return string
      */
-    public function formHeader($strAction, $strName = "", $strEncoding = "", $strOnSubmit = null, $strMethod = "POST")
+    public function formHeader($strAction, $strName = "", $strEncoding = "", $strOnSubmit = null, $strMethod = "POST", $onLeaveChangeDetection = true)
     {
 
         $strOnSubmit = $strOnSubmit ?? "require('forms').defaultOnSubmit(this);return false;";
@@ -1333,6 +1334,7 @@ HTML;
         $arrTemplate["method"] = in_array($strMethod, array("GET", "POST")) ? $strMethod : "POST";
         $arrTemplate["enctype"] = $strEncoding;
         $arrTemplate["onsubmit"] = $strOnSubmit;
+        $arrTemplate["onchangedetection"] = $onLeaveChangeDetection ? 'true' : 'false';
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "form_start");
     }
 
