@@ -84,14 +84,7 @@ Header to use when creating drag n dropable lists. places an id an loads the nee
 background using the ajaxHelper.
 Loads the script-helper and adds the table to the drag-n-dropable tables getting parsed later
 <dragable_list_header>
-<script type="text/javascript">
-
-require(['listSortable'], function(sortManager) {
-    sortManager.init('%%listid%%', '%%targetModule%%', %%bitMoveToTree%%);
-}) ;
-
-
-</script>
+<script type="text/javascript"> require(['listSortable'], function(sortManager) { sortManager.init('%%listid%%', '%%targetModule%%', %%bitMoveToTree%%); }); </script>
 <div id='%%listid%%_prev' class='alert alert-info divPageTarget'>[lang,commons_list_sort_prev,system]</div>
 <table id="%%listid%%" class="table admintable table-striped-tbody" data-kajona-pagenum="%%curPage%%" data-kajona-elementsperpage="%%elementsPerPage%%">
 
@@ -100,11 +93,13 @@ require(['listSortable'], function(sortManager) {
 Optional Element to close a list
 <list_footer>
 </table>
+<script type="text/javascript"> if (%%clickable%%) { require(['lists'], function(l) { l.initRowClick() }); }</script>
 </list_footer>
 
 <dragable_list_footer>
 </table>
 <div id='%%listid%%_next' class='alert alert-info divPageTarget'>[lang,commons_list_sort_next,system]</div>
+<script type="text/javascript"> if (%%clickable%%) { require(['lists'], function(l) { l.initRowClick() }); }</script>
 </dragable_list_footer>
 
 

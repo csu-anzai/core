@@ -1529,7 +1529,7 @@ HTML;
      */
     public function listFooter()
     {
-        return $this->objTemplate->fillTemplateFile(array(), "/admin/skins/kajona_v4/elements.tpl", "list_footer");
+        return $this->objTemplate->fillTemplateFile(array("clickable" => SystemSetting::getConfigValue("_system_lists_clickable_") === "true" ? 'true' : 'false'), "/admin/skins/kajona_v4/elements.tpl", "list_footer");
     }
 
     /**
@@ -1541,7 +1541,7 @@ HTML;
      */
     public function dragableListFooter($strListId)
     {
-        return $this->objTemplate->fillTemplateFile(array("listid" => $strListId), "/admin/skins/kajona_v4/elements.tpl", "dragable_list_footer");
+        return $this->objTemplate->fillTemplateFile(array("listid" => $strListId, "clickable" => (SystemSetting::getConfigValue("_system_lists_clickable_") === "true" ? 'true' : 'false')), "/admin/skins/kajona_v4/elements.tpl", "dragable_list_footer");
     }
 
     /**
