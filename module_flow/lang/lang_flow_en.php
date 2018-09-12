@@ -73,3 +73,6 @@ $lang["action_status_change_redirect"]   = "The system needs user input in order
 
 $lang["flow_controller_trait_headline_status"]   = "Status change";
 $lang["flow_controller_trait_headline_action"]   = "Actions";
+
+$lang["action_skip_transition_title"]   = "Skip status message";
+$lang["action_skip_transition_description"] = "";

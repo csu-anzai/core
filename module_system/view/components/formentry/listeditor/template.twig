@@ -13,6 +13,11 @@
                             <span class="kj-icon fa fa-trash-o"></span>
                         </a>
                     </div>
+                    <div class="input-group-addon">
+                        <a href="#">
+                            <span class="kj-icon fa fa-arrows ui-sortable-handle"></span>
+                        </a>
+                    </div>
                 </div>
                 {% else %}
                 <input type="text" name="{{ name }}[{{ key }}]" value="{{ item }}" readonly class="form-control">
@@ -31,7 +36,7 @@
 
     {% if not readOnly %}
     <script type="text/javascript">
-        require(['jquery', 'util'], function($, util) {
+        require(['jquery', 'util', 'jquery-ui'], function($, util) {
             $("#{{ name }}-add").click(function(){
                 var id = util.generateSystemId();
                 var html = "<div class=\"item\">";
@@ -48,6 +53,12 @@
                 $("#{{ name }}-container").append(html);
 
                 return false;
+            });
+
+            $("#{{ name }}-container").sortable({
+                items: '.item',
+                handle: 'span.fa-arrows',
+                cursor: 'move'
             });
         });
     </script>

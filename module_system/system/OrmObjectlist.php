@@ -75,7 +75,7 @@ class OrmObjectlist extends OrmBase
         $this->processWhereRestrictions($strQuery, $arrParams, $strTargetClass);
 
         $arrRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, $arrParams);
-        return $arrRow["cnt"];
+        return (int)$arrRow["cnt"];
 
     }
 

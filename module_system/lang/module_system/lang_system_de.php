@@ -53,6 +53,8 @@ $lang["_system_email_defaultsender_"]    = "Standard E-Mail Absender";
 $lang["_system_email_defaultsender_hint"]    = "Sofern eine Mail keine Von-Adresse eingetragen hat wird die hier genannte Adresse verwendet.";
 $lang["_system_session_ipfixation_"]     = "Session an IP binden";
 $lang["_system_session_ipfixation_hint"] = "Normalerweise wird die Session an die IP des Clients gebunden. Bspw. beim Einsatz von Proxy Servern kann dies aber zu Problem (Logouts) führen.";
+$lang["_system_lists_clickable_"]        = "Standard-Listen klickbar";
+$lang["_system_lists_clickable_hint"]    = "Wenn aktiv wird bei Klick auf eine Listenzeile die erste Aktion automatisch ausgeführt";
 $lang["about_part1"]                     = "<h2>Kajona V6 - Open Source Content Management System</h2>Kajona V 6.2<br /><br /><a href=\"http://www.kajona.de\" target=\"_blank\">www.kajona.de</a><br /><a href=\"mailto:info@kajona.de\" target=\"_blank\">info@kajona.de</a><br /><br />Für weitere Infomationen, Support oder bei Anregungen besuchen Sie einfach unsere Webseite.<br />Support erhalten Sie auch in unserem <a href=\"http://board.kajona.de/\" target=\"_blank\">Forum</a>.";
 $lang["about_part2_header"]              = "<h2>Entwicklungsleitung</h2>";
 $lang["about_part2a_header"]             = "<h2>Contributors / Entwickler</h2>";
@@ -337,3 +339,5 @@ $lang['smtp_auth_password']   = "SMTP auth_password";
 
 $lang["update_in_progress"] = "Das System wird gerade aktualisiert. Bitte warten Sie...";
 $lang["form_objectlist_add_search"]  = "{0} hinzufügen ...";
+
+$lang["object_browser_reset"] = "Objekt entfernen";

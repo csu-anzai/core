@@ -7,7 +7,7 @@ use Artemeon\Image\Plugins\ImageScaleAndCrop;
 
 $floatAngle = 90.0;
 
-$objImage = new Image(_images_cachepath_);
+$objImage = new Image(_realpath_._images_cachepath_);
 $objImage->setUseCache(false);
 if (!$objImage->load(_realpath_."/files/images/samples/P9066809.JPG")) {
     echo "Could not load file.\n";

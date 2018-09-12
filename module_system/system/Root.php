@@ -533,7 +533,9 @@ abstract class Root
         if ($this->objSortManager !== null) {
             $this->objSortManager->fixSortOnDelete($this->intSort);
         }
-        $bitReturn = $bitReturn && $this->deleteSystemRecord($this->getSystemid());
+
+        $strQuery = "DELETE FROM agp_system WHERE system_id = ?";
+        $bitReturn = $bitReturn && $this->objDB->_pQuery($strQuery, array($this->getSystemid()));
 
         Objectfactory::getInstance()->removeFromCache($this->getSystemid());
         OrmRowcache::removeSingleRow($this->getSystemid());
@@ -1339,41 +1341,6 @@ abstract class Root
     public function getModuleData($strName, $bitCache = true)
     {
         return SystemModule::getPlainModuleData($strName, $bitCache);
-    }
-
-    /**
-     * Deletes a record from the SystemTable
-     *
-     * @param string $strSystemid
-     *
-     * @return bool
-     * @todo: remove first params, is always the current systemid. maybe mark as protected, currently only called by the test-classes
-     * @todo find ussages and make private
-     *
-     */
-    final private function deleteSystemRecord($strSystemid)
-    {
-        $bitResult = true;
-
-        //Start a tx before deleting anything
-        $this->objDB->transactionBegin();
-
-        $strQuery = "DELETE FROM agp_system WHERE system_id = ?";
-        $bitResult = $bitResult && $this->objDB->_pQuery($strQuery, array($strSystemid));
-
-        //end tx
-        if ($bitResult) {
-            $this->objDB->transactionCommit();
-            Logger::getInstance()->info("deleted system-record with id ".$strSystemid);
-        } else {
-            $this->objDB->transactionRollback();
-            Logger::getInstance()->warning("deletion of system-record with id ".$strSystemid." failed");
-        }
-
-        //flush the cache
-        Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_CACHE_MANAGER)->flushCache();
-
-        return $bitResult;
     }
 
     /**

@@ -74,3 +74,6 @@ $lang["action_status_change_redirect"]   = "Das System benötigt eine Benutzerei
 $lang["flow_controller_trait_headline_status"]   = "Statuswechsel";
 $lang["flow_controller_trait_headline_action"]   = "Aktionen";
 
+$lang["action_skip_transition_title"]   = "Überspringe Status Nachricht";
+$lang["action_skip_transition_description"] = "";
+

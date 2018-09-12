@@ -113,7 +113,7 @@ class SystemtaskCompresspicuploads extends SystemtaskBase implements AdminSystem
         foreach ($arrFilesFolders["files"] as $arrOneFile) {
             $strImagePath = $strPath."/".$arrOneFile["filename"];
 
-            $objImage = new Image(_images_cachepath_);
+            $objImage = new Image(_realpath_._images_cachepath_);
             $objImage->setUseCache(false);
             $objImage->load(_realpath_.$strImagePath);
             $objImage->addOperation(new ImageScale($this->intMaxWidth, $this->intMaxHeight));

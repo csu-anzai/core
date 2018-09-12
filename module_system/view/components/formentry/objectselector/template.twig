@@ -1,0 +1,55 @@
+
+<div class="form-group core-component-formentry-objectselector">
+    <label for="{{ name }}" class="col-sm-3 control-label">{{ title }}</label>
+    <div class="col-sm-6">
+        <input type="text" id="{{ name }}" name="{{ name }}" {% if object %}value="{{ object.strDisplayName }}"{% endif %} class="form-control" {% if readOnly %}readonly{% endif %} autocomplete="off">
+        <input type="hidden" id="{{ name }}_id" name="{{ name }}_id" {% if object %}value="{{ object.systemId }}"{% endif %} />
+    </div>
+    <div class="col-sm-2 form-opener">
+        {% if add_link and not readOnly %}{{ add_link|raw }}{% endif %}
+        {% if reset_link and not readOnly %}{{ reset_link|raw }}{% endif %}
+    </div>
+
+    <script type="text/javascript">
+        require(['jquery', 'v4skin'], function($, v4skin){
+            var searchEl = $("#{{ name }}");
+
+            var objConfig = new v4skin.defaultAutoComplete();
+            objConfig.source = function(request, response) {
+                $.ajax({
+                    url: "{{ endpoint_url|escape("js") }}",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        search_query: request.term,
+                        object_types: {{ object_types|raw }}
+                    },
+                    success: response
+                });
+            };
+
+            objConfig.select = function (event, ui) {
+                if (ui.item) {
+                    $(this).val(ui.item.description);
+                    $("{{ name }}_id").val(ui.item.systemid).trigger('change');
+                    $(this).trigger('change');
+                }
+                return false;
+            };
+
+            searchEl.autocomplete(objConfig).data( 'ui-autocomplete' )._renderItem = function( ul, item ) {
+                var text;
+                if (item.icon) {
+                    text = item.icon + '&nbsp;&nbsp;' + item.description;
+                } else {
+                    text = item.description;
+                }
+
+                return $( '<li></li>' )
+                    .data('ui-autocomplete-item', item)
+                    .append('<div class="ui-autocomplete-item">' + text + '</div>')
+                    .appendTo(ul);
+            } ;
+        });
+    </script>
+</div>

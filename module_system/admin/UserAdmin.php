@@ -44,8 +44,8 @@ use Kajona\System\System\Usersources\UsersourcesGroupInterface;
 use Kajona\System\System\Usersources\UsersourcesUserInterface;
 use Kajona\System\System\UserUser;
 use Kajona\System\System\Validators\EmailValidator;
-use Kajona\System\View\Components\DTable\DTableComponent;
-use Kajona\System\View\Components\DTable\Model\DTable;
+use Kajona\System\View\Components\Dtable\DTableComponent;
+use Kajona\System\View\Components\Dtable\Model\DTable;
 
 /**
  * This class provides the user and groupmanagement
@@ -1534,7 +1534,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
             );
         }
 
-        $strReturn .= "<script type='text/javascript'>require(['folderview'], function(f) { f.initRowClick(); });</script>";
+        $strReturn .= "<script type='text/javascript'>require(['lists'], function(l) { l.initRowClick(); });</script>";
 
         return $strReturn;
     }

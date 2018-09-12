@@ -12,6 +12,7 @@ use AGP\Prozessverwaltung\Admin\Formentries\FormentryOe;
 use AGP\Prozessverwaltung\Admin\Formentries\FormentryProzess;
 use Kajona\Flow\System\ServiceProvider as FlowServiceProvider;
 use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\Formentries\FormentryCheckbox;
 use Kajona\System\Admin\Formentries\FormentryDate;
 use Kajona\System\Admin\Formentries\FormentryDatetime;
 use Kajona\System\Admin\Formentries\FormentryDropdown;
@@ -104,7 +105,7 @@ class SystemChangelogRenderer
         if (empty($strType)) {
             if (validateSystemid($strValue)) {
                 $strType = FormentryObjectlist::class;
-            } elseif (StringUtil::indexOf($strProperty, "date", false) !== false && Date::isDateValue($strValue)) {
+            } elseif (StringUtil::indexOf($strProperty, "date", false) !== false && (Date::isDateValue($strValue) || empty($strValue))) {
                 $strType = FormentryDate::class;
             } elseif ($strProperty == "intRecordStatus" && $strValue !== "") {
                 $statusValue = $this->getValueForStatus($strValue, $this->objReflection->getStrSourceClass());
@@ -285,10 +286,22 @@ class SystemChangelogRenderer
                 }
 
                 break;
+            case FormentryCheckbox::class:
+                if ($strValue === "1") {
+                    return Carrier::getInstance()->getObjLang()->getLang("commons_yes", "system");
+                } elseif ($strValue === "0") {
+                    return Carrier::getInstance()->getObjLang()->getLang("commons_no", "system");
+                } else {
+                    return "";
+                }
 
             default:
                 if (validateSystemid($strValue)) {
                     return $this->getStrValueForObjects($strValue);
+                }
+                $arrJson = json_decode($strValue, true);
+                if (!empty($arrJson)) {
+                    $strValue = print_r($arrJson, true);
                 }
                 return $strValue;
         }
