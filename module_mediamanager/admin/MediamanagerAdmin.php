@@ -666,7 +666,7 @@ HTML;
             $strReturn .= $this->renderFloatingGrid($objIterator, MediamanagerAdmin::INT_LISTTYPE_FOLDERVIEW, "&form_element=".$strTargetfield."&download=".$this->getParam("download"), false);
         }
 
-        $strReturn .= "<script type='text/javascript'>require(['folderview'], function(f) { f.initRowClick(); });</script>";
+        $strReturn .= "<script type='text/javascript'>require(['lists'], function(l) { l.initRowClick(); });</script>";
         return $strReturn;
     }
 
@@ -1332,7 +1332,7 @@ HTML;
 
         $strFile = $this->getParam("file");
 
-        $objImage = new Image(_images_cachepath_);
+        $objImage = new Image(_realpath_._images_cachepath_);
         $objImage->setUseCache(false);
         $objImage->load(_realpath_.$strFile);
         $objImage->addOperation(new ImageRotate($this->getParam("angle")));
@@ -1368,7 +1368,7 @@ HTML;
 
         $strFile = $this->getParam("file");
 
-        $objImage = new Image(_images_cachepath_);
+        $objImage = new Image(_realpath_._images_cachepath_);
         $objImage->setUseCache(false);
         $objImage->load(_realpath_.$strFile);
         $objImage->addOperation(new ImageCrop($this->getParam("intX"), $this->getParam("intY"), $this->getParam("intWidth"), $this->getParam("intHeight")));

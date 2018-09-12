@@ -125,7 +125,7 @@ class Flyimage
                 return;
             }
 
-            $objImage = new Image(_images_cachepath_);
+            $objImage = new Image(_realpath_._images_cachepath_);
             $objImage->load(_realpath_.$this->strFilename);
             $objImage->addOperation(new ImageScaleAndCrop($this->intFixedWidth, $this->intFixedHeight));
             $objImage->addOperation(new ImageScale($this->intMaxWidth, $this->intMaxHeight));
@@ -184,7 +184,7 @@ class Flyimage
         srand((double)microtime() * 1000000);
 
         //v2 version
-        $objImage = new Image(_images_cachepath_);
+        $objImage = new Image(_realpath_._images_cachepath_);
         $objImage->create($intWidth, $intHeight);
         $objImage->addOperation(new ImageRectangle(0, 0, $intWidth, $intHeight, "#FFFFFF"));
 
