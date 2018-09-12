@@ -1,12 +1,13 @@
 <?php
 
-namespace Kajona\Flow\Tests;
+namespace Kajona\Flow\Tests\Condition;
 
 use Kajona\Flow\System\Flow\Condition\AndCondition;
 use Kajona\Flow\System\Flow\Condition\CallbackCondition;
 use Kajona\Flow\System\FlowConditionAbstract;
 use Kajona\Flow\System\FlowConditionResult;
 use Kajona\Flow\System\FlowTransition;
+use Kajona\Flow\Tests\FlowTestAbstract;
 use Kajona\System\System\MessagingMessage;
 
 class AndConditionTest extends FlowTestAbstract
