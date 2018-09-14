@@ -644,7 +644,7 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
         } elseif ($this->intGroupStyle == self::GROUP_TYPE_TABS) {
             $arrTabs = [];
             foreach ($this->arrGroupSort as $strKey) {
-                $strHtml = $arrGroups[$strKey];
+                $strHtml = $arrGroups[$strKey] ?? "";
                 if (!empty($strHtml)) {
                     // mark tabs which contain validation errors
                     $bitHasError = $this->hasGroupError($strKey);
