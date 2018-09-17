@@ -1,0 +1,5 @@
+{
+  "paths": {
+    "chartjs": "chartjs/Chart.bundle.min"
+  }
+}
