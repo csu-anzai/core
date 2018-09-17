@@ -6,7 +6,7 @@
 /**
  * @module lists
  */
-define('lists', ['jquery', 'lang'], function ($, lang) {
+define('lists', ['jquery', 'lang', "util"], function ($, lang, utils) {
 
     return /** @alias module:lists */ {
         arrSystemids : [],
@@ -180,6 +180,46 @@ define('lists', ['jquery', 'lang'], function ($, lang) {
             });
 
             return selectedElements;
+        },
+
+
+        /**
+         * Enables selection by clicking a row-entry
+         */
+        initRowClick : function() {
+            var dialog = utils.isStackedDialog();
+            var tds = $('#moduleOutput .admintable tr td');
+            tds.addClass('clickable');
+            tds.on('click', function(e) {
+
+                var source = event.target || event.srcElement;
+                //if not fired within an td, skip
+                if (source.tagName.toLowerCase() != "td") {
+                    return;
+                }
+
+                var row = $(this).parent('tr');
+
+                var callbacks = row.find('td.actions .listButton a[onclick*="selectCallback"]');
+                if (callbacks.length) {
+                    callbacks[0].click();
+                    return;
+                }
+                if (dialog) {
+                    var button = row.find('td.actions .listButton:last a');
+                } else {
+                    var button = row.find('td.actions .listButton:first a');
+                }
+                if (button.length) {
+                    var attr = button.attr('data-toggle');
+                    if (typeof attr !== typeof undefined && attr !== false) {
+                        e.stopPropagation();
+                        button.dropdown('toggle');
+                    }
+
+                    button[0].click();
+                }
+            });
         }
     };
 

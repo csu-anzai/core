@@ -71,6 +71,16 @@ abstract class FlowConditionAbstract extends Model implements ModelInterface, Ad
     }
 
     /**
+     * Returns all child conditions
+     *
+     * @return FlowConditionInterface[]
+     */
+    protected function getChildConditions()
+    {
+        return FlowConditionAbstract::getObjectListFiltered(null, $this->getSystemid());
+    }
+
+    /**
      * @return string
      */
     public function getStrIcon()

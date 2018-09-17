@@ -112,7 +112,15 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
         if (isStackedDialog && url.indexOf('peClose=1') != -1) {
             //react on peClose statements by reloading the parent view
             parent.KAJONA.admin.folderview.dialog.hide();
-            parent.routie.reload();
+
+            if (url.indexOf('peLoad=1') != -1) {
+                // in this case we want that the parent routes to the provided url
+                url = url.replace("peClose=1", "");
+                url = url.replace("peLoad=1", "");
+                parent.routie(url);
+            } else {
+                parent.routie.reload();
+            }
             return;
         }
 
