@@ -193,7 +193,6 @@ class RequestDispatcher
                         } catch (\Throwable $objEx) {
                             if (!($objEx instanceof Exception)) {
                                 $objNewEx = new Exception($objEx->getMessage(), Exception::$level_ERROR, $objEx);
-                                $objNewEx->setStrAdditionalTrace($objEx->getTraceAsString());
                                 $objEx = $objNewEx;
                             }
                             $objEx->processException();
