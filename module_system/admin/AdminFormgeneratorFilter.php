@@ -158,15 +158,9 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
             $bitInitiallyVisible
         );
 
-        $strFilterUrlButton = (SystemModule::getModuleByName('tinyurl') !== null) ?
-            '<button type="button" class="btn btn-default" style="background-color:transparent; border: none" onclick="require(\'forms\').getFilterURL();">'.
-            '<span class="kj-icon fa fa-link" style="margin-right: 5px"></span>'.
-            $objLang->getLang("commons_filter_url", "system").
-            '</button>' :
-            '';
+        $strFilterUrlButton = $objToolkit->getJsActionButton('icon_link', $objLang->getLang("commons_filter_url", "system"), "getFilterURL");
 
-
-        return $objToolkit->addToContentToolbar($arrFolder[1]) . $objToolkit->addToContentToolbar($strFilterUrlButton). $arrFolder[0];
+        return $objToolkit->addToContentToolbar($arrFolder[1]) . $objToolkit->addToContentToolbar(trim($strFilterUrlButton)). $arrFolder[0];
     }
 
     /**

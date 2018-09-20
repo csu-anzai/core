@@ -2957,6 +2957,20 @@ HTML;
         return $this->objTemplate->fillTemplateFile(array("content" => $strContent, "class" => $strClass, "systemid" => $strId, "highlightid" => $strHighlightId), "/admin/skins/kajona_v4/elements.tpl", "calendar_event");
     }
 
+    /**
+     * @param string $icon
+     * @param string $label
+     * @param string $callback
+     * @return string
+     * @since 7.1
+     */
+    public  function getJsActionButton($icon, $label, $callback){
+        $icon = AdminskinHelper::getAdminImage($icon);
+
+        return $this->objTemplate->fillTemplateFile(["icon"=>$icon, "label"=>$label, "callback"=>$callback], "/admin/skins/kajona_v4/elements.tpl", "js_action_button");
+
+    }
+
     //---contect menues ---------------------------------------------------------------------------------
 
     /**
