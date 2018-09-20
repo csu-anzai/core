@@ -1,6 +1,6 @@
 <?php
 
-namespace Kajona\Ezcchart\Tests;
+namespace Kajona\Chartjs\Tests;
 
 use Kajona\System\Tests\Testbase;
 
