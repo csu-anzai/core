@@ -309,9 +309,8 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
 
     forms.getFilterURL = function () {
         var filterUrl = $(".contentFolder form").attr('action') + '&' + $(".contentFolder form").serialize();
-        ajax.genericAjaxCall("tinyurl", "getShortUrl", {url: filterUrl}, function (resp) {
-            if (resp) {
-                var data = JSON.parse(resp);
+        ajax.genericAjaxCall("tinyurl", "getShortUrl", {url: filterUrl}, function (data) {
+            if (data) {
                 var modalContent = '<div class="input-group">' +
                     '<input type="text" class="form-control" value="' + data.url + '">' +
                     '<span class="input-group-btn">' +
@@ -324,9 +323,9 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
                 dialogHelper.showInfoModal("Page Url", modalContent);
             }
             else {
-                console.error("No data in response, probably 'Tinyurl' module not installed.");
+                // console.error("No data in response, probably 'Tinyurl' module not installed.");
             }
-        });
+        }, null, null, null, 'json');
     };
 
     return forms;

@@ -26,16 +26,18 @@ use Kajona\System\Admin\Formentries\FormentryHidden;
 class TinyUrlController extends AdminController implements AdminInterface
 {
     /**
+     * @inject tinyurl_manager
+     */
+    protected $tinyurlManager;
+
+    /**
      * @return false|string
      * @permissions loggedin
      * @responseType json
      */
     public function actionGetShortUrl()
     {
-        $strLongUrl = $this->getParam('url');
-        $objTinyUrl = new TinyUrl();
-
-        return ["url" => $objTinyUrl->getShortUrl($strLongUrl)];
+        return ["url" => $this->tinyurlManager->getShortUrl($this->getParam('url'))];
     }
 
     /**
@@ -45,8 +47,7 @@ class TinyUrlController extends AdminController implements AdminInterface
     public function actionLoadUrl()
     {
         $strUrlID = $this->getParam('systemid');
-        $objTinyUrl = new TinyUrl();
-        $strUrl = urldecode($objTinyUrl->loadUrl($strUrlID));
+        $strUrl = urldecode($this->tinyurlManager->loadUrl($strUrlID));
         if (!empty($strUrl)) {
             $strReturn = "";
             $urlParts = explode("?", $strUrl);

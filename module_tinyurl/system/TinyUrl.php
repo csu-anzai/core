@@ -26,7 +26,7 @@ class TinyUrl
      * @param string $strLongUrl
      * @return string
      */
-    public static function getShortUrl($strLongUrl)
+    public function getShortUrl($strLongUrl)
     {
 
         $strUrlId = generateSystemid();

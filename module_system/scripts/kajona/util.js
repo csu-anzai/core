@@ -336,9 +336,7 @@ define('util', ['jquery'], function ($) {
         textArea.select();
         try {
             document.execCommand('copy');
-        } catch (err) {
-            console.error('Oops, unable to copy');
-        }
+        } catch (err) {}
         document.body.removeChild(textArea);
     }
 
