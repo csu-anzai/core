@@ -323,6 +323,24 @@ define('util', ['jquery'], function ($) {
         }
     };
 
+    /**
+     * Copies text to clipboard
+     *
+     * @param text
+     */
+    util.copyTextToClipboard = function (text) {
+        var textArea = document.createElement("textarea");
+        textArea.style.background = 'transparent';
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+            console.error('Oops, unable to copy');
+        }
+        document.body.removeChild(textArea);
+    }
 
     /**
      * decodes html entites, call it just like

@@ -8,9 +8,11 @@
  *
  * @module forms
  */
-define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function ($, tooltip, router, util, messaging) {
 
-    /** @exports forms */
+define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'dialogHelper'], function ($, tooltip, router, util, messaging, ajax, dialogHelper) {
+
+
+        /** @exports forms */
     var forms = {};
 
     forms.changeLabel = '';
@@ -302,6 +304,28 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
     forms.registerUnlockId = function (strId) {
         router.registerLoadCallback("form_unlock", function() {
             $.ajax({url: KAJONA_WEBPATH + '/xml.php?admin=1&module=system&action=unlockRecord&systemid='+strId});
+        });
+    };
+
+    forms.getFilterURL = function () {
+        var filterUrl = $(".contentFolder form").attr('action') + '&' + $(".contentFolder form").serialize();
+        ajax.genericAjaxCall("tinyurl", "getShortUrl", {url: filterUrl}, function (resp) {
+            if (resp) {
+                var data = JSON.parse(resp);
+                var modalContent = '<div class="input-group">' +
+                    '<input type="text" class="form-control" value="' + data.url + '">' +
+                    '<span class="input-group-btn">' +
+                    '<button class="btn btn-default" type="button" title="Copy to clipboard" onclick="require(\'util\').copyTextToClipboard(\'' + data.url + '\')">' +
+                    '<i class=\'kj-icon fa fa-clipboard\'>' +
+                    '</button>' +
+                    '</span>' +
+                    '</div>';
+
+                dialogHelper.showInfoModal("Page Url", modalContent);
+            }
+            else {
+                console.error("No data in response, probably 'Tinyurl' module not installed.");
+            }
         });
     };
 
