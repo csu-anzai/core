@@ -203,17 +203,25 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
     public static function getObjectListFiltered(FilterBase $objFilter = null, $strUsernameFilter = "", $intStart = null, $intEnd = null)
     {
         $strDbPrefix = _dbprefix_;
+        $connection = Database::getInstance();
 
         $strQuery = "SELECT user_tbl.user_id
                       FROM {$strDbPrefix}system, ".Carrier::getInstance()->getObjDB()->encloseTableName(_dbprefix_."user")." AS user_tbl
                       LEFT JOIN {$strDbPrefix}user_kajona AS user_kajona ON user_tbl.user_id = user_kajona.user_id
                       WHERE
-                          (user_tbl.user_username LIKE ? OR user_kajona.user_forename LIKE ? OR user_kajona.user_name LIKE ?)
+                          (
+                          user_tbl.user_username LIKE ? 
+                          OR user_kajona.user_forename LIKE ? 
+                          OR user_kajona.user_name LIKE ? 
+                          OR ".$connection->getConcatExpression(['user_kajona.user_forename', '\' \'', 'user_kajona.user_name'])." LIKE ?
+                          OR ".$connection->getConcatExpression(['user_kajona.user_name', '\' \'', 'user_kajona.user_forename'])." LIKE ?
+                          OR ".$connection->getConcatExpression(['user_kajona.user_name', '\', \'', 'user_kajona.user_forename'])." LIKE ?                  
+                          )
                           AND user_tbl.user_id = system_id
                           AND (system_deleted = 0 OR system_deleted IS NULL)
                       ORDER BY user_tbl.user_username, user_tbl.user_subsystem ASC";
 
-        $arrParams = array("%".$strUsernameFilter."%", "%".$strUsernameFilter."%", "%".$strUsernameFilter."%");
+        $arrParams = array("%".$strUsernameFilter."%", "%".$strUsernameFilter."%", "%".$strUsernameFilter."%", "%".$strUsernameFilter."%", "%".$strUsernameFilter."%", "%".$strUsernameFilter."%");
 
         $arrIds = Carrier::getInstance()->getObjDB()->getPArray($strQuery, $arrParams, $intStart, $intEnd);
 
@@ -234,16 +242,25 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
     public static function getObjectCountFiltered(FilterBase $objFilter = null, $strUsernameFilter = "")
     {
         $strDbPrefix = _dbprefix_;
+        $connection = Database::getInstance();
 
         $strQuery = "SELECT COUNT(*) AS cnt
                       FROM {$strDbPrefix}system, {$strDbPrefix}user AS user_tbl 
                       LEFT JOIN {$strDbPrefix}user_kajona AS user_kajona ON user_tbl.user_id = user_kajona.user_id
                       WHERE
-                          (user_tbl.user_username LIKE ? OR user_kajona.user_forename LIKE ? OR user_kajona.user_name LIKE ?)
+                          (
+                          user_tbl.user_username LIKE ? 
+                          OR user_kajona.user_forename LIKE ? 
+                          OR user_kajona.user_name LIKE ?
+                          OR ".$connection->getConcatExpression(['user_kajona.user_forename', '\' \'', 'user_kajona.user_name'])." LIKE ?
+                          OR ".$connection->getConcatExpression(['user_kajona.user_name', '\' \'', 'user_kajona.user_forename'])." LIKE ?
+                          OR ".$connection->getConcatExpression(['user_kajona.user_name', '\', \'', 'user_kajona.user_forename'])." LIKE ?
+                          )
+                          
                           AND user_tbl.user_id = system_id
                           AND (system_deleted = 0 OR system_deleted IS NULL)";
 
-        $arrParams = array("%".$strUsernameFilter."%", "%".$strUsernameFilter."%", "%".$strUsernameFilter."%");
+        $arrParams = array("%".$strUsernameFilter."%", "%".$strUsernameFilter."%", "%".$strUsernameFilter."%", "%".$strUsernameFilter."%", "%".$strUsernameFilter."%", "%".$strUsernameFilter."%");
 
         $arrRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, $arrParams);
         return $arrRow["cnt"];
@@ -263,8 +280,7 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
         $objUser = $objSubsystem->getUserByUsername($strName);
         if ($objUser != null) {
             return array($objUser);
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -330,8 +346,7 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
         $this->loadSourceObject();
         if ($this->objSourceUser != null) {
             return $this->objSourceUser->getStrEmail();
-        }
-        else {
+        } else {
             return "n.a.";
         }
     }
@@ -344,8 +359,7 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
         $this->loadSourceObject();
         if ($this->objSourceUser != null) {
             return $this->objSourceUser->getStrForename();
-        }
-        else {
+        } else {
             return "n.a.";
         }
     }
@@ -358,8 +372,7 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
         $this->loadSourceObject();
         if ($this->objSourceUser != null) {
             return $this->objSourceUser->getStrName();
-        }
-        else {
+        } else {
             return "n.a.";
         }
     }
@@ -635,8 +648,7 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
     {
         if ($this->intItemsPerPage > 0) {
             return $this->intItemsPerPage;
-        }
-        else {
+        } else {
             return SystemSetting::getConfigValue("_admin_nr_of_rows_");
         }
     }
