@@ -314,13 +314,19 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
                 var modalContent = '<div class="input-group">' +
                     '<input type="text" class="form-control" value="' + data.url + '">' +
                     '<span class="input-group-btn">' +
-                    '<button class="btn btn-default" type="button" title="Copy to clipboard" onclick="require(\'util\').copyTextToClipboard(\'' + data.url + '\')">' +
+                    '<button class="btn btn-default copy-btn" type="button" title="" onclick="require(\'util\').copyTextToClipboard(\'' + data.url + '\')">' +
                     '<i class=\'kj-icon fa fa-clipboard\'>' +
                     '</button>' +
                     '</span>' +
                     '</div>';
 
-                dialogHelper.showInfoModal("Page Url", modalContent);
+                dialogHelper.showInfoModal("<span data-lang-property=\"system:copy_page_url\"></span>", modalContent);
+                require(["lang", "jquery"], function(lang, $) {
+                    lang.initializeProperties();
+                    lang.fetchSingleProperty("system", "copy_to_clipboard", function(value) {
+                        $(".copy-btn").attr("title", value);
+                    })
+                })
             }
             else {
                 // console.error("No data in response, probably 'Tinyurl' module not installed.");

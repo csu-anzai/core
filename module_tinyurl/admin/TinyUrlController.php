@@ -8,7 +8,6 @@ declare(strict_types=1);
 namespace Kajona\Tinyurl\Admin;
 
 
-use Kajona\Tinyurl\System\TinyUrl;
 use Kajona\System\Admin\AdminController;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminInterface;
