@@ -455,6 +455,12 @@ JS;
 
         $objForm->updateSourceObject();
 
+        // in case available set the internal identifier
+        $internalIdentifier = $this->getParam("messaging_internal_identifier");
+        if (validateSystemid($internalIdentifier)) {
+            $objMessage->setStrInternalIdentifier($internalIdentifier);
+        }
+
         $objMessageHandler = new MessagingMessagehandler();
         $objMessage->setObjMessageProvider(new MessageproviderPersonalmessage());
 
