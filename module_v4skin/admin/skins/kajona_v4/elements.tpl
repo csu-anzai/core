@@ -1837,5 +1837,5 @@ place ajaxScript before the closing input_tagselector-tag.
 </changelog_heatmap>
 
 <js_action_button>
-<button type="button" class="btn btn-default" style="background-color:transparent; border: none" onclick="require('forms').%%callback%%();"><span style="margin-right: 5px">%%icon%%</span>%%label%%</button>
+<button type="button" class="btn" style="background-color:transparent; border: none" onclick="%%callback%%"><span style="margin-right: 5px">%%icon%%</span>%%label%%</button>
 </js_action_button>

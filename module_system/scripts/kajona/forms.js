@@ -328,9 +328,6 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
                     })
                 })
             }
-            else {
-                // console.error("No data in response, probably 'Tinyurl' module not installed.");
-            }
         }, null, null, null, 'json');
     };
 

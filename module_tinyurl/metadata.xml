@@ -5,12 +5,12 @@
 >
     <title>tinyurl</title>
     <description>Create a shortened URL</description>
-    <version>7.0</version>
+    <version>7.1</version>
     <author>Kajona Team</author>
     <type>MODULE</type>
     <providesInstaller>TRUE</providesInstaller>
     <requiredModules>
-        <module name="system" version="7.0" />
+        <module name="system" version="7.1" />
     </requiredModules>
     <constants>
         <constant name="_tinyurl_module_id_" value="20180907" />

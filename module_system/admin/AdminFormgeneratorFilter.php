@@ -158,7 +158,7 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
             $bitInitiallyVisible
         );
 
-        $strFilterUrlButton = $objToolkit->getJsActionButton('icon_link', $objLang->getLang("commons_filter_url", "system"), "getFilterURL");
+        $strFilterUrlButton = $objToolkit->getJsActionButton('icon_link', $objLang->getLang("commons_filter_url", "system"), "require('forms').getFilterURL()");
 
         return $objToolkit->addToContentToolbar($arrFolder[1]) . $objToolkit->addToContentToolbar(trim($strFilterUrlButton)). $arrFolder[0];
     }

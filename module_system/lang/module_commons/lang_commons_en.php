@@ -96,7 +96,7 @@ $lang["commons_validator_numeric_validationmessage"] = "The field must contain n
 $lang["commons_validator_posint_validationmessage"] = "The field must contain positive integer values";
 $lang["commons_yes"]                     = "Yes";
 $lang["commons_filter_active"]            = "List filter in use";
-$lang["commons_filter_url"]               = "Get filter link";
+$lang["commons_filter_url"]               = "Share/save filter";
 $lang["filter_show_hide"]                = "Show/hide filter";
 
 $lang["commons_remove_assignment"]                     = "Remove assignment";

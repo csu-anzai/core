@@ -14,7 +14,7 @@ use Kajona\System\System\SystemModule;
 use Kajona\Tinyurl\Admin\TinyUrlController;
 
 /**
- * Class providing an install for the tags module
+ * Class providing an install for the TinyUrl module
  *
  * @package module_tinyurl
  * @author andrii.konoval@artemeon.de

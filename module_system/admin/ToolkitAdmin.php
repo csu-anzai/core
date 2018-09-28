@@ -2958,6 +2958,8 @@ HTML;
     }
 
     /**
+     * Renders a button with onClick callback.
+     *
      * @param string $icon
      * @param string $label
      * @param string $callback
