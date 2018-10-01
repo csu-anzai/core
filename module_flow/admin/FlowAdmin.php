@@ -10,20 +10,15 @@
 namespace Kajona\Flow\Admin;
 
 use Kajona\Flow\System\FlowActionAbstract;
-use Kajona\Flow\System\FlowActionUserInputInterface;
 use Kajona\Flow\System\FlowConditionAbstract;
 use Kajona\Flow\System\FlowConfig;
 use Kajona\Flow\System\FlowGraphWriter;
 use Kajona\Flow\System\FlowManager;
-use Kajona\Flow\System\FlowModelRightInterface;
 use Kajona\Flow\System\FlowStatus;
 use Kajona\Flow\System\FlowStatusFilter;
 use Kajona\Flow\System\FlowTransition;
 use Kajona\System\Admin\AdminEvensimpler;
-use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminInterface;
-use Kajona\System\Admin\Formentries\FormentryHeadline;
-use Kajona\System\Admin\Formentries\FormentryHidden;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\ArraySectionIterator;
 use Kajona\System\System\Lang;
@@ -31,6 +26,11 @@ use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
+use Kajona\System\System\Permissions\PermissionHandlerFactory;
+use Kajona\System\System\Permissions\PermissionHandlerInterface;
+use Kajona\System\System\Root;
+use Kajona\System\View\Components\Dtable\DTableComponent;
+use Kajona\System\View\Components\Dtable\Model\DTable;
 
 /**
  * Admin class to setup status transition flows
@@ -66,6 +66,12 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
      * @var FlowManager
      */
     protected $objFlowManager;
+
+    /**
+     * @inject system_permission_handler_factory
+     * @var PermissionHandlerFactory
+     */
+    protected $objPermissionHandlerFactory;
 
     /**
      * @return array
@@ -374,8 +380,38 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
         $objArraySectionIterator->setPageNumber((int)($this->getParam("pv") != "" ? $this->getParam("pv") : 1));
         $objArraySectionIterator->setArraySection(FlowTransition::getObjectListFiltered($objFilter, $this->getSystemid(), $objArraySectionIterator->calculateStartPos(), $objArraySectionIterator->calculateEndPos()));
 
-        /* Render list and filter */
-        $strList = $this->renderList($objArraySectionIterator, true, "list".$this->getStrCurObjectTypeName());
+        $strList = "";
+
+        // render roles
+        $targetClass = $objStatus->getFlowConfig()->getStrTargetClass();
+        $permissionHandler = $this->objPermissionHandlerFactory->factory($targetClass);
+
+        if ($permissionHandler instanceof PermissionHandlerInterface) {
+            $table = new DTable();
+            $roles = $permissionHandler->getRoles();
+
+            foreach ($roles as $role) {
+                $allRights = $permissionHandler->getRoleRights($role);
+                $statusRights = $objStatus->getRightsForRole($role);
+
+                $rights = implode(", ", array_map(function($rightKey) use ($allRights){
+                    return isset($allRights[$rightKey]) ? $allRights[$rightKey] : "-";
+                }, $statusRights));
+
+                /** @var Root $model */
+                $model = new $targetClass();
+                $label = Lang::getInstance()->getLang("flow_roles_{$role}", $model->getArrModule("module"));
+
+                $table->addRow([$label, $rights]);
+            }
+
+            $strList.= $this->objToolkit->formHeadline(Lang::getInstance()->getLang("form_flow_headline_roles", "flow"));
+            $strList.= (new DTableComponent($table))->renderComponent();
+            $strList.= "<hr>";
+        }
+
+        $strList.= $this->objToolkit->formHeadline(Lang::getInstance()->getLang("form_flow_headline_transitions", "flow"));
+        $strList.= $this->renderList($objArraySectionIterator, true, "list".$this->getStrCurObjectTypeName());
         $strGraph = FlowGraphWriter::write($objStatus->getFlowConfig(), $objStatus);
 
         $strHtml = "<div class='row'>";
