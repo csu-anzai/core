@@ -277,6 +277,8 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_sidebarClose" => "<i class='fa fa-expand'></i>",
         "icon_summary" => "<i class='kj-icon fa fa-file-text-o'></i>",
         "icon_servicer" => "<i class='kj-icon fa fa-building-o'></i>",
+        "icon_servicerDisabled" => "<span class='kj-icon fa-stack'><i class='fa fa-building-o'></i><i class='fa fa-ban fa-stack-1x kj-stack' style='color: red'></i></span>",
+        "icon_servicerEnabled" => "<span class='kj-icon fa-stack'><i class='fa fa-building-o'></i><i class='fa fa-check fa-stack-1x kj-stack' style='color: green;'></i></span>",
         "icon_outsourcing" => "<i class='kj-icon fa fa-sign-out'></i>",
         "icon_subservicer" => "<i class='kj-icon fa fa-building'></i>",
         "icon_szenario" => "<span class='fa-stack kj-icon' style='text-align: center'><i class='fa fa-square' style='color:#DA0000'></i><i class='fa fa-stack-1x fa-inverse kj-text-icon' style='border-bottom:0; font-weight: normal;'>S</i></span>",
@@ -306,6 +308,9 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_confirmation" =>  "<i class='kj-icon fa fa-envelope'></i>",
         "icon_commodity_group" =>  "<i class='kj-icon fa fa-cubes'></i>",
         "icon_product_group" =>  "<i class='kj-icon fa fa-cube'></i>",
+        "icon_shopping_cart" =>  "<i class='kj-icon fa fa-shopping-cart'></i>",
+        "icon_shopping_cartReady" =>  "<span class='kj-icon fa-stack'><i class='fa fa-shopping-cart'></i><i class='fa fa-check fa-stack-1x kj-stack' style='color: green'></i></span>",
+        "icon_shopping_cartError" =>  "<span class='kj-icon fa-stack'><i class='fa fa-shopping-cart'></i><i class='fa fa-ban fa-stack-1x kj-stack' style='color: red'></i></span>",
 
         //note: a copy of this markup is placed in agp_util.js and elements_artemeon.tpl::input_dropdown_ampel
         "icon_ampel_gelb" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_gelb'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle orange'></i><i class='kj-icon fa fa-circle-thin'></i></span>",

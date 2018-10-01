@@ -37,6 +37,11 @@ class Listsearch extends AbstractComponent
     protected $items;
 
     /**
+     * @var bool
+     */
+    protected $focus;
+
+    /**
      * @param string $endpointUrl
      * @param array $items
      */
@@ -46,6 +51,7 @@ class Listsearch extends AbstractComponent
 
         $this->endpointUrl = $endpointUrl;
         $this->items = $items;
+        $this->focus = false;
         $this->searchPlaceholder = Lang::getInstance()->getLang("form_search_query", "search");
     }
 
@@ -74,6 +80,14 @@ class Listsearch extends AbstractComponent
     }
 
     /**
+     * @param bool $focus
+     */
+    public function setFocus(bool $focus)
+    {
+        $this->focus = $focus;
+    }
+
+    /**
      * @inheritdoc
      */
     public function renderComponent(): string
@@ -87,6 +101,7 @@ class Listsearch extends AbstractComponent
             "endpoint_url" => $endpointUrl,
             "search_placeholder" => $this->searchPlaceholder,
             "items" => $this->items,
+            "focus" => $this->focus,
             "form_id" => generateSystemid(),
         ];
 

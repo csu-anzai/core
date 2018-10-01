@@ -8,7 +8,7 @@
  *
  * @module folderview
  */
-define("folderview", ["jquery", "util"], function($, util){
+define("folderview", ["jquery", "util", "lists"], function($, util, lists){
 
     return /** @alias module:folderview */ {
         /**
@@ -119,7 +119,7 @@ define("folderview", ["jquery", "util"], function($, util){
                     var html = '';
                     html+= '<tr>';
                     html+= '    <td class="listimage">' + arrItems[i].strIcon + '</td>';
-                    html+= '    <td class="title"><div class="smaller">'+strEscapedPath+'</div>' + strEscapedTitle + ' <input type="hidden" name="' + strElementName + '[]" value="' + arrItems[i].strSystemId + '" /></td>';
+                    html+= '    <td class="title"><div class="smaller">'+strEscapedPath+'</div>' + strEscapedTitle + ' <input type="hidden" name="' + strElementName + '[]" value="' + arrItems[i].strSystemId + '" data-kajona-initval="" /></td>';
                     html+= '    <td class="icon-cell">';
                     html+= '        <a href="#" class="removeLink" onclick="require(\'v4skin\').removeObjectListItem(this);return false">' + strDeleteButton + '</a>';
                     html+= '    </td>';
@@ -170,7 +170,7 @@ define("folderview", ["jquery", "util"], function($, util){
                         value = 'on';
                     }
 
-                    html+= '    <td class="listcheckbox"><input type="checkbox" name="' + formElementName + '" value="' + value + '" data-systemid="' + arrItems[i].strSystemId + '" checked></td>';
+                    html+= '    <td class="listcheckbox"><input type="checkbox" name="' + formElementName + '" value="' + value + '" data-systemid="' + arrItems[i].strSystemId + '" data-kajona-initval="" checked></td>';
                     html+= '    <td class="listimage">' + arrItems[i].strIcon + '</td>';
                     html+= '    <td class="title">';
                     html+= '        <div class="small text-muted">' + arrItems[i].strPath + '</div>';
@@ -205,30 +205,10 @@ define("folderview", ["jquery", "util"], function($, util){
 
         /**
          * Enables selection by clicking a row-entry
+         * @deprecated
          */
         initRowClick : function() {
-            var tds = $('#moduleOutput .admintable tr td:not(.actions)');
-            tds.addClass('clickable');
-            tds.on('click', function(e) {
-                var row = $(this).parent('tr');
-
-
-                var callbacks = row.find('td.actions .listButton a[onclick*="selectCallback"]');
-                if (callbacks.length) {
-                    callbacks[0].click();
-                    return;
-                }
-                var lastButton = row.find('td.actions .listButton:last a');
-                if (lastButton.length) {
-                    var attr = lastButton.attr('data-toggle');
-                    if (typeof attr !== typeof undefined && attr !== false) {
-                        e.stopPropagation();
-                        lastButton.dropdown('toggle');
-                    }
-
-                    lastButton[0].click();
-                }
-            });
+            return lists.initRowClick();
         }
     };
 

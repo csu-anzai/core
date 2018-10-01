@@ -23,6 +23,7 @@ $lang["form_flow_name"]         = "Name";
 $lang["form_flow_iconcolor"]    = "Farbe";
 $lang["form_flow_headline_groups"] = "Gruppen Konfiguration";
 $lang["form_flow_headline_roles"] = "Rollenkonfiguration";
+$lang["form_flow_headline_transitions"] = "Übergänge";
 $lang["form_flow_viewgroups"]   = "Ansehen";
 $lang["form_flow_editgroups"]   = "Bearbeiten";
 $lang["form_flow_deletegroups"] = "Löschen";
@@ -74,3 +75,12 @@ $lang["action_status_change_redirect"]   = "Das System benötigt eine Benutzerei
 $lang["flow_controller_trait_headline_status"]   = "Statuswechsel";
 $lang["flow_controller_trait_headline_action"]   = "Aktionen";
 
+$lang["action_skip_transition_title"]   = "Überspringe Status Nachricht";
+$lang["action_skip_transition_description"] = "";
+
+$lang["flow_condition_and_title"]   = "AND Bedingung";
+$lang["flow_condition_case_title"]   = "Case Bedingung";
+$lang["flow_condition_group_title"]   = "Group Bedingung";
+$lang["flow_condition_invert_title"]   = "Invert Bedingung";
+$lang["flow_condition_or_title"]   = "OR Bedingung";
+$lang["flow_condition_xor_title"]   = "XOR Bedingung";

@@ -342,6 +342,28 @@ The relevant object and the name of the changed property are passed, too.<br />R
 			<td>Description</td>
 			<td>Event thrown if the fileindexer has updated files in a repository.</td>
 		</tr>
+        <tr>
+            <td rowspan="3" style="border-top: 1px solid #ccc; border-right: 1px solid #ccc;vertical-align: top;">flow.transition.executed</td>
+            <td style="border-top: 1px solid #ccc;">Since</td>
+            <td style="border-top: 1px solid #ccc;">7.0</td>
+        </tr>
+        <tr>
+            <td>Arguments</td>
+            <td>
+                <dl>
+                    <dt><code>\Kajona\System\System\Model $object</code></dt>
+                    <dd>Contains the object on which we execute the status change</dd>
+                    <dt><code>\Kajona\Flow\System\FlowTransition $transition</code></dt>
+                    <dd>Contains the transition which gets executed.</dd>
+                </dl>
+            </td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td>Callback method in case a transition was executed. The event gets triggered after every action and the handler
+            code was executed. Note the event is triggered inside a transaction this means if the event throws an error the
+            complete status change gets reverted.</td>
+        </tr>
 	</tbody>
 </table>
 

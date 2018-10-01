@@ -389,7 +389,7 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
             }
 
             if ($strImage != "" && is_file($strImage)) {
-                $objImage = new Image(_images_cachepath_);
+                $objImage = new Image(_realpath_._images_cachepath_);
                 $objImage->load($strImage);
                 $objImage->addOperation(new ImageScale(300, 300));
                 $strImages .= "<img src='".$objImage->getAsBase64Src()."' alt='".$strOneScreenshot."' />&nbsp;";

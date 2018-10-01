@@ -1534,7 +1534,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
             );
         }
 
-        $strReturn .= "<script type='text/javascript'>require(['folderview'], function(f) { f.initRowClick(); });</script>";
+        $strReturn .= "<script type='text/javascript'>require(['lists'], function(l) { l.initRowClick(); });</script>";
 
         return $strReturn;
     }

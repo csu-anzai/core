@@ -103,8 +103,9 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
     /**
      * Internal callback to initialize a form
      * @param strFormid
+     * @param onChangeDetection
      */
-    forms.initForm = function(strFormid) {
+    forms.initForm = function(strFormid, onChangeDetection) {
         $('#'+strFormid+' input , #'+strFormid+' select , #'+strFormid+' textarea ').each(function() {
             if ($(this).attr('data-kajona-block-initval')) {
                 return true;
@@ -112,7 +113,9 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
             $(this).attr("data-kajona-initval", $(this).val());
         });
 
-        router.markerElements.forms.monitoredEl = $('#'+strFormid);
+        if (onChangeDetection) {
+            router.markerElements.forms.monitoredEl = $('#' + strFormid);
+        }
 
     };
 
