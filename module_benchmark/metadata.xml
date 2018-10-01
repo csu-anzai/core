@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://apidocs.kajona.de/xsd/package_v2.xsd"
+    >
+    <title>benchmark</title>
+    <description>Simple scripts to validate a systems' performance</description>
+    <version>7.1</version>
+    <author>Kajona Team</author>
+    <providesInstaller>FALSE</providesInstaller>
+    <requiredModules>
+        <module name="system" version="7.0" />
+    </requiredModules>
+    <constants />
+</package>
