@@ -44,6 +44,14 @@ if (!empty($_POST["search_user"]) && !empty($_POST["username"])) {
         echo "User not found in local database".PHP_EOL;
     }
 
+    echo "Searching by wildcard ".$_POST["username"].PHP_EOL;
+    foreach (Ldap::getAllInstances() as $objLdap) {
+        echo "Query to ".$objLdap->getStrCfgName().PHP_EOL;
+        $arrUser = $objLdap->searchUserByWildcard($_POST["username"]);
+        echo print_r($arrUser, true);
+        echo PHP_EOL;
+    }
+
 
 }
 

@@ -16,7 +16,9 @@ use Kajona\System\System\Logger;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\SystemEventidentifier;
 use Kajona\System\System\UserGroup;
+use Kajona\System\System\Usersources\UsersourcesSourceKajona;
 use Kajona\System\System\Usersources\UsersourcesUserInterface;
+use Kajona\System\System\Usersources\UsersourcesUserKajona;
 
 
 /**
@@ -193,6 +195,10 @@ class UsersourcesUserLdap extends \Kajona\System\System\Model implements \Kajona
                 Logger::getInstance()->notice($e->getMessage());
             }
         }
+
+        //may include kajona-source group ids
+        $sourceKajona = new UsersourcesUserKajona($this->getSystemid());
+        $arrReturn = array_merge($sourceKajona->getGroupIdsForUser());
 
         return $arrReturn;
     }

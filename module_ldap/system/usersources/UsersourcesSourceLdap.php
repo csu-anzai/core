@@ -11,8 +11,10 @@ namespace Kajona\Ldap\System\Usersources;
 
 use Kajona\Ldap\System\Ldap;
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Database;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Logger;
+use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Usersources\UsersourcesGroupInterface;
 use Kajona\System\System\Usersources\UsersourcesUserInterface;
 use Kajona\System\System\Usersources\UsersourcesUsersourceInterface;
@@ -262,6 +264,77 @@ class UsersourcesSourceLdap implements UsersourcesUsersourceInterface
 
     /**
      * @inheritdoc
+     * @param $strUsername
+     * @param int $intMax
+     * @return UsersourcesUserInterface[]|void
+     */
+    public function searchUser($strUsername, $intMax = 10)
+    {
+        $strDbPrefix = _dbprefix_;
+        $connection = Database::getInstance();
+
+        $strQuery = "SELECT user_tbl.user_id
+                      FROM {$strDbPrefix}system, {$strDbPrefix}user AS user_tbl
+                      JOIN {$strDbPrefix}user_ldap AS user_ldap ON user_tbl.user_id = user_ldap.user_ldap_id
+                      WHERE
+                          (
+                          user_tbl.user_username LIKE ? 
+                          OR user_ldap.user_ldap_givenname LIKE ? 
+                          OR user_ldap.user_ldap_familyname LIKE ? 
+                          OR ".$connection->getConcatExpression(['user_ldap.user_ldap_givenname', '\' \'', 'user_ldap.user_ldap_familyname'])." LIKE ?
+                          OR ".$connection->getConcatExpression(['user_ldap.user_ldap_familyname', '\' \'', 'user_ldap.user_ldap_givenname'])." LIKE ?
+                          OR ".$connection->getConcatExpression(['user_ldap.user_ldap_familyname', '\', \'', 'user_ldap.user_ldap_givenname'])." LIKE ?                  
+                          )
+                          AND user_tbl.user_id = system_id
+                          AND (system_deleted = 0 OR system_deleted IS NULL)
+                      ORDER BY user_tbl.user_username, user_tbl.user_subsystem ASC";
+
+        $arrParams = array("%".$strUsername."%", "%".$strUsername."%", "%".$strUsername."%", "%".$strUsername."%", "%".$strUsername."%", "%".$strUsername."%");
+        $arrIds = Carrier::getInstance()->getObjDB()->getPArray($strQuery, $arrParams, 0, $intMax);
+
+        $arrReturn = array();
+        foreach ($arrIds as $arrOneId) {
+            $arrReturn[] = Objectfactory::getInstance()->getObject($arrOneId["user_id"]);
+        }
+
+        if (count($arrReturn) < $intMax) {
+            foreach (Ldap::getAllInstances() as $objSingleLdap) {
+                $arrDetails = $objSingleLdap->searchUserByWildcard($strUsername);
+                if ($arrDetails !== false) {
+                    foreach ($arrDetails as $arrSingleUser) {
+                        //transparent user creation if not already existing
+                        if ($this->getUserByUsername($arrSingleUser["username"]) === null) {
+                            $objUser = new UserUser();
+                            $objUser->setStrUsername($arrSingleUser["username"]);
+                            $objUser->setStrSubsystem("ldap");
+                            $objUser->setIntAdmin(1);
+                            $objUser->updateObjectToDb();
+
+                            /** @var $objSourceUser UsersourcesUserLdap */
+                            $objSourceUser = $objUser->getObjSourceUser();
+                            if ($objSourceUser instanceof UsersourcesUserLdap) {
+                                $objSourceUser->setStrDN($arrSingleUser["identifier"]);
+                                $objSourceUser->setStrFamilyname($arrSingleUser["familyname"]);
+                                $objSourceUser->setStrGivenname($arrSingleUser["givenname"]);
+                                $objSourceUser->setStrEmail($arrSingleUser["mail"]);
+                                $objSourceUser->setIntCfg($objSingleLdap->getIntCfgNr());
+                                $objSourceUser->updateObjectToDb();
+                            }
+
+                            $arrReturn[] = $objUser;
+                        }
+                    }
+
+                }
+            }
+        }
+
+        return $arrReturn;
+    }
+
+
+    /**
+     * @inheritdoc
      */
     public function getAllGroupIds($bitIgnoreSystemGroups = false)
     {
@@ -319,7 +392,7 @@ class UsersourcesSourceLdap implements UsersourcesUsersourceInterface
             @ini_set("max_execution_time", "500");
         }
 
-        //fill all groups - loads new members
+        //fill all groups - loads new members from the ldap system
         $arrGroups = $this->getAllGroupIds();
 
         $arrUserIds = array();
@@ -354,9 +427,12 @@ class UsersourcesSourceLdap implements UsersourcesUsersourceInterface
 
                 $this->objDB->flushQueryCache();
             } else {
-                //user seems to be deleted, remove from system, too
-                $objUser->deleteObject();
-                Logger::getInstance("ldapsync.log")->warning("Deleting user " . $strOneUserId . " / " . $objUser->getStrUsername() . " @ " . $objSourceUser->getStrDN());
+                //user seems to be deleted, remove from system, if not in any kajona group too (mixed groups allowed from 7.0)
+                $userGroupsIds = $objUser->getArrGroupIds();
+                if (count(array_diff($userGroupsIds, $arrGroups)) == 0) {
+                    $objUser->deleteObject();
+                    Logger::getInstance("ldapsync.log")->warning("Deleting user ".$strOneUserId." / ".$objUser->getStrUsername()." @ ".$objSourceUser->getStrDN());
+                }
             }
         }
 
