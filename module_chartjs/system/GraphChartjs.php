@@ -1,12 +1,12 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2010-2018 ARTEMEON                                                                              *
-********************************************************************************************************/
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
 
 namespace Kajona\Chartjs\System;
 
 use Kajona\System\System\GraphInterface;
-use Kajona\System\System\Resourceloader;
 
 /**
  * This class could be used to create graphs based on the chartjs API.
@@ -20,39 +20,44 @@ class GraphChartjs implements GraphInterface
 {
 
     /**
-     * Defines the lable for the left side (x-axis) of the chart
+     * Contains all data of the chart
      *
-     * @var string
+     * @var array
      */
-    private $strXAxisTitle = '';
+    private $arrChartData = [
+        "type" => "bar"
+    ];
 
     /**
-     * Defines the lable for the bottom (y-axis) of the chart
+     * Contains all global options of the chart
      *
-     * @var string
+     * @var array
      */
-    private $strYAxisTitle = '';
+    private $arrChartGlobalOptions = [];
 
     /**
-     * Defines the title of the graph itself
-     *
-     * @var string
+     * @var int
      */
-    private $strGraphTitle = '';
+    private $intXLabelsCount = 0;
 
-    /**
-     * Defines the type of the chart [line, bar, radar, polar area, doughnut, pie, bubble]
-     *
-     * @var string
-     */
-    private $strChartType = 'bar';
 
-    /**
-     * Defines the type of the chart [line, bar, radar, polar area, doughnut, pie, bubble]
-     *
-     * @var integer
-     */
-    private $intBorderWidth = 1;
+    private $arrColors = [
+        0 => ['name' => 'Absolute Zero', 'hex' => '#0048Ba', 'rgba' => '0, 72,186'],
+        1 => ['name' => 'Acid', 'hex' => '#B0BF1A', 'rgba' => '176, 191, 26'],
+        2 => ['name' => 'Alloy Orange', 'hex' => '#C46210', 'rgba' => '196, 98, 16'],
+        3 => ['name' => 'Amber', 'hex' => '#FFBF00', 'rgba' => '255, 191, 0'],
+        4 => ['name' => 'Amethyst', 'hex' => '#9966CC', 'rgba' => '153, 102, 204'],
+        5 => ['name' => 'Antique ruby', 'hex' => '#841B2D', 'rgba' => '132, 27, 45'],
+        6 => ['name' => 'Antique white', 'hex' => '#FAEBD7', 'rgba' => '250, 235, 215'],
+        7 => ['name' => 'Apple green', 'hex' => '#8DB600', 'rgba' => '141, 182, 0'],
+        8 => ['name' => 'Arctic lime', 'hex' => '#D0FF14', 'rgba' => '208, 255, 20'],
+        9 => ['name' => 'Atomic tangerine', 'hex' => '#FF9966', 'rgba' => '255, 153, 102'],
+        10 => ['name' => 'Azure', 'hex' => '#007FFF', 'rgba' => '0, 127, 255'],
+        11 => ['name' => 'Baker-Miller pink', 'hex' => '#FF91AF', 'rgba' => '255, 145, 175'],
+        12 => ['name' => 'Barbie pink', 'hex' => '#E94196', 'rgba' => '233, 65, 150'],
+        13 => ['name' => 'Bitter lemon', 'hex' => '#CAE00D', 'rgba' => '202, 224, 13'],
+        14 => ['name' => 'Black coral', 'hex' => '#54626F', 'rgba' => '84, 98, 111']
+    ];
 
     /**
      * Defines the width for the canvas but ONLY if respnsive is set to FALSE
@@ -75,23 +80,23 @@ class GraphChartjs implements GraphInterface
      */
     private $bitResponsive = true;
 
-
-
-
-
-
-
-
     /**
      * @param array $arrValues
      * @param string $strLegend
-     * @param bool $bitWriteValues
+     * @param bool $bitWriteValues - not implemented
      *
      * @see GraphInterface::addBarChartSet()
      */
     public function addBarChartSet($arrValues, $strLegend, $bitWriteValues = false)
     {
-
+        $intDatasetNumber = count($this->arrChartData['data']['datasets']);
+        $this->arrChartData['data']['datasets'][] = [
+            "label" => !empty($strLegend) ? $strLegend : "Dataset " . $intDatasetNumber,
+            "data" => $arrValues,
+            "backgroundColor" => 'rgba('.$this->arrColors[$intDatasetNumber]['rgba'].', 0.3)',
+            "borderColor" => $this->arrColors[$intDatasetNumber]['hex']
+        ];
+        $this->intXLabelsCount = count($arrValues);
     }
 
     /**
@@ -103,7 +108,18 @@ class GraphChartjs implements GraphInterface
      */
     public function addStackedBarChartSet($arrValues, $strLegend, $bitWriteValues = true)
     {
+        $intDatasetNumber = count($this->arrChartData['data']['datasets']);
+        $this->arrChartData['data']['datasets'][] = [
+            "label" => !empty($strLegend) ? $strLegend : "Dataset " . $intDatasetNumber,
+            "data" => $arrValues,
+            "backgroundColor" => 'rgba('.$this->arrColors[$intDatasetNumber]['rgba'].', 0.3)',
+            "borderColor" => $this->arrColors[$intDatasetNumber]['hex']
+        ];
 
+        $this->arrChartData['options']['scales']['xAxes'][0]['stacked'] = true;
+        $this->arrChartData['options']['scales']['yAxes'][0]['stacked'] = true;
+
+        $this->intXLabelsCount = count($arrValues);
     }
 
     /**
@@ -114,7 +130,15 @@ class GraphChartjs implements GraphInterface
      */
     public function addLinePlot($arrValues, $strLegend)
     {
-
+        $intDatasetNumber = count($this->arrChartData['data']['datasets']);
+        $this->arrChartData['data']['datasets'][] = [
+            "type" => "line",
+            "label" => !empty($strLegend) ? $strLegend : "Dataset " . $intDatasetNumber,
+            "data" => $arrValues,
+            "backgroundColor" => 'rgba('.$this->arrColors[$intDatasetNumber]['rgba'].', 0.3)',
+            "borderColor" => $this->arrColors[$intDatasetNumber]['hex']
+        ];
+        $this->intXLabelsCount = count($arrValues);
     }
 
     /**
@@ -125,7 +149,18 @@ class GraphChartjs implements GraphInterface
      */
     public function createPieChart($arrValues, $arrLegends)
     {
-
+        $this->setPieChart(true);
+        foreach ($this->arrColors as $arrColorData) {
+            $arrBackgroundColors[] = 'rgba('.$arrColorData['rgba'].', 0.5)';
+            $arrBorderColors[] = $arrColorData['hex'];
+        }
+        $this->arrChartData['data']['datasets'][] = [
+            "data" => $arrValues,
+            "backgroundColor" => $arrBackgroundColors,
+            "borderColor" => $arrBorderColors
+        ];
+        $this->intXLabelsCount = count($arrValues);
+        $this->arrChartData['data']['labels'] = $arrLegends;
     }
 
     /**
@@ -147,137 +182,49 @@ class GraphChartjs implements GraphInterface
     }
 
     /**
-     * @return mixed
+     * @return mixed|string
      *
      * @see GraphInterface::renderGraph()
      */
     public function renderGraph()
     {
-        $this->setStrXAxisTitle('xAxis Title');
-        $this->setStrYAxisTitle('yAxis Title');
-        $this->setStrGraphTitle('ARTEMEON Graph Chart.js');
-        $this->setStrChartType('bar');
-        $this->setIntBorderWidth(1);
-        $this->setBitResponsive(true);
-
-        $arrayColors = [
-            0 => ['name' => 'Absolute Zero', 'hex' => '#0048Ba', 'rgba' => '0, 72,186'],
-            1 => ['name' => 'Acid', 'hex' => '#B0BF1A', 'rgba' => '176, 191 26'],
-            2 => ['name' => 'Alloy Orange', 'hex' => '#C46210', 'rgba' => '196, 98 16'],
-            3 => ['name' => 'Amber', 'hex' => '#FFBF00', 'rgba' => '255, 191, 0'],
-            4 => ['name' => 'Amethyst', 'hex' => '#9966CC', 'rgba' => '153, 102, 204'],
-            5 => ['name' => 'Antique ruby', 'hex' => '#841B2D', 'rgba' => '132, 27, 45'],
-            6 => ['name' => 'Antique white', 'hex' => '#FAEBD7', 'rgba' => '250, 235, 215'],
-            7 => ['name' => 'Apple green', 'hex' => '#8DB600', 'rgba' => '141, 182, 0'],
-            8 => ['name' => 'Arctic lime', 'hex' => '#D0FF14', 'rgba' => '208, 255, 20'],
-            9 => ['name' => 'Atomic tangerine', 'hex' => '#FF9966', 'rgba' => '255, 153, 102'],
-            10 => ['name' => 'Azure', 'hex' => '#007FFF', 'rgba' => '0, 127, 255'],
-            11 => ['name' => 'Baker-Miller pink', 'hex' => '#FF91AF', 'rgba' => '255, 145, 175'],
-            12 => ['name' => 'Barbie pink', 'hex' => '#E94196', 'rgba' => '233, 65, 150'],
-            13 => ['name' => 'Bitter lemon', 'hex' => '#CAE00D', 'rgba' => '202, 224, 13'],
-            14 => ['name' => 'Black coral', 'hex' => '#54626F', 'rgba' => '84, 98, 111']
-        ];
-
-        $labels = [];
-        $backgroundColors = [];
-        $borderColors = [];
-        $blockedIndex = [];
-        for ($i = 0; $i <= 5; $i++) {
-            $rng = rand(0, 14);
-            while(in_array($rng, $blockedIndex)){
-                $rng = rand(0, 14);
-            }
-
-            array_push($blockedIndex, $rng);
-            array_push($labels, $arrayColors[$rng]['name']);
-            array_push($backgroundColors, 'rgba(' . $arrayColors[$rng]['rgba'] . ', 0.3)');
-            array_push($borderColors, $arrayColors[$rng]['hex']);
+        if (!isset($this->arrChartData['data']) || count($this->arrChartData['data']) == 0) {
+            throw new Exception("Chart not initialized yet", Exception::$level_ERROR);
         }
 
-        $data = [rand(2, 20), rand(5, 15), rand(3, 18), rand(6, 20), rand(4, 17), rand(1, 20)];
-        $jsonData = $this->getJsonFormat($data);
+        if (!isset($this->arrChartData['data']['labels']) || count($this->arrChartData['data']['labels']) == 0) {
+            $this->arrChartData['data']['labels'] = range(1, $this->intXLabelsCount );
+        }
 
-        $jsonLabels = $this->getJsonFormat($labels);
-        $jsonBackgroundColors = $this->getJsonFormat($backgroundColors);
-        $jsonBorderColors = $this->getJsonFormat($borderColors);
+        $strSystemId = generateSystemid();
+        $strResizeableId = "resize_".$strSystemId;
+        $strChartId = "chart_".$strSystemId;
 
-        $finalData = [
-            'datasetLabel' => 'Dataset 1',
-            'labels' => $jsonLabels,
-            'data' => $jsonData,
-            'backgroundColor' => $jsonBackgroundColors,
-            'borderColor' => $jsonBorderColors
-        ];
-
-        $strReturn = '<canvas id="chartCanvas" width="' . $this->intWidth . '" height="' . $this->intHeight . '"></canvas>';
+        $strWidth = $this->bitIsResponsive ? "100%" : $this->intWidth."px";
+        $strReturn = "<div id=\"$strResizeableId\" style=\"width:{$strWidth}; height:".$this->intHeight."px;\">";
+        $strReturn .= '<canvas id="'.$strChartId.'" width="'.$this->intWidth.'" height="'.$this->intHeight.'"></canvas>';
+        $strReturn .= '</div>';
         $strReturn .= "<script type='text/javascript'>
 
             require(['chartjs'], function(chartjs) {
-
-                var ctx = document.getElementById('chartCanvas').getContext('2d');
+		        var chartData = ".json_encode($this->arrChartData, JSON_NUMERIC_CHECK).";
+		        var chartGlobalOptions = ".json_encode($this->arrChartGlobalOptions, JSON_NUMERIC_CHECK).";
+                var ctx = document.getElementById('".$strChartId."');
+                
+                ctx.style.backgroundColor = chartGlobalOptions['backgroundColor'];
+                Chart.defaults.global.defaultFontColor = typeof (chartGlobalOptions['defaultFontColor']) !== 'undefined' ? chartGlobalOptions['defaultFontColor'] : 'black';
+                Chart.defaults.global.defaultFontFamily = chartGlobalOptions['defaultFontFamily'];
+                Chart.defaults.global.legend.labels.fontColor = typeof (chartGlobalOptions['labelsFontColor']) !== 'undefined' ? chartGlobalOptions['labelsFontColor'] : chartGlobalOptions['defaultFontColor'];    
+                
                 var myChart = new chartjs.Chart(ctx, {
-                    type: '{$this->strChartType}',
-                    data: 
-                    {
-                        labels: {$finalData["labels"]},
-                        datasets: [
-                            {
-                                label: '{$finalData["datasetLabel"]}',
-                                data: {$finalData["data"]},
-                                backgroundColor: {$finalData["backgroundColor"]},
-                                borderColor: {$finalData["borderColor"]},
-                                borderWidth: {$this->intBorderWidth}
-                            }
-                        ]
-                    },                    
-                    options: {
-                        title: {
-                            display: true,
-                            text: '{$this->strGraphTitle}'
-                        },
-                        responsive: {$this->bitResponsive},
-                        maintainAspectRatio: false,
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    min: 0,
-                                    callback: function(value, index, values) {
-                                        return '# ' + value;
-                                    }
-                                },
-                                scaleLabel: {
-                                    display: true,
-                                    labelString: '{$this->strYAxisTitle}'
-                                }
-                            }],
-                            xAxes: [{
-                                ticks: {
-                                    fontColor: 'blue',
-                                    fontSize: 14,
-                                    stepSize: 1,
-                                    beginAtZero: true
-                                },
-                                scaleLabel: {
-                                    display: true,
-                                    labelString: '{$this->strXAxisTitle}'
-                                }
-                            }]
-                        }
-                    }
+                    type: chartData['type'],
+                    data : chartData['data'],
+                    options : chartData['options'],
                 });     
             });
         </script>";
 
         return $strReturn;
-    }
-
-    /**
-     * @param $data
-     * @return string
-     */
-    private function getJsonFormat($data)
-    {
-        return is_string($data) && is_array(json_decode($data, true)) && (json_last_error() == JSON_ERROR_NONE) ? $data : json_encode($data);
     }
 
     /**
@@ -287,7 +234,10 @@ class GraphChartjs implements GraphInterface
      */
     public function setStrXAxisTitle($strTitle)
     {
-        $this->strXAxisTitle = $strTitle;
+        $this->arrChartData['options']['scales']['xAxes'][0]['scaleLabel']['display'] = true;
+        $this->arrChartData['options']['scales']['xAxes'][0]['scaleLabel']['labelString'] = $strTitle;
+        $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['beginAtZero'] = true;
+
     }
 
     /**
@@ -297,7 +247,9 @@ class GraphChartjs implements GraphInterface
      */
     public function setStrYAxisTitle($strTitle)
     {
-        $this->strYAxisTitle = $strTitle;
+        $this->arrChartData['options']['scales']['yAxes'][0]['scaleLabel']['display'] = true;
+        $this->arrChartData['options']['scales']['yAxes'][0]['scaleLabel']['labelString'] = $strTitle;
+        $this->arrChartData['options']['scales']['yAxes'][0]['ticks']['beginAtZero'] = true;
     }
 
     /**
@@ -307,22 +259,9 @@ class GraphChartjs implements GraphInterface
      */
     public function setStrGraphTitle($strTitle)
     {
-        $this->strGraphTitle = $strTitle;
+        $this->arrChartData['options']['title']['dispaly'] = true;
+        $this->arrChartData['options']['title']['text'] = $strTitle;
     }
-
-    /**
-     * @param string $chartType
-     */
-    public function setStrChartType(string $chartType)
-    {
-        $this->strChartType = $chartType;
-    }
-
-
-
-
-
-
 
     /**
      * @param string $strColor
@@ -331,7 +270,7 @@ class GraphChartjs implements GraphInterface
      */
     public function setStrBackgroundColor($strColor)
     {
-
+        $this->arrChartGlobalOptions['backgroundColor'] = $strColor;
     }
 
     /**
@@ -355,14 +294,18 @@ class GraphChartjs implements GraphInterface
     }
 
     /**
+     * Sets Labeles array.
+     * bzw: For progressive  label view use chartjs-plugin-labels plugin
+     *
      * @param array $arrXAxisTickLabels
      * @param int $intNrOfWrittenLabels
      *
      * @see GraphInterface::setArrXAxisTickLabels()
      */
-    public function setArrXAxisTickLabels($arrXAxisTickLabels, $intNrOfWrittenLabels = 12)
+    public function setArrXAxisTickLabels($arrXAxisTickLabels, $intNrOfWrittenLabels = 20)
     {
-
+        $this->arrChartData['data']['labels'] = $arrXAxisTickLabels;
+        $this->setMaxXAxesTicksLimit($intNrOfWrittenLabels);
     }
 
     /**
@@ -372,7 +315,7 @@ class GraphChartjs implements GraphInterface
      */
     public function setBitRenderLegend($bitRenderLegend)
     {
-
+        $this->arrChartData['options']['legend']['display'] = $bitRenderLegend;
     }
 
     /**
@@ -382,7 +325,7 @@ class GraphChartjs implements GraphInterface
      */
     public function setStrFont($strFont)
     {
-
+        $this->arrChartGlobalOptions['defaultFontFamily'] = $strFont;
     }
 
     /**
@@ -392,11 +335,16 @@ class GraphChartjs implements GraphInterface
      */
     public function setStrFontColor($strFontColor)
     {
+        $this->arrChartGlobalOptions['defaultFontColor'] = $strFontColor;
+    }
 
+    public function setStrLegendFontColor($strFontColor)
+    {
+        $this->arrChartGlobalOptions['labelsFontColor'] = $strFontColor;
     }
 
     /**
-     * @param int $intXAxisAngle
+     * Not supported in chart.js
      *
      * @see GraphInterface::setIntXAxisAngle()
      */
@@ -407,24 +355,24 @@ class GraphChartjs implements GraphInterface
 
     /**
      * @param array $arrSeriesColors
-     * @return mixed
+     * @return void
      *
      * @see GraphInterface::setArrSeriesColors()
      */
     public function setArrSeriesColors($arrSeriesColors)
     {
-        return '';
+        if (!empty($arrSeriesColors)) {
+            foreach ($arrSeriesColors as $arrColorData) {
+                if (!isset($arrColorData['hex']) || !isset($arrColorData['rgba'])) {
+                    throw new Exception("All array color items must have 'hex' and 'rgba' keys", Exception::$level_ERROR);
+                }
+            }
+        }
+        $this->arrColors = $arrSeriesColors;
     }
 
     /**
-     * @param int $intBorderWidth
-     */
-    public function setIntBorderWidth(int $intBorderWidth)
-    {
-        $this->intBorderWidth = $intBorderWidth;
-    }
-
-    /**
+     * Enables general repsonsiveness of the chart. This includes that the chart takes up 100% width of the parent container.
      * @param int $bitResponsive
      */
     public function setBitResponsive(int $bitResponsive)
@@ -432,4 +380,46 @@ class GraphChartjs implements GraphInterface
         $this->bitResponsive = $bitResponsive;
     }
 
+    /**
+     * @param int $bitHorizontal
+     */
+    public function setBarHorizontal(int $bitHorizontal)
+    {
+        $this->arrChartData['type'] = $bitHorizontal ? "horizontalBar" : "bar";
+    }
+
+    /**
+     * @param int $bitHorizontal
+     */
+    public function setPieChart(int $bitPie)
+    {
+        if ($bitPie) {
+            $this->arrChartData['type'] = "pie";
+        }
+    }
+
+    /**
+     * @param int $bitHideXAxis
+     */
+    public function setHideXAxis( int $bitHideXAxis) {
+        $this->arrChartGlobalOptions['xAxesTickDispaly'] = $bitHideXAxis ? false : true;
+        $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['display'] = $bitHideXAxis ? false : true;
+    }
+
+    /**
+     * @param int $bitHideYAxis
+     */
+    public function setHideYAxis( int $bitHideYAxis) {
+        $this->arrChartGlobalOptions['yAxesTickDispaly'] = $bitHideYAxis ? false : true;
+        $this->arrChartData['options']['scales']['yAxes'][0]['ticks']['display'] = $bitHideYAxis ? false : true;
+    }
+
+    /**
+     * @param int $maxXAxesTicksLimit
+     */
+    public function setMaxXAxesTicksLimit( int $maxXAxesTicksLimit) {
+        $this->arrChartGlobalOptions['maxXAxesTicksLimit'] = $maxXAxesTicksLimit;
+        $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['autoSkip'] = true;
+        $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['maxTicksLimit'] = $maxXAxesTicksLimit;
+    }
 }
