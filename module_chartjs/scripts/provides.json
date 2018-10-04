@@ -1,5 +1,6 @@
 {
   "paths": {
-    "chartjs": "chartjs/Chart.bundle.min"
+    "chartjs": "chartjs/Chart.bundle.min",
+    "chartjs-plugin-labels": "chartjs/chartjs-plugin-labels.min"
   }
 }
