@@ -66,7 +66,7 @@ class ChartJS
         $objGraph->addLinePlot(array(4, 3, 2, 1), null);
         $objGraph->addLinePlot(array(-5, 3, -2, 1), null);
         $objGraph->setBitRenderLegend(true);
-        $objGraph->setIntXAxisAngle(-20);
+        $objGraph->setIntXAxisAngle(-20);  // not works
         $objGraph->setStrXAxisTitle("XXX");
         $objGraph->setStrYAxisTitle("YYY");
         $objGraph->setStrBackgroundColor("#F0F0F0");
@@ -86,7 +86,7 @@ class ChartJS
         $objGraph->addBarChartSet(array(6, 7, 3, 20), "serie 5");
         $objGraph->addBarChartSet(array(9, 2, 3, 40), "serie 9");
         $objGraph->setArrXAxisTickLabels(array("v1", "v2", "v3", "v4"));
-        $objGraph->setIntXAxisAngle(-20);
+        $objGraph->setIntXAxisAngle(-20);  // not works
         $objGraph->setIntHeight(350);
         $objGraph->setIntWidth(300);
         $objGraph->setBitRenderLegend(true);
@@ -98,7 +98,7 @@ class ChartJS
         $objGraph->setStrGraphTitle("04. One Bar Chart (In this case each bar has a differetn color)");
         $objGraph->addBarChartSet(array(9, 2, 3, 40), "serie 9");
         $objGraph->setArrXAxisTickLabels(array("v1", "v2", "v3", "v4"));
-        $objGraph->setIntXAxisAngle(-20);
+        $objGraph->setIntXAxisAngle(-20);  // not works
         $objGraph->setIntHeight(350);
         $objGraph->setIntWidth(300);
         $objGraph->setBitRenderLegend(true);
@@ -205,7 +205,7 @@ class ChartJS
         $objGraph->addStackedBarChartSet(array(0, -5, 7, 8, 4, 12, 1, 1, 1, 3, 4, 5, 6), "serie 1");
         $objGraph->addStackedBarChartSet(array(3, -4, 6, 2, 5, 2, 2, 2, 2, 3, 4, 5, 6), "serie 2");
         $objGraph->setArrXAxisTickLabels(array("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13"));
-        $objGraph->setIntXAxisAngle(-20);
+        $objGraph->setIntXAxisAngle(-20);  // not works
         $objGraph->setStrFont("open sans");
         echo $objGraph->renderGraph();
 
@@ -219,7 +219,7 @@ class ChartJS
         $objGraph->addStackedBarChartSet(array(3, 0, 6, 2, 5, 2, 2, 2, 2, 3, 4, 5, 6), "serie 2");
         $objGraph->addStackedBarChartSet(array(3, -4, 6, 2, 5, 2, 2, 2, 2, 3, 4, 5, 6), "serie 3");
         $objGraph->setArrXAxisTickLabels(array("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13"), 5);
-        $objGraph->setIntXAxisAngle(-20);
+        $objGraph->setIntXAxisAngle(-20);  // not works
         $objGraph->setStrFont("open sans");
         $objGraph->setBarHorizontal(true);
         echo $objGraph->renderGraph();

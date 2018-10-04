@@ -40,7 +40,11 @@ class GraphChartjs implements GraphInterface
      */
     private $intXLabelsCount = 0;
 
-
+    /**
+     * Default color set for chats.
+     *
+     * @var array
+     */
     private $arrColors = [
         0 => ['name' => 'Absolute Zero', 'hex' => '#0048Ba', 'rgba' => '0, 72,186'],
         1 => ['name' => 'Acid', 'hex' => '#B0BF1A', 'rgba' => '176, 191, 26'],
@@ -83,20 +87,29 @@ class GraphChartjs implements GraphInterface
     /**
      * @param array $arrValues
      * @param string $strLegend
-     * @param bool $bitWriteValues - not implemented
-     *
-     * @see GraphInterface::addBarChartSet()
      */
-    public function addBarChartSet($arrValues, $strLegend, $bitWriteValues = false)
-    {
+    private function addChartSet($arrValues, $strLegend, $type = null) {
         $intDatasetNumber = count($this->arrChartData['data']['datasets']);
         $this->arrChartData['data']['datasets'][] = [
+            "type" => $type,
             "label" => !empty($strLegend) ? $strLegend : "Dataset " . $intDatasetNumber,
             "data" => $arrValues,
             "backgroundColor" => 'rgba('.$this->arrColors[$intDatasetNumber]['rgba'].', 0.3)',
             "borderColor" => $this->arrColors[$intDatasetNumber]['hex']
         ];
         $this->intXLabelsCount = count($arrValues);
+    }
+
+    /**
+     * @param array $arrValues
+     * @param string $strLegend
+     * @param bool $bitWriteValues - not implemented
+     *
+     * @see GraphInterface::addBarChartSet()
+     */
+    public function addBarChartSet($arrValues, $strLegend, $bitWriteValues = false)
+    {
+        $this->addChartSet($arrValues, $strLegend);
     }
 
     /**
@@ -108,18 +121,9 @@ class GraphChartjs implements GraphInterface
      */
     public function addStackedBarChartSet($arrValues, $strLegend, $bitWriteValues = true)
     {
-        $intDatasetNumber = count($this->arrChartData['data']['datasets']);
-        $this->arrChartData['data']['datasets'][] = [
-            "label" => !empty($strLegend) ? $strLegend : "Dataset " . $intDatasetNumber,
-            "data" => $arrValues,
-            "backgroundColor" => 'rgba('.$this->arrColors[$intDatasetNumber]['rgba'].', 0.3)',
-            "borderColor" => $this->arrColors[$intDatasetNumber]['hex']
-        ];
-
+        $this->addChartSet($arrValues, $strLegend);
         $this->arrChartData['options']['scales']['xAxes'][0]['stacked'] = true;
         $this->arrChartData['options']['scales']['yAxes'][0]['stacked'] = true;
-
-        $this->intXLabelsCount = count($arrValues);
     }
 
     /**
@@ -130,15 +134,7 @@ class GraphChartjs implements GraphInterface
      */
     public function addLinePlot($arrValues, $strLegend)
     {
-        $intDatasetNumber = count($this->arrChartData['data']['datasets']);
-        $this->arrChartData['data']['datasets'][] = [
-            "type" => "line",
-            "label" => !empty($strLegend) ? $strLegend : "Dataset " . $intDatasetNumber,
-            "data" => $arrValues,
-            "backgroundColor" => 'rgba('.$this->arrColors[$intDatasetNumber]['rgba'].', 0.3)',
-            "borderColor" => $this->arrColors[$intDatasetNumber]['hex']
-        ];
-        $this->intXLabelsCount = count($arrValues);
+        $this->addChartSet($arrValues, $strLegend, "line");
     }
 
     /**
@@ -168,7 +164,7 @@ class GraphChartjs implements GraphInterface
      */
     public function showGraph()
     {
-
+        $this->renderGraph();
     }
 
     /**
@@ -178,7 +174,7 @@ class GraphChartjs implements GraphInterface
      */
     public function saveGraph($strFilename)
     {
-
+        //not supported
     }
 
     /**
@@ -237,7 +233,6 @@ class GraphChartjs implements GraphInterface
         $this->arrChartData['options']['scales']['xAxes'][0]['scaleLabel']['display'] = true;
         $this->arrChartData['options']['scales']['xAxes'][0]['scaleLabel']['labelString'] = $strTitle;
         $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['beginAtZero'] = true;
-
     }
 
     /**
@@ -294,7 +289,7 @@ class GraphChartjs implements GraphInterface
     }
 
     /**
-     * Sets Labeles array.
+     * Sets array of labels.
      * bzw: For progressive  label view use chartjs-plugin-labels plugin
      *
      * @param array $arrXAxisTickLabels
@@ -302,7 +297,7 @@ class GraphChartjs implements GraphInterface
      *
      * @see GraphInterface::setArrXAxisTickLabels()
      */
-    public function setArrXAxisTickLabels($arrXAxisTickLabels, $intNrOfWrittenLabels = 20)
+    public function setArrXAxisTickLabels($arrXAxisTickLabels, $intNrOfWrittenLabels = 12)
     {
         $this->arrChartData['data']['labels'] = $arrXAxisTickLabels;
         $this->setMaxXAxesTicksLimit($intNrOfWrittenLabels);
@@ -344,13 +339,11 @@ class GraphChartjs implements GraphInterface
     }
 
     /**
-     * Not supported in chart.js
-     *
      * @see GraphInterface::setIntXAxisAngle()
      */
     public function setIntXAxisAngle($intXAxisAngle)
     {
-
+        //not supported
     }
 
     /**
