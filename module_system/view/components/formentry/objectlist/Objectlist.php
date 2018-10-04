@@ -118,7 +118,7 @@ class Objectlist extends FormentryComponentAbstract
 
                 $rows[] = [
                     'systemid'    => $item->getSystemid(),
-                    'displayName' => $this->getDisplayName($item),
+                    'displayName' => html_entity_decode($this->getDisplayName($item)),
                     'path'        => $this->getPathName($item),
                     'icon'        => AdminskinHelper::getAdminImage($icon),
                     'removeLink'  => $removeLink,
