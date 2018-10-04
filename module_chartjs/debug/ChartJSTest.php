@@ -41,7 +41,6 @@ class ChartJS
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
         $objGraph->addLinePlot(array(8.112, 1, 2, 4), null);
         $objGraph->addLinePlot(array(1, 2, 3, 4), null);
-        $objGraph->addLinePlot(array(1, 2, 3, 4), null);
         $objGraph->addLinePlot(array(4, 7, 1, 2), null);
         $objGraph->addLinePlot(array(4, 3, 2, 1), null);
         $objGraph->addLinePlot(array(-5, 3, -2, 1), null);

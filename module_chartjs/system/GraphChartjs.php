@@ -25,7 +25,25 @@ class GraphChartjs implements GraphInterface
      * @var array
      */
     private $arrChartData = [
-        "type" => "bar"
+        "type" => "bar",
+        "options" => [
+            'scales' => [
+                'xAxes' => [
+                    [
+                        'ticks' => [
+                            'beginAtZero' => true
+                        ]
+                    ]
+                ],
+                'yAxes' => [
+                    [
+                        'ticks' => [
+                            'beginAtZero' => true
+                        ]
+                    ]
+                ]
+            ]
+        ]
     ];
 
     /**
@@ -46,21 +64,8 @@ class GraphChartjs implements GraphInterface
      * @var array
      */
     private $arrColors = [
-        0 => ['name' => 'Absolute Zero', 'hex' => '#0048Ba', 'rgba' => '0, 72,186'],
-        1 => ['name' => 'Acid', 'hex' => '#B0BF1A', 'rgba' => '176, 191, 26'],
-        2 => ['name' => 'Alloy Orange', 'hex' => '#C46210', 'rgba' => '196, 98, 16'],
-        3 => ['name' => 'Amber', 'hex' => '#FFBF00', 'rgba' => '255, 191, 0'],
-        4 => ['name' => 'Amethyst', 'hex' => '#9966CC', 'rgba' => '153, 102, 204'],
-        5 => ['name' => 'Antique ruby', 'hex' => '#841B2D', 'rgba' => '132, 27, 45'],
-        6 => ['name' => 'Antique white', 'hex' => '#FAEBD7', 'rgba' => '250, 235, 215'],
-        7 => ['name' => 'Apple green', 'hex' => '#8DB600', 'rgba' => '141, 182, 0'],
-        8 => ['name' => 'Arctic lime', 'hex' => '#D0FF14', 'rgba' => '208, 255, 20'],
-        9 => ['name' => 'Atomic tangerine', 'hex' => '#FF9966', 'rgba' => '255, 153, 102'],
-        10 => ['name' => 'Azure', 'hex' => '#007FFF', 'rgba' => '0, 127, 255'],
-        11 => ['name' => 'Baker-Miller pink', 'hex' => '#FF91AF', 'rgba' => '255, 145, 175'],
-        12 => ['name' => 'Barbie pink', 'hex' => '#E94196', 'rgba' => '233, 65, 150'],
-        13 => ['name' => 'Bitter lemon', 'hex' => '#CAE00D', 'rgba' => '202, 224, 13'],
-        14 => ['name' => 'Black coral', 'hex' => '#54626F', 'rgba' => '84, 98, 111']
+        "#8bbc21", "#2f7ed8", "#f28f43", "#1aadce", "#77a1e5", "#0d233a", "#c42525", "#a6c96a", "#910000",
+        '#0048Ba', '#B0BF1A', '#C46210', '#FFBF00', '#9966CC', '#841B2D', '#FAEBD7', '#8DB600', '#D0FF14', '#FF9966', '#007FFF', '#FF91AF', '#E94196', '#CAE00D', '#54626F'
     ];
 
     /**
@@ -94,8 +99,8 @@ class GraphChartjs implements GraphInterface
             "type" => $type,
             "label" => !empty($strLegend) ? $strLegend : "Dataset " . $intDatasetNumber,
             "data" => $arrValues,
-            "backgroundColor" => 'rgba('.$this->arrColors[$intDatasetNumber]['rgba'].', 0.3)',
-            "borderColor" => $this->arrColors[$intDatasetNumber]['hex']
+            "backgroundColor" => 'rgba('.implode(', ', hex2rgb($this->arrColors[$intDatasetNumber])).', 0.3)',
+            "borderColor" => $this->arrColors[$intDatasetNumber],
         ];
         $this->intXLabelsCount = count($arrValues);
     }
@@ -146,9 +151,9 @@ class GraphChartjs implements GraphInterface
     public function createPieChart($arrValues, $arrLegends)
     {
         $this->setPieChart(true);
-        foreach ($this->arrColors as $arrColorData) {
-            $arrBackgroundColors[] = 'rgba('.$arrColorData['rgba'].', 0.5)';
-            $arrBorderColors[] = $arrColorData['hex'];
+        foreach ($this->arrColors as $arrColor) {
+            $arrBackgroundColors[] = 'rgba('.implode(', ', hex2rgb($arrColor)).', 0.3)';
+            $arrBorderColors[] = $arrColor;
         }
         $this->arrChartData['data']['datasets'][] = [
             "data" => $arrValues,
@@ -232,7 +237,6 @@ class GraphChartjs implements GraphInterface
     {
         $this->arrChartData['options']['scales']['xAxes'][0]['scaleLabel']['display'] = true;
         $this->arrChartData['options']['scales']['xAxes'][0]['scaleLabel']['labelString'] = $strTitle;
-        $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['beginAtZero'] = true;
     }
 
     /**
@@ -244,7 +248,6 @@ class GraphChartjs implements GraphInterface
     {
         $this->arrChartData['options']['scales']['yAxes'][0]['scaleLabel']['display'] = true;
         $this->arrChartData['options']['scales']['yAxes'][0]['scaleLabel']['labelString'] = $strTitle;
-        $this->arrChartData['options']['scales']['yAxes'][0]['ticks']['beginAtZero'] = true;
     }
 
     /**
@@ -355,13 +358,8 @@ class GraphChartjs implements GraphInterface
     public function setArrSeriesColors($arrSeriesColors)
     {
         if (!empty($arrSeriesColors)) {
-            foreach ($arrSeriesColors as $arrColorData) {
-                if (!isset($arrColorData['hex']) || !isset($arrColorData['rgba'])) {
-                    throw new Exception("All array color items must have 'hex' and 'rgba' keys", Exception::$level_ERROR);
-                }
-            }
+            $this->arrColors = $arrSeriesColors;
         }
-        $this->arrColors = $arrSeriesColors;
     }
 
     /**
@@ -414,5 +412,9 @@ class GraphChartjs implements GraphInterface
         $this->arrChartGlobalOptions['maxXAxesTicksLimit'] = $maxXAxesTicksLimit;
         $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['autoSkip'] = true;
         $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['maxTicksLimit'] = $maxXAxesTicksLimit;
+    }
+
+    public function setBeginAtZero($beginAtZero = true){
+        $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['beginAtZero'] = $beginAtZero;
     }
 }
