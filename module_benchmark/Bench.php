@@ -11,15 +11,19 @@ namespace Kajona\Benchmark;
 
 use Kajona\Benchmark\System\AbstractBench;
 use Kajona\Benchmark\System\BenchInterface;
+use Kajona\System\System\Config;
 use Kajona\System\System\Pluginmanager;
 use Kajona\System\System\Timer;
 
 class Bench
 {
 
+    const ITERATIONS = 2;
+
     public function main()
     {
         error_reporting(E_ALL);
+        ini_set('display_errors', 1);
 
         $manager = new Pluginmanager(AbstractBench::PLUGIN_NAME, "/system/bench");
         $timer = new Timer();
@@ -28,24 +32,38 @@ class Bench
         echo "<pre>";
         echo "Kajona system benchmark suite".PHP_EOL;
         echo "(c) ARTEMEON Management Partner".PHP_EOL;
+        echo PHP_EOL;
+        echo "Database driver: ".Config::getInstance()->getConfig("dbdriver").PHP_EOL;
+        echo "Database host:   ".Config::getInstance()->getConfig("dbhost").PHP_EOL;
 
-
-        /** @var BenchInterface $bench */
-        foreach ($manager->getPlugins() as $bench) {
-            $timer->start();
-            $bench->bench();
-            $timer->end();
-            $results[get_class($bench)] = $timer->getDurationsInSec()." sec";
-        }
 
         echo PHP_EOL;
         echo "| ".str_pad("Bench", 60)."| ".str_pad("Duration", 30)."|".PHP_EOL;
-        echo "|".str_pad("", 93, "-")."|".PHP_EOL;
-        foreach ($results as $bench => $duration) {
-            echo "| ".str_pad($bench, 60)."| ".str_pad($duration, 30)."|".PHP_EOL;
+        echo "|-".str_pad("", 60, "-")."|-".str_pad("", 30, "-")."|".PHP_EOL;
+        ob_flush();
+        flush();
+
+        for ($i = 0; $i < self::ITERATIONS; $i++) {
+            /** @var BenchInterface $bench */
+            foreach ($manager->getPlugins() as $bench) {
+                echo "| ".str_pad(get_class($bench), 60)."| ";
+                ob_flush();
+                flush();
+
+                $timer->start();
+                $bench->bench();
+                $timer->end();
+
+                echo str_pad($timer->getDurationsInSec()." sec", 30)."|".PHP_EOL;
+                ob_flush();
+                flush();
+            }
+
+            echo "|-".str_pad("", 60, "-")."|-".str_pad("", 30, "-")."|".PHP_EOL;
         }
 
-
+        echo PHP_EOL;
+        echo "Finished.".PHP_EOL;
         echo "</pre>";
 
     }

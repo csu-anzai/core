@@ -9,17 +9,20 @@ use Kajona\System\System\Filesystem;
 
 class FileystemBench extends AbstractBench
 {
+
+    const ITERATIONS = 2000;
+
     public function bench()
     {
-//        $this->createFilesAndFolders();
-//        $this->deleteFilesAndFolders();
+        $this->createFilesAndFolders();
+        $this->deleteFilesAndFolders();
     }
 
 
     private function createFilesAndFolders()
     {
         $fs = new Filesystem();
-        for ($i = 0; $i < 2000; $i++) {
+        for ($i = 0; $i < self::ITERATIONS; $i++) {
             $dir = generateSystemid();
             $fs->folderCreate("project/temp/bench/".$dir, true);
             file_put_contents(_realpath_."project/temp/bench/".$dir."/".$dir.".txt", $dir);

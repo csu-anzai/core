@@ -32,7 +32,7 @@ class Timer
 
     public function getDurationsInSec()
     {
-        return round(($this->end - $this->start), 5);
+        return round(($this->end - $this->start), 6);
     }
 }
 
