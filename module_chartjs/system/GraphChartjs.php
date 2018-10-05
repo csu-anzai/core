@@ -29,8 +29,11 @@ class GraphChartjs implements GraphInterface
         "options" => [
             'plugins' => [
                 'labels' => [
-//                    'render' => 'value'
+                    //'render' => 'value'
                 ]
+            ],
+            "title" => [
+                "display" => true,
             ],
             'scales' => [
                 'xAxes' => [
@@ -113,14 +116,16 @@ class GraphChartjs implements GraphInterface
     /**
      * @param array $arrValues
      * @param string $strLegend
-     * @param bool $bitWriteValues - not implemented
+     * @param bool $bitWriteValues
      *
      * @see GraphInterface::addBarChartSet()
      */
-    public function addBarChartSet($arrValues, $strLegend, $bitWriteValues = false)
+    public function addBarChartSet($arrValues, $strLegend, $bitWriteValues = null)
     {
         $this->addChartSet($arrValues, $strLegend);
-        $this->setWriteValues($bitWriteValues);
+        if (isset($bitWriteValues)) {
+            $this->setWriteValues($bitWriteValues);
+        }
     }
 
     /**
@@ -130,12 +135,14 @@ class GraphChartjs implements GraphInterface
      *
      * @see GraphInterface::addStackedBarChartSet()
      */
-    public function addStackedBarChartSet($arrValues, $strLegend, $bitWriteValues = false)
+    public function addStackedBarChartSet($arrValues, $strLegend, $bitWriteValues = null)
     {
         $this->addChartSet($arrValues, $strLegend);
         $this->arrChartData['options']['scales']['xAxes'][0]['stacked'] = true;
         $this->arrChartData['options']['scales']['yAxes'][0]['stacked'] = true;
-        $this->setWriteValues($bitWriteValues);
+        if (isset($bitWriteValues)) {
+            $this->setWriteValues($bitWriteValues);
+        }
     }
 
     /**
@@ -169,6 +176,7 @@ class GraphChartjs implements GraphInterface
         ];
         $this->intXLabelsCount = count($arrValues);
         $this->arrChartData['data']['labels'] = $arrLegends;
+        $this->setWriteValues(true, 'percentage');
     }
 
     /**
@@ -218,7 +226,7 @@ class GraphChartjs implements GraphInterface
                 require(['chartjs-plugin-labels'], function(chartjsLabels) {
 		            var chartData = ".json_encode($this->arrChartData, JSON_NUMERIC_CHECK).";
     		        var chartGlobalOptions = ".json_encode($this->arrChartGlobalOptions, JSON_NUMERIC_CHECK).";
-                     var ctx = document.getElementById('".$strChartId."');
+                    var ctx = document.getElementById('".$strChartId."');
                 
                     ctx.style.backgroundColor = chartGlobalOptions['backgroundColor'];
                     Chart.defaults.global.defaultFontColor = typeof (chartGlobalOptions['defaultFontColor']) !== 'undefined' ? chartGlobalOptions['defaultFontColor'] : 'black';
