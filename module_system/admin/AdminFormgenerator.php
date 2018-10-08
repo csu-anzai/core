@@ -214,6 +214,7 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
     public function updateSourceObject()
     {
         foreach ($this->arrFields as $objOneField) {
+            $objOneField->readValue();
             if ($objOneField->getObjSourceObject() != null) {
                 $objOneField->setValueToObject();
             }
@@ -223,8 +224,9 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
     /**
      * Updates the internal value of each field. This can be used in case the form comes from a
      * cache and the request parameters have changed during the request
+     * @deprecated
      */
-    public final function readValues()
+    final public function readValues()
     {
         foreach ($this->arrFields as $objOneField) {
             $objOneField->readValue();
@@ -328,6 +330,7 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
         $errors = [];
         $fields = $container->getFields();
         foreach ($fields as $field) {
+            $field->readValue();
             if ($field->getBitSkipValidation()) {
                 continue;
             }
@@ -619,6 +622,7 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
         $arrGroups = [self::DEFAULT_GROUP => ""];
 
         foreach ($this->arrFields as $objOneField) {
+            $objOneField->readValue();
             $strKey = $this->getGroupKeyForEntry($objOneField);
             if (empty($strKey)) {
                 // in case we have no key use the default key
@@ -684,6 +688,7 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
         $strHidden = "";
 
         foreach ($this->arrFields as $objOneField) {
+            $objOneField->readValue();
             if (in_array($objOneField->getStrEntryName(), $this->arrHiddenElements)) {
                 $strHidden .= $objOneField->renderField();
             } else {

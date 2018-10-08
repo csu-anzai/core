@@ -89,7 +89,7 @@ class FormentryBase
         if ($objSourceObject != null) {
             $this->updateLabel();
         }
-        $this->updateValue();
+        //$this->updateValue();
     }
 
     /**
@@ -125,7 +125,9 @@ class FormentryBase
         if (isset($arrParams[$this->strEntryName])) {
             $this->setStrValue($arrParams[$this->strEntryName]);
         } else {
-            $this->setStrValue($this->getValueFromObject());
+            if ($this->getObjSourceObject() !== null) {
+                $this->setStrValue($this->getValueFromObject());
+            }
         }
     }
 

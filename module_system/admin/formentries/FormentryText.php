@@ -6,6 +6,7 @@
 
 namespace Kajona\System\Admin\Formentries;
 
+use Kajona\System\Admin\FormentryI18nTrait;
 use Kajona\System\Admin\FormentryPrintableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Validators\TextValidator;
@@ -17,6 +18,7 @@ use Kajona\System\System\Validators\TextValidator;
  */
 class FormentryText extends FormentryBase implements FormentryPrintableInterface
 {
+    use FormentryI18nTrait;
 
     private $strOpener = "";
 
@@ -31,7 +33,7 @@ class FormentryText extends FormentryBase implements FormentryPrintableInterface
 
     /**
      * Renders the field itself.
-     * In most cases, based on the current toolkit.
+     * In most cases, based on the current toolkit.x
      *
      * @return string
      */
@@ -43,10 +45,46 @@ class FormentryText extends FormentryBase implements FormentryPrintableInterface
             $strReturn .= $objToolkit->formTextRow($this->getStrHint());
         }
 
-        $strReturn .= $objToolkit->formInputText($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue(), "inputText", $this->strOpener, $this->getBitReadonly());
+        if ($this->isI18nEnabled()) {
+            foreach ($this->toValueArray($this->getStrValue()) as $lang => $value) {
+                $strReturn .= $objToolkit->formInputText($this->getStrEntryName()."_".$lang, $this->getStrLabel()." ({$lang})", $value, "inputText", $this->strOpener, $this->getBitReadonly());
+            }
+            $strReturn .= $objToolkit->formInputHidden($this->getStrEntryName(), "1");
+        } else {
+            $strReturn .= $objToolkit->formInputText($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue(), "inputText", $this->strOpener, $this->getBitReadonly());
+        }
+
 
         return $strReturn;
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function updateValue()
+    {
+        if ($this->isI18nEnabled()) {
+            $arrParams = Carrier::getAllParams();
+            if (isset($arrParams[$this->getStrEntryName()])) {
+                $this->setStrValue($this->toValueString($arrParams, $this->getStrEntryName()));
+            } else {
+                parent::updateValue();
+            }
+        } else {
+            parent::updateValue();
+        }
+    }
+
+    /**
+     * Uses the current validator and validates the current value.
+     *
+     * @return bool
+     */
+    public function validateValue()
+    {
+        return $this->getObjValidator()->validate($this->getStrValue());
+    }
+
 
     /**
      * Returns a textual representation of the formentries' value.
