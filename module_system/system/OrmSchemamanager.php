@@ -8,7 +8,6 @@
 
 namespace Kajona\System\System;
 
-
 /**
  * The schemamanager-class is used to generate the table out of an objects annotations.
  *
@@ -22,7 +21,7 @@ namespace Kajona\System\System;
 class OrmSchemamanager extends OrmBase
 {
 
-    static $arrColumnDataTypes = array(
+    private static $arrColumnDataTypes = array(
         DbDatatypes::STR_TYPE_INT,
         DbDatatypes::STR_TYPE_LONG,
         DbDatatypes::STR_TYPE_DOUBLE,
@@ -52,6 +51,7 @@ class OrmSchemamanager extends OrmBase
      * @param OrmSchemamanagerTable[] $arrTableDefinitions
      *
      * @throws OrmException
+     * @throws Exception
      * @return void
      */
     private function processTableDefinitions($arrTableDefinitions)
@@ -75,7 +75,7 @@ class OrmSchemamanager extends OrmBase
             }
 
 
-            if (!Carrier::getInstance()->getObjDB()->createTable($objOneTable->getStrName(), $arrFields, $arrPrimary, $arrIndex, $objOneTable->getBitTxSafe())) {
+            if (!Carrier::getInstance()->getObjDB()->createTable($objOneTable->getStrName(), $arrFields, $arrPrimary, $arrIndex)) {
                 throw new OrmException("error creating table ".$objOneTable->getStrName(), OrmException::$level_ERROR);
             }
 
@@ -95,8 +95,6 @@ class OrmSchemamanager extends OrmBase
 
         $arrTargetTables = $objReflection->getAnnotationValuesFromClass(self::STR_ANNOTATION_TARGETTABLE);
 
-        $arrTxSafe = $objReflection->getAnnotationValuesFromClass(self::STR_ANNOTATION_TARGETTABLETXSAFE);
-
         /** @var OrmSchemamanagerTable[] $arrCreateTables */
         $arrCreateTables = array();
 
@@ -108,10 +106,6 @@ class OrmSchemamanager extends OrmBase
             }
 
             $objTable = new OrmSchemamanagerTable($arrTable[0]);
-            if (count($arrTxSafe) == 1) {
-                $objTable->setBitTxSafe($arrTxSafe[0] == "false" ? false : true);
-            }
-
             $objTable->addRow(new OrmSchemamanagerRow($arrTable[1], DbDatatypes::STR_TYPE_CHAR20, false, true));
             $arrCreateTables[$arrTable[0]] = $objTable;
         }
