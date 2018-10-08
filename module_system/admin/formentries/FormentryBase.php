@@ -18,7 +18,6 @@ use Kajona\System\System\ValidationError;
 use Kajona\System\System\ValidatorExtendedInterface;
 use Kajona\System\System\ValidatorInterface;
 
-
 /**
  * The base-class for all form-entries.
  * Holds common values and common method-logic to reduce the amount
@@ -73,6 +72,7 @@ class FormentryBase
      * @param $strFormName
      * @param $strSourceProperty
      * @param Model $objSourceObject
+     * @throws Exception
      */
     public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
     {
@@ -106,6 +106,7 @@ class FormentryBase
      * Updates the internal value either based on a request value or the value from
      * the object. This method is only needed in case the request parameters have changed
      * during the request and you need to update the form which may come from a cache
+     * @throws Exception
      */
     final public function readValue()
     {
@@ -116,6 +117,7 @@ class FormentryBase
      * Queries the params-array or the source-object for the mapped value.
      * If found in the params-array, the value will be used, otherwise
      * the source-objects' getter is invoked.
+     * @throws Exception
      */
     protected function updateValue()
     {
@@ -130,6 +132,8 @@ class FormentryBase
     /**
      * Loads the fields label-text, based on a combination of form-name and property-name.
      * The generated label may be overwritten if necessary.
+     * @param string $strKey
+     * @throws Exception
      */
     public function updateLabel($strKey = "")
     {
@@ -401,6 +405,7 @@ class FormentryBase
      * @param string $strAnnotation
      *
      * @return int|null|string
+     * @throws Exception
      */
     protected function getCurrentProperty($strAnnotation = AdminFormgenerator::STR_TYPE_ANNOTATION)
     {
@@ -430,6 +435,7 @@ class FormentryBase
      * @param string $strAnnotation
      *
      * @return array|null|string
+     * @throws Exception
      */
     protected function getAnnotationParamsForCurrentProperty($strAnnotation = AdminFormgenerator::STR_TYPE_ANNOTATION)
     {
@@ -449,6 +455,7 @@ class FormentryBase
      * @param string $strAnnotation
      *
      * @return mixed|null
+     * @throws Exception
      */
     protected function getAnnotationParamValueForCurrentProperty($strParamName, $strAnnotation = AdminFormgenerator::STR_TYPE_ANNOTATION)
     {
@@ -476,6 +483,4 @@ class FormentryBase
     {
         $this->bitSkipValidation = $bitSkipValidation;
     }
-
-
 }
