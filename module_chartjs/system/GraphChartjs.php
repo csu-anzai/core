@@ -6,6 +6,7 @@
 
 namespace Kajona\Chartjs\System;
 
+use Kajona\System\System\Exception;
 use Kajona\System\System\GraphInterface;
 
 /**
@@ -95,14 +96,23 @@ class GraphChartjs implements GraphInterface
      *
      * @var bool
      */
-    private $bitResponsive = true;
+    private $bitResponsive = false;
+
+    /**
+     * @return array
+     */
+    public function getArrChartData(): array
+    {
+        return $this->arrChartData;
+    }
+
 
     /**
      * @param array $arrValues
      * @param string $strLegend
      */
     private function addChartSet($arrValues, $strLegend, $type = null) {
-        $intDatasetNumber = count($this->arrChartData['data']['datasets']);
+        $intDatasetNumber = isset($this->arrChartData['data']['datasets']) ? count($this->arrChartData['data']['datasets']) : 0;
         $this->arrChartData['data']['datasets'][] = [
             "type" => $type,
             "label" => !empty($strLegend) ? $strLegend : "Dataset " . $intDatasetNumber,
@@ -216,7 +226,7 @@ class GraphChartjs implements GraphInterface
         $strResizeableId = "resize_".$strSystemId;
         $strChartId = "chart_".$strSystemId;
 
-        $strWidth = $this->bitIsResponsive ? "100%" : $this->intWidth."px";
+        $strWidth = $this->isBitResponsive() ? "100%" : $this->intWidth."px";
         $strReturn = "<div id=\"$strResizeableId\" style=\"width:{$strWidth}; height:".$this->intHeight."px;\">";
         $strReturn .= '<canvas id="'.$strChartId.'" width="'.$this->intWidth.'" height="'.$this->intHeight.'"></canvas>';
         $strReturn .= '</div>';
@@ -390,6 +400,14 @@ class GraphChartjs implements GraphInterface
     public function setBitResponsive(int $bitResponsive)
     {
         $this->bitResponsive = $bitResponsive;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBitResponsive(): bool
+    {
+        return $this->bitResponsive;
     }
 
     /**
