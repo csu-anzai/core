@@ -121,7 +121,6 @@ Hint: In order to read and write property-values, getters and setters need to be
 You will face situations where you want to control different parts of the mapper in detail. Especially for custom object structures, custom primary-keys and table-indexes will be a must-have.
 Therefore, the mapper supports additional annotations:
 
-* @targetTableTxSafe false: Given on class-level this annotation indicates that the target-table doesn’t need to support transaction. Since this is only needed for rare scenarios try to not to use this annotation.
 * @tableColumnPrimaryKey: Adds another properties’ column to the tables primary-key (in addition to the one given with @targetTable)
 * @tableColumnIndex: The column named at the same property will be added to the tables indexable columns. Useful for getting faster select-results due to a special data-layout.
  
@@ -133,7 +132,6 @@ Finally, a commented example making use of all annotations:
 	* doesn't need to support transactions
 	* 
 	* @targetTable object.object_id
-	* @targetTableTxSafe false
 	*/
 	class BasicObject {
 	
@@ -322,10 +320,6 @@ Mandatory:
 
 ``@targetTable name.primaryColumnName`` -> The name of the mapping table and the name of the column saving the primary key
  
-Optionally:
-
-``@targetTableTxSafe true/false`` -> By default all tables should support transactions, this annotations may disable transaction support for the targetTable
- 
 On property level:
 
 Mandatory:
@@ -353,7 +347,6 @@ Example:
 	* doesn't need to support transactions
 	* 
 	* @targetTable object.object_id
-	* @targetTableTxSafe false
 	*/
 	class BasicObject {
 	
@@ -394,17 +387,6 @@ In order to generate a table based on all those annotations, you only need two l
 	$objSchemamanager->createTable("BasicObject");
 
 On MySQL, this results in a table based on the following DDL:
-	
-	CREATE TABLE IF NOT EXISTS `kajona_object` (
-	`object_id` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
-	`property1` text COLLATE utf8_unicode_ci,
-	`anotherproperty` int(11) NOT NULL DEFAULT '0',
-	`custnr` bigint(20) DEFAULT NULL,
-	PRIMARY KEY (`object_id`,`anotherproperty`),
-	KEY `custnr` (`custnr`)
-	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-	
-If `@targetTableTxSafe` would be missing, the default (InnoDB) would be set as the table engine:
 
 	CREATE TABLE IF NOT EXISTS `kajona_object` (
 	`object_id` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
