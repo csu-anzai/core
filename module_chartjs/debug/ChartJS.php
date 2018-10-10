@@ -27,6 +27,7 @@ class ChartJS
         echo "<script language=\"javascript\" type=\"text/javascript\" src=\""._webpath_.Resourceloader::getInstance()->getCorePathForModule("module_system")."/module_system/scripts/jqueryui/jquery-ui.custom.min.js\"></script>";
 
         echo "<link rel=\"stylesheet\" type=\"text/css\" href=\""._webpath_.Resourceloader::getInstance()->getCorePathForModule("module_system")."/module_system/scripts/jqueryui/css/smoothness/jquery-ui.custom.css\"></link>";
+        echo "<link rel=\"stylesheet\" type=\"text/css\" href=\""._webpath_.Resourceloader::getInstance()->getCorePathForModule("module_system")."/module_v4skin/admin/skins/kajona_v4/less/styles.min.css\"></link>";
 
         $objAdminHelper = new AdminHelper();
 

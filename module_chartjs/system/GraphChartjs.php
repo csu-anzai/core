@@ -6,6 +6,8 @@
 
 namespace Kajona\Chartjs\System;
 
+use Kajona\System\System\AdminskinHelper;
+use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\GraphInterface;
 
@@ -97,6 +99,13 @@ class GraphChartjs implements GraphInterface
      * @var bool
      */
     private $bitResponsive = false;
+
+    /**
+     * Defines if we need to show the download link of chart image on the chart
+     *
+     * @var bool
+     */
+    private $bitDownloadLink = false;
 
     /**
      * @return array
@@ -225,11 +234,18 @@ class GraphChartjs implements GraphInterface
         $strSystemId = generateSystemid();
         $strResizeableId = "resize_".$strSystemId;
         $strChartId = "chart_".$strSystemId;
+        $strLinkExportId = $strChartId."_exportlink";
 
         $strWidth = $this->isBitResponsive() ? "100%" : $this->intWidth."px";
-        $strReturn = "<div id=\"$strResizeableId\" style=\"width:{$strWidth}; height:".$this->intHeight."px;\">";
+        $strReturn = "<div onmouseover='$(\"#$strLinkExportId\").show();' onmouseout='$(\"#$strLinkExportId\").hide();' id=\"$strResizeableId\" style=\"width:{$strWidth}; height:".$this->intHeight."px;\">";
         $strReturn .= '<canvas id="'.$strChartId.'" width="'.$this->intWidth.'" height="'.$this->intHeight.'"></canvas>';
-        $strReturn .= '</div>';
+        if ($this->isBitDownloadLink()) {
+            $strImage = AdminskinHelper::getAdminImage("icon_downloads", Carrier::getInstance()->getObjLang()->getLang("commons_save_as_image", "system"));
+            $strReturn .= "<div class=\"chartjs-link-bar\"><a class=\"chartjs-image-link\" id=\"$strLinkExportId\" download>$strImage</a></div>";
+            $this->arrChartGlobalOptions['createImageLink'] = true;
+        }
+        $strReturn .= "</div>";
+
         $strReturn .= "<script type='text/javascript'>
 
             require(['chartjs'], function(chartjs) {
@@ -241,13 +257,24 @@ class GraphChartjs implements GraphInterface
                     ctx.style.backgroundColor = chartGlobalOptions['backgroundColor'];
                     Chart.defaults.global.defaultFontColor = typeof (chartGlobalOptions['defaultFontColor']) !== 'undefined' ? chartGlobalOptions['defaultFontColor'] : 'black';
                     Chart.defaults.global.defaultFontFamily = chartGlobalOptions['defaultFontFamily'];
-                    Chart.defaults.global.legend.labels.fontColor = typeof (chartGlobalOptions['labelsFontColor']) !== 'undefined' ? chartGlobalOptions['labelsFontColor'] : chartGlobalOptions['defaultFontColor'];    
+                    Chart.defaults.global.legend.labels.fontColor = typeof (chartGlobalOptions['labelsFontColor']) !== 'undefined' ? chartGlobalOptions['labelsFontColor'] : chartGlobalOptions['defaultFontColor'];
                 
-                    new chartjs.Chart(ctx, {
+                    if (typeof (chartGlobalOptions['createImageLink']) !== 'undefined' || chartGlobalOptions['createImageLink']) {
+                       chartData['options']['animation'] = {
+                            onComplete: createExportLink
+                       }
+                    }
+                    
+                    var myChart = new chartjs.Chart(ctx, {
                         type: chartData['type'],
                         data : chartData['data'],
                         options : chartData['options'],
                     });     
+                    
+                    function createExportLink() {
+                        var url = myChart.toBase64Image();
+                        document.getElementById('".$strLinkExportId."').href = url;
+                    }
                 });
             });
         </script>";
@@ -475,4 +502,21 @@ class GraphChartjs implements GraphInterface
             $this->arrChartData['options']['plugins']['labels'] = [];
         }
     }
+
+    /**
+     * @return bool
+     */
+    public function isBitDownloadLink(): bool
+    {
+        return $this->bitDownloadLink;
+    }
+
+    /**
+     * @param bool $bitDownloadLink
+     */
+    public function setBitDownloadLink(bool $bitDownloadLink): void
+    {
+        $this->bitDownloadLink = $bitDownloadLink;
+    }
+
 }
