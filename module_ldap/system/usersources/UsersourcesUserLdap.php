@@ -192,13 +192,13 @@ class UsersourcesUserLdap extends \Kajona\System\System\Model implements \Kajona
                     $arrReturn[] = $strOneGroupId;
                 }
             } catch (\Exception $e) {
-                Logger::getInstance()->notice($e->getMessage());
+                Logger::getInstance()->info($e->getMessage());
             }
         }
 
         //may include kajona-source group ids
         $sourceKajona = new UsersourcesUserKajona($this->getSystemid());
-        $arrReturn = array_merge($sourceKajona->getGroupIdsForUser());
+        $arrReturn = array_merge($arrReturn, $sourceKajona->getGroupIdsForUser());
 
         return $arrReturn;
     }
