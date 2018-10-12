@@ -5,7 +5,9 @@ namespace Kajona\Chartjs\Debug;
 
 use Kajona\Chartjs\System\GraphChartjs;
 use Kajona\System\Admin\AdminHelper;
+use Kajona\System\System\GraphCommons;
 use Kajona\System\System\GraphFactory;
+use Kajona\System\System\Link;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemSetting;
@@ -39,6 +41,88 @@ class ChartJS
             require(['app'], function() {});
         </script>
         ";
+
+        // TMP====
+        $arrActionHanlderValue1 = array(
+            "val1" => 1,
+            "val2" => 2,
+            "val3" => 3,
+        );
+        $arrActionHanlderValue2 = array(
+            "val21" => 1,
+            "val22" => 2,
+            "val23" => 3,
+        );
+
+        /** @var GraphChartjs $objGraph */
+        $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_JQPLOT);
+        $arrDataPointObjects1 = GraphCommons::convertArrValuesToDataPointArray(array(8.112, 1, 2, 4));
+        $testLink = Link::getLinkAdminHref("auswertung", "setParams", "&folderview=1&params_use=1", 'test message');
+        $arrDataPointObjects1[0]->setObjActionHandlerValue($testLink);
+        $arrDataPointObjects1[1]->setObjActionHandler('require(\'oprisk\').reports.reportmap.filterOeClick');
+        $arrDataPointObjects1[1]->setObjActionHandlerValue(json_encode($arrActionHanlderValue1));
+        $arrDataPointObjects1[2]->setObjActionHandler('require(\'oprisk\').reports.reportmap.filterOeClick');
+        $arrDataPointObjects1[2]->setObjActionHandlerValue(json_encode($arrActionHanlderValue2));
+        $arrDataPointObjects1[3]->setObjActionHandler('require(\'oprisk\').reports.reportmap.filterOeClick');
+        $arrDataPointObjects1[3]->setObjActionHandlerValue(json_encode($arrActionHanlderValue2));
+        $arrDataPointObjects2 = GraphCommons::convertArrValuesToDataPointArray(array(1, 2, 3, 4));
+        $objGraph->addLinePlot($arrDataPointObjects1, null);
+        $objGraph->addLinePlot($arrDataPointObjects2, null);
+        $objGraph->setBitRenderLegend(true);
+        $objGraph->setIntXAxisAngle(-20); // not works
+        $objGraph->setStrXAxisTitle("XXX");
+        $objGraph->setStrYAxisTitle("YYY");
+         $objGraph->setStrGraphTitle("01. My First Line Chart");
+        $objGraph->setIntHeight(700);
+        $objGraph->setIntWidth(700);
+        $objGraph->setStrFontColor("#FF0000");
+        $objGraph->setArrXAxisTickLabels(array("v1", "v2", "v3", "v4"));
+        $objGraph->setStrFont("Open Sans");
+        echo $objGraph->renderGraph();
+
+
+        $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_JQPLOT);
+        $objGraph->addStackedBarChartSet([1], "xx1");
+        $objGraph->addStackedBarChartSet([1], "xx2");
+        $objGraph->addStackedBarChartSet([0], "xx3");
+        $objGraph->addStackedBarChartSet([0], "xx4");
+        $objGraph->addStackedBarChartSet([0], "xx5");
+        //$objGraph->addStackedBarChartSet([2,2], "yyy");
+        $objGraph->setBitRenderLegend(false);
+        $objGraph->setXAxisRange(0, array_sum([1,1,0,0,0]));
+        $objGraph->setBarHorizontal(true);
+        $objGraph->setHideXAxis(true);
+        $objGraph->setHideYAxis(true);
+        $objGraph->drawBorder(true);
+        $objGraph->setBitIsResizeable(false);
+        $objGraph->setBitDownloadLink(false);
+        $objGraph->setIntHeight(45);
+        $objGraph->setIntWidth(700);
+        echo $objGraph->renderGraph();
+
+        $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
+        $objGraph->addStackedBarChartSet([1], "xx1");
+        $objGraph->addStackedBarChartSet([1], "xx2");
+        $objGraph->addStackedBarChartSet([0], "xx3");
+        $objGraph->addStackedBarChartSet([0], "xx4");
+        $objGraph->addStackedBarChartSet([0], "xx5");
+        $objGraph->setBitRenderLegend(false);
+        $objGraph->setTickStepXAxis(1);
+        $objGraph->setTickStepYAxis(1);
+        $objGraph->setHideGridLinesYAxis(1);
+        $objGraph->setHideGridLinesXAxis(1);
+        //$objGraph->setXAxisRange(0, array_sum($arrStatus2Result));
+        $objGraph->setBarHorizontal(true);
+        $objGraph->setHideXAxis(true);
+        $objGraph->setHideYAxis(true);
+        //$objGraph->drawBorder(true);
+        //$objGraph->setBitIsResizeable(false);
+        $objGraph->setBitDownloadLink(false);
+        $objGraph->setIntHeight(70);
+        $objGraph->setIntWidth(700);
+        echo $objGraph->renderGraph();
+        // END TMP====
+
 
         /** @var GraphChartjs $objGraph */
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
