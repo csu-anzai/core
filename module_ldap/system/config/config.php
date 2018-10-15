@@ -79,7 +79,7 @@ $config[1]["ldap_common_name"]                     = "cn";
 $config[1]["ldap_user_base_dn"]                    = "OU=Anwender,DC=ad,DC=artemeon,DC=int";
 $config[1]["ldap_user_filter"]                     = "(&(objectClass=user)(objectCategory=person)(cn=*))";
 $config[1]["ldap_user_search_filter"]              = "(&(objectClass=user)(objectCategory=person)(userPrincipalName=?))";
-$config[0]["ldap_user_search_wildcard"]            = "(&(objectClass=user)(objectCategory=person) (|(userPrincipalName=?)(sn=?)(givenName=?)))";
+$config[1]["ldap_user_search_wildcard"]            = "(&(objectClass=user)(objectCategory=person) (|(userPrincipalName=?)(sn=?)(givenName=?)))";
 $config[1]["ldap_user_attribute_username"]         = "userPrincipalName";
 $config[1]["ldap_user_attribute_mail_fallback"]    = "userPrincipalName";
 $config[1]["ldap_user_attribute_mail"]             = "mail";
