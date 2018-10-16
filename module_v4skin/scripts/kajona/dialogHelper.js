@@ -76,6 +76,20 @@ define('dialogHelper', ['jquery', 'dialog'], function ($, Dialog) {
         },
 
         /**
+         * Registers and shows a information modal
+         * @returns {module:dialog}
+         */
+        showInfoModal : function(title, content) {
+
+            var dialogInstance = new Dialog('jsDialog_0', 0);
+            dialogInstance.setTitle(title);
+            dialogInstance.setContentRaw(content);
+            dialogInstance.init(300, 300);
+
+            return dialogInstance;
+        },
+
+        /**
          * Hides the currently open loading modal
          */
         hideLoadingModal : function() {

@@ -8,9 +8,11 @@
  *
  * @module forms
  */
-define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function ($, tooltip, router, util, messaging) {
 
-    /** @exports forms */
+define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'dialogHelper'], function ($, tooltip, router, util, messaging, ajax, dialogHelper) {
+
+
+        /** @exports forms */
     var forms = {};
 
     forms.changeLabel = '';
@@ -303,6 +305,30 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
         router.registerLoadCallback("form_unlock", function() {
             $.ajax({url: KAJONA_WEBPATH + '/xml.php?admin=1&module=system&action=unlockRecord&systemid='+strId});
         });
+    };
+
+    forms.getFilterURL = function () {
+        var filterUrl = $(".contentFolder form").attr('action') + '&' + $(".contentFolder form").serialize();
+        ajax.genericAjaxCall("tinyurl", "getShortUrl", {url: filterUrl}, function (data) {
+            if (data) {
+                var modalContent = '<div class="input-group">' +
+                    '<input type="text" class="form-control" value="' + data.url + '">' +
+                    '<span class="input-group-btn">' +
+                    '<button class="btn btn-default copy-btn" type="button" title="" onclick="require(\'util\').copyTextToClipboard(\'' + data.url + '\')">' +
+                    '<i class=\'kj-icon fa fa-clipboard\'>' +
+                    '</button>' +
+                    '</span>' +
+                    '</div>';
+
+                dialogHelper.showInfoModal("<span data-lang-property=\"system:copy_page_url\"></span>", modalContent);
+                require(["lang", "jquery"], function(lang, $) {
+                    lang.initializeProperties();
+                    lang.fetchSingleProperty("system", "copy_to_clipboard", function(value) {
+                        $(".copy-btn").attr("title", value);
+                    })
+                })
+            }
+        }, null, null, null, 'json');
     };
 
     return forms;

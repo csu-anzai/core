@@ -341,3 +341,6 @@ $lang["update_in_progress"] = "Das System wird gerade aktualisiert. Bitte warten
 $lang["form_objectlist_add_search"]  = "{0} hinzufügen ...";
 
 $lang["object_browser_reset"] = "Objekt entfernen";
+
+$lang["copy_to_clipboard"] = "In die Zwischenablage kopieren";
+$lang["copy_page_url"] = "Seiten-URL";
