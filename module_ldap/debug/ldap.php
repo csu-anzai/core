@@ -31,6 +31,8 @@ foreach(Ldap::getAllInstances() as $objOneLdap) {
     $arrUser = $objOneLdap->getUserDetailsByDN($arrUser[0]["identifier"]);
     var_dump($arrUser);
 
+    var_dump($objOneLdap->getUserdetailsByName("ff@testad1.local"));
+
 
 //    echo "Loading groups for user\n";
 //    var_dump($objOneLdap->getMembersOfGroup("CN=Entwickler,OU=Gruppen,DC=ad,DC=artemeon,DC=int"));
