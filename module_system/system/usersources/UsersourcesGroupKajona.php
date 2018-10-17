@@ -138,13 +138,12 @@ class UsersourcesGroupKajona extends Model implements ModelInterface, Usersource
      */
     public function getUserIdsForGroup($intStart = null, $intEnd = null)
     {
-        $strQuery = "SELECT k_user.user_id FROM "._dbprefix_."user_kajona as k_user,
+        $strQuery = "SELECT user2.user_id FROM 
                                          ".$this->objDB->encloseTableName(_dbprefix_."user")." as user2,
 									     "._dbprefix_."user_kajona_members,
 									     "._dbprefix_."system 
 								   WHERE group_member_group_kajona_id= ?
-								  	 AND k_user.user_id = group_member_user_kajona_id
-                                     AND k_user.user_id = user2.user_id
+								  	 AND user2.user_id = group_member_user_kajona_id
                                      AND user2.user_id = system_id
 					                 AND system_deleted = 0
                                 ORDER BY user2.user_username ASC  ";

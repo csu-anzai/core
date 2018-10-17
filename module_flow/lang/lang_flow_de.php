@@ -23,6 +23,7 @@ $lang["form_flow_name"]         = "Name";
 $lang["form_flow_iconcolor"]    = "Farbe";
 $lang["form_flow_headline_groups"] = "Gruppen Konfiguration";
 $lang["form_flow_headline_roles"] = "Rollenkonfiguration";
+$lang["form_flow_headline_transitions"] = "Übergänge";
 $lang["form_flow_viewgroups"]   = "Ansehen";
 $lang["form_flow_editgroups"]   = "Bearbeiten";
 $lang["form_flow_deletegroups"] = "Löschen";
@@ -72,4 +73,7 @@ $lang["form_next_status_description"]   = "Auf dieser Seite können Sie für das
 $lang["action_status_change_title"]   = "Rückmeldung";
 $lang["action_status_change_success"]   = "Statuswechsel erfolgreich durchgeführt.";
 $lang["action_status_change_redirect"]   = "Das System benötigt eine Benutzereingabe um den Statusübergang durchzuführen.";
+
+$lang["action_skip_transition_title"]   = "Überspringe Status Nachricht";
+$lang["action_skip_transition_description"] = "";
 

@@ -10,7 +10,9 @@
 namespace Kajona\System\System\Usersources;
 
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Database;
 use Kajona\System\System\Logger;
+use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Security\PasswordExpiredException;
 use Kajona\System\System\Security\PasswordRotator;
 use Kajona\System\System\ServiceProvider;
@@ -202,6 +204,45 @@ class UsersourcesSourceKajona implements UsersourcesUsersourceInterface
 
         return null;
     }
+
+    /**
+     * @inheritdoc
+     * @param $strUsername
+     * @return array|UsersourcesUserInterface[]
+     */
+    public function searchUser($strUsername, $intMax = 10)
+    {
+        $strDbPrefix = _dbprefix_;
+        $connection = Database::getInstance();
+
+        $strQuery = "SELECT user_tbl.user_id
+                      FROM {$strDbPrefix}system, ".Carrier::getInstance()->getObjDB()->encloseTableName(_dbprefix_."user")." AS user_tbl
+                      LEFT JOIN {$strDbPrefix}user_kajona AS user_kajona ON user_tbl.user_id = user_kajona.user_id
+                      WHERE
+                          (
+                          user_tbl.user_username LIKE ? 
+                          OR user_kajona.user_forename LIKE ? 
+                          OR user_kajona.user_name LIKE ? 
+                          OR ".$connection->getConcatExpression(['user_kajona.user_forename', '\' \'', 'user_kajona.user_name'])." LIKE ?
+                          OR ".$connection->getConcatExpression(['user_kajona.user_name', '\' \'', 'user_kajona.user_forename'])." LIKE ?
+                          OR ".$connection->getConcatExpression(['user_kajona.user_name', '\', \'', 'user_kajona.user_forename'])." LIKE ?                  
+                          )
+                          AND user_tbl.user_id = system_id
+                          AND (system_deleted = 0 OR system_deleted IS NULL)
+                      ORDER BY user_tbl.user_username, user_tbl.user_subsystem ASC";
+
+        $arrParams = array("%".$strUsername."%", "%".$strUsername."%", "%".$strUsername."%", "%".$strUsername."%", "%".$strUsername."%", "%".$strUsername."%");
+
+        $arrIds = Carrier::getInstance()->getObjDB()->getPArray($strQuery, $arrParams, 0, $intMax);
+
+        $arrReturn = array();
+        foreach ($arrIds as $arrOneId) {
+            $arrReturn[] = Objectfactory::getInstance()->getObject($arrOneId["user_id"]);
+        }
+
+        return $arrReturn;
+    }
+
 
     /**
      * Fetches a user by mail. This way of fetching users is not officially supported since not covered by all login-providers.

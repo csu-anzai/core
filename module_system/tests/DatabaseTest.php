@@ -593,8 +593,8 @@ SQL;
         $connection = Database::getInstance();
         $connection->multiInsert("temp_autotest", ["temp_id"], [[$systemId]]);
 
-        $query = "SELECT " . $connection->getConcatExpression(["','", "temp_id", "','"]) . " AS val FROM " . _dbprefix_ . "temp_autotest";
-        $row = $connection->getPRow($query, []);
+        $query = "SELECT " . $connection->getConcatExpression(["','", "temp_id", "','"]) . " AS val FROM " . _dbprefix_ . "temp_autotest WHERE temp_id = ? AND " . $connection->getConcatExpression(["','", "temp_id", "','"]) . " LIKE ? AND temp_id = ?";
+        $row = $connection->getPRow($query, [$systemId, ",{$systemId},", $systemId]);
 
         $this->assertEquals(",{$systemId},", $row["val"]);
     }

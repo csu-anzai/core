@@ -917,7 +917,7 @@ JS;
         $strReturn .= $this->objToolkit->getContentToolbar($arrToolbar);
 
         list($arrHeader, $arrData) = $this->buildChangelogDataTable($objObject, $objArraySectionIterator, true);
-        $strReturn .= $this->objToolkit->dataTable($arrHeader, $arrData);
+        $strReturn .= $this->objToolkit->dataTable($arrHeader, $arrData, "kajona-data-table-ignore-floatthread");
 
         $strReturn .= $this->objToolkit->getPageview($objArraySectionIterator, $strSourceModule, $strSourceAction, "&systemid=".$strSystemid."&bitBlockFolderview=".$this->getParam("bitBlockFolderview"));
 

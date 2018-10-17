@@ -23,6 +23,7 @@ $lang["form_flow_name"]         = "Name";
 $lang["form_flow_iconcolor"]    = "Color";
 $lang["form_flow_headline_groups"] = "Group configuration";
 $lang["form_flow_headline_roles"] = "Role configuration";
+$lang["form_flow_headline_transitions"] = "Transitions";
 $lang["form_flow_viewgroups"]   = "View";
 $lang["form_flow_editgroups"]   = "Edit";
 $lang["form_flow_deletegroups"] = "Delete";
@@ -72,3 +73,6 @@ $lang["form_next_status_description"]   = "Please select the next status for the
 $lang["action_status_change_title"]   = "Response";
 $lang["action_status_change_success"]   = "Status change was successful.";
 $lang["action_status_change_redirect"]   = "The system needs user input in order to execute the status change.";
+
+$lang["action_skip_transition_title"]   = "Skip status message";
+$lang["action_skip_transition_description"] = "";

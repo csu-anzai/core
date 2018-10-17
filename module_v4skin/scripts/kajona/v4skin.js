@@ -156,7 +156,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
             this.delay = 500;
 
             this.position = {
-                collision: "flip"
+                collision: "fit flip"
             };
 
             this.messages = {
@@ -238,6 +238,11 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
 
             // trigger table changed event
             var table = $(el).closest(".form-group").find(".table").first();
+
+            //remove marker
+            if (table.siblings('.initval-marker').length > 0) {
+                table.siblings('.initval-marker').val(table.siblings('.initval-marker').val().replace($(el).closest('tr').find('input').val()), '');
+            }
 
             // remove element
             $(el).parent().parent().fadeOut(0, function(){

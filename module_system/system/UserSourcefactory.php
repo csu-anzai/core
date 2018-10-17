@@ -130,50 +130,34 @@ class UserSourcefactory
      * @param int|null $intEnd
      * @param string|null $strGroupId
      * @return UserUser[]
+     * @throws Exception
      */
     public function getUserlistByUserquery($strParam, $intStart = null, $intEnd = null, $strGroupId = null)
     {
-        $strDbPrefix = _dbprefix_;
-        //validate if a group with the given name is available
-        $strQuery = "SELECT user_tbl.user_id, user_tbl.user_subsystem
-                      FROM {$strDbPrefix}system, {$strDbPrefix}user AS user_tbl
-                      LEFT JOIN {$strDbPrefix}user_kajona AS user_kajona ON user_tbl.user_id = user_kajona.user_id
-                      WHERE
-                          (user_tbl.user_username LIKE ? OR user_kajona.user_forename LIKE ? OR user_kajona.user_name LIKE ?)
-                          AND user_tbl.user_id = system_id
-                          AND (system_deleted = 0 OR system_deleted IS NULL)
-                          AND system_status = 1";
-
-        $arrParams = array("%".$strParam."%", "%".$strParam."%", "%".$strParam."%");
-
-        $bitSqlFiltered = false;
-        if (validateSystemid($strGroupId) && count($this->arrSubsystemsAvailable) == 1 && $this->arrSubsystemsAvailable[0] == "kajona") {
-            $bitSqlFiltered = true;
-            $strQuery .= " AND ? IN (SELECT group_member_group_kajona_id FROM {$strDbPrefix}user_kajona_members WHERE group_member_user_kajona_id = user_tbl.user_id) ";
-            $arrParams[] = $strGroupId;
+        $arrReturn = [];
+        foreach ($this->arrSubsystemsAvailable as $subsystem) {
+            //append a custom search by each subsystem
+            $subsystem = $this->getUsersource($subsystem);
+            $arrReturn = array_merge($arrReturn, $subsystem->searchUser($strParam));
         }
 
-        $strQuery .= " ORDER BY user_tbl.user_username, user_tbl.user_subsystem ASC ";
-
-        $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, $arrParams, $intStart, $intEnd);
-
-        $arrReturn = array();
-        foreach ($arrRows as $arrOneRow) {
-            if (in_array($arrOneRow["user_subsystem"], $this->arrSubsystemsAvailable)) {
-                /** @var UserUser $objUser */
-                $objUser = Objectfactory::getInstance()->getObject($arrOneRow["user_id"]);
-
-                if (validateSystemid($strGroupId) && !$bitSqlFiltered) {
-                    if (!in_array($strGroupId, $objUser->getArrGroupIds())) {
-                        continue;
-                    }
-                }
-
-                $arrReturn[] = $objUser;
-            }
+        if (validateSystemid($strGroupId)) {
+            $arrReturn = array_filter($arrReturn, function (UserUser $user) use ($strGroupId) {
+                return in_array($strGroupId, $user->getArrGroupIds());
+            });
         }
 
-        return $arrReturn;
+        uasort($arrReturn, function (UserUser $a, UserUser $b) {
+            return strcmp($a->getStrDisplayName(), $b->getStrDisplayName());
+        });
+
+        //remove duplicates
+        $arrUnified = [];
+        foreach ($arrReturn as $user) {
+            $arrUnified[$user->getSystemid()] = $user;
+        }
+
+        return array_values($arrUnified);
     }
 
 

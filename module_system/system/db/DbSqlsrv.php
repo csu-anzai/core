@@ -74,6 +74,23 @@ class DbSqlsrv extends DbBase
     }
 
     /**
+     * Internal helper to convert php values to database values
+     * currently casting them to strings, otherwise the sqlsrv driver fails to
+     * set them back due to type conversions
+     * @param $arrParams
+     * @return array
+     */
+    private function convertParamsArray($arrParams)
+    {
+        $converted = [];
+        foreach ($arrParams as $val) {
+            //$converted[] = [$val, null, SQLSRV_PHPTYPE_STRING(SQLSRV_ENC_CHAR)]; //TODO: would be better but not working, casting internally to return type string
+            $converted[] = $val === null ? null : $val."";
+        }
+        return $converted;
+    }
+
+    /**
      * Sends a prepared statement to the database. All params must be represented by the ? char.
      * The params themself are stored using the second params using the matching order.
      *
@@ -85,7 +102,8 @@ class DbSqlsrv extends DbBase
      */
     public function _pQuery($strQuery, $arrParams)
     {
-        $objStatement = sqlsrv_prepare($this->linkDB, $strQuery, array_values($arrParams));
+        $convertParamsArray = $this->convertParamsArray($arrParams);
+        $objStatement = sqlsrv_prepare($this->linkDB, $strQuery, $convertParamsArray);
         if ($objStatement === false) {
             return false;
         }
@@ -118,7 +136,7 @@ class DbSqlsrv extends DbBase
         $arrReturn = array();
         $intCounter = 0;
 
-        $objStatement = sqlsrv_query($this->linkDB, $strQuery, $arrParams);
+        $objStatement = sqlsrv_query($this->linkDB, $strQuery, $this->convertParamsArray($arrParams));
 
         if ($objStatement === false) {
             return false;
@@ -153,7 +171,7 @@ class DbSqlsrv extends DbBase
      */
     public function getTables()
     {
-        $arrTemp = $this->getPArray("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE'", array());
+        $arrTemp = $this->getPArray("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE'", array()) ?? [];
 
         foreach ($arrTemp as $intKey => $strValue) {
             $arrTemp[$intKey]["name"] = strtolower($strValue["table_name"]);
@@ -173,11 +191,7 @@ class DbSqlsrv extends DbBase
     public function getColumnsOfTable($strTableName)
     {
         $arrReturn = array();
-        $arrTemp = $this->getPArray("SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ?", array(strtoupper($strTableName)));
-
-        if (empty($arrTemp)) {
-            return array();
-        }
+        $arrTemp = $this->getPArray("SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ?", array(strtoupper($strTableName))) ?? [];
 
         foreach ($arrTemp as $arrOneColumn) {
             $arrReturn[] = array(

@@ -54,7 +54,13 @@ global.kajonaPaths = {
     statusDisplay : "module_system/scripts/kajona/statusDisplay",
     tooltip : "module_system/scripts/kajona/tooltip",
     workingIndicator : "module_system/scripts/kajona/workingIndicator",
+    contentToolbar : "module_system/scripts/kajona/contentToolbar",
+    breadcrumb : "module_system/scripts/kajona/breadcrumb",
+    moduleNavigation : "module_system/scripts/kajona/moduleNavigation",
+    quickhelp : "module_system/scripts/kajona/quickhelp",
     util : "module_system/scripts/kajona/util",
+    router : "module_system/scripts/kajona/router",
+    bootstrap : "module_v4skin/scripts/bootstrap/bootstrap.min",
     qtip : "_buildfiles/jstests/spec/helpers/qtip-faker",
     jcrop : "_buildfiles/jstests/spec/helpers/jcrop-faker"
 

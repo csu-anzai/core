@@ -214,7 +214,6 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
                       ORDER BY user_tbl.user_username, user_tbl.user_subsystem ASC";
 
         $arrParams = array("%".$strUsernameFilter."%", "%".$strUsernameFilter."%", "%".$strUsernameFilter."%");
-
         $arrIds = Carrier::getInstance()->getObjDB()->getPArray($strQuery, $arrParams, $intStart, $intEnd);
 
         $arrReturn = array();
@@ -263,8 +262,7 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
         $objUser = $objSubsystem->getUserByUsername($strName);
         if ($objUser != null) {
             return array($objUser);
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -330,8 +328,7 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
         $this->loadSourceObject();
         if ($this->objSourceUser != null) {
             return $this->objSourceUser->getStrEmail();
-        }
-        else {
+        } else {
             return "n.a.";
         }
     }
@@ -344,8 +341,7 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
         $this->loadSourceObject();
         if ($this->objSourceUser != null) {
             return $this->objSourceUser->getStrForename();
-        }
-        else {
+        } else {
             return "n.a.";
         }
     }
@@ -358,8 +354,7 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
         $this->loadSourceObject();
         if ($this->objSourceUser != null) {
             return $this->objSourceUser->getStrName();
-        }
-        else {
+        } else {
             return "n.a.";
         }
     }
@@ -635,8 +630,7 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
     {
         if ($this->intItemsPerPage > 0) {
             return $this->intItemsPerPage;
-        }
-        else {
+        } else {
             return SystemSetting::getConfigValue("_admin_nr_of_rows_");
         }
     }
