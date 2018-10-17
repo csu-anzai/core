@@ -32,8 +32,8 @@ class GraphChartjs implements GraphInterface
         "type" => "bar",
         "options" => [
             'plugins' => [
-                'labels' => [
-                    //'render' => 'value'
+                'datalabels' => [
+                    'display' => false
                 ]
             ],
             "title" => [
@@ -117,13 +117,14 @@ class GraphChartjs implements GraphInterface
     }
 
 
-    private function dataPointObjArrayToArray($arrDataPointObjects) {
+    private function dataPointObjArrayToArray($arrDataPointObjects)
+    {
         $arrDataPoints = [];
         foreach ($arrDataPointObjects as $objDataPoint) {
             $arrDataPoints[] = [
-                "floatvalue"         => $objDataPoint->getFloatValue(),
+                "floatvalue" => $objDataPoint->getFloatValue(),
                 "actionhandlervalue" => $objDataPoint->getObjActionHandlerValue(),
-                "actionhandler"      => $objDataPoint->getObjActionHandler(),
+                "actionhandler" => $objDataPoint->getObjActionHandler(),
             ];
         }
         return $arrDataPoints;
@@ -133,7 +134,8 @@ class GraphChartjs implements GraphInterface
      * @param array $arrValues
      * @param string $strLegend
      */
-    private function addChartSet($arrValues, $strLegend, $type = null) {
+    private function addChartSet($arrValues, $strLegend, $type = null)
+    {
 
         $arrDataPointObjects = GraphCommons::convertArrValuesToDataPointArray($arrValues);
 
@@ -141,7 +143,7 @@ class GraphChartjs implements GraphInterface
         $this->arrChartData['data']['datasets'][] = [
             "dataPoints" => $this->dataPointObjArrayToArray($arrDataPointObjects),
             "type" => $type,
-            "label" => !empty($strLegend) ? $strLegend : "Dataset " . $intDatasetNumber,
+            "label" => !empty($strLegend) ? $strLegend : "Dataset ".$intDatasetNumber,
             "data" => GraphCommons::getDataPointFloatValues($arrDataPointObjects),
             "backgroundColor" => 'rgba('.implode(', ', hex2rgb($this->arrColors[$intDatasetNumber])).', 0.3)',
             "borderColor" => $this->arrColors[$intDatasetNumber],
@@ -207,7 +209,7 @@ class GraphChartjs implements GraphInterface
             $arrBorderColors[] = $arrColor;
         }
         $this->arrChartData['data']['datasets'][] = [
-            "dataPoints" =>  $this->dataPointObjArrayToArray($arrDataPointObjects),
+            "dataPoints" => $this->dataPointObjArrayToArray($arrDataPointObjects),
             "data" => GraphCommons::getDataPointFloatValues($arrDataPointObjects),
             "backgroundColor" => $arrBackgroundColors,
             "borderColor" => $arrBorderColors
@@ -247,7 +249,7 @@ class GraphChartjs implements GraphInterface
         }
 
         if (!isset($this->arrChartData['data']['labels']) || count($this->arrChartData['data']['labels']) == 0) {
-            $this->arrChartData['data']['labels'] = range(1, $this->intXLabelsCount );
+            $this->arrChartData['data']['labels'] = range(1, $this->intXLabelsCount);
         }
 
         $strSystemId = generateSystemid();
@@ -268,7 +270,7 @@ class GraphChartjs implements GraphInterface
         $strReturn .= "<script type='text/javascript'>
 
             require(['chartjs'], function(chartjs) {
-                require(['chartjs-plugin-labels'], function(chartjsLabels) {
+                require(['chartjs-plugin-datalabels'], function(chartjsDatalabels) {
 		            var chartData = ".json_encode($this->arrChartData, JSON_NUMERIC_CHECK).";
     		        var chartGlobalOptions = ".json_encode($this->arrChartGlobalOptions, JSON_NUMERIC_CHECK).";
                     var ctx = document.getElementById('".$strChartId."');
@@ -286,7 +288,7 @@ class GraphChartjs implements GraphInterface
                     chartData['options']['onClick'] = function (evt){
                         var item = this.getElementAtEvent(evt)[0];
                         if (typeof item !== 'undefined') {
-                            var datasetIndex = item._datasetIndex 
+                            var datasetIndex = item._datasetIndex;
                             var index = item._index; 
                             require(['chartjsHelper'], function(chartjsHelper) {
                                 chartjsHelper.onClickHandler(evt, index, datasetIndex, chartData['data']['datasets'][datasetIndex]['dataPoints'][index]);
@@ -486,7 +488,8 @@ class GraphChartjs implements GraphInterface
     /**
      * @param int $bitHideXAxis
      */
-    public function setHideXAxis( int $bitHideXAxis) {
+    public function setHideXAxis(int $bitHideXAxis)
+    {
         $this->arrChartGlobalOptions['xAxesTickDispaly'] = $bitHideXAxis ? false : true;
         $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['display'] = $bitHideXAxis ? false : true;
     }
@@ -494,7 +497,8 @@ class GraphChartjs implements GraphInterface
     /**
      * @param int $bitHideYAxis
      */
-    public function setHideYAxis( int $bitHideYAxis) {
+    public function setHideYAxis(int $bitHideYAxis)
+    {
         $this->arrChartGlobalOptions['yAxesTickDispaly'] = $bitHideYAxis ? false : true;
         $this->arrChartData['options']['scales']['yAxes'][0]['ticks']['display'] = $bitHideYAxis ? false : true;
     }
@@ -502,35 +506,40 @@ class GraphChartjs implements GraphInterface
     /**
      * @param int $bitHideXAxis
      */
-    public function setTickStepXAxis( int $intStep) {
+    public function setTickStepXAxis(int $intStep)
+    {
         $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['stepSize'] = $intStep;
     }
 
     /**
      * @param int $bitHideYAxis
      */
-    public function setTickStepYAxis( int $intStep) {
+    public function setTickStepYAxis(int $intStep)
+    {
         $this->arrChartData['options']['scales']['yAxes'][0]['ticks']['stepSize'] = $intStep;
     }
 
     /**
      * @param int $bitHideXAxis
      */
-    public function setHideGridLinesXAxis(int $bitHideGridLines) {
+    public function setHideGridLinesXAxis(int $bitHideGridLines)
+    {
         $this->arrChartData['options']['scales']['xAxes'][0]['gridLines']['display'] = $bitHideGridLines ? false : true;
     }
 
     /**
      * @param int $bitHideYAxis
      */
-    public function setHideGridLinesYAxis( int $bitHideGridLines) {
+    public function setHideGridLinesYAxis(int $bitHideGridLines)
+    {
         $this->arrChartData['options']['scales']['yAxes'][0]['gridLines']['display'] = $bitHideGridLines ? false : true;
     }
 
     /**
      * @param int $maxXAxesTicksLimit
      */
-    public function setMaxXAxesTicksLimit( int $maxXAxesTicksLimit) {
+    public function setMaxXAxesTicksLimit(int $maxXAxesTicksLimit)
+    {
         $this->arrChartGlobalOptions['maxXAxesTicksLimit'] = $maxXAxesTicksLimit;
         $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['autoSkip'] = true;
         $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['maxTicksLimit'] = $maxXAxesTicksLimit;
@@ -539,24 +548,20 @@ class GraphChartjs implements GraphInterface
     /**
      * @param bool $beginAtZero
      */
-    public function setBeginAtZero($beginAtZero = true){
+    public function setBeginAtZero($beginAtZero = true)
+    {
         $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['beginAtZero'] = $beginAtZero;
     }
 
     /**
      * Set if you need a value in the chart
-     * $type possible values 'label', 'value', 'percentage', 'image' or custom function, default is 'percentage'
      *
      * @param bool $writeValues
      * @param string $type
      */
-    public function setWriteValues($writeValues = true, $type = 'value'){
-        if ($writeValues) {
-            $this->arrChartData['options']['plugins']['labels']['render'] = $type;
-        }
-        else {
-            $this->arrChartData['options']['plugins']['labels'] = [];
-        }
+    public function setWriteValues($writeValues = false)
+    {
+        $this->arrChartData['options']['plugins']['datalabels']['display'] = $writeValues;
     }
 
     /**

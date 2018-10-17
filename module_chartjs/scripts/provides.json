@@ -1,7 +1,7 @@
 {
   "paths": {
     "chartjs": "chartjs/Chart.bundle.min",
-    "chartjs-plugin-labels": "chartjs/chartjs-plugin-labels.min",
+    "chartjs-plugin-datalabels": "chartjs/chartjs-plugin-datalabels",
     "chartjsHelper": "kajona/chartjsHelper"
   }
 }
