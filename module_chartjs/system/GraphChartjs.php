@@ -116,7 +116,12 @@ class GraphChartjs implements GraphInterface
         return $this->arrChartData;
     }
 
-
+    /**
+     * Converts array of dataPoint object to array of array
+     *
+     * @param $arrDataPointObjects
+     * @return array
+     */
     private function dataPointObjArrayToArray($arrDataPointObjects)
     {
         $arrDataPoints = [];
@@ -131,12 +136,13 @@ class GraphChartjs implements GraphInterface
     }
 
     /**
+     * Add new data set to the chart
+     *
      * @param array $arrValues
      * @param string $strLegend
      */
     private function addChartSet($arrValues, $strLegend, $type = null)
     {
-
         $arrDataPointObjects = GraphCommons::convertArrValuesToDataPointArray($arrValues);
 
         $intDatasetNumber = isset($this->arrChartData['data']['datasets']) ? count($this->arrChartData['data']['datasets']) : 0;
@@ -152,6 +158,8 @@ class GraphChartjs implements GraphInterface
     }
 
     /**
+     * Add new data set to the Bar chart
+     *
      * @param array $arrValues
      * @param string $strLegend
      * @param bool $bitWriteValues
@@ -167,6 +175,8 @@ class GraphChartjs implements GraphInterface
     }
 
     /**
+     * Add new data set to the StackedBar chart
+     *
      * @param array $arrValues
      * @param string $strLegend
      * @param bool $bitWriteValues
@@ -184,6 +194,8 @@ class GraphChartjs implements GraphInterface
     }
 
     /**
+     * Add new data set to the Line chart
+     *
      * @param array $arrValues
      * @param string $strLegend
      *
@@ -195,6 +207,8 @@ class GraphChartjs implements GraphInterface
     }
 
     /**
+     * Add new data set to the Pie chart
+     *
      * @param array $arrValues
      * @param array $arrLegends
      *
@@ -582,7 +596,7 @@ class GraphChartjs implements GraphInterface
     }
 
     /**
-     * Set if you need a value in the chart
+     * Set if you need to show values straight on the chart
      *
      * @param bool $writeValues
      * @param string $type
@@ -608,16 +622,32 @@ class GraphChartjs implements GraphInterface
         $this->bitDownloadLink = $bitDownloadLink;
     }
 
+    /**
+     * Set if you need to show values straight on the chart in percentage view
+     *
+     * @param bool $bitSetPercentageValues
+     */
     public function setValueTypePercentage($bitSetPercentageValues = true)
     {
         $this->arrChartGlobalOptions['percentageValues'] = $bitSetPercentageValues;
     }
 
+    /**
+     * Set if you don't want to show 0 values on the chart
+     *
+     * @param bool $bitNotShowNullValues
+     */
     public function setNotShowNullValues($bitNotShowNullValues = true)
     {
         $this->arrChartGlobalOptions['notShowNullValues'] = $bitNotShowNullValues;
     }
 
+    /**
+     * Switch on default tooltip.
+     * By default chartjs render used customized tooltip.
+     *
+     * @param bool $bitSetDefaultTooltip
+     */
     public function setDefaultTooltip($bitSetDefaultTooltip = true)
     {
         $this->arrChartGlobalOptions['setDefaultTooltip'] = $bitSetDefaultTooltip;
