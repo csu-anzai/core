@@ -286,7 +286,7 @@ class ChartJS
         $objGraph->addStackedBarChartSet([0], "xx4");
         $objGraph->addStackedBarChartSet([0], "xx5");
         $objGraph->setBitRenderLegend(false);
-        $objGraph->setXAxisRange(0, array_sum([1,1,0,0,0]));
+        $objGraph->setXAxisRange(0, array_sum([1, 1, 0, 0, 0]));
         $objGraph->setBarHorizontal(true);
         $objGraph->setHideXAxis(true);
         $objGraph->setHideYAxis(true);

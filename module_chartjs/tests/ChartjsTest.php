@@ -6,7 +6,8 @@ use Kajona\Chartjs\System\GraphChartjs;
 use Kajona\System\System\Exception;
 use Kajona\System\Tests\Testbase;
 
-class ChartjsTest extends Testbase  {
+class ChartjsTest extends Testbase
+{
 
     public function testChartJSBasicParameters()
     {
