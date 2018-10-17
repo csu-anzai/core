@@ -15,12 +15,25 @@ define(['jquery', 'folderview'], function($, folderview) {
     };
 
     chartjsHelper.dataPointOnClickURLHandler = function (dataPoint) {
-        console.log(dataPoint);
         if (dataPoint.actionhandlervalue && dataPoint.actionhandlervalue != null && dataPoint.actionhandlervalue != "") {
             folderview.dialog.setContentIFrame(dataPoint.actionhandlervalue);
             folderview.dialog.setTitle('');
             folderview.dialog.init();
         }
+    };
+
+    chartjsHelper.dataShowPercentage = function (value, ctx) {
+        var sum = 0;
+        var dataArr = ctx.chart.data.datasets[0].data;
+        dataArr.map(data => {
+            sum += data;
+        });
+        var percentage = (value * 100 / sum).toFixed(2);
+        return percentage != 0 ? percentage + "%" : '';
+    };
+
+    chartjsHelper.dataNotShowNullValues = function (value) {
+        return value != 0 ? value : '';
     };
 
     return chartjsHelper;

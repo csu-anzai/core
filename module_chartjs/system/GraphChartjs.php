@@ -33,7 +33,7 @@ class GraphChartjs implements GraphInterface
         "options" => [
             'plugins' => [
                 'datalabels' => [
-                    'display' => false
+                    'display' => false,
                 ]
             ],
             "title" => [
@@ -216,7 +216,8 @@ class GraphChartjs implements GraphInterface
         ];
         $this->intXLabelsCount = count($arrValues);
         $this->arrChartData['data']['labels'] = $arrLegends;
-        $this->setWriteValues(true, 'percentage');
+        $this->setWriteValues(true);
+        $this->setValueTypePercentage(true);
     }
 
     /**
@@ -269,7 +270,7 @@ class GraphChartjs implements GraphInterface
 
         $strReturn .= "<script type='text/javascript'>
 
-            require(['chartjs'], function(chartjs) {
+            require(['chartjs', 'chartjsHelper'], function(chartjs, chartjsHelper) {
                 require(['chartjs-plugin-datalabels'], function(chartjsDatalabels) {
 		            var chartData = ".json_encode($this->arrChartData, JSON_NUMERIC_CHECK).";
     		        var chartGlobalOptions = ".json_encode($this->arrChartGlobalOptions, JSON_NUMERIC_CHECK).";
@@ -280,19 +281,46 @@ class GraphChartjs implements GraphInterface
                     Chart.defaults.global.defaultFontFamily = chartGlobalOptions['defaultFontFamily'];
                     Chart.defaults.global.legend.labels.fontColor = typeof (chartGlobalOptions['labelsFontColor']) !== 'undefined' ? chartGlobalOptions['labelsFontColor'] : chartGlobalOptions['defaultFontColor'];
                 
+                    if (typeof (chartGlobalOptions['setDefaultTooltip']) == 'undefined' || !chartGlobalOptions['setDefaultTooltip']) {
+                        chartData['options']['tooltips'] = {
+                            enabled: true,
+                            mode: 'single',
+                            callbacks: {
+                                label: function(tooltipItems, data) {
+                                    return data.datasets[tooltipItems.datasetIndex].label  + ' : ' + data.datasets[tooltipItems.datasetIndex].data[tooltipItems.index];
+                                }
+                            }
+                        };
+                    }
+                
                     if (typeof (chartGlobalOptions['createImageLink']) !== 'undefined' || chartGlobalOptions['createImageLink']) {
                        chartData['options']['animation'] = {
                             onComplete: createExportLink
                        }
                     }
+
+                    if (typeof (chartGlobalOptions['notShowNullValues']) !== 'undefined' || chartGlobalOptions['notShowNullValues']) {
+                       chartData['options']['plugins']['datalabels'] = {
+                          formatter: (value, ctx) => {
+                             return chartjsHelper.dataNotShowNullValues(value);
+                          }
+                       }
+                    }
+
+                    if (typeof (chartGlobalOptions['percentageValues']) !== 'undefined' || chartGlobalOptions['percentageValues']) {
+                       chartData['options']['plugins']['datalabels'] = {
+                          formatter: (value, ctx) => {
+                             return chartjsHelper.dataShowPercentage(value, ctx);
+                          }
+                       }
+                    }
+
                     chartData['options']['onClick'] = function (evt){
                         var item = this.getElementAtEvent(evt)[0];
                         if (typeof item !== 'undefined') {
                             var datasetIndex = item._datasetIndex;
                             var index = item._index; 
-                            require(['chartjsHelper'], function(chartjsHelper) {
-                                chartjsHelper.onClickHandler(evt, index, datasetIndex, chartData['data']['datasets'][datasetIndex]['dataPoints'][index]);
-                            })
+                            chartjsHelper.onClickHandler(evt, index, datasetIndex, chartData['data']['datasets'][datasetIndex]['dataPoints'][index]);
                         } 
                     };
 
@@ -580,4 +608,18 @@ class GraphChartjs implements GraphInterface
         $this->bitDownloadLink = $bitDownloadLink;
     }
 
+    public function setValueTypePercentage($bitSetPercentageValues = true)
+    {
+        $this->arrChartGlobalOptions['percentageValues'] = $bitSetPercentageValues;
+    }
+
+    public function setNotShowNullValues($bitNotShowNullValues = true)
+    {
+        $this->arrChartGlobalOptions['notShowNullValues'] = $bitNotShowNullValues;
+    }
+
+    public function setDefaultTooltip($bitSetDefaultTooltip = true)
+    {
+        $this->arrChartGlobalOptions['setDefaultTooltip'] = $bitSetDefaultTooltip;
+    }
 }
