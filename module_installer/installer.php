@@ -195,6 +195,7 @@ class Installer
             "/files/cache",
             "/files/images",
             "/files/downloads",
+            "/files/temp",
         );
 
 
