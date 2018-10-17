@@ -4,6 +4,8 @@
  *       Published under the GNU LGPL v2.1
  ********************************************************************************************************/
 
+declare(strict_types = 1);
+
 namespace Kajona\Chartjs\System;
 
 use Kajona\System\System\AdminskinHelper;
