@@ -43,7 +43,7 @@
             var objConfig = new v4skin.defaultAutoComplete();
             objConfig.source = function(request, response) {
                 $.ajax({
-                    url: '{{ endpointUrl }}',
+                    url: '{{ endpointUrl|raw }}',
                     type: 'POST',
                     dataType: 'json',
                     data: {
