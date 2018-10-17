@@ -99,6 +99,15 @@ interface UsersourcesUsersourceInterface
     public function getUserByUsername($strUsername);
 
     /**
+     * Searches for a user within the subsystems' database, may not be necessarily already contained
+     * within the subsystems mirror
+     *
+     * @param $strUsername
+     * @return UsersourcesUserInterface[]
+     */
+    public function searchUser($strUsername, $intMax = 10);
+
+    /**
      * Returns an array of group-ids provided by the current source.
      * return string
      * @param bool $bitIgnoreSystemGroups

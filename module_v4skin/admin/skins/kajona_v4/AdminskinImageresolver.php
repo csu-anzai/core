@@ -319,6 +319,7 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_ampel_grau" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_grau'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i></span>",
         "icon_ampel_lavendel" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_lavendel'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle lavendel'></i><i class='kj-icon fa fa-circle-thin'></i></span>",
         "icon_it_sytems" => "<i class='kj-icon fa fa-cogs'></i>",
+        "icon_link" => "<i class='kj-icon fa fa-link'></i>",
 
     ];
 

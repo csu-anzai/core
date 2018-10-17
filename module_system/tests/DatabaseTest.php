@@ -608,6 +608,11 @@ SQL;
         $row = $connection->getPRow($query, []);
 
         $this->assertEquals(",{$systemId},", $row["val"]);
+
+        $query = "SELECT temp_id as val FROM agp_temp_autotest WHERE " . $connection->getConcatExpression(["','", "temp_id", "','"]) ." LIKE ? ";//. " AS val FROM agp_temp_autotest";
+        $row = $connection->getPRow($query, ["%{$systemId}%"]);
+
+        $this->assertEquals($systemId, $row["val"]);
     }
 }
 
