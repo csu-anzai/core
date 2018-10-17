@@ -32,12 +32,6 @@ class TinyUrl
         $strUrlId = generateSystemid();
         $objDb = Carrier::getInstance()->getObjDB();
 
-        $strQuery = "SELECT url_id FROM agp_tinyurl WHERE url=?";
-        $arrRows = $objDb->getPRow($strQuery, [$strLongUrl]);
-        if (!empty($arrRows)) {
-            return Link::getLinkAdminHref("tinyurl", "loadUrl", "&systemid=".$arrRows['url_id']);
-        }
-
         if ($objDb->_pQuery("INSERT INTO agp_tinyurl (url_id, url) VALUES (?,?)", [$strUrlId, $strLongUrl])) {
             return Link::getLinkAdminHref("tinyurl", "loadUrl", "&systemid=".$strUrlId);
         }
