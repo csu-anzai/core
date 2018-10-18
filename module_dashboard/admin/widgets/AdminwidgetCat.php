@@ -8,6 +8,7 @@ namespace Kajona\Dashboard\Admin\Widgets;
 
 use Kajona\System\System\Exception;
 use Kajona\System\System\Remoteloader;
+use Kajona\System\System\Resourceloader;
 use Kajona\System\System\StringUtil;
 
 /**
@@ -16,16 +17,9 @@ use Kajona\System\System\StringUtil;
 class AdminwidgetCat extends Adminwidget implements AdminwidgetInterface
 {
 
-    private $arrCats = [
-        "<img src='"._webpath_."/files/images/AdminwidgetCat/acrobat.gif' style='float: right;'/>",
-        "<img src='"._webpath_."/files/images/AdminwidgetCat/banjo.gif' style='float: right;'/>",
-        "<img src='"._webpath_."/files/images/AdminwidgetCat/burp.gif' style='float: right;'/>",
-        "<img src='"._webpath_."/files/images/AdminwidgetCat/facepalm.gif' style='float: right;'/>",
-        "<img src='"._webpath_."/files/images/AdminwidgetCat/knead.gif' style='float: right;'/>",
-        "<img src='"._webpath_."/files/images/AdminwidgetCat/meal.gif' style='float: right;'/>",
-        "<img src='"._webpath_."/files/images/AdminwidgetCat/popcorn.gif' style='float: right;'/>",
-        "<img src='"._webpath_."/files/images/AdminwidgetCat/sleepy.gif' style='float: right;'/>",
-    ];
+    private $arrCats = [];
+
+    private $arrGifs = ["acrobat.gif", "banjo.gif", "burp.gif", "facepalm.gif", "knead.gif", "meal.gif", "popcorn.gif", "sleepy.gif"];
 
     /**
      * Basic constructor, registers the fields to be persisted and loaded
@@ -35,6 +29,11 @@ class AdminwidgetCat extends Adminwidget implements AdminwidgetInterface
         parent::__construct();
         //register the fields to be persisted and loaded
         $this->setPersistenceKeys(array("cat"));
+
+        $path = _webpath_.Resourceloader::getInstance()->getWebPathForModule("module_dashboard")."/img/AdminwidgetCat";
+        foreach ($this->arrGifs as $img) {
+            $this->arrCats[] = "<img src='$path/$img' style='float: right;'/>";
+        }
     }
 
     /**
