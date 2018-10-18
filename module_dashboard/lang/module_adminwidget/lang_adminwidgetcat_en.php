@@ -6,4 +6,7 @@
 
 
 //editable entries
-$lang["cat_name"]                    = "Cat";
+$lang["cat_name"]                = "Cat";
+$lang["cats"]                    = "Cats";
+$lang["cat_select"]              = "Select a cat!";
+$lang["cat_setup"]               = "Please, set up a cat widget";

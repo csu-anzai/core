@@ -17,11 +17,14 @@ class AdminwidgetCat extends Adminwidget implements AdminwidgetInterface
 {
 
     private $arrCats = [
-        //"<img src="._webpath_."/#/core/module_dashboard/img/AdminwidgetCat/acrobat.gif' style='float: right;'/>",
-        //"<img src='" . _webpath_. "'//#//core/module_dashboard/img/AdminwidgetCat/acrobat.gif' style='float: right;'/>",
-        "<img src='http://icons.iconarchive.com/icons/iconka/saint-whiskers/256/cat-food-hearts-icon.png' style='float: right;'/>",
-        "<img src='http://icons.iconarchive.com/icons/iconka/meow/256/cat-tied-icon.png' style='float: right;'/>",
-        "<img src='http://icons.iconarchive.com/icons/iconka/meow/256/cat-drunk-icon.png' style='float: right;'/>"
+        "<img src='"._webpath_."/files/images/AdminwidgetCat/acrobat.gif' style='float: right;'/>",
+        "<img src='"._webpath_."/files/images/AdminwidgetCat/banjo.gif' style='float: right;'/>",
+        "<img src='"._webpath_."/files/images/AdminwidgetCat/burp.gif' style='float: right;'/>",
+        "<img src='"._webpath_."/files/images/AdminwidgetCat/facepalm.gif' style='float: right;'/>",
+        "<img src='"._webpath_."/files/images/AdminwidgetCat/knead.gif' style='float: right;'/>",
+        "<img src='"._webpath_."/files/images/AdminwidgetCat/meal.gif' style='float: right;'/>",
+        "<img src='"._webpath_."/files/images/AdminwidgetCat/popcorn.gif' style='float: right;'/>",
+        "<img src='"._webpath_."/files/images/AdminwidgetCat/sleepy.gif' style='float: right;'/>",
     ];
 
     /**
@@ -42,7 +45,7 @@ class AdminwidgetCat extends Adminwidget implements AdminwidgetInterface
      */
     public function getEditForm()
     {
-        $strReturn = "Select a cat!";
+        $strReturn = $this->getLang("cat_select");
 
         $strReturn .= $this->objToolkit->formInputRadiogroup("cat", $this->arrCats, $this->getLang("cats"), $this->getFieldValue("cat"));
 
@@ -59,11 +62,11 @@ class AdminwidgetCat extends Adminwidget implements AdminwidgetInterface
     public function getWidgetOutput()
     {
         if ($this->getFieldValue("cat") == "") {
-            return "Please set up a cat widget";
+            return $this->getLang("cat_setup");
         }
-        $strReturn = "<div>";
+        $strReturn = '<div id="cat-cage" style="height: 150px; width: 100%; background-color: white">';
         $strReturn .= $this->widgetText($this->arrCats[$this->getFieldValue("cat")]);
-        $strReturn .= "</div><div style='clear: both;'></div>";
+        $strReturn .= '</div><div style="clear: both;"></div>';
 
         return $strReturn;
     }
