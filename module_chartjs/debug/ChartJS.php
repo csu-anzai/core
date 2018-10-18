@@ -306,8 +306,8 @@ class ChartJS
         $objGraph->setBitRenderLegend(false);
         $objGraph->setTickStepXAxis(1);
         $objGraph->setTickStepYAxis(1);
-        $objGraph->setHideGridLinesYAxis(1);
-        $objGraph->setHideGridLinesXAxis(1);
+        $objGraph->setHideGridLinesYAxis(true);
+        $objGraph->setHideGridLinesXAxis(true);
         $objGraph->setBarHorizontal(true);
         $objGraph->setHideXAxis(true);
         $objGraph->setHideYAxis(true);

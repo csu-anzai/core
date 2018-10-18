@@ -142,6 +142,7 @@ class GraphChartjs implements GraphInterface
      *
      * @param array $arrValues
      * @param string $strLegend
+     * @param string $type
      */
     private function addChartSet($arrValues, $strLegend, $type = null)
     {
@@ -168,7 +169,7 @@ class GraphChartjs implements GraphInterface
      *
      * @see GraphInterface::addBarChartSet()
      */
-    public function addBarChartSet($arrValues, $strLegend, $bitWriteValues = null)
+    public function addBarChartSet($arrValues, $strLegend, $bitWriteValues = false)
     {
         $this->addChartSet($arrValues, $strLegend);
         if (isset($bitWriteValues)) {
@@ -185,7 +186,7 @@ class GraphChartjs implements GraphInterface
      *
      * @see GraphInterface::addStackedBarChartSet()
      */
-    public function addStackedBarChartSet($arrValues, $strLegend, $bitWriteValues = null)
+    public function addStackedBarChartSet($arrValues, $strLegend, $bitWriteValues = false)
     {
         $this->addChartSet($arrValues, $strLegend);
         $this->arrChartData['options']['scales']['xAxes'][0]['stacked'] = true;
@@ -393,9 +394,9 @@ class GraphChartjs implements GraphInterface
     /**
      * Enables general repsonsiveness of the chart. This includes that the chart takes up 100% width of the parent container.
      *
-     * @param int $bitResponsive
+     * @param bool $bitResponsive
      */
-    public function setBitResponsive(int $bitResponsive)
+    public function setBitResponsive(bool $bitResponsive)
     {
         $this->bitResponsive = $bitResponsive;
     }
@@ -409,17 +410,17 @@ class GraphChartjs implements GraphInterface
     }
 
     /**
-     * @param int $bitHorizontal
+     * @param bool $bitHorizontal
      */
-    public function setBarHorizontal(int $bitHorizontal)
+    public function setBarHorizontal(bool $bitHorizontal)
     {
         $this->arrChartData['type'] = $bitHorizontal ? "horizontalBar" : "bar";
     }
 
     /**
-     * @param int $bitHorizontal
+     * @param bool $bitHorizontal
      */
-    public function setPieChart(int $bitPie)
+    public function setPieChart(bool $bitPie)
     {
         if ($bitPie) {
             $this->arrChartData['type'] = "pie";
@@ -427,21 +428,21 @@ class GraphChartjs implements GraphInterface
     }
 
     /**
-     * @param int $bitHideXAxis
+     * @param bool $bitHideXAxis
      */
-    public function setHideXAxis(int $bitHideXAxis)
+    public function setHideXAxis(bool $bitHideXAxis = true)
     {
-        $this->arrChartGlobalOptions['xAxesTickDispaly'] = $bitHideXAxis ? false : true;
-        $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['display'] = $bitHideXAxis ? false : true;
+        $this->arrChartGlobalOptions['xAxesTickDispaly'] = !$bitHideXAxis;
+        $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['display'] = !$bitHideXAxis;
     }
 
     /**
-     * @param int $bitHideYAxis
+     * @param bool $bitHideYAxis
      */
-    public function setHideYAxis(int $bitHideYAxis)
+    public function setHideYAxis(bool $bitHideYAxis = true)
     {
-        $this->arrChartGlobalOptions['yAxesTickDispaly'] = $bitHideYAxis ? false : true;
-        $this->arrChartData['options']['scales']['yAxes'][0]['ticks']['display'] = $bitHideYAxis ? false : true;
+        $this->arrChartGlobalOptions['yAxesTickDispaly'] = !$bitHideYAxis;
+        $this->arrChartData['options']['scales']['yAxes'][0]['ticks']['display'] = !$bitHideYAxis;
     }
 
     /**
@@ -461,19 +462,19 @@ class GraphChartjs implements GraphInterface
     }
 
     /**
-     * @param int $bitHideXAxis
+     * @param bool $bitHideGridLines
      */
-    public function setHideGridLinesXAxis(int $bitHideGridLines)
+    public function setHideGridLinesXAxis(bool $bitHideGridLines = true)
     {
-        $this->arrChartData['options']['scales']['xAxes'][0]['gridLines']['display'] = $bitHideGridLines ? false : true;
+        $this->arrChartData['options']['scales']['xAxes'][0]['gridLines']['display'] = !$bitHideGridLines;
     }
 
     /**
-     * @param int $bitHideYAxis
+     * @param bool $bitHideGridLines
      */
-    public function setHideGridLinesYAxis(int $bitHideGridLines)
+    public function setHideGridLinesYAxis(bool $bitHideGridLines = true)
     {
-        $this->arrChartData['options']['scales']['yAxes'][0]['gridLines']['display'] = $bitHideGridLines ? false : true;
+        $this->arrChartData['options']['scales']['yAxes'][0]['gridLines']['display'] = !$bitHideGridLines;
     }
 
     /**
@@ -489,7 +490,7 @@ class GraphChartjs implements GraphInterface
     /**
      * @param bool $beginAtZero
      */
-    public function setBeginAtZero($beginAtZero = true)
+    public function setBeginAtZero(bool $beginAtZero = true)
     {
         $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['beginAtZero'] = $beginAtZero;
     }
@@ -500,7 +501,7 @@ class GraphChartjs implements GraphInterface
      * @param bool $writeValues
      * @param string $type
      */
-    public function setWriteValues($writeValues = false)
+    public function setWriteValues(bool $writeValues = false)
     {
         $this->arrChartData['options']['plugins']['datalabels']['display'] = $writeValues;
     }
@@ -526,7 +527,7 @@ class GraphChartjs implements GraphInterface
      *
      * @param bool $bitSetPercentageValues
      */
-    public function setValueTypePercentage($bitSetPercentageValues = true)
+    public function setValueTypePercentage(bool $bitSetPercentageValues = true)
     {
         $this->arrChartGlobalOptions['percentageValues'] = $bitSetPercentageValues;
     }
@@ -536,7 +537,7 @@ class GraphChartjs implements GraphInterface
      *
      * @param bool $bitNotShowNullValues
      */
-    public function setNotShowNullValues($bitNotShowNullValues = true)
+    public function setNotShowNullValues(bool $bitNotShowNullValues = true)
     {
         $this->arrChartGlobalOptions['notShowNullValues'] = $bitNotShowNullValues;
     }
@@ -547,7 +548,7 @@ class GraphChartjs implements GraphInterface
      *
      * @param bool $bitSetDefaultTooltip
      */
-    public function setDefaultTooltip($bitSetDefaultTooltip = true)
+    public function setDefaultTooltip(bool $bitSetDefaultTooltip = true)
     {
         $this->arrChartGlobalOptions['setDefaultTooltip'] = $bitSetDefaultTooltip;
     }
@@ -556,6 +557,7 @@ class GraphChartjs implements GraphInterface
      * @return mixed|string
      *
      * @see GraphInterface::renderGraph()
+     * @throws Exception
      */
     public function renderGraph()
     {
