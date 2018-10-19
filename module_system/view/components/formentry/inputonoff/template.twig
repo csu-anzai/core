@@ -3,7 +3,7 @@
     <label for="{{ name }}" class="col-sm-3 control-label">{{ title }}</label>
     <div class="col-sm-6">
         <div id="div_{{ name }}">
-            <input type="checkbox" name="{{ name }}" value="checked" id="{{ name }}" {% if class %}class="{{ class }}"{% endif %} {% if checked %}checked{% endif %} {% if readOnly %}disabled{% endif %} data-size="small" data-on-text="<i class='fa fa-check fa-white' ></i>" data-off-text="<i class='fa fa-times'></i>">
+            <input type="checkbox" name="{{ name }}" value="checked" id="{{ name }}" {% if class %}class="{{ class }}"{% endif %} {% if checked %}checked{% endif %} {% if readOnly %}disabled{% endif %} {% for key, value in data %}data-{{ key }}="{{ value|e('html_attr') }}"{% endfor %}>
         </div>
     </div>
     <script type="text/javascript">

@@ -36,6 +36,11 @@ abstract class FormentryComponentAbstract extends AbstractComponent
     protected $readOnly = false;
 
     /**
+     * @var array
+     */
+    protected $data = [];
+
+    /**
      * @param string $name
      * @param string $title
      */
@@ -72,6 +77,17 @@ abstract class FormentryComponentAbstract extends AbstractComponent
     }
 
     /**
+     * Method to set additional data attributes on an element
+     *
+     * @param string $key
+     * @param string $value
+     */
+    public function setData($key, $value)
+    {
+        $this->data[$key] = $value;
+    }
+
+    /**
      * @inheritdoc
      */
     public function renderComponent(): string
@@ -90,6 +106,7 @@ abstract class FormentryComponentAbstract extends AbstractComponent
             "name" => $this->name,
             "title" => $this->title,
             "readOnly" => $this->readOnly,
+            "data" => $this->data,
         ];
     }
 }

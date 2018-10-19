@@ -4,7 +4,7 @@
     <div class="col-sm-6">
         <div class="checkbox">
             <label>
-                <input type="checkbox" name="{{ name }}" value="checked" id="{{ name }}" {% if class %}class="{{ class }}"{% endif %} {% if checked %}checked{% endif %} {% if readOnly %}disabled{% endif %}>
+                <input type="checkbox" name="{{ name }}" value="checked" id="{{ name }}" {% if class %}class="{{ class }}"{% endif %} {% if checked %}checked{% endif %} {% if readOnly %}disabled{% endif %} {% for key, value in data %}data-{{ key }}="{{ value|e('html_attr') }}"{% endfor %}>
                 {{ title }}
             </label>
         </div>

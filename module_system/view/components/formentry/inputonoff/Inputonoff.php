@@ -37,6 +37,17 @@ class Inputonoff extends Inputcheckbox
      */
     public function buildContext()
     {
+        // set default data attributes
+        if (!isset($this->data["size"])) {
+            $this->data["size"] = "small";
+        }
+        if (!isset($this->data["on-text"])) {
+            $this->data["on-text"] = "<i class='fa fa-check fa-white'></i>";
+        }
+        if (!isset($this->data["off-text"])) {
+            $this->data["off-text"] = "<i class='fa fa-times'></i>";
+        }
+
         $context = parent::buildContext();
         $context["callback"] = $this->callback;
 
