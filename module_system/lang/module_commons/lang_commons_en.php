@@ -49,7 +49,8 @@ $lang["commons_edit_permissions"]        = "Change permissions";
 $lang["commons_edit_tags"]               = "Edit Tags";
 $lang["commons_error_permissions"]       = "Not enough permissions to perform this action";
 $lang["commons_form_entry_changed"]      = "The value of the input field was changed";
-$lang["commons_form_entry_changed_conf"]      = "The value of the input field was changed. Do you really want to proceed?";
+$lang["commons_form_entry_changed_conf"] = "The value of the input field was changed. Do you really want to proceed?";
+$lang["commons_form_unchanged"]          = "There are unsaved changes, do you really want to leave the page?";
 $lang["commons_hits_header"]             = "Hits";
 $lang["commons_image"]                   = "Image";
 $lang["commons_language"]                = "Language";
@@ -95,6 +96,7 @@ $lang["commons_validator_numeric_validationmessage"] = "The field must contain n
 $lang["commons_validator_posint_validationmessage"] = "The field must contain positive integer values";
 $lang["commons_yes"]                     = "Yes";
 $lang["commons_filter_active"]            = "List filter in use";
+$lang["commons_filter_url"]               = "Share/save filter";
 $lang["filter_show_hide"]                = "Show/hide filter";
 
 $lang["commons_remove_assignment"]                     = "Remove assignment";

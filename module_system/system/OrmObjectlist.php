@@ -75,7 +75,7 @@ class OrmObjectlist extends OrmBase
         $this->processWhereRestrictions($strQuery, $arrParams, $strTargetClass);
 
         $arrRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, $arrParams);
-        return $arrRow["cnt"];
+        return (int)$arrRow["cnt"];
 
     }
 
@@ -275,11 +275,6 @@ class OrmObjectlist extends OrmBase
 
     protected function addLogicalDeleteRestriction()
     {
-
-        if (!self::$bitLogcialDeleteAvailable) {
-            return;
-        }
-
         $this->addWhereRestriction(new OrmCondition($this->getDeletedWhereRestriction("", ""), array()));
     }
 
@@ -299,7 +294,7 @@ class OrmObjectlist extends OrmBase
 
             $strWhere = $objOneRestriction->getStrWhere();
 
-            if($objOneRestriction instanceof OrmConditionInterface && $strWhere != "") {
+            if ($objOneRestriction instanceof OrmConditionInterface && $strWhere != "") {
                 $strWhere = OrmCondition::STR_CONDITION_AND." (".$strWhere.")";
             }
 

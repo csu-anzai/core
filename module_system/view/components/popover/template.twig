@@ -10,7 +10,7 @@
                     return;
                 }
                 require(['jquery', 'bootstrap', 'ajax'], function($, bs, ajax)  {
-                    ajax.loadUrlToElement('.lc_{{ id|escape("html_attr") }}', '{{ contentEndpoint }}', '', false, 'post', function() {});
+                    ajax.loadUrlToElement('.lc_{{ id|escape("html_attr") }}', '{{ contentEndpoint|raw }}', '', false, 'post', function() {});
                 });
                 $('#pc_{{ id|escape("html_attr") }}').addClass('loadDone');
             }) });   </script>

@@ -148,6 +148,23 @@ define('util', ['jquery'], function ($) {
     };
 
     /**
+     * Simple method to generate a system id
+     */
+    util.generateSystemId = function(){
+        var chars = ['a', 'b', 'c', 'd', 'e', 'f', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        var result = "";
+
+        for (var i = 0; i < 20; i++) {
+            var k = parseInt(chars.length * Math.random());
+            if (chars[k]) {
+                result+= chars[k];
+            }
+        }
+
+        return result;
+    };
+
+    /**
      * some functions to track the mouse position and move an element
      * @deprecated will be removed with Kajona 3.4 or 3.5, use YUI Panel instead
      */
@@ -306,6 +323,22 @@ define('util', ['jquery'], function ($) {
         }
     };
 
+    /**
+     * Copies text to clipboard
+     *
+     * @param text
+     */
+    util.copyTextToClipboard = function (text) {
+        var textArea = document.createElement("textarea");
+        textArea.style.background = 'transparent';
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+        } catch (err) {}
+        document.body.removeChild(textArea);
+    }
 
     /**
      * decodes html entites, call it just like

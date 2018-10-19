@@ -1239,6 +1239,14 @@ footer {
                 }
             }
         }
+
+        .btn {
+            color: @text-color;
+
+            &:hover {
+                color: @link-color;
+            }
+        }
     }
 
     fieldset {
@@ -1651,6 +1659,12 @@ table.form-control {
                         color: @text-color;
                     }
                 }
+            }
+        }
+
+        td.clickable {
+            &:hover {
+                cursor: pointer;
             }
         }
 

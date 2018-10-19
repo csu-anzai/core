@@ -43,11 +43,7 @@ abstract class OrmBase
      */
     private $objHandleLogicalDeleted = null;
 
-
-    protected static $bitLogcialDeleteAvailable = null;
-
     const STR_ANNOTATION_TARGETTABLE = "@targetTable";
-    const STR_ANNOTATION_TARGETTABLETXSAFE = "@targetTableTxSafe";
     const STR_ANNOTATION_TABLECOLUMN = "@tableColumn";
     const STR_ANNOTATION_TABLECOLUMNDATATYPE = "@tableColumnDatatype";
     const STR_ANNOTATION_TABLECOLUMNPRIMARYKEY = "@tableColumnPrimaryKey";
@@ -68,22 +64,6 @@ abstract class OrmBase
     public function __construct($objObject = null)
     {
         $this->objObject = $objObject;
-        if (self::$bitLogcialDeleteAvailable === null) {
-            $arrColumns = Database::getInstance()->getColumnsOfTable("agp_system");
-            self::$bitLogcialDeleteAvailable = count(array_filter($arrColumns, function ($arrOneTable) {
-                return $arrOneTable["columnName"] == "system_deleted";
-            })) > 0;
-        }
-    }
-
-    /**
-     * Used to reset the internal flag detecting if logical deletions are present, or not
-     *
-     * @internal
-     */
-    public static function resetBitLogicalDeleteAvailable()
-    {
-        self::$bitLogcialDeleteAvailable = null;
     }
 
     /**
@@ -108,6 +88,7 @@ abstract class OrmBase
      * Validates if the current object has at least a single target-table set up
      *
      * @return bool
+     * @throws Exception
      */
     protected function hasTargetTable()
     {
@@ -131,6 +112,7 @@ abstract class OrmBase
      *
      * @return string
      * @throws OrmException
+     * @throws Exception
      */
     protected function getQueryBase($strTargetClass = "")
     {
@@ -239,12 +221,10 @@ abstract class OrmBase
             $strSystemTablePrefix = $strSystemTablePrefix.".";
         }
 
-        if (self::$bitLogcialDeleteAvailable) {
-            if ($this->getIntCombinedLogicalDeletionConfig() === OrmDeletedhandlingEnum::EXCLUDED) {
-                $strQuery .= " ".$strConjunction." {$strSystemTablePrefix}system_deleted = 0 ";
-            } elseif ($this->getIntCombinedLogicalDeletionConfig() === OrmDeletedhandlingEnum::EXCLUSIVE) {
-                $strQuery .= " ".$strConjunction." {$strSystemTablePrefix}system_deleted = 1 ";
-            }
+        if ($this->getIntCombinedLogicalDeletionConfig() === OrmDeletedhandlingEnum::EXCLUDED) {
+            $strQuery .= " ".$strConjunction." {$strSystemTablePrefix}system_deleted = 0 ";
+        } elseif ($this->getIntCombinedLogicalDeletionConfig() === OrmDeletedhandlingEnum::EXCLUSIVE) {
+            $strQuery .= " ".$strConjunction." {$strSystemTablePrefix}system_deleted = 1 ";
         }
 
         return $strQuery;

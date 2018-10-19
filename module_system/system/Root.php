@@ -533,7 +533,9 @@ abstract class Root
         if ($this->objSortManager !== null) {
             $this->objSortManager->fixSortOnDelete($this->intSort);
         }
-        $bitReturn = $bitReturn && $this->deleteSystemRecord($this->getSystemid());
+
+        $strQuery = "DELETE FROM agp_system WHERE system_id = ?";
+        $bitReturn = $bitReturn && $this->objDB->_pQuery($strQuery, array($this->getSystemid()));
 
         Objectfactory::getInstance()->removeFromCache($this->getSystemid());
         OrmRowcache::removeSingleRow($this->getSystemid());
@@ -1342,41 +1344,6 @@ abstract class Root
     }
 
     /**
-     * Deletes a record from the SystemTable
-     *
-     * @param string $strSystemid
-     *
-     * @return bool
-     * @todo: remove first params, is always the current systemid. maybe mark as protected, currently only called by the test-classes
-     * @todo find ussages and make private
-     *
-     */
-    final private function deleteSystemRecord($strSystemid)
-    {
-        $bitResult = true;
-
-        //Start a tx before deleting anything
-        $this->objDB->transactionBegin();
-
-        $strQuery = "DELETE FROM agp_system WHERE system_id = ?";
-        $bitResult = $bitResult && $this->objDB->_pQuery($strQuery, array($strSystemid));
-
-        //end tx
-        if ($bitResult) {
-            $this->objDB->transactionCommit();
-            Logger::getInstance()->info("deleted system-record with id ".$strSystemid);
-        } else {
-            $this->objDB->transactionRollback();
-            Logger::getInstance()->warning("deletion of system-record with id ".$strSystemid." failed");
-        }
-
-        //flush the cache
-        Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_CACHE_MANAGER)->flushCache();
-
-        return $bitResult;
-    }
-
-    /**
      * Generates a sorted array of systemids, reaching from the passed systemid up
      * until the assigned module-id
      *
@@ -1465,22 +1432,6 @@ abstract class Root
     protected function getObjLang()
     {
         return $this->objLang;
-    }
-
-
-    // --- Admin-Language -------------------------------------------------------------------------------
-
-    /**
-     * Returns the language to display contents or to edit contents on adminside
-     * NOTE: THIS ARE THE CONTENTS, NOT THE TEXTS
-     *
-     * @return string
-     * @throws Exception
-     */
-    final public function getStrAdminLanguageToWorkOn()
-    {
-        $objLanguage = new LanguagesLanguage();
-        return $objLanguage->getAdminLanguage();
     }
 
 

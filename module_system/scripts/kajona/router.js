@@ -49,13 +49,25 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
             applyLoadCallbacks();
 
             //split between post and get
-            if (KAJONA.admin.forms.submittedEl != null) {
-                var data = $(KAJONA.admin.forms.submittedEl).serialize();
-                KAJONA.admin.forms.submittedEl = null;
+            if (markedElements.forms.submittedEl != null) {
+                var data = $(markedElements.forms.submittedEl).serialize();
+                markedElements.forms.submittedEl = null;
+                markedElements.forms.monitoredEl = null;
                 ajax.loadUrlToElement('#moduleOutput', objUrl.url, data, false, 'POST', function(){
                     applyFormCallbacks();
                 });
             } else {
+
+                if (markedElements.forms.monitoredEl != null) {
+                    if (require('forms').hasChanged(markedElements.forms.monitoredEl)) {
+                        var doLeave = confirm(require('forms').leaveUnsaved);
+                        if (!doLeave) {
+                            return;
+                        }
+                        markedElements.forms.monitoredEl = null;
+                    }
+                }
+
                 ajax.loadUrlToElement('#moduleOutput', objUrl.url, null, true);
             }
 
@@ -100,7 +112,15 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
         if (isStackedDialog && url.indexOf('peClose=1') != -1) {
             //react on peClose statements by reloading the parent view
             parent.KAJONA.admin.folderview.dialog.hide();
-            parent.routie.reload();
+
+            if (url.indexOf('peLoad=1') != -1) {
+                // in this case we want that the parent routes to the provided url
+                url = url.replace("peClose=1", "");
+                url = url.replace("peLoad=1", "");
+                parent.routie(url);
+            } else {
+                parent.routie.reload();
+            }
             return;
         }
 
@@ -156,6 +176,17 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
                 // we always delete the callback after it was executed
                 delete arrFormCallbacks[key];
             }
+        }
+    };
+
+    /**
+     * Global markers to reference on leave / save monitored elements
+     * @type {{forms: {monitoredEl: null, submittedEl: null}}}
+     */
+    var markedElements = {
+        forms : {
+            monitoredEl : null,
+            submittedEl : null
         }
     };
 
@@ -225,8 +256,12 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
          */
         removeFormCallback: function (strName) {
             delete arrFormCallbacks[strName];
-        }
+        },
 
+        /**
+         * Global namespace to store some montitored elements
+         */
+        markerElements : markedElements,
     };
 
 

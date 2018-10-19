@@ -1320,9 +1320,10 @@ HTML;
      * @param string $strOnSubmit
      * @param string $strMethod
      *
+     * @param bool $onLeaveChangeDetection
      * @return string
      */
-    public function formHeader($strAction, $strName = "", $strEncoding = "", $strOnSubmit = null, $strMethod = "POST")
+    public function formHeader($strAction, $strName = "", $strEncoding = "", $strOnSubmit = null, $strMethod = "POST", $onLeaveChangeDetection = true)
     {
 
         $strOnSubmit = $strOnSubmit ?? "require('forms').defaultOnSubmit(this);return false;";
@@ -1333,6 +1334,7 @@ HTML;
         $arrTemplate["method"] = in_array($strMethod, array("GET", "POST")) ? $strMethod : "POST";
         $arrTemplate["enctype"] = $strEncoding;
         $arrTemplate["onsubmit"] = $strOnSubmit;
+        $arrTemplate["onchangedetection"] = $onLeaveChangeDetection ? 'true' : 'false';
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "form_start");
     }
 
@@ -1529,7 +1531,7 @@ HTML;
      */
     public function listFooter()
     {
-        return $this->objTemplate->fillTemplateFile(array(), "/admin/skins/kajona_v4/elements.tpl", "list_footer");
+        return $this->objTemplate->fillTemplateFile(array("clickable" => SystemSetting::getConfigValue("_system_lists_clickable_") === "true" ? 'true' : 'false'), "/admin/skins/kajona_v4/elements.tpl", "list_footer");
     }
 
     /**
@@ -1541,7 +1543,7 @@ HTML;
      */
     public function dragableListFooter($strListId)
     {
-        return $this->objTemplate->fillTemplateFile(array("listid" => $strListId), "/admin/skins/kajona_v4/elements.tpl", "dragable_list_footer");
+        return $this->objTemplate->fillTemplateFile(array("listid" => $strListId, "clickable" => (SystemSetting::getConfigValue("_system_lists_clickable_") === "true" ? 'true' : 'false')), "/admin/skins/kajona_v4/elements.tpl", "dragable_list_footer");
     }
 
     /**
@@ -2693,6 +2695,24 @@ HTML;
         return $popover->renderComponent();
     }
 
+
+
+    /**
+     * Renders a button with onClick callback.
+     *
+     * @param string $icon
+     * @param string $label
+     * @param string $callback
+     * @return string
+     * @since 7.1
+     */
+    public  function getJsActionButton($icon, $label, $callback){
+        $icon = AdminskinHelper::getAdminImage($icon);
+
+        return $this->objTemplate->fillTemplateFile(["icon"=>$icon, "label"=>$label, "callback"=>$callback], "/admin/skins/kajona_v4/elements.tpl", "js_action_button");
+
+    }
+
     //---contect menues ---------------------------------------------------------------------------------
 
     /**
@@ -2709,6 +2729,7 @@ HTML;
      * @param bool $bitOpenToLeft
      *
      * @return string
+     * @deprecated - please use the Menu component
      */
     public function registerMenu($strIdentifier, array $arrEntries, $bitOpenToLeft = false)
     {

@@ -28,6 +28,8 @@ use Traversable;
  */
 class FormentryObjectlist extends FormentryBase implements FormentryPrintableInterface
 {
+    const OPTION_SKIP_RIGHT_CHECK = 1;
+
     /**
      * @var string
      */
@@ -47,6 +49,17 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
      * @var array
      */
     protected $arrKeyValues = array();
+
+    /**
+     * @var int
+     */
+    protected $options = 0;
+
+    /** @var bool */
+    protected $showAddButton = true;
+
+    /** @var bool */
+    protected $showDeleteAllButton = true;
 
     /**
      * @param string $strAddLink
@@ -74,6 +87,16 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         $this->objectTypes = $objectTypes;
     }
 
+    /**
+     * Bitmask consisting of OPTION_SKIP_RIGHT_CHECK
+     *
+     * @param int $options
+     */
+    public function setOptions(int $options)
+    {
+        $this->options = $options;
+    }
+
     protected function updateValue()
     {
         $arrParams = Carrier::getAllParams();
@@ -83,11 +106,9 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
 
         if (isset($arrParams[$strEntryName])) {
             $this->setStrValue($arrParams[$strEntryName]);
-        }
-        elseif (isset($arrParams[$strEntryNameEmpty])) {
+        } elseif (isset($arrParams[$strEntryNameEmpty])) {
             $this->setStrValue("");
-        }
-        else {
+        } else {
             $this->setStrValue($this->getValueFromObject());
         }
     }
@@ -107,14 +128,26 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         }
 
         // filter objects
-        $arrObjects = array_values(array_filter($this->arrKeyValues, function ($objObject) {
-            return $objObject->rightView();
-        }));
+        $skipRightCheck = $this->options & self::OPTION_SKIP_RIGHT_CHECK;
+
+        if ($skipRightCheck) {
+            $arrObjects = $this->arrKeyValues;
+        } else {
+            $arrObjects = array_values(array_filter($this->arrKeyValues, function ($objObject) {
+                return $objObject->rightView();
+            }));
+        }
+
+        uasort($arrObjects, function (ModelInterface $a, ModelInterface $b) {
+            return strcmp($a->getStrDisplayName(), $b->getStrDisplayName());
+        });
 
         $objectList = new Objectlist($this->getStrEntryName(), $this->getStrLabel(), $arrObjects);
         $objectList->setReadOnly($this->getBitReadonly());
         $objectList->setAddLink($this->strAddLink);
         $objectList->setSearchInput($this->endpointUrl, $this->objectTypes);
+        $objectList->setShowAddButton($this->isShowAddButton());
+        $objectList->setShowDeleteAllButton($this->isShowDeleteAllButton());
         $strReturn .= $objectList->renderComponent();
 
         return $strReturn;
@@ -127,8 +160,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
             foreach ($strValue as $objValue) {
                 if ($objValue instanceof Model) {
                     $arrValuesIds[] = $objValue->getStrSystemid();
-                }
-                else {
+                } else {
                     $arrValuesIds[] = $objValue;
                 }
             }
@@ -203,22 +235,21 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
                 if ($objObject instanceof Model && $objObject instanceof ModelInterface) {
 
                     $strTitle = self::getDisplayName($objObject);
-                    
-                    if($objObject->rightView()) {
-                        
+
+                    if ($objObject->rightView()) {
+
                         //see, if the matching target-module provides a showSummary method
                         $objModule = SystemModule::getModuleByName($objObject->getArrModule("modul"));
                         if ($objModule != null) {
                             $objAdmin = $objModule->getAdminInstanceOfConcreteModule($objObject->getSystemid());
 
                             if ($objAdmin !== null && method_exists($objAdmin, "actionShowSummary")) {
-                                $strTitle = Link::getLinkAdminDialog($objObject->getArrModule("modul"), "showSummary", "&systemid=" . $objObject->getSystemid()."&folderview=".Carrier::getInstance()->getParam("folderview"), $strTitle);
+                                $strTitle = Link::getLinkAdminDialog($objObject->getArrModule("modul"), "showSummary", "&systemid=".$objObject->getSystemid()."&folderview=".Carrier::getInstance()->getParam("folderview"), $strTitle);
                             }
                         }
                     }
                     $strHtml .= $strTitle."<br/>\n";
-                }
-                else {
+                } else {
                     throw new Exception("Array must contain objects", Exception::$level_ERROR);
                 }
             }
@@ -227,8 +258,6 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
 
         return "-";
     }
-
-
 
 
     private function toObjectArray()
@@ -250,6 +279,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
      *
      * @param ModelInterface $objObject
      * @return string
+     * @throws \ReflectionException
      * @deprecated
      */
     public static function getDisplayName(ModelInterface $objObject)
@@ -259,8 +289,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         $objClass = new ReflectionClass(get_class($objObject)); //TODO remove hardcoded cross-module dependencies
         if (SystemModule::getModuleByName("aufgaben") !== null && $objClass->implementsInterface('AGP\Aufgaben\System\AufgabenTaskableInterface')) {
             $strObjectName .= "[".$objObject->getStrTaskCategory()."] ";
-        }
-        elseif ($objClass->implementsInterface('Kajona\System\System\VersionableInterface')) {
+        } elseif ($objClass->implementsInterface('Kajona\System\System\VersionableInterface')) {
             $strObjectName .= "[".$objObject->getVersionRecordName()."] ";
         }
 
@@ -291,7 +320,6 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         array_pop($arrParents);
 
 
-
         //Only return three levels
         $arrPath = array();
         for ($intI = 0; $intI < 3; $intI++) {
@@ -304,7 +332,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
             $arrPath[] = $objObject->getStrDisplayName();
         }
 
-        if(count($arrPath) == 0) {
+        if (count($arrPath) == 0) {
             return "";
         }
 
@@ -317,12 +345,48 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
      *
      * @return FormentryObjectlist
      */
-    public function setArrKeyValues($arrKeyValues) {
+    public function setArrKeyValues($arrKeyValues)
+    {
         $this->arrKeyValues = $arrKeyValues;
         return $this;
     }
 
-    public function getArrKeyValues() {
+    public function getArrKeyValues()
+    {
         return $this->arrKeyValues;
     }
+
+    /**
+     * @return bool
+     */
+    public function isShowAddButton(): bool
+    {
+        return $this->showAddButton;
+    }
+
+    /**
+     * @param bool $showAddButton
+     */
+    public function setShowAddButton(bool $showAddButton)
+    {
+        $this->showAddButton = $showAddButton;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowDeleteAllButton(): bool
+    {
+        return $this->showDeleteAllButton;
+    }
+
+    /**
+     * @param bool $showDeleteAllButton
+     */
+    public function setShowDeleteAllButton(bool $showDeleteAllButton)
+    {
+        $this->showDeleteAllButton = $showDeleteAllButton;
+    }
+
+
 }

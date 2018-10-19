@@ -21,6 +21,11 @@ use Kajona\System\System\Objectfactory;
 use Kajona\System\System\RedirectException;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Session;
+use Kajona\System\View\Components\Menu\Item\Dialog;
+use Kajona\System\View\Components\Menu\Item\Headline;
+use Kajona\System\View\Components\Menu\Item\Separator;
+use Kajona\System\View\Components\Menu\Menu;
+use Kajona\System\View\Components\Menu\MenuItem;
 use Kajona\System\Xml;
 
 /**
@@ -67,7 +72,7 @@ trait FlowControllerTrait
         $strMenuId = "status-menu-" . generateSystemid();
         $strDropdownId = "status-dropdown-" . generateSystemid();
         $strReturn = $this->objToolkit->listButton(
-            "<span class='dropdown status-dropdown' id='" . $strDropdownId . "'><a href='#' data-toggle='dropdown' role='button'>" . $strIcon . "</a><div class='dropdown-menu generalContextMenu' role='menu' id='" . $strMenuId . "'></div></span>"
+            "<span class='dropdown status-dropdown' id='" . $strDropdownId . "'><a href='#' data-toggle='dropdown' role='button'>" . $strIcon . "</a><div class='core-component-menu dropdown-menu generalContextMenu' role='menu' id='" . $strMenuId . "'></div></span>"
         );
 
         $strParams = http_build_query(["admin" => 1, "module" => $objListEntry->getArrModule('module'), "action" => "showStatusMenu", "systemid" => $objListEntry->getSystemid()], null, "&");
@@ -183,14 +188,6 @@ require(["jquery", "ajax"], function($, ajax){
             return "<ul><li class='dropdown-header'>" . $this->getLang("list_flow_no_right", "flow") . "</li></ul>";
         }
 
-        $arrMenu = array();
-
-        $strLink = htmlspecialchars(Link::getLinkAdminHref("flow", "showFlow", ["systemid" => $this->getSystemid(), "folderview" => "1"]));
-        $strTitle = $this->getLang("flow_current_status", "flow");
-        $arrMenu[] = array(
-            "fullentry" => '<li><a href="#" onclick="require(\'dialogHelper\').showIframeDialog(\''.$strLink.'\', \''.$strTitle.'\'); return false;">'.$strTitle.'</a></li><li role="separator" class="divider"></li>',
-        );
-
         $strClass = $objObject->getSystemid() . "-errors";
         $arrTransitions = $this->objFlowManager->getPossibleTransitionsForModel($objObject, false);
         $objFlow = $this->objFlowManager->getFlowForModel($objObject);
@@ -201,6 +198,9 @@ require(["jquery", "ajax"], function($, ajax){
         } else {
             $bitHasRight = $objObject->rightEdit();
         }
+
+        $actionItems = [];
+        $statusItems = [];
 
         if (!empty($arrTransitions) && $bitHasRight) {
             foreach ($arrTransitions as $objTransition) {
@@ -237,29 +237,53 @@ require(["jquery", "ajax"], function($, ajax){
                 }
 
                 if (!empty($strValidation)) {
-                    $arrMenu[] = array(
-                        "name" => AdminskinHelper::getAdminImage("icon_flag_hex_disabled_" . $objTargetStatus->getStrIconColor()) . " " . $objTargetStatus->getStrDisplayName() . $strValidation,
-                        "link" => "#",
-                        "onclick" => "return false;",
-                    );
+                    $menuItem = new MenuItem();
+                    $menuItem->setName(AdminskinHelper::getAdminImage("icon_flag_hex_disabled_" . $objTargetStatus->getStrIconColor()) . " " . $objTargetStatus->getStrDisplayName() . $strValidation);
+                    $menuItem->setLink("#");
+                    $menuItem->setOnClick("return false;");
+                    $statusItems[] = $menuItem;
                 } else {
-                    $arrMenu[] = array(
-                        "name" => AdminskinHelper::getAdminImage($objTargetStatus->getStrIcon()) . " " . $objTargetStatus->getStrDisplayName(),
-                        "link" => Link::getLinkAdminHref($this->getArrModule("modul"), "setStatus", "&systemid=" . $objObject->getStrSystemid() . "&transition_id=" . $objTransition->getSystemid()),
-                    );
+                    $menuItem = new MenuItem();
+                    $menuItem->setName(AdminskinHelper::getAdminImage($objTargetStatus->getStrIcon()) . " " . $objTargetStatus->getStrDisplayName());
+                    $menuItem->setLink(Link::getLinkAdminHref($this->getArrModule("modul"), "setStatus", "&systemid=" . $objObject->getStrSystemid() . "&transition_id=" . $objTransition->getSystemid()));
+                    $statusItems[] = $menuItem;
                 }
+
+                $actionItems = array_merge($actionItems, $objResult->getMenuItems());
             }
         }
 
-        if (!empty($arrMenu)) {
-            $strHtml = $this->objToolkit->registerMenu(generateSystemid(), $arrMenu);
+        $menu = new Menu();
 
-            // hack to remove the div around the ul since the div is already in the html
-            preg_match("#<ul>(.*)</ul>#ims", $strHtml, $arrMatches);
+        // flow chart
+        $currentStatus = $objFlow->getStatusByIndex($objObject->getIntRecordStatus());
+        $menu->addItem(new Dialog($currentStatus->getStrName(), Link::getLinkAdminHref("flow", "showFlow", ["systemid" => $this->getSystemid(), "folderview" => "1"]), $currentStatus->getStrIcon()));
 
-            // js to init the tooltip for validation errors
-            $strTitle = json_encode($objObject->getStrDisplayName());
-            $strJs = <<<HTML
+        if (count($statusItems) > 0) {
+            // status
+            $menu->addItem(new Separator());
+            $menu->addItem(new Headline($this->getLang("flow_controller_trait_headline_status", "flow")));
+            $menu->addItems($statusItems);
+
+            if (count($actionItems) > 0) {
+                // actions
+                $menu->addItem(new Separator());
+                $menu->addItem(new Headline($this->getLang("flow_controller_trait_headline_action", "flow")));
+                $menu->addItems($actionItems);
+            }
+        } else {
+            $menu->addItem(new Separator());
+            $menu->addItem(new Headline($this->getLang("list_flow_no_status", "flow")));
+        }
+
+        $strHtml = $menu->renderComponent();
+
+        // hack to remove the div around the ul since the div is already in the html
+        preg_match("#<ul>(.*)</ul>#ims", $strHtml, $arrMatches);
+
+        // js to init the tooltip for validation errors
+        $strTitle = json_encode($objObject->getStrDisplayName());
+        $strJs = <<<HTML
 <script type='text/javascript'>
     require(['jquery', 'dialogHelper'], function($, dialogHelper){
         $('.{$strClass}').parent().on('click', function(){
@@ -272,10 +296,7 @@ require(["jquery", "ajax"], function($, ajax){
 </script>
 HTML;
 
-            return $arrMatches[0] . $strJs;
-        } else {
-            return "<ul><li class='dropdown-header'>" . $this->getLang("list_flow_no_status", "flow") . "</li></ul>";
-        }
+        return $arrMatches[0] . $strJs;
     }
 
     /**

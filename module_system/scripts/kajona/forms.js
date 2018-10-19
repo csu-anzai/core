@@ -8,10 +8,16 @@
  *
  * @module forms
  */
-define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function ($, tooltip, router, util, messaging) {
 
-    /** @exports forms */
+define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'dialogHelper'], function ($, tooltip, router, util, messaging, ajax, dialogHelper) {
+
+
+        /** @exports forms */
     var forms = {};
+
+    forms.changeLabel = '';
+    forms.changeConfirmation = '';
+    forms.leaveUnsaved = '';
 
     /**
      * Hides a field in the form
@@ -96,16 +102,48 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
         return util.getElement(objField);
     };
 
-
-    forms.initForm = function(strFormid) {
+    /**
+     * Internal callback to initialize a form
+     * @param strFormid
+     * @param onChangeDetection
+     */
+    forms.initForm = function(strFormid, onChangeDetection) {
         $('#'+strFormid+' input , #'+strFormid+' select , #'+strFormid+' textarea ').each(function() {
+            if ($(this).attr('data-kajona-block-initval')) {
+                return true;
+            }
             $(this).attr("data-kajona-initval", $(this).val());
         });
+
+        if (onChangeDetection) {
+            router.markerElements.forms.monitoredEl = $('#' + strFormid);
+        }
+
     };
 
+    /**
+     * May be triggered to determine whether a form has been changed or not
+     * @param $objForm
+     */
+    forms.hasChanged = function($objForm) {
+        var changed = false;
+        $objForm.find('[data-kajona-initval]').each(function() {
+            var el = $(this);
+            if (el.val() != el.attr('data-kajona-initval')) {
+                changed = true;
+                return false;
+            }
+        });
+
+        return changed;
+    };
+
+    /**
+     * Fires the animation on the submit button
+     * @param objForm
+     */
     forms.animateSubmitStart = function(objForm) {
         var processingElemet = undefined;
-
         //try to get the button currently clicked
         if($(document.activeElement).prop('tagName') == "BUTTON") {
             processingElemet = $(document.activeElement);
@@ -125,8 +163,7 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
     };
 
 
-    forms.changeLabel = '';
-    forms.changeConfirmation = '';
+
 
     /**
      * Adds an onchange listener to the formentry with the passed ID. If the value is changed, a warning is rendered below the field.
@@ -226,7 +263,7 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
         $(objForm).on('submit', function() {
             return false;
         });
-        KAJONA.admin.forms.submittedEl = objForm;
+        router.markerElements.forms.submittedEl = objForm;
         $(window).off('unload');
 
         this.animateSubmitStart(objForm);
@@ -268,6 +305,30 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
         router.registerLoadCallback("form_unlock", function() {
             $.ajax({url: KAJONA_WEBPATH + '/xml.php?admin=1&module=system&action=unlockRecord&systemid='+strId});
         });
+    };
+
+    forms.getFilterURL = function () {
+        var filterUrl = $(".contentFolder form").attr('action') + '&' + $(".contentFolder form").serialize();
+        ajax.genericAjaxCall("tinyurl", "getShortUrl", {url: filterUrl}, function (data) {
+            if (data) {
+                var modalContent = '<div class="input-group">' +
+                    '<input type="text" class="form-control" value="' + data.url + '">' +
+                    '<span class="input-group-btn">' +
+                    '<button class="btn btn-default copy-btn" type="button" title="" onclick="require(\'util\').copyTextToClipboard(\'' + data.url + '\')">' +
+                    '<i class=\'kj-icon fa fa-clipboard\'>' +
+                    '</button>' +
+                    '</span>' +
+                    '</div>';
+
+                dialogHelper.showInfoModal("<span data-lang-property=\"system:copy_page_url\"></span>", modalContent);
+                require(["lang", "jquery"], function(lang, $) {
+                    lang.initializeProperties();
+                    lang.fetchSingleProperty("system", "copy_to_clipboard", function(value) {
+                        $(".copy-btn").attr("title", value);
+                    })
+                })
+            }
+        }, null, null, null, 'json');
     };
 
     return forms;

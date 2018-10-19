@@ -23,6 +23,7 @@ $lang["form_flow_name"]         = "Name";
 $lang["form_flow_iconcolor"]    = "Farbe";
 $lang["form_flow_headline_groups"] = "Gruppen Konfiguration";
 $lang["form_flow_headline_roles"] = "Rollenkonfiguration";
+$lang["form_flow_headline_transitions"] = "Übergänge";
 $lang["form_flow_viewgroups"]   = "Ansehen";
 $lang["form_flow_editgroups"]   = "Bearbeiten";
 $lang["form_flow_deletegroups"] = "Löschen";
@@ -56,8 +57,6 @@ $lang["transition_skip_1"] = "Keinen";
 
 $lang["flow_step_no_delete"] = "Dieser Status kann nicht gelöscht werden";
 
-$lang["flow_current_status"]   = "Aktueller Status";
-
 $lang["delete_step_question"]   = "Möchten Sie den Schritt &quot;<b>%%element_name%%</b>&quot; wirklich löschen?";
 $lang["delete_transition_question"]   = "Möchten Sie den Übergang &quot;<b>%%element_name%%</b>&quot; wirklich löschen?";
 $lang["delete_transition_action_question"]   = "Möchten Sie die Aktion &quot;<b>%%element_name%%</b>&quot; wirklich löschen?";
@@ -73,3 +72,15 @@ $lang["action_status_change_title"]   = "Rückmeldung";
 $lang["action_status_change_success"]   = "Statuswechsel erfolgreich durchgeführt.";
 $lang["action_status_change_redirect"]   = "Das System benötigt eine Benutzereingabe um den Statusübergang durchzuführen.";
 
+$lang["flow_controller_trait_headline_status"]   = "Statuswechsel";
+$lang["flow_controller_trait_headline_action"]   = "Aktionen";
+
+$lang["action_skip_transition_title"]   = "Überspringe Status Nachricht";
+$lang["action_skip_transition_description"] = "";
+
+$lang["flow_condition_and_title"]   = "AND Bedingung";
+$lang["flow_condition_case_title"]   = "Case Bedingung";
+$lang["flow_condition_group_title"]   = "Group Bedingung";
+$lang["flow_condition_invert_title"]   = "Invert Bedingung";
+$lang["flow_condition_or_title"]   = "OR Bedingung";
+$lang["flow_condition_xor_title"]   = "XOR Bedingung";

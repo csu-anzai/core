@@ -1,14 +1,14 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2004-2006 by MulchProductions, www.mulchprod.de                                                 *
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-********************************************************************************************************/
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
 
 namespace Kajona\Flow\System;
 
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminFormgeneratorFactory;
+use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\Database;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Logger;
@@ -89,7 +89,22 @@ abstract class FlowHandlerAbstract implements FlowHandlerInterface
                 $this->executeActions($objObject, $objTransition);
 
                 // execute handler actions
-                $this->executeStatusTransition($objObject, $objTransition);
+                $redirectException = null;
+                try {
+                    $this->executeStatusTransition($objObject, $objTransition);
+                } catch (RedirectException $e) {
+                    // the handle can throw redirect exceptions. Since we want to execute the event after the handler
+                    // code was executed we catch here the redirect exception and throw them after the event
+                    $redirectException = $e;
+                }
+
+                // trigger transition executed event
+                CoreEventdispatcher::getInstance()->notifyGenericListeners(FlowEventidentifier::EVENT_TRANSITION_EXECUTED, [$objObject, $objTransition]);
+
+                // throw redirect exception if available
+                if ($redirectException instanceof RedirectException) {
+                    throw $redirectException;
+                }
             }
 
             Database::getInstance()->transactionCommit();

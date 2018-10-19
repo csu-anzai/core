@@ -11,6 +11,8 @@ namespace Kajona\System\Installer;
 
 use Kajona\Packagemanager\System\PackagemanagerManager;
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Config;
+use Kajona\System\System\Database;
 use Kajona\System\System\Date;
 use Kajona\System\System\DbDatatypes;
 use Kajona\System\System\IdGenerator;
@@ -27,6 +29,7 @@ use Kajona\System\System\OrmSchemamanager;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\Rights;
 use Kajona\System\System\Session;
+use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemChangelog;
 use Kajona\System\System\SystemCommon;
@@ -204,34 +207,9 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         if(!$this->objDB->createTable("agp_session", $arrFields, array("session_id"), array("session_phpid", "session_releasetime")))
             $strReturn .= "An error occurred! ...\n";
 
-        // caching --------------------------------------------------------------------------------------
-        $strReturn .= "Installing table cache...\n";
-
-        $arrFields = array();
-        $arrFields["cache_id"] = array("char20", false);
-        $arrFields["cache_source"] = array("char254", true);
-        $arrFields["cache_hash1"] = array("char254", true);
-        $arrFields["cache_hash2"] = array("char254", true);
-        $arrFields["cache_language"] = array("char20", true);
-        $arrFields["cache_content"] = array("longtext", true);
-        $arrFields["cache_leasetime"] = array("int", true);
-        $arrFields["cache_hits"] = array("int", true);
-
-        if(!$this->objDB->createTable("agp_cache", $arrFields, array("cache_id"), array("cache_source", "cache_hash1", "cache_leasetime", "cache_language"), false))
-            $strReturn .= "An error occurred! ...\n";
-
         //languages -------------------------------------------------------------------------------------
         $strReturn .= "Installing table languages...\n";
         $objManager->createTable(LanguagesLanguage::class);
-
-        $strReturn .= "Installing table languages_languageset...\n";
-        $arrFields = array();
-        $arrFields["languageset_id"] = array("char20", false);
-        $arrFields["languageset_language"] = array("char20", true);
-        $arrFields["languageset_systemid"] = array("char20", false);
-
-        if(!$this->objDB->createTable("agp_languages_languageset", $arrFields, array("languageset_id", "languageset_systemid")))
-            $strReturn .= "An error occurred! ...\n";
 
         //aspects --------------------------------------------------------------------------------------
         $strReturn .= "Installing table aspects...\n";
@@ -451,10 +429,6 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $objModule = SystemModule::getModuleByName("messaging");
         $objModule->setAbsolutePosition(1);
 
-        //to avoid problems on subsequent installers
-        OrmBase::resetBitLogicalDeleteAvailable();
-
-
         return $strReturn;
     }
 
@@ -484,7 +458,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrDbTables = $this->objDB->getTables();
         foreach($arrTables as $strOneTable) {
             if(!in_array($strOneTable, $arrDbTables)) {
-                if(!$this->objDB->createTable($strOneTable, $arrFields, array("change_id"), array("change_date", "change_user", "change_systemid", "change_property"), false))
+                if(!$this->objDB->createTable($strOneTable, $arrFields, array("change_id"), array("change_date", "change_user", "change_systemid", "change_property")))
                     $strReturn .= "An error occurred! ...\n";
             }
         }
@@ -571,6 +545,16 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "7.0") {
             $strReturn .= $this->update_70_701();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.0.1") {
+            $strReturn .= $this->update_701_702();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.0.2") {
+            $strReturn .= $this->update_702_71();
         }
 
         return $strReturn."\n\n";
@@ -824,6 +808,49 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.1");
+        return $strReturn;
+    }
+
+    private function update_701_702()
+    {
+        $strReturn = "Updating 7.0.1 to 7.0.2...\n";
+
+        $strReturn .= "Adding list clickable setting".PHP_EOL;
+        $this->registerConstant("_system_lists_clickable_", "false", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
+
+        $strReturn .= "Upating module version".PHP_EOL;
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.2");
+
+        return $strReturn;
+    }
+
+    private function update_702_71()
+    {
+        $strReturn = "Updating 7.0.1 to 7.1...\n";
+
+        $strReturn .= "Removing languageset table".PHP_EOL;
+        $this->objDB->_pQuery("DROP TABLE agp_languages_languageset", []);
+
+        $strReturn .= "Removing cache table".PHP_EOL;
+        $this->objDB->_pQuery("DROP TABLE agp_cache", []);
+
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1");
+
+        if (Config::getInstance()->getConfig("dbdriver") == "mysqli") {
+            $strReturn .= "Updating myisam tables".PHP_EOL;
+
+            foreach (Database::getInstance()->getTables() as $table) {
+                $create = StringUtil::toLowerCase(Database::getInstance()->getPRow("show create table {$table}", [])["Create Table"]);
+
+                if (StringUtil::indexOf($create, "engine=myisam") !== false) {
+                    $strReturn .= "Updating engine of {$table}".PHP_EOL;
+                    Database::getInstance()->_pQuery("ALTER TABLE {$table} ENGINE = InnoDB", []);
+                }
+
+
+            }
+        }
         return $strReturn;
     }
 

@@ -145,6 +145,12 @@ class SearchCommons extends Model implements ModelInterface
         $objMetadataFilter->setFilterUser($objSearch->getFilterUser());
         $objMetadataFilter->setFilterChangeStartDate($objSearch->getObjChangeStartdate());
         $objMetadataFilter->setFilterChangeEndDate($objSearch->getObjChangeEnddate());
+
+        $objectTypes = $objSearch->getArrObjectTypes();
+        if (!empty($objectTypes)) {
+            $objMetadataFilter->setArrFilterClasses($objectTypes);
+        }
+
         return $objMetadataFilter;
     }
 }

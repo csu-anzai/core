@@ -7,6 +7,8 @@
 
 namespace Kajona\Flow\System;
 
+use Kajona\System\View\Components\Menu\MenuItem;
+
 /**
  * A result object of a condition
  *
@@ -18,37 +20,82 @@ class FlowConditionResult
     /**
      * @var bool
      */
-    protected $bitValid;
+    protected $isValid;
 
     /**
      * @var array
      */
-    protected $arrErrors;
+    protected $errors;
 
-    public function __construct($bitValid = null)
+    /**
+     * @var MenuItem[]
+     */
+    protected $menuItems;
+
+    /**
+     * @param bool|null $bitValid
+     */
+    public function __construct($bitValid = null, array $errors = [], array $menuItems = [])
     {
-        $this->bitValid = $bitValid;
-        $this->arrErrors = [];
+        $this->isValid = $bitValid;
+        $this->errors = $errors;
+        $this->menuItems = $menuItems;
     }
 
+    /**
+     * In case no explicit valid status is set the result depends on the error count. If we have an explicit valid
+     * status the result is independent of the error count
+     *
+     * @return bool
+     */
     public function isValid()
     {
-        return $this->bitValid === null ? count($this->arrErrors) === 0 : $this->bitValid;
+        return $this->isValid === null ? count($this->errors) === 0 : $this->isValid;
     }
 
+    /**
+     * @param string $strError
+     */
     public function addError(string $strError)
     {
-        $this->arrErrors[] = $strError;
+        $this->errors[] = $strError;
     }
 
+    /**
+     * @param MenuItem $menuItem
+     */
+    public function addMenuItem(MenuItem $menuItem)
+    {
+        $this->menuItems[] = $menuItem;
+    }
+
+    /**
+     * @return array
+     */
     public function getErrors()
     {
-        return $this->arrErrors;
+        return $this->errors;
     }
 
+    /**
+     * @return MenuItem[]
+     */
+    public function getMenuItems()
+    {
+        return $this->menuItems;
+    }
+
+    /**
+     * Merges the status of another result object into this object. If both conditions have an explicit valid status
+     * both conditions must also be true otherwise the valid status will be false. If this object has no explicit valid
+     * status we take the status from the provided object
+     *
+     * @param FlowConditionResult $objResult
+     */
     public function merge(FlowConditionResult $objResult)
     {
-        $this->bitValid = $this->bitValid === null ? $objResult->isValid() : ($this->bitValid && $objResult->isValid());
-        $this->arrErrors = array_merge($this->arrErrors, $objResult->getErrors());
+        $this->isValid = $this->isValid === null ? $objResult->isValid() : ($this->isValid && $objResult->isValid());
+        $this->errors = array_merge($this->errors, $objResult->getErrors());
+        $this->menuItems = array_merge($this->menuItems, $objResult->getMenuItems());
     }
 }

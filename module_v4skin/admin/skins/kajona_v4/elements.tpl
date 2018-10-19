@@ -84,14 +84,7 @@ Header to use when creating drag n dropable lists. places an id an loads the nee
 background using the ajaxHelper.
 Loads the script-helper and adds the table to the drag-n-dropable tables getting parsed later
 <dragable_list_header>
-<script type="text/javascript">
-
-require(['listSortable'], function(sortManager) {
-    sortManager.init('%%listid%%', '%%targetModule%%', %%bitMoveToTree%%);
-}) ;
-
-
-</script>
+<script type="text/javascript"> require(['listSortable'], function(sortManager) { sortManager.init('%%listid%%', '%%targetModule%%', %%bitMoveToTree%%); }); </script>
 <div id='%%listid%%_prev' class='alert alert-info divPageTarget'>[lang,commons_list_sort_prev,system]</div>
 <table id="%%listid%%" class="table admintable table-striped-tbody" data-kajona-pagenum="%%curPage%%" data-kajona-elementsperpage="%%elementsPerPage%%">
 
@@ -100,11 +93,13 @@ require(['listSortable'], function(sortManager) {
 Optional Element to close a list
 <list_footer>
 </table>
+<script type="text/javascript"> if (%%clickable%%) { require(['lists'], function(l) { l.initRowClick() }); }</script>
 </list_footer>
 
 <dragable_list_footer>
 </table>
 <div id='%%listid%%_next' class='alert alert-info divPageTarget'>[lang,commons_list_sort_next,system]</div>
+<script type="text/javascript"> if (%%clickable%%) { require(['lists'], function(l) { l.initRowClick() }); }</script>
 </dragable_list_footer>
 
 
@@ -204,9 +199,10 @@ To avoid side-effects, no line-break in this case -> not needed by default, but 
     <script type="text/javascript">
         require(["forms"], function(forms) {
             $(function() {
-                forms.initForm('%%name%%');
+                forms.initForm('%%name%%', %%onchangedetection%%);
                 forms.changeLabel = '[lang,commons_form_entry_changed,system]';
                 forms.changeConfirmation = '[lang,commons_form_entry_changed_conf,system]';
+                forms.leaveUnsaved = '[lang,commons_form_unchanged,system]';
             });
         });
     </script>
@@ -837,7 +833,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
 
         <div class="col-sm-6 inputText inputTagEditor" id="tageditor_%%name%%">
-            <input type="text" id="%%name%%" data-name="%%name%%" style="display:none" class="form-control" autocomplete="off"/>
+            <input type="text" id="%%name%%" data-name="%%name%%" style="display:none" class="form-control" autocomplete="off" data-kajona-block-initval="true"/>
             <div id="%%name%%-list">%%data%%</div>
         </div>
     </div>
@@ -1728,3 +1724,7 @@ place ajaxScript before the closing input_tagselector-tag.
         });
     </script>
 </changelog_heatmap>
+
+<js_action_button>
+<button type="button" class="btn" style="background-color:transparent; border: none" onclick="%%callback%%"><span style="margin-right: 5px">%%icon%%</span>%%label%%</button>
+</js_action_button>

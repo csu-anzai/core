@@ -23,7 +23,7 @@ use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
 use Kajona\System\System\FilterBase;
 use Kajona\System\System\Filters\UserGroupFilter;
-use Kajona\System\System\LanguagesLanguage;
+use Kajona\System\System\Lang;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
@@ -44,8 +44,8 @@ use Kajona\System\System\Usersources\UsersourcesGroupInterface;
 use Kajona\System\System\Usersources\UsersourcesUserInterface;
 use Kajona\System\System\UserUser;
 use Kajona\System\System\Validators\EmailValidator;
-use Kajona\System\View\Components\DTable\DTableComponent;
-use Kajona\System\View\Components\DTable\Model\DTable;
+use Kajona\System\View\Components\Dtable\DTableComponent;
+use Kajona\System\View\Components\Dtable\Model\DTable;
 
 /**
  * This class provides the user and groupmanagement
@@ -621,10 +621,9 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
             ->setStrLabel($this->getLang("user_skin"));
 
 
-        $objLanguage = new LanguagesLanguage();
         $objForm->addField(new FormentryDropdown("user", "language"))
             ->setArrKeyValues($arrLang)
-            ->setStrValue(($this->getParam("user_language") != "" ? $this->getParam("user_language") : $objLanguage->getAdminLanguage()))
+            ->setStrValue(($this->getParam("user_language") != "" ? $this->getParam("user_language") : Lang::getInstance()->getStrTextLanguage()))
             ->setStrLabel($this->getLang("user_language"))
             ->setBitMandatory(true);
 
@@ -1116,7 +1115,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      *
      * @throws Exception
      * @return string "" in case of success
-     * @permissions delete
+     * @permissions edit
      */
     protected function actionGroupMemberDelete()
     {
@@ -1143,7 +1142,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * @return array
      * @throws Exception
      * @responseType json
-     * @permissions delete
+     * @permissions edit
      */
     protected function actionApiGroupMemberDelete()
     {
@@ -1168,7 +1167,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      * @return array
      * @throws Exception
      * @responseType json
-     * @permissions delete
+     * @permissions edit
      */
     protected function actionApiGroupMemberAdd()
     {
@@ -1379,7 +1378,15 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
                     Link::getLinkAdmin(
                         "user",
                         "userBrowser",
-                        "&form_element=".$this->getParam("form_element")."&systemid=".$objOneIterable->getSystemid()."&filter=".$this->getParam("filter")."&checkid=".$this->getParam("checkid"),
+                        [
+                            "form_element" => $this->getParam("form_element"),
+                            "filter" => $this->getParam("filter"),
+                            "allowUser" => $this->getParam("allowUser"),
+                            "allowGroup" => $this->getParam("allowGroup"),
+                            "checkid" => $this->getParam("checkid"),
+                            "systemid" => $objOneIterable->getSystemid(),
+                            "selectedGroup" => $this->getParam("selectedGroup")
+                        ],
                         $this->getLang("user_browser_show"),
                         $this->getLang("user_browser_show"),
                         "icon_folderActionOpen"
@@ -1526,6 +1533,8 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
                 function() {return true; }
             );
         }
+
+        $strReturn .= "<script type='text/javascript'>require(['lists'], function(l) { l.initRowClick(); });</script>";
 
         return $strReturn;
     }

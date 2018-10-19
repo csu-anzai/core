@@ -49,7 +49,8 @@ $lang["commons_edit_permissions"]        = "Rechte bearbeiten";
 $lang["commons_edit_tags"]               = "Tags bearbeiten";
 $lang["commons_error_permissions"]       = "Keine ausreichenden Rechte um diese Aktion durchzuführen";
 $lang["commons_form_entry_changed"]      = "Der Wert des Eingabefeldes wurde verändert";
-$lang["commons_form_entry_changed_conf"]      = "Der Wert des Eingabefeldes wurde verändert. Möchten Sie wirklich fortfahren?";
+$lang["commons_form_entry_changed_conf"] = "Der Wert des Eingabefeldes wurde verändert. Möchten Sie wirklich fortfahren?";
+$lang["commons_form_unchanged"]          = "Es gibt nicht gespeicherte Änderungen. Möchten Sie die Seite wirklich verlassen?";
 $lang["commons_hits_header"]             = "Hits";
 $lang["commons_image"]                   = "Bild";
 $lang["commons_language"]                = "Sprache";
@@ -95,6 +96,7 @@ $lang["commons_validator_numeric_validationmessage"] = "Das Feld muss numerische
 $lang["commons_validator_posint_validationmessage"] = "Das Feld muss positive Ganzzahlen enthalten";
 $lang["commons_yes"]                     = "Ja";
 $lang["commons_filter_active"]            = "Aktiver Listen-Filter";
+$lang["commons_filter_url"]               = "Filter teilen/speichern";
 $lang["filter_show_hide"]                = "Filter ein-/ausblenden";
 
 $lang["commons_remove_assignment"]                     = "Zuordnung löschen";

@@ -29,6 +29,8 @@ class Grid extends AbstractComponent
      */
     protected $rows;
 
+    private $bitLimitHeight = false;
+
     /**
      * The column widths contains an array with the bootstrap col- class width. I.e. an array [2, 10] for a grid which
      * has a small left sidebar column. The sum of all columns must be 12.
@@ -79,8 +81,28 @@ class Grid extends AbstractComponent
         $data = [
             "column_widths" => $this->columnWidths,
             "rows" => $rows,
+            "limitHeight" => $this->bitLimitHeight,
+            "id" => generateSystemid()
         ];
 
         return $this->renderTemplate($data);
     }
+
+    /**
+     * @return bool
+     */
+    public function isBitLimitHeight(): bool
+    {
+        return $this->bitLimitHeight;
+    }
+
+    /**
+     * @param bool $bitLimitHeight
+     */
+    public function setBitLimitHeight(bool $bitLimitHeight)
+    {
+        $this->bitLimitHeight = $bitLimitHeight;
+    }
+
+
 }

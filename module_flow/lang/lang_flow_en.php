@@ -23,6 +23,7 @@ $lang["form_flow_name"]         = "Name";
 $lang["form_flow_iconcolor"]    = "Color";
 $lang["form_flow_headline_groups"] = "Group configuration";
 $lang["form_flow_headline_roles"] = "Role configuration";
+$lang["form_flow_headline_transitions"] = "Transitions";
 $lang["form_flow_viewgroups"]   = "View";
 $lang["form_flow_editgroups"]   = "Edit";
 $lang["form_flow_deletegroups"] = "Delete";
@@ -56,8 +57,6 @@ $lang["transition_skip_1"] = "None";
 
 $lang["flow_step_no_delete"] = "It is not possible to delete this status";
 
-$lang["flow_current_status"]   = "Current status";
-
 $lang["delete_step_question"]   = "Do you really want to delete the step &quot;<b>%%element_name%%</b>&quot;?";
 $lang["delete_transition_question"]   = "Do you really want to delete the transition &quot;<b>%%element_name%%</b>&quot;?";
 $lang["delete_transition_action_question"]   = "Do you really want to delete the action &quot;<b>%%element_name%%</b>&quot;?";
@@ -72,3 +71,16 @@ $lang["form_next_status_description"]   = "Please select the next status for the
 $lang["action_status_change_title"]   = "Response";
 $lang["action_status_change_success"]   = "Status change was successful.";
 $lang["action_status_change_redirect"]   = "The system needs user input in order to execute the status change.";
+
+$lang["flow_controller_trait_headline_status"]   = "Status change";
+$lang["flow_controller_trait_headline_action"]   = "Actions";
+
+$lang["action_skip_transition_title"]   = "Skip status message";
+$lang["action_skip_transition_description"] = "";
+
+$lang["flow_condition_and_title"]   = "AND Condition";
+$lang["flow_condition_case_title"]   = "Case Condition";
+$lang["flow_condition_group_title"]   = "Group Condition";
+$lang["flow_condition_invert_title"]   = "Invert Condition";
+$lang["flow_condition_or_title"]   = "OR Condition";
+$lang["flow_condition_xor_title"]   = "XOR Condition";

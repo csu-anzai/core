@@ -65,15 +65,6 @@ abstract class Testbase extends TestCase
             define("_autotesting_", true);
         }
 
-        if (!defined("_autotesting_sqlite_checks_")) {
-            if (Config::getInstance()->getConfig("dbdriver") == "sqlite3") {
-                Database::getInstance()->_pQuery("PRAGMA journal_mode = MEMORY", array());
-            }
-
-
-            define("_autotesting_sqlite_checks_", true);
-        }
-
         Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_APC | Carrier::INT_CACHE_TYPE_DBQUERIES);
         parent::setUp();
     }

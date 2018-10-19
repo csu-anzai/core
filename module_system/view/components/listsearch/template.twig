@@ -51,6 +51,8 @@
                 .append('<div class="ui-autocomplete-item">' + text + '</div>')
                 .appendTo(ul);
         } ;
+
+        {% if focus %}searchEl.focus();{% endif %}
     });
     </script>
 </div>
