@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace Kajona\System\View\Components\Formentry\Inputtext;
+namespace Kajona\System\View\Components\Formentry\Inputcolorpicker;
 
 use Kajona\System\View\Components\Formentry\FormentryComponentAbstract;
 
