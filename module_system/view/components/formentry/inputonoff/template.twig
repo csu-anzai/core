@@ -1,9 +1,9 @@
 
 <div class="form-group core-component-formentry-inputonoff">
-    <label for="{{ name }}" class="col-sm-3 control-label">{{ title }}</label>
+    <label for="{{ name|e('html_attr') }}" class="col-sm-3 control-label">{{ title }}</label>
     <div class="col-sm-6">
-        <div id="div_{{ name }}">
-            <input type="checkbox" name="{{ name }}" value="checked" id="{{ name }}" {% if class %}class="{{ class }}"{% endif %} {% if checked %}checked{% endif %} {% if readOnly %}disabled{% endif %} {% for key, value in data %}data-{{ key }}="{{ value|e('html_attr') }}"{% endfor %}>
+        <div id="div_{{ name|e('html_attr') }}">
+            <input type="checkbox" name="{{ name|e('html_attr') }}" value="checked" id="{{ name|e('html_attr') }}" {% if class %}class="{{ class|e('html_attr') }}"{% endif %} {% if checked %}checked{% endif %} {% if readOnly %}disabled{% endif %} {% for key, value in data %}data-{{ key }}="{{ value|e('html_attr') }}"{% endfor %}>
         </div>
     </div>
     <script type="text/javascript">

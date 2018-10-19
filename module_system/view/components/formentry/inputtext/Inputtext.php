@@ -35,6 +35,11 @@ class Inputtext extends FormentryComponentAbstract
     protected $type;
 
     /**
+     * @var string
+     */
+    protected $opener;
+
+    /**
      * @param string $name
      * @param string $title
      * @param mixed $value
@@ -67,6 +72,14 @@ class Inputtext extends FormentryComponentAbstract
     }
 
     /**
+     * @param string $opener
+     */
+    public function setOpener($opener)
+    {
+        $this->opener = $opener;
+    }
+
+    /**
      * @inheritdoc
      */
     public function buildContext()
@@ -74,6 +87,7 @@ class Inputtext extends FormentryComponentAbstract
         $context = parent::buildContext();
         $context["value"] = $this->value;
         $context["type"] = $this->type;
+        $context["opener"] = $this->opener;
 
         return $context;
     }
