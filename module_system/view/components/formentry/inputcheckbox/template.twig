@@ -1,0 +1,12 @@
+
+<div class="form-group core-component-formentry-inputcheckbox">
+    <label for="{{ name }}" class="col-sm-3 control-label"></label>
+    <div class="col-sm-6">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="{{ name }}" value="checked" id="{{ name }}" {% if class %}class="{{ class }}"{% endif %} {% if checked %}checked{% endif %} {% if readOnly %}disabled{% endif %}>
+                {{ title }}
+            </label>
+        </div>
+    </div>
+</div>

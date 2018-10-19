@@ -35,7 +35,9 @@ use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\Toolkit;
 use Kajona\System\View\Components\Datatable\Datatable;
+use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
+use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
 use Kajona\System\View\Components\Popover\Popover;
 use Kajona\Tags\System\TagsFavorite;
 use Kajona\Tags\System\TagsTag;
@@ -233,13 +235,11 @@ class ToolkitAdmin extends Toolkit
      */
     public function formInputCheckbox($strName, $strTitle, $bitChecked = false, $strClass = "", $bitReadOnly = false)
     {
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["class"] = $strClass;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["checked"] = ($bitChecked ? "checked=\"checked\"" : "");
-        $arrTemplate["readonly"] = ($bitReadOnly ? "disabled=\"disabled\"" : "");
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_checkbox");
+        $inputCheckbox = new Inputcheckbox($strName, $strTitle, $bitChecked);
+        $inputCheckbox->setReadOnly($bitReadOnly);
+        $inputCheckbox->setClass($strClass);
+
+        return $inputCheckbox->renderComponent();
     }
 
     /**
@@ -256,14 +256,12 @@ class ToolkitAdmin extends Toolkit
      */
     public function formInputOnOff($strName, $strTitle, $bitChecked = false, $bitReadOnly = false, $strOnSwitchJSCallback = "", $strClass = "")
     {
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["class"] = $strClass;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["checked"] = ($bitChecked ? "checked=\"checked\"" : "");
-        $arrTemplate["readonly"] = ($bitReadOnly ? "disabled=\"disabled\"" : "");
-        $arrTemplate["onSwitchJSCallback"] = $strOnSwitchJSCallback;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_on_off_switch");
+        $inputOnoff = new Inputonoff($strName, $strTitle, $bitChecked);
+        $inputOnoff->setReadOnly($bitReadOnly);
+        $inputOnoff->setClass($strClass);
+        $inputOnoff->setCallback($strOnSwitchJSCallback);
+
+        return $inputOnoff->renderComponent();
     }
 
     /**
