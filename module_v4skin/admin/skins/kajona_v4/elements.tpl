@@ -1192,11 +1192,6 @@ Shown, wherever the attention of the user is needed
     </div>
 </warning_box>
 
-Used to print plain text
-<text_row>
-<p class="%%class%%">%%text%%</p>
-</text_row>
-
 Used to print plaintext in a form
 <text_row_form>
     <div class="form-group">
