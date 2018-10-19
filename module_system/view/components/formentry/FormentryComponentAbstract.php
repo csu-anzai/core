@@ -95,9 +95,9 @@ abstract class FormentryComponentAbstract extends AbstractComponent
      * Method to set additional data attributes on an element
      *
      * @param string $key
-     * @param string $value
+     * @param mixed $value
      */
-    public function setData($key, $value)
+    public function setData(string $key, $value)
     {
         $this->data[$key] = $value;
     }
