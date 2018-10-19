@@ -37,6 +37,7 @@ use Kajona\System\System\Toolkit;
 use Kajona\System\View\Components\Datatable\Datatable;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Popover\Popover;
+use Kajona\System\View\Components\WarningBox\WarningBox;
 use Kajona\Tags\System\TagsFavorite;
 use Kajona\Tags\System\TagsTag;
 
@@ -1857,10 +1858,8 @@ require(['ajax'], function(ajax){
      */
     public function warningBox($strContent, $strClass = "alert-warning")
     {
-        $arrTemplate = array();
-        $arrTemplate["content"] = $strContent;
-        $arrTemplate["class"] = $strClass;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "warning_box");
+        $cmp = new WarningBox($strContent, $strClass);
+        return $cmp->renderComponent();
     }
 
     /**
