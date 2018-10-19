@@ -25,11 +25,6 @@ class Inputcheckbox extends FormentryComponentAbstract
     protected $checked;
 
     /**
-     * @var string
-     */
-    protected $class;
-
-    /**
      * @param string $name
      * @param string $title
      * @param bool $checked
@@ -50,21 +45,12 @@ class Inputcheckbox extends FormentryComponentAbstract
     }
 
     /**
-     * @param string $class
-     */
-    public function setClass(string $class)
-    {
-        $this->class = $class;
-    }
-
-    /**
      * @inheritdoc
      */
     public function buildContext()
     {
         $context = parent::buildContext();
         $context["checked"] = $this->checked;
-        $context["class"] = $this->class;
 
         return $context;
     }
