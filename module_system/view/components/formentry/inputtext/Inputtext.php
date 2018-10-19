@@ -86,7 +86,7 @@ class Inputtext extends FormentryComponentAbstract
     {
         $context = parent::buildContext();
         $context["value"] = $this->value;
-        $context["type"] = $this->type;
+        $context["type"] = $this->type ?: 'text';
         $context["opener"] = $this->opener;
 
         return $context;
