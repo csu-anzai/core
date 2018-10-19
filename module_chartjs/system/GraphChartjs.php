@@ -172,7 +172,7 @@ class GraphChartjs implements GraphInterface
     public function addBarChartSet($arrValues, $strLegend, $bitWriteValues = false)
     {
         $this->addChartSet($arrValues, $strLegend);
-        if (isset($bitWriteValues)) {
+        if ($bitWriteValues) {
             $this->setWriteValues($bitWriteValues);
         }
     }
@@ -191,7 +191,7 @@ class GraphChartjs implements GraphInterface
         $this->addChartSet($arrValues, $strLegend);
         $this->arrChartData['options']['scales']['xAxes'][0]['stacked'] = true;
         $this->arrChartData['options']['scales']['yAxes'][0]['stacked'] = true;
-        if (isset($bitWriteValues)) {
+        if ($bitWriteValues) {
             $this->setWriteValues($bitWriteValues);
         }
     }
@@ -345,11 +345,35 @@ class GraphChartjs implements GraphInterface
     /**
      * @param string $strFont
      *
+     */
+    public function setDefaultFont($strFont)
+    {
+        $this->arrChartGlobalOptions['defaultFontFamily'] = $strFont;
+    }
+
+    /**
+     * @param string $strFont
+     *
      * @see GraphInterface::setStrFont()
      */
     public function setStrFont($strFont)
     {
-        $this->arrChartGlobalOptions['defaultFontFamily'] = $strFont;
+        $this->arrChartData['options']['legend']['labels']['fontFamily'] = $strFont;
+        $this->arrChartData['options']['title']['fontFamily'] = $strFont;
+        $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['fontFamily'] = $strFont;
+        $this->arrChartData['options']['scales']['yAxes'][0]['ticks']['fontFamily'] = $strFont;
+        $this->arrChartData['options']['scales']['xAxes'][0]['scaleLabel']['fontFamily'] = $strFont;
+        $this->arrChartData['options']['scales']['yAxes'][0]['scaleLabel']['fontFamily'] = $strFont;
+
+    }
+
+    /**
+     * @param string $strFontColor
+     *
+     */
+    public function setStrDefaultFontColor($strFontColor)
+    {
+        $this->arrChartGlobalOptions['defaultFontColor'] = $strFontColor;
     }
 
     /**
@@ -359,15 +383,12 @@ class GraphChartjs implements GraphInterface
      */
     public function setStrFontColor($strFontColor)
     {
-        $this->arrChartGlobalOptions['defaultFontColor'] = $strFontColor;
-    }
-
-    /**
-     * @param string $strFontColor
-     */
-    public function setStrLegendFontColor($strFontColor)
-    {
-        $this->arrChartGlobalOptions['labelsFontColor'] = $strFontColor;
+        $this->arrChartData['options']['legend']['labels']['fontColor'] = $strFontColor;
+        $this->arrChartData['options']['title']['fontColor'] = $strFontColor;
+        $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['fontColor'] = $strFontColor;
+        $this->arrChartData['options']['scales']['yAxes'][0]['ticks']['fontColor'] = $strFontColor;
+        $this->arrChartData['options']['scales']['xAxes'][0]['scaleLabel']['fontColor'] = $strFontColor;
+        $this->arrChartData['options']['scales']['yAxes'][0]['scaleLabel']['fontColor'] = $strFontColor;
     }
 
     /**
@@ -593,10 +614,9 @@ class GraphChartjs implements GraphInterface
                     var ctx = document.getElementById('".$strChartId."');
                 
                     ctx.style.backgroundColor = chartGlobalOptions['backgroundColor'];
-                    Chart.defaults.global.defaultFontColor = typeof (chartGlobalOptions['defaultFontColor']) !== 'undefined' ? chartGlobalOptions['defaultFontColor'] : 'black';
+//                    Chart.defaults.global.defaultFontColor = typeof (chartGlobalOptions['defaultFontColor']) !== 'undefined' ? chartGlobalOptions['defaultFontColor'] : 'black';
                     Chart.defaults.global.defaultFontFamily = chartGlobalOptions['defaultFontFamily'];
-                    Chart.defaults.global.legend.labels.fontColor = typeof (chartGlobalOptions['labelsFontColor']) !== 'undefined' ? chartGlobalOptions['labelsFontColor'] : chartGlobalOptions['defaultFontColor'];
-                
+
                     if (typeof (chartGlobalOptions['setDefaultTooltip']) == 'undefined' || !chartGlobalOptions['setDefaultTooltip']) {
                         chartData['options']['tooltips'] = {
                             enabled: true,

@@ -1,4 +1,4 @@
-define(['jquery', 'folderview'], function($, folderview) {
+define("chartjsHelper", ['jquery', 'folderview'], function($, folderview) {
 
     var chartjsHelper = {};
 
