@@ -118,7 +118,7 @@ class DTable
         $strReturn = "";
 
         foreach ($this->getHeaders() as $row) {
-            foreach ($row->getCells as $cell) {
+            foreach ($row->getCells() as $cell) {
                 $strReturn .= $cell->getValue();
             }
             $strReturn .= ' <br />';
