@@ -65,7 +65,7 @@ class Inputtext extends FormentryComponentAbstract
     public function setType(string $type)
     {
         if (!in_array($type, self::$allowedTypes)) {
-            throw new \InvalidArgumentException("Input type must be on of: " . implode(", ", self::$allowedTypes));
+            throw new \InvalidArgumentException("Input type must be one of: " . implode(", ", self::$allowedTypes));
         }
 
         $this->type = $type;
