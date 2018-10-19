@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Kajona\Chartjs\Debug;
 
 
 use Kajona\Chartjs\System\GraphChartjs;
 use Kajona\System\Admin\AdminHelper;
-use Kajona\System\System\GraphCommons;
 use Kajona\System\System\GraphFactory;
-use Kajona\System\System\Link;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemSetting;
@@ -16,7 +16,7 @@ class ChartJS
 {
     public function testCharts()
     {
-        srand((double)microtime() * 1000000);
+        srand((int)microtime() * 1000000);
         //--- system kernel -------------------------------------------------------------------------------------
         echo "\tcreating a few charts...\n";
 

@@ -28,12 +28,13 @@ class ChartjsTest extends Testbase
         }
 
         $objGraph->setStrBackgroundColor('red');
-        $objGraph->setStrFontColor('blue');
-        $objGraph->setStrFont('Arial');
-        $objGraph->setStrLegendFontColor('green');
+        $objGraph->setStrDefaultFontColor('blue');
+        $objGraph->setDefaultFont('Arial');
         $objGraph->addBarChartSet([10, 20, 30], "");
         $objGraph->setStrXAxisTitle('XXX');
         $objGraph->setStrYAxisTitle('YYY');
+        $objGraph->setStrFontColor('red');
+        $objGraph->setStrFont('Times');
         $arrChartData = $objGraph->getArrChartData();
         $this->assertEquals($arrChartData['data']['datasets'][0]['label'], "Dataset 0");
         $this->assertEquals($arrChartData['data']['datasets'][0]['data'][0], 10);
@@ -45,9 +46,22 @@ class ChartjsTest extends Testbase
         $this->assertTrue($arrChartData['options']['scales']['yAxes'][0]['scaleLabel']['display']);
         $this->assertEquals($arrChartData['options']['scales']['yAxes'][0]['scaleLabel']['labelString'], 'YYY');
 
+        $this->assertEquals($arrChartData['options']['legend']['labels']['fontColor'], 'red');
+        $this->assertEquals($arrChartData['options']['scales']['xAxes'][0]['ticks']['fontColor'], 'red');
+        $this->assertEquals($arrChartData['options']['scales']['yAxes'][0]['ticks']['fontColor'], 'red');
+        $this->assertEquals($arrChartData['options']['scales']['xAxes'][0]['scaleLabel']['fontColor'], 'red');
+        $this->assertEquals($arrChartData['options']['scales']['yAxes'][0]['scaleLabel']['fontColor'], 'red');
+
+        $this->assertEquals($arrChartData['options']['legend']['labels']['fontFamily'], 'Times');
+        $this->assertEquals($arrChartData['options']['scales']['xAxes'][0]['ticks']['fontFamily'], 'Times');
+        $this->assertEquals($arrChartData['options']['scales']['yAxes'][0]['ticks']['fontFamily'], 'Times');
+        $this->assertEquals($arrChartData['options']['scales']['xAxes'][0]['scaleLabel']['fontFamily'], 'Times');
+        $this->assertEquals($arrChartData['options']['scales']['yAxes'][0]['scaleLabel']['fontFamily'], 'Times');
+
+
         $strRender = $objGraph->renderGraph();
 
-        $this->assertTrue(!empty(strpos($strRender, 'var chartGlobalOptions = {"backgroundColor":"red","defaultFontColor":"blue","defaultFontFamily":"Arial","labelsFontColor":"green"};')));
+        $this->assertTrue(!empty(strpos($strRender, 'var chartGlobalOptions = {"backgroundColor":"red","defaultFontColor":"blue","defaultFontFamily":"Arial"};')));
     }
 
     public function testChartJSBarChart()

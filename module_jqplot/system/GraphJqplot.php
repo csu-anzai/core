@@ -6,6 +6,8 @@
 *	$Id$                                      *
 ********************************************************************************************************/
 
+declare(strict_types = 1);
+
 namespace Kajona\Jqplot\System;
 
 use Kajona\System\System\AdminskinHelper;
