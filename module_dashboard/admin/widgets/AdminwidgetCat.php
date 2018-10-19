@@ -4,12 +4,11 @@
  *       Published under the GNU LGPL v2.1
  ********************************************************************************************************/
 
+declare(strict_types=1);
+
 namespace Kajona\Dashboard\Admin\Widgets;
 
-use Kajona\System\System\Exception;
-use Kajona\System\System\Remoteloader;
 use Kajona\System\System\Resourceloader;
-use Kajona\System\System\StringUtil;
 
 /**
  * @package module_dashboard
@@ -17,8 +16,14 @@ use Kajona\System\System\StringUtil;
 class AdminwidgetCat extends Adminwidget implements AdminwidgetInterface
 {
 
+    /**
+     * @var array
+     */
     private $arrCats = [];
 
+    /**
+     * @var array
+     */
     private $arrGifs = ["acrobat.gif", "banjo.gif", "burp.gif", "facepalm.gif", "knead.gif", "meal.gif", "popcorn.gif", "sleepy.gif"];
 
     /**
