@@ -265,6 +265,17 @@ abstract class Adminwidget
     {
         return "";
     }
+
+    public function getWidgetDescription()
+    {
+        return "Artemeon Widget.";
+    }
+
+    public function getWidgetImg()
+    {
+        return "/files/extract/widgets/default.png";
+        //return Resourceloader::getInstance()->getWebPathForModule("module_dashboard")."/img/widgets/default.png";
+    }
 }
 
 

@@ -16,6 +16,7 @@ use Kajona\Dashboard\System\EventEntry;
 use Kajona\Dashboard\System\EventRepository;
 use Kajona\Dashboard\System\TodoJstreeNodeLoader;
 use Kajona\Dashboard\System\TodoRepository;
+use Kajona\Dashboard\View\Components\WoidgetList\WidgetList;
 use Kajona\System\Admin\AdminController;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminInterface;
@@ -105,6 +106,27 @@ class DashboardAdmin extends AdminController implements AdminInterface
         $strReturn .= $this->objToolkit->getMainDashboard($arrColumns);
 
         return $strReturn;
+    }
+
+    /**
+     * Shows wiget list.
+     * Loads all widgets placed on the dashboard
+     *
+     * @return string
+     * @permissions view
+     */
+    protected function actionListWidgets() {
+
+        $arrWidgetsAvailable = DashboardWidget::getListOfWidgetsAvailable();
+        foreach ($arrWidgetsAvailable as $strOneWidget) {
+            /** @var $objWidget AdminwidgetInterface|Adminwidget */
+            $objWidget = new $strOneWidget();
+            $img = "<img src='"._webpath_."/image.php?image=".urlencode($objWidget->getWidgetImg())."&amp;maxWidth=100&amp;maxHeight=60' />";
+            $arrWidget[] = ['name' => $objWidget->getWidgetName(), 'info'=>$objWidget->getWidgetDescription(), 'img'=>$img, 'class' => get_class($objWidget)];
+        }
+
+        $wListService = new WidgetList($arrWidget);
+        return $wListService->renderComponent();
     }
 
     /**

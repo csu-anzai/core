@@ -1,0 +1,26 @@
+<div class="container">
+    {% for widget in widgets %}
+        <div class="row">
+            <div class="col-sm-2">
+                {#<div style="text-align: center" class="glyphicon glyphicon-exclamation-sign fa-4x" aria-hidden="true"></div>#}
+                <div style="margin: 10px 10px 10px 10px; height:60px">{{ widget['img']|raw }}</div>
+                <div style="padding-top:10px; text-align: center; font-weight: 600">{{ widget['name'] }}</div>
+            </div>
+            <div style="border-left:1px solid lightgrey; height:100px" class="col-sm-7">{{ widget['info'] }}</div>
+            <div style="border-left:1px solid lightgrey; height:100px" class="col-sm-3">
+                <button class="btn" onclick="addWidgetToDashboard('{{ widget['class']|e('js') }}')">Add</button>
+            </div>
+        </div>
+        <hr>
+    {% endfor %}
+</div>
+<script>
+
+    function addWidgetToDashboard(widgetClass) {
+        var data = "&step=3&widget="+widgetClass+"&column=column1&ajax=true";
+        require(['ajax'], function (ajax) {
+            ajax.genericAjaxCall("dashboard", "addWidgetToDashboard", data);
+        });
+    }
+
+</script>
