@@ -36,6 +36,7 @@ use Kajona\System\System\SystemSetting;
 use Kajona\System\System\Toolkit;
 use Kajona\System\View\Components\Datatable\Datatable;
 use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
+use Kajona\System\View\Components\Formentry\Inputtext\Inputcolorpicker;
 use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
@@ -321,14 +322,14 @@ class ToolkitAdmin extends Toolkit
      */
     public function formInputColorPicker($strName, $strTitle = "", $strValue = "", $bitReadonly = false, $strInstantEditor = "")
     {
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["value"] = htmlspecialchars($strValue, ENT_QUOTES, "UTF-8", false);
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["instantEditor"] = $strInstantEditor;
-        $arrTemplate["readonly"] = ($bitReadonly ? "readonly=\"readonly\"" : "");
+        $inputColorpicker = new Inputcolorpicker($strName, $strTitle, $strValue);
+        $inputColorpicker->setReadOnly($bitReadonly);
 
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_colorpicker");
+        if (!empty($strInstantEditor)) {
+            $inputColorpicker->setData("kajona-instantsave", $strInstantEditor);
+        }
+
+        return $inputColorpicker->renderComponent();
     }
 
     /**

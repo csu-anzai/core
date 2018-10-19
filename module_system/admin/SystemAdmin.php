@@ -57,6 +57,7 @@ use Kajona\System\System\Validators\EmailValidator;
 use Kajona\System\System\VersionableInterface;
 use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
+use Kajona\System\View\Components\Formentry\Inputtext\Inputcolorpicker;
 use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
 use Kajona\System\View\Components\Formentry\Listeditor\Listeditor;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
@@ -1620,6 +1621,13 @@ JS;
         $inputText = new Inputtext(generateSystemid(), "Text (date)", "");
         $inputText->setType("date");
         $result[] = $inputText;
+
+        $inputColorpicker = new Inputcolorpicker(generateSystemid(), "Colorpicker", "#852a2a");
+        $result[] = $inputColorpicker;
+
+        $inputColorpicker = new Inputcolorpicker(generateSystemid(), "Colorpicker (disabled)", "#852a2a");
+        $inputColorpicker->setReadOnly(true);
+        $result[] = $inputColorpicker;
 
         $inputCheckbox = new Inputcheckbox(generateSystemid(), "Checkbox", true);
         $result[] = $inputCheckbox;
