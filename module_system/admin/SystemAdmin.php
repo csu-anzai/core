@@ -52,8 +52,14 @@ use Kajona\System\System\SysteminfoInterface;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSession;
 use Kajona\System\System\SystemSetting;
+use Kajona\System\System\UserGroup;
 use Kajona\System\System\Validators\EmailValidator;
 use Kajona\System\System\VersionableInterface;
+use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
+use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
+use Kajona\System\View\Components\Formentry\Listeditor\Listeditor;
+use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
+use Kajona\System\View\Components\Formentry\Objectselector\Objectselector;
 use PHPExcel_Style_Alignment;
 use PHPExcel_Style_Border;
 use PHPExcel_Style_Fill;
@@ -1588,4 +1594,61 @@ JS;
 
         return json_encode($arrChart);
     }
+
+    /**
+     * @return string
+     * @permissions view
+     * @autoTestable
+     * @throws Exception
+     */
+    protected function actionShowComponents()
+    {
+        $result = [];
+
+        $inputCheckbox = new Inputcheckbox(generateSystemid(), "Checkbox", true);
+        $result[] = $inputCheckbox;
+
+        $inputCheckbox = new Inputcheckbox(generateSystemid(), "Checkbox (disabled)", true);
+        $inputCheckbox->setReadOnly(true);
+        $result[] = $inputCheckbox;
+
+        $inputOnOff = new Inputonoff(generateSystemid(), "Onoff", true);
+        $result[] = $inputOnOff;
+
+        $inputOnOff = new Inputonoff(generateSystemid(), "Onoff (disabled)", true);
+        $inputOnOff->setReadOnly(true);
+        $result[] = $inputOnOff;
+
+        $listEditor = new Listeditor(generateSystemid(), "Listeditor", ["foo", "bar"]);
+        $result[] = $listEditor;
+
+        $listEditor = new Listeditor(generateSystemid(), "Listeditor (disabled)", ["foo", "bar"]);
+        $listEditor->setReadOnly(true);
+        $result[] = $listEditor;
+
+        $objectList = new Objectlist(generateSystemid(), "Objectlist", UserGroup::getObjectListFiltered(null, "", 0, 3));
+        $result[] = $objectList;
+
+        $objectList = new Objectlist(generateSystemid(), "Objectlist (disabled)", UserGroup::getObjectListFiltered(null, "", 0, 3));
+        $objectList->setReadOnly(true);
+        $result[] = $objectList;
+
+        $objectSelector = new Objectselector(generateSystemid(), "Objectselector", null, UserGroup::getGroupByName("Admins"));
+        $result[] = $objectSelector;
+
+        $objectSelector = new Objectselector(generateSystemid(), "Objectselector (disabled)", null, UserGroup::getGroupByName("Admins"));
+        $objectSelector->setReadOnly(true);
+        $result[] = $objectSelector;
+
+
+        $html = $this->objToolkit->formHeader("");
+        foreach ($result as $component) {
+            $html.= "<hr>";
+            $html.= $component->renderComponent();
+        }
+        $html.= $this->objToolkit->formClose();
+
+        return $html;
+    }
+
 }
