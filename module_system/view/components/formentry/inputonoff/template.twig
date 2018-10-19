@@ -12,7 +12,7 @@
             divId = '#' + divId.replace( /(:|\.|\[|\])/g, "\\$1" );
             $(divId).bootstrapSwitch();
             $(divId).on('switchChange.bootstrapSwitch', function (event, state) {
-                {{ callback }}
+                {{ callback|raw }}
             });
         });
     </script>
