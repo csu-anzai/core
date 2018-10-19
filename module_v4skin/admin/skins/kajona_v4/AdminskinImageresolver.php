@@ -306,14 +306,22 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_shopping_cart" =>  "<i class='kj-icon fa fa-shopping-cart'></i>",
         "icon_shopping_cartReady" =>  "<span class='kj-icon fa-stack'><i class='fa fa-shopping-cart'></i><i class='fa fa-check fa-stack-1x kj-stack' style='color: green'></i></span>",
         "icon_shopping_cartError" =>  "<span class='kj-icon fa-stack'><i class='fa fa-shopping-cart'></i><i class='fa fa-ban fa-stack-1x kj-stack' style='color: red'></i></span>",
+        "icon_it_sytems" => "<i class='kj-icon fa fa-cogs'></i>",
 
         //note: a copy of this markup is placed in agp_util.js and elements_artemeon.tpl::input_dropdown_ampel
         "icon_ampel_gelb" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_gelb'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle orange'></i><i class='kj-icon fa fa-circle-thin'></i></span>",
         "icon_ampel_rot" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_rot'><i class='kj-icon fa fa-circle red' ></i><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i></span>",
         "icon_ampel_gruen" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_gruen'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle green'></i></span>",
         "icon_ampel_grau" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_grau'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i></span>",
-        "icon_ampel_lavendel" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_lavendel'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle lavendel'></i><i class='kj-icon fa fa-circle-thin'></i></span>",
-        "icon_it_sytems" => "<i class='kj-icon fa fa-cogs'></i>",
+        "icon_ampel_schwarz" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_schwarz'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle black'></i><i class='kj-icon fa fa-circle-thin'></i></span>",
+
+
+        "icon_ampel_gelb_4" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_gelb'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle orange'></i><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i></span>",
+        "icon_ampel_rot_4" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_rot'><i class='kj-icon fa fa-circle red' ></i><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i></span>",
+        "icon_ampel_gruen_4" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_gruen'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle green'></i><i class='kj-icon fa fa-circle-thin'></i></span>",
+        "icon_ampel_grau_4" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_grau'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i></span>",
+        "icon_ampel_schwarz_4" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_schwarz'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle black'></i></span>",
+
 
     ];
 
