@@ -36,6 +36,7 @@ use Kajona\System\System\SystemSetting;
 use Kajona\System\System\Toolkit;
 use Kajona\System\View\Components\Datatable\Datatable;
 use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
+use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
 use Kajona\System\View\Components\Popover\Popover;
@@ -295,16 +296,16 @@ class ToolkitAdmin extends Toolkit
      */
     public function formInputText($strName, $strTitle = "", $strValue = "", $strClass = "", $strOpener = "", $bitReadonly = false, $strInstantEditor = "")
     {
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["value"] = htmlspecialchars($strValue, ENT_QUOTES, "UTF-8", false);
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["class"] = $strClass;
-        $arrTemplate["opener"] = $strOpener;
-        $arrTemplate["instantEditor"] = $strInstantEditor;
-        $arrTemplate["readonly"] = ($bitReadonly ? "readonly=\"readonly\"" : "");
+        $inputCheckbox = new Inputtext($strName, $strTitle, $strValue);
+        $inputCheckbox->setClass($strClass);
+        $inputCheckbox->setReadOnly($bitReadonly);
+        $inputCheckbox->setOpener($strOpener);
 
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_text");
+        if (!empty($strInstantEditor)) {
+            $inputCheckbox->setData("kajona-instantsave", $strInstantEditor);
+        }
+
+        return $inputCheckbox->renderComponent();
     }
 
 
