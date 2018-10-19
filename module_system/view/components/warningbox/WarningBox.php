@@ -52,6 +52,6 @@ class WarningBox extends AbstractComponent
             "class" => $this->strClass
         ];
 
-        return $this->renderTemplate($data);
+        return $this->renderTemplate($data, "warning_box");
     }
 }
