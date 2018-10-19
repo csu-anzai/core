@@ -57,6 +57,7 @@ use Kajona\System\System\Validators\EmailValidator;
 use Kajona\System\System\VersionableInterface;
 use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
+use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
 use Kajona\System\View\Components\Formentry\Listeditor\Listeditor;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Formentry\Objectselector\Objectselector;
@@ -1604,6 +1605,21 @@ JS;
     protected function actionShowComponents()
     {
         $result = [];
+
+        $inputText = new Inputtext(generateSystemid(), "Text", "foo");
+        $result[] = $inputText;
+
+        $inputText = new Inputtext(generateSystemid(), "Text (disabled)", "foo");
+        $inputText->setReadOnly(true);
+        $result[] = $inputText;
+
+        $inputText = new Inputtext(generateSystemid(), "Text (password)", "foo");
+        $inputText->setType("password");
+        $result[] = $inputText;
+
+        $inputText = new Inputtext(generateSystemid(), "Text (date)", "");
+        $inputText->setType("date");
+        $result[] = $inputText;
 
         $inputCheckbox = new Inputcheckbox(generateSystemid(), "Checkbox", true);
         $result[] = $inputCheckbox;
