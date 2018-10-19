@@ -1607,69 +1607,73 @@ JS;
     {
         $result = [];
 
-        $inputText = new Inputtext(generateSystemid(), "Text", "foo");
+        $inputText = new Inputtext("input_text", "Text", "foo");
         $result[] = $inputText;
 
-        $inputText = new Inputtext(generateSystemid(), "Text (disabled)", "foo");
+        $inputText = new Inputtext("input_text_disabled", "Text (disabled)", "foo");
         $inputText->setReadOnly(true);
         $result[] = $inputText;
 
-        $inputText = new Inputtext(generateSystemid(), "Text (password)", "foo");
+        $inputText = new Inputtext("input_text_password", "Text (password)", "foo");
         $inputText->setType("password");
         $result[] = $inputText;
 
-        $inputText = new Inputtext(generateSystemid(), "Text (date)", "");
+        $inputText = new Inputtext("input_text_date", "Text (date)", "");
         $inputText->setType("date");
         $result[] = $inputText;
 
-        $inputColorpicker = new Inputcolorpicker(generateSystemid(), "Colorpicker", "#852a2a");
+        $inputColorpicker = new Inputcolorpicker("input_colorpicker", "Colorpicker", "#852a2a");
         $result[] = $inputColorpicker;
 
-        $inputColorpicker = new Inputcolorpicker(generateSystemid(), "Colorpicker (disabled)", "#852a2a");
+        $inputColorpicker = new Inputcolorpicker("input_colorpicker_disabled", "Colorpicker (disabled)", "#852a2a");
         $inputColorpicker->setReadOnly(true);
         $result[] = $inputColorpicker;
 
-        $inputCheckbox = new Inputcheckbox(generateSystemid(), "Checkbox", true);
+        $inputCheckbox = new Inputcheckbox("input_checkbox", "Checkbox", true);
         $result[] = $inputCheckbox;
 
-        $inputCheckbox = new Inputcheckbox(generateSystemid(), "Checkbox (disabled)", true);
+        $inputCheckbox = new Inputcheckbox("input_checkbox_disabled", "Checkbox (disabled)", true);
         $inputCheckbox->setReadOnly(true);
         $result[] = $inputCheckbox;
 
-        $inputOnOff = new Inputonoff(generateSystemid(), "Onoff", true);
+        $inputOnOff = new Inputonoff("input_onoff", "Onoff", true);
         $result[] = $inputOnOff;
 
-        $inputOnOff = new Inputonoff(generateSystemid(), "Onoff (disabled)", true);
+        $inputOnOff = new Inputonoff("input_onoff_disabled", "Onoff (disabled)", true);
         $inputOnOff->setReadOnly(true);
         $result[] = $inputOnOff;
 
-        $listEditor = new Listeditor(generateSystemid(), "Listeditor", ["foo", "bar"]);
+        $listEditor = new Listeditor("listeditor", "Listeditor", ["foo", "bar"]);
         $result[] = $listEditor;
 
-        $listEditor = new Listeditor(generateSystemid(), "Listeditor (disabled)", ["foo", "bar"]);
+        $listEditor = new Listeditor("listeditor_disabled", "Listeditor (disabled)", ["foo", "bar"]);
         $listEditor->setReadOnly(true);
         $result[] = $listEditor;
 
-        $objectList = new Objectlist(generateSystemid(), "Objectlist", UserGroup::getObjectListFiltered(null, "", 0, 3));
+        $objectList = new Objectlist("objectlist", "Objectlist", UserGroup::getObjectListFiltered(null, "", 0, 3));
         $result[] = $objectList;
 
-        $objectList = new Objectlist(generateSystemid(), "Objectlist (disabled)", UserGroup::getObjectListFiltered(null, "", 0, 3));
+        $objectList = new Objectlist("objectlist_disabled", "Objectlist (disabled)", UserGroup::getObjectListFiltered(null, "", 0, 3));
         $objectList->setReadOnly(true);
         $result[] = $objectList;
 
-        $objectSelector = new Objectselector(generateSystemid(), "Objectselector", null, UserGroup::getGroupByName("Admins"));
+        $objectSelector = new Objectselector("objectselector", "Objectselector", null, UserGroup::getGroupByName("Admins"));
         $result[] = $objectSelector;
 
-        $objectSelector = new Objectselector(generateSystemid(), "Objectselector (disabled)", null, UserGroup::getGroupByName("Admins"));
+        $objectSelector = new Objectselector("objectselector_disabled", "Objectselector (disabled)", null, UserGroup::getGroupByName("Admins"));
         $objectSelector->setReadOnly(true);
         $result[] = $objectSelector;
 
+        $html = "";
+        $html.= "<pre>" . json_encode($this->getAllParams(), JSON_PRETTY_PRINT) . "</pre>";
+        $html.= "<hr>";
 
-        $html = $this->objToolkit->formHeader("");
+        $html.= $this->objToolkit->formHeader("");
         foreach ($result as $component) {
-            $html.= "<hr>";
             $html.= $component->renderComponent();
+            $html.= "<hr>";
         }
+        $html.= $this->objToolkit->formInputSubmit();
         $html.= $this->objToolkit->formClose();
 
         return $html;
