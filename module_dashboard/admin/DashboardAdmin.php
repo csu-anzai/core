@@ -16,7 +16,7 @@ use Kajona\Dashboard\System\EventEntry;
 use Kajona\Dashboard\System\EventRepository;
 use Kajona\Dashboard\System\TodoJstreeNodeLoader;
 use Kajona\Dashboard\System\TodoRepository;
-use Kajona\Dashboard\View\Components\WoidgetList\WidgetList;
+use Kajona\Dashboard\View\Components\WidgetList\WidgetList;
 use Kajona\System\Admin\AdminController;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminInterface;

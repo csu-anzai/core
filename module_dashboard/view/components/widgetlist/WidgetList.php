@@ -6,7 +6,7 @@
 
 declare(strict_types = 1);
 
-namespace Kajona\Dashboard\View\Components\WoidgetList;
+namespace Kajona\Dashboard\View\Components\WidgetList;
 
 use Kajona\System\View\Components\AbstractComponent;
 
@@ -25,7 +25,7 @@ class WidgetList extends AbstractComponent
     protected $widgets;
 
     /**
-     * WoidgetList constructor.
+     * WidgetList constructor.
      * @param array|null $widgets
      * @param string|null $description
      */
