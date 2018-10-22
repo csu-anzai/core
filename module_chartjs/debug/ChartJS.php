@@ -44,11 +44,11 @@ class ChartJS
 
         /** @var GraphChartjs $objGraph */
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
-        $objGraph->addLinePlot(array(8.112, 1, 2, 4), null);
-        $objGraph->addLinePlot(array(1, 2, 3, 4), null);
-        $objGraph->addLinePlot(array(4, 7, 1, 2), null);
-        $objGraph->addLinePlot(array(4, 3, 2, 1), null);
-        $objGraph->addLinePlot(array(-5, 3, -2, 1), null);
+        $objGraph->addLinePlot(array(8.112, 1, 2, 4), "");
+        $objGraph->addLinePlot(array(1, 2, 3, 4), "");
+        $objGraph->addLinePlot(array(4, 7, 1, 2), "");
+        $objGraph->addLinePlot(array(4, 3, 2, 1), "");
+        $objGraph->addLinePlot(array(-5, 3, -2, 1), "");
         $objGraph->setBitRenderLegend(true);
         $objGraph->setIntXAxisAngle(-20); // not works
         $objGraph->setStrXAxisTitle("XXX");
@@ -64,11 +64,11 @@ class ChartJS
 
 
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
-        $objGraph->addLinePlot(array(8.112, 1, 2, 4), null);
-        $objGraph->addLinePlot(array(1, 2, 3, 4), null);
-        $objGraph->addLinePlot(array(4, 7, 1, 2), null);
-        $objGraph->addLinePlot(array(4, 3, 2, 1), null);
-        $objGraph->addLinePlot(array(-5, 3, -2, 1), null);
+        $objGraph->addLinePlot(array(8.112, 1, 2, 4), "");
+        $objGraph->addLinePlot(array(1, 2, 3, 4), "");
+        $objGraph->addLinePlot(array(4, 7, 1, 2), "");
+        $objGraph->addLinePlot(array(4, 3, 2, 1), "");
+        $objGraph->addLinePlot(array(-5, 3, -2, 1), "");
         $objGraph->setBitRenderLegend(true);
         $objGraph->setIntXAxisAngle(-20);  // not works
         $objGraph->setStrXAxisTitle("XXX");
@@ -265,7 +265,7 @@ class ChartJS
         echo $objGraph->renderGraph();
 
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
-        $objGraph->addLinePlot(array(0, 0, 0, 0, 0, 0, 0.5), null);
+        $objGraph->addLinePlot(array(0, 0, 0, 0, 0, 0, 0.5), "");
         $objGraph->setIntHeight(500);
         $objGraph->setIntWidth(700);
         $objGraph->setArrXAxisTickLabels(array("23", "24", "25", "26", "27", "28", "29"));

@@ -20,7 +20,7 @@ use Kajona\System\System\GraphInterface;
  *
  * @package module_chartjs
  * @since 7.1
- * @author sascha.broening@artemeon.de
+ * @author sascha.broening@artemeon.de, andrii.konoval@artemeon.de
  */
 class GraphChartjs implements GraphInterface
 {
@@ -124,7 +124,7 @@ class GraphChartjs implements GraphInterface
      * @param $arrDataPointObjects
      * @return array
      */
-    private function dataPointObjArrayToArray($arrDataPointObjects)
+    private function dataPointObjArrayToArray(array $arrDataPointObjects)
     {
         $arrDataPoints = [];
         foreach ($arrDataPointObjects as $objDataPoint) {
@@ -144,7 +144,7 @@ class GraphChartjs implements GraphInterface
      * @param string $strLegend
      * @param string $type
      */
-    private function addChartSet($arrValues, $strLegend, $type = null)
+    private function addChartSet(array $arrValues, string $strLegend = "", $type = null)
     {
         $arrDataPointObjects = GraphCommons::convertArrValuesToDataPointArray($arrValues);
 
@@ -186,7 +186,7 @@ class GraphChartjs implements GraphInterface
      *
      * @see GraphInterface::addStackedBarChartSet()
      */
-    public function addStackedBarChartSet($arrValues, $strLegend, $bitWriteValues = false)
+    public function addStackedBarChartSet($arrValues, $strLegend = "", $bitWriteValues = false)
     {
         $this->addChartSet($arrValues, $strLegend);
         $this->arrChartData['options']['scales']['xAxes'][0]['stacked'] = true;
@@ -204,7 +204,7 @@ class GraphChartjs implements GraphInterface
      *
      * @see GraphInterface::addLinePlot()
      */
-    public function addLinePlot($arrValues, $strLegend)
+    public function addLinePlot($arrValues, $strLegend = "")
     {
         $this->addChartSet($arrValues, $strLegend, "line");
     }
@@ -217,7 +217,7 @@ class GraphChartjs implements GraphInterface
      *
      * @see GraphInterface::createPieChart()
      */
-    public function createPieChart($arrValues, $arrLegends)
+    public function createPieChart($arrValues, $arrLegends = "")
     {
         $arrDataPointObjects = GraphCommons::convertArrValuesToDataPointArray($arrValues);
         $this->setPieChart(true);
@@ -439,7 +439,7 @@ class GraphChartjs implements GraphInterface
     }
 
     /**
-     * @param bool $bitHorizontal
+     * @param bool $bitPie
      */
     public function setPieChart(bool $bitPie)
     {
