@@ -15,9 +15,9 @@ use Kajona\System\View\Components\AbstractComponent;
  *
  * @author sascha.broening@artemeon.de
  * @since 7.0
- * @componentTemplate template.twig
+ * @componentTemplate core/module_system/view/components/formentry/inputcheckbox/template.twig
  */
-class WarningBox extends AbstractComponent
+class Warningbox extends AbstractComponent
 {
     
     /**
@@ -34,9 +34,9 @@ class WarningBox extends AbstractComponent
      * @param string $strContent
      * @param string $strClass
      */
-    public function __construct(string $strContent, string $strClass)
+    public function __construct(string $strContent, string $strClass = "")
     {
-        parent::__construct();
+        parent::__construct($strContent, $strClass);
 
         $this->strContent = $strContent;
         $this->strClass = $strClass;
@@ -52,6 +52,6 @@ class WarningBox extends AbstractComponent
             "class" => $this->strClass
         ];
 
-        return $this->renderTemplate($data, "warning_box");
+        return $this->renderTemplate($data);
     }
 }
