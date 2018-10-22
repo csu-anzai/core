@@ -15,7 +15,7 @@ use Kajona\System\View\Components\AbstractComponent;
  *
  * @author sascha.broening@artemeon.de
  * @since 7.0
- * @componentTemplate core/module_system/view/components/formentry/inputcheckbox/template.twig
+ * @componentTemplate core/module_system/view/components/textrow/template.twig
  */
 class TextRow extends AbstractComponent
 {
