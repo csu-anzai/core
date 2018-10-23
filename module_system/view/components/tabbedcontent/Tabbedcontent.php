@@ -45,7 +45,7 @@ class Tabbedcontent extends AbstractComponent
     /**
      * @param array $arrTabs
      */
-    public function setArrTabs(array $arrTabs): void
+    public function setArrTabs(array $arrTabs)
     {
         $this->arrTabs = $arrTabs;
     }
