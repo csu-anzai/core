@@ -64,7 +64,11 @@ class AdminskinHelper
      */
     public static function getPathForSkin($strSkin = "")
     {
-        return "/admin/skins/kajona_v4";
+        if (self::$strSkinPath == null) {
+            self::$strSkinPath = Resourceloader::getInstance()->getPathForFolder("/admin/skins/kajona_v4");
+        }
+
+        return self::$strSkinPath;
     }
 
     /**
