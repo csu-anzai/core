@@ -189,6 +189,13 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
     private $bitOnLeaveChangeDetection = true;
 
     /**
+     * If required, a fromsent-addon may be specified to distinguish subsequent forms
+     * based on the same model class
+     * @var string
+     */
+    private $strFormSentAddon = "";
+
+    /**
      * Creates a new instance of the form-generator.
      *
      * @param string $strFormname
@@ -400,7 +407,7 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
             $this->addField($objField);
         }
 
-        $this->addField(new FormentryHidden("", static::getStrFormSentParamForObject($this->objSourceobject)))->setStrValue("1");
+         $this->addField(new FormentryHidden("", static::getStrFormSentParamForObject($this->objSourceobject).$this->strFormSentAddon))->setStrValue("1");
 
         /*add reload URL param*/
         if ($this->strOnSaveRedirectUrl != "") {
@@ -466,7 +473,7 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
      */
     public function getFormIsSent()
     {
-        return Carrier::getInstance()->issetParam(static::getStrFormSentParamForObject($this->getObjSourceobject()));
+        return Carrier::getInstance()->issetParam(static::getStrFormSentParamForObject($this->getObjSourceobject()).$this->strFormSentAddon);
     }
 
     /**
@@ -474,8 +481,9 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
      *
      * @param Root|null $objModel
      * @return string
+     * @internal use the method on the form instance instead of the static getter
      */
-    public static final function getStrFormSentParamForObject($objModel = null)
+    final public static function getStrFormSentParamForObject($objModel = null)
     {
         return "formsent_".($objModel !== null ? StringUtil::toLowerCase(get_class($objModel)) : "");
     }
@@ -1506,4 +1514,14 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
 
         return round($countCompletedFields/$countFieldsShouldBeCompleted*100, 2);
     }
+
+    /**
+     * @param string $strFormSentAddon
+     */
+    public function setStrFormSentAddon(string $strFormSentAddon)
+    {
+        $this->strFormSentAddon = $strFormSentAddon;
+    }
+
+
 }
