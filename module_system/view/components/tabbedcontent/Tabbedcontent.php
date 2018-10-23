@@ -22,7 +22,7 @@ class Tabbedcontent extends AbstractComponent
     /**
      * @var array
      */
-    protected $arrTabs;
+    protected $arrTabsData;
 
     /**
      * @var bool
@@ -38,7 +38,7 @@ class Tabbedcontent extends AbstractComponent
     {
         parent::__construct();
 
-        $this->arrTabs = $arrTabs;
+        $this->arrTabsData = $arrTabs;
         $this->bitFullHeight = $bitFullHeight;
     }
 
@@ -47,13 +47,13 @@ class Tabbedcontent extends AbstractComponent
      */
     public function setArrTabs(array $arrTabs)
     {
-        $this->arrTabs = $arrTabs;
+        $this->arrTabsData = $arrTabs;
     }
 
     /**
      * @param bool $bitFullHeight
      */
-    public function setBitFullHeight(bool $bitFullHeight): void
+    public function setBitFullHeight(bool $bitFullHeight)
     {
         $this->bitFullHeight = $bitFullHeight;
     }
@@ -68,7 +68,7 @@ class Tabbedcontent extends AbstractComponent
         $strMainTabId = generateSystemid();
         $bitRemoteContent = false;
         $strClassaddon = "active in ";
-        foreach ($this->arrTabs as $strTitle => $strContent) {
+        foreach ($this->arrTabsData as $strTitle => $strContent) {
             $arrTab['id'] = $arrContent['id'] = generateSystemid();
             $arrTab['title'] = $strTitle;
             $arrTab['classaddon'] = $strClassaddon;
