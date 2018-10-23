@@ -37,7 +37,7 @@ use Kajona\System\System\Toolkit;
 use Kajona\System\View\Components\Datatable\Datatable;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Popover\Popover;
-use Kajona\System\View\Components\WarningBox\GetTextRow;
+use Kajona\System\View\Components\Textrow\TextRow;
 use Kajona\Tags\System\TagsFavorite;
 use Kajona\Tags\System\TagsTag;
 
@@ -1874,7 +1874,7 @@ require(['ajax'], function(ajax){
      */
     public function getTextRow($strText, $strClass = "text")
     {
-        $cmp = new GetTextRow($strText, $strClass);
+        $cmp = new TextRow($strText, $strClass);
         return $cmp->renderComponent();
     }
 
