@@ -113,21 +113,25 @@ class DTable
      *
      * @return string
      */
-    function getStringView()
+    function getStringView(string $separator = " ")
     {
         $strReturn = "";
 
         foreach ($this->getHeaders() as $row) {
+            $arrCellValues = [];
             foreach ($row->getCells() as $cell) {
-                $strReturn .= $cell->getValue();
+                $arrCellValues[] = $cell->getValue();
             }
+            $strReturn .= implode($separator, $arrCellValues);
             $strReturn .= ' <br />';
         }
 
         foreach ($this->getRows() as $row) {
+            $arrCellValues = [];
             foreach ($row->getCells() as $cell) {
-                $strReturn .= $cell->getValue();
+                $arrCellValues[] = $cell->getValue();
             }
+            $strReturn .= implode($separator, $arrCellValues);
             $strReturn .= ' <br />';
         }
 
