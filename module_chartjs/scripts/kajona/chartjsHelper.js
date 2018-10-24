@@ -73,7 +73,7 @@ define("chartjsHelper", ['jquery', 'folderview'], function ($, folderview) {
     };
 
     /**
-     * Creates the chart using "chatjs" library and set parameters
+     * Creates the chart using "chartjs" library and set parameters
      *
      * @param ctx
      * @param chartData

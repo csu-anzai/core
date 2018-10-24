@@ -1199,6 +1199,8 @@ class GraphJqplot implements GraphInterfaceFronted
     /**
      * @param bool $autoHeight
      * @return mixed|void
+     *
+     * @inheritdoc
      */
     public function setAsHorizontalInLineStackedChart($autoHeight = false)
     {
