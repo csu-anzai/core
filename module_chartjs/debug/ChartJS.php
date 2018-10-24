@@ -278,23 +278,17 @@ class ChartJS
         $objGraph->setIntWidth(700);
         echo $objGraph->renderGraph();
 
-        // === JQPLOT VS CHARTJS
+        // === JQPLOT VS CHARTJS == BEGIN
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_JQPLOT);
         $objGraph->addStackedBarChartSet([1], "xx1");
         $objGraph->addStackedBarChartSet([1], "xx2");
         $objGraph->addStackedBarChartSet([0], "xx3");
         $objGraph->addStackedBarChartSet([0], "xx4");
         $objGraph->addStackedBarChartSet([0], "xx5");
+        $objGraph->setIntWidth(700);
         $objGraph->setBitRenderLegend(false);
         $objGraph->setXAxisRange(0, array_sum([1, 1, 0, 0, 0]));
-        $objGraph->setBarHorizontal(true);
-        $objGraph->setHideXAxis(true);
-        $objGraph->setHideYAxis(true);
-        $objGraph->drawBorder(true);
-        $objGraph->setBitIsResizeable(false);
-        $objGraph->setBitDownloadLink(false);
-        $objGraph->setIntHeight(45);
-        $objGraph->setIntWidth(700);
+        $objGraph->setAsHorizontalInLineStackedChart(true);
         echo $objGraph->renderGraph();
 
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
@@ -303,20 +297,12 @@ class ChartJS
         $objGraph->addStackedBarChartSet([0], "xx3");
         $objGraph->addStackedBarChartSet([0], "xx4");
         $objGraph->addStackedBarChartSet([0], "xx5");
-        $objGraph->setBitRenderLegend(false);
-        $objGraph->setTickStepXAxis(1);
-        $objGraph->setTickStepYAxis(1);
-        $objGraph->setHideGridLinesYAxis(true);
-        $objGraph->setHideGridLinesXAxis(true);
-        $objGraph->setBarHorizontal(true);
-        $objGraph->setHideXAxis(true);
-        $objGraph->setHideYAxis(true);
-        $objGraph->setBitDownloadLink(false);
-        $objGraph->setIntHeight(70);
         $objGraph->setIntWidth(700);
-        $objGraph->setNotShowNullValues(true);
+        $objGraph->setBitRenderLegend(false);
+        $objGraph->setAsHorizontalInLineStackedChart(true);
+
         echo $objGraph->renderGraph();
-        // ====
+        // ==== JQPLOT VS CHARTJS == END
 
     }
 }

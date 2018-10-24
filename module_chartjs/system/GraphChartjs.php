@@ -12,7 +12,7 @@ use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\GraphCommons;
-use Kajona\System\System\GraphInterface;
+use Kajona\System\System\GraphInterfaceFronted;
 
 /**
  * This class could be used to create graphs based on the chartjs API.
@@ -22,7 +22,7 @@ use Kajona\System\System\GraphInterface;
  * @since 7.1
  * @author sascha.broening@artemeon.de, andrii.konoval@artemeon.de
  */
-class GraphChartjs implements GraphInterface
+class GraphChartjs implements GraphInterfaceFronted
 {
 
     /**
@@ -252,6 +252,20 @@ class GraphChartjs implements GraphInterface
      */
     public function saveGraph($strFilename)
     {
+        //not supported
+    }
+
+    /**
+     * @param bool $isResizable
+     */
+    public function setBitIsResizeable(bool $isResizable = true) {
+        //not supported
+    }
+
+    /**
+     * @param bool $bitDrawBorder
+     */
+    public function drawBorder(bool $bitDrawBorder = true) {
         //not supported
     }
 
@@ -538,7 +552,7 @@ class GraphChartjs implements GraphInterface
     /**
      * @param bool $bitDownloadLink
      */
-    public function setBitDownloadLink(bool $bitDownloadLink): void
+    public function setBitDownloadLink(bool $bitDownloadLink = true)
     {
         $this->bitDownloadLink = $bitDownloadLink;
     }
@@ -573,6 +587,59 @@ class GraphChartjs implements GraphInterface
     {
         $this->arrChartGlobalOptions['setDefaultTooltip'] = $bitSetDefaultTooltip;
     }
+
+    /**
+     * @param null $intMin
+     * @param null $intMax
+     * @param null $intTickInterval
+     * @return mixed|void
+     */
+    public function setXAxisRange($intMin = null, $intMax = null, $intTickInterval = null) {
+        if ($intMin !== null) {
+            $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['suggestedMin'] = $intMin;
+        }
+        if ($intMax !== null) {
+            $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['suggestedMax'] = $intMax;
+        }
+        if ($intTickInterval !== null) {
+            $this->setTickStepYAxis((int)$intTickInterval);
+        }
+    }
+
+    /**
+     * @param $minVal
+     * @param $maxVal
+     */
+    public function setYAxisRange($intMin = null, $intMax = null, $intTickInterval = null) {
+        if ($intMin !== null) {
+            $this->arrChartData['options']['scales']['yAxes'][0]['ticks']['suggestedMin'] = $intMin;
+        }
+        if ($intMax !== null) {
+            $this->arrChartData['options']['scales']['yAxes'][0]['ticks']['suggestedMax'] = $intMax;
+        }
+        if ($intTickInterval !== null) {
+            $this->setTickStepYAxis((int)$intTickInterval);
+        }
+    }
+
+    public function setAsHorizontalInLineStackedChart($autoHeight = false)
+    {
+        $this->setBarHorizontal(true);
+        $this->setHideXAxis(true);
+        $this->setHideYAxis(true);
+        $this->setTickStepXAxis(1);
+        $this->setTickStepYAxis(1);
+        $this->setHideGridLinesYAxis(true);
+        $this->setHideGridLinesXAxis(true);
+        $this->setBitDownloadLink(false);
+        $this->setWriteValues(true);
+        $this->setNotShowNullValues(true);
+        if ($autoHeight && isset($this->arrChartData['data']) && count($this->arrChartData['data']) != 0) {
+            $countGraphs = count($this->arrChartData['data']['datasets'][0]['dataPoints']);
+            $this->setIntHeight(30 + $countGraphs * 40);
+        }
+    }
+
 
     /**
      * @return mixed|string
