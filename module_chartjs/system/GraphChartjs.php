@@ -626,6 +626,10 @@ class GraphChartjs implements GraphInterfaceFronted
         }
     }
 
+    /**
+     * @param bool $autoHeight
+     * @return mixed|void
+     */
     public function setAsHorizontalInLineStackedChart($autoHeight = false)
     {
         $this->setBarHorizontal(true);
@@ -677,71 +681,11 @@ class GraphChartjs implements GraphInterfaceFronted
         $strReturn .= "</div>";
 
         $strReturn .= "<script type='text/javascript'>
-
-            require(['chartjs', 'chartjsHelper'], function(chartjs, chartjsHelper) {
-                require(['chartjs-plugin-datalabels'], function(chartjsDatalabels) {
-		            var chartData = ".json_encode($this->arrChartData, JSON_NUMERIC_CHECK).";
-    		        var chartGlobalOptions = ".json_encode($this->arrChartGlobalOptions, JSON_NUMERIC_CHECK).";
-                    var ctx = document.getElementById('".$strChartId."');
-                
-                    ctx.style.backgroundColor = chartGlobalOptions['backgroundColor'];
-                    Chart.defaults.global.defaultFontColor = typeof (chartGlobalOptions['defaultFontColor']) !== 'undefined' ? chartGlobalOptions['defaultFontColor'] : 'black';
-                    Chart.defaults.global.defaultFontFamily = chartGlobalOptions['defaultFontFamily'];
-
-                    if (typeof (chartGlobalOptions['setDefaultTooltip']) == 'undefined' || !chartGlobalOptions['setDefaultTooltip']) {
-                        chartData['options']['tooltips'] = {
-                            enabled: true,
-                            mode: 'single',
-                            callbacks: {
-                                label: function(tooltipItems, data) {
-                                    return data.datasets[tooltipItems.datasetIndex].label  + ' : ' + data.datasets[tooltipItems.datasetIndex].data[tooltipItems.index];
-                                }
-                            }
-                        };
-                    }
-                
-                    if (typeof (chartGlobalOptions['createImageLink']) !== 'undefined' || chartGlobalOptions['createImageLink']) {
-                       chartData['options']['animation'] = {
-                            onComplete: createExportLink
-                       }
-                    }
-
-                    if (typeof (chartGlobalOptions['notShowNullValues']) !== 'undefined' || chartGlobalOptions['notShowNullValues']) {
-                       chartData['options']['plugins']['datalabels'] = {
-                          formatter: (value, ctx) => {
-                             return chartjsHelper.dataNotShowNullValues(value);
-                          }
-                       }
-                    }
-
-                    if (typeof (chartGlobalOptions['percentageValues']) !== 'undefined' || chartGlobalOptions['percentageValues']) {
-                       chartData['options']['plugins']['datalabels'] = {
-                          formatter: (value, ctx) => {
-                             return chartjsHelper.dataShowPercentage(value, ctx);
-                          }
-                       }
-                    }
-
-                    chartData['options']['onClick'] = function (evt){
-                        var item = this.getElementAtEvent(evt)[0];
-                        if (typeof item !== 'undefined') {
-                            var datasetIndex = item._datasetIndex;
-                            var index = item._index; 
-                            chartjsHelper.onClickHandler(evt, index, datasetIndex, chartData['data']['datasets'][datasetIndex]['dataPoints'][index]);
-                        } 
-                    };
-
-                    var myChart = new chartjs.Chart(ctx, {
-                        type: chartData['type'],
-                        data : chartData['data'],
-                        options : chartData['options'],
-                    });     
-                    
-                    function createExportLink() {
-                        var url = myChart.toBase64Image();
-                        document.getElementById('".$strLinkExportId."').href = url;
-                    }
-                });
+            require(['chartjsHelper'], function(chartjsHelper) {
+                var chartData = ".json_encode($this->arrChartData, JSON_NUMERIC_CHECK).";
+    	        var chartGlobalOptions = ".json_encode($this->arrChartGlobalOptions, JSON_NUMERIC_CHECK).";
+                var ctx = document.getElementById('".$strChartId."');
+                chartjsHelper.createChart(ctx, chartData, chartGlobalOptions);
             });
         </script>";
 
