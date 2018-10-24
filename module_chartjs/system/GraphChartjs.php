@@ -4,7 +4,7 @@
  *       Published under the GNU LGPL v2.1
  ********************************************************************************************************/
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kajona\Chartjs\System;
 
@@ -101,7 +101,7 @@ class GraphChartjs implements GraphInterfaceFronted
      *
      * @var bool
      */
-    private $bitResponsive = false;
+    private $bitIsResponsive = false;
 
     /**
      * Defines if we need to show the download link of chart image on the chart
@@ -258,14 +258,16 @@ class GraphChartjs implements GraphInterfaceFronted
     /**
      * @param bool $isResizable
      */
-    public function setBitIsResizeable(bool $isResizable = true) {
+    public function setBitIsResizeable(bool $isResizable = true)
+    {
         //not supported
     }
 
     /**
      * @param bool $bitDrawBorder
      */
-    public function drawBorder(bool $bitDrawBorder = true) {
+    public function drawBorder(bool $bitDrawBorder = true)
+    {
         //not supported
     }
 
@@ -431,17 +433,17 @@ class GraphChartjs implements GraphInterfaceFronted
      *
      * @param bool $bitResponsive
      */
-    public function setBitResponsive(bool $bitResponsive)
+    public function setBitIsResponsive(bool $bitResponsive)
     {
-        $this->bitResponsive = $bitResponsive;
+        $this->bitIsResponsive = $bitResponsive;
     }
 
     /**
      * @return bool
      */
-    public function isBitResponsive(): bool
+    public function isBitIsResponsive(): bool
     {
-        return $this->bitResponsive;
+        return $this->bitIsResponsive;
     }
 
     /**
@@ -594,7 +596,8 @@ class GraphChartjs implements GraphInterfaceFronted
      * @param null $intTickInterval
      * @return mixed|void
      */
-    public function setXAxisRange($intMin = null, $intMax = null, $intTickInterval = null) {
+    public function setXAxisRange($intMin = null, $intMax = null, $intTickInterval = null)
+    {
         if ($intMin !== null) {
             $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['suggestedMin'] = $intMin;
         }
@@ -610,7 +613,8 @@ class GraphChartjs implements GraphInterfaceFronted
      * @param $minVal
      * @param $maxVal
      */
-    public function setYAxisRange($intMin = null, $intMax = null, $intTickInterval = null) {
+    public function setYAxisRange($intMin = null, $intMax = null, $intTickInterval = null)
+    {
         if ($intMin !== null) {
             $this->arrChartData['options']['scales']['yAxes'][0]['ticks']['suggestedMin'] = $intMin;
         }
@@ -662,7 +666,7 @@ class GraphChartjs implements GraphInterfaceFronted
         $strChartId = "chart_".$strSystemId;
         $strLinkExportId = $strChartId."_exportlink";
 
-        $strWidth = $this->isBitResponsive() ? "100%" : $this->intWidth."px";
+        $strWidth = $this->isBitIsResponsive() ? "100%" : $this->intWidth."px";
         $strReturn = "<div onmouseover='$(\"#$strLinkExportId\").show();' onmouseout='$(\"#$strLinkExportId\").hide();' id=\"$strResizeableId\" style=\"width:{$strWidth}; height:".$this->intHeight."px;\">";
         $strReturn .= '<canvas id="'.$strChartId.'" width="'.$this->intWidth.'" height="'.$this->intHeight.'"></canvas>';
         if ($this->isBitDownloadLink()) {
@@ -681,7 +685,7 @@ class GraphChartjs implements GraphInterfaceFronted
                     var ctx = document.getElementById('".$strChartId."');
                 
                     ctx.style.backgroundColor = chartGlobalOptions['backgroundColor'];
-//                    Chart.defaults.global.defaultFontColor = typeof (chartGlobalOptions['defaultFontColor']) !== 'undefined' ? chartGlobalOptions['defaultFontColor'] : 'black';
+                    Chart.defaults.global.defaultFontColor = typeof (chartGlobalOptions['defaultFontColor']) !== 'undefined' ? chartGlobalOptions['defaultFontColor'] : 'black';
                     Chart.defaults.global.defaultFontFamily = chartGlobalOptions['defaultFontFamily'];
 
                     if (typeof (chartGlobalOptions['setDefaultTooltip']) == 'undefined' || !chartGlobalOptions['setDefaultTooltip']) {
