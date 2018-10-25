@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace Kajona\Oauth2\System;
 
 use GuzzleHttp\Client;
-use Kajona\System\System\Config;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Session;
 use Kajona\System\System\Usersources\UsersourcesUserKajona;
@@ -40,18 +39,32 @@ class ProviderManager
     private $lifeCycleFactory;
 
     /**
-     * @var Config
+     * @var Session
      */
-    private $config;
+    private $session;
 
-    public function __construct(Client $httpClient, ServiceLifeCycleFactory $lifeCycleFactory)
+    /**
+     * @var array
+     */
+    private $providersConfig;
+
+    /**
+     * @param Client $httpClient
+     * @param ServiceLifeCycleFactory $lifeCycleFactory
+     * @param Session $session
+     * @param array $providersConfig
+     */
+    public function __construct(Client $httpClient, ServiceLifeCycleFactory $lifeCycleFactory, Session $session, array $providersConfig)
     {
         $this->httpClient = $httpClient;
         $this->lifeCycleFactory = $lifeCycleFactory;
-        $this->config = Config::getInstance("module_oauth2");
+        $this->session = $session;
+        $this->providersConfig = $providersConfig;
     }
 
     /**
+     * Builds the authorization url which we use to redirect the client to the remote provider
+     *
      * @param Provider $provider
      * @see https://tools.ietf.org/html/rfc6749#section-4.1.1
      */
@@ -104,10 +117,50 @@ class ProviderManager
         $user = $this->createOrGetUser($userName, $email, $firstName, $lastName);
 
         if ($user instanceof UserUser) {
-            Session::getInstance()->loginUser($user);
+            $this->loginUser($user);
         } else {
             throw new \RuntimeException("Could not find user");
         }
+    }
+
+    /**
+     * Returns a provider by id
+     *
+     * @param string $providerId
+     * @return Provider
+     */
+    public function getProviderById($providerId)
+    {
+        if (is_array($this->providersConfig) && isset($this->providersConfig[$providerId])) {
+            return $this->newProvider($providerId, $this->providersConfig[$providerId]);
+        } else {
+            throw new \InvalidArgumentException("Invalid provider id");
+        }
+    }
+
+    /**
+     * Returns all available providers
+     *
+     * @return Provider[]
+     */
+    public function getAvailableProviders()
+    {
+        $result = [];
+        if (is_array($this->providersConfig)) {
+            foreach ($this->providersConfig as $index => $row) {
+                $result[] = $this->newProvider($index, $row);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return Provider
+     */
+    public function getDefaultProvider()
+    {
+        return $this->getProviderById(0);
     }
 
     /**
@@ -119,7 +172,7 @@ class ProviderManager
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @see https://tools.ietf.org/html/rfc6749#section-4.1.3
      */
-    public function exchangeAccessToken(Provider $provider, $code)
+    protected function exchangeAccessToken(Provider $provider, $code)
     {
         $response = $this->httpClient->request("POST", $provider->getTokenUrl(), [
             "form_params" => [
@@ -148,47 +201,43 @@ class ProviderManager
     }
 
     /**
-     * Returns a provider by id
-     *
-     * @param string $providerId
-     * @return Provider
+     * @param string $userName
+     * @param string $email
+     * @param string $firstName
+     * @param string $lastName
+     * @return UserUser|null
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
-    public function getProviderById($providerId)
+    protected function createOrGetUser($userName, $email, $firstName, $lastName)
     {
-        $providers = $this->config->getConfig("providers");
+        $users = UserUser::getAllUsersByName($userName);
+        if (empty($users)) {
+            /** @var \Kajona\System\System\Usersources\UsersourcesUserKajona $sourceUser */
+            $sourceUser = new UsersourcesUserKajona();
+            $sourceUser->setStrEmail($email);
+            $sourceUser->setStrForename($firstName);
+            $sourceUser->setStrName($lastName);
+            $sourceUser->setStrPass(generateSystemid());
+            $this->lifeCycleFactory->factory(get_class($sourceUser))->update($sourceUser);
 
-        if (is_array($providers) && isset($providers[$providerId])) {
-            return $this->newProvider($providerId, $providers[$providerId]);
+            $user = new UserUser();
+            $user->setStrUsername($userName);
+            $user->setObjSourceUser($sourceUser);
+            $this->lifeCycleFactory->factory(get_class($user))->update($user);
+
+            return $user;
         } else {
-            throw new \InvalidArgumentException("Invalid provider id");
+            return $users[0] ?? null;
         }
     }
 
     /**
-     * Returns all available providers
-     *
-     * @return Provider[]
+     * @param UserUser $user
+     * @throws \Kajona\System\System\Exception
      */
-    public function getAvailableProviders()
+    protected function loginUser(UserUser $user)
     {
-        $providers = $this->config->getConfig("providers");
-        $result = [];
-
-        if (is_array($providers)) {
-            foreach ($providers as $index => $row) {
-                $result[] = $this->newProvider($index, $row);
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * @return Provider
-     */
-    public function getDefaultProvider()
-    {
-        return $this->getProviderById(0);
+        $this->session->loginUser($user);
     }
 
     /**
@@ -210,37 +259,6 @@ class ProviderManager
         $provider->setClaimMapping($row["claim_mapping"]);
 
         return $provider;
-    }
-
-    /**
-     * @param string $userName
-     * @param string $email
-     * @param string $firstName
-     * @param string $lastName
-     * @return UserUser|null
-     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
-     */
-    private function createOrGetUser($userName, $email, $firstName, $lastName)
-    {
-        $users = UserUser::getAllUsersByName($userName);
-        if (empty($users)) {
-            /** @var \Kajona\System\System\Usersources\UsersourcesUserKajona $sourceUser */
-            $sourceUser = new UsersourcesUserKajona();
-            $sourceUser->setStrEmail($email);
-            $sourceUser->setStrForename($firstName);
-            $sourceUser->setStrName($lastName);
-            $sourceUser->setStrPass(generateSystemid());
-            $this->lifeCycleFactory->factory(get_class($sourceUser))->update($sourceUser);
-
-            $user = new UserUser();
-            $user->setStrUsername($userName);
-            $user->setObjSourceUser($sourceUser);
-            $this->lifeCycleFactory->factory(get_class($user))->update($user);
-
-            return $user;
-        } else {
-            return $users[0] ?? null;
-        }
     }
 
     /**
