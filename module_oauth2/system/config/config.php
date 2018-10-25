@@ -2,6 +2,7 @@
 
 $config["providers"] = [];
 
+/*
 $config["providers"][0] = [
     "name" => "Winsrv01",
     "client_id" => "824e247e-9557-4e20-854a-83292f8dd84f", // the Id of the Client wanting an access token, as regiestered in the ClientId parameter when registering the Client in ADFS.
@@ -17,3 +18,4 @@ $config["providers"][0] = [
         \Kajona\Oauth2\System\ProviderManager::CLAIM_LASTNAME => "last_name",
     ]
 ];
+*/
