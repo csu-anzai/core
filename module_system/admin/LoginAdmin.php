@@ -9,7 +9,10 @@
 
 namespace Kajona\System\Admin;
 
+use Kajona\Oauth2\System\ProviderManager;
+use Kajona\Oauth2\System\ServiceProvider;
 use Kajona\System\System\AuthenticationException;
+use Kajona\System\System\Carrier;
 use Kajona\System\System\Cookie;
 use Kajona\System\System\HttpStatuscodes;
 use Kajona\System\System\Link;
@@ -22,6 +25,7 @@ use Kajona\System\System\Security\PasswordValidatorInterface;
 use Kajona\System\System\Security\ValidationException;
 use Kajona\System\System\Session;
 use Kajona\System\System\StringUtil;
+use Kajona\System\System\SystemModule;
 use Kajona\System\System\UserUser;
 use Kajona\System\System\Wadlgenerator;
 
@@ -180,6 +184,21 @@ class LoginAdmin extends AdminController implements AdminInterface
     util.setBrowserFocus('name');
 });</script>";
 
+        if (SystemModule::getModuleByName("oauth2") !== null) {
+            /** @var ProviderManager $providerManager */
+            $providerManager = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_PROVIDER_MANAGER);
+            $providers = $providerManager->getAvailableProviders();
+
+            if (count($providers) > 0) {
+                $strForm .= $this->objToolkit->divider();
+                foreach ($providers as $provider) {
+                    $strForm .= $this->objToolkit->formHeader(Link::getLinkAdminHref("oauth2", "redirect", ["provider_id" => $provider->getId()]), generateSystemid());
+                    $strForm .= $this->objToolkit->formInputSubmit($this->getLang("login_with", "oauth2", [$provider->getName()]));
+                    $strForm .= $this->objToolkit->formClose();
+                }
+            }
+        }
+
         $arrTemplate = array();
         $arrTemplate["form"] = $strForm;
         $arrTemplate["loginTitle"] = $this->getLang("login_loginTitle", "user");
@@ -250,16 +269,17 @@ class LoginAdmin extends AdminController implements AdminInterface
      */
     protected function actionAdminLogin()
     {
-try {
-        if ($this->objSession->login($this->getParam("name"), $this->getParam("passwort"))) {
-            //user allowed to access admin?
-            if (!$this->objSession->isAdmin()) {
-                //no, reset session
-                $this->objSession->logout();}
+        try {
+            if ($this->objSession->login($this->getParam("name"), $this->getParam("passwort"))) {
+                //user allowed to access admin?
+                if (!$this->objSession->isAdmin()) {
+                    //no, reset session
+                    $this->objSession->logout();
+                }
 
-            //save the current skin as a cookie
-            $objCookie = new Cookie();
-            $objCookie->setCookie("adminlanguage", $this->objSession->getAdminLanguage(false, true));
+                //save the current skin as a cookie
+                $objCookie = new Cookie();
+                $objCookie->setCookie("adminlanguage", $this->objSession->getAdminLanguage(false, true));
 
                 return $this->loadPostLoginSite();
             } else {
