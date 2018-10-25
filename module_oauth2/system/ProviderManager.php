@@ -96,7 +96,7 @@ class ProviderManager
         $lastName = $token->getClaim($claimMapping[self::CLAIM_LASTNAME] ?? "", "");
 
         if (empty($userName)) {
-            throw new \RuntimeException("Could not map username claim, available claims: " . implode(", ", array_keys($token->getClaims())));
+            throw new \RuntimeException("Could not map username claim, available claims: " . \json_encode($token->getClaims()));
         }
 
         $userName = $this->normalizeName($userName);
