@@ -8,12 +8,9 @@ declare(strict_types = 1);
 
 namespace Kajona\Oauth2\Installer;
 
-use AGP\Wpsapi\Admin\WpsApiController;
-use AGP\Wpsapi\System\Models\ShoppingCart;
 use Kajona\Oauth2\Admin\OAuth2Controller;
 use Kajona\System\System\InstallerBase;
 use Kajona\System\System\InstallerRemovableInterface;
-use Kajona\System\System\OrmSchemamanager;
 use Kajona\System\System\SystemModule;
 
 /**
