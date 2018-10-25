@@ -85,18 +85,18 @@ class ProviderManager
 
         $token = (new Parser())->parse((string) $accessToken);
 
-        $claimMapping = $this->config->getConfig("claim_mapping");
+        $claimMapping = $provider->getClaimMapping();
         if (empty($claimMapping) || !is_array($claimMapping)) {
             throw new \RuntimeException("Claim mapping not available");
         }
 
-        $userName = $token->getClaim($claimMapping[self::CLAIM_USERNAME] ?? "");
-        $email = $token->getClaim($claimMapping[self::CLAIM_EMAIL] ?? "");
-        $firstName = $token->getClaim($claimMapping[self::CLAIM_FIRSTNAME] ?? "");
-        $lastName = $token->getClaim($claimMapping[self::CLAIM_LASTNAME] ?? "");
+        $userName = $token->getClaim($claimMapping[self::CLAIM_USERNAME] ?? "", "");
+        $email = $token->getClaim($claimMapping[self::CLAIM_EMAIL] ?? "", "");
+        $firstName = $token->getClaim($claimMapping[self::CLAIM_FIRSTNAME] ?? "", "");
+        $lastName = $token->getClaim($claimMapping[self::CLAIM_LASTNAME] ?? "", "");
 
         if (empty($userName)) {
-            throw new \RuntimeException("No user name provided");
+            throw new \RuntimeException("Could not map username claim, available claims: " . implode(", ", array_keys($token->getClaims())));
         }
 
         $userName = $this->normalizeName($userName);
@@ -206,6 +206,8 @@ class ProviderManager
         $provider->setRedirectUri($row["redirect_uri"]);
         $provider->setAuthorizationUrl($row["authorization_url"]);
         $provider->setTokenUrl($row["token_url"]);
+        $provider->setCertFile($row["cert_file"]);
+        $provider->setClaimMapping($row["claim_mapping"]);
 
         return $provider;
     }

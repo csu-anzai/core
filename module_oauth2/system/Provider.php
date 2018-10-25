@@ -53,6 +53,11 @@ class Provider
     private $certFile;
 
     /**
+     * @var array
+     */
+    private $claimMapping;
+
+    /**
      * @return string
      */
     public function getId()
@@ -175,9 +180,25 @@ class Provider
     /**
      * @param string $certFile
      */
-    public function setCertFile(string $certFile)
+    public function setCertFile($certFile)
     {
         $this->certFile = $certFile;
+    }
+
+    /**
+     * @return array
+     */
+    public function getClaimMapping()
+    {
+        return $this->claimMapping;
+    }
+
+    /**
+     * @param array $claimMapping
+     */
+    public function setClaimMapping($claimMapping)
+    {
+        $this->claimMapping = $claimMapping;
     }
 }
 
