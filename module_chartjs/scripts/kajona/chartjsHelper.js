@@ -55,7 +55,7 @@ define("chartjsHelper", ['jquery', 'folderview'], function ($, folderview) {
     chartjsHelper.dataShowPercentage = function (value, ctx) {
         var sum = 0;
         var dataArr = ctx.chart.data.datasets[0].data;
-        dataArr.map(data => {
+        dataArr.map(function(data) {
             sum += data;
         });
         var percentage = (value * 100 / sum).toFixed(2);
