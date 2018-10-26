@@ -55,7 +55,7 @@ define("chartjsHelper", ['jquery', 'folderview'], function ($, folderview) {
     chartjsHelper.dataShowPercentage = function (value, ctx) {
         var sum = 0;
         var dataArr = ctx.chart.data.datasets[0].data;
-        dataArr.map(function(data) {
+        dataArr.map(function (data) {
             sum += data;
         });
         var percentage = (value * 100 / sum).toFixed(2);
@@ -105,7 +105,7 @@ define("chartjsHelper", ['jquery', 'folderview'], function ($, folderview) {
 
                 if (typeof (chartGlobalOptions['notShowNullValues']) !== 'undefined' || chartGlobalOptions['notShowNullValues']) {
                     chartData['options']['plugins']['datalabels'] = {
-                        formatter: (value, ctx) => {
+                        formatter: function (value) {
                             return chartjsHelper.dataNotShowNullValues(value);
                         }
                     }
@@ -113,7 +113,7 @@ define("chartjsHelper", ['jquery', 'folderview'], function ($, folderview) {
 
                 if (typeof (chartGlobalOptions['percentageValues']) !== 'undefined' || chartGlobalOptions['percentageValues']) {
                     chartData['options']['plugins']['datalabels'] = {
-                        formatter: (value, ctx) => {
+                        formatter: function (value, ctx) {
                             return chartjsHelper.dataShowPercentage(value, ctx);
                         }
                     }
