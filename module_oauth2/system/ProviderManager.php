@@ -268,7 +268,7 @@ class ProviderManager
     private function normalizeName($name)
     {
         // in case the name contains also the domain, remove the domain name
-        if (strpos("\\", $name) !== false) {
+        if (strpos($name, "\\") !== false) {
             return substr(strstr($name, "\\"), 1);
         }
 
