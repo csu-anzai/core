@@ -101,7 +101,7 @@ class GraphChartjs implements GraphInterfaceFronted
      *
      * @var bool
      */
-    private $bitIsResponsive = false;
+    private $bitIsResponsive = true;
 
     /**
      * Defines if we need to show the download link of chart image on the chart
@@ -429,7 +429,7 @@ class GraphChartjs implements GraphInterfaceFronted
     }
 
     /**
-     * Enables general repsonsiveness of the chart. This includes that the chart takes up 100% width of the parent container.
+     * Enables general repsonsiveness of the chart.
      *
      * @param bool $bitResponsive
      */
@@ -644,6 +644,7 @@ class GraphChartjs implements GraphInterfaceFronted
         $this->setBitDownloadLink(false);
         $this->setWriteValues(true);
         $this->setNotShowNullValues(true);
+        $this->setBitIsResponsive(false);
         if ($autoHeight && isset($this->arrChartData['data']) && count($this->arrChartData['data']) != 0) {
             $countGraphs = count($this->arrChartData['data']['datasets'][0]['dataPoints']);
             $this->setIntHeight(30 + $countGraphs * 40);
@@ -673,8 +674,9 @@ class GraphChartjs implements GraphInterfaceFronted
         $strLinkExportId = $strChartId."_exportlink";
 
         $strWidth = $this->isBitIsResponsive() ? "100%" : $this->intWidth."px";
-        $strReturn = "<div onmouseover='$(\"#$strLinkExportId\").show();' onmouseout='$(\"#$strLinkExportId\").hide();' id=\"$strResizeableId\" style=\"width:{$strWidth}; height:".$this->intHeight."px;\">";
-        $strReturn .= '<canvas id="'.$strChartId.'" width="'.$this->intWidth.'" height="'.$this->intHeight.'"></canvas>';
+        $strHeight = $this->isBitIsResponsive() ? "100%" : $this->intHeight."px";
+        $strReturn = "<div onmouseover='$(\"#$strLinkExportId\").show();' onmouseout='$(\"#$strLinkExportId\").hide();' id=\"$strResizeableId\" style=\"width:{$strWidth}; height:{$strHeight};\">";
+        $strReturn .= "<canvas id=\"$strChartId\" width=\"$strWidth\" height=\"$strHeight\"></canvas>";
         if ($this->isBitDownloadLink()) {
             $strImage = AdminskinHelper::getAdminImage("icon_downloads", Carrier::getInstance()->getObjLang()->getLang("commons_save_as_image", "system"));
             $strReturn .= "<div class=\"chartjs-link-bar\"><a class=\"chartjs-image-link\" id=\"$strLinkExportId\" download>$strImage</a></div>";

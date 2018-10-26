@@ -60,8 +60,7 @@ class ChartJS
         $objGraph->setStrFontColor("#FF0000");
         $objGraph->setArrXAxisTickLabels(array("v1", "v2", "v3", "v4"));
         $objGraph->setStrFont("Open Sans");
-        echo $objGraph->renderGraph();
-
+        echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';
 
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
         $objGraph->addLinePlot(array(8.112, 1, 2, 4), "");
@@ -79,7 +78,7 @@ class ChartJS
         $objGraph->setIntWidth(700);
         $objGraph->setStrFontColor("#FF0000");
         $objGraph->setStrFont("Open Sans");
-        echo $objGraph->renderGraph();
+        echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';
 
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
         $objGraph->setStrGraphTitle("03. A Bar Chart");
@@ -96,7 +95,7 @@ class ChartJS
         $objGraph->setBitRenderLegend(true);
         $objGraph->setStrFontColor("#FF0000");
         $objGraph->setStrFont("open sans");
-        echo $objGraph->renderGraph();
+        echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';
 
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
         $objGraph->setStrGraphTitle("04. One Bar Chart (In this case each bar has a differetn color)");
@@ -108,7 +107,7 @@ class ChartJS
         $objGraph->setBitRenderLegend(true);
         $objGraph->setStrFontColor("#FF0000");
         $objGraph->setStrFont("open sans");
-        echo $objGraph->renderGraph();
+        echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';
 
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
         $objGraph->setStrGraphTitle("05. A Mixed Chart");
@@ -132,7 +131,7 @@ class ChartJS
         $objGraph->addLinePlot(array(1, 2, 3, 4), "serie 18");
         $objGraph->setBitRenderLegend(true);
         $objGraph->setStrFont("open sans");
-        echo $objGraph->renderGraph();
+        echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';
 
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
         $objGraph->setStrGraphTitle("06. A Mixed stacked Chart");
@@ -147,7 +146,7 @@ class ChartJS
         $objGraph->addLinePlot(array(1, 2, 3, 4), "serie 9");
         $objGraph->setBitRenderLegend(true);
         $objGraph->setStrFont("open sans");
-        echo $objGraph->renderGraph();
+        echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';
 
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
         $objGraph->setStrGraphTitle("07. A Bar Chart");
@@ -157,7 +156,7 @@ class ChartJS
         $objGraph->addBarChartSet(array(1, 2, 3, 4), "serie 10");
         $objGraph->setBitRenderLegend(true);
         $objGraph->setStrFont("open sans");
-        echo $objGraph->renderGraph();
+        echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';
 
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
         $objGraph->setStrGraphTitle("08. A Horizontal Bar Chart no xAxis and yAxis");
@@ -170,7 +169,7 @@ class ChartJS
         $objGraph->setStrFont("open sans");
         $objGraph->setHideXAxis(true);
         $objGraph->setHideYAxis(true);
-        echo $objGraph->renderGraph();
+        echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';
 
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
         $objGraph->setStrGraphTitle("09. A Horizontal Bar Chart with labels");
@@ -182,8 +181,7 @@ class ChartJS
         $objGraph->setBarHorizontal(true);
         $objGraph->setBitRenderLegend(true);
         $objGraph->setStrFont("open sans");
-        echo $objGraph->renderGraph();
-
+        echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';
 
         /** @var GraphChartjs $objGraph */
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
@@ -198,7 +196,7 @@ class ChartJS
         $objGraph->setIntHeight(500);
         $objGraph->setIntWidth(700);
         $objGraph->setStrFont("open sans");
-        echo $objGraph->renderGraph();
+        echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';
 
         //create a stacked bar chart
         /** @var GraphChartjs $objGraph */
@@ -211,7 +209,7 @@ class ChartJS
         $objGraph->setArrXAxisTickLabels(array("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13"));
         $objGraph->setIntXAxisAngle(-20);  // not works
         $objGraph->setStrFont("open sans");
-        echo $objGraph->renderGraph();
+        echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';
 
         //create a stacked bar chart
         /** @var GraphChartjs $objGraph */
@@ -226,7 +224,7 @@ class ChartJS
         $objGraph->setIntXAxisAngle(-20);  // not works
         $objGraph->setStrFont("open sans");
         $objGraph->setBarHorizontal(true);
-        echo $objGraph->renderGraph();
+        echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';
 
         //create pie charts
         /** @var GraphChartjs $objGraph */
@@ -235,21 +233,21 @@ class ChartJS
         $objGraph->createPieChart(array(231.23524234234, 20.2342344, 30, 40), array("val 1", "val 2", "val 3", "val 4"));
         $objGraph->setBitRenderLegend(true);
         $objGraph->setStrFont("open sans");
-        echo $objGraph->renderGraph();
+        echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';
 
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
         $objGraph->setStrGraphTitle("14. A Pie Chart");
         $objGraph->createPieChart(array(231, 20, 30, 40, 2, 3, 4, 5), array("val 1", "val 2", "val 3", "val 4", "v5", "v6", "v7", "v8"));
         $objGraph->setBitRenderLegend(true);
         $objGraph->setStrFont("open sans");
-        echo $objGraph->renderGraph();
+        echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';
 
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
         $objGraph->setStrGraphTitle("15. A Pie Chart 2");
         $objGraph->createPieChart(array(1), array("val 1"));
         $objGraph->setBitRenderLegend(true);
         $objGraph->setStrFont("open sans");
-        echo $objGraph->renderGraph();
+        echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';
 
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
         $objGraph->setStrGraphTitle("16. A Horizontal Bar Chart with labels");
@@ -262,21 +260,21 @@ class ChartJS
         $objGraph->setBarHorizontal(true);
         $objGraph->setBitRenderLegend(true);
         $objGraph->setStrFont("open sans");
-        echo $objGraph->renderGraph();
+        echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';
 
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
         $objGraph->addLinePlot(array(0, 0, 0, 0, 0, 0, 0.5), "");
         $objGraph->setIntHeight(500);
         $objGraph->setIntWidth(700);
         $objGraph->setArrXAxisTickLabels(array("23", "24", "25", "26", "27", "28", "29"));
-        echo $objGraph->renderGraph();
+        echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';
 
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
         $objGraph->setStrGraphTitle("18. An empty chart");
         $objGraph->addBarChartSet(array(), "legend");
         $objGraph->setIntHeight(500);
         $objGraph->setIntWidth(700);
-        echo $objGraph->renderGraph();
+        echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';
 
         // === JQPLOT VS CHARTJS == BEGIN
         $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_JQPLOT);
@@ -299,8 +297,8 @@ class ChartJS
         $objGraph->addStackedBarChartSet([0], "xx5");
         $objGraph->setIntWidth(700);
         $objGraph->setBitRenderLegend(false);
+        $objGraph->setBitIsResponsive(false);
         $objGraph->setAsHorizontalInLineStackedChart(true);
-
         echo $objGraph->renderGraph();
         // ==== JQPLOT VS CHARTJS == END
 
