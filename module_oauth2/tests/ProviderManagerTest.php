@@ -47,8 +47,10 @@ class ProviderManagerTest extends Testbase
             ->setIssuedAt(time())
             ->setNotBefore(time() + 60)
             ->setExpiration(time() + 3600)
-            ->set('uid', 1)
-            ->set('user_name', 'foo')
+            ->set('unique_name', 'AD\\cka')
+            ->set('email', 'christoph.kappestein@artemeon.de')
+            ->set('first_name', 'Christoph')
+            ->set('last_name', 'Kappestein')
             ->getToken();
 
         $data = [
@@ -76,7 +78,10 @@ class ProviderManagerTest extends Testbase
         $providerManager->expects($this->once())
             ->method("createOrGetUser")
             ->will($this->returnCallback(function($userName, $email, $firstName, $lastName){
-                $this->assertEquals("foo", $userName);
+                $this->assertEquals("cka", $userName);
+                $this->assertEquals("christoph.kappestein@artemeon.de", $email);
+                $this->assertEquals("Christoph", $firstName);
+                $this->assertEquals("Kappestein", $lastName);
 
                 $user = new UserUser();
                 $user->setStrUsername($userName);
@@ -86,7 +91,7 @@ class ProviderManagerTest extends Testbase
         $providerManager->expects($this->once())
             ->method("loginUser")
             ->with($this->callback(function(UserUser $user){
-                $this->assertEquals("foo", $user->getStrUsername());
+                $this->assertEquals("cka", $user->getStrUsername());
                 return true;
             }));
 
@@ -119,7 +124,7 @@ class ProviderManagerTest extends Testbase
             "token_url" => "https://winsrv01.artemeon.de/adfs/oauth2/token",
             "cert_file" => null,
             "claim_mapping" => [
-                \Kajona\Oauth2\System\ProviderManager::CLAIM_USERNAME => "user_name",
+                \Kajona\Oauth2\System\ProviderManager::CLAIM_USERNAME => "unique_name",
                 \Kajona\Oauth2\System\ProviderManager::CLAIM_EMAIL => "email",
                 \Kajona\Oauth2\System\ProviderManager::CLAIM_FIRSTNAME => "first_name",
                 \Kajona\Oauth2\System\ProviderManager::CLAIM_LASTNAME => "last_name",
