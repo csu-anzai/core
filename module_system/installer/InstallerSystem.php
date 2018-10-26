@@ -11,6 +11,8 @@ namespace Kajona\System\Installer;
 
 use Kajona\Packagemanager\System\PackagemanagerManager;
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Config;
+use Kajona\System\System\Database;
 use Kajona\System\System\Date;
 use Kajona\System\System\DbDatatypes;
 use Kajona\System\System\IdGenerator;
@@ -27,6 +29,7 @@ use Kajona\System\System\OrmSchemamanager;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\Rights;
 use Kajona\System\System\Session;
+use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemChangelog;
 use Kajona\System\System\SystemCommon;
@@ -426,10 +429,6 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $objModule = SystemModule::getModuleByName("messaging");
         $objModule->setAbsolutePosition(1);
 
-        //to avoid problems on subsequent installers
-        OrmBase::resetBitLogicalDeleteAvailable();
-
-
         return $strReturn;
     }
 
@@ -459,7 +458,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrDbTables = $this->objDB->getTables();
         foreach($arrTables as $strOneTable) {
             if(!in_array($strOneTable, $arrDbTables)) {
-                if(!$this->objDB->createTable($strOneTable, $arrFields, array("change_id"), array("change_date", "change_user", "change_systemid", "change_property"), false))
+                if(!$this->objDB->createTable($strOneTable, $arrFields, array("change_id"), array("change_date", "change_user", "change_systemid", "change_property")))
                     $strReturn .= "An error occurred! ...\n";
             }
         }
@@ -837,6 +836,21 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1");
+
+        if (Config::getInstance()->getConfig("dbdriver") == "mysqli") {
+            $strReturn .= "Updating myisam tables".PHP_EOL;
+
+            foreach (Database::getInstance()->getTables() as $table) {
+                $create = StringUtil::toLowerCase(Database::getInstance()->getPRow("show create table {$table}", [])["Create Table"]);
+
+                if (StringUtil::indexOf($create, "engine=myisam") !== false) {
+                    $strReturn .= "Updating engine of {$table}".PHP_EOL;
+                    Database::getInstance()->_pQuery("ALTER TABLE {$table} ENGINE = InnoDB", []);
+                }
+
+
+            }
+        }
         return $strReturn;
     }
 

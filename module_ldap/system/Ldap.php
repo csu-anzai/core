@@ -297,7 +297,6 @@ class Ldap
         } else {
             throw new Exception("loading of custom search failed: " . ldap_errno($this->objCx) . " # " . ldap_error($this->objCx));
         }
-
     }
 
 
@@ -323,7 +322,6 @@ class Ldap
 
             $arrResult = @ldap_first_entry($this->objCx, $objResult);
             while ($arrResult !== false) {
-
                 $arrReturn = array();
                 $arrReturn["username"] = $this->getStrAttribute($arrResult, $this->arrConfig["ldap_user_attribute_username"]);
                 $arrReturn["mail"] = $this->getStrAttribute($arrResult, $this->arrConfig["ldap_user_attribute_mail"]);
@@ -346,6 +344,16 @@ class Ldap
     }
 
     /**
+     * Strips critical characters from user-provided values
+     * @param $query
+     * @return mixed
+     */
+    private function sanitizeUserInput($query)
+    {
+        return StringUtil::replace(["\\", "*", "(", ")"], ["\\\\", "", "", ""], $query);
+    }
+
+    /**
      * Searches for an user identified by the passed username.
      * The result is limited to the path set up via the config-file.
      *
@@ -356,24 +364,49 @@ class Ldap
      */
     public function getUserdetailsByName($strUsername)
     {
-        $arrReturn = false;
-
         //escape domain names
-        $strUsername = StringUtil::replace("\\", "\\\\", $strUsername);
-
+        $strUsername = $this->sanitizeUserInput($strUsername);
         $strUserFilter = $this->arrConfig["ldap_user_search_filter"];
         $strUserFilter = StringUtil::replace("?", $strUsername, $strUserFilter);
 
+        return $this->triggerLdapSearch($this->arrConfig["ldap_user_base_dn"], $strUserFilter);
+    }
 
+    /**
+     * @param $strPortion
+     * @return array|bool
+     * @throws Exception
+     */
+    public function searchUserByWildcard($strPortion, $intMax = 10)
+    {
+        //escape domain names
+        $strPortion = $this->sanitizeUserInput($strPortion);
+        $strUserFilter = $this->arrConfig["ldap_user_search_wildcard"];
+        $strUserFilter = StringUtil::replace("?", $strPortion."*", $strUserFilter);
+
+        return $this->triggerLdapSearch($this->arrConfig["ldap_user_base_dn"], $strUserFilter, $intMax);
+    }
+
+
+    /**
+     * Internal helper to trigger a user-search against the ldap
+     * @param $baseDN
+     * @param $filter
+     * @param int $maxHits
+     * @return array|bool
+     * @throws Exception
+     */
+    private function triggerLdapSearch($baseDN, $filter, $maxHits = 10)
+    {
+        $arrReturn = false;
         //search the group itself
-        $objResult = @ldap_search($this->objCx, $this->arrConfig["ldap_user_base_dn"], $strUserFilter);
+        $objResult = @ldap_search($this->objCx, $baseDN, $filter);
 
         if ($objResult !== false) {
             Logger::getInstance(Logger::USERSOURCES)->info("ldap-search found " . ldap_count_entries($this->objCx, $objResult) . " entries");
 
             $arrResult = @ldap_first_entry($this->objCx, $objResult);
             while ($arrResult !== false) {
-
                 $arrTemp = array();
                 $arrTemp["username"] = $this->getStrAttribute($arrResult, $this->arrConfig["ldap_user_attribute_username"]);
                 $arrTemp["mail"] = $this->getStrAttribute($arrResult, $this->arrConfig["ldap_user_attribute_mail"]);
@@ -386,11 +419,14 @@ class Ldap
 
                 $arrReturn[] = $arrTemp;
 
+                if (count($arrReturn) >= $maxHits) {
+                    break;
+                }
+
                 $arrResult = ldap_next_entry($this->objCx, $arrResult);
             }
         } else {
-            Logger::getInstance(Logger::USERSOURCES)->error("loading of user failed: " . ldap_errno($this->objCx) . " # " . ldap_error($this->objCx) . " \n Userfilter: " . $strUserFilter . " Base DN: " . $this->arrConfig["ldap_user_base_dn"]);
-
+            Logger::getInstance(Logger::USERSOURCES)->error("loading of user failed: " . ldap_errno($this->objCx) . " # " . ldap_error($this->objCx) . " \n Userfilter: " . $filter . " Base DN: " . $baseDN);
             throw new Exception("loading of user failed: " . ldap_errno($this->objCx) . " # " . ldap_error($this->objCx));
         }
 
