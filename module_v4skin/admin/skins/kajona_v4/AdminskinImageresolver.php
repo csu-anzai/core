@@ -51,7 +51,7 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         }
 
 
-        return "<img src=\""._skinwebpath_."/pics/".$strName."\"  alt=\"".$strAlt."\"  ".(!$bitBlockTooltip ? "rel=\"tooltip\" title=\"".$strAlt."\" " : "")." ".($strEntryId != "" ? " id=\"".$strEntryId."\" " : "")." data-kajona-icon='".$strName."' />";
+        return "<img src=\""._webpath_.$strName."\"  alt=\"".$strAlt."\"  ".(!$bitBlockTooltip ? "rel=\"tooltip\" title=\"".$strAlt."\" " : "")." ".($strEntryId != "" ? " id=\"".$strEntryId."\" " : "")." data-kajona-icon='".$strName."' />";
     }
 
 
