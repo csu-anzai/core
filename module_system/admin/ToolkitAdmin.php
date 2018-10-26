@@ -232,8 +232,8 @@ class ToolkitAdmin extends Toolkit
      * @param bool $bitChecked
      * @param string $strClass
      * @param bool $bitReadOnly
-     *
      * @return string
+     * @deprecated
      */
     public function formInputCheckbox($strName, $strTitle, $bitChecked = false, $strClass = "", $bitReadOnly = false)
     {
