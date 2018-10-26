@@ -1858,10 +1858,8 @@ require(['ajax'], function(ajax){
      */
     public function warningBox($strContent, $strClass = "alert-warning")
     {
-        $arrTemplate = array();
-        $arrTemplate["content"] = $strContent;
-        $arrTemplate["class"] = $strClass;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "warning_box");
+        $cmp = new Warningbox($strContent, $strClass);
+        return $cmp->renderComponent();
     }
 
     /**

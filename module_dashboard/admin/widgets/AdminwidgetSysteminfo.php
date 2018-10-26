@@ -117,5 +117,15 @@ class AdminwidgetSysteminfo extends Adminwidget implements AdminwidgetInterface
         return $strVersion;
     }
 
+    public function getWidgetDescription()
+    {
+        return "System info description!!!!!";
+    }
+
+    public function getWidgetImg()
+    {
+        return "/files/extract/widgets/systeminfo.png";
+        //return Resourceloader::getInstance()->getWebPathForModule("module_dashboard")."/img/widgets/systeminfo.png";
+    }
 }
 

@@ -86,5 +86,15 @@ class AdminwidgetSystemlog extends Adminwidget implements AdminwidgetInterface
         return $this->getLang("syslog_name");
     }
 
+    public function getWidgetDescription()
+    {
+        return "This is a system log description!!!!!";
+    }
+
+    public function getWidgetImg()
+    {
+        return "/files/extract/widgets/systemlog.png";
+        //return Resourceloader::getInstance()->getWebPathForModule("module_dashboard")."/img/widgets/systeminfo.png";
+    }
 }
 

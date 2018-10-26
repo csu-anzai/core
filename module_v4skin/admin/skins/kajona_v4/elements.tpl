@@ -1184,13 +1184,10 @@ Part to display the login status, user is logged in
 </script>
 </logout_form>
 
-Shown, wherever the attention of the user is needed
-<warning_box>
-    <div class="alert %%class%%">
-        <a class="close" data-dismiss="alert" href="#">&times;</a>
-        %%content%%
-    </div>
-</warning_box>
+Used to print plain text
+<text_row>
+<p class="%%class%%">%%text%%</p>
+</text_row>
 
 Used to print plaintext in a form
 <text_row_form>

@@ -285,7 +285,10 @@ HTML;
 <div id='flow-graph' class='mermaid' style='color:#fff; {$strHeight} '>{$strGraph}</div>
 <script type="text/javascript">
     var callback = function(statusId) {
-        location.href = "{$strLinkTransition}".replace('{$strTmpSystemId}', statusId);
+        var link = "{$strLinkTransition}";
+        if (link) {
+            location.href = link.replace('{$strTmpSystemId}', statusId);
+        }
     };
 
     require(['mermaid', 'loader', 'jquery'], function(mermaid, loader, $){
@@ -303,12 +306,24 @@ HTML;
                 var actionLink = "{$strLinkTransitionAction}".replace('{$strTmpSystemId}', transitionId);
                 var conditionLink = "{$strLinkTransitionCondition}".replace('{$strTmpSystemId}', transitionId);
 
-                $(this).html('<a href="' + actionLink + '" title="{$strAction}"><i class="kj-icon fa fa-play-circle-o"></i></a> <a href="' + conditionLink + '" title="{$strCondition}"><i class="kj-icon fa fa-table"></i></a');
+                var html = '';
+                if (actionLink) {
+                    html+= '<a href="' + actionLink + '" title="{$strAction}"><i class="kj-icon fa fa-play-circle-o"></i></a>';
+                    html+= ' ';
+                }
+                if (conditionLink) {
+                    html+= '<a href="' + conditionLink + '" title="{$strCondition}"><i class="kj-icon fa fa-table"></i></a>';
+                }
+
+                $(this).html(html);
             });
 
             $('.node').on('click', function(){
                 var statusId = $(this).attr('id');
-                location.href = "{$strLinkTransition}".replace('{$strTmpSystemId}', statusId);
+                var link = "{$strLinkTransition}";
+                if (link) {
+                    location.href = link.replace('{$strTmpSystemId}', statusId);
+                }
             });
             
             $('.node div').css('cursor', 'pointer');
