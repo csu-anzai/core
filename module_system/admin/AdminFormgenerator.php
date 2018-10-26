@@ -26,8 +26,8 @@ use Kajona\System\System\StringUtil;
 use Kajona\System\System\UserUser;
 use Kajona\System\System\ValidationError;
 use Kajona\System\System\ValidatorInterface;
-use Kajona\System\System\Validators\ObjectvalidatorBase;
 use Kajona\System\System\Validators\SystemidValidator;
+use Kajona\System\View\Components\Tabbedcontent\Tabbedcontent;
 
 /**
  * The admin-form generator is used to create, validate and manage forms for the backend.
@@ -667,7 +667,8 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
                 }
             }
 
-            $strReturn .= $this->objToolkit->getTabbedContent($arrTabs);
+            $objTabbedContent = new Tabbedcontent($arrTabs);
+            $strReturn .= $objTabbedContent->renderComponent();
         } elseif ($this->intGroupStyle == self::GROUP_TYPE_HEADLINE) {
             foreach ($this->arrGroupSort as $strKey) {
                 $strHtml = $arrGroups[$strKey];

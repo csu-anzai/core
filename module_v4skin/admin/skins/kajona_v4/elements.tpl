@@ -1062,28 +1062,6 @@ A fieldset to structure logical sections
 </iframe_container>
 
 
-<tabbed_content_wrapper>
-    <ul class="nav nav-tabs" id="%%id%%">
-        %%tabheader%%
-    </ul>
-
-    <div class="tab-content %%classaddon%%">
-        %%tabcontent%%
-    </div>
-</tabbed_content_wrapper>
-
-<tabbed_content_tabheader>
-    <li class="%%classaddon%%"><a href="" data-target="#%%tabid%%" data-href="%%href%%" data-toggle="tab">%%tabtitle%%</a></li>
-</tabbed_content_tabheader>
-
-<tabbed_content_tabcontent>
-    <div class="tab-pane fade %%classaddon%%" id="%%tabid%%" role="tabpanel">
-        %%tabcontent%%
-    </div>
-</tabbed_content_tabcontent>
-
-
-
 ---------------------------------------------------------------------------------------------------------
 -- SPECIAL SECTIONS -------------------------------------------------------------------------------------
 

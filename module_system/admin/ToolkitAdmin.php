@@ -37,6 +37,7 @@ use Kajona\System\System\Toolkit;
 use Kajona\System\View\Components\Datatable\Datatable;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Popover\Popover;
+use Kajona\System\View\Components\Tabbedcontent\Tabbedcontent;
 use Kajona\System\View\Components\Textrow\TextRow;
 use Kajona\Tags\System\TagsFavorite;
 use Kajona\Tags\System\TagsTag;
@@ -1974,60 +1975,14 @@ JS;
      * @param $arrTabs array(key => content)
      * @param bool $bitFullHeight whether the tab content should use full height
      *
+     * @deprecated use direct the Tabbedcontent component
+     *
      * @return string
      */
     public function getTabbedContent(array $arrTabs, $bitFullHeight = false)
     {
-
-        $strMainTabId = generateSystemid();
-        $bitRemoteContent = false;
-
-        $strTabs = "";
-        $strTabContent = "";
-        $strClassaddon = "active in ";
-        foreach ($arrTabs as $strTitle => $strContent) {
-            $strTabId = generateSystemid();
-            // if content is an url enable ajax loading
-            if (substr($strContent, 0, 7) == 'http://' || substr($strContent, 0, 8) == 'https://') {
-                $strTabs .= $this->objTemplate->fillTemplateFile(array("tabid" => $strTabId, "tabtitle" => $strTitle, "href" => $strContent, "classaddon" => $strClassaddon), "/admin/skins/kajona_v4/elements.tpl", "tabbed_content_tabheader");
-                $strTabContent .= $this->objTemplate->fillTemplateFile(array("tabid" => $strTabId, "tabcontent" => "", "classaddon" => $strClassaddon . "contentLoading"), "/admin/skins/kajona_v4/elements.tpl", "tabbed_content_tabcontent");
-                $bitRemoteContent = true;
-            } else {
-                $strTabs .= $this->objTemplate->fillTemplateFile(array("tabid" => $strTabId, "tabtitle" => $strTitle, "href" => "", "classaddon" => $strClassaddon), "/admin/skins/kajona_v4/elements.tpl", "tabbed_content_tabheader");
-                $strTabContent .= $this->objTemplate->fillTemplateFile(array("tabid" => $strTabId, "tabcontent" => $strContent, "classaddon" => $strClassaddon), "/admin/skins/kajona_v4/elements.tpl", "tabbed_content_tabcontent");
-            }
-            $strClassaddon = "";
-        }
-
-        $strHtml = $this->objTemplate->fillTemplateFile(array("id" => $strMainTabId, "tabheader" => $strTabs, "tabcontent" => $strTabContent, "classaddon" => ($bitFullHeight === true ? 'fullHeight' : '')), "/admin/skins/kajona_v4/elements.tpl", "tabbed_content_wrapper");
-
-        // add ajax loader if we have content which we need to fetch per ajax
-        if ($bitRemoteContent) {
-            $strHtml.= <<<HTML
-<script type="text/javascript">
-require(['jquery', 'forms'], function($, forms){
-    $('#{$strMainTabId} > li > a[data-href!=""]').on('click', function(e){
-        if(!$(e.target).data('loaded')) {
-            forms.loadTab($(e.target).data('target').substr(1), $(e.target).data('href'));
-            $(e.target).data('loaded', true);
-        }
-    });
-    
-    $(document).ready(function(){
-        var el = $('#{$strMainTabId} > li.active > a[data-href!=""]');
-        if (el.length > 0) {
-            if(!el.data('loaded')) {
-                forms.loadTab(el.data('target').substr(1), el.data('href'));
-                el.data('loaded', true);
-            }
-        }
-    });
-});
-</script>
-HTML;
-        }
-
-        return $strHtml;
+        $objTabbedContent = new Tabbedcontent($arrTabs, $bitFullHeight);
+        return $objTabbedContent->renderComponent();
     }
 
     /**
