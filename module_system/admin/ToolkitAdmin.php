@@ -38,6 +38,7 @@ use Kajona\System\View\Components\Datatable\Datatable;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Popover\Popover;
 use Kajona\System\View\Components\Textrow\TextRow;
+use Kajona\System\View\Components\Warningbox\Warningbox;
 use Kajona\Tags\System\TagsFavorite;
 use Kajona\Tags\System\TagsTag;
 
