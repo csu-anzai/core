@@ -84,18 +84,23 @@ define("chartjsHelper", ['jquery', 'folderview'], function ($, folderview) {
             require(['chartjs-plugin-datalabels'], function (chartjsDatalabels) {
                 ctx.style.backgroundColor = chartGlobalOptions['backgroundColor'];
                 Chart.defaults.global.defaultFontFamily = chartGlobalOptions['defaultFontFamily'];
+                // Chart.defaults.global.defaultFontSize = 21;
+                Chart.defaults.global.elements.line.fill = false;
+                Chart.defaults.global.elements.line.lineTension = 0.9;
+                Chart.defaults.global.tooltipCaretSize = 0;
 
-                if (typeof (chartGlobalOptions['setDefaultTooltip']) == 'undefined' || !chartGlobalOptions['setDefaultTooltip']) {
-                    chartData['options']['tooltips'] = {
-                        enabled: true,
-                        mode: 'single',
-                        callbacks: {
-                            label: function (tooltipItems, data) {
-                                return data.datasets[tooltipItems.datasetIndex].label + ' : ' + data.datasets[tooltipItems.datasetIndex].data[tooltipItems.index];
-                            }
-                        }
-                    };
-                }
+                // if (typeof (chartGlobalOptions['setDefaultTooltip']) == 'undefined' || !chartGlobalOptions['setDefaultTooltip']) {
+                //     chartData['options']['tooltips'] = {
+                //         enabled: true,
+                //         mode: 'single',
+                //
+                //         callbacks: {
+                //             label: function (tooltipItems, data) {
+                //                 return data.datasets[tooltipItems.datasetIndex].label + ' : ' + data.datasets[tooltipItems.datasetIndex].data[tooltipItems.index];
+                //             }
+                //         },
+                //     };
+                // }
 
                 if (typeof (chartGlobalOptions['createImageLink']) !== 'undefined' || chartGlobalOptions['createImageLink']) {
                     chartData['options']['animation'] = {

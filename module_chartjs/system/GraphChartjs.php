@@ -12,15 +12,17 @@ use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\GraphCommons;
+use Kajona\System\System\GraphDatapoint;
 use Kajona\System\System\GraphInterfaceFronted;
 
 /**
  * This class could be used to create graphs based on the chartjs API.
  * chartjs renders charts on the client side.
  *
- * @package module_chartjs
  * @since 7.1
- * @author sascha.broening@artemeon.de, andrii.konoval@artemeon.de
+ * @author sascha.broening@artemeon.de
+ * @author andrii.konoval@artemeon.de
+ * @author stefan.idler@artemeon.de
  */
 class GraphChartjs implements GraphInterfaceFronted
 {
@@ -39,7 +41,7 @@ class GraphChartjs implements GraphInterfaceFronted
                 ]
             ],
             "title" => [
-                "display" => true,
+                "display" => false,
             ],
             'scales' => [
                 'xAxes' => [
@@ -65,7 +67,9 @@ class GraphChartjs implements GraphInterfaceFronted
      *
      * @var array
      */
-    private $arrChartGlobalOptions = [];
+    private $arrChartGlobalOptions = [
+        "defaultFontFamily" => 'inherit'
+    ];
 
     /**
      * @var int
@@ -154,8 +158,11 @@ class GraphChartjs implements GraphInterfaceFronted
             "type" => $type,
             "label" => !empty($strLegend) ? $strLegend : "Dataset ".$intDatasetNumber,
             "data" => GraphCommons::getDataPointFloatValues($arrDataPointObjects),
-            "backgroundColor" => 'rgba('.implode(', ', hex2rgb($this->arrColors[$intDatasetNumber])).', 0.3)',
+            "backgroundColor" => $this->arrColors[$intDatasetNumber] /*'rgba('.implode(', ', hex2rgb($this->arrColors[$intDatasetNumber])).', 0.3)'*/,
             "borderColor" => $this->arrColors[$intDatasetNumber],
+            "borderWidth" => 1,
+            "lineTension" => 0.2,
+
         ];
         $this->intXLabelsCount = count($arrValues);
     }
@@ -219,11 +226,20 @@ class GraphChartjs implements GraphInterfaceFronted
      */
     public function createPieChart($arrValues, $arrLegends = "")
     {
-        $arrDataPointObjects = GraphCommons::convertArrValuesToDataPointArray($arrValues);
+        $arrDataPointObjects = GraphCommons::convertArrValuesToDataPointArray($arrValues, true);
+
+        $nrOfNonNullValues = 0;
+        array_map(function (GraphDatapoint $point) use (&$nrOfNonNullValues) {
+            if ($point->getFloatValue() > 0) {
+                $nrOfNonNullValues++;
+            }
+        }, $arrDataPointObjects);
+
+
         $this->setPieChart(true);
         foreach ($this->arrColors as $arrColor) {
-            $arrBackgroundColors[] = 'rgba('.implode(', ', hex2rgb($arrColor)).', 0.3)';
-            $arrBorderColors[] = $arrColor;
+            $arrBackgroundColors[] = $arrColor;
+            $arrBorderColors[] =  $nrOfNonNullValues <= 1 ? $arrColor : '#FFFFFF';
         }
         $this->arrChartData['data']['datasets'][] = [
             "dataPoints" => $this->dataPointObjArrayToArray($arrDataPointObjects),
@@ -233,8 +249,15 @@ class GraphChartjs implements GraphInterfaceFronted
         ];
         $this->intXLabelsCount = count($arrValues);
         $this->arrChartData['data']['labels'] = $arrLegends;
+
+        $this->arrChartData['options']['scales']['xAxes'][0]['gridLines']['display'] = false;
+        $this->arrChartData['options']['scales']['xAxes'][0]['display'] = false;
+        $this->arrChartData['options']['scales']['yAxes'][0]['gridLines']['display'] = false;
+        $this->arrChartData['options']['scales']['yAxes'][0]['display'] = false;
         $this->setWriteValues(true);
-        $this->setValueTypePercentage(true);
+        $this->setHideXAxis(true);
+        $this->setHideYAxis(true);
+        $this->setValueTypePercentage(false);
     }
 
     /**
@@ -300,7 +323,7 @@ class GraphChartjs implements GraphInterfaceFronted
      */
     public function setStrGraphTitle($strTitle)
     {
-        $this->arrChartData['options']['title']['dispaly'] = true;
+        $this->arrChartData['options']['title']['display'] = true;
         $this->arrChartData['options']['title']['text'] = $strTitle;
     }
 
@@ -425,6 +448,13 @@ class GraphChartjs implements GraphInterfaceFronted
     {
         if (!empty($arrSeriesColors)) {
             $this->arrColors = $arrSeriesColors;
+        }
+
+        //$this->arrChartData['data']['datasets'][]
+        if (!empty($this->arrChartData['data']['datasets'])) {
+            $this->arrChartData['data']['datasets'][0]["backgroundColor"] = $arrSeriesColors;
+            $oldBorder = $this->arrChartData['data']['datasets'][0]["borderColor"];
+            $this->arrChartData['data']['datasets'][0]["borderColor"] = $oldBorder[0] == '#FFFFFF' ? $oldBorder : $arrSeriesColors;
         }
     }
 
