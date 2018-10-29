@@ -1386,7 +1386,7 @@ HTML;
             // we only want to hide the hint in case the hint is very long, for short hints we can directly show the
             // text. In the following we try to determine whether we should show the hint directly or not
             $shouldHide = false;
-            if (strlen($hint) > 118) {
+            if (strlen(strip_tags($hint)) > 118) {
                 $shouldHide = true;
             } elseif (strpos($hint, "<br") !== false) {
                 $shouldHide = true;
