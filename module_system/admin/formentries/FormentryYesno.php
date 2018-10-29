@@ -50,7 +50,7 @@ class FormentryYesno extends FormentryBase implements FormentryPrintableInterfac
 
         $strReturn = "";
         if($this->getStrHint() != null)
-            $strReturn .= $objToolkit->formTextRow($this->getStrHint());
+            $strReturn .= $objToolkit->formTextHint($this->getStrHint());
         $strReturn .=  $objToolkit->formInputDropdown($this->getStrEntryName(), $arrYesNo, $this->getStrLabel(), $this->getStrValue(), "", !$this->getBitReadonly(), $this->strAddons);
         return $strReturn;
     }

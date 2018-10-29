@@ -1375,6 +1375,36 @@ HTML;
     }
 
     /**
+     * Renders a hint form field
+     *
+     * @param string $hint
+     * @return string
+     */
+    public function formTextHint($hint)
+    {
+        if (Config::getInstance()->getConfig("hide_hints")) {
+            // we only want to hide the hint in case the hint is very long, for short hints we can directly show the
+            // text. In the following we try to determine whether we should show the hint directly or not
+            $shouldHide = false;
+            if (strlen($hint) > 118) {
+                $shouldHide = true;
+            } elseif (strpos($hint, "<br") !== false) {
+                $shouldHide = true;
+            }
+
+            if ($shouldHide) {
+                $linkText = Lang::getInstance()->getLang("form_entry_show_hint", "system");
+                $layout = $this->getLayoutFolder($hint, $linkText, false, "", "", "text-muted");
+                return $this->formTextRow($layout[1] . $layout[0]);
+            } else {
+                return $this->formTextRow($hint);
+            }
+        } else {
+            return $this->formTextRow($hint);
+        }
+    }
+
+    /**
      * Returns a headline in a form
      *
      * @param string $strText
@@ -1886,11 +1916,12 @@ require(['ajax'], function(ajax){
      * @param bool $bitVisible
      * @param string $strCallbackVisible JS function
      * @param string $strCallbackInvisible JS function
+     * @param string $linkClass
      *
      * @return mixed 0: The html-layout code
      *               1: The link to fold / unfold
      */
-    public function getLayoutFolder($strContent, $strLinkText, $bitVisible = false, $strCallbackVisible = "", $strCallbackInvisible = "")
+    public function getLayoutFolder($strContent, $strLinkText, $bitVisible = false, $strCallbackVisible = "", $strCallbackInvisible = "", $linkClass = "")
     {
         $arrReturn = array();
         $strID = generateSystemid();
@@ -1898,8 +1929,12 @@ require(['ajax'], function(ajax){
         $arrTemplate["id"] = $strID;
         $arrTemplate["content"] = $strContent;
         $arrTemplate["display"] = ($bitVisible ? "folderVisible" : "folderHidden");
+
+        $strCallbackVisible = $strCallbackVisible != "" ? $strCallbackVisible : "null";
+        $strCallbackInvisible = $strCallbackInvisible != "" ? $strCallbackInvisible : "null";
+
         $arrReturn[0] = $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "layout_folder");
-        $arrReturn[1] = "<a href=\"javascript:require('util').fold('".$strID."', ".($strCallbackVisible != "" ? $strCallbackVisible : "null").", ".($strCallbackInvisible != "" ? $strCallbackInvisible : "null").");\">".$strLinkText."</a>";
+        $arrReturn[1] = "<a href=\"javascript:require('util').fold('{$strID}', {$strCallbackVisible}, {$strCallbackInvisible});\" class=\"{$linkClass}\">".$strLinkText."</a>";
         return $arrReturn;
     }
 
