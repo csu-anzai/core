@@ -215,7 +215,7 @@ class FlowTransition extends Model implements ModelInterface, AdminListableInter
     /**
      * Checks whether the transition moves the status forward or backwards in the flow
      *
-     * @TODO: this is maybe not the best solution since this depends on the sorting of the status list
+     * @deprecated - in look back this method makes no sense please dont use it
      */
     public function isForwarding()
     {
