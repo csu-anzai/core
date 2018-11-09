@@ -6,17 +6,14 @@ namespace Kajona\Benchmark\System\Bench;
 
 use Kajona\Benchmark\System\AbstractBench;
 use Kajona\System\System\Database;
-use Kajona\System\System\DbDatatypes;
-use Kajona\System\System\Filesystem;
 use Kajona\System\System\StringUtil;
 
-class Database8DeleteBench extends AbstractBench
+class Database8DropBench extends AbstractBench
 {
     public function bench()
     {
         $this->deleteTables();
     }
-
 
     private function deleteTables()
     {
