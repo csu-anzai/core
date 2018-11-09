@@ -43,6 +43,12 @@ class FlowTransition extends Model implements ModelInterface, AdminListableInter
     protected $intVisible = 1;
 
     /**
+     * The FlowManager contains a method getNextTransitionForModel which is used in case code wants to automatically
+     * trigger a status transition. If this skip flag is set to 1 this transition is never considered by the method thus
+     * no automatic transition happens. That being said the method getNextTransitionForModel returns only a transition
+     * how the transition is used depends always on the specific module
+     *
+     * @see FlowManager::getNextTransitionForModel
      * @var int
      * @tableColumn agp_flow_step_transition.transition_skip
      * @tableColumnDatatype int
