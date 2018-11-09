@@ -21,7 +21,7 @@ class Database7DeleteBench extends AbstractBench
     {
         for ($i = 0; $i < self::INSERT_ROWS; $i++) {
             Database::getInstance()->_pQuery(
-                "INSERT INTO agp_bench_1 (bench_id, bench_char20, bench_char100, bench_char254, bench_char500, bench_charText, bench_charLongtext, bench_int, bench_long, bench_double) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO agp_bench_2 (bench_id, bench_char20, bench_char100, bench_char254, bench_char500, bench_charText, bench_charLongtext, bench_int, bench_long, bench_double) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 $this->getRandomRow()
             );
         }
@@ -29,10 +29,10 @@ class Database7DeleteBench extends AbstractBench
 
     private function deleteTableRows()
     {
-        Database::getInstance()->_pQuery("DELETE FROM agp_bench_1 WHERE bench_char20 = ?", ["foo"]);
+        Database::getInstance()->_pQuery("DELETE FROM agp_bench_2 WHERE bench_char20 = ?", ["foo"]);
     }
 
-    protected function getRandomRow()
+    private function getRandomRow()
     {
         return [
             generateSystemid(),
