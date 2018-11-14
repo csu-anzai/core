@@ -60,7 +60,7 @@ class FormentryDropdown extends FormentryBase implements FormentryPrintableInter
         $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
         $strReturn = "";
         if ($this->getStrHint() != null) {
-            $strReturn .= $objToolkit->formTextHint($this->getStrHint());
+            $strReturn .= $objToolkit->formTextHint($this->getStrHint(), $this->getBitHideLongHints());
         }
 
         $strOpener = "";
