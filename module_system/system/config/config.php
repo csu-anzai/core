@@ -67,9 +67,6 @@
         'blacklist'  => [],                                            //Blacklist of specific words which are forbidden in the password
     ];
 
-    $config['hide_hints']           = true;                            //Whether to show form entry hints or to display a link which shows the text on click.
-                                                                       //This makes the form clearer if your form has many long text hints
-
 //--caching ---------------------------------------------------------------------------------------------
 
     $config['textcachetime']        = 1;                               //Number of seconds language-files are cached. Cached entries are shared between sessions. Reduce this amount during
