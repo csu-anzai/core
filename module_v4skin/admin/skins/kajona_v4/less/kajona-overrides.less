@@ -2181,3 +2181,17 @@ body.login {
         animation: shake 2s ease-in-out;
     }
 }
+
+/* form hint container */
+.form-hint-container {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    max-height:20px;
+    cursor:pointer;
+}
+
+.form-hint-container::before {
+    content: " [+] ";
+    float:right;
+}

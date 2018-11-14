@@ -1378,27 +1378,13 @@ HTML;
      * Renders a hint form field
      *
      * @param string $hint
+     * @param bool $hideLongText
      * @return string
      */
-    public function formTextHint($hint)
+    public function formTextHint($hint, $hideLongText = false)
     {
-        if (Config::getInstance()->getConfig("hide_hints")) {
-            // we only want to hide the hint in case the hint is very long, for short hints we can directly show the
-            // text. In the following we try to determine whether we should show the hint directly or not
-            $shouldHide = false;
-            if (strlen(strip_tags($hint)) > 118) {
-                $shouldHide = true;
-            } elseif (strpos($hint, "<br") !== false) {
-                $shouldHide = true;
-            }
-
-            if ($shouldHide) {
-                $linkText = Lang::getInstance()->getLang("form_entry_show_hint", "system");
-                $layout = $this->getLayoutFolder($hint, $linkText, false, "", "", "text-muted");
-                return $this->formTextRow($layout[1] . $layout[0]);
-            } else {
-                return $this->formTextRow($hint);
-            }
+        if ($hideLongText) {
+            return $this->formTextRow('<div class="form-hint-container" onclick="$(this).removeClass(\'form-hint-container\')">' . $hint . '</div>');
         } else {
             return $this->formTextRow($hint);
         }
