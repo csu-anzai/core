@@ -24,7 +24,7 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util', 'router'], functi
      */
     var getActionCallback = function($onAccept) {
 
-        if ($onAccept.type === 'redirect') {
+        if ($onAccept && $onAccept.type === 'redirect') {
             return function() {
                 router.registerLoadCallback("alert_redirect", function() {
                     $('.modal-backdrop.fade.in').remove();
@@ -37,7 +37,7 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util', 'router'], functi
                 router.loadUrl($onAccept.target);
 
             };
-        } else if ($onAccept.type === 'ajax') {
+        } else if ($onAccept && $onAccept.type === 'ajax') {
             return function() {
                 ajax.genericAjaxCall($onAccept.module, $onAccept.action, $onAccept.systemid, function(){
                     // on ok we trigger the getUnreadCount again since the ajax call could have created
