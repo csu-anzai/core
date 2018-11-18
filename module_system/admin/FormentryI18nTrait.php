@@ -20,7 +20,7 @@ use Kajona\System\System\LanguagesLanguage;
  */
 trait FormentryI18nTrait
 {
-    private $i18nEnabled = false;
+
 
     /**
      * Evaluates if a value represents an i18n value
@@ -76,21 +76,4 @@ trait FormentryI18nTrait
         }, LanguagesLanguage::getObjectListFiltered());
     }
 
-    /**
-     * @return bool
-     */
-    public function isI18nEnabled(): bool
-    {
-        return $this->i18nEnabled;
-    }
-
-    /**
-     * @param bool $i18nEnabled
-     * @return FormentryI18nTrait
-     */
-    public function setI18nEnabled(bool $i18nEnabled)
-    {
-        $this->i18nEnabled = $i18nEnabled;
-        return $this;
-    }
 }

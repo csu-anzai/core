@@ -6,7 +6,9 @@
 
 namespace Kajona\System\Admin\Formentries;
 
+use AGP\Prozessverwaltung\Admin\Formentries\FormentryObjectGroups;
 use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\AdminFormgeneratorContainerInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Lang;
@@ -232,6 +234,11 @@ class FormentryBase
     public function setBitMandatory($bitMandatory)
     {
         $this->bitMandatory = $bitMandatory;
+        if ($this instanceof AdminFormgeneratorContainerInterface) {
+            foreach ($this->getFields() as $field) {
+                $field->setBitMandatory($bitMandatory);
+            }
+        }
         return $this;
     }
 
