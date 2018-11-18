@@ -214,7 +214,7 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
         $arrFields["search_ix_document_id"] 		= array("char20", false);
         $arrFields["search_ix_system_id"] 	        = array("char20", true);
 
-        if(!$this->objDB->createTable("agp_search_ix_document", $arrFields, array("search_ix_document_id"), array("search_ix_system_id"), false))
+        if(!$this->objDB->createTable("agp_search_ix_document", $arrFields, array("search_ix_document_id"), array("search_ix_system_id")))
             $strReturn .= "An error occurred! ...\n";
 
         $strReturn .= "Installing table search_ix_content...\n";
@@ -226,7 +226,7 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
         $arrFields["search_ix_content_score"] 	    = array("int", true);
         $arrFields["search_ix_content_document_id"] = array("char20", true);
 
-        if(!$this->objDB->createTable("agp_search_ix_content", $arrFields, array("search_ix_content_id"), array("search_ix_content_field_name", "search_ix_content_content", "search_ix_content_document_id"), false))
+        if(!$this->objDB->createTable("agp_search_ix_content", $arrFields, array("search_ix_content_id"), array("search_ix_content_field_name", "search_ix_content_content", "search_ix_content_document_id")))
            $strReturn .= "An error occurred! ...\n";
 
         return $strReturn;

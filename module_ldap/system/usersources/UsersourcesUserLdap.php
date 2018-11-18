@@ -12,6 +12,7 @@ namespace Kajona\Ldap\System\Usersources;
 use Kajona\Ldap\System\Ldap;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\System\CoreEventdispatcher;
+use Kajona\System\System\Exception;
 use Kajona\System\System\Logger;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\SystemEventidentifier;
@@ -180,25 +181,29 @@ class UsersourcesUserLdap extends \Kajona\System\System\Model implements \Kajona
 
         $arrReturn = array();
 
-        $objLdap = Ldap::getInstance($this->intCfg);
-        $objLdapSource = new UsersourcesSourceLdap();
-        $arrLdapGroups = $objLdapSource->getAllGroupIds();
+        try {
+            $objLdap = Ldap::getInstance($this->intCfg);
+            $objLdapSource = new UsersourcesSourceLdap();
+            $arrLdapGroups = $objLdapSource->getAllGroupIds();
 
-        foreach ($arrLdapGroups as $strOneGroupId) {
-            $objGroup = new UsersourcesGroupLdap($strOneGroupId);
+            foreach ($arrLdapGroups as $strOneGroupId) {
+                $objGroup = new UsersourcesGroupLdap($strOneGroupId);
 
-            try {
-                if ($objGroup->getIntCfg() == $this->intCfg && $objLdap->isUserMemberOfGroup($this->getStrDN(), $objGroup->getStrDn())) {
-                    $arrReturn[] = $strOneGroupId;
+                try {
+                    if ($objGroup->getIntCfg() == $this->intCfg && $objLdap->isUserMemberOfGroup($this->getStrDN(), $objGroup->getStrDn())) {
+                        $arrReturn[] = $strOneGroupId;
+                    }
+                } catch (\Exception $e) {
+                    Logger::getInstance()->info($e->getMessage());
                 }
-            } catch (\Exception $e) {
-                Logger::getInstance()->notice($e->getMessage());
             }
+        } catch (\Exception $e) {
+            Logger::getInstance()->info($e->getMessage());
         }
 
         //may include kajona-source group ids
         $sourceKajona = new UsersourcesUserKajona($this->getSystemid());
-        $arrReturn = array_merge($sourceKajona->getGroupIdsForUser());
+        $arrReturn = array_merge($arrReturn, $sourceKajona->getGroupIdsForUser());
 
         return $arrReturn;
     }

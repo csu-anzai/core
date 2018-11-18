@@ -30,12 +30,10 @@ class OrmSchemamanagerTable
 
     /**
      * @param string $strName
-     * @param bool $bitTxSafe
      */
-    public function __construct($strName, $bitTxSafe = true)
+    public function __construct($strName)
     {
         $this->strName = $strName;
-        $this->bitTxSafe = $bitTxSafe;
     }
 
     /**
@@ -52,22 +50,6 @@ class OrmSchemamanagerTable
     public function getArrRows()
     {
         return $this->arrRows;
-    }
-
-    /**
-     * @param boolean $bitTxSafe
-     */
-    public function setBitTxSafe($bitTxSafe)
-    {
-        $this->bitTxSafe = $bitTxSafe;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getBitTxSafe()
-    {
-        return $this->bitTxSafe;
     }
 
     public function addRow(OrmSchemamanagerRow $objRow)

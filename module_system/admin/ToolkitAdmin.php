@@ -37,6 +37,8 @@ use Kajona\System\System\Toolkit;
 use Kajona\System\View\Components\Datatable\Datatable;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Popover\Popover;
+use Kajona\System\View\Components\Textrow\TextRow;
+use Kajona\System\View\Components\Warningbox\Warningbox;
 use Kajona\Tags\System\TagsFavorite;
 use Kajona\Tags\System\TagsTag;
 
@@ -1373,6 +1375,22 @@ HTML;
     }
 
     /**
+     * Renders a hint form field
+     *
+     * @param string $hint
+     * @param bool $hideLongText
+     * @return string
+     */
+    public function formTextHint($hint, $hideLongText = false)
+    {
+        if ($hideLongText) {
+            return $this->formTextRow('<div class="form-hint-container" onclick="require(\'jquery\')(this).removeClass(\'form-hint-container\')">' . $hint . '</div>');
+        } else {
+            return $this->formTextRow($hint);
+        }
+    }
+
+    /**
      * Returns a headline in a form
      *
      * @param string $strText
@@ -1857,10 +1875,8 @@ require(['ajax'], function(ajax){
      */
     public function warningBox($strContent, $strClass = "alert-warning")
     {
-        $arrTemplate = array();
-        $arrTemplate["content"] = $strContent;
-        $arrTemplate["class"] = $strClass;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "warning_box");
+        $cmp = new Warningbox($strContent, $strClass);
+        return $cmp->renderComponent();
     }
 
     /**
@@ -1873,10 +1889,8 @@ require(['ajax'], function(ajax){
      */
     public function getTextRow($strText, $strClass = "text")
     {
-        $arrTemplate = array();
-        $arrTemplate["text"] = $strText;
-        $arrTemplate["class"] = $strClass;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "text_row");
+        $cmp = new TextRow($strText, $strClass);
+        return $cmp->renderComponent();
     }
 
 
@@ -2955,6 +2969,22 @@ HTML;
             $strId = generateSystemid();
         }
         return $this->objTemplate->fillTemplateFile(array("content" => $strContent, "class" => $strClass, "systemid" => $strId, "highlightid" => $strHighlightId), "/admin/skins/kajona_v4/elements.tpl", "calendar_event");
+    }
+
+    /**
+     * Renders a button with onClick callback.
+     *
+     * @param string $icon
+     * @param string $label
+     * @param string $callback
+     * @return string
+     * @since 7.1
+     */
+    public  function getJsActionButton($icon, $label, $callback){
+        $icon = AdminskinHelper::getAdminImage($icon);
+
+        return $this->objTemplate->fillTemplateFile(["icon"=>$icon, "label"=>$label, "callback"=>$callback], "/admin/skins/kajona_v4/elements.tpl", "js_action_button");
+
     }
 
     //---contect menues ---------------------------------------------------------------------------------

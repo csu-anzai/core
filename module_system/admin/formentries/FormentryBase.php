@@ -64,7 +64,7 @@ class FormentryBase
     private $strValue = null;
     private $strHint = null;
     private $bitReadonly = false;
-
+    private $bitHideLongHints = false;
 
     /**
      * Creates a new instance of the current field.
@@ -484,5 +484,21 @@ class FormentryBase
     public function setBitSkipValidation(bool $bitSkipValidation)
     {
         $this->bitSkipValidation = $bitSkipValidation;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getBitHideLongHints() : bool
+    {
+        return $this->bitHideLongHints;
+    }
+
+    /**
+     * @param bool $bitHideLongHints
+     */
+    public function setBitHideLongHints(bool $bitHideLongHints)
+    {
+        $this->bitHideLongHints = $bitHideLongHints;
     }
 }

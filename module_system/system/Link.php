@@ -230,7 +230,7 @@ class Link
         $strAction = urlencode($strAction);
 
         //rewriting enabled?
-        if (SystemSetting::getConfigValue("_system_mod_rewrite_") == "true") {
+        if (false && SystemSetting::getConfigValue("_system_mod_rewrite_") == "true") {
             $strPrefix = "/admin";
             if (SystemSetting::getConfigValue("_system_mod_rewrite_admin_only_") == "true") {
                 $strPrefix = "";

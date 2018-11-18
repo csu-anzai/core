@@ -348,3 +348,6 @@ $lang["update_in_progress"] = "System update in progress, please wait...";
 $lang["form_objectlist_add_search"]  = "{0} add ...";
 
 $lang["object_browser_reset"] = "Remove object";
+
+$lang["copy_to_clipboard"] = "Copy to clipboard";
+$lang["copy_page_url"] = "Page URL";

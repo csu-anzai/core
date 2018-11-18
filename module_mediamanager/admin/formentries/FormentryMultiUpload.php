@@ -7,6 +7,7 @@
 namespace Kajona\Mediamanager\Admin\Formentries;
 
 use Kajona\Mediamanager\System\MediamanagerFile;
+use Kajona\Mediamanager\System\MediamanagerFileFilter;
 use Kajona\Mediamanager\System\MediamanagerRepo;
 use Kajona\Mediamanager\System\Validators\MediamanagerUploadValidator;
 use Kajona\System\Admin\Formentries\FormentryBase;
@@ -138,12 +139,49 @@ class FormentryMultiUpload extends FormentryBase implements FormentryPrintableIn
         $arrLinks = [];
         if ($objMMFile != null) {
             /** @var MediamanagerFile $objFile */
-            foreach (MediamanagerFile::getObjectListFiltered(null, $objMMFile->getSystemid()) as $objFile) {
-                $arrLinks[] = "<a href='"._webpath_."/download.php?systemid=".$objFile->getSystemid()."'>".$objFile->getStrName()."</a>";
+
+            //1. Render files directly uploaded
+            $filterFile = new MediamanagerFileFilter();
+            $filterFile->setIntFileType(MediamanagerFile::$INT_TYPE_FILE);
+            $files = MediamanagerFile::getObjectListFiltered($filterFile, $objMMFile->getSystemid());
+            foreach ($files as $file) {
+                $arrLinks[] = "<a href='"._webpath_."/download.php?systemid=".$file->getSystemid()."'>".$file->getStrName()."</a>";
+            }
+
+            //Render versionized folders/files
+            $filterFolder = new MediamanagerFileFilter();
+            $filterFolder->setIntFileType(MediamanagerFile::$INT_TYPE_FOLDER);
+            $folders = MediamanagerFile::getObjectListFiltered($filterFolder, $objMMFile->getSystemid());
+            foreach ($folders as $folder) {
+                $arrLinks = array_merge($arrLinks, $this->renderFolderForSummary($folder));
             }
         }
 
         return implode("\r\n<br />", $arrLinks);
+    }
+
+    /**
+     * Renders Meidamanager folders as text
+     *
+     * @param MediamanagerFile $objFile
+     * @return array
+     */
+    private function renderFolderForSummary(MediamanagerFile $objFile) {
+        $arrLinks = [];
+
+        if($objFile->getIntType() == MediamanagerFile::$INT_TYPE_FOLDER) {
+            $files = MediamanagerFile::getObjectListFiltered(null, $objFile->getSystemid());
+            $arrLinks[] = "";
+            $arrLinks[] = $objFile->getStrDisplayName();
+            foreach ($files as $file) {
+                $arrLinks = array_merge($arrLinks, $this->renderFolderForSummary($file));
+
+            }
+        } else {
+            $arrLinks[] = "- <a href='"._webpath_."/download.php?systemid=".$objFile->getSystemid()."'>".$objFile->getStrName()."</a>";
+        }
+
+        return $arrLinks;
     }
 
     /**
