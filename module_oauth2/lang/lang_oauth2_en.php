@@ -4,4 +4,4 @@
  *       Published under the GNU LGPL v2.1
  ********************************************************************************************************/
 
-$lang["login_with"] = "Login as {0}";
+$lang["login_with"] = "Login using {0}";
