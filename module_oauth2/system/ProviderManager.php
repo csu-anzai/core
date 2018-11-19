@@ -211,18 +211,18 @@ class ProviderManager
     {
         $users = UserUser::getAllUsersByName($userName);
         if (empty($users)) {
-            /** @var \Kajona\System\System\Usersources\UsersourcesUserKajona $sourceUser */
-            $sourceUser = new UsersourcesUserKajona();
-            $sourceUser->setStrEmail($email);
-            $sourceUser->setStrForename($firstName);
-            $sourceUser->setStrName($lastName);
-            $sourceUser->setStrPass(generateSystemid());
-            $this->lifeCycleFactory->factory(get_class($sourceUser))->update($sourceUser);
-
             $user = new UserUser();
             $user->setStrUsername($userName);
-            $user->setObjSourceUser($sourceUser);
             $this->lifeCycleFactory->factory(get_class($user))->update($user);
+
+            $sourceUser = $user->getObjSourceUser();
+            if ($sourceUser instanceof UsersourcesUserKajona) {
+                $sourceUser->setStrEmail($email);
+                $sourceUser->setStrForename($firstName);
+                $sourceUser->setStrName($lastName);
+                $sourceUser->setStrPass(generateSystemid());
+                $this->lifeCycleFactory->factory(get_class($sourceUser))->update($sourceUser);
+            }
 
             return $user;
         } else {
