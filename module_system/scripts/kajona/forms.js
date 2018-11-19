@@ -41,7 +41,6 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
 
         //reset value
         if (isResetValue && objField.attr('id')) {
-            debugger;
             (objField.find('input[type=checkbox]').each(function() {
                 this.checked = false;
             }));
