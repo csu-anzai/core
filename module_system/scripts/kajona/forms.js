@@ -23,8 +23,9 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
      * Hides a field in the form
      *
      * @param objField - my be a jquery field or a id selector
+     * @param isResetValue if enabled, sets the fields value to emtpy / ""
      */
-    forms.hideField = function(objField) {
+    forms.hideField = function(objField, isResetValue) {
         objField = util.getElement(objField);
 
         var objFormGroup = objField.is('h3') || objField.is('h4') || objField.is('p') ? objField : objField.closest('.form-group');
@@ -36,6 +37,17 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
         var objHintFormGroup = objFormGroup.prev('.form-group');
         if(objHintFormGroup.find('div > span.help-block').length > 0) {
             objHintFormGroup.slideUp(0);
+        }
+
+        //reset value
+        if (isResetValue && objField.attr('id')) {
+            debugger;
+            (objField.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            }));
+
+
+            objField.val('');
         }
     };
 
