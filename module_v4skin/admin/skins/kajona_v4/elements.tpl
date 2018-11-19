@@ -23,7 +23,7 @@ templates!
     </ul>
 </div>
 <script type="text/javascript">
-require(["jquery", "ajax", "util"], function($, ajax, util) {
+require(["jquery", "ajax", "util", "jquery-ui"], function($, ajax, util, jqueryui) {
     $(function() {
         $('.grid > ul.sortable').sortable( {
             items: 'li[data-systemid!=""]',
