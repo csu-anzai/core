@@ -181,7 +181,6 @@ class ProviderManager
                 "redirect_uri" => $provider->getRedirectUri(),
                 "code" => $code,
             ],
-            "verify" => false, // only for testing
         ]);
 
         if ($response->getStatusCode() >= 400) {

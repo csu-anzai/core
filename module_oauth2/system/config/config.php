@@ -19,3 +19,5 @@ $config["providers"][0] = [
     ]
 ];
 */
+
+$config["https_verify"] = true;

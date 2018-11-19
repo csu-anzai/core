@@ -42,7 +42,11 @@ class ServiceProvider implements ServiceProviderInterface
         };
 
         $objContainer[self::STR_HTTP_CLIENT] = function ($c) {
-            return new Client();
+            $httpsVerify = Config::getInstance("module_oauth2")->getConfig("https_verify");
+
+            return new Client([
+                'verify' => $httpsVerify
+            ]);
         };
     }
 }
