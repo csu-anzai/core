@@ -1375,6 +1375,22 @@ HTML;
     }
 
     /**
+     * Renders a hint form field
+     *
+     * @param string $hint
+     * @param bool $hideLongText
+     * @return string
+     */
+    public function formTextHint($hint, $hideLongText = false)
+    {
+        if ($hideLongText) {
+            return $this->formTextRow('<div class="form-hint-container" onclick="require(\'jquery\')(this).removeClass(\'form-hint-container\')">' . $hint . '</div>');
+        } else {
+            return $this->formTextRow($hint);
+        }
+    }
+
+    /**
      * Returns a headline in a form
      *
      * @param string $strText

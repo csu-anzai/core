@@ -1106,6 +1106,20 @@ footer {
             }
         }
 
+        /* form hint container */
+        .form-hint-container {
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+            max-height:20px;
+            cursor:pointer;
+        }
+
+        .form-hint-container::before {
+            content: " [+] ";
+            float:right;
+        }
+
         &.fileupload-wrapper {
             .fileinput-button {
                 border: none;
@@ -1621,6 +1635,11 @@ table.form-control {
         &:hover {
             text-decoration: none;
         }
+    }
+
+    img[data-kajona-icon] {
+        width: 22px;
+        height: 22px;
     }
 
 }
