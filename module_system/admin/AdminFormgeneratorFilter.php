@@ -9,13 +9,12 @@
 namespace Kajona\System\Admin;
 
 use Kajona\System\Admin\Formentries\FormentryHidden;
+use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\FilterBase;
 use Kajona\System\System\Link;
 use Kajona\System\System\SystemModule;
-
-
 
 /**
  * @author christoph.kappestein@gmail.com
@@ -159,7 +158,8 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
             $bitInitiallyVisible
         );
 
-        $strFilterUrlButton = Link::getLinkAdminManual(["href" => "#", "onclick" => "require('forms').getFilterURL();return false"], $objLang->getLang("commons_filter_url", "system"));
+        $title = AdminskinHelper::getAdminImage("icon_treeLink") . " " . $objLang->getLang("commons_filter_url", "system");
+        $strFilterUrlButton = Link::getLinkAdminManual(["href" => "#", "onclick" => "require('forms').getFilterURL();return false"], $title);
 
         return $objToolkit->addToContentToolbar($arrFolder[1]) . $objToolkit->addToContentToolbar(trim($strFilterUrlButton)). $arrFolder[0];
     }
