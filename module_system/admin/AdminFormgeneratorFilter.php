@@ -14,7 +14,6 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\FilterBase;
 use Kajona\System\System\Link;
-use Kajona\System\System\SystemModule;
 
 /**
  * @author christoph.kappestein@gmail.com
