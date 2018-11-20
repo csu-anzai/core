@@ -35,67 +35,6 @@ class OAuth2Controller extends AdminEvensimpler implements AdminInterface
     protected $providerManager;
 
     /**
-     * @inheritdoc
-     */
-    public function getOutputModuleNavi()
-    {
-        $arrReturn = [];
-        $arrReturn[] = ["view", Link::getLinkAdmin($this->getArrModule("module"), "list", "", $this->getLang("action_list"))];
-
-        return $arrReturn;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function renderEditAction(Model $objListEntry, $bitDialog = false, array $arrParams = null)
-    {
-        return "";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function renderDeleteAction(ModelInterface $objListEntry)
-    {
-        return "";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function renderCopyAction(Model $objListEntry)
-    {
-        return "";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function renderStatusAction(Model $objListEntry, $strAltActive = "", $strAltInactive = "")
-    {
-        return "";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function renderAdditionalActions(Model $objListEntry)
-    {
-        $actions = [];
-
-        return $actions;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getNewEntryAction($strListIdentifier, $bitDialog = false)
-    {
-        return "";
-    }
-
-    /**
      * Redirects the user to the fitting authorization url depending on the given provider id
      *
      * @permissions anonymous
