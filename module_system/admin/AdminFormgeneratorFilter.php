@@ -12,6 +12,7 @@ use Kajona\System\Admin\Formentries\FormentryHidden;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\FilterBase;
+use Kajona\System\System\Link;
 use Kajona\System\System\SystemModule;
 
 
@@ -158,7 +159,7 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
             $bitInitiallyVisible
         );
 
-        $strFilterUrlButton = $objToolkit->getJsActionButton('icon_link', $objLang->getLang("commons_filter_url", "system"), "require('forms').getFilterURL()");
+        $strFilterUrlButton = Link::getLinkAdminManual(["href" => "#", "onclick" => "require('forms').getFilterURL();return false"], $objLang->getLang("commons_filter_url", "system"));
 
         return $objToolkit->addToContentToolbar($arrFolder[1]) . $objToolkit->addToContentToolbar(trim($strFilterUrlButton)). $arrFolder[0];
     }
