@@ -1,6 +1,7 @@
 /* KAJONA variable redefinitions */
 
-@kajona-brand-color:        #6cb121;
+//@kajona-brand-color:        #6cb121;
+@kajona-brand-color:        #876A2E;
 
 @font-size-base:            13px;
 @font-family-sans-serif:    "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -40,8 +41,11 @@
 @kajona-search-bg:          "../img/pusteblume-submenu.png";
 @kajona-breadcrumb-bg:      "../img/pusteblume.png";
 
+@kajona-top-bar-logo-small: "../img/logo_small.png";
+@kajona-top-bar-logo-large: "../img/logo_large.png";
+
 //glyphicons
-@icon-font-path:          "../fonts/glyphicons/";
+@icon-font-path:            "../fonts/glyphicons/";
 
 /* END KAJONA redefinitions */
 
@@ -564,7 +568,29 @@ footer {
 .navbar-fixed-top {
     margin: 0;
     .navbar-topbar {
-        background: url(@kajona-topbar-bg) 300px 0 no-repeat @kajona-gray;
+
+        background: @kajona-gray;
+        background-image:
+                url(@kajona-top-bar-logo-small),
+                url(@kajona-topbar-bg);
+
+        background-position: right 15px center, 300px 0;
+        background-repeat: no-repeat, no-repeat;
+        background-size: auto 50px, auto auto;
+
+        @media
+            (min--moz-device-pixel-ratio: 1.5),
+            (-o-min-device-pixel-ratio: 3/2),
+            (-webkit-min-device-pixel-ratio: 1.5),
+            (min-device-pixel-ratio: 1.5),
+            (min-resolution: 1.5dppx) {
+            background-image:
+                    url(@kajona-top-bar-logo-large),
+                    url(@kajona-topbar-bg);
+        }
+
+
+        //background: url(@kajona-topbar-bg) 300px 0 no-repeat @kajona-gray;
         min-height: 50px;
         padding-left: 20px;
         padding-right: 20px;
@@ -615,6 +641,12 @@ footer {
                 }
             }
 
+        }
+
+        .header-logo {
+            height: 50px;
+            width: 100px;
+            cursor: pointer;
         }
 
     }
@@ -1072,6 +1104,20 @@ footer {
                 border: none;
                 margin-bottom: 0;
             }
+        }
+
+        /* form hint container */
+        .form-hint-container {
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+            max-height:20px;
+            cursor:pointer;
+        }
+
+        .form-hint-container::before {
+            content: " [+] ";
+            float:right;
         }
 
         &.fileupload-wrapper {
@@ -1589,6 +1635,11 @@ table.form-control {
         &:hover {
             text-decoration: none;
         }
+    }
+
+    img[data-kajona-icon] {
+        width: 22px;
+        height: 22px;
     }
 
 }

@@ -41,6 +41,8 @@ use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
 use Kajona\System\View\Components\Popover\Popover;
+use Kajona\System\View\Components\Textrow\TextRow;
+use Kajona\System\View\Components\Warningbox\Warningbox;
 use Kajona\Tags\System\TagsFavorite;
 use Kajona\Tags\System\TagsTag;
 
@@ -1373,6 +1375,22 @@ HTML;
     }
 
     /**
+     * Renders a hint form field
+     *
+     * @param string $hint
+     * @param bool $hideLongText
+     * @return string
+     */
+    public function formTextHint($hint, $hideLongText = false)
+    {
+        if ($hideLongText) {
+            return $this->formTextRow('<div class="form-hint-container" onclick="require(\'jquery\')(this).removeClass(\'form-hint-container\')">' . $hint . '</div>');
+        } else {
+            return $this->formTextRow($hint);
+        }
+    }
+
+    /**
      * Returns a headline in a form
      *
      * @param string $strText
@@ -1857,10 +1875,8 @@ require(['ajax'], function(ajax){
      */
     public function warningBox($strContent, $strClass = "alert-warning")
     {
-        $arrTemplate = array();
-        $arrTemplate["content"] = $strContent;
-        $arrTemplate["class"] = $strClass;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "warning_box");
+        $cmp = new Warningbox($strContent, $strClass);
+        return $cmp->renderComponent();
     }
 
     /**
@@ -1873,10 +1889,8 @@ require(['ajax'], function(ajax){
      */
     public function getTextRow($strText, $strClass = "text")
     {
-        $arrTemplate = array();
-        $arrTemplate["text"] = $strText;
-        $arrTemplate["class"] = $strClass;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "text_row");
+        $cmp = new TextRow($strText, $strClass);
+        return $cmp->renderComponent();
     }
 
 

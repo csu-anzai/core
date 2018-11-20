@@ -43,6 +43,10 @@ class FlowTransition extends Model implements ModelInterface, AdminListableInter
     protected $intVisible = 1;
 
     /**
+     * Basically this property is a filter for the getNextTransitionForModel method, in case it is set to 1 the method
+     * does not consider this transition
+     *
+     * @see FlowManager::getNextTransitionForModel
      * @var int
      * @tableColumn agp_flow_step_transition.transition_skip
      * @tableColumnDatatype int
@@ -209,7 +213,7 @@ class FlowTransition extends Model implements ModelInterface, AdminListableInter
     /**
      * Checks whether the transition moves the status forward or backwards in the flow
      *
-     * @TODO: this is maybe not the best solution since this depends on the sorting of the status list
+     * @deprecated - in look back this method makes no sense please dont use it
      */
     public function isForwarding()
     {
