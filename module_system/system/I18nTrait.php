@@ -6,28 +6,25 @@
 
 declare(strict_types = 1);
 
-namespace Kajona\System\Admin;
-
-use Kajona\System\System\LanguagesLanguage;
+namespace Kajona\System\System;
 
 /**
- * Trait to keep common logic for i18n based formentries.
+ * Trait to keep common logic for i18n based content.
  * Currently providing helpers to explode / implode values
  * and to detect i18n capabilities
  *
  * @author stefan.idler@artemeon.de
  * @since 7.1
  */
-trait FormentryI18nTrait
+trait I18nTrait
 {
-
 
     /**
      * Evaluates if a value represents an i18n value
      * @param $value
      * @return bool
      */
-    public function is18nValue($value)
+    public function is18nValue($value): bool
     {
         $val = json_decode($value, true);
         return $val !== null;
@@ -38,12 +35,12 @@ trait FormentryI18nTrait
      * @param string $i18nString
      * @return array
      */
-    protected function toValueArray(string $i18nString = null): array
+    protected function toI18nValueArray(string $i18nString = null): array
     {
         $val = json_decode($i18nString ?? "", true);
         $return = [];
 
-        foreach ($this->getPossibleLanguages() as $lang) {
+        foreach ($this->getPossibleI18nLanguages() as $lang) {
             $return[$lang] = isset($val[$lang]) ? $val[$lang] : ($val !== null ? "" : $i18nString);
         }
 
@@ -56,10 +53,10 @@ trait FormentryI18nTrait
      * @param string $key
      * @return string
      */
-    protected function toValueString(array $params, string $key): string
+    protected function toI18nValueString(array $params, string $key): string
     {
         $return = [];
-        foreach ($this->getPossibleLanguages() as $lang) {
+        foreach ($this->getPossibleI18nLanguages() as $lang) {
             $return[$lang] = $params["{$key}_{$lang}"] ?? "";
         }
         return json_encode($return);
@@ -69,11 +66,35 @@ trait FormentryI18nTrait
      * Returns the list of languages currently available
      * @return array
      */
-    protected function getPossibleLanguages()
+    protected function getPossibleI18nLanguages(): array
     {
         return array_map(function (LanguagesLanguage $lang) {
             return $lang->getStrName();
         }, LanguagesLanguage::getObjectListFiltered());
     }
 
+    /**
+     * Fetches the current value (based on the backend lang or the passed lang) from the
+     * value string
+     * @param string $value json-string
+     * @param string|null $lang
+     * @return string
+     * @throws Exception
+     */
+    protected function getI18nValueForString(string $value, string $lang = null): string
+    {
+        $lang = $lang ?? $this->getCurrentI18nLanguage();
+        $arr = $this->toI18nValueArray($value);
+        return isset($arr[$lang]) ? $arr[$lang] : "";
+    }
+
+    /**
+     * Return the key of the current language
+     * @return string
+     * @throws Exception
+     */
+    protected function getCurrentI18nLanguage(): string
+    {
+        return Session::getInstance()->getAdminLanguage();
+    }
 }

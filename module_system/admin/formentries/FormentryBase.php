@@ -30,7 +30,7 @@ use Kajona\System\System\ValidatorInterface;
  * @since 4.0
  * @package module_formgenerator
  */
-class FormentryBase
+abstract class FormentryBase
 {
 
     /**
