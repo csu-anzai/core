@@ -1384,7 +1384,7 @@ HTML;
     public function formTextHint($hint, $hideLongText = false)
     {
         if ($hideLongText) {
-            return $this->formTextRow('<div class="form-hint-container" onclick="require(\'jquery\')(this).removeClass(\'form-hint-container\')">' . $hint . '</div>');
+            return $this->formTextRow('<div class="form-hint-container" onclick="require(\'jquery\')(this).toggleClass(\'form-hint-container\')">' . $hint . '</div>');
         } else {
             return $this->formTextRow($hint);
         }
