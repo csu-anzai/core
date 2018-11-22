@@ -491,5 +491,6 @@ class FormentryBase
     public function setBitHideLongHints(bool $bitHideLongHints)
     {
         $this->bitHideLongHints = $bitHideLongHints;
+        return $this;
     }
 }
