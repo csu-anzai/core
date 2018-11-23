@@ -198,6 +198,7 @@ class GraphChartjs implements GraphInterfaceFronted
         $this->addChartSet($arrValues, $strLegend);
         $this->arrChartData['options']['scales']['xAxes'][0]['stacked'] = true;
         $this->arrChartData['options']['scales']['yAxes'][0]['stacked'] = true;
+        $this->setNotShowNullValues(true);
         if ($bitWriteValues) {
             $this->setWriteValues($bitWriteValues);
         }
@@ -450,11 +451,18 @@ class GraphChartjs implements GraphInterfaceFronted
             $this->arrColors = $arrSeriesColors;
         }
 
-        //$this->arrChartData['data']['datasets'][]
+        $iColor = 0;
+        $colorCount = count($arrSeriesColors);
         if (!empty($this->arrChartData['data']['datasets'])) {
-            $this->arrChartData['data']['datasets'][0]["backgroundColor"] = $arrSeriesColors;
-            $oldBorder = $this->arrChartData['data']['datasets'][0]["borderColor"];
-            $this->arrChartData['data']['datasets'][0]["borderColor"] = $oldBorder[0] == '#FFFFFF' ? $oldBorder : $arrSeriesColors;
+            foreach ($this->arrChartData['data']['datasets'] as $index => $dataset) {
+                $this->arrChartData['data']['datasets'][$index]["backgroundColor"] = $arrSeriesColors[$iColor];
+                if ($dataset["borderColor"] !== '#FFFFFF') {
+                    $this->arrChartData['data']['datasets'][$index]["borderColor"] = $arrSeriesColors[$iColor];
+                }
+                if (++$iColor > $colorCount-1) {
+                    $iColor = 0;
+                }
+            }
         }
     }
 
@@ -673,7 +681,6 @@ class GraphChartjs implements GraphInterfaceFronted
         $this->setHideGridLinesXAxis(true);
         $this->setBitDownloadLink(false);
         $this->setWriteValues(true);
-        $this->setNotShowNullValues(true);
         $this->setBitIsResponsive(false);
         if ($autoHeight && isset($this->arrChartData['data']) && count($this->arrChartData['data']) != 0) {
             $countGraphs = count($this->arrChartData['data']['datasets'][0]['dataPoints']);
