@@ -45,7 +45,8 @@ class AdminFormsTest extends Testbase
     public function testFloatCompleteness()
     {
 
-        $objFormManager = new AdminFormgenerator("test", new AdminFormB());
+        $objSourceobject = new AdminFormB();
+        $objFormManager = new AdminFormgenerator("test", $objSourceobject);
 
         $objFormManager->generateFieldsFromObject();
 
@@ -78,7 +79,7 @@ class AdminFormsTest extends Testbase
         $this->assertEquals($objFormManager->getFloatFormCompleteness(), $completeness);
         $objFormManager->removeAllValidationError();
 
-        $fa2->setStrValue('fa2 value');
+        $objSourceobject->setStrFieldA2('fa2 value');
         $countErrorsFields = count($objFormManager->getValidationErrorObjects()); // 2
         $completeness = round(($countRequiredFields - $countErrorsFields)*100/$countRequiredFields, 2); // 33.33%
 
@@ -86,8 +87,8 @@ class AdminFormsTest extends Testbase
         $this->assertEquals($objFormManager->getFloatFormCompleteness(), $completeness);
         $objFormManager->removeAllValidationError();
 
-        $fb1->setStrValue('fb1 value');
-        $fb2->setStrValue('fb2 value');
+        $objSourceobject->setStrFieldB1('fb1 value');
+        $objSourceobject->setStrFieldB2('fb2 value');
         $countErrorsFields = count($objFormManager->getValidationErrorObjects()); // 1
         $completeness = round(($countRequiredFields - $countErrorsFields)*100/$countRequiredFields, 2); // 66.66%
 
@@ -95,7 +96,7 @@ class AdminFormsTest extends Testbase
         $this->assertEquals($objFormManager->getFloatFormCompleteness(), $completeness);
         $objFormManager->removeAllValidationError();
 
-        $fb3->setStrValue('fb3 value');
+        $objSourceobject->setStrFieldB3('fb3 value');
         $countErrorsFields = count($objFormManager->getValidationErrorObjects()); // 0
         $completeness = ($countRequiredFields - $countErrorsFields)*100/$countRequiredFields; // 100%
 

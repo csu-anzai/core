@@ -199,6 +199,7 @@ abstract class FormentryBase
         if ($this->objSourceObject == null) {
             return "";
         }
+        //$this->readValue();
 
         $objReflection = new Reflection($this->objSourceObject);
         $strSetter = $objReflection->getSetter($this->strSourceProperty);
