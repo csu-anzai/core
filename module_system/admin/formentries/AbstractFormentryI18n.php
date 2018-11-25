@@ -70,7 +70,7 @@ abstract class AbstractFormentryI18n extends FormentryBase implements FormentryP
         }
 
         $values = $this->toI18nValueArray($this->getStrValue());
-        /** @var FormentryText $objEntry */
+        /** @var FormentryBase|FormentryPrintableInterface $objEntry */
         foreach ($this->arrEntries as $lang => $objEntry) {
             $objEntry->setStrValue($values[$lang]);
             $strReturn .= $objEntry->renderField();
@@ -102,7 +102,11 @@ abstract class AbstractFormentryI18n extends FormentryBase implements FormentryP
      */
     public function getValueAsText()
     {
-        return $this->getI18nValueForString($this->getStrValue());
+        $lang = $this->getCurrentI18nLanguage();
+        /** @var FormentryBase|FormentryPrintableInterface $entry */
+        $entry = $this->arrEntries[$lang];
+        $entry->setStrValue($this->getI18nValueForString($this->getStrValue() ?? ""));
+        return $entry->getValueAsText();
     }
 
 

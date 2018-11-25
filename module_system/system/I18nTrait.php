@@ -51,13 +51,17 @@ trait I18nTrait
      * Converts post-values back to a storable, single-field string
      * @param array $params
      * @param string $key
+     * @param callable|null $transformCallback
      * @return string
      */
-    protected function toI18nValueString(array $params, string $key): string
+    protected function toI18nValueString(array $params, string $key, callable $transformCallback = null): string
     {
         $return = [];
         foreach ($this->getPossibleI18nLanguages() as $lang) {
             $return[$lang] = $params["{$key}_{$lang}"] ?? "";
+            if ($transformCallback !== null) {
+                $return[$lang] = $transformCallback($return[$lang]);
+            }
         }
         return json_encode($return);
     }

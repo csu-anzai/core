@@ -40,6 +40,14 @@ class I18nTraitTest extends Testbase
     }
 
 
+    public function testTo18nValueString()
+    {
+        $this->assertEquals(json_encode(["de" => "de", "en" => "en", "es" => ""]), $this->toI18nValueString(["a_de" => "de", "a_en" => "en"], "a"));
+        $this->assertEquals(json_encode(["de" => "", "en" => "", "es" => ""]), $this->toI18nValueString(["a_de" => "de", "a_en" => "en"], "b"));
+
+        $this->assertEquals(json_encode(["de" => "tt", "en" => "tt", "es" => "tt"]), $this->toI18nValueString(["a_de" => "de", "a_en" => "en"], "b", function($val) { return "tt"; }));
+    }
+
     protected function getPossibleI18nLanguages()
     {
         return ["de", "en", "es"];
