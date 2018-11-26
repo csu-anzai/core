@@ -60,8 +60,11 @@ class ChartjsTest extends Testbase
 
 
         $strRender = $objGraph->renderGraph();
+        $strGlobalOptions = substr($strRender, strpos($strRender, "var chartGlobalOptions = {"));
 
-        $this->assertTrue(!empty(strpos($strRender, 'var chartGlobalOptions = {"backgroundColor":"red","defaultFontColor":"blue","defaultFontFamily":"Arial"};')));
+        $this->assertTrue(!empty(strpos($strGlobalOptions, '"backgroundColor":"red"')));
+        $this->assertTrue(!empty(strpos($strGlobalOptions, '"defaultFontColor":"blue"')));
+        $this->assertTrue(!empty(strpos($strGlobalOptions, '"defaultFontFamily":"Arial"')));
     }
 
     public function testChartJSBarChart()
