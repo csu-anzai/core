@@ -53,6 +53,7 @@ class GraphChartjs implements GraphInterfaceFronted
                 ],
                 'yAxes' => [
                     [
+                        'id' => 'defaultYID',
                         'ticks' => [
                             'beginAtZero' => true
                         ]
@@ -147,8 +148,11 @@ class GraphChartjs implements GraphInterfaceFronted
      * @param array $arrValues
      * @param string $strLegend
      * @param string $type
+     * @param bool $bitWriteValues
+     * @param null $yAxisID
+     * @param float $lineTension
      */
-    private function addChartSet(array $arrValues, string $strLegend = "", $type = null)
+    private function addChartSet(array $arrValues, string $strLegend = "", $type = null, $bitWriteValues = false, $yAxisID = null, $lineTension = 0)
     {
         $arrDataPointObjects = GraphCommons::convertArrValuesToDataPointArray($arrValues);
 
@@ -162,7 +166,9 @@ class GraphChartjs implements GraphInterfaceFronted
             "borderColor" => $this->arrColors[$intDatasetNumber],
             "borderWidth" => 1,
             "lineTension" => 0.2,
-
+            "yAxisID" => empty($yAxisID) ? "defaultYID" : $yAxisID,
+            "datalabels" => $bitWriteValues ? ["display" => true] : ["display" => false],
+            "lineTension" => $lineTension
         ];
         $this->intXLabelsCount = count($arrValues);
     }
@@ -178,10 +184,7 @@ class GraphChartjs implements GraphInterfaceFronted
      */
     public function addBarChartSet($arrValues, $strLegend, $bitWriteValues = false)
     {
-        $this->addChartSet($arrValues, $strLegend);
-        if ($bitWriteValues) {
-            $this->setWriteValues($bitWriteValues);
-        }
+        $this->addChartSet($arrValues, $strLegend, null, $bitWriteValues);
     }
 
     /**
@@ -193,15 +196,12 @@ class GraphChartjs implements GraphInterfaceFronted
      *
      * @see GraphInterface::addStackedBarChartSet()
      */
-    public function addStackedBarChartSet($arrValues, $strLegend = "", $bitWriteValues = false)
+    public function addStackedBarChartSet($arrValues, $strLegend = "", $bitWriteValues = true)
     {
-        $this->addChartSet($arrValues, $strLegend);
+        $this->addChartSet($arrValues, $strLegend, null, $bitWriteValues);
         $this->arrChartData['options']['scales']['xAxes'][0]['stacked'] = true;
         $this->arrChartData['options']['scales']['yAxes'][0]['stacked'] = true;
         $this->setNotShowNullValues(true);
-        if ($bitWriteValues) {
-            $this->setWriteValues($bitWriteValues);
-        }
     }
 
     /**
@@ -210,11 +210,31 @@ class GraphChartjs implements GraphInterfaceFronted
      * @param array $arrValues
      * @param string $strLegend
      *
+     * @param bool $bitWriteValues
+     * @param float $lineTension
      * @see GraphInterface::addLinePlot()
      */
-    public function addLinePlot($arrValues, $strLegend = "")
+    public function addLinePlot($arrValues, $strLegend = "", $bitWriteValues = false, $lineTension = 0)
     {
-        $this->addChartSet($arrValues, $strLegend, "line");
+        $this->addChartSet($arrValues, $strLegend, "line", $bitWriteValues, null, $lineTension);
+    }
+
+    /**
+     * Add additional data set to the Line chart
+     *
+     * @param array $arrValues
+     * @param string $strLegend
+     *
+     * @param bool $bitWriteValues
+     * @param float $lineTension
+     * @see GraphInterface::addLinePlot()
+     */
+    public function addLinePlotY2Axis($arrValues, $strLegend, $bitWriteValues = false, $lineTension = 0)
+    {
+        $this->addChartSet($arrValues, $strLegend, "line", $bitWriteValues, "2YID", $lineTension);
+        $this->arrChartData['options']['scales']['yAxes'][1]['id'] = "2YID";
+        $this->arrChartData['options']['scales']['yAxes'][1]['type'] = "linear";
+        $this->arrChartData['options']['scales']['yAxes'][1]['position'] = "right";
     }
 
     /**
@@ -255,7 +275,6 @@ class GraphChartjs implements GraphInterfaceFronted
         $this->arrChartData['options']['scales']['xAxes'][0]['display'] = false;
         $this->arrChartData['options']['scales']['yAxes'][0]['gridLines']['display'] = false;
         $this->arrChartData['options']['scales']['yAxes'][0]['display'] = false;
-        $this->setWriteValues(true);
         $this->setHideXAxis(true);
         $this->setHideYAxis(true);
         $this->setValueTypePercentage(false);
@@ -315,6 +334,17 @@ class GraphChartjs implements GraphInterfaceFronted
     {
         $this->arrChartData['options']['scales']['yAxes'][0]['scaleLabel']['display'] = true;
         $this->arrChartData['options']['scales']['yAxes'][0]['scaleLabel']['labelString'] = $strTitle;
+    }
+
+    /**
+     * @param string $strTitle
+     *
+     * @see GraphInterface::setStrY2AxisTitle()
+     */
+    public function setStrY2AxisTitle($strTitle)
+    {
+        $this->arrChartData['options']['scales']['yAxes'][1]['scaleLabel']['display'] = true;
+        $this->arrChartData['options']['scales']['yAxes'][1]['scaleLabel']['labelString'] = $strTitle;
     }
 
     /**
@@ -451,16 +481,16 @@ class GraphChartjs implements GraphInterfaceFronted
             $this->arrColors = $arrSeriesColors;
         }
 
-        $iColor = 0;
+        $colorIndex = 0;
         $colorCount = count($arrSeriesColors);
         if (!empty($this->arrChartData['data']['datasets'])) {
             foreach ($this->arrChartData['data']['datasets'] as $index => $dataset) {
-                $this->arrChartData['data']['datasets'][$index]["backgroundColor"] = $arrSeriesColors[$iColor];
+                $this->arrChartData['data']['datasets'][$index]["backgroundColor"] = $arrSeriesColors[$colorIndex];
                 if ($dataset["borderColor"] !== '#FFFFFF') {
-                    $this->arrChartData['data']['datasets'][$index]["borderColor"] = $arrSeriesColors[$iColor];
+                    $this->arrChartData['data']['datasets'][$index]["borderColor"] = $arrSeriesColors[$colorIndex];
                 }
-                if (++$iColor > $colorCount-1) {
-                    $iColor = 0;
+                if (++$colorIndex > $colorCount-1) {
+                    $colorIndex = 0;
                 }
             }
         }
@@ -537,6 +567,14 @@ class GraphChartjs implements GraphInterfaceFronted
     }
 
     /**
+     * @param int $bitHideY2Axis
+     */
+    public function setTickStepY2Axis(int $intStep)
+    {
+        $this->arrChartData['options']['scales']['yAxes'][1]['ticks']['stepSize'] = $intStep;
+    }
+
+    /**
      * @param bool $bitHideGridLines
      */
     public function setHideGridLinesXAxis(bool $bitHideGridLines = true)
@@ -568,17 +606,6 @@ class GraphChartjs implements GraphInterfaceFronted
     public function setBeginAtZero(bool $beginAtZero = true)
     {
         $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['beginAtZero'] = $beginAtZero;
-    }
-
-    /**
-     * Set if you need to show values straight on the chart
-     *
-     * @param bool $writeValues
-     * @param string $type
-     */
-    public function setWriteValues(bool $writeValues = false)
-    {
-        $this->arrChartData['options']['plugins']['datalabels']['display'] = $writeValues;
     }
 
     /**
@@ -665,6 +692,23 @@ class GraphChartjs implements GraphInterfaceFronted
     }
 
     /**
+     * @param $minVal
+     * @param $maxVal
+     */
+    public function setY2AxisRange($intMin = null, $intMax = null, $intTickInterval = null)
+    {
+        if ($intMin !== null) {
+            $this->arrChartData['options']['scales']['yAxes'][1]['ticks']['suggestedMin'] = $intMin;
+        }
+        if ($intMax !== null) {
+            $this->arrChartData['options']['scales']['yAxes'][1]['ticks']['suggestedMax'] = $intMax;
+        }
+        if ($intTickInterval !== null) {
+            $this->setTickStepY2Axis((int)$intTickInterval);
+        }
+    }
+
+    /**
      * @param bool $autoHeight
      * @return mixed|void
      *
@@ -680,7 +724,6 @@ class GraphChartjs implements GraphInterfaceFronted
         $this->setHideGridLinesYAxis(true);
         $this->setHideGridLinesXAxis(true);
         $this->setBitDownloadLink(false);
-        $this->setWriteValues(true);
         $this->setBitIsResponsive(false);
         if ($autoHeight && isset($this->arrChartData['data']) && count($this->arrChartData['data']) != 0) {
             $countGraphs = count($this->arrChartData['data']['datasets'][0]['dataPoints']);

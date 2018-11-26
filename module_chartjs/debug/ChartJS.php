@@ -114,13 +114,13 @@ class ChartJS
         $objGraph->setStrXAxisTitle("My new X-Axis");
         $objGraph->setStrYAxisTitle("My new Y-Axis");
         $objGraph->addBarChartSet(array(1, 2, 3, 4), "serie 3", true);
-        $objGraph->addBarChartSet(array(1, 2, 3, 4), "serie 4");
-        $objGraph->addBarChartSet(array(1, 2, 3, 4), "serie 5");
-        $objGraph->addBarChartSet(array(1, 2, 3, 4), "serie 6");
-        $objGraph->addBarChartSet(array(1, 2, 3, 4), "serie 7");
+        $objGraph->addBarChartSet(array(1, 2, 3, 4), "serie 4", true);
+        $objGraph->addBarChartSet(array(1, 2, 3, 4), "serie 5", true);
+        $objGraph->addBarChartSet(array(1, 2, 3, 4), "serie 6", true);
+        $objGraph->addBarChartSet(array(1, 2, 3, 4), "serie 7", true);
         $objGraph->addLinePlot(array(8, 1, 2, 4), "serie 8");
-        $objGraph->addBarChartSet(array(1, 2, 3, 4), "serie 9");
-        $objGraph->addBarChartSet(array(1, 2, 3, 4), "serie 10");
+        $objGraph->addBarChartSet(array(1, 2, 3, 4), "serie 9", true);
+        $objGraph->addBarChartSet(array(1, 2, 3, 4), "serie 10", true);
         $objGraph->addLinePlot(array(1, 2, 3, 4), "serie 11");
         $objGraph->addLinePlot(array(1, 2, 3, 4), "serie 12");
         $objGraph->addLinePlot(array(1, 2, 3, 4), "serie 13");
@@ -153,7 +153,7 @@ class ChartJS
         $objGraph->setStrXAxisTitle("My new X-Axis");
         $objGraph->setStrYAxisTitle("My new Y-Axis");
         $objGraph->addBarChartSet(array(1, 2, 3, 4), "serie 9", true);
-        $objGraph->addBarChartSet(array(1, 2, 3, 4), "serie 10");
+        $objGraph->addBarChartSet(array(1, 2, 3, 4), "serie 10", true);
         $objGraph->setBitRenderLegend(true);
         $objGraph->setStrFont("open sans");
         echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';

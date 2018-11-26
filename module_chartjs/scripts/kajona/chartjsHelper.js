@@ -22,9 +22,9 @@ define("chartjsHelper", ['jquery', 'folderview'], function ($, folderview) {
      */
     chartjsHelper.onClickHandler = function (ev, seriesIndex, pointIndex, dataPoint) {
         if (dataPoint.actionhandler && dataPoint.actionhandler != null) {
-            var objFunction = eval("(" + objDataPoint.actionhandler + ")");
+            var objFunction = eval("(" + dataPoint.actionhandler + ")");
             if ($.isFunction(objFunction)) {
-                objFunction.call(this, ev, seriesIndex, pointIndex, objDataPoint);
+                objFunction.call(this, ev, seriesIndex, pointIndex, null, dataPoint);
             }
         }
         else {
