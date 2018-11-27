@@ -148,6 +148,32 @@ abstract class OrmBase
         return $strQuery;
     }
 
+    /**
+     * @param string $targetClass
+     * @return array
+     * @throws Exception
+     * @throws OrmException
+     */
+    protected function getTables($targetClass)
+    {
+        $objAnnotations = new Reflection($targetClass);
+        $arrTargetTables = $objAnnotations->getAnnotationValuesFromClass(OrmBase::STR_ANNOTATION_TARGETTABLE);
+
+        if (count($arrTargetTables) == 0) {
+            throw new OrmException("Class ".(is_object($targetClass) ? get_class($targetClass) : $targetClass)." has no target table", OrmException::$level_ERROR);
+        }
+
+        $arrTables = array();
+        foreach ($arrTargetTables as $strOneTable) {
+            $arrOneTable = explode(".", $strOneTable);
+            if (in_array($arrOneTable[0], $this->arrBlockedTableAlias)) {
+                $arrTables[] = Carrier::getInstance()->getObjDB()->encloseTableName($arrOneTable[0]);
+            } else {
+                $arrTables[] = Carrier::getInstance()->getObjDB()->encloseTableName($arrOneTable[0]);
+            }
+        }
+        return $arrTables;
+    }
 
     /**
      * Reads the assignment values currently stored in the database for a given property of the current object.

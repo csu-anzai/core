@@ -60,22 +60,49 @@ class OrmObjectlist extends OrmBase
      */
     public function getObjectCount($strTargetClass, $strPrevid = "")
     {
+        $arrParams = array();
 
-        //build the query
-        $strQuery = "SELECT COUNT(*) AS cnt
+        if (is_array($strTargetClass)) {
+            $strQuery = "";
+            $i = 0;
+            $len = count($strTargetClass);
+            foreach ($strTargetClass as $targetClass) {
+                //build the query
+                $strQuery.= "SELECT COUNT(*) AS cnt
+                       ".$this->getQueryBase($targetClass)."
+                       ".($strPrevid != "" && $strPrevid !== null ? " AND system_prev_id = ? " : "")."";
+
+                if ($strPrevid != "") {
+                    $arrParams[] = $strPrevid;
+                }
+
+                $i++;
+                if ($i < $len) {
+                    $strQuery.= " UNION ALL ";
+                }
+            }
+        } else {
+            //build the query
+            $strQuery = "SELECT COUNT(*) AS cnt
                        ".$this->getQueryBase($strTargetClass)."
                        ".($strPrevid != "" && $strPrevid !== null ? " AND system_prev_id = ? " : "")."";
 
-        $arrParams = array();
-        if ($strPrevid != "") {
-            $arrParams[] = $strPrevid;
+            if ($strPrevid != "") {
+                $arrParams[] = $strPrevid;
+            }
         }
 
         $this->addLogicalDeleteRestriction();
         $this->processWhereRestrictions($strQuery, $arrParams, $strTargetClass);
 
-        $arrRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, $arrParams);
-        return (int)$arrRow["cnt"];
+        $results = Carrier::getInstance()->getObjDB()->getPArray($strQuery, $arrParams);
+
+        $count = 0;
+        foreach ($results as $row) {
+            $count+= (int) $row["cnt"];
+        }
+
+        return $count;
 
     }
 
@@ -98,37 +125,87 @@ class OrmObjectlist extends OrmBase
      */
     public function getObjectListIds($strTargetClass, $strPrevid = "", $intStart = null, $intEnd = null)
     {
+        $arrParams = array();
 
-        $strQuery = "SELECT *
+        if (is_array($strTargetClass)) {
+            $strQuery = "";
+            $i = 0;
+            $len = count($strTargetClass);
+
+            // find all tables which are available on both types
+            $tableList = [];
+            foreach ($strTargetClass as $targetClass) {
+                $tableList[] = $this->getTables($targetClass);
+            }
+
+            $tableList = array_intersect(...$tableList);
+
+            $parts = [];
+            $parts[] = "agp_system.*";
+            foreach ($tableList as $table) {
+                $parts[] = "{$table}.*";
+            }
+
+            foreach ($strTargetClass as $targetClass) {
+                //build the query
+                $strQuery.= "(SELECT " . implode(",", $parts) . "
+                           ".$this->getQueryBase($targetClass)."
+                       ".($strPrevid != "" && $strPrevid !== null ? " AND system_prev_id = ? " : "");
+
+                if ($strPrevid != "") {
+                    $arrParams[] = $strPrevid;
+                }
+
+                $this->addLogicalDeleteRestriction();
+                $this->processWhereRestrictions($strQuery, $arrParams, $targetClass);
+
+                $strQuery.= $this->getOrderBy(new Reflection($targetClass));
+                $strQuery.= ")";
+
+                $i++;
+                if ($i < $len) {
+                    $strQuery.= " UNION ALL ";
+                }
+            }
+        } else {
+            $strQuery = "SELECT *
                            ".$this->getQueryBase($strTargetClass)."
                        ".($strPrevid != "" && $strPrevid !== null ? " AND system_prev_id = ? " : "");
 
-        $arrParams = array();
-        if ($strPrevid != "") {
-            $arrParams[] = $strPrevid;
+            if ($strPrevid != "") {
+                $arrParams[] = $strPrevid;
+            }
+
+            $this->addLogicalDeleteRestriction();
+            $this->processWhereRestrictions($strQuery, $arrParams, $strTargetClass);
+
+            $strQuery .= $this->getOrderBy(new Reflection($strTargetClass));
         }
 
-        $this->addLogicalDeleteRestriction();
-        $this->processWhereRestrictions($strQuery, $arrParams, $strTargetClass);
-        $strQuery .= $this->getOrderBy(new Reflection($strTargetClass));
+        //$s = Carrier::getInstance()->getObjDB()->prettifyQuery($strQuery, $arrParams);
         $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, $arrParams, $intStart, $intEnd);
 
         $arrReturn = array();
         foreach ($arrRows as $arrOneRow) {
             //Caching is only allowed if the fetched and required classes match. Otherwise there could be missing queried tables.
-            if ($arrOneRow["system_class"] == $strTargetClass) {
-                OrmRowcache::addSingleInitRow($arrOneRow);
-                $arrReturn[] = $arrOneRow["system_id"];
-            }
-            else {
-                $objReflectionClass = new ReflectionClass($arrOneRow["system_class"]);
-                if ($objReflectionClass->isSubclassOf($strTargetClass)) {
-                    //returns the instance, but enforces a fresh reload from the database.
-                    //this is useful if extending classes need to query additional tables
+            if (!is_array($strTargetClass)) {
+                if ($arrOneRow["system_class"] == $strTargetClass) {
+                    OrmRowcache::addSingleInitRow($arrOneRow);
+                    $arrReturn[] = $arrOneRow["system_id"];
+                } else {
+                    $objReflectionClass = new ReflectionClass($arrOneRow["system_class"]);
+                    if ($objReflectionClass->isSubclassOf($strTargetClass)) {
+                        //returns the instance, but enforces a fresh reload from the database.
+                        //this is useful if extending classes need to query additional tables
+                        $arrReturn[] = $arrOneRow["system_id"];
+                    }
+                }
+            } else {
+                if (in_array($arrOneRow["system_class"], $strTargetClass)) {
+                    OrmRowcache::addSingleInitRow($arrOneRow);
                     $arrReturn[] = $arrOneRow["system_id"];
                 }
             }
-
         }
 
         return $arrReturn;
