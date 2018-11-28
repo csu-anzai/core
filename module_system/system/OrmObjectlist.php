@@ -164,6 +164,10 @@ class OrmObjectlist extends OrmBase
      * You may influence the ordering and restrictions by adding the relevant restriction / order
      * objects before calling this method.
      *
+     * It is possible to select multiple different entities by providing an array of target classes. In this case we
+     * query all intersection tables of the provided classes. It is always preferred to provide only a single entity but
+     * in some cases it is required to select multiple different entities so this should be used cautiously
+     *
      * @param string|array $strTargetClass
      * @param string $strPrevid
      * @param null|int $intStart
