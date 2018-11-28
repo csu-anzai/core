@@ -3,6 +3,7 @@
 namespace Kajona\System\Tests;
 
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Database;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
@@ -122,6 +123,9 @@ class OrmObjectlistTest extends Testbase
 
     public function testObjectListMultiPaged()
     {
+        $info = Database::getInstance()->getDbInfo();
+        print_r($info);
+
         $orm = new OrmObjectlist();
         $result = $orm->getObjectList([OrmObjectlistBar::class, OrmObjectlistBaz::class], "", 0, 5);
 
