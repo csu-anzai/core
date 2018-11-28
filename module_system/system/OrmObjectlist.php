@@ -63,37 +63,15 @@ class OrmObjectlist extends OrmBase
         $arrParams = array();
 
         if (is_array($strTargetClass)) {
-            $strQuery = "";
-            $i = 0;
-            $len = count($strTargetClass);
+            $parts = [];
             foreach ($strTargetClass as $targetClass) {
-                //build the query
-                $strQuery.= "SELECT COUNT(*) AS cnt
-                       ".$this->getQueryBase($targetClass)."
-                       ".($strPrevid != "" && $strPrevid !== null ? " AND system_prev_id = ? " : "")."";
-
-                if ($strPrevid != "") {
-                    $arrParams[] = $strPrevid;
-                }
-
-                $i++;
-                if ($i < $len) {
-                    $strQuery.= " UNION ALL ";
-                }
+                $parts[] = "(" . $this->getCountQuery($targetClass, $strPrevid, $arrParams) . ")";
             }
+
+            $strQuery = implode(" UNION ALL ", $parts);
         } else {
-            //build the query
-            $strQuery = "SELECT COUNT(*) AS cnt
-                       ".$this->getQueryBase($strTargetClass)."
-                       ".($strPrevid != "" && $strPrevid !== null ? " AND system_prev_id = ? " : "")."";
-
-            if ($strPrevid != "") {
-                $arrParams[] = $strPrevid;
-            }
+            $strQuery = $this->getCountQuery($strTargetClass, $strPrevid, $arrParams);
         }
-
-        $this->addLogicalDeleteRestriction();
-        $this->processWhereRestrictions($strQuery, $arrParams, $strTargetClass);
 
         $results = Carrier::getInstance()->getObjDB()->getPArray($strQuery, $arrParams);
 
@@ -103,9 +81,7 @@ class OrmObjectlist extends OrmBase
         }
 
         return $count;
-
     }
-
 
     /**
      * Returns the list of object id's matching the current query. The target-tables
@@ -128,58 +104,15 @@ class OrmObjectlist extends OrmBase
         $arrParams = array();
 
         if (is_array($strTargetClass)) {
-            $strQuery = "";
-            $i = 0;
-            $len = count($strTargetClass);
-
-            // find all tables which are available on both types
-            $tableList = [];
-            foreach ($strTargetClass as $targetClass) {
-                $tableList[] = $this->getTables($targetClass);
-            }
-
-            $tableList = array_intersect(...$tableList);
-
+            $select = $this->getIntersectSelect($strTargetClass);
             $parts = [];
-            $parts[] = "agp_system.*";
-            foreach ($tableList as $table) {
-                $parts[] = "{$table}.*";
-            }
-
             foreach ($strTargetClass as $targetClass) {
-                //build the query
-                $strQuery.= "(SELECT " . implode(",", $parts) . "
-                           ".$this->getQueryBase($targetClass)."
-                       ".($strPrevid != "" && $strPrevid !== null ? " AND system_prev_id = ? " : "");
-
-                if ($strPrevid != "") {
-                    $arrParams[] = $strPrevid;
-                }
-
-                $this->addLogicalDeleteRestriction();
-                $this->processWhereRestrictions($strQuery, $arrParams, $targetClass);
-
-                $strQuery.= $this->getOrderBy(new Reflection($targetClass));
-                $strQuery.= ")";
-
-                $i++;
-                if ($i < $len) {
-                    $strQuery.= " UNION ALL ";
-                }
+                $parts[] = "(" . $this->getListQuery($targetClass, $strPrevid, $arrParams, $select) . ")";
             }
+
+            $strQuery = implode(" UNION ALL ", $parts);
         } else {
-            $strQuery = "SELECT *
-                           ".$this->getQueryBase($strTargetClass)."
-                       ".($strPrevid != "" && $strPrevid !== null ? " AND system_prev_id = ? " : "");
-
-            if ($strPrevid != "") {
-                $arrParams[] = $strPrevid;
-            }
-
-            $this->addLogicalDeleteRestriction();
-            $this->processWhereRestrictions($strQuery, $arrParams, $strTargetClass);
-
-            $strQuery .= $this->getOrderBy(new Reflection($strTargetClass));
+            $strQuery = $this->getListQuery($strTargetClass, $strPrevid, $arrParams);
         }
 
         //$s = Carrier::getInstance()->getObjDB()->prettifyQuery($strQuery, $arrParams);
@@ -279,6 +212,106 @@ class OrmObjectlist extends OrmBase
         }
 
         return null;
+    }
+
+    /**
+     * @param string|array $targetClass
+     * @param string $strPrevid
+     * @param array $arrParams
+     * @return string
+     * @throws Exception
+     * @throws OrmException
+     */
+    private function getCountQuery($targetClass, $strPrevid, array &$arrParams)
+    {
+        $strQuery = "SELECT COUNT(*) AS cnt
+                       ".$this->getQueryBase($targetClass)."
+                       ".($strPrevid != "" && $strPrevid !== null ? " AND system_prev_id = ? " : "")."";
+
+        if ($strPrevid != "") {
+            $arrParams[] = $strPrevid;
+        }
+
+        $this->addLogicalDeleteRestriction();
+        $this->processWhereRestrictions($strQuery, $arrParams, $targetClass);
+
+        return $strQuery;
+    }
+
+    /**
+     * Returns the complete list query
+     *
+     * @param string|array $targetClass
+     * @param string $strPrevid
+     * @param array $arrParams
+     * @param string $select
+     * @return string
+     * @throws Exception
+     * @throws OrmException
+     */
+    private function getListQuery($targetClass, $strPrevid, array &$arrParams, $select = "*")
+    {
+        $strQuery = "SELECT ".$select."
+                       ".$this->getQueryBase($targetClass)."
+                       ".($strPrevid != "" && $strPrevid !== null ? " AND system_prev_id = ? " : "");
+
+        if ($strPrevid != "") {
+            $arrParams[] = $strPrevid;
+        }
+
+        $this->addLogicalDeleteRestriction();
+        $this->processWhereRestrictions($strQuery, $arrParams, $targetClass);
+
+        $strQuery .= $this->getOrderBy(new Reflection($targetClass));
+
+        return $strQuery;
+    }
+
+    /**
+     * If we make an select on multiple classes we need to get the intersection of all available tables. At the minimum
+     * we have the system table
+     *
+     * @param array $targetClasses
+     * @return string
+     */
+    private function getIntersectSelect(array $targetClasses)
+    {
+        // find all tables which are available on both types
+        $tableList = [];
+        foreach ($targetClasses as $targetClass) {
+            $tableList[] = $this->getTables($targetClass);
+        }
+
+        $tableList = array_intersect(...$tableList);
+
+        $parts = [];
+        $parts[] = "agp_system.*";
+        foreach ($tableList as $table) {
+            $parts[] = "{$table}.*";
+        }
+
+        return implode(", ", $parts);
+    }
+
+    /**
+     * Returns all tables for a given target class
+     *
+     * @param string $targetClass
+     * @return array
+     * @throws Exception
+     */
+    private function getTables($targetClass)
+    {
+        $objAnnotations = new Reflection($targetClass);
+        $arrTargetTables = $objAnnotations->getAnnotationValuesFromClass(OrmBase::STR_ANNOTATION_TARGETTABLE);
+
+        $arrTables = array();
+        foreach ($arrTargetTables as $strOneTable) {
+            $arrOneTable = explode(".", $strOneTable);
+            $arrTables[] = Carrier::getInstance()->getObjDB()->encloseTableName($arrOneTable[0]);
+        }
+
+        return $arrTables;
     }
 
     /**
