@@ -13,7 +13,7 @@ use Kajona\System\System\OrmSchemamanager;
  * @author christoph.kappestein@artemeon.de
  * @since 7.1
  */
-class OrmObjectinitTest extends Testbase
+class OrmObjectlistTest extends Testbase
 {
     protected function setUp()
     {
