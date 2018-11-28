@@ -123,9 +123,6 @@ class OrmObjectlistTest extends Testbase
 
     public function testObjectListMultiPaged()
     {
-        $info = Database::getInstance()->getDbInfo();
-        print_r($info);
-
         $orm = new OrmObjectlist();
         $result = $orm->getObjectList([OrmObjectlistBar::class, OrmObjectlistBaz::class], "", 0, 5);
 
