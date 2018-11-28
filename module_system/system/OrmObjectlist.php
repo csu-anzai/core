@@ -50,7 +50,7 @@ class OrmObjectlist extends OrmBase
     /**
      * Counts the objects found by the currently setup query.
      *
-     * @param string $strTargetClass
+     * @param string|array $strTargetClass
      * @param string $strPrevid
      *
      * @return int
@@ -89,7 +89,7 @@ class OrmObjectlist extends OrmBase
      * You may influence the ordering and restrictions by adding the relevant restriction / order
      * objects before calling this method.
      *
-     * @param string $strTargetClass
+     * @param string|array $strTargetClass
      * @param string $strPrevid
      * @param null|int $intStart
      * @param null|int $intEnd
@@ -164,7 +164,7 @@ class OrmObjectlist extends OrmBase
      * You may influence the ordering and restrictions by adding the relevant restriction / order
      * objects before calling this method.
      *
-     * @param string $strTargetClass
+     * @param string|array $strTargetClass
      * @param string $strPrevid
      * @param null|int $intStart
      * @param null|int $intEnd
