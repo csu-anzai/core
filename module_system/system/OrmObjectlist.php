@@ -121,6 +121,12 @@ class OrmObjectlist extends OrmBase
         $arrReturn = array();
         foreach ($arrRows as $arrOneRow) {
             //Caching is only allowed if the fetched and required classes match. Otherwise there could be missing queried tables.
+
+            // @TODO we should move the system_class check into the query which would increase the performance. We have
+            // this currently on the PHP side to handle abstract classes etc. But handling abstract classes produces
+            // some problems i.e. we need to make for each entry an additional query means we run into the n+1 query
+            // problem. Also the count query could have problems since it does not handles such a logic
+
             if (!is_array($strTargetClass)) {
                 if ($arrOneRow["system_class"] == $strTargetClass) {
                     OrmRowcache::addSingleInitRow($arrOneRow);
@@ -134,9 +140,17 @@ class OrmObjectlist extends OrmBase
                     }
                 }
             } else {
+                // in case we want to query multiple entities
                 if (in_array($arrOneRow["system_class"], $strTargetClass)) {
+                    // NOTE this could be dangerous since $arrOneRow contains not all available columns so we have
+                    // later on a partial entity, means an entity where not all fields are available (only the fields
+                    // which are available on every entity). But we still add this to the cache since otherwise we run
+                    // into the n+1 query problem
                     OrmRowcache::addSingleInitRow($arrOneRow);
                     $arrReturn[] = $arrOneRow["system_id"];
+                } else {
+                    // for multi types we dont support abstract classes so you have to provide the concrete class, means
+                    // the name which is also used in the database
                 }
             }
         }
