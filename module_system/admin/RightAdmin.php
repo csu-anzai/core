@@ -137,10 +137,16 @@ class RightAdmin extends AdminController implements AdminInterface
      * @permissions right
      * @responseType html
      * @return string
+     * @throws Exception
      */
     protected function actionLoadRights()
     {
-        $object = $this->objFactory->getObject($this->getSystemid());
+        $systemid = $this->getSystemid();
+        if ($systemid == "" && $this->objSession->isSuperAdmin()) {
+            $systemid = "0";
+        }
+
+        $object = $this->objFactory->getObject($systemid);
 
         if (!$object instanceof Root) {
             throw new \InvalidArgumentException("Invalid systemid");

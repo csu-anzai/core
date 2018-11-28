@@ -122,16 +122,21 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
      */
     public function getStrDisplayName()
     {
-        $strReturn = $this->getStrUsername();
-        if ($this->getStrName() != "") {
-            $strReturn .= " (".$this->getStrName().", ".$this->getStrForename().")";
+        $username = $this->getStrUsername();
+        $lastName = $this->getStrName();
+        $firstName = $this->getStrForename();
+
+        if (!empty($lastName)) {
+            $return = "{$firstName} {$lastName} ({$username})";
+        } else {
+            $return = $username;
         }
 
         if ($this->getIntRecordDeleted() == 1) {
-            $strReturn = $this->getStrUsername()." (".$this->getLang("user_deleted").")";
+            $return = $username . " (" . $this->getLang("user_deleted") . ")";
         }
 
-        return $strReturn;
+        return $return;
     }
 
     /**

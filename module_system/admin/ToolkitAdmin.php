@@ -39,6 +39,7 @@ use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Popover\Popover;
 use Kajona\System\View\Components\Tabbedcontent\Tabbedcontent;
 use Kajona\System\View\Components\Textrow\TextRow;
+use Kajona\System\View\Components\Warningbox\Warningbox;
 use Kajona\Tags\System\TagsFavorite;
 use Kajona\Tags\System\TagsTag;
 
@@ -1372,6 +1373,22 @@ HTML;
         $arrTemplate["text"] = $strText;
         $arrTemplate["class"] = $strClass;
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "text_row_form", true);
+    }
+
+    /**
+     * Renders a hint form field
+     *
+     * @param string $hint
+     * @param bool $hideLongText
+     * @return string
+     */
+    public function formTextHint($hint, $hideLongText = false)
+    {
+        if ($hideLongText) {
+            return $this->formTextRow('<div class="form-hint-container" onclick="require(\'jquery\')(this).toggleClass(\'form-hint-container\')">' . $hint . '</div>');
+        } else {
+            return $this->formTextRow($hint);
+        }
     }
 
     /**
