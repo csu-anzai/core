@@ -369,7 +369,7 @@ interface DbDriverInterface
     public function getConcatExpression(array $parts);
 
     /**
-     * Returns a query expression which concatenates different values. This can bei either column names or strings.
+     * Returns a query expression which combines two separate sql queries. These queries must select the same columns
      *
      * @param array $parts
      * @return string
