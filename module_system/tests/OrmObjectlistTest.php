@@ -119,6 +119,43 @@ class OrmObjectlistTest extends Testbase
             }
         }
     }
+
+    public function testObjectListMultiPaged()
+    {
+        $orm = new OrmObjectlist();
+        $result = $orm->getObjectList([OrmObjectlistBar::class, OrmObjectlistBaz::class], "", 0, 5);
+
+        $this->assertEquals(6, count($result));
+
+        foreach ($result as $i => $entity) {
+            $this->assertInstanceOf(OrmObjectlistFoo::class, $entity);
+            // we have the shared properties
+            $this->assertEquals("foo", $entity->getStrFoo());
+
+            if ($i > 3) {
+                $this->assertInstanceOf(OrmObjectlistBaz::class, $entity);
+                // we dont have specific properties
+                $this->assertNull($entity->getStrBaz());
+            } else {
+                $this->assertInstanceOf(OrmObjectlistBar::class, $entity);
+                // we dont have specific properties
+                $this->assertNull($entity->getStrBar());
+            }
+        }
+    }
+
+    public function testObjectListAbstract()
+    {
+        $orm = new OrmObjectlist();
+        $result = $orm->getObjectList(OrmObjectlistFoo::class);
+
+        $this->assertEquals(12, count($result));
+
+        foreach ($result as $entity) {
+            $this->assertInstanceOf(OrmObjectlistFoo::class, $entity);
+            $this->assertEquals("foo", $entity->getStrFoo());
+        }
+    }
 }
 
 
