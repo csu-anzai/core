@@ -35,7 +35,7 @@ class OrmObjectinitTest extends Testbase
     }
 
 
-    public function tebbkkstObjectInit()
+    public function testObjectInit()
     {
         $objObject = new OrmObjectinitTestclass();
 
