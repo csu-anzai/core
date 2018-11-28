@@ -336,4 +336,12 @@ abstract class DbBase implements DbDriverInterface
     {
         return 'CONCAT(' . implode(', ', $parts) . ')';
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getUnionExpression(array $parts)
+    {
+        return '(' . implode(') UNION ALL (', $parts) . ')';
+    }
 }

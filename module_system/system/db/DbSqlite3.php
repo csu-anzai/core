@@ -738,4 +738,12 @@ class DbSqlite3 extends DbBase
     {
         return implode(' || ', $parts);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getUnionExpression(array $parts)
+    {
+        return implode(' UNION ALL ', $parts);
+    }
 }

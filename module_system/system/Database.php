@@ -1386,10 +1386,21 @@ class Database
     }
 
     /**
+     * @param array $parts
      * @return string
      */
     public function getConcatExpression(array $parts)
     {
         return $this->objDbDriver->getConcatExpression($parts);
     }
+
+    /**
+     * @param array $parts
+     * @return string
+     */
+    public function getUnionExpression(array $parts)
+    {
+        return $this->objDbDriver->getUnionExpression($parts);
+    }
+
 }

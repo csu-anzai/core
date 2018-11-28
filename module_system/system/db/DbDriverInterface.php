@@ -369,6 +369,14 @@ interface DbDriverInterface
     public function getConcatExpression(array $parts);
 
     /**
+     * Returns a query expression which concatenates different values. This can bei either column names or strings.
+     *
+     * @param array $parts
+     * @return string
+     */
+    public function getUnionExpression(array $parts);
+
+    /**
      * Returns the number of affected rows from the last _pQuery call
      *
      * @return int

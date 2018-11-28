@@ -65,10 +65,10 @@ class OrmObjectlist extends OrmBase
         if (is_array($strTargetClass)) {
             $parts = [];
             foreach ($strTargetClass as $targetClass) {
-                $parts[] = "(" . $this->getCountQuery($targetClass, $strPrevid, $arrParams) . ")";
+                $parts[] = $this->getCountQuery($targetClass, $strPrevid, $arrParams);
             }
 
-            $strQuery = implode(" UNION ALL ", $parts);
+            $strQuery = Database::getInstance()->getUnionExpression($parts);
         } else {
             $strQuery = $this->getCountQuery($strTargetClass, $strPrevid, $arrParams);
         }
@@ -107,10 +107,10 @@ class OrmObjectlist extends OrmBase
             $select = $this->getIntersectSelect($strTargetClass);
             $parts = [];
             foreach ($strTargetClass as $targetClass) {
-                $parts[] = "(" . $this->getListQuery($targetClass, $strPrevid, $arrParams, $select) . ")";
+                $parts[] = $this->getListQuery($targetClass, $strPrevid, $arrParams, $select);
             }
 
-            $strQuery = implode(" UNION ALL ", $parts);
+            $strQuery = Database::getInstance()->getUnionExpression($parts);
         } else {
             $strQuery = $this->getListQuery($strTargetClass, $strPrevid, $arrParams);
         }
