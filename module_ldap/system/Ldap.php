@@ -131,6 +131,7 @@ class Ldap
             $strUsername = $this->arrConfig["ldap_common_name"] . "=" . $strUsername . "," . $strContext;
         }
 
+        Logger::getInstance(Logger::USERSOURCES)->info("ldap authenticate user " . $strUsername);
         $bitBind = @ldap_bind($this->objCx, $strUsername, $strPassword);
         $this->internalBind();
 

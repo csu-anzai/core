@@ -10,6 +10,7 @@
 namespace Kajona\Ldap\System\Usersources;
 
 use Kajona\Ldap\System\Ldap;
+use Kajona\Ldap\System\LdapAuthenticatorInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Database;
 use Kajona\System\System\Exception;
@@ -65,41 +66,9 @@ class UsersourcesSourceLdap implements UsersourcesUsersourceInterface
      */
     public function authenticateUser(UsersourcesUserInterface $objUser, $strPassword)
     {
-        if ($objUser instanceof UsersourcesUserLdap) {
-            foreach (Ldap::getAllInstances() as $objSingleLdap) {
-
-                if ($objUser->getIntCfg() != $objSingleLdap->getIntCfgNr()) {
-                    continue;
-                }
-
-                $objRealUser = new UserUser($objUser->getSystemid());
-
-                $arrSingleUser = $objSingleLdap->getUserdetailsByName($objRealUser->getStrUsername());
-                if ($arrSingleUser !== false && count($arrSingleUser) == 1) {
-                    $arrSingleUser = $arrSingleUser[0];
-                    $bitReturn = $objSingleLdap->authenticateUser($arrSingleUser['identifier'], $strPassword);
-
-
-                    //synchronize the local data with the ldap-data
-                    if ($objUser instanceof UsersourcesUserLdap) {
-                        $objUser->setStrFamilyname($arrSingleUser["familyname"]);
-                        $objUser->setStrGivenname($arrSingleUser["givenname"]);
-                        $objUser->setStrEmail($arrSingleUser["mail"]);
-                        $objUser->setStrDN($arrSingleUser["identifier"]);
-                        $objUser->setIntCfg($objSingleLdap->getIntCfgNr());
-                        $objUser->updateObjectToDb();
-                        $this->objDB->flushQueryCache();
-
-                    }
-
-                    return $bitReturn;
-                }
-
-
-            }
-        }
-
-        return false;
+        /** @var LdapAuthenticatorInterface $userNameGenerator */
+        $ldapAuthenticate = Carrier::getInstance()->getContainer()->offsetGet(\Kajona\Ldap\System\ServiceProvider::STR_LDAP_AUTHENTICATOR);
+        return $ldapAuthenticate->authenticateUser($objUser, $strPassword);
     }
 
     /**
