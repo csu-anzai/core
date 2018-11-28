@@ -744,6 +744,10 @@ class DbSqlite3 extends DbBase
      */
     public function getUnionExpression(array $parts)
     {
+        $parts = array_map(function($part){
+            return 'SELECT * FROM (' . $part . ')';
+        }, $parts);
+
         return implode(' UNION ALL ', $parts);
     }
 }
