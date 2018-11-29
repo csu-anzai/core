@@ -342,6 +342,6 @@ abstract class DbBase implements DbDriverInterface
      */
     public function getUnionExpression(array $parts)
     {
-        return '(' . implode(') UNION (', $parts) . ')';
+        return '(' . implode(') UNION ALL (', $parts) . ')';
     }
 }
