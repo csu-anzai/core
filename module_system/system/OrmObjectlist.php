@@ -107,10 +107,11 @@ class OrmObjectlist extends OrmBase
             $select = $this->getIntersectSelect($strTargetClass);
             $parts = [];
             foreach ($strTargetClass as $targetClass) {
-                $parts[] = $this->getListQuery($targetClass, $strPrevid, $arrParams, $select);
+                $parts[] = $this->getListQuery($targetClass, $strPrevid, $arrParams, $select, false);
             }
 
             $strQuery = Database::getInstance()->getUnionExpression($parts);
+            $strQuery.= $this->getUnionOrderBy($strTargetClass);
         } else {
             $strQuery = $this->getListQuery($strTargetClass, $strPrevid, $arrParams);
         }
@@ -263,11 +264,12 @@ class OrmObjectlist extends OrmBase
      * @param string $strPrevid
      * @param array $arrParams
      * @param string $select
+     * @param bool $orderBy
      * @return string
      * @throws Exception
      * @throws OrmException
      */
-    private function getListQuery($targetClass, $strPrevid, array &$arrParams, $select = "*")
+    private function getListQuery($targetClass, $strPrevid, array &$arrParams, $select = "*", $orderBy = true)
     {
         $strQuery = "SELECT ".$select."
                        ".$this->getQueryBase($targetClass)."
@@ -280,7 +282,9 @@ class OrmObjectlist extends OrmBase
         $this->addLogicalDeleteRestriction();
         $this->processWhereRestrictions($strQuery, $arrParams, $targetClass);
 
-        $strQuery .= $this->getOrderBy(new Reflection($targetClass));
+        if ($orderBy) {
+            $strQuery .= $this->getOrderBy(new Reflection($targetClass));
+        }
 
         return $strQuery;
     }
@@ -400,6 +404,21 @@ class OrmObjectlist extends OrmBase
         return $strOrderBy;
     }
 
+    /**
+     * Returns the default order by for the union query
+     *
+     * @param array $targetClass
+     * @return string
+     */
+    private function getUnionOrderBy(array $targetClass)
+    {
+        // we order the result at first based on the class and then use the default sorting
+        $parts[] = "system_class ASC";
+        $parts[] = "system_sort ASC";
+        $parts[] = "system_create_date DESC";
+
+        return " ORDER BY ".implode(", ", $parts)." ";
+    }
 
     protected function addLogicalDeleteRestriction()
     {
