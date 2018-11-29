@@ -147,7 +147,7 @@ class Popover extends AbstractComponent
     /**
      * @return string
      */
-    public function getPlacement()
+    public function getPlacement() : string
     {
         return $this->placement;
     }
