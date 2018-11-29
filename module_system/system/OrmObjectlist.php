@@ -65,12 +65,12 @@ class OrmObjectlist extends OrmBase
         if (is_array($strTargetClass)) {
             $parts = [];
             foreach ($strTargetClass as $targetClass) {
-                $parts[] = $this->getCountQuery($targetClass, $strPrevid, $arrParams);
+                $parts[] = $this->getQuery($targetClass, $strPrevid, $arrParams, "COUNT(*) AS cnt", false);
             }
 
             $strQuery = Database::getInstance()->getUnionExpression($parts);
         } else {
-            $strQuery = $this->getCountQuery($strTargetClass, $strPrevid, $arrParams);
+            $strQuery = $this->getQuery($strTargetClass, $strPrevid, $arrParams, "COUNT(*) AS cnt", false);
         }
 
         $results = Carrier::getInstance()->getObjDB()->getPArray($strQuery, $arrParams);
@@ -107,13 +107,13 @@ class OrmObjectlist extends OrmBase
             $select = $this->getIntersectSelect($strTargetClass);
             $parts = [];
             foreach ($strTargetClass as $targetClass) {
-                $parts[] = $this->getListQuery($targetClass, $strPrevid, $arrParams, $select, false);
+                $parts[] = $this->getQuery($targetClass, $strPrevid, $arrParams, $select, false);
             }
 
             $strQuery = Database::getInstance()->getUnionExpression($parts);
             $strQuery.= $this->getUnionOrderBy($strTargetClass);
         } else {
-            $strQuery = $this->getListQuery($strTargetClass, $strPrevid, $arrParams);
+            $strQuery = $this->getQuery($strTargetClass, $strPrevid, $arrParams);
         }
 
         //$s = Carrier::getInstance()->getObjDB()->prettifyQuery($strQuery, $arrParams);
@@ -210,19 +210,9 @@ class OrmObjectlist extends OrmBase
      */
     public function getSingleObject($strTargetClass, $strPrevid = "")
     {
+        $arrParams = [];
+        $strQuery = $this->getQuery($strTargetClass, $strPrevid, $arrParams);
 
-        $strQuery = "SELECT *
-                           ".$this->getQueryBase($strTargetClass)."
-                       ".($strPrevid != "" && $strPrevid !== null ? " AND system_prev_id = ? " : "");
-
-        $arrParams = array();
-        if ($strPrevid != "") {
-            $arrParams[] = $strPrevid;
-        }
-
-        $this->addLogicalDeleteRestriction();
-        $this->processWhereRestrictions($strQuery, $arrParams, $strTargetClass);
-        $strQuery .= $this->getOrderBy(new Reflection($strTargetClass));
         $arrRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, $arrParams);
 
         if (isset($arrRow["system_id"])) {
@@ -234,31 +224,7 @@ class OrmObjectlist extends OrmBase
     }
 
     /**
-     * @param string|array $targetClass
-     * @param string $strPrevid
-     * @param array $arrParams
-     * @return string
-     * @throws Exception
-     * @throws OrmException
-     */
-    private function getCountQuery($targetClass, $strPrevid, array &$arrParams)
-    {
-        $strQuery = "SELECT COUNT(*) AS cnt
-                       ".$this->getQueryBase($targetClass)."
-                       ".($strPrevid != "" && $strPrevid !== null ? " AND system_prev_id = ? " : "")."";
-
-        if ($strPrevid != "") {
-            $arrParams[] = $strPrevid;
-        }
-
-        $this->addLogicalDeleteRestriction();
-        $this->processWhereRestrictions($strQuery, $arrParams, $targetClass);
-
-        return $strQuery;
-    }
-
-    /**
-     * Returns the complete list query
+     * Builds the base select statement
      *
      * @param string|array $targetClass
      * @param string $strPrevid
@@ -269,7 +235,7 @@ class OrmObjectlist extends OrmBase
      * @throws Exception
      * @throws OrmException
      */
-    private function getListQuery($targetClass, $strPrevid, array &$arrParams, $select = "*", $orderBy = true)
+    private function getQuery($targetClass, $strPrevid, array &$arrParams, $select = "*", $orderBy = true)
     {
         $strQuery = "SELECT ".$select."
                        ".$this->getQueryBase($targetClass)."
