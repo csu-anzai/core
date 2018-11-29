@@ -109,13 +109,10 @@ class OrmObjectlistTest extends Testbase
             // we have the shared properties
             $this->assertEquals("foo", $entity->getStrFoo());
 
-            if ($i > 3) {
-                $this->assertInstanceOf(OrmObjectlistBaz::class, $entity);
-                // we dont have specific properties
+            // we dont have specific properties
+            if ($entity instanceof OrmObjectlistBaz) {
                 $this->assertNull($entity->getStrBaz());
-            } else {
-                $this->assertInstanceOf(OrmObjectlistBar::class, $entity);
-                // we dont have specific properties
+            } elseif ($entity instanceof OrmObjectlistBar) {
                 $this->assertNull($entity->getStrBar());
             }
         }
