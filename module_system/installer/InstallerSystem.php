@@ -11,15 +11,13 @@ namespace Kajona\System\Installer;
 
 use Kajona\Packagemanager\System\PackagemanagerManager;
 use Kajona\System\System\Carrier;
-use Kajona\System\System\Classloader;
+use Kajona\System\System\Database;
 use Kajona\System\System\Date;
 use Kajona\System\System\DbDatatypes;
-use Kajona\System\System\Filesystem;
 use Kajona\System\System\IdGenerator;
 use Kajona\System\System\InstallerBase;
 use Kajona\System\System\InstallerInterface;
 use Kajona\System\System\LanguagesLanguage;
-use Kajona\System\System\Logger;
 use Kajona\System\System\MessagingAlert;
 use Kajona\System\System\MessagingConfig;
 use Kajona\System\System\MessagingMessage;
@@ -472,8 +470,8 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["change_class"]          = array("char254", true);
         $arrFields["change_action"]         = array("char254", true);
         $arrFields["change_property"]       = array("char254", true);
-        $arrFields["change_oldvalue"]       = array("text", true);
-        $arrFields["change_newvalue"]       = array("text", true);
+        $arrFields["change_oldvalue"]       = array(DbDatatypes::STR_TYPE_LONGTEXT, true);
+        $arrFields["change_newvalue"]       = array(DbDatatypes::STR_TYPE_LONGTEXT, true);
 
 
         $arrTables = array("changelog");
@@ -577,6 +575,11 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "7.0.1") {
             $strReturn .= $this->update_701_702();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.0.2") {
+            $strReturn .= $this->update_702_703();
         }
 
         return $strReturn."\n\n";
@@ -842,6 +845,39 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $strReturn .= "Upating module version".PHP_EOL;
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.2");
+
+        return $strReturn;
+    }
+
+    private function update_702_703()
+    {
+        $dbPrefix = _dbprefix_;
+
+        $strReturn = "Updating 7.0.2 to 7.0.3...\n";
+
+        $strReturn .= "Migrating oldvalue and newvalue columns of change tables to longtext".PHP_EOL;
+
+        $arrTables = array("changelog");
+        $arrProvider = SystemChangelog::getAdditionalProviders();
+        foreach($arrProvider as $objOneProvider) {
+            $arrTables[] = $objOneProvider->getTargetTable();
+        }
+
+        foreach($arrTables as $strOneTable) {
+            //Need to do it this way since under oracle converting from varchar2 to clob is not possible
+            Database::getInstance()->addColumn($strOneTable, "temp_change_oldvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+            Database::getInstance()->_pQuery("UPDATE $dbPrefix$strOneTable SET temp_change_oldvalue=change_oldvalue", []);
+            Database::getInstance()->removeColumn($strOneTable, "change_oldvalue");
+            Database::getInstance()->changeColumn($strOneTable, "temp_change_oldvalue", "change_oldvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+
+            Database::getInstance()->addColumn($strOneTable, "temp_change_newvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+            Database::getInstance()->_pQuery("UPDATE $dbPrefix$strOneTable SET temp_change_newvalue=change_newvalue", []);
+            Database::getInstance()->removeColumn($strOneTable, "change_newvalue");
+            Database::getInstance()->changeColumn($strOneTable, "temp_change_newvalue", "change_newvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+        }
+
+        $strReturn .= "Upating module version".PHP_EOL;
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.3");
 
         return $strReturn;
     }
