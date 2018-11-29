@@ -748,6 +748,6 @@ class DbSqlite3 extends DbBase
             return 'SELECT * FROM (' . $part . ')';
         }, $parts);
 
-        return implode(' UNION ALL ', $parts);
+        return implode(' UNION ', $parts);
     }
 }
