@@ -1184,7 +1184,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
             $strReturn = $this->objToolkit->genericAdminList($objGroup->getSystemid(), $objGroup->getStrName(), AdminskinHelper::getAdminImage($objGroup->getStrIcon()), $strAction);
 
 
-            return json_encode(["state" => "ok", "row" => $strReturn]);
+            return json_encode(["state" => "ok", "row" => $strReturn, "message" => $this->getLang("mitglied_speichern_erfolg")]);
         } else {
             throw new Exception($this->getLang("mitglied_speichern_fehler"), Exception::$level_ERROR);
         }
