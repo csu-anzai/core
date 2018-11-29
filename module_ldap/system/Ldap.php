@@ -126,6 +126,7 @@ class Ldap
      */
     public function authenticateUser($strUsername, $strPassword)
     {
+        Logger::getInstance(Logger::USERSOURCES)->info("ldap authenticate user " . $strUsername);
         $bitBind = @ldap_bind($this->objCx, $strUsername, $strPassword);
         $this->internalBind();
 

@@ -76,6 +76,10 @@ define('dialog', ['jquery', 'bootstrap', 'router', 'util', 'folderview'], functi
             }
         };
 
+        this.isVisible = function() {
+            return $('#' + this.containerId + ".modal-dialog").is(":visible");
+        };
+
         this.setContentRaw = function(strContent) {
             $('#' + this.containerId + '_content').html(strContent);
         };
