@@ -55,8 +55,10 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util', 'router'], functi
      * @param $objAlert
      */
     var renderAlert = function($objAlert) {
-        dialog = dialogHelper.showConfirmationDialog($objAlert.title, $objAlert.body, $objAlert.confirmLabel, getActionCallback($objAlert.onAccept));
-        ajax.genericAjaxCall("messaging", "deleteAlert", $objAlert.systemid);
+        if (!dialog || !dialog.isVisible()) {
+            dialog = dialogHelper.showConfirmationDialog($objAlert.title, $objAlert.body, $objAlert.confirmLabel, getActionCallback($objAlert.onAccept));
+            ajax.genericAjaxCall("messaging", "deleteAlert", $objAlert.systemid);
+        }
     };
 
     /**
