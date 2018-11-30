@@ -8,6 +8,9 @@ declare(strict_types=1);
 namespace Kajona\System\System;
 
 /**
+ * Shows a notification to the user. This should be used for informational messages since it does not interrupt the
+ * workflow of the user
+ *
  * @author christoph.kappestein@artemeon.de
  * @since 7.1
  */
