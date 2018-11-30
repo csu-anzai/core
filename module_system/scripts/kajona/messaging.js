@@ -55,7 +55,7 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util', 'router', 'toastr
      * @param $objAlert
      */
     var renderAlert = function($objAlert) {
-        if ($objAlert.type === "notification") {
+        if ($objAlert.type === "Kajona\\System\\System\\MessagingNotification") {
             var options = {
                 onclick: getActionCallback($objAlert.onAccept),
             };
