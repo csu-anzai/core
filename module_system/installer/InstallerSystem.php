@@ -23,6 +23,7 @@ use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\MessagingAlert;
 use Kajona\System\System\MessagingConfig;
 use Kajona\System\System\MessagingMessage;
+use Kajona\System\System\MessagingNotification;
 use Kajona\System\System\MessagingQueue;
 use Kajona\System\System\OrmSchemamanager;
 use Kajona\System\System\Resourceloader;
@@ -898,9 +899,8 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
     {
         $strReturn = "Updating 7.1 to 7.1.1...\n";
 
-        if (!$this->objDB->hasColumn("agp_messages_alert", "alert_type")) {
-            $this->objDB->addColumn("agp_messages_alert", "alert_type", DbDatatypes::STR_TYPE_CHAR20);
-        }
+        $orm = new OrmSchemamanager();
+        $orm->createTable(MessagingNotification::class);
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.1");
