@@ -376,6 +376,7 @@ HTML;
                             $objFlow->getHandler()->handleStatusTransition($objObject, $objTransition);
 
                             $objAlert = new MessagingAlert();
+                            $objAlert->setStrType(MessagingAlert::TYPE_NOTIFICATION);
                             $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
                             $objAlert->setStrBody($this->getLang("action_status_change_success", "flow"));
                             $objAlert->setObjAlertAction(new MessagingAlertActionVoid());
@@ -389,6 +390,7 @@ HTML;
 
                     } catch (RedirectException $e) {
                         $objAlert = new MessagingAlert();
+                        $objAlert->setStrType(MessagingAlert::TYPE_NOTIFICATION);
                         $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
                         $objAlert->setStrBody($this->getLang("action_status_change_success", "flow"));
                         $objAlert->setObjAlertAction(new MessagingAlertActionRedirect($e->getHref()));
