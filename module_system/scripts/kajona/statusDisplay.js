@@ -36,17 +36,43 @@ define('statusDisplay', ['jquery', 'toastr'], function ($, toastr) {
             if(message.indexOf("<message>") != -1 && message.indexOf("<error>") == -1) {
                 var intStart = message.indexOf("<message>")+9;
                 var responseText = message.substr(intStart, message.indexOf("</message>")-intStart);
-
-                toastr.info(responseText);
+                this.messageOK(responseText);
             }
 
             if(message.indexOf("<error>") != -1) {
                 var intStart = message.indexOf("<error>")+7;
                 var responseText = message.substr(intStart, message.indexOf("</error>")-intStart);
-
-                toastr.error(responseText);
+                this.messageError(responseText);
             }
-        }
+        },
+
+        /**
+         * Creates a success message box contaning the passed content
+         *
+         * @param {String} strMessage
+         */
+        messageSuccess : function(strMessage) {
+            toastr.success(strMessage);
+        },
+
+        /**
+         * Creates a informal message box contaning the passed content
+         *
+         * @param {String} strMessage
+         */
+        messageOK : function(strMessage) {
+            toastr.info(strMessage);
+        },
+
+        /**
+         * Creates an error message box containg the passed content
+         *
+         * @param {String} strMessage
+         */
+        messageError : function(strMessage) {
+            toastr.error(strMessage);
+        },
+
     };
 
 });
