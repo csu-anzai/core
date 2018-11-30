@@ -23,7 +23,6 @@ use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\MessagingAlert;
 use Kajona\System\System\MessagingConfig;
 use Kajona\System\System\MessagingMessage;
-use Kajona\System\System\MessagingNotification;
 use Kajona\System\System\MessagingQueue;
 use Kajona\System\System\OrmSchemamanager;
 use Kajona\System\System\Resourceloader;
@@ -562,11 +561,6 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             $strReturn .= $this->update_703_71();
         }
 
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "7.1") {
-            $strReturn .= $this->update_71_711();
-        }
-
         return $strReturn."\n\n";
     }
 
@@ -895,18 +889,6 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         return $strReturn;
     }
 
-    private function update_71_711()
-    {
-        $strReturn = "Updating 7.1 to 7.1.1...\n";
-
-        $orm = new OrmSchemamanager();
-        $orm->createTable(MessagingNotification::class);
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.1");
-
-        return $strReturn;
-    }
 
 
     /**
