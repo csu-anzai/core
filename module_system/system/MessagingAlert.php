@@ -41,7 +41,14 @@ use Kajona\System\System\Alert\MessagingAlertActionInterface;
  */
 class MessagingAlert extends Model implements ModelInterface, AdminListableInterface, \JsonSerializable
 {
+    /**
+     * Shows a notification which does not interrupt the user, should be used for informational messages
+     */
     const TYPE_NOTIFICATION = 'notification';
+
+    /**
+     * Shows a modal dialog which forces an action from the user should be used for important messages
+     */
     const TYPE_MODAL = 'modal';
 
     /**
