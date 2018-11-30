@@ -42,16 +42,6 @@ use Kajona\System\System\Alert\MessagingAlertActionInterface;
 class MessagingAlert extends Model implements ModelInterface, AdminListableInterface, \JsonSerializable
 {
     /**
-     * Shows a notification which does not interrupt the user, should be used for informational messages
-     */
-    const TYPE_NOTIFICATION = 'notification';
-
-    /**
-     * Shows a modal dialog which forces an action from the user should be used for important messages
-     */
-    const TYPE_MODAL = 'modal';
-
-    /**
      * @var string
      * @tableColumn agp_messages_alert.alert_user
      * @tableColumnDatatype char20
@@ -68,13 +58,6 @@ class MessagingAlert extends Model implements ModelInterface, AdminListableInter
      * @tableColumnIndex
      */
     private $strRef = "";
-
-    /**
-     * @var string
-     * @tableColumn agp_messages_alert.alert_type
-     * @tableColumnDatatype char20
-     */
-    private $strType = "";
 
     /**
      * @var string
@@ -156,7 +139,7 @@ class MessagingAlert extends Model implements ModelInterface, AdminListableInter
     public function jsonSerialize()
     {
         return [
-            "type" => $this->strType,
+            "type" => get_class($this),
             "title" => $this->strTitle,
             "body" => $this->strBody,
             "confirmLabel" => $this->strConfirmLabel,
@@ -247,22 +230,6 @@ class MessagingAlert extends Model implements ModelInterface, AdminListableInter
     public function setStrRef($strRef)
     {
         $this->strRef = $strRef;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStrType()
-    {
-        return $this->strType;
-    }
-
-    /**
-     * @param string $strType
-     */
-    public function setStrType($strType)
-    {
-        $this->strType = $strType;
     }
 
     /**
