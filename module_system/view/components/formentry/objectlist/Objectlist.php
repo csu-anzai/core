@@ -207,7 +207,7 @@ class Objectlist extends FormentryComponentAbstract
             }
 
             $objObject = Objectfactory::getInstance()->getObject($strPathId);
-            $arrPath[] = strip_tags($objObject->getStrDisplayName());
+            $arrPath[] = strip_tags(html_entity_decode($objObject->getStrDisplayName()));
         }
 
         if (count($arrPath) == 0) {
