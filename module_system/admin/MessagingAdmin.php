@@ -228,14 +228,14 @@ JS;
                     $bitA = $this->getParam($strClassname."_bymail") == "true";
                     $objConfig->setBitBymail($bitA);
                     $this->objLifeCycleFactory->factory(get_class($objConfig))->update($objConfig);
-                    $strMessage = $objOneProvider->getStrName()." ".$this->getLang("provider_bymail")."=".($bitA ? "enabled" : "disabled");
+                    $strMessage = $objOneProvider->getStrName()." ".$this->getLang("provider_bymail")."=".($bitA ? $this->getLang("systemtask_systemstatus_active", "system") : $this->getLang("systemtask_systemstatus_inactive", "system"));
                     break;
 
                 } elseif ($this->getParam($strClassname."_enabled") != "") {
                     $bitA = $this->getParam($strClassname."_enabled") == "true";
                     $objConfig->setBitEnabled($bitA);
                     $this->objLifeCycleFactory->factory(get_class($objConfig))->update($objConfig);
-                    $strMessage = $objOneProvider->getStrName()." ".$this->getLang("provider_enabled")."=".($bitA ? "enabled" : "disabled");
+                    $strMessage = $objOneProvider->getStrName()." ".$this->getLang("provider_enabled")."=".($bitA ? $this->getLang("systemtask_systemstatus_active", "system") : $this->getLang("systemtask_systemstatus_inactive", "system"));
                     break;
                 }
             }

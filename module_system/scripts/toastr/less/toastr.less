@@ -2,7 +2,8 @@
  * Note that this is toastr v2.1.3, the "latest" version in url has no more maintenance,
  * please go to https://cdnjs.com/libraries/toastr.js and pick a certain version you want to use,
  * make sure you copy the url from the website since the url may change between versions.
- Changed to match Kajona Core styles
+ *
+ * Changed to match Kajona Core styles
  * */
 .toast-title {
     font-weight: bold;
@@ -116,6 +117,7 @@ button.toast-close-button {
     opacity: 0.8;
     -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
     filter: alpha(opacity=80);
+    border: 1px solid;
 }
 #toast-container > div.rtl {
     direction: rtl;
@@ -123,13 +125,11 @@ button.toast-close-button {
     background-position: right 15px center;
 }
 #toast-container > div:hover {
-    -moz-box-shadow: 0 0 12px #000000;
-    -webkit-box-shadow: 0 0 12px #000000;
-    box-shadow: 0 0 12px #000000;
     opacity: 1;
     -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
     filter: alpha(opacity=100);
     cursor: pointer;
+    border: 1px solid;
 }
 
 #toast-container > .toast {
@@ -143,26 +143,29 @@ button.toast-close-button {
     line-height: 18px;
     float: left;
     margin-left: -1em;
-    padding-right: 0.5em;
     margin-right: 0.5em;
 }
 
 #toast-container > .toast-info {
+    .alert-variant(@alert-info-bg; @alert-info-border; @alert-info-text);
     &:before {
         content: @fa-var-info;
     }
 }
 #toast-container > .toast-error {
+    .alert-variant(@alert-danger-bg; @alert-danger-border; @alert-danger-text);
     &:before {
         content: @fa-var-warning;
     }
 }
 #toast-container > .toast-success {
+    .alert-variant(@alert-success-bg; @alert-success-border; @alert-success-text);
     &:before {
         content: @fa-var-check;
     }
 }
 #toast-container > .toast-warning {
+    .alert-variant(@alert-warning-bg; @alert-warning-border; @alert-warning-text);
     &:before {
         content: @fa-var-warning;
     }
@@ -182,18 +185,7 @@ button.toast-close-button {
 .toast {
     background-color: #030303;
 }
-.toast-success {
-    .alert-variant(@alert-success-bg; @alert-success-border; @alert-success-text);
-}
-.toast-error {
-    .alert-variant(@alert-danger-bg; @alert-danger-border; @alert-danger-text);
-}
-.toast-info {
-    .alert-variant(@alert-info-bg; @alert-info-border; @alert-info-text);
-}
-.toast-warning {
-    .alert-variant(@alert-warning-bg; @alert-warning-border; @alert-warning-text);
-}
+
 .toast-progress {
     position: absolute;
     left: 0;
