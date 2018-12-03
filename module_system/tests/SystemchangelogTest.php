@@ -3,6 +3,7 @@
 namespace Kajona\System\Tests;
 
 use Kajona\System\System\Carrier;
+use Kajona\System\System\ChangelogContainer;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\Date;
 use Kajona\System\System\GenericeventListenerInterface;
@@ -127,6 +128,16 @@ class SystemchangelogTest extends Testbase
                 $this->assertTrue(in_array($objOneChangeSet->getStrNewValue(), array(6, 7)));
             }
         }
+
+        // test query old value
+        $arrChanges = SystemChangelog::getSpecificEntries($strSystemid, "arrayTest", "testArray", 2);
+        $this->assertEquals(1, count($arrChanges));
+
+        /** @var ChangelogContainer $container */
+        $container = $arrChanges[0];
+
+        $this->assertEquals(2, $container->getStrOldValue());
+        $this->assertEquals("", $container->getStrNewValue());
     }
 
     public function testArrayHandling()
