@@ -86,7 +86,7 @@ class StackedDataBar extends AbstractComponent
                     'value' => round($dataValue, 2),
                     'color' => $colorSet[$index],
                     'label' => isset($this->labels[$index]) ? $this->labels[$index] : "",
-                    'class' => str_replace(' ', '', $this->title).'-'.$index.'-'.$uniqueKey.'-box',
+                    'class' => $index.'-'.$uniqueKey.'-box',
                     'dataPointHandler' => $objDataPiont->getObjActionHandlerValue()
                 ];
             }
