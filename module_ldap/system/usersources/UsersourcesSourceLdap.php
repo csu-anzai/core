@@ -241,12 +241,11 @@ class UsersourcesSourceLdap implements UsersourcesUsersourceInterface
      */
     public function searchUser($strUsername, $intMax = 10)
     {
-        $strDbPrefix = _dbprefix_;
         $connection = Database::getInstance();
 
         $strQuery = "SELECT user_tbl.user_id
-                      FROM {$strDbPrefix}system, {$strDbPrefix}user AS user_tbl
-                      JOIN {$strDbPrefix}user_ldap AS user_ldap ON user_tbl.user_id = user_ldap.user_ldap_id
+                      FROM agp_system, agp_user AS user_tbl
+                      JOIN agp_user_ldap AS user_ldap ON user_tbl.user_id = user_ldap.user_ldap_id
                       WHERE
                           (
                           user_tbl.user_username LIKE ? 
