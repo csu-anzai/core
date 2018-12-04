@@ -62,7 +62,7 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util', 'router', 'toastr
 
             toastr.info($objAlert.title, $objAlert.body, options);
         } else {
-            if (!dialog || !dialog.isVisible()) {
+            if (!dialog || (dialog && !dialog.isVisible())) {
                 dialog = dialogHelper.showConfirmationDialog($objAlert.title, $objAlert.body, $objAlert.confirmLabel, getActionCallback($objAlert.onAccept));
             }
         }
