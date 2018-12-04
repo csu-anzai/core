@@ -287,7 +287,7 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
         if ($objUser != null) {
             return array($objUser);
         } else {
-            return null;
+            return [];
         }
     }
 
