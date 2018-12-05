@@ -78,12 +78,16 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
     forms.setFieldReadOnly = function(objField) {
         objField = util.getElement(objField);
 
-        if (objField.is('input:checkbox') || objField.is('select') || objField.data('datepicker') !== null) {
+        if ($('#'+objField.attr('id')+'_upl') && $('#'+objField.attr('id')+'_upl').fileupload) {
+            $('#'+objField.attr('id')+'_upl').fileupload('disable');
+        }
+        else if (objField.is('input:checkbox') || objField.is('select') || objField.data('datepicker') !== null) {
             objField.prop("disabled", "disabled");
         }
         else {
             objField.attr("readonly", "readonly");
         }
+
     };
 
     /**
@@ -94,10 +98,13 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
     forms.setFieldEditable = function(objField) {
         objField = util.getElement(objField);
 
-        if (objField.is('input:checkbox') || objField.is('select') || objField.data('datepicker') !== null) {
-            objField.removeProp("disabled");
+
+        if($('#'+objField.attr('id')+'_upl') && $('#'+objField.attr('id')+'_upl').fileupload) {
+            $('#'+objField.attr('id')+'_upl').fileupload('enable');
         }
-        else {
+        else if (objField.is('input:checkbox') || objField.is('select') || objField.data('datepicker') !== null) {
+            objField.removeProp("disabled");
+        } else {
             objField.removeProp("readonly");
         }
     };

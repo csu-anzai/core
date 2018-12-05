@@ -11,6 +11,11 @@ define('util', ['jquery'], function ($) {
     /** @exports util */
     var util = {};
 
+
+    util.isEllipsisActive = function(element) {
+        return element.offsetWidth + 2 < element.scrollWidth;
+    };
+
     /**
      * Function to get the element from the current opener.
      *
