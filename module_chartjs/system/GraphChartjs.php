@@ -731,6 +731,26 @@ class GraphChartjs implements GraphInterfaceFronted
         }
     }
 
+    /**
+     * For each data in a dataset the colors will vary
+     *
+     * @param bool $bitVaryBarColors
+     */
+    public function setVaryBarColorsForAllSeries($bitVaryBarColors = true)
+    {
+        if ($bitVaryBarColors && !empty($this->arrChartData['data']['datasets'])) {
+            foreach ($this->arrChartData['data']['datasets'] as $index => $dataset) {
+                $this->arrChartData['data']['datasets'][$index]["backgroundColor"] = $this->arrColors;
+                if ($dataset["borderColor"] !== '#FFFFFF') {
+                    $this->arrChartData['data']['datasets'][$index]["borderColor"] = $this->arrColors;
+                }
+            }
+        }
+
+        if (!$bitVaryBarColors) {
+            $this->setArrSeriesColors($this->arrColors);
+        }
+    }
 
     /**
      * @return mixed|string
