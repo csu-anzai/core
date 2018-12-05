@@ -11,6 +11,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Kajona\Oauth2\System\ProviderManager;
+use Kajona\Oauth2\System\VoidLogger;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\ServiceProvider;
 use Kajona\System\System\Session;
@@ -29,9 +30,10 @@ class ProviderManagerTest extends Testbase
         $httpClient = new Client();
         $lifeCycleFactory = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_LIFE_CYCLE_FACTORY);
         $session = Session::getInstance();
+        $logger = new VoidLogger();
         $providersConfig = $this->getProvidersConfig();
 
-        $providerManager = new ProviderManager($httpClient, $lifeCycleFactory, $session, $providersConfig);
+        $providerManager = new ProviderManager($httpClient, $lifeCycleFactory, $session, $logger, $providersConfig);
         $provider = $providerManager->getDefaultProvider();
 
         $authorizationUrl = $providerManager->buildAuthorizationUrl($provider);

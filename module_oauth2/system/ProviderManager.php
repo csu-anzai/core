@@ -14,6 +14,7 @@ use Kajona\System\System\Session;
 use Kajona\System\System\Usersources\UsersourcesUserKajona;
 use Kajona\System\System\UserUser;
 use Lcobucci\JWT\Parser;
+use Psr\Log\LoggerInterface;
 
 /**
  * ProviderManager
@@ -44,6 +45,11 @@ class ProviderManager
     private $session;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @var array
      */
     private $providersConfig;
@@ -52,13 +58,15 @@ class ProviderManager
      * @param Client $httpClient
      * @param ServiceLifeCycleFactory $lifeCycleFactory
      * @param Session $session
+     * @param LoggerInterface $logger
      * @param array $providersConfig
      */
-    public function __construct(Client $httpClient, ServiceLifeCycleFactory $lifeCycleFactory, Session $session, array $providersConfig)
+    public function __construct(Client $httpClient, ServiceLifeCycleFactory $lifeCycleFactory, Session $session, LoggerInterface $logger, array $providersConfig)
     {
         $this->httpClient = $httpClient;
         $this->lifeCycleFactory = $lifeCycleFactory;
         $this->session = $session;
+        $this->logger = $logger;
         $this->providersConfig = $providersConfig;
     }
 
@@ -89,8 +97,12 @@ class ProviderManager
      */
     public function handleCallback(Provider $provider, $code)
     {
+        $this->logger->info("Try to obtain an access token for provider " . $provider->getName() . " with code {$code}");
+
         $accessToken = $this->exchangeAccessToken($provider, $code);
         $certFile = $provider->getCertFile();
+
+        $this->logger->info("Received access token {$accessToken}");
 
         if (!empty($certFile) && is_file($certFile)) {
             // @TODO optional we can verify the token
@@ -109,10 +121,14 @@ class ProviderManager
         $lastName = $token->getClaim($claimMapping[self::CLAIM_LASTNAME] ?? "", "");
 
         if (empty($userName)) {
+            $this->logger->info("Could not map username claim, available claims: " . \json_encode($token->getClaims()));
+
             throw new \RuntimeException("Could not map username claim, available claims: " . \json_encode($token->getClaims()));
         }
 
         $userName = $this->normalizeName($userName);
+
+        $this->logger->info("Received username {$userName} from token");
 
         $user = $this->createOrGetUser($userName, $email, $firstName, $lastName);
 
@@ -174,6 +190,8 @@ class ProviderManager
      */
     protected function exchangeAccessToken(Provider $provider, $code)
     {
+        $this->logger->info("Request token endpoint " . $provider->getTokenUrl());
+
         $response = $this->httpClient->request("POST", $provider->getTokenUrl(), [
             "form_params" => [
                 "grant_type" => "authorization_code",
@@ -182,6 +200,11 @@ class ProviderManager
                 "code" => $code,
             ],
         ]);
+
+        $code = $response->getStatusCode();
+        $body = (string) $response->getBody();
+
+        $this->logger->info("Received response code {$code} with body {$body}");
 
         if ($response->getStatusCode() >= 400) {
             throw new \RuntimeException("Invalid response code");
@@ -211,6 +234,8 @@ class ProviderManager
     {
         $users = UserUser::getAllUsersByName($userName);
         if (empty($users)) {
+            $this->logger->info("User {$userName} not found, create a new user");
+
             $user = new UserUser();
             $user->setStrUsername($userName);
             $this->lifeCycleFactory->factory(get_class($user))->update($user);
@@ -226,6 +251,8 @@ class ProviderManager
 
             return $user;
         } else {
+            $this->logger->info("Found existing user {$userName}");
+
             return $users[0] ?? null;
         }
     }

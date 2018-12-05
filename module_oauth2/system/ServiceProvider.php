@@ -8,6 +8,7 @@ namespace Kajona\Oauth2\System;
 
 use GuzzleHttp\Client;
 use Kajona\System\System\Config;
+use Kajona\System\System\Logger;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
@@ -34,6 +35,7 @@ class ServiceProvider implements ServiceProviderInterface
                 $c[self::STR_HTTP_CLIENT],
                 $c[\Kajona\System\System\ServiceProvider::STR_LIFE_CYCLE_FACTORY],
                 $c[\Kajona\System\System\ServiceProvider::STR_SESSION],
+                Logger::getInstance("oauth2.log"),
                 Config::getInstance("module_oauth2")->getConfig("providers")
             );
         };
