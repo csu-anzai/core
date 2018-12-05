@@ -47,6 +47,7 @@ class ServiceProvider implements ServiceProviderInterface
             $httpsVerify = Config::getInstance("module_oauth2")->getConfig("https_verify");
 
             return new Client([
+                'http_errors' => false, // whether to throw an exception for non successful status codes
                 'verify' => $httpsVerify
             ]);
         };
