@@ -834,7 +834,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $strReturn .= "Migrating oldvalue and newvalue columns of change tables to longtext".PHP_EOL;
 
-        $arrTables = array("changelog");
+        $arrTables = array("agp_changelog");
         $arrProvider = SystemChangelog::getAdditionalProviders();
         foreach($arrProvider as $objOneProvider) {
             $arrTables[] = $objOneProvider->getTargetTable();
@@ -873,6 +873,9 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1");
 
         if (Config::getInstance()->getConfig("dbdriver") == "mysqli") {
+            // flush cache to exclude deleted tables
+            Database::getInstance()->flushTablesCache();
+
             $strReturn .= "Updating myisam tables".PHP_EOL;
 
             foreach (Database::getInstance()->getTables() as $table) {
