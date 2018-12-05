@@ -70,10 +70,11 @@ class ProviderManagerTest extends Testbase
 
         $lifeCycleFactory = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_LIFE_CYCLE_FACTORY);
         $session = Session::getInstance();
+        $logger = new VoidLogger();
         $providersConfig = $this->getProvidersConfig();
 
         $providerManager = $this->getMockBuilder(ProviderManager::class)
-            ->setConstructorArgs([$httpClient, $lifeCycleFactory, $session, $providersConfig])
+            ->setConstructorArgs([$httpClient, $lifeCycleFactory, $session, $logger, $providersConfig])
             ->setMethods(["createOrGetUser", "loginUser"])
             ->getMock();
 
@@ -106,9 +107,10 @@ class ProviderManagerTest extends Testbase
         $httpClient = new Client();
         $lifeCycleFactory = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_LIFE_CYCLE_FACTORY);
         $session = Session::getInstance();
+        $logger = new VoidLogger();
         $providersConfig = $this->getProvidersConfig();
 
-        $providerManager = new ProviderManager($httpClient, $lifeCycleFactory, $session, $providersConfig);
+        $providerManager = new ProviderManager($httpClient, $lifeCycleFactory, $session, $logger, $providersConfig);
         $result = $providerManager->getAvailableProviders();
 
         $this->assertEquals(1, count($result));
