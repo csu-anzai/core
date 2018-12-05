@@ -16,7 +16,7 @@ namespace Kajona\System\System;
 class PharModuleExtractor
 {
     private $strLogName = "pharextractor.log";
-    private $strExtractPattern = '/\.(jpg|jpeg|gif|png|js|less|css|otf|eot|svg|ttf|woff|woff2)$/i';
+    private $strExtractPattern = '/\.(jpg|jpeg|gif|png|js|css|otf|eot|svg|ttf|woff|woff2)$/i';
 
 
     private function extractStaticContent($arrIndexMap)
@@ -47,7 +47,7 @@ class PharModuleExtractor
                 //check for matching suffix and move to temp dir
                 if (preg_match($this->strExtractPattern, $strKey)) {
                     //extract the file and export it
-                    $strTargetPath = _realpath_."files/extract/".$strModule."/".$strKey;
+                    $strTargetPath = _realpath_."files/extract/".substr($strPath, 0, -5)."/".$strKey;
 
                     try {
                         $objFilesystem->folderCreate(dirname($strTargetPath), true, true);
