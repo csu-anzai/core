@@ -46,7 +46,7 @@ class PharModuleExtractor
 
                 //check for matching suffix and move to temp dir
                 if (preg_match($this->strExtractPattern, $strKey)) {
-                    //extract the file and export it
+                    //extract the file and export it, remove .phar suffixes from the filename
                     $strTargetPath = _realpath_."files/extract/".substr($strPath, 0, -5)."/".$strKey;
 
                     try {
