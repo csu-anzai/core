@@ -1755,9 +1755,21 @@ HTML;
     public function listConfirmationButton($strDialogContent, $strConfirmationLinkHref, $strButton, $strButtonTooltip, $strHeader = "", $strConfirmationButtonLabel = "")
     {
         //get the reload-url
-        $strParam = "";
         if (StringUtil::indexOf($strConfirmationLinkHref, "javascript:") === false) {
             $strParam = (StringUtil::indexOf($strConfirmationLinkHref, "?") ? "&" : "?") ."reloadUrl='+encodeURIComponent(document.location.hash.substr(1))+'";
+
+            $strConfirmationLink = "'".$strConfirmationLinkHref.$strParam."'";
+        } elseif (StringUtil::indexOf($strConfirmationLinkHref, "javascript:") === 0) {
+            // if starts with javascript: we use a closure because on some browser the user gets redirected to a blank
+            // page which displays the output of the javascript expression. But in our case we want that the user stays
+            // on the same site. Because of this we pass a function to the dialog setContent method which gets executed
+            // on click
+            $strConfirmationLinkHref = substr($strConfirmationLinkHref, 11);
+            $strConfirmationLinkHref = stripslashes($strConfirmationLinkHref);
+
+            $strConfirmationLink = "function() { {$strConfirmationLinkHref}; return false; }";
+        } else {
+            $strConfirmationLink = "'".$strConfirmationLinkHref."'";
         }
 
         if ($strConfirmationButtonLabel == "") {
@@ -1766,7 +1778,7 @@ HTML;
 
         //create the list-button and the js code to show the dialog
         $strButton = Link::getLinkAdminManual(
-            "href=\"#\" onclick=\"javascript:jsDialog_1.setTitle('{$strHeader}'); jsDialog_1.setContent('{$strDialogContent}', '{$strConfirmationButtonLabel}',  '".$strConfirmationLinkHref.$strParam."'); jsDialog_1.init(); return false;\"",
+            "href=\"#\" onclick=\"javascript:jsDialog_1.setTitle('{$strHeader}'); jsDialog_1.setContent('{$strDialogContent}', '{$strConfirmationButtonLabel}', {$strConfirmationLink}); jsDialog_1.init(); return false;\"",
             "",
             $strButtonTooltip,
             $strButton
