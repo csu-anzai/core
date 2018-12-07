@@ -76,7 +76,7 @@ class UserSourcefactory
 
         //validate if a group with the given name is available
         $strQuery = "SELECT group_id, group_subsystem FROM agp_user_group where group_name LIKE ?";
-        $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, array($strName."%"), $intStart, $intEnd);
+        $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, array("%".$strName."%"), $intStart, $intEnd);
 
         $arrReturn = array();
         foreach ($arrRows as $arrOneRow) {

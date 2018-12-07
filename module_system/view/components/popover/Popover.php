@@ -27,6 +27,7 @@ class Popover extends AbstractComponent
     private $content = "";
     private $contentEndpoint = "";
     private $trigger = "hover";
+    private $placement = "bottom";
 
     private $id = '';
 
@@ -51,6 +52,7 @@ class Popover extends AbstractComponent
             "contentEndpoint" => $this->contentEndpoint,
             "link" => $this->link,
             "trigger" => $this->trigger,
+            "placement" => $this->placement,
             "id" => $this->id,
         ];
 
@@ -142,5 +144,19 @@ class Popover extends AbstractComponent
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getPlacement() : string
+    {
+        return $this->placement;
+    }
 
+    /**
+     * @param string $placement
+     */
+    public function setPlacement(string $placement)
+    {
+        $this->placement = $placement;
+    }
 }

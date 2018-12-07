@@ -40,7 +40,8 @@ class InstallerTinyurl extends InstallerBase implements InstallerRemovableInterf
             _tinyurl_module_id_,
             "",
             TinyUrlController::class,
-            $this->objMetadata->getStrVersion()
+            $this->objMetadata->getStrVersion(),
+            false
         );
 
         return $strReturn;

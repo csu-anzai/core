@@ -646,11 +646,11 @@ class SystemChangelog
             $arrParams[] = $strPropertyFilter;
         }
         if ($strOldvalueFilter !== null) {
-            $arrWhere[] = " change_oldvalue = ? ";
+            $arrWhere[] = " change_oldvalue LIKE ? ";
             $arrParams[] = $strOldvalueFilter;
         }
         if ($strNewvalueFilter !== null) {
-            $arrWhere[] = " change_newvalue = ? ";
+            $arrWhere[] = " change_newvalue LIKE ? ";
             $arrParams[] = $strNewvalueFilter;
         }
 

@@ -212,12 +212,11 @@ class UsersourcesSourceKajona implements UsersourcesUsersourceInterface
      */
     public function searchUser($strUsername, $intMax = 10)
     {
-        $strDbPrefix = _dbprefix_;
         $connection = Database::getInstance();
 
         $strQuery = "SELECT user_tbl.user_id
-                      FROM {$strDbPrefix}system, ".Carrier::getInstance()->getObjDB()->encloseTableName(_dbprefix_."user")." AS user_tbl
-                      LEFT JOIN {$strDbPrefix}user_kajona AS user_kajona ON user_tbl.user_id = user_kajona.user_id
+                      FROM agp_system, agp_user AS user_tbl
+                      LEFT JOIN agp_user_kajona AS user_kajona ON user_tbl.user_id = user_kajona.user_id
                       WHERE
                           (
                           user_tbl.user_username LIKE ? 

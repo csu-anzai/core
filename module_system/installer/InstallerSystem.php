@@ -24,7 +24,6 @@ use Kajona\System\System\MessagingAlert;
 use Kajona\System\System\MessagingConfig;
 use Kajona\System\System\MessagingMessage;
 use Kajona\System\System\MessagingQueue;
-use Kajona\System\System\OrmBase;
 use Kajona\System\System\OrmSchemamanager;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\Rights;
@@ -445,8 +444,8 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["change_class"]          = array("char254", true);
         $arrFields["change_action"]         = array("char254", true);
         $arrFields["change_property"]       = array("char254", true);
-        $arrFields["change_oldvalue"]       = array("text", true);
-        $arrFields["change_newvalue"]       = array("text", true);
+        $arrFields["change_oldvalue"]       = array(DbDatatypes::STR_TYPE_LONGTEXT, true);
+        $arrFields["change_newvalue"]       = array(DbDatatypes::STR_TYPE_LONGTEXT, true);
 
 
         $arrTables = array("agp_changelog");
@@ -554,7 +553,12 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "7.0.2") {
-            $strReturn .= $this->update_702_71();
+            $strReturn .= $this->update_702_703();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.0.3") {
+            $strReturn .= $this->update_703_71();
         }
 
         return $strReturn."\n\n";
@@ -824,9 +828,40 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         return $strReturn;
     }
 
-    private function update_702_71()
+    private function update_702_703()
     {
-        $strReturn = "Updating 7.0.1 to 7.1...\n";
+        $strReturn = "Updating 7.0.2 to 7.0.3...\n";
+
+        $strReturn .= "Migrating oldvalue and newvalue columns of change tables to longtext".PHP_EOL;
+
+        $arrTables = array("agp_changelog");
+        $arrProvider = SystemChangelog::getAdditionalProviders();
+        foreach($arrProvider as $objOneProvider) {
+            $arrTables[] = $objOneProvider->getTargetTable();
+        }
+
+        foreach($arrTables as $strOneTable) {
+            //Need to do it this way since under oracle converting from varchar2 to clob is not possible
+            Database::getInstance()->addColumn($strOneTable, "temp_change_oldvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+            Database::getInstance()->_pQuery("UPDATE $strOneTable SET temp_change_oldvalue=change_oldvalue", []);
+            Database::getInstance()->removeColumn($strOneTable, "change_oldvalue");
+            Database::getInstance()->changeColumn($strOneTable, "temp_change_oldvalue", "change_oldvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+
+            Database::getInstance()->addColumn($strOneTable, "temp_change_newvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+            Database::getInstance()->_pQuery("UPDATE $strOneTable SET temp_change_newvalue=change_newvalue", []);
+            Database::getInstance()->removeColumn($strOneTable, "change_newvalue");
+            Database::getInstance()->changeColumn($strOneTable, "temp_change_newvalue", "change_newvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+        }
+
+        $strReturn .= "Upating module version".PHP_EOL;
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.3");
+
+        return $strReturn;
+    }
+
+    private function update_703_71()
+    {
+        $strReturn = "Updating 7.0.3 to 7.1...\n";
 
         $strReturn .= "Removing languageset table".PHP_EOL;
         $this->objDB->_pQuery("DROP TABLE agp_languages_languageset", []);
@@ -838,6 +873,9 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1");
 
         if (Config::getInstance()->getConfig("dbdriver") == "mysqli") {
+            // flush cache to exclude deleted tables
+            Database::getInstance()->flushTablesCache();
+
             $strReturn .= "Updating myisam tables".PHP_EOL;
 
             foreach (Database::getInstance()->getTables() as $table) {

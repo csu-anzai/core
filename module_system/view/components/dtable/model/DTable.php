@@ -108,5 +108,34 @@ class DTable
         return $this;
     }
 
+    /**
+     * Return table data as a string.
+     *
+     * @return string
+     */
+    function getStringView(string $separator = " ")
+    {
+        $strReturn = "";
+
+        foreach ($this->getHeaders() as $row) {
+            $arrCellValues = [];
+            foreach ($row->getCells() as $cell) {
+                $arrCellValues[] = $cell->getValue();
+            }
+            $strReturn .= implode($separator, $arrCellValues);
+            $strReturn .= ' <br />';
+        }
+
+        foreach ($this->getRows() as $row) {
+            $arrCellValues = [];
+            foreach ($row->getCells() as $cell) {
+                $arrCellValues[] = $cell->getValue();
+            }
+            $strReturn .= implode($separator, $arrCellValues);
+            $strReturn .= ' <br />';
+        }
+
+        return $strReturn;
+    }
 
 }

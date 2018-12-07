@@ -34,10 +34,6 @@ $config[0]["ldap_bind_userpwd"]                    = "ff";
 //in most cases, this is the combination of cn+objectCategory
 $config[0]["ldap_common_identifier"]               = "distinguishedName";
 
-//the common name is used as the mapper during login. when searching for logins using
-//a full path, this attribute is being compared
-$config[0]["ldap_common_name"]                     = "cn";
-
 //the search-base for users unknown to the system
 $config[0]["ldap_user_base_dn"]                    = "OU=accounts,DC=testad1,DC=local";
 //filter to reduce the list of results to the matching object-types
@@ -75,7 +71,6 @@ $config[1]["ldap_bind_anonymous"]                  = false;
 $config[1]["ldap_bind_username"]                   = "ldapbind@ad.artemeon.int";
 $config[1]["ldap_bind_userpwd"]                    = "123";
 $config[1]["ldap_common_identifier"]               = "distinguishedName";
-$config[1]["ldap_common_name"]                     = "cn";
 $config[1]["ldap_user_base_dn"]                    = "OU=Anwender,DC=ad,DC=artemeon,DC=int";
 $config[1]["ldap_user_filter"]                     = "(&(objectClass=user)(objectCategory=person)(cn=*))";
 $config[1]["ldap_user_search_filter"]              = "(&(objectClass=user)(objectCategory=person)(userPrincipalName=?))";

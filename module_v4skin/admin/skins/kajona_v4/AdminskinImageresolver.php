@@ -51,7 +51,7 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         }
 
 
-        return "<img src=\""._skinwebpath_."/pics/".$strName."\"  alt=\"".$strAlt."\"  ".(!$bitBlockTooltip ? "rel=\"tooltip\" title=\"".$strAlt."\" " : "")." ".($strEntryId != "" ? " id=\"".$strEntryId."\" " : "")." data-kajona-icon='".$strName."' />";
+        return "<img src=\""._webpath_.$strName."\"  alt=\"".$strAlt."\"  ".(!$bitBlockTooltip ? "rel=\"tooltip\" title=\"".$strAlt."\" " : "")." ".($strEntryId != "" ? " id=\"".$strEntryId."\" " : "")." data-kajona-icon='".$strName."' />";
     }
 
 
@@ -313,6 +313,8 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_shopping_cartError" =>  "<span class='kj-icon fa-stack'><i class='fa fa-shopping-cart'></i><i class='fa fa-ban fa-stack-1x kj-stack' style='color: red'></i></span>",
         "icon_it_sytems" => "<i class='kj-icon fa fa-cogs'></i>",
         "icon_link" => "<i class='kj-icon fa fa-link'></i>",
+        "icon_ra_container"       => "<i class='kj-icon fa fa-folder-o'></i>",
+        "icon_ra_bait_container"  => "<span class='kj-icon fa-stack'><i class='fa fa-folder-o'></i><i class='fa fa-cogs fa-stack-1x kj-stack'></i></span>",
 
         //note: a copy of this markup is placed in agp_util.js and elements_artemeon.tpl::input_dropdown_ampel
         "icon_ampel_gelb" => "<span class='traffic-icon' data-kajona-icon='icon_ampel_gelb'><i class='kj-icon fa fa-circle-thin'></i><i class='kj-icon fa fa-circle orange'></i><i class='kj-icon fa fa-circle-thin'></i></span>",
