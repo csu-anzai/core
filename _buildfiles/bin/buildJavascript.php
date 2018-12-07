@@ -90,32 +90,38 @@ foreach ($jsFiles as $name => $file) {
     }
 }
 
+$uglifyBin = __DIR__ . "/../jstests/node_modules/uglify-js/bin/uglifyjs";
+$tsBin = __DIR__ . "/../jstests/node_modules/typescript/bin/tsc";
+$plainJsFile = __DIR__ . "/plain";
+$tscJsFile = __DIR__ . "/tsc";
+$tsConfig = __DIR__ . "/tsconfig.json";
+
 echo "found " . count($jsFiles) . " js files\n";
-file_put_contents('plain.js', $content);
+file_put_contents("{$plainJsFile}.js", $content);
 
 // minify
-if (is_file("plain.js")) {
+if (is_file("{$plainJsFile}.js")) {
     echo "minfiy merged js files\n";
-    $strUglifyjsBin = "node " . __DIR__ . "/../jstests/node_modules/uglify-js/bin/uglifyjs";
-    system($strUglifyjsBin . " plain.js -o plain.min.js");
+    $strUglifyjsBin = "node {$uglifyBin}";
+    system($strUglifyjsBin . " {$plainJsFile}.js -o {$plainJsFile}.min.js");
 }
 
 // build type script
 echo "compile type script files\n";
-$strTscBin = "node " . __DIR__ . "/../jstests/node_modules/typescript/bin/tsc";
-system($strTscBin . " --build tsconfig.json");
+$strTscBin = "node {$tsBin}";
+system($strTscBin . " --build {$tsConfig}");
 
 // minify ts
-if (is_file("tsc.js")) {
+if (is_file("{$tscJsFile}.js")) {
     echo "minfy type script file\n";
-    $strUglifyjsBin = "node " . __DIR__ . "/../jstests/node_modules/uglify-js/bin/uglifyjs";
-    system($strUglifyjsBin . " tsc.js -o tsc.min.js");
+    $strUglifyjsBin = "node {$uglifyBin}";
+    system($strUglifyjsBin . " {$tscJsFile}.js -o {$tscJsFile}.min.js");
 }
 
 // merge type script and js files
 echo "Build agp js\n";
-$plain = is_file("plain.min.js") ? file_get_contents("plain.min.js") : "";
-$tsc = is_file("tsc.min.js") ? file_get_contents("tsc.min.js") : "";
+$plain = is_file("{$plainJsFile}.min.js") ? file_get_contents("{$plainJsFile}.min.js") : "";
+$tsc = is_file("{$tscJsFile}.min.js") ? file_get_contents("{$tscJsFile}.min.js") : "";
 
 file_put_contents($strRoot . "/core/module_system/scripts/agp.min.js", $plain . "\n\n" . $tsc);
 
