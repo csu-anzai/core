@@ -13,6 +13,7 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Reflection;
+use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemModule;
 
 
@@ -256,7 +257,7 @@ class SearchIndexwriter
             $arrValues[] = [
                 $objOneContent->getStrId(),
                 $objOneContent->getFieldName(),
-                $objOneContent->getContent(),
+                StringUtil::truncate($objOneContent->getContent(), 250, ""),
                 $objOneContent->getScore(),
                 $objOneContent->getDocumentId(),
             ];

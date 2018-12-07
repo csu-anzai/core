@@ -139,6 +139,7 @@ class MessagingAlert extends Model implements ModelInterface, AdminListableInter
     public function jsonSerialize()
     {
         return [
+            "type" => get_class($this),
             "title" => $this->strTitle,
             "body" => $this->strBody,
             "confirmLabel" => $this->strConfirmLabel,

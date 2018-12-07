@@ -12,6 +12,7 @@
     "moment": "moment/moment.min",
     "qtip": "qtip2/jquery.qtip.min",
     "domReady": "requirejs/domReady",
+    "toastr": "toastr/toastr.min",
 
     "ajax": "kajona/ajax",
     "cacheManager": "kajona/cacheManager",

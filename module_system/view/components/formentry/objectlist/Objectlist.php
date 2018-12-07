@@ -118,7 +118,7 @@ class Objectlist extends FormentryComponentAbstract
 
                 $rows[] = [
                     'systemid'    => $item->getSystemid(),
-                    'displayName' => $this->getDisplayName($item),
+                    'displayName' => html_entity_decode($this->getDisplayName($item)),
                     'path'        => $this->getPathName($item),
                     'icon'        => AdminskinHelper::getAdminImage($icon),
                     'removeLink'  => $removeLink,
@@ -207,7 +207,7 @@ class Objectlist extends FormentryComponentAbstract
             }
 
             $objObject = Objectfactory::getInstance()->getObject($strPathId);
-            $arrPath[] = strip_tags($objObject->getStrDisplayName());
+            $arrPath[] = strip_tags(html_entity_decode($objObject->getStrDisplayName()));
         }
 
         if (count($arrPath) == 0) {

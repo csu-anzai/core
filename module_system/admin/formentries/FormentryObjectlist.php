@@ -138,6 +138,10 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
             }));
         }
 
+        uasort($arrObjects, function (ModelInterface $a, ModelInterface $b) {
+            return strcmp($a->getStrDisplayName(), $b->getStrDisplayName());
+        });
+
         $objectList = new Objectlist($this->getStrEntryName(), $this->getStrLabel(), $arrObjects);
         $objectList->setReadOnly($this->getBitReadonly());
         $objectList->setAddLink($this->strAddLink);

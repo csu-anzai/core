@@ -16,7 +16,7 @@
  *
  * @module statusDisplay
  */
-define('statusDisplay', ['jquery'], function ($) {
+define('statusDisplay', ['jquery', 'toastr'], function ($, toastr) {
 
     return /** @alias module:statusDisplay */ {
         idOfMessageBox : "jsStatusBox",
@@ -52,9 +52,7 @@ define('statusDisplay', ['jquery'], function ($) {
          * @param {String} strMessage
          */
         messageSuccess : function(strMessage) {
-            $("#"+this.idOfMessageBox).removeClass().addClass("alert alert-success");
-            this.timeToFadeOut = this.timeToFadeOutMessage;
-            this.startFadeIn(strMessage);
+            toastr.success(strMessage);
         },
 
         /**
@@ -63,9 +61,7 @@ define('statusDisplay', ['jquery'], function ($) {
          * @param {String} strMessage
          */
         messageOK : function(strMessage) {
-            $("#"+this.idOfMessageBox).removeClass().addClass("alert alert-info");
-            this.timeToFadeOut = this.timeToFadeOutMessage;
-            this.startFadeIn(strMessage);
+            toastr.info(strMessage);
         },
 
         /**
@@ -74,50 +70,9 @@ define('statusDisplay', ['jquery'], function ($) {
          * @param {String} strMessage
          */
         messageError : function(strMessage) {
-            $("#"+this.idOfMessageBox).removeClass().addClass("alert alert-danger");
-            this.timeToFadeOut = this.timeToFadeOutError;
-            this.startFadeIn(strMessage);
+            toastr.error(strMessage);
         },
 
-        startFadeIn : function(strMessage) {
-            var statusBox = $("#"+this.idOfMessageBox);
-            var contentBox = $("#"+this.idOfContentBox);
-            contentBox.html(strMessage);
-            statusBox.css("display", "").css("opacity", 0.0);
-
-            //place the element at the top of the page
-            var screenWidth = $(window).width();
-            var divWidth = statusBox.width();
-            var newX = screenWidth/2 - divWidth/2;
-            var newY = $(window).scrollTop() -2;
-            statusBox.css('top', newY);
-            statusBox.css('left', newX);
-
-            //start fade-in handler
-            this.fadeIn();
-
-        },
-
-        fadeIn : function () {
-            var me = this;
-            $("#"+this.idOfMessageBox).animate({opacity: 0.8}, 1000, function() {
-                window.setTimeout(function(){
-                    me.startFadeOut();
-                }, me.timeToFadeOut);
-            });
-        },
-
-        startFadeOut : function() {
-            var me = this;
-            $("#"+this.idOfMessageBox).animate(
-                { top: -200 },
-                1000,
-                function() {
-                    $("#"+me.idOfMessageBox).css("display", "none");
-                }
-            );
-
-        }
     };
 
 });

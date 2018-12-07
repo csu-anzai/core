@@ -41,6 +41,19 @@ interface AdminwidgetInterface {
      */
     public function getWidgetName();
 
+    /**
+     * Returns a brief description of the widget.
+     *
+     * @return string
+     */
+    public function getWidgetDescription();
+
+    /**
+     * Returns path to a presentation image of the widget.
+     *
+     * @return string
+     */
+    public function getWidgetImg();
 }
 
 

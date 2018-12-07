@@ -546,13 +546,13 @@ class GraphJqplot implements GraphInterface
         $strThousandsChar = Carrier::getInstance()->getObjLang()->getLang("numberStyleThousands", "system");
 
         //5. Init Chart
-        $strCoreDirectory = Resourceloader::getInstance()->getCorePathForModule("module_jqplot");
+        $strCoreDirectory = Resourceloader::getInstance()->getWebPathForModule("module_jqplot");
         $strReturn .= "<script type='text/javascript'>
             require(['jqplot', 'loader'], function(jqplot, loader) {
                 
                 loader.loadFile([
-                    '{$strCoreDirectory}/module_jqplot/scripts/jqplot/jquery.jqplot.css',
-                    '{$strCoreDirectory}/module_jqplot/scripts/kajona/jquery.jqplot.custom.css'
+                    '{$strCoreDirectory}/scripts/jqplot/jquery.jqplot.css',
+                    '{$strCoreDirectory}/scripts/kajona/jquery.jqplot.custom.css'
                 ], function() {});
                 
                 require(['jqlot.custom_helper'], function(jqplotHelper) {

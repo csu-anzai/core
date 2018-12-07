@@ -11,6 +11,11 @@ define('util', ['jquery'], function ($) {
     /** @exports util */
     var util = {};
 
+
+    util.isEllipsisActive = function(element) {
+        return element.offsetWidth + 2 < element.scrollWidth;
+    };
+
     /**
      * Function to get the element from the current opener.
      *
@@ -323,6 +328,22 @@ define('util', ['jquery'], function ($) {
         }
     };
 
+    /**
+     * Copies text to clipboard
+     *
+     * @param text
+     */
+    util.copyTextToClipboard = function (text) {
+        var textArea = document.createElement("textarea");
+        textArea.style.background = 'transparent';
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+        } catch (err) {}
+        document.body.removeChild(textArea);
+    }
 
     /**
      * decodes html entites, call it just like

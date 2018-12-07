@@ -8,14 +8,12 @@
 
 namespace Kajona\System\Admin;
 
-use Kajona\System\Admin\Formentries\FormentryButton;
 use Kajona\System\Admin\Formentries\FormentryHidden;
+use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\FilterBase;
 use Kajona\System\System\Link;
-use Kajona\System\System\Session;
-
 
 /**
  * @author christoph.kappestein@gmail.com
@@ -131,7 +129,14 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
         return "";
     }
 
-
+    /**
+     * @param string $strFilter
+     * @param boolean $bitFilterActive
+     * @param bool $bitInitiallyVisible
+     * @param string $strLangActive
+     * @param string $strLangInactive
+     * @return string
+     */
     public static function renderToolbarEntry($strFilter, $bitFilterActive, $bitInitiallyVisible = false, $strLangActive = null, $strLangInactive = null)
     {
         $objLang = Carrier::getInstance()->getObjLang();
@@ -152,7 +157,10 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
             $bitInitiallyVisible
         );
 
-        return $objToolkit->addToContentToolbar($arrFolder[1]) . $arrFolder[0];
+        $title = AdminskinHelper::getAdminImage("icon_treeLink") . " " . $objLang->getLang("commons_filter_url", "system");
+        $strFilterUrlButton = Link::getLinkAdminManual(["href" => "#", "onclick" => "require('forms').getFilterURL();return false"], $title);
+
+        return $objToolkit->addToContentToolbar($arrFolder[1]) . $objToolkit->addToContentToolbar(trim($strFilterUrlButton)). $arrFolder[0];
     }
 
     /**

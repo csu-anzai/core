@@ -8,9 +8,11 @@
  *
  * @module forms
  */
-define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function ($, tooltip, router, util, messaging) {
 
-    /** @exports forms */
+define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'dialogHelper'], function ($, tooltip, router, util, messaging, ajax, dialogHelper) {
+
+
+        /** @exports forms */
     var forms = {};
 
     forms.changeLabel = '';
@@ -21,8 +23,9 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
      * Hides a field in the form
      *
      * @param objField - my be a jquery field or a id selector
+     * @param isResetValue if enabled, sets the fields value to emtpy / ""
      */
-    forms.hideField = function(objField) {
+    forms.hideField = function(objField, isResetValue) {
         objField = util.getElement(objField);
 
         var objFormGroup = objField.is('h3') || objField.is('h4') || objField.is('p') ? objField : objField.closest('.form-group');
@@ -34,6 +37,16 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
         var objHintFormGroup = objFormGroup.prev('.form-group');
         if(objHintFormGroup.find('div > span.help-block').length > 0) {
             objHintFormGroup.slideUp(0);
+        }
+
+        //reset value
+        if (isResetValue && objField.attr('id')) {
+            (objField.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            }));
+
+
+            objField.val('');
         }
     };
 
@@ -65,12 +78,16 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
     forms.setFieldReadOnly = function(objField) {
         objField = util.getElement(objField);
 
-        if (objField.is('input:checkbox') || objField.is('select') || objField.data('datepicker') !== null) {
+        if ($('#'+objField.attr('id')+'_upl') && $('#'+objField.attr('id')+'_upl').fileupload) {
+            $('#'+objField.attr('id')+'_upl').fileupload('disable');
+        }
+        else if (objField.is('input:checkbox') || objField.is('select') || objField.data('datepicker') !== null) {
             objField.prop("disabled", "disabled");
         }
         else {
             objField.attr("readonly", "readonly");
         }
+
     };
 
     /**
@@ -81,10 +98,13 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
     forms.setFieldEditable = function(objField) {
         objField = util.getElement(objField);
 
-        if (objField.is('input:checkbox') || objField.is('select') || objField.data('datepicker') !== null) {
-            objField.removeProp("disabled");
+
+        if($('#'+objField.attr('id')+'_upl') && $('#'+objField.attr('id')+'_upl').fileupload) {
+            $('#'+objField.attr('id')+'_upl').fileupload('enable');
         }
-        else {
+        else if (objField.is('input:checkbox') || objField.is('select') || objField.data('datepicker') !== null) {
+            objField.removeProp("disabled");
+        } else {
             objField.removeProp("readonly");
         }
     };
@@ -303,6 +323,30 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging'], function (
         router.registerLoadCallback("form_unlock", function() {
             $.ajax({url: KAJONA_WEBPATH + '/xml.php?admin=1&module=system&action=unlockRecord&systemid='+strId});
         });
+    };
+
+    forms.getFilterURL = function () {
+        var filterUrl = $(".contentFolder form").attr('action') + '&' + $(".contentFolder form").serialize();
+        ajax.genericAjaxCall("tinyurl", "getShortUrl", {url: filterUrl}, function (data) {
+            if (data) {
+                var modalContent = '<div class="input-group">' +
+                    '<input type="text" class="form-control" value="' + data.url + '">' +
+                    '<span class="input-group-btn">' +
+                    '<button class="btn btn-default copy-btn" type="button" title="" onclick="require(\'util\').copyTextToClipboard(\'' + data.url + '\')">' +
+                    '<i class=\'kj-icon fa fa-clipboard\'>' +
+                    '</button>' +
+                    '</span>' +
+                    '</div>';
+
+                dialogHelper.showInfoModal("<span data-lang-property=\"system:copy_page_url\"></span>", modalContent);
+                require(["lang", "jquery"], function(lang, $) {
+                    lang.initializeProperties();
+                    lang.fetchSingleProperty("system", "copy_to_clipboard", function(value) {
+                        $(".copy-btn").attr("title", value);
+                    })
+                })
+            }
+        }, null, null, null, 'json');
     };
 
     return forms;
