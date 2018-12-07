@@ -66,7 +66,7 @@ class Dropdown extends FormentryComponentAbstract
     }
 
     /**
-     * @param string $selected
+     * @param string $addons
      * @deprecated
      */
     public function setAddons($addons)
