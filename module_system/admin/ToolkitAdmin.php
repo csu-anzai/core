@@ -36,7 +36,7 @@ use Kajona\System\System\SystemSetting;
 use Kajona\System\System\Toolkit;
 use Kajona\System\View\Components\Datatable\Datatable;
 use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
-use Kajona\System\View\Components\Formentry\Inputtext\Inputcolorpicker;
+use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
 use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
@@ -255,8 +255,8 @@ class ToolkitAdmin extends Toolkit
      * @param bool $bitReadOnly
      * @param string $strOnSwitchJSCallback
      * @param string $strClass
-     *
      * @return string
+     * @deprecated
      */
     public function formInputOnOff($strName, $strTitle, $bitChecked = false, $bitReadOnly = false, $strOnSwitchJSCallback = "", $strClass = "")
     {
@@ -293,9 +293,9 @@ class ToolkitAdmin extends Toolkit
      * @param string $strClass
      * @param string $strOpener
      * @param bool $bitReadonly
-     *
      * @param string $strInstantEditor
      * @return string
+     * @deprecated
      */
     public function formInputText($strName, $strTitle = "", $strValue = "", $strClass = "", $strOpener = "", $bitReadonly = false, $strInstantEditor = "")
     {
@@ -319,8 +319,8 @@ class ToolkitAdmin extends Toolkit
      * @param string $strTitle
      * @param string $strValue
      * @param bool $bitReadonly
-     *
      * @return string
+     * @deprecated
      */
     public function formInputColorPicker($strName, $strTitle = "", $strValue = "", $bitReadonly = false, $strInstantEditor = "")
     {
