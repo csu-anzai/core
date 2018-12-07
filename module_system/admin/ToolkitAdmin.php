@@ -35,6 +35,7 @@ use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\Toolkit;
 use Kajona\System\View\Components\Datatable\Datatable;
+use Kajona\System\View\Components\Formentry\Dropdown\Dropdown;
 use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
 use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
 use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
@@ -834,55 +835,23 @@ class ToolkitAdmin extends Toolkit
      * @param string $strAddons
      * @param string $strDataPlaceholder
      * @param string $strOpener
-     *
      * @return string
      * @throws Exception
+     * @deprecated
      */
     public function formInputDropdown($strName, array $arrKeyValues, $strTitle = "", $strKeySelected = "", $strClass = "", $bitEnabled = true, $strAddons = "", $strDataPlaceholder = "", $strOpener = "", $strInstantEditor = "")
     {
-        $strOptions = "";
-        foreach (array("", 0, "\"\"") as $strOneKeyToCheck) {
-            if (array_key_exists($strOneKeyToCheck, $arrKeyValues) && trim($arrKeyValues[$strOneKeyToCheck]) == "") {
-                unset($arrKeyValues[$strOneKeyToCheck]);
-            }
-        }
+        $strPlaceholder = $strDataPlaceholder != "" ? $strDataPlaceholder : Carrier::getInstance()->getObjLang()->getLang("commons_dropdown_dataplaceholder", "system");
 
-        //see if the selected value is valid
-        if (!in_array($strKeySelected, array_keys($arrKeyValues))) {
-            $strKeySelected = "";
-        }
+        $dropdown = new Dropdown($strName, $strTitle, $arrKeyValues, $strKeySelected);
+        $dropdown->setClass($strClass);
+        $dropdown->setReadOnly(!$bitEnabled);
+        $dropdown->setOpener($strOpener);
+        $dropdown->setAddons($strAddons);
+        $dropdown->setData('placeholder', $strPlaceholder);
+        $dropdown->setData('kajona-instantsave', $strInstantEditor);
 
-        if (!isset($arrKeyValues[""])) {
-            $strPlaceholder = $strDataPlaceholder != "" ? $strDataPlaceholder : Carrier::getInstance()->getObjLang()->getLang("commons_dropdown_dataplaceholder", "system");
-            $strOptions .= "<option value='' disabled ".($strKeySelected == "" ? " selected " : "").">".$strPlaceholder."</option>";
-        }
-
-        //Iterating over the array to create the options
-        foreach ($arrKeyValues as $strKey => $strValue) {
-            $arrTemplate = array();
-            $arrTemplate["key"] = $strKey;
-            $arrTemplate["value"] = $strValue;
-            if ((string)$strKey == (string)$strKeySelected) {
-                $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_dropdown_row_selected");
-            } else {
-                $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_dropdown_row");
-            }
-        }
-
-
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["class"] = $strClass;
-        $arrTemplate["disabled"] = ($bitEnabled ? "" : "disabled=\"disabled\"");
-        $arrTemplate["options"] = $strOptions;
-        $arrTemplate["addons"] = $strAddons;
-        $arrTemplate["opener"] = $strOpener;
-        $arrTemplate["instantEditor"] = $strInstantEditor;
-        $arrTemplate["dataplaceholder"] = $strDataPlaceholder != "" ? $strDataPlaceholder : Carrier::getInstance()->getObjLang()->getLang("commons_dropdown_dataplaceholder", "system"); //TODO noch benötigt?
-
-
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_dropdown", true);
+        return $dropdown->renderComponent();
     }
 
     /**
