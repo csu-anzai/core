@@ -108,7 +108,11 @@ class DashboardAdmin extends AdminController implements AdminInterface
         }
 
         $board->setWidgets($widgets);
-        return $board->renderComponent();
+        $return = $board->renderComponent();
+
+        //add a toolbar
+        $return .= $this->objToolkit->addToContentToolbar(Link::getLinkAdminDialog("dashboard", "listWidgets", [], $this->getLang("action_add_widget_to_dashboard"), $this->getLang("action_add_widget_to_dashboard"), "icon_new"));
+        return $return;
     }
 
     /**
