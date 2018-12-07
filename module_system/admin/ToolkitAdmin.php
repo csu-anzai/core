@@ -1384,7 +1384,9 @@ HTML;
     public function formTextHint($hint, $hideLongText = false)
     {
         if ($hideLongText) {
-            return $this->formTextRow('<div class="form-hint-container" onclick="require(\'jquery\')(this).removeClass(\'form-hint-container\')">' . $hint . '</div>');
+            $id = generateSystemid();
+            return $this->formTextRow('<div class="form-hint-container" id="'.$id.'" onclick="require(\'jquery\')(this).toggleClass(\'form-hint-container\')">' . $hint . '</div><script type="text/javascript">require([\'util\', \'jquery\'], function(u, $) { 
+                var $el = $("#'.$id.'"); if (!u.isEllipsisActive($el[0])) { $el.toggleClass(\'form-hint-container\'); } })</script>');
         } else {
             return $this->formTextRow($hint);
         }
