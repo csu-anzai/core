@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Kajona\System\View\Components\Formentry\Dropdown;
 
+use Kajona\System\System\Carrier;
 use Kajona\System\View\Components\Formentry\FormentryComponentAbstract;
 
 /**
@@ -78,6 +79,11 @@ class Dropdown extends FormentryComponentAbstract
      */
     public function buildContext()
     {
+        // set default data attributes
+        if (!isset($this->data["placeholder"])) {
+            $this->data["placeholder"] = Carrier::getInstance()->getObjLang()->getLang("commons_dropdown_dataplaceholder", "system");
+        }
+
         $context = parent::buildContext();
         $context["options"] = $this->options;
         $context["selected"] = $this->selected;

@@ -841,14 +841,16 @@ class ToolkitAdmin extends Toolkit
      */
     public function formInputDropdown($strName, array $arrKeyValues, $strTitle = "", $strKeySelected = "", $strClass = "", $bitEnabled = true, $strAddons = "", $strDataPlaceholder = "", $strOpener = "", $strInstantEditor = "")
     {
-        $strPlaceholder = $strDataPlaceholder != "" ? $strDataPlaceholder : Carrier::getInstance()->getObjLang()->getLang("commons_dropdown_dataplaceholder", "system");
-
         $dropdown = new Dropdown($strName, $strTitle, $arrKeyValues, $strKeySelected);
         $dropdown->setClass($strClass);
         $dropdown->setReadOnly(!$bitEnabled);
         $dropdown->setOpener($strOpener);
         $dropdown->setAddons($strAddons);
-        $dropdown->setData('placeholder', $strPlaceholder);
+
+        if (!empty($strDataPlaceholder)) {
+            $dropdown->setData('placeholder', $strDataPlaceholder);
+        }
+
         $dropdown->setData('kajona-instantsave', $strInstantEditor);
 
         return $dropdown->renderComponent();
