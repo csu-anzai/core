@@ -13,6 +13,7 @@
     "qtip": "qtip2/jquery.qtip.min",
     "domReady": "requirejs/domReady",
     "toastr": "toastr/toastr.min",
+    "vue": "vue/vue.min",
 
     "ajax": "kajona/ajax",
     "cacheManager": "kajona/cacheManager",
