@@ -55,6 +55,7 @@ use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\Validators\EmailValidator;
 use Kajona\System\System\VersionableInterface;
+use Kajona\System\View\Components\Formentry\Dropdown\Dropdown;
 use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
 use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
@@ -1642,6 +1643,13 @@ JS;
         $inputOnOff = new Inputonoff("input_onoff_disabled", "Onoff (disabled)", true);
         $inputOnOff->setReadOnly(true);
         $result[] = $inputOnOff;
+
+        $inputDropdown = new Dropdown("input_dropdown", "Dropdown", range(0, 10), 5);
+        $result[] = $inputDropdown;
+
+        $inputDropdown = new Dropdown("input_dropdown_disabled", "Dropdown (disabled)", range(0, 10), 5);
+        $inputDropdown->setReadOnly(true);
+        $result[] = $inputDropdown;
 
         $listEditor = new Listeditor("listeditor", "Listeditor", ["foo", "bar"]);
         $result[] = $listEditor;
