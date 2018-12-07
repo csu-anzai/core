@@ -6,6 +6,11 @@
             <input type="checkbox" name="{{ name|e('html_attr') }}" value="checked" id="{{ name|e('html_attr') }}" {% if class %}class="{{ class|e('html_attr') }}"{% endif %} {% if checked %}checked{% endif %} {% if readOnly %}disabled{% endif %} {% for key, value in data %}data-{{ key }}="{{ value|e('html_attr') }}"{% endfor %}>
         </div>
     </div>
+    {% if opener %}
+    <div class="col-sm-2 form-opener">
+        {{ opener|raw }}
+    </div>
+    {% endif %}
     <script type="text/javascript">
         require(["jquery", "bootstrap-switch"], function($){
             var divId = '{{ name }}';

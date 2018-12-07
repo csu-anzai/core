@@ -4,9 +4,14 @@
     <div class="col-sm-6">
         <div class="input-group colorpicker-component" id="c_{{ name|e('html_attr') }}">
             <div class="input-group-addon"><i></i></div>
-            <input id="{{ name|e('html_attr') }}" name="{{ name|e('html_attr') }}" class="form-control" type="text" value="{{ value|e('html_attr') }}" {% if readOnly %}readonly{% endif %} {% for key, value in data %}data-{{ key }}="{{ value|e('html_attr') }}"{% endfor %}>
+            <input id="{{ name|e('html_attr') }}" name="{{ name|e('html_attr') }}" class="form-control {{ class|e('html_attr') }}" type="text" value="{{ value|e('html_attr') }}" {% if readOnly %}readonly{% endif %} {% for key, value in data %}data-{{ key }}="{{ value|e('html_attr') }}"{% endfor %}>
         </div>
     </div>
+    {% if opener %}
+    <div class="col-sm-2 form-opener">
+        {{ opener|raw }}
+    </div>
+    {% endif %}
     <script type="text/javascript">
         require(["jquery", "bootstrap-colorpicker"], function($, colorpicker) {
             $('#c_{{ name|e('html_attr') }}').colorpicker({
