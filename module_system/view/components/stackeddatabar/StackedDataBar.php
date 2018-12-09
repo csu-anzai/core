@@ -15,6 +15,7 @@ use Kajona\System\View\Components\AbstractComponent;
  * Shows stacked bar "chart" for set data
  *
  * @author andrii.konoval@artemeon.de
+ * @author stefan.idler@artemeon.de
  * @since 7.0
  * @componentTemplate core/module_system/view/components/stackeddatabar/template.twig
  */
@@ -41,7 +42,7 @@ class StackedDataBar extends AbstractComponent
     protected $title;
 
     /**
-     * @var int;
+     * @var string;
      */
     protected $width;
 
@@ -58,7 +59,7 @@ class StackedDataBar extends AbstractComponent
      * @param array $labels
      * @param int $width
      */
-    public function __construct(string $title, array $data, array $colors = [], array $labels = [], int $width = 0)
+    public function __construct(string $title, array $data, array $colors = [], array $labels = [], $width = '100%')
     {
         parent::__construct();
 
@@ -94,9 +95,24 @@ class StackedDataBar extends AbstractComponent
         if ($dataSum == 0) {
             $resultData = [];
         }
+        $curSum = 0;
         foreach ($resultData as $index => $data) {
-            $resultData[$index]['proc'] = round($data['value'] / $dataSum * 100, 1);
+            //floor to avoid visual overflows
+            $curVal = floor($data['value'] / $dataSum * 100);
+            $resultData[$index]['proc'] = $curVal;
+            $curSum += $curVal;
         }
+
+        //fill a possibly missing gap
+        if ($curSum < 100) {
+            foreach ($resultData as $index => &$val) {
+                if ($val['proc'] > 0) {
+                    $val['proc'] += (100-$curSum);
+                    break;
+                }
+            }
+        }
+
         $data = [
             "data" => $resultData,
             "title" => $this->title,
@@ -111,7 +127,7 @@ class StackedDataBar extends AbstractComponent
      */
     public function setData(array $data): void
     {
-        $this->data = GraphCommons::convertArrValuesToDataPointArray($data);;
+        $this->data = GraphCommons::convertArrValuesToDataPointArray($data);
     }
 
     /**
@@ -133,10 +149,12 @@ class StackedDataBar extends AbstractComponent
     /**
      * @param int $width
      */
-    public function setWidth(int $width): void
+    public function setWidth($width): void
     {
         if (is_numeric($width) && $width != 0) {
             $this->width = $width.'px';
+        } elseif (is_string($width)) {
+            $this->width = $width;
         } else {
             $this->width = '100%';
         }
