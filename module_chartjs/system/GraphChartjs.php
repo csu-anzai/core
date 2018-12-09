@@ -65,11 +65,12 @@ class GraphChartjs implements GraphInterfaceFronted
 
     /**
      * Contains all global options of the chart
+     * @todo: wozu gibt es das? gehört das nicht in das $arrChartData set? "Global" darf hier an sicht nicht genannt werden!
      *
      * @var array
      */
     private $arrChartGlobalOptions = [
-        "defaultFontFamily" => 'inherit'
+
     ];
 
     /**
@@ -92,21 +93,14 @@ class GraphChartjs implements GraphInterfaceFronted
      *
      * @var integer
      */
-    private $intWidth = 400;
+    private $intWidth = null;
 
     /**
      * Defines the height for the canvas
      *
      * @var integer
      */
-    private $intHeight = 400;
-
-    /**
-     * Defines the behaviour for the chart. If responsive is set to true, the width and height specifications will be ignored
-     *
-     * @var bool
-     */
-    private $bitIsResponsive = true;
+    private $intHeight = null;
 
     /**
      * Defines if we need to show the download link of chart image on the chart
@@ -152,7 +146,7 @@ class GraphChartjs implements GraphInterfaceFronted
      * @param null $yAxisID
      * @param float $lineTension
      */
-    private function addChartSet(array $arrValues, string $strLegend = "", $type = null, $bitWriteValues = false, $yAxisID = null, $lineTension = 0)
+    private function addChartSet(array $arrValues, string $strLegend = "", $type = null, $bitWriteValues = false, $yAxisID = null, $lineTension = 0.2) //TODO: warum an einer privaten methode optional parameter?
     {
         $arrDataPointObjects = GraphCommons::convertArrValuesToDataPointArray($arrValues);
 
@@ -165,7 +159,6 @@ class GraphChartjs implements GraphInterfaceFronted
             "backgroundColor" => $this->arrColors[$intDatasetNumber] /*'rgba('.implode(', ', hex2rgb($this->arrColors[$intDatasetNumber])).', 0.3)'*/,
             "borderColor" => $this->arrColors[$intDatasetNumber],
             "borderWidth" => 1,
-            "lineTension" => 0.2,
             "yAxisID" => empty($yAxisID) ? "defaultYID" : $yAxisID,
             "datalabels" => $bitWriteValues ? ["display" => true] : ["display" => false],
             "lineTension" => $lineTension
@@ -214,7 +207,7 @@ class GraphChartjs implements GraphInterfaceFronted
      * @param float $lineTension
      * @see GraphInterface::addLinePlot()
      */
-    public function addLinePlot($arrValues, $strLegend = "", $bitWriteValues = false, $lineTension = 0)
+    public function addLinePlot($arrValues, $strLegend = "", $bitWriteValues = false, $lineTension = 0.2)
     {
         $this->addChartSet($arrValues, $strLegend, "line", $bitWriteValues, null, $lineTension);
     }
@@ -229,7 +222,7 @@ class GraphChartjs implements GraphInterfaceFronted
      * @param float $lineTension
      * @see GraphInterface::addLinePlot()
      */
-    public function addLinePlotY2Axis($arrValues, $strLegend, $bitWriteValues = false, $lineTension = 0)
+    public function addLinePlotY2Axis($arrValues, $strLegend, $bitWriteValues = false, $lineTension = 0.2)
     {
         $this->addChartSet($arrValues, $strLegend, "line", $bitWriteValues, "2YID", $lineTension);
         $this->arrChartData['options']['scales']['yAxes'][1]['id'] = "2YID";
@@ -481,6 +474,8 @@ class GraphChartjs implements GraphInterfaceFronted
             $this->arrColors = $arrSeriesColors;
         }
 
+        //TODO @ako: warum kam das rein?
+        //das hier klappt für line charts
         $colorIndex = 0;
         $colorCount = count($arrSeriesColors);
         if (!empty($this->arrChartData['data']['datasets'])) {
@@ -494,24 +489,31 @@ class GraphChartjs implements GraphInterfaceFronted
                 }
             }
         }
+
+        //TODO das hier klappt für pie charts
+//        if (!empty($this->arrChartData['data']['datasets'])) {
+//            $this->arrChartData['data']['datasets'][0]["backgroundColor"] = $arrSeriesColors;
+//            $oldBorder = $this->arrChartData['data']['datasets'][0]["borderColor"];
+//            $this->arrChartData['data']['datasets'][0]["borderColor"] = $oldBorder[0] == '#FFFFFF' ? $oldBorder : $arrSeriesColors;
+//        }
     }
 
     /**
      * Enables general repsonsiveness of the chart.
      *
      * @param bool $bitResponsive
+     * @deprecated
      */
     public function setBitIsResponsive(bool $bitResponsive)
     {
-        $this->bitIsResponsive = $bitResponsive;
     }
 
     /**
      * @return bool
+     * @deprecated
      */
     public function isBitIsResponsive(): bool
     {
-        return $this->bitIsResponsive;
     }
 
     /**
@@ -724,33 +726,12 @@ class GraphChartjs implements GraphInterfaceFronted
         $this->setHideGridLinesYAxis(true);
         $this->setHideGridLinesXAxis(true);
         $this->setBitDownloadLink(false);
-        $this->setBitIsResponsive(false);
         if ($autoHeight && isset($this->arrChartData['data']) && count($this->arrChartData['data']) != 0) {
             $countGraphs = count($this->arrChartData['data']['datasets'][0]['dataPoints']);
             $this->setIntHeight(30 + $countGraphs * 40);
         }
     }
 
-    /**
-     * For each data in a dataset the colors will vary
-     *
-     * @param bool $bitVaryBarColors
-     */
-    public function setVaryBarColorsForAllSeries($bitVaryBarColors = true)
-    {
-        if ($bitVaryBarColors && !empty($this->arrChartData['data']['datasets'])) {
-            foreach ($this->arrChartData['data']['datasets'] as $index => $dataset) {
-                $this->arrChartData['data']['datasets'][$index]["backgroundColor"] = $this->arrColors;
-                if ($dataset["borderColor"] !== '#FFFFFF') {
-                    $this->arrChartData['data']['datasets'][$index]["borderColor"] = $this->arrColors;
-                }
-            }
-        }
-
-        if (!$bitVaryBarColors) {
-            $this->setArrSeriesColors($this->arrColors);
-        }
-    }
 
     /**
      * @return mixed|string
@@ -773,10 +754,22 @@ class GraphChartjs implements GraphInterfaceFronted
         $strChartId = "chart_".$strSystemId;
         $strLinkExportId = $strChartId."_exportlink";
 
-        $strWidth = $this->isBitIsResponsive() ? "100%" : $this->intWidth."px";
-        $strHeight = $this->isBitIsResponsive() ? "100%" : $this->intHeight."px";
-        $strReturn = "<div onmouseover='$(\"#$strLinkExportId\").show();' onmouseout='$(\"#$strLinkExportId\").hide();' id=\"$strResizeableId\" style=\"width:{$strWidth}; height:{$strHeight};\">";
-        $strReturn .= "<canvas id=\"$strChartId\" width=\"$strWidth\" height=\"$strHeight\"></canvas>";
+//        $strWidth = $this->isBitIsResponsive() ? "100%" : $this->intWidth."px";
+//        $strHeight = $this->isBitIsResponsive() ? "100%" : $this->intHeight."px";
+//        $strReturn = "<div onmouseover='$(\"#$strLinkExportId\").show();' onmouseout='$(\"#$strLinkExportId\").hide();' id=\"$strResizeableId\" style=\"width:{$strWidth}; height:{$strHeight};\">";
+
+        $style = "";
+        if ($this->intWidth !== null) {
+            $style .= " width: {$this->intWidth}px; ";
+        }
+
+        if ($this->intHeight !== null) {
+            $style .= " height: {$this->intHeight}px; ";
+        }
+
+
+        $strReturn = "<div onmouseover='$(\"#{$strLinkExportId}\").show();' onmouseout='$(\"#{$strLinkExportId}\").hide();' id='{$strResizeableId}' style='{$style}'>";
+        $strReturn .= "<canvas id='{$strChartId}' style=' width: 100%; height: 100%' ></canvas>";
         if ($this->isBitDownloadLink()) {
             $strImage = AdminskinHelper::getAdminImage("icon_downloads", Carrier::getInstance()->getObjLang()->getLang("commons_save_as_image", "system"));
             $strReturn .= "<div class=\"chartjs-link-bar\"><a class=\"chartjs-image-link\" id=\"$strLinkExportId\" download>$strImage</a></div>";

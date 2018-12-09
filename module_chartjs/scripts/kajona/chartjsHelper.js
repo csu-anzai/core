@@ -80,14 +80,25 @@ define("chartjsHelper", ['jquery', 'folderview'], function ($, folderview) {
      * @param chartGlobalOptions
      */
     chartjsHelper.createChart = function (ctx, chartData, chartGlobalOptions) {
-        require(['chartjs', 'chartjsHelper'], function (chartjs, chartjsHelper) {
+        require(['chartjs'], function (chartjs) {
+
+            Chart.defaults.global.defaultFontFamily = '"Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif';
+            Chart.defaults.global.defaultFontSize = 10;
+            Chart.defaults.global.elements.line.fill = false;
+            Chart.defaults.global.elements.line.lineTension = 0.9;
+            Chart.defaults.global.tooltips.cornerRadius = 0;
+            Chart.defaults.global.tooltips.backgroundColor = 'rgba(255,255,255,0.9)';
+            Chart.defaults.global.tooltips.borderWidth = 0.5;
+            Chart.defaults.global.tooltips.borderColor = 'rgba(0,0,0,0.8)';
+            Chart.defaults.global.tooltips.bodyFontColor = '#000';
+            Chart.defaults.global.tooltips.titleFontColor = '#000';
+            Chart.defaults.global.legend.labels.boxWidth = 12;
+            Chart.defaults.global.maintainAspectRatio = false;
+
+
+
             require(['chartjs-plugin-datalabels'], function (chartjsDatalabels) {
-                ctx.style.backgroundColor = chartGlobalOptions['backgroundColor'];
-                Chart.defaults.global.defaultFontFamily = chartGlobalOptions['defaultFontFamily'];
-                // Chart.defaults.global.defaultFontSize = 21;
-                Chart.defaults.global.elements.line.fill = false;
-                Chart.defaults.global.elements.line.lineTension = 0.9;
-                Chart.defaults.global.tooltipCaretSize = 0;
+                ctx.style.backgroundColor = chartGlobalOptions['backgroundColor']; //TODO: @ako: was bringt die zeile?
 
                 // if (typeof (chartGlobalOptions['setDefaultTooltip']) == 'undefined' || !chartGlobalOptions['setDefaultTooltip']) {
                 //     chartData['options']['tooltips'] = {
@@ -146,7 +157,7 @@ define("chartjsHelper", ['jquery', 'folderview'], function ($, folderview) {
 
             });
         });
-    }
+    };
 
     return chartjsHelper;
 });
