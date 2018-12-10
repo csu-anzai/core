@@ -28,8 +28,6 @@ class ChartjsTest extends Testbase
         }
 
         $objGraph->setStrBackgroundColor('red');
-        $objGraph->setStrDefaultFontColor('blue');
-        $objGraph->setDefaultFont('Arial');
         $objGraph->addBarChartSet([10, 20, 30], "");
         $objGraph->setStrXAxisTitle('XXX');
         $objGraph->setStrYAxisTitle('YYY');
@@ -60,11 +58,9 @@ class ChartjsTest extends Testbase
 
 
         $strRender = $objGraph->renderGraph();
-        $strGlobalOptions = substr($strRender, strpos($strRender, "var chartGlobalOptions = {"));
+        $strOptions = substr($strRender, strpos($strRender, "var chartGlobalOptions = {"));
 
-        $this->assertTrue(!empty(strpos($strGlobalOptions, '"backgroundColor":"red"')));
-        $this->assertTrue(!empty(strpos($strGlobalOptions, '"defaultFontColor":"blue"')));
-        $this->assertTrue(!empty(strpos($strGlobalOptions, '"defaultFontFamily":"Arial"')));
+        $this->assertTrue(!empty(strpos($strOptions, '"backgroundColor":"red"')));
     }
 
     public function testChartJSBarChart()

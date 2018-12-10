@@ -64,14 +64,11 @@ class GraphChartjs implements GraphInterfaceFronted
     ];
 
     /**
-     * Contains all global options of the chart
-     * @todo: wozu gibt es das? gehört das nicht in das $arrChartData set? "Global" darf hier an sicht nicht genannt werden!
+     * Contains options of the chart
      *
      * @var array
      */
-    private $arrChartGlobalOptions = [
-
-    ];
+    private $arrChartOptions = [];
 
     /**
      * @var int
@@ -85,7 +82,8 @@ class GraphChartjs implements GraphInterfaceFronted
      */
     private $arrColors = [
         "#8bbc21", "#2f7ed8", "#f28f43", "#1aadce", "#77a1e5", "#0d233a", "#c42525", "#a6c96a", "#910000",
-        '#0048Ba', '#B0BF1A', '#C46210', '#FFBF00', '#9966CC', '#841B2D', '#FAEBD7', '#8DB600', '#D0FF14', '#FF9966', '#007FFF', '#FF91AF', '#E94196', '#CAE00D', '#54626F'
+        '#0048Ba', '#B0BF1A', '#C46210', '#FFBF00', '#9966CC', '#841B2D', '#FAEBD7', '#8DB600', '#D0FF14',
+        '#FF9966', '#007FFF', '#FF91AF', '#E94196', '#CAE00D', '#54626F'
     ];
 
     /**
@@ -146,7 +144,7 @@ class GraphChartjs implements GraphInterfaceFronted
      * @param null $yAxisID
      * @param float $lineTension
      */
-    private function addChartSet(array $arrValues, string $strLegend = "", $type = null, $bitWriteValues = false, $yAxisID = null, $lineTension = 0.2) //TODO: warum an einer privaten methode optional parameter?
+    private function addChartSet(array $arrValues, string $strLegend = "", $type = null, $bitWriteValues = false, $yAxisID = null, $lineTension = 0.2)
     {
         $arrDataPointObjects = GraphCommons::convertArrValuesToDataPointArray($arrValues);
 
@@ -358,7 +356,7 @@ class GraphChartjs implements GraphInterfaceFronted
      */
     public function setStrBackgroundColor($strColor)
     {
-        $this->arrChartGlobalOptions['backgroundColor'] = $strColor;
+        $this->arrChartOptions['backgroundColor'] = $strColor;
     }
 
     /**
@@ -408,15 +406,6 @@ class GraphChartjs implements GraphInterfaceFronted
     /**
      * @param string $strFont
      *
-     */
-    public function setDefaultFont($strFont)
-    {
-        $this->arrChartGlobalOptions['defaultFontFamily'] = $strFont;
-    }
-
-    /**
-     * @param string $strFont
-     *
      * @see GraphInterface::setStrFont()
      */
     public function setStrFont($strFont)
@@ -428,15 +417,6 @@ class GraphChartjs implements GraphInterfaceFronted
         $this->arrChartData['options']['scales']['xAxes'][0]['scaleLabel']['fontFamily'] = $strFont;
         $this->arrChartData['options']['scales']['yAxes'][0]['scaleLabel']['fontFamily'] = $strFont;
 
-    }
-
-    /**
-     * @param string $strFontColor
-     *
-     */
-    public function setStrDefaultFontColor($strFontColor)
-    {
-        $this->arrChartGlobalOptions['defaultFontColor'] = $strFontColor;
     }
 
     /**
@@ -474,28 +454,27 @@ class GraphChartjs implements GraphInterfaceFronted
             $this->arrColors = $arrSeriesColors;
         }
 
-        //TODO @ako: warum kam das rein?
-        //das hier klappt für line charts
         $colorIndex = 0;
         $colorCount = count($arrSeriesColors);
         if (!empty($this->arrChartData['data']['datasets'])) {
-            foreach ($this->arrChartData['data']['datasets'] as $index => $dataset) {
-                $this->arrChartData['data']['datasets'][$index]["backgroundColor"] = $arrSeriesColors[$colorIndex];
-                if ($dataset["borderColor"] !== '#FFFFFF') {
-                    $this->arrChartData['data']['datasets'][$index]["borderColor"] = $arrSeriesColors[$colorIndex];
+            if ($this->getChartType() !== 'pie') {
+                foreach ($this->arrChartData['data']['datasets'] as $index => $dataset) {
+                    $this->arrChartData['data']['datasets'][$index]["backgroundColor"] = $arrSeriesColors[$colorIndex];
+                    if ($dataset["borderColor"] !== '#FFFFFF') {
+                        $this->arrChartData['data']['datasets'][$index]["borderColor"] = $arrSeriesColors[$colorIndex];
+                    }
+                    if (++$colorIndex > $colorCount - 1) {
+                        $colorIndex = 0;
+                    }
                 }
-                if (++$colorIndex > $colorCount-1) {
-                    $colorIndex = 0;
-                }
+            } else {
+                $this->arrChartData['data']['datasets'][0]["backgroundColor"] = $arrSeriesColors;
+                $oldBorder = $this->arrChartData['data']['datasets'][0]["borderColor"];
+                $this->arrChartData['data']['datasets'][0]["borderColor"] = $oldBorder[0] == '#FFFFFF' ? $oldBorder : $arrSeriesColors;
+
             }
         }
 
-        //TODO das hier klappt für pie charts
-//        if (!empty($this->arrChartData['data']['datasets'])) {
-//            $this->arrChartData['data']['datasets'][0]["backgroundColor"] = $arrSeriesColors;
-//            $oldBorder = $this->arrChartData['data']['datasets'][0]["borderColor"];
-//            $this->arrChartData['data']['datasets'][0]["borderColor"] = $oldBorder[0] == '#FFFFFF' ? $oldBorder : $arrSeriesColors;
-//        }
     }
 
     /**
@@ -535,11 +514,18 @@ class GraphChartjs implements GraphInterfaceFronted
     }
 
     /**
+     * @return mixed
+     */
+    public function getChartType()
+    {
+        return $this->arrChartData['type'];
+    }
+
+    /**
      * @param bool $bitHideXAxis
      */
     public function setHideXAxis(bool $bitHideXAxis = true)
     {
-        $this->arrChartGlobalOptions['xAxesTickDispaly'] = !$bitHideXAxis;
         $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['display'] = !$bitHideXAxis;
     }
 
@@ -548,7 +534,6 @@ class GraphChartjs implements GraphInterfaceFronted
      */
     public function setHideYAxis(bool $bitHideYAxis = true)
     {
-        $this->arrChartGlobalOptions['yAxesTickDispaly'] = !$bitHideYAxis;
         $this->arrChartData['options']['scales']['yAxes'][0]['ticks']['display'] = !$bitHideYAxis;
     }
 
@@ -597,7 +582,6 @@ class GraphChartjs implements GraphInterfaceFronted
      */
     public function setMaxXAxesTicksLimit(int $maxXAxesTicksLimit)
     {
-        $this->arrChartGlobalOptions['maxXAxesTicksLimit'] = $maxXAxesTicksLimit;
         $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['autoSkip'] = true;
         $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['maxTicksLimit'] = $maxXAxesTicksLimit;
     }
@@ -633,7 +617,7 @@ class GraphChartjs implements GraphInterfaceFronted
      */
     public function setValueTypePercentage(bool $bitSetPercentageValues = true)
     {
-        $this->arrChartGlobalOptions['percentageValues'] = $bitSetPercentageValues;
+        $this->arrChartOptions['percentageValues'] = $bitSetPercentageValues;
     }
 
     /**
@@ -643,7 +627,7 @@ class GraphChartjs implements GraphInterfaceFronted
      */
     public function setNotShowNullValues(bool $bitNotShowNullValues = true)
     {
-        $this->arrChartGlobalOptions['notShowNullValues'] = $bitNotShowNullValues;
+        $this->arrChartOptions['notShowNullValues'] = $bitNotShowNullValues;
     }
 
     /**
@@ -654,7 +638,7 @@ class GraphChartjs implements GraphInterfaceFronted
      */
     public function setDefaultTooltip(bool $bitSetDefaultTooltip = true)
     {
-        $this->arrChartGlobalOptions['setDefaultTooltip'] = $bitSetDefaultTooltip;
+        $this->arrChartOptions['setDefaultTooltip'] = $bitSetDefaultTooltip;
     }
 
     /**
@@ -732,6 +716,26 @@ class GraphChartjs implements GraphInterfaceFronted
         }
     }
 
+    /**
+     * For each data in a dataset the colors will vary
+     *
+     * @param bool $bitVaryBarColors
+     */
+    public function setVaryBarColorsForAllSeries($bitVaryBarColors = true)
+    {
+        if ($bitVaryBarColors && !empty($this->arrChartData['data']['datasets'])) {
+            foreach ($this->arrChartData['data']['datasets'] as $index => $dataset) {
+                $this->arrChartData['data']['datasets'][$index]["backgroundColor"] = $this->arrColors;
+                if ($dataset["borderColor"] !== '#FFFFFF') {
+                    $this->arrChartData['data']['datasets'][$index]["borderColor"] = $this->arrColors;
+                }
+            }
+        }
+
+        if (!$bitVaryBarColors) {
+            $this->setArrSeriesColors($this->arrColors);
+        }
+    }
 
     /**
      * @return mixed|string
@@ -773,16 +777,17 @@ class GraphChartjs implements GraphInterfaceFronted
         if ($this->isBitDownloadLink()) {
             $strImage = AdminskinHelper::getAdminImage("icon_downloads", Carrier::getInstance()->getObjLang()->getLang("commons_save_as_image", "system"));
             $strReturn .= "<div class=\"chartjs-link-bar\"><a class=\"chartjs-image-link\" id=\"$strLinkExportId\" download>$strImage</a></div>";
-            $this->arrChartGlobalOptions['createImageLink'] = true;
+            $this->arrChartOptions['createImageLink'] = true;
+            $this->arrChartOptions['strLinkExportId'] = $strLinkExportId;
         }
         $strReturn .= "</div>";
 
         $strReturn .= "<script type='text/javascript'>
             require(['chartjsHelper'], function(chartjsHelper) {
                 var chartData = ".json_encode($this->arrChartData, JSON_NUMERIC_CHECK).";
-    	        var chartGlobalOptions = ".json_encode($this->arrChartGlobalOptions, JSON_NUMERIC_CHECK).";
+    	        var chartOptions = ".json_encode($this->arrChartOptions, JSON_NUMERIC_CHECK).";
                 var ctx = document.getElementById('".$strChartId."');
-                chartjsHelper.createChart(ctx, chartData, chartGlobalOptions);
+                chartjsHelper.createChart(ctx, chartData, chartOptions);
             });
         </script>";
 

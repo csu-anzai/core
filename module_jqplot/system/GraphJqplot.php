@@ -1119,7 +1119,7 @@ class GraphJqplot implements GraphInterfaceFronted
      *
      * @param $bitVaryBarColors
      */
-    public function setVaryBarColorsForAllSeries($bitVaryBarColors)
+    public function setVaryBarColorsForAllSeries($bitVaryBarColors = true)
     {
         if ($this->containsChartType(GraphJqplotCharttype::BAR)) {
             /** $arrData GraphJqplotSeriesdata */

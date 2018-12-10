@@ -77,9 +77,9 @@ define("chartjsHelper", ['jquery', 'folderview'], function ($, folderview) {
      *
      * @param ctx
      * @param chartData
-     * @param chartGlobalOptions
+     * @param chartOptions
      */
-    chartjsHelper.createChart = function (ctx, chartData, chartGlobalOptions) {
+    chartjsHelper.createChart = function (ctx, chartData, chartOptions) {
         require(['chartjs'], function (chartjs) {
 
             Chart.defaults.global.defaultFontFamily = '"Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif';
@@ -96,11 +96,11 @@ define("chartjsHelper", ['jquery', 'folderview'], function ($, folderview) {
             Chart.defaults.global.maintainAspectRatio = false;
 
 
-
             require(['chartjs-plugin-datalabels'], function (chartjsDatalabels) {
-                ctx.style.backgroundColor = chartGlobalOptions['backgroundColor']; //TODO: @ako: was bringt die zeile?
+                // set chart area backgroundColor
+                ctx.style.backgroundColor = chartOptions['backgroundColor'];
 
-                // if (typeof (chartGlobalOptions['setDefaultTooltip']) == 'undefined' || !chartGlobalOptions['setDefaultTooltip']) {
+                // if (typeof (chartOptions['setDefaultTooltip']) == 'undefined' || !chartOptions['setDefaultTooltip']) {
                 //     chartData['options']['tooltips'] = {
                 //         enabled: true,
                 //         mode: 'single',
@@ -113,13 +113,13 @@ define("chartjsHelper", ['jquery', 'folderview'], function ($, folderview) {
                 //     };
                 // }
 
-                if (typeof (chartGlobalOptions['createImageLink']) !== 'undefined' || chartGlobalOptions['createImageLink']) {
+                if (typeof (chartOptions['createImageLink']) !== 'undefined' || chartOptions['createImageLink']) {
                     chartData['options']['animation'] = {
                         onComplete: createExportLink
                     }
                 }
 
-                if (typeof (chartGlobalOptions['notShowNullValues']) !== 'undefined' || chartGlobalOptions['notShowNullValues']) {
+                if (typeof (chartOptions['notShowNullValues']) !== 'undefined' || chartOptions['notShowNullValues']) {
                     chartData['options']['plugins']['datalabels'] = {
                         formatter: function (value) {
                             return chartjsHelper.dataNotShowNullValues(value);
@@ -127,7 +127,7 @@ define("chartjsHelper", ['jquery', 'folderview'], function ($, folderview) {
                     }
                 }
 
-                if (typeof (chartGlobalOptions['percentageValues']) !== 'undefined' || chartGlobalOptions['percentageValues']) {
+                if (typeof (chartOptions['percentageValues']) !== 'undefined' || chartOptions['percentageValues']) {
                     chartData['options']['plugins']['datalabels'] = {
                         formatter: function (value, ctx) {
                             return chartjsHelper.dataShowPercentage(value, ctx);
@@ -152,7 +152,7 @@ define("chartjsHelper", ['jquery', 'folderview'], function ($, folderview) {
 
                 function createExportLink() {
                     var url = myChart.toBase64Image();
-                    document.getElementById('".$strLinkExportId."').href = url;
+                    document.getElementById(chartOptions['strLinkExportId']).href = url;
                 }
 
             });

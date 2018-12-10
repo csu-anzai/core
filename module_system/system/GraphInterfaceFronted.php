@@ -95,4 +95,11 @@ interface GraphInterfaceFronted extends GraphInterface
      * @return mixed
      */
     public function setAsHorizontalInLineStackedChart($autoSize = false);
+
+    /**
+     * For each series the bar colors will vary
+     *
+     * @return mixed
+     */
+    public function setVaryBarColorsForAllSeries($bitVaryBarColors = true);
 }
