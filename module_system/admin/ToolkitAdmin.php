@@ -124,6 +124,9 @@ class ToolkitAdmin extends Toolkit
      * @param string $strToolbarset
      * @param bool $bitReadonly
      * @return string
+     * @throws Exception
+     *
+     * @deprecated use WysiwygEditor component instead
      */
     public function formWysiwygEditor($strName = "inhalt", $strTitle = "", $strContent = "", $strToolbarset = "standard", $bitReadonly = false, $strOpener = "")
     {
