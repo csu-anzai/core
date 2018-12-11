@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Kajona\System\View\Components\Wysiwygeditor;
 
+use Kajona\System\System\Link;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\Session;
 use Kajona\System\System\StringUtil;
@@ -66,7 +67,7 @@ class WysiwygEditor extends AbstractComponent
     /**
      * @var string
      */
-    protected $srtConfigFile;
+    protected $strConfigFile;
 
     /**
      * WysiwygEditor constructor.
@@ -125,8 +126,8 @@ class WysiwygEditor extends AbstractComponent
             "language" => $this->strLanguage,
             "configFile" => $this->strConfigFile,
             "modulepath" => _webpath_.Resourceloader::getInstance()->getWebPathForModule("module_system")."/scripts/ckeditor/ckeditor.js",
-            "filebrowserBrowseUrl" => StringUtil::replace("&amp;", "&", getLinkAdminHref("folderview", "browserChooser", "&form_element=ckeditor&download=1")),
-            "filebrowserImageBrowseUrl" => StringUtil::replace("&amp;", "&", getLinkAdminHref("folderview", "browserChooser", "&form_element=ckeditor&download=1"))
+            "filebrowserBrowseUrl" => StringUtil::replace("&amp;", "&", Link::getLinkAdminHref("folderview", "browserChooser", ['form_element' => 'ckeditor', 'download' => 1])),
+            "filebrowserImageBrowseUrl" => StringUtil::replace("&amp;", "&", Link::getLinkAdminHref("folderview", "browserChooser", ['form_element' => 'ckeditor', 'download' => 1])),
         ];
 
         return $this->renderTemplate($data);

@@ -1257,34 +1257,6 @@ The following sections specify the layout of the rights-mgmt
 
 
 ---------------------------------------------------------------------------------------------------------
--- WYSIWYG EDITOR ---------------------------------------------------------------------------------------
-
-NOTE: This section not just defines the layout, it also inits the WYSIWYG editor. Change settings with care!
-
-The textarea field to replace by the editor. If the editor can't be loaded, a plain textfield is shown instead
-<wysiwyg_ckeditor>
-<div class="form-group">
-    <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
-    <div class="col-sm-6">
-        <textarea name="%%name%%" id="%%name%%" class="form-control inputWysiwyg" data-kajona-editorid="%%editorid%%" %%readonly%%>%%content%%</textarea>
-    </div>
-    <div class="col-sm-2 form-opener">
-        %%opener%%
-    </div>
-</div>
-</wysiwyg_ckeditor>
-
-A few settings to customize the editor. They are added right into the CKEditor configuration.
-Please refer to the CKEditor documentation to see what's possible here
-<wysiwyg_ckeditor_inits>
-    resize_minWidth : 640,
-    filebrowserWindowWidth : 400,
-    filebrowserWindowHeight : 500,
-    filebrowserImageWindowWidth : 400,
-    filebrowserImageWindowWindowHeight : 500,
-</wysiwyg_ckeditor_inits>
-
----------------------------------------------------------------------------------------------------------
 -- PATH NAVIGATION --------------------------------------------------------------------------------------
 
 The following sections are used to display the path-navigations, e.g. used by the navigation module
