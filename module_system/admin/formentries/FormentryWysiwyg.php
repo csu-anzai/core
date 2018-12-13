@@ -10,7 +10,7 @@ use Kajona\System\Admin\FormentryPrintableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\Validators\TextValidator;
-use Kajona\System\View\Components\Wysiwygeditor\WysiwygEditor;
+use Kajona\System\View\Components\Formentry\Wysiwygeditor\WysiwygEditor;
 
 
 /**
