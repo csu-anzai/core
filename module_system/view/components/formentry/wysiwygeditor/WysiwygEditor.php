@@ -107,9 +107,9 @@ class WysiwygEditor extends FormentryComponentAbstract
             "toolbarSet" => $this->toolbarset,
             "language" => $this->language,
             "configFile" => $this->configFile,
-            "modulepath" => _webpath_.Resourceloader::getInstance()->getWebPathForModule("module_system")."/scripts/ckeditor/ckeditor.js",
-            "filebrowserBrowseUrl" => StringUtil::replace("&amp;", "&", Link::getLinkAdminHref("folderview", "browserChooser", ['form_element' => 'ckeditor', 'download' => 1])),
-            "filebrowserImageBrowseUrl" => StringUtil::replace("&amp;", "&", Link::getLinkAdminHref("folderview", "browserChooser", ['form_element' => 'ckeditor', 'download' => 1])),
+            "modulepath" => _webpath_.Resourceloader::getInstance()->getWebPathForModule("module_system")."/view/components/formentry/wysiwygeditor/scripts/ckeditor/ckeditor.js",
+            "filebrowserBrowseUrl" => Link::getLinkAdminHref("folderview", "browserChooser", ['form_element' => 'ckeditor', 'download' => 1], false),
+            "filebrowserImageBrowseUrl" => Link::getLinkAdminHref("folderview", "browserChooser", ['form_element' => 'ckeditor', 'download' => 1], false),
         ];
 
         return $this->renderTemplate($data);
