@@ -841,16 +841,24 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         }
 
         foreach($arrTables as $strOneTable) {
-            //Need to do it this way since under oracle converting from varchar2 to clob is not possible
-            Database::getInstance()->addColumn($strOneTable, "temp_change_oldvalue", DbDatatypes::STR_TYPE_LONGTEXT);
-            Database::getInstance()->_pQuery("UPDATE $strOneTable SET temp_change_oldvalue=change_oldvalue", []);
-            Database::getInstance()->removeColumn($strOneTable, "change_oldvalue");
-            Database::getInstance()->changeColumn($strOneTable, "temp_change_oldvalue", "change_oldvalue", DbDatatypes::STR_TYPE_LONGTEXT);
 
-            Database::getInstance()->addColumn($strOneTable, "temp_change_newvalue", DbDatatypes::STR_TYPE_LONGTEXT);
-            Database::getInstance()->_pQuery("UPDATE $strOneTable SET temp_change_newvalue=change_newvalue", []);
-            Database::getInstance()->removeColumn($strOneTable, "change_newvalue");
-            Database::getInstance()->changeColumn($strOneTable, "temp_change_newvalue", "change_newvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+            if (Config::getInstance()->getConfig("dbdriver") == "mysqli") {
+                //direct change on the table
+                Database::getInstance()->changeColumn($strOneTable, "change_oldvalue", "change_oldvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+                Database::getInstance()->changeColumn($strOneTable, "change_newvalue", "change_newvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+
+            } else {
+                //Need to do it this way since under oracle converting from varchar2 to clob is not possible
+                Database::getInstance()->addColumn($strOneTable, "temp_change_oldvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+                Database::getInstance()->_pQuery("UPDATE $strOneTable SET temp_change_oldvalue=change_oldvalue", []);
+                Database::getInstance()->removeColumn($strOneTable, "change_oldvalue");
+                Database::getInstance()->changeColumn($strOneTable, "temp_change_oldvalue", "change_oldvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+
+                Database::getInstance()->addColumn($strOneTable, "temp_change_newvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+                Database::getInstance()->_pQuery("UPDATE $strOneTable SET temp_change_newvalue=change_newvalue", []);
+                Database::getInstance()->removeColumn($strOneTable, "change_newvalue");
+                Database::getInstance()->changeColumn($strOneTable, "temp_change_newvalue", "change_newvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+            }
         }
 
         $strReturn .= "Upating module version".PHP_EOL;
