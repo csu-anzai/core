@@ -138,23 +138,6 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
         $strReturn .= "Version found:\n\t Module: ".$arrModule["module_name"].", Version: ".$arrModule["module_version"]."\n\n";
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.2") {
-            $strReturn .= "Updating to 6.5...\n";
-            $this->updateModuleVersion("search", "6.5");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.5") {
-            $strReturn .= "Updating to 6.6...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.6") {
-            $strReturn .= $this->update_66_70();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "7.0") {
             $strReturn .= $this->update_70_71();
         }
@@ -163,19 +146,6 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
         return $strReturn."\n\n";
 	}
 
-
-    private function update_66_70()
-    {
-        $strReturn = "Update to 7.0".PHP_EOL;
-
-        $strReturn .= "Updating schema".PHP_EOL;
-        $this->objDB->removeColumn("agp_search_ix_document", "search_ix_content_lang");
-        $this->objDB->removeColumn("agp_search_ix_document", "search_ix_portal_object");
-
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
-
-        return $strReturn;
-	}
 
     private function update_70_71()
     {

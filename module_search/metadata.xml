@@ -9,8 +9,8 @@
     <author>Kajona Team</author>
     <providesInstaller>TRUE</providesInstaller>
     <requiredModules>
-        <module name="system" version="7.0" />
-        <module name="packagemanager" version="7.0" />
+        <module name="system" version="7.1" />
+        <module name="packagemanager" version="7.1" />
     </requiredModules>
     <constants>
         <constant name="_search_module_id_" value="55" />

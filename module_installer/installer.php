@@ -50,8 +50,8 @@ class Installer
     private $strForwardLink = "";
     private $strBackwardLink = "";
 
-    private $strVersion = "V 7.0";
-    private $strMinPhpVersion = "7.0";
+    private $strVersion = "V 7.1";
+    private $strMinPhpVersion = "7.2";
 
     /**
      * Instance of template-engine
@@ -200,11 +200,29 @@ class Installer
 
 
         $arrModules = array(
-            "mbstring",
+            "curl",
+            "exif",
+            "fileinfo",
             "gd",
+            "iconv",
+            "json",
+            "ldap",
+            "libxml",
+            "mbstring",
+            "openssl",
+            "zend opcache",
+            "pcre",
+            "phar",
+            "reflection",
+            "session",
+            "simplexml",
+            "sockets",
+            "spl",
             "xml",
-            "zip",
-            "openssl"
+            "xmlreader",
+            "xmlwriter",
+            "xsl",
+            "zip"
         );
 
         $arrChecksLanguages = [];
@@ -233,11 +251,14 @@ class Installer
 
         $arrChecksModules = [];
         foreach ($arrModules as $strOneModule) {
-            if (in_array($strOneModule, get_loaded_extensions())) {
-                $arrChecksModules[$strOneFile] = true;
+            $extensions = array_map(function(string $val) {
+                return strtolower($val);
+            }, get_loaded_extensions());
+            if (in_array($strOneModule, $extensions)) {
+                $arrChecksModules[$strOneModule] = true;
             }
             else {
-                $arrChecksModules[$strOneFile] = false;
+                $arrChecksModules[$strOneModule] = false;
             }
         }
 
