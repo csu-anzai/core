@@ -15,8 +15,9 @@
  * @package module_packagemanager
  */
 
+use Kajona\Packagemanager\System\PackagemanagerContentproviderLocal;
+
 $config = array();
 
 //comma-separated list of registered content-providers
-$config["contentproviders"]  = "Kajona\\Packagemanager\\System\\PackagemanagerContentproviderKajona,";
-$config["contentproviders"] .= "Kajona\\Packagemanager\\System\\PackagemanagerContentproviderLocal";
+$config["contentproviders"] = PackagemanagerContentproviderLocal::class;

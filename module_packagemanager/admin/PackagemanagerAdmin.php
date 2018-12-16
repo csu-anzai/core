@@ -8,17 +8,14 @@
 
 namespace Kajona\Packagemanager\Admin;
 
+use Artemeon\Image\Image;
+use Artemeon\Image\Plugins\ImageScale;
 use Kajona\Packagemanager\System\PackagemanagerManager;
 use Kajona\Packagemanager\System\PackagemanagerMetadata;
 use Kajona\Packagemanager\System\PackagemanagerPackagemanagerInterface;
 use Kajona\Packagemanager\System\ServiceProvider;
-use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminInterface;
 use Kajona\System\Admin\AdminSimple;
-use Kajona\System\Admin\Formentries\FormentryCheckbox;
-use Kajona\System\Admin\Formentries\FormentryHeadline;
-use Kajona\System\Admin\Formentries\FormentryPlaintext;
-use Kajona\System\Admin\Formentries\FormentryText;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\ArrayIterator;
 use Kajona\System\System\ArraySectionIterator;
@@ -27,16 +24,10 @@ use Kajona\System\System\Classloader;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Filesystem;
 use Kajona\System\System\History;
-use Kajona\System\System\HttpResponsetypes;
-use Artemeon\Image\Image;
-use Artemeon\Image\Plugins\ImageScale;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
-use Kajona\System\System\Resourceloader;
-use Kajona\System\System\ResponseObject;
 use Kajona\System\System\StringUtil;
-use Kajona\System\System\SystemSetting;
 
 /**
  * Admin-GUI of the packagemanager.
@@ -70,6 +61,7 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
      * Generic list of all packages available on the local filesystem
      *
      * @return string
+     * @throws Exception
      * @permissions view
      * @autoTestable
      */
@@ -142,16 +134,6 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
                 }
             }
 
-
-            $strActions .= $this->objToolkit->listButton(
-                "<span id=\"updateWrapper".createFilename($objOneMetadata->getStrTitle(), true)."\">".AdminskinHelper::getAdminImage("loadingSmall", $this->getLang("package_searchupdate"))."</span>"
-            );
-            $strActions .= "<script type='text/javascript'>
-                require(['packagemanager'], function(packagemanager) {
-                    packagemanager.addPackageToTest('".$objOneMetadata->getStrTitle()."', '".createFilename($objOneMetadata->getStrTitle(), true)."');
-                });
-            </script>";
-
             $strReturn .= $this->objToolkit->simpleAdminList($objOneMetadata, $strActions);
         }
 
@@ -184,6 +166,7 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
      *
      * @permissions view
      * @return string
+     * @throws Exception
      */
     protected function actionShowInfo()
     {
@@ -196,69 +179,13 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
         return "";
     }
 
-
-    /**
-     * Checks if an update is available for a list of packages.
-     * Renders the matching icon and tooltip or the link to update a package.
-     *
-     * @permissions view,edit
-     * @return string
-     * @responseType json
-     */
-    protected function actionGetUpdateIcons()
-    {
-
-        $strPackages = $this->getParam("packages");
-        $arrPackagesToCheck = explode(",", $strPackages);
-        $objManager = new PackagemanagerManager();
-
-        //close session to avoid blocking
-        $this->objSession->sessionClose();
-        $arrLatestVersion = [];// $objManager->scanForUpdates();
-
-        $arrReturn = array();
-        foreach ($arrPackagesToCheck as $strOnePackage) {
-            $objMetadata = $objManager->getPackage($strOnePackage);
-
-            if ($objMetadata == null || !isset($arrLatestVersion[$strOnePackage])) {
-                $arrReturn[$strOnePackage] = AdminskinHelper::getAdminImage("icon_updateError", $this->getLang("package_noversion"));
-                continue;
-            }
-
-
-            $objHandler = $objManager->getPackageManagerForPath($objMetadata->getStrPath());
-            $bitUpdateAvailable = $objManager->updateAvailable($objHandler, $arrLatestVersion[$strOnePackage]);
-
-            if ($bitUpdateAvailable === null) {
-                $arrReturn[$strOnePackage] = AdminskinHelper::getAdminImage("icon_updateError", $this->getLang("package_noversion"));
-            } else {
-                //compare the version to trigger additional actions
-                $strLatestVersion = $arrLatestVersion[$strOnePackage];
-                if ($bitUpdateAvailable) {
-                    $arrReturn[$strOnePackage] = Link::getLinkAdminDialog(
-                        $this->getArrModule("modul"),
-                        "initPackageUpdate",
-                        "&package=".$objHandler->getObjMetadata()->getStrPath(),
-                        $this->getLang("package_updatefound")." ".$strLatestVersion,
-                        $this->getLang("package_updatefound")." ".$strLatestVersion,
-                        "icon_update",
-                        $objHandler->getObjMetadata()->getStrTitle()
-                    );
-                } else {
-                    $arrReturn[$strOnePackage] = AdminskinHelper::getAdminImage("icon_updateDisabled", $this->getLang("package_noupdate")." ".$strLatestVersion);
-                }
-            }
-        }
-
-        return json_encode($arrReturn);
-    }
-
     /**
      * Validates a local package, renders the metadata
      * and provides, if feasible, a button to start the installation.
      *
      * @permissions edit
      * @return string
+     * @throws Exception
      */
     protected function actionProcessPackage()
     {
@@ -443,6 +370,7 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
      *
      * @permissions edit
      * @return string
+     * @throws Exception
      */
     protected function actionInstallPackage()
     {
@@ -492,6 +420,7 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
      *
      * @permissions edit
      * @return string
+     * @throws Exception
      */
     protected function actionInitPackageUpdate()
     {
@@ -499,7 +428,6 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
         $objManager = new PackagemanagerManager();
         $objHandler = $objManager->getPackageManagerForPath($strPackage);
         return $objManager->updatePackage($objHandler);
-
     }
 
 
@@ -607,6 +535,7 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
      * @param bool $bitDialog
      *
      * @return array
+     * @throws Exception
      */
     protected function getNewEntryAction($strListIdentifier, $bitDialog = false)
     {
