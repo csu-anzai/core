@@ -1,24 +1,19 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-********************************************************************************************************/
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
+
+declare(strict_types=1);
 
 namespace Kajona\System\Admin\Formentries;
 
 use Kajona\System\Admin\FormentryPrintableInterface;
 use Kajona\System\System\Carrier;
-use Kajona\System\System\DropdownLoaderInterface;
-use Kajona\System\System\Link;
-use Kajona\System\System\Reflection;
-use Kajona\System\System\ServiceProvider;
-use Kajona\System\System\StringUtil;
-use Kajona\System\System\Validators\TextValidator;
-
 
 /**
- * A yes-no field renders a dropdown containing a list of entries.
- * Make sure to pass the list of possible entries before rendering the form.
+ * Similar to a dropdown, but rendered as a list of radio buttons to force
+ * the user to select a single value.
  *
  * @author stefan.idler@artemeon.de
  * @since 7.1
@@ -27,10 +22,7 @@ class FormentryRadiogroup extends FormentryDropdown implements FormentryPrintabl
 {
 
     /**
-     * Renders the field itself.
-     * In most cases, based on the current toolkit.
-     *
-     * @return string
+     * @inheritdoc
      */
     public function renderField()
     {
