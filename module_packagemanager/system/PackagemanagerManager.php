@@ -8,23 +8,16 @@
 
 namespace Kajona\Packagemanager\System;
 
-use Kajona\Packagemanager\System\Messageproviders\MessageproviderPackageupdate;
 use Kajona\System\System\CacheManager;
-use Kajona\System\System\Carrier;
 use Kajona\System\System\Classloader;
 use Kajona\System\System\Config;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Logger;
-use Kajona\System\System\MessagingMessage;
-use Kajona\System\System\MessagingMessagehandler;
-use Kajona\System\System\Objectfactory;
 use Kajona\System\System\OrmBase;
 use Kajona\System\System\OrmDeletedhandlingEnum;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\StringUtil;
-use Kajona\System\System\SystemSetting;
-use Kajona\System\System\UserGroup;
 use Kajona\System\System\Zip;
 
 
@@ -229,32 +222,6 @@ class PackagemanagerManager
     }
 
     /**
-     * Scans all packages available and tries to load the latest version available.
-     * All packages found are returned in a list like
-     * array(packagename => version)
-     * In addition, the update-available messages are triggered internally.
-     *
-     * @return array
-     * @throws Exception
-     */
-    public function scanForUpdates()
-    {
-
-        $objManager = new PackagemanagerManager();
-        $arrVersions = $objManager->getArrLatestVersion();
-
-        foreach ($arrVersions as $strOneModule => $strOneVersion) {
-            $objMetadata = $objManager->getPackage($strOneModule);
-            if ($objMetadata != null) {
-                $objManager->updateAvailable($objManager->getPackageManagerForPath($objMetadata->getStrPath()), $strOneVersion);
-            }
-        }
-
-        return $arrVersions;
-    }
-
-
-    /**
      * Internal helper, searches for all packages currently installed if a new version is available.
      * Therefore every source is queries only once.
      *
@@ -309,75 +276,6 @@ class PackagemanagerManager
         }
 
         return $arrReturn;
-    }
-
-
-    /**
-     * Validates a packages' latest version and compares it to the version currently installed.
-     * Optionally, a version to compare may be passed.
-     *
-     * @param PackagemanagerPackagemanagerInterface $objPackage
-     * @param string $strVersionToCompare
-     *
-     * @return bool or null of the package could not be found
-     */
-    public function updateAvailable(PackagemanagerPackagemanagerInterface $objPackage, $strVersionToCompare = "")
-    {
-
-        if ($strVersionToCompare === "") {
-            $arrRemotePackages = $this->getArrLatestVersion();
-            if (isset($arrRemotePackages[$objPackage->getObjMetadata()->getStrTitle()])) {
-                $strLatestVersion = $arrRemotePackages[$objPackage->getObjMetadata()->getStrTitle()];
-            }
-            else {
-                $strLatestVersion = null;
-            }
-        }
-        else {
-            $strLatestVersion = $strVersionToCompare;
-        }
-
-        if ($strLatestVersion !== null) {
-            if ($strLatestVersion != null && version_compare($strLatestVersion, $objPackage->getObjMetadata()->getStrVersion(), ">")) {
-                Logger::getInstance(Logger::PACKAGEMANAGEMENT)->info("found update for package ".$objPackage->getObjMetadata()->getStrTitle().", installed: ".$objPackage->getObjMetadata()->getStrVersion()." available: ".$strLatestVersion);
-
-                $this->sendUpdateAvailableMessage($objPackage, $strLatestVersion);
-
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @param PackagemanagerPackagemanagerInterface $objPackage
-     * @param string $strLatestVersion
-     *
-     * @return void
-     */
-    private function sendUpdateAvailableMessage(PackagemanagerPackagemanagerInterface $objPackage, $strLatestVersion)
-    {
-        //check, if not already sent
-        $strIdentifier = sha1(__CLASS__.$objPackage->getObjMetadata()->getStrTitle().$strLatestVersion);
-
-        if (count(MessagingMessage::getMessagesByIdentifier($strIdentifier)) == 0) {
-
-            $strMailtext = Carrier::getInstance()->getObjLang()->getLang("update_notification_package", "packagemanager")." ".$objPackage->getObjMetadata()->getStrTitle()."\n";
-            $strMailtext .= Carrier::getInstance()->getObjLang()->getLang("update_notification_verinst", "packagemanager")." ".$objPackage->getObjMetadata()->getStrVersion()."\n";
-            $strMailtext .= Carrier::getInstance()->getObjLang()->getLang("update_notification_verav", "packagemanager")." ".$strLatestVersion."\n";
-
-            $objMessageHandler = new MessagingMessagehandler();
-            $objMessage = new MessagingMessage();
-            $objMessage->setStrTitle(Carrier::getInstance()->getObjLang()->getLang("update_notification_intro", "packagemanager"));
-            $objMessage->setStrBody($strMailtext);
-            $objMessage->setObjMessageProvider(new MessageproviderPackageupdate());
-            $objMessage->setStrInternalIdentifier($strIdentifier);
-            $objMessageHandler->sendMessageObject($objMessage, Objectfactory::getInstance()->getObject(SystemSetting::getConfigValue("_admins_group_id_")));
-        }
     }
 
     /**
