@@ -60,7 +60,7 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
 		$arrFields["search_queue_systemid"] = array("char20", true);
 		$arrFields["search_queue_action"] 	= array("char20", true);
 
-		if(!$this->objDB->createTable("search_queue", $arrFields, array("search_queue_id")))
+		if(!$this->objDB->createTable("search_queue", $arrFields, array("search_queue_id"), array("search_queue_systemid")))
 			$strReturn .= "An error occurred! ...\n";
 
 
@@ -153,6 +153,11 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
             $strReturn .= $this->update_66_70();
         }
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.0") {
+            $strReturn .= $this->update_70_701();
+        }
+
 
         return $strReturn."\n\n";
 	}
@@ -168,6 +173,16 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
 
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
 
+        return $strReturn;
+	}
+
+    private function update_70_701()
+    {
+        $strReturn = "Update to 7.0.1".PHP_EOL;
+
+        $strReturn .= "Updating schema".PHP_EOL;
+        $this->objDB->createIndex("search_queue", "ix_".generateSystemid(), ["search_queue_systemid"]);
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.1");
         return $strReturn;
 	}
 
