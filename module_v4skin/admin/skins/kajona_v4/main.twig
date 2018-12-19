@@ -36,10 +36,7 @@
                     {{ login|raw }}
                 </div>
                 <div class="col-md-8 col-sm-9 hidden-xs" style="text-align: right;">
-                    <form class="navbar-search pull-left" action="_indexpath_">
-                        <input type="hidden" name="admin" value="1" >
-                        <input type="hidden" name="module" value="search">
-                        <input type="hidden" name="action" value="search">
+                    <form class="navbar-search pull-left" action="_webpath_/#/search/search" onsubmit="require('forms').defaultOnSubmit(this);return false;">
 
                         <div class="input-group">
                             <input type="text" name="search_query" class="form-control search-query" placeholder="{{ "globalSearchPlaceholder"|lang("dashboard") }}" id="globalSearchInput">

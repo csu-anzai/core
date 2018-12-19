@@ -300,7 +300,7 @@ class ToolkitAdmin extends Toolkit
      */
     public function formInputText($strName, $strTitle = "", $strValue = "", $strClass = "", $strOpener = "", $bitReadonly = false, $strInstantEditor = "")
     {
-        $inputCheckbox = new Inputtext($strName, $strTitle, $strValue);
+        $inputCheckbox = new Inputtext($strName, (string) $strTitle, $strValue);
         $inputCheckbox->setClass($strClass);
         $inputCheckbox->setReadOnly($bitReadonly);
         $inputCheckbox->setOpener($strOpener);

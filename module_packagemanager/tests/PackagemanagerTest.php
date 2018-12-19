@@ -2,6 +2,7 @@
 
 namespace Kajona\Packagemanager\Tests;
 
+use Kajona\Packagemanager\System\PackagemanagerContentproviderLocal;
 use Kajona\Packagemanager\System\PackagemanagerManager;
 use Kajona\Packagemanager\System\PackagemanagerMetadata;
 use Kajona\System\System\Filesystem;
@@ -103,8 +104,8 @@ class PackagemanagerTest extends Testbase
     {
         $objManager = new PackagemanagerManager();
         $arrProviders = $objManager->getContentproviders();
-        $this->assertEquals(2, count($arrProviders));
-        $this->assertEquals("Kajona\\Packagemanager\\System\\PackagemanagerContentproviderLocal", get_class($arrProviders[1]));
+        $this->assertEquals(1, count($arrProviders));
+        $this->assertEquals(PackagemanagerContentproviderLocal::class, get_class($arrProviders[0]));
     }
 
 
@@ -135,8 +136,6 @@ class PackagemanagerTest extends Testbase
     <description></description>
     <version>3.9.1</version>
     <author>Kajona Team</author>
-    <target>module_autotest</target>
-    <type>MODULE</type>
     <providesInstaller>FALSE</providesInstaller>
     <requiredModules>
         <module name="system" version="3.4.1" />

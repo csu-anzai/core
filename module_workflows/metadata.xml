@@ -7,10 +7,9 @@
     <description>A complex workflow-engine to trigger events by multiple triggers.</description>
     <version>7.1</version>
     <author>Kajona Team</author>
-    <type>MODULE</type>
     <providesInstaller>TRUE</providesInstaller>
     <requiredModules>
-        <module name="system" version="7.0" />
+        <module name="system" version="7.1" />
     </requiredModules>
     <constants>
         <constant name="_workflows_module_id_" value="115" />

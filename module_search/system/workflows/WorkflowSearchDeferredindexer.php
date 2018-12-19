@@ -91,20 +91,22 @@ class WorkflowSearchDeferredindexer implements WorkflowsHandlerInterface
         //start with deletions
         $objQueue = new SearchIndexqueue();
 
-        Carrier::getInstance()->getObjRights()->setBitTestMode(true);
+        //Carrier::getInstance()->getObjRights()->setBitTestMode(true);
 
-        foreach ($objQueue->getRows(SearchEnumIndexaction::DELETE()) as $arrRow) {
+        $rowsToDelete = $objQueue->getRows(SearchEnumIndexaction::DELETE());
+        foreach ($rowsToDelete as $arrRow) {
             $objIndex->removeRecordFromIndex($arrRow["search_queue_systemid"]);
             $objQueue->deleteBySystemid($arrRow["search_queue_systemid"]);
         }
 
         //index objects
-        foreach ($objQueue->getRows(SearchEnumIndexaction::INDEX(), 0, $this->intMaxObjectsPerRun) as $arrRow) {
+        $rowsToIndex = $objQueue->getRows(SearchEnumIndexaction::INDEX(), 0, $this->intMaxObjectsPerRun);
+        foreach ($rowsToIndex as $arrRow) {
             $objIndex->indexObject(Objectfactory::getInstance()->getObject($arrRow["search_queue_systemid"]));
             $objQueue->deleteBySystemidAndAction($arrRow["search_queue_systemid"], SearchEnumIndexaction::INDEX());
         }
 
-        Carrier::getInstance()->getObjRights()->setBitTestMode(false);
+        //Carrier::getInstance()->getObjRights()->setBitTestMode(false);
 
         //reschedule for the next run
         return false;
