@@ -73,9 +73,14 @@ class UserSourcefactory
      */
     public function getGrouplistByQuery($strName, $intStart = null, $intEnd = null)
     {
-
         //validate if a group with the given name is available
-        $strQuery = "SELECT group_id, group_subsystem FROM agp_user_group where group_name LIKE ?";
+        $strQuery = "SELECT ugroup.group_id, 
+                            ugroup.group_subsystem 
+                       FROM agp_user_group ugroup
+                 INNER JOIN agp_system groupsys
+                         ON ugroup.group_id = groupsys.system_id
+                      WHERE (groupsys.system_deleted = 0 OR groupsys.system_deleted IS NULL)
+                        AND ugroup.group_name LIKE ?";
         $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, array("%".$strName."%"), $intStart, $intEnd);
 
         $arrReturn = array();
