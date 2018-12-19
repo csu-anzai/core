@@ -1062,28 +1062,6 @@ A fieldset to structure logical sections
 </iframe_container>
 
 
-<tabbed_content_wrapper>
-    <ul class="nav nav-tabs" id="%%id%%">
-        %%tabheader%%
-    </ul>
-
-    <div class="tab-content %%classaddon%%">
-        %%tabcontent%%
-    </div>
-</tabbed_content_wrapper>
-
-<tabbed_content_tabheader>
-    <li class="%%classaddon%%"><a href="" data-target="#%%tabid%%" data-href="%%href%%" data-toggle="tab">%%tabtitle%%</a></li>
-</tabbed_content_tabheader>
-
-<tabbed_content_tabcontent>
-    <div class="tab-pane fade %%classaddon%%" id="%%tabid%%" role="tabpanel">
-        %%tabcontent%%
-    </div>
-</tabbed_content_tabcontent>
-
-
-
 ---------------------------------------------------------------------------------------------------------
 -- SPECIAL SECTIONS -------------------------------------------------------------------------------------
 
@@ -1285,34 +1263,6 @@ The following sections specify the layout of the rights-mgmt
 </div>
 </rights_form_inherit>
 
-
----------------------------------------------------------------------------------------------------------
--- WYSIWYG EDITOR ---------------------------------------------------------------------------------------
-
-NOTE: This section not just defines the layout, it also inits the WYSIWYG editor. Change settings with care!
-
-The textarea field to replace by the editor. If the editor can't be loaded, a plain textfield is shown instead
-<wysiwyg_ckeditor>
-<div class="form-group">
-    <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
-    <div class="col-sm-6">
-        <textarea name="%%name%%" id="%%name%%" class="form-control inputWysiwyg" data-kajona-editorid="%%editorid%%" %%readonly%%>%%content%%</textarea>
-    </div>
-    <div class="col-sm-2 form-opener">
-        %%opener%%
-    </div>
-</div>
-</wysiwyg_ckeditor>
-
-A few settings to customize the editor. They are added right into the CKEditor configuration.
-Please refer to the CKEditor documentation to see what's possible here
-<wysiwyg_ckeditor_inits>
-    resize_minWidth : 640,
-    filebrowserWindowWidth : 400,
-    filebrowserWindowHeight : 500,
-    filebrowserImageWindowWidth : 400,
-    filebrowserImageWindowWindowHeight : 500,
-</wysiwyg_ckeditor_inits>
 
 ---------------------------------------------------------------------------------------------------------
 -- PATH NAVIGATION --------------------------------------------------------------------------------------

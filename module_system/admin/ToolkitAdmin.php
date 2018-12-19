@@ -41,6 +41,7 @@ use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
 use Kajona\System\View\Components\Popover\Popover;
+use Kajona\System\View\Components\Tabbedcontent\Tabbedcontent;
 use Kajona\System\View\Components\Textrow\TextRow;
 use Kajona\System\View\Components\Warningbox\Warningbox;
 use Kajona\System\View\Components\Tabbedcontent\Tabbedcontent;
@@ -115,83 +116,6 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["readonly"] = ($bitReadOnly ? "disabled=\"disabled\"" : "");
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", $bitWithTime ? "input_datetime_simple" : "input_date_simple");
-    }
-
-
-    /**
-     * Returns a text-field using the cool WYSIWYG editor
-     * You can use the different toolbar sets defined in /scripts/ckeditor/config.js
-     *
-     * @param string $strName
-     * @param string $strTitle
-     * @param string $strContent
-     * @param string $strToolbarset
-     * @param bool $bitReadonly
-     * @return string
-     */
-    public function formWysiwygEditor($strName = "inhalt", $strTitle = "", $strContent = "", $strToolbarset = "standard", $bitReadonly = false, $strOpener = "")
-    {
-        $strReturn = "";
-
-        //create the html-input element
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["opener"] = $strOpener;
-        $arrTemplate["editorid"] = generateSystemid();
-        $arrTemplate["readonly"] = ($bitReadonly ? " readonly=\"readonly\" " : "");
-        $arrTemplate["content"] = htmlentities($strContent, ENT_COMPAT, "UTF-8");
-        $strReturn .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "wysiwyg_ckeditor");
-        //for the popups, we need the skinwebpath
-        $strReturn .= $this->formInputHidden("skinwebpath", _skinwebpath_);
-
-        //set the language the user defined for the admin
-        $strLanguage = Session::getInstance()->getAdminLanguage();
-        if ($strLanguage == "") {
-            $strLanguage = "en";
-        }
-
-        //include the settings made by admin skin
-        $strTemplateInit = $this->objTemplate->fillTemplateFile(array(), "/admin/skins/kajona_v4/elements.tpl", "wysiwyg_ckeditor_inits");
-
-        //check if a customized editor-config is available
-        $strConfigFile = "'config_kajona_standard.js'";
-        //BC
-        if (is_file(_realpath_."project/module_system/scripts/admin/ckeditor/config_kajona_standard.js")) {
-            $strConfigFile = "KAJONA_WEBPATH+'/project/module_system/admin/scripts/ckeditor/config_kajona_standard.js'";
-        }
-
-        if (is_file(_realpath_."project/module_system/scripts/ckeditor/config_kajona_standard.js")) {
-            $strConfigFile = "KAJONA_WEBPATH+'/project/module_system/scripts/ckeditor/config_kajona_standard.js'";
-        }
-
-        //to add role-based editors, you could load a different toolbar or also a different CKEditor config file
-        //the editor code
-        $strReturn .= " <script type=\"text/javascript\" src=\""._webpath_.Resourceloader::getInstance()->getWebPathForModule("module_system")."/scripts/ckeditor/ckeditor.js\"></script>\n";
-        $strReturn .= " <script type=\"text/javascript\">\n";
-        $strReturn .= "
-            var ckeditorConfig = {
-                customConfig : ".$strConfigFile.",
-                toolbar : '".$strToolbarset."',
-                ".$strTemplateInit."
-                language : '".$strLanguage."',
-                filebrowserBrowseUrl : '".StringUtil::replace("&amp;", "&", getLinkAdminHref("folderview", "browserChooser", "&form_element=ckeditor&download=1"))."',
-                filebrowserImageBrowseUrl : '".StringUtil::replace("&amp;", "&", getLinkAdminHref("mediamanager", "folderContentFolderviewMode", "systemid=".SystemSetting::getConfigValue("_mediamanager_default_imagesrepoid_")."&form_element=ckeditor&bit_link=1"))."'
-	        };
-            var curEditor = CKEDITOR.replace($(\"textarea[name='".$strName."'][data-kajona-editorid='".$arrTemplate["editorid"]."']\")[0], ckeditorConfig);
-            curEditor.on('change', function(event) {
-                $(\"textarea[name='".$strName."'][data-kajona-editorid='".$arrTemplate["editorid"]."']\").val(event.editor.getData());
-            });
-            curEditor.on('instanceReady', function(event) {
-                if($(\"textarea[name='".$strName."'][data-kajona-editorid='".$arrTemplate["editorid"]."']\").hasClass('mandatoryFormElement')) {
-                        event.editor.container.addClass('mandatoryFormElement')
-                }
-            });
-            
-        ";
-        $strReturn .= "</script>\n";
-
-        return $strReturn;
     }
 
 
