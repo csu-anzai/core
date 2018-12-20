@@ -497,7 +497,7 @@ abstract class Root
             if (validateSystemid($arrOneChild["system_id"])) {
                 $objInstance = Objectfactory::getInstance()->getObject($arrOneChild["system_id"]);
                 if ($objInstance !== null) {
-                    $objInstance->deleteObject();
+                    ServiceLifeCycleFactory::getLifeCycle(get_class($objInstance))->delete($objInstance);
                 }
             }
         }
@@ -569,7 +569,7 @@ abstract class Root
             if (validateSystemid($arrOneChild["system_id"])) {
                 $objInstance = Objectfactory::getInstance()->getObject($arrOneChild["system_id"]);
                 if ($objInstance !== null) {
-                    $objInstance->deleteObjectFromDatabase();
+                    ServiceLifeCycleFactory::getLifeCycle(get_class($objInstance))->deleteObjectFromDatabase($objInstance);
                 }
             }
         }
