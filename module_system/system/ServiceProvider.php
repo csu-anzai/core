@@ -176,7 +176,7 @@ class ServiceProvider implements ServiceProviderInterface
         };
 
         $objContainer[self::STR_TEMPLATE_ENGINE] = function ($c) {
-            $debug = $c[self::STR_CONFIG]->getConfig("debuglevel") == 1;
+            $debug = $c[self::STR_CONFIG]->getDebug("debuglevel") == 1;
             $loader = new Loader(_realpath_);
 
             $twig = new \Twig_Environment($loader, array(

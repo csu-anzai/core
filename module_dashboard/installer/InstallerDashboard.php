@@ -50,21 +50,9 @@ class InstallerDashboard extends InstallerBase implements InstallerInterface {
         $strReturn .= "Version found:\n\t Module: ".$arrModule["module_name"].", Version: ".$arrModule["module_version"]."\n\n";
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.2") {
-            $strReturn .= "Updating to 6.5...\n";
-            $this->updateModuleVersion("dashboard", "6.5");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.5") {
-            $strReturn .= "Updating to 6.6...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.6") {
-            $strReturn .= "Updating to 7.0...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
+        if($arrModule["module_version"] == "7.0") {
+            $strReturn .= "Updating to 7.1...\n";
+            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1");
         }
 
         return $strReturn."\n\n";

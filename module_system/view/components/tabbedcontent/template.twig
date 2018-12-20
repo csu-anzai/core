@@ -1,0 +1,43 @@
+<div class="core-component-tabbedcontent">
+    <ul class="nav nav-tabs" id="{{ mainTabId }}">
+        {% for tab in tabs %}
+            <li class="{{ tab.classaddon }}">
+                <a href="" data-target="#{{ tab.id }}" data-href="{{ tab.href }}" data-toggle="tab">
+                    {{ tab.title }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <div class="tab-content {% if fullHeight %} fullHeight {% endif %}">
+        {% for content in contents %}
+            <div class="tab-pane fade {{ content.classaddon }}" id="{{ content.id }}" role="tabpanel">
+                {{ content.content | raw }}
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if remoteContent %}
+        <script type="text/javascript">
+            require(['jquery', 'forms'], function ($, forms) {
+                $('#{{ mainTabId }} > li > a[data-href!=""]').on('click', function (e) {
+                    if (!$(e.target).data('loaded')) {
+                        forms.loadTab($(e.target).data('target').substr(1), $(e.target).data('href'));
+                        $(e.target).data('loaded', true);
+                    }
+                });
+
+                $(document).ready(function () {
+                    var el = $('#{{ mainTabId }} > li.active > a[data-href!=""]');
+                    if (el.length > 0) {
+                        if (!el.data('loaded')) {
+                            forms.loadTab(el.data('target').substr(1), el.data('href'));
+                            el.data('loaded', true);
+                        }
+                    }
+                });
+            });
+        </script>
+    {% endif %}
+
+</div>

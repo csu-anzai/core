@@ -153,38 +153,14 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
         $strReturn .= "Version found:\n\t Module: ".$arrModule["module_name"].", Version: ".$arrModule["module_version"]."\n\n";
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "6.2") {
-            $strReturn = "Updating to 6.5...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5");
-            $this->updateModuleVersion("folderview", "6.5");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "6.5") {
-            $strReturn = "Updating to 6.5.1...\n";
-
-            $this->objDB->addColumn("agp_mediamanager_file", "file_search_content", DbDatatypes::STR_TYPE_TEXT);
-            $this->objDB->addColumn("agp_mediamanager_repo", "repo_search_index", DbDatatypes::STR_TYPE_INT);
-
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.1");
-            $this->updateModuleVersion("folderview", "6.5.1");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.5.1") {
-            $strReturn .= "Updating to 6.6...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.6") {
-            $strReturn .= "Updating to 7.0...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "7.0") {
             $strReturn .= $this->update70_701();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.0.1") {
+            $strReturn .= "Updating to 7.1...\n";
+            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1");
         }
 
         return $strReturn."\n\n";

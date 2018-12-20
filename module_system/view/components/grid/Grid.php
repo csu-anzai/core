@@ -29,6 +29,14 @@ class Grid extends AbstractComponent
      */
     protected $rows;
 
+    /**
+     * @var string
+     */
+    protected $class;
+
+    /**
+     * @var bool
+     */
     private $bitLimitHeight = false;
 
     /**
@@ -36,8 +44,9 @@ class Grid extends AbstractComponent
      * has a small left sidebar column. The sum of all columns must be 12.
      *
      * @param array $columnWidths
+     * @param string $class
      */
-    public function __construct(array $columnWidths)
+    public function __construct(array $columnWidths, string $class = null)
     {
         parent::__construct();
 
@@ -46,6 +55,7 @@ class Grid extends AbstractComponent
         }
 
         $this->columnWidths = $columnWidths;
+        $this->class = $class;
     }
 
     public function addRow(array $row)
@@ -81,6 +91,7 @@ class Grid extends AbstractComponent
         $data = [
             "column_widths" => $this->columnWidths,
             "rows" => $rows,
+            "class" => $this->class,
             "limitHeight" => $this->bitLimitHeight,
             "id" => generateSystemid()
         ];

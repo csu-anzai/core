@@ -8,9 +8,11 @@
 ********************************************************************************************************/
 
 namespace Kajona\Search\Event;
+
 use Kajona\Search\System\SearchEnumIndexaction;
 use Kajona\Search\System\SearchIndexqueue;
 use Kajona\Search\System\SearchIndexwriter;
+use Kajona\Search\System\Workflows\WorkflowSearchDeferredindexer;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\GenericeventListenerInterface;
 use Kajona\System\System\Objectfactory;
@@ -26,7 +28,8 @@ use Kajona\Workflows\System\WorkflowsWorkflow;
  * @author sidler@mulchprod.de
  * @since 4.6
  */
-class SearchRequestEndprocessinglistener implements GenericeventListenerInterface {
+class SearchRequestEndprocessinglistener implements GenericeventListenerInterface
+{
 
     private static $arrToDelete = array();
     private static $arrToIndex = array();
@@ -38,24 +41,25 @@ class SearchRequestEndprocessinglistener implements GenericeventListenerInterfac
      *
      * @return bool
      */
-    public function handleEvent($strEventName, array $arrArguments) {
+    public function handleEvent($strEventName, array $arrArguments)
+    {
 
-
-        if(count(self::$arrToDelete) == 0 && count(self::$arrToIndex) == 0)
+        if (count(self::$arrToDelete) == 0 && count(self::$arrToIndex) == 0) {
             return true;
+        }
 
         //clean and reduce arrays to avoid logical duplicates
-        foreach(self::$arrToDelete as $strOneId => $strObject) {
-            if(isset(self::$arrToIndex[$strOneId]))
+        foreach (self::$arrToDelete as $strOneId => $strObject) {
+            if (isset(self::$arrToIndex[$strOneId])) {
                 unset(self::$arrToIndex[$strOneId]);
+            }
         }
 
 
         $strConfigValue = SystemSetting::getConfigValue("_search_deferred_indexer_");
-        if($strConfigValue !== null && $strConfigValue == "true") {
+        if ($strConfigValue !== null && $strConfigValue == "true") {
             $this->processDeferred();
-        }
-        else {
+        } else {
             $this->processDirectly();
         }
 
@@ -68,14 +72,15 @@ class SearchRequestEndprocessinglistener implements GenericeventListenerInterfac
     /**
      * Creates a new workflow-instance in order to index changed objects in a decoupled process
      */
-    private function processDeferred() {
+    private function processDeferred()
+    {
 
         $arrRows = array();
-        foreach(array_keys(self::$arrToIndex) as $strOneId) {
+        foreach (array_keys(self::$arrToIndex) as $strOneId) {
             $arrRows[] = array(generateSystemid(), $strOneId, SearchEnumIndexaction::INDEX()."");
         }
 
-        foreach(array_keys(self::$arrToDelete) as $strOneId) {
+        foreach (array_keys(self::$arrToDelete) as $strOneId) {
             $arrRows[] = array(generateSystemid(), $strOneId, SearchEnumIndexaction::DELETE()."");
         }
 
@@ -87,29 +92,31 @@ class SearchRequestEndprocessinglistener implements GenericeventListenerInterfac
     /**
      * Handles the processing of objects directly
      */
-    private function processDirectly() {
+    private function processDirectly()
+    {
         $objIndex = new SearchIndexwriter();
 
         //start by processing the records to be deleted
-        foreach(self::$arrToDelete as $strOneId => $strObject) {
+        foreach (self::$arrToDelete as $strOneId => $strObject) {
             $objIndex->removeRecordFromIndex($strOneId);
         }
 
         //add new records
-        foreach(self::$arrToIndex as $strOneId => $objInstance) {
-            if(!is_object($objIndex) && validateSystemid($objInstance))
+        foreach (self::$arrToIndex as $strOneId => $objInstance) {
+            if (!is_object($objIndex) && validateSystemid($objInstance)) {
                 $objInstance = Objectfactory::getInstance()->getObject($objInstance);
+            }
 
             $objIndex->indexObject($objInstance);
         }
-
     }
 
     /**
      * Adds a systemid to be removed from the search-index
      * @param $strSystemid
      */
-    public static function addIdToDelete($strSystemid) {
+    public static function addIdToDelete($strSystemid)
+    {
         self::$arrToDelete[$strSystemid] = $strSystemid;
     }
 
@@ -117,17 +124,19 @@ class SearchRequestEndprocessinglistener implements GenericeventListenerInterfac
      * Adds a records systemid to be added to the search index
      * @param string $strSystemid
      */
-    public static function addIdToIndex($strSystemid) {
-        if(is_object($strSystemid) && $strSystemid instanceof \Kajona\System\System\Model) {
-            if($strSystemid instanceof WorkflowsWorkflow && $strSystemid->getStrClass() == "Kajona\\Search\\System\\Workflows\\WorkflowSearchDeferredindexer")
+    public static function addIdToIndex($strSystemid)
+    {
+        if (is_object($strSystemid) && $strSystemid instanceof \Kajona\System\System\Model) {
+            if ($strSystemid instanceof WorkflowsWorkflow && $strSystemid->getStrClass() == WorkflowSearchDeferredindexer::class) {
                 return;
+            }
 
             self::$arrToIndex[$strSystemid->getSystemid()] = $strSystemid;
+        } else {
+            if (is_string($strSystemid) && !isset(self::$arrToIndex)) {
+                self::$arrToIndex[$strSystemid] = $strSystemid;
+            }
         }
-        else if(is_string($strSystemid) && !isset(self::$arrToIndex)) {
-            self::$arrToIndex[$strSystemid] = $strSystemid;
-        }
-
     }
 
 
@@ -135,7 +144,8 @@ class SearchRequestEndprocessinglistener implements GenericeventListenerInterfac
      * Internal init to register the event listener, called on file-inclusion, e.g. by the class-loader
      * @return void
      */
-    public static function staticConstruct() {
+    public static function staticConstruct()
+    {
         CoreEventdispatcher::getInstance()->removeAndAddListener(SystemEventidentifier::EVENT_SYSTEM_REQUEST_AFTERCONTENTSEND, new SearchRequestEndprocessinglistener());
     }
 

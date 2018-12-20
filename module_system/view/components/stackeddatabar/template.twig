@@ -1,0 +1,38 @@
+<div class="core-component-stackeddatabar" style="width: {{ width }}">
+    <div class="progress">
+        {% for val in data %}
+            <div class="progress-bar" id="{{ val.id }}" data-width="{{ val.proc }}" data-handler="{{ val.dataPointHandler }}"
+                 style="background-color:{{ val.color }};">
+                {{ val.value }}
+            </div>
+        {% endfor %}
+    </div>
+    <script type="text/javascript">
+
+        {% for val in data %}
+            require(['jquery', 'tooltip'], function ($, tooltip) {
+                tooltip.addTooltip($('#{{ val.id }}'), "<div>{{ title }}<br>{{ val.label }}: <b>{{ val.value }}</b></div>");
+                $("#{{ val.id }}").click(dataPointOnClickURLHandler);
+            });
+        {% endfor %}
+
+        require(['jquery', 'folderview', 'tooltip'], function ($, folderview) {
+            dataPointOnClickURLHandler = function () {
+                dataPointHandler = $(this).attr('data-handler');
+                if (dataPointHandler && dataPointHandler != null && dataPointHandler != "") {
+                    folderview.dialog.setContentIFrame(dataPointHandler);
+                    folderview.dialog.setTitle('');
+                    folderview.dialog.init();
+                }
+            };
+
+            $(document).ready(function() {
+                setTimeout(function() {
+                    $(".core-component-stackeddatabar div.progress-bar").each(function(){
+                        $(this).width($(this).attr('data-width')+'%');
+                    });
+                }, 50);
+            });
+        });
+    </script>
+</div>

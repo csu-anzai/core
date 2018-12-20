@@ -1,0 +1,19 @@
+
+<div class="form-group core-component-formentry-inputonoff">
+    <label for="{{ name|e('html_attr') }}" class="col-sm-3 control-label">{{ title }}</label>
+    <div class="col-sm-6">
+        <div id="div_{{ name|e('html_attr') }}">
+            <input type="checkbox" name="{{ name|e('html_attr') }}" value="checked" id="{{ name|e('html_attr') }}" {% if class %}class="{{ class|e('html_attr') }}"{% endif %} {% if checked %}checked{% endif %} {% if readOnly %}disabled{% endif %} {% for key, value in data %}data-{{ key }}="{{ value|e('html_attr') }}"{% endfor %}>
+        </div>
+    </div>
+    <script type="text/javascript">
+        require(["jquery", "bootstrap-switch"], function($){
+            var divId = '{{ name }}';
+            divId = '#' + divId.replace( /(:|\.|\[|\])/g, "\\$1" );
+            $(divId).bootstrapSwitch();
+            $(divId).on('switchChange.bootstrapSwitch', function (event, state) {
+                {{ callback|raw }}
+            });
+        });
+    </script>
+</div>

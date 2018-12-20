@@ -9,7 +9,7 @@
     <author>Kajona Team</author>
     <providesInstaller>TRUE</providesInstaller>
     <requiredModules>
-        <module name="system" version="7.0" />
+        <module name="system" version="7.1" />
     </requiredModules>
     <constants>
         <constant name="_oauth2_module_id_" value="20181024" />

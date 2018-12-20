@@ -134,7 +134,7 @@ class WorkflowsAdmin extends AdminEvensimpler implements AdminInterface
         $objChart->addLinePlot($arrHandlers, $this->getLang("chart_handler"));
         $objChart->addLinePlot($arrBrokenHandlers, $this->getLang("chart_handler_broken"));
 
-        $objChart->setIntWidth(1200);
+        $objChart->setIntHeight(400);
         $strReturn .= $objChart->renderGraph();
 
 
