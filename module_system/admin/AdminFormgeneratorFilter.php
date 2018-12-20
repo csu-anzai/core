@@ -9,6 +9,7 @@
 namespace Kajona\System\Admin;
 
 use Kajona\System\Admin\Formentries\FormentryHidden;
+use Kajona\System\Admin\Formentries\FormentryPlaintext;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
@@ -109,7 +110,7 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
         /* Display filter active/inactive */
         $bitFilterActive = false;
         foreach ($this->getArrFields() as $objOneField) {
-            if (!$objOneField instanceof FormentryHidden) {
+            if (!$objOneField instanceof FormentryHidden && !$objOneField instanceof FormentryPlaintext) {
                 $bitFilterActive = $bitFilterActive || !$objOneField->isFieldEmpty();
             }
         }
