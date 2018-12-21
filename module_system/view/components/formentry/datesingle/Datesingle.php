@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Kajona\System\View\Components\Formentry\Datesingle;
 
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Date;
 use Kajona\System\View\Components\Formentry\FormentryComponentAbstract;
 
 /**
@@ -28,9 +29,9 @@ class Datesingle extends FormentryComponentAbstract
     /**
      * @param string $name
      * @param string $title
-     * @param mixed $value
+     * @param Date|null $value
      */
-    public function __construct(string $name, string $title, $value = null)
+    public function __construct(string $name, string $title, Date $value = null)
     {
         parent::__construct($name, $title);
 
@@ -51,7 +52,7 @@ class Datesingle extends FormentryComponentAbstract
     public function buildContext()
     {
         $context = parent::buildContext();
-        $context["value"] = dateToString($this->value, false);
+        $context["value"] = $this->value;
         $context["format"] = Carrier::getInstance()->getObjLang()->getLang("dateStyleShort", "system");
         $context["lang"] = Carrier::getInstance()->getObjSession()->getAdminLanguage() ?: "en";
 
