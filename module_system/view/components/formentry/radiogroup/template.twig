@@ -1,0 +1,19 @@
+
+<div class="form-group core-component-formentry-radiogroup">
+    <label for="{{ name|e('html_attr') }}" class="col-sm-3 control-label">{{ title }}</label>
+    <div class="col-sm-6">
+        {% for key, value in options %}
+            <div class="radio">
+                <label>
+                    <input type="radio" name="{{ name|e('html_attr') }}" id="{{ name|e('html_attr') }}_{{ key }}" value="{{ key }}" class="{{ class }}" {% if key == selected %}checked{% endif %} {% if readOnly %}disabled{% endif %}>
+                    {{ value }}
+                </label>
+            </div>
+        {% endfor %}
+    </div>
+    {% if opener %}
+    <div class="col-sm-2 form-opener">
+        {{ opener|raw }}
+    </div>
+    {% endif %}
+</div>
