@@ -1785,7 +1785,8 @@ HTML;
         $objHistory = new History();
         $strParam = "";
         if (StringUtil::indexOf($strConfirmationLinkHref, "javascript:") === false) {
-            $strParam = "?reloadUrl='+encodeURIComponent(document.location.hash.substr(1))+'";
+            $strParam .= StringUtil::indexOf($strConfirmationLinkHref, "?") === false ? '?' : '&';
+            $strParam .= "reloadUrl='+encodeURIComponent(document.location.hash.substr(1))+'";
         }
 
         if ($strConfirmationButtonLabel == "") {
