@@ -55,6 +55,7 @@ use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\Validators\EmailValidator;
 use Kajona\System\System\VersionableInterface;
+use Kajona\System\View\Components\Formentry\Datesingle\Datesingle;
 use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
 use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
@@ -1642,6 +1643,13 @@ JS;
         $inputOnOff = new Inputonoff("input_onoff_disabled", "Onoff (disabled)", true);
         $inputOnOff->setReadOnly(true);
         $result[] = $inputOnOff;
+
+        $dateSingle = new Datesingle("datesingle", "Datesingle", new Date());
+        $result[] = $dateSingle;
+
+        $dateSingle = new Datesingle("datesingle_readonly", "Datesingle (readonly)", new Date());
+        $dateSingle->setReadOnly(true);
+        $result[] = $dateSingle;
 
         $listEditor = new Listeditor("listeditor", "Listeditor", ["foo", "bar"]);
         $result[] = $listEditor;
