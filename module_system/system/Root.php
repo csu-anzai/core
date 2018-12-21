@@ -497,7 +497,7 @@ abstract class Root
             if (validateSystemid($arrOneChild["system_id"])) {
                 $objInstance = Objectfactory::getInstance()->getObject($arrOneChild["system_id"]);
                 if ($objInstance !== null) {
-                    $objInstance->deleteObject();
+                    ServiceLifeCycleFactory::getLifeCycle(get_class($objInstance))->delete($objInstance);
                 }
             }
         }
@@ -569,7 +569,7 @@ abstract class Root
             if (validateSystemid($arrOneChild["system_id"])) {
                 $objInstance = Objectfactory::getInstance()->getObject($arrOneChild["system_id"]);
                 if ($objInstance !== null) {
-                    $objInstance->deleteObjectFromDatabase();
+                    ServiceLifeCycleFactory::getLifeCycle(get_class($objInstance))->deleteObjectFromDatabase($objInstance);
                 }
             }
         }
@@ -1855,6 +1855,7 @@ abstract class Root
      * @param mixed $mixedValue Value
      *
      * @return void
+     * @deprecated - the model should not handle HTTP request parameters please use the Carrier directly
      */
     public function setParam($strKey, $mixedValue)
     {
@@ -1867,6 +1868,7 @@ abstract class Root
      * @param string $strKey
      *
      * @return string else ""
+     * @deprecated - the model should not handle HTTP request parameters please use the Carrier directly
      */
     public function getParam($strKey)
     {
@@ -1877,6 +1879,7 @@ abstract class Root
      * Returns the complete Params-Array
      *
      * @return mixed
+     * @deprecated - the model should not handle HTTP request parameters please use the Carrier directly
      */
     final public function getAllParams()
     {

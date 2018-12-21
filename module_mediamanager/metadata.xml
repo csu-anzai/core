@@ -5,16 +5,12 @@
         >
     <title>mediamanager</title>
     <description>
-        The mediamanager is a central place to handle all kind of files. This includes images for galleries or even a download-manager.
-        If you have the package "qr-code" installed, the download links may be illustrated using a qrcode-image, too.
-        The mediamanager replaces the old (v3) download- and gallery-modules.
-    </description>
-    <version>7.0.1</version>
+        The mediamanager is a central place to handle all kind of files.</description>
+    <version>7.1</version>
     <author>Kajona Team</author>
-    <type>MODULE</type>
     <providesInstaller>TRUE</providesInstaller>
     <requiredModules>
-        <module name="system" version="7.0" />
+        <module name="system" version="7.1" />
     </requiredModules>
     <constants>
         <constant name="_mediamanager_module_id_" value="130" />

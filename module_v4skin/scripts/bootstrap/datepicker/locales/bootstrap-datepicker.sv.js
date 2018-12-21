@@ -2,7 +2,7 @@
  * Swedish translation for bootstrap-datepicker
  * Patrik Ragnarsson <patrik@starkast.net>
  */
-;(function($){
+define("bootstrap-datepicker-pt", ["jquery"], function($){
 	$.fn.datepicker.dates['sv'] = {
 		days: ["Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag"],
 		daysShort: ["Sön", "Mån", "Tis", "Ons", "Tor", "Fre", "Lör"],
@@ -14,4 +14,4 @@
 		weekStart: 1,
 		clear: "Rensa"
 	};
-}(jQuery));
+});

@@ -12,10 +12,8 @@
     <link rel="stylesheet" href="_webpath_{{ "module_system"|webpath }}/scripts/qtip2/jquery.qtip.min.css?_system_browser_cachebuster_" type="text/css" />
     <link rel="stylesheet" href="_webpath_{{ "module_v4skin"|webpath }}/admin/skins/kajona_v4/less/styles.min.css?_system_browser_cachebuster_" type="text/css" />
 
-    <script src="_webpath_{{ "module_system"|webpath }}/scripts/jquery/jquery.min.js?_system_browser_cachebuster_"></script>
-    <script src="_webpath_{{ "module_system"|webpath }}/scripts/routie/routie.min.js?_system_browser_cachebuster_"></script>
     {{ head|raw }}
-    <script src="_webpath_{{ "module_system"|webpath }}/scripts/requirejs/require.js?_system_browser_cachebuster_"></script>
+    <script src="_webpath_{{ "module_system"|webpath }}/scripts/agp.min.js?_system_browser_cachebuster_"></script>
     <script type="text/javascript">
         require(['app'], function() {});
     </script>
@@ -36,10 +34,7 @@
                     {{ login|raw }}
                 </div>
                 <div class="col-md-8 col-sm-9 hidden-xs" style="text-align: right;">
-                    <form class="navbar-search pull-left" action="_indexpath_">
-                        <input type="hidden" name="admin" value="1" >
-                        <input type="hidden" name="module" value="search">
-                        <input type="hidden" name="action" value="search">
+                    <form class="navbar-search pull-left" action="_webpath_/#/search/search" onsubmit="require('forms').defaultOnSubmit(this);return false;">
 
                         <div class="input-group">
                             <input type="text" name="search_query" class="form-control search-query" placeholder="{{ "globalSearchPlaceholder"|lang("dashboard") }}" id="globalSearchInput">

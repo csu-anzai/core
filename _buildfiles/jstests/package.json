@@ -5,18 +5,16 @@
   "main": "Gruntfile.js",
   "license": "LGPL-2.1",
   "dependencies": {
+    "clean-css-cli": "^4.1",
     "grunt": "^1.0.0",
     "grunt-contrib-concat": "^1.0.1",
     "grunt-contrib-uglify": "^2.0.0",
-    "jasmine": "^2.5.2",
-    "jasmine-reporters": "^2.2.0",
-    "jasmine-spec-reporter": "^4.1.1",
     "jquery": "^3.1.1",
     "jquery-ui": "1.12.1",
     "jsdom": "^9.8.3",
     "less": "^2.5.3",
-    "requirejs": "^2.3.2",
-    "uglify-js": "^2.7.5",
-    "clean-css-cli": "^4.1"
+    "requirejs": "^2.3.5",
+    "typescript": "^3.0.1",
+    "uglify-js": "^2.8.29"
   }
 }

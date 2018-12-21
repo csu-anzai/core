@@ -16,7 +16,7 @@
     'use strict';
     if (typeof define === 'function' && define.amd) {
         // Register as an anonymous AMD module:
-        define([
+        define("jquery.fileupload-image", [
             'jquery',
             'load-image',
             'load-image-meta',

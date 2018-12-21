@@ -7,7 +7,7 @@
 /**
  * @module tagEditor
  */
-define(["jquery", "jquerytageditor", "v4skin", "workingIndicator", "forms", "util"], function($, tagEditor, v4skin, workingIndicator, forms, util) {
+define("tagEditor", ["jquery", "jquerytageditor", "v4skin", "workingIndicator", "forms", "util"], function($, tagEditor, v4skin, workingIndicator, forms, util) {
 
 
     updateMandatory = function($objInput) {

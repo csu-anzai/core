@@ -2,7 +2,7 @@
 //       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt
 //       $Id$
 
-define(["jquery", "jquery-ui", "ajax", "statusDisplay", "tooltip", "util"], function($, jqueryui, ajax, statusDisplay, tooltip, util){
+define("dashboard", ["jquery", "jquery-ui", "ajax", "statusDisplay", "tooltip", "util"], function($, jqueryui, ajax, statusDisplay, tooltip, util){
 
     var dashboard = {};
 

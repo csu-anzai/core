@@ -5,11 +5,11 @@
     >
     <title>dbbrowser</title>
     <description>Visualizes the current database structure</description>
-    <version>7.0</version>
+    <version>7.1</version>
     <author>Kajona Team</author>
     <providesInstaller>TRUE</providesInstaller>
     <requiredModules>
-        <module name="system" version="7.0.1" />
+        <module name="system" version="7.1" />
     </requiredModules>
     <constants>
         <constant name="_dbbrowser_module_id_" value="20180808" />

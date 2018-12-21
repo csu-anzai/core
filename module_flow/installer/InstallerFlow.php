@@ -72,53 +72,16 @@ class InstallerFlow extends InstallerBase
         $strReturn .= "Version found:\n\t Module: ".$arrModule["module_name"].", Version: ".$arrModule["module_version"]."\n\n";
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "6.2") {
-            $strReturn .= $this->update_62_65();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "6.5") {
-            $strReturn .= "Updating to 6.6...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if ($arrModule["module_version"] == "6.6") {
-            $strReturn .= $this->update_66_70();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if ($arrModule["module_version"] == "7.0") {
             $strReturn .= $this->update_70_701();
         }
 
-        return $strReturn;
-    }
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if ($arrModule["module_version"] == "7.0.1") {
+            $strReturn = "Updating to 7.1...\n";
+            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1");
+        }
 
-    private function update_62_65()
-    {
-        $strReturn = "Updating flow transition table\n";
-        $this->objDB->addColumn("agp_flow_step_transition", "transition_visible", DbDatatypes::STR_TYPE_INT);
-
-        // make all existing transitions visible
-        $this->objDB->_pQuery("UPDATE agp_flow_step_transition SET transition_visible = 1", []);
-
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5");
-        return $strReturn;
-    }
-
-    private function update_66_70()
-    {
-        $strReturn = "Updating to 7.0...\n";
-
-        // add transition skip column
-        $strReturn.= "Add transition skip column...\n";
-        $this->objDB->addColumn("agp_flow_step_transition", "transition_skip", DbDatatypes::STR_TYPE_INT);
-
-        // set all transitions skip to 0
-        $this->objDB->_pQuery("UPDATE agp_flow_step_transition SET transition_skip = 0", []);
-
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
         return $strReturn;
     }
 

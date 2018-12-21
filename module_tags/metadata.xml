@@ -5,12 +5,11 @@
         >
     <title>tags</title>
     <description>Tags are used to connect objects with keywords.</description>
-    <version>7.0</version>
+    <version>7.1</version>
     <author>Kajona Team</author>
-    <type>MODULE</type>
     <providesInstaller>TRUE</providesInstaller>
     <requiredModules>
-        <module name="system" version="7.0" />
+        <module name="system" version="7.1" />
     </requiredModules>
     <constants>
         <constant name="_tags_modul_id_" value="95" />

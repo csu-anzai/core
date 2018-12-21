@@ -481,67 +481,6 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $strReturn .= "Version found:\n\t Module: ".$arrModule["module_name"].", Version: ".$arrModule["module_version"]."\n\n";
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.2") {
-            $strReturn .= $this->update_62_621();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.2.1") {
-            $strReturn .= $this->update_621_622();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.2.2") {
-            $strReturn .= $this->update_622_623();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.2.3") {
-            $strReturn .= $this->update_623_624();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.2.4") {
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2.5");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.2.5") {
-            $strReturn .= $this->update_625_65();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.5") {
-            $strReturn .= $this->update_65_651();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.5.1") {
-            $strReturn .= $this->update_651_652();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.5.2") {
-            $strReturn .= $this->update_652_653();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.5.3" || $arrModule["module_version"] == "6.5.4") {
-            $strReturn .= "Updating to 6.6...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.6") {
-            $strReturn .= $this->update_66_661();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.6.1") {
-            $strReturn .= $this->update_661_70();
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "7.0") {
             $strReturn .= $this->update_70_701();
         }
@@ -562,244 +501,6 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         }
 
         return $strReturn."\n\n";
-    }
-
-    private function update_62_621()
-    {
-        $strReturn = "Updating 6.2 to 6.2.1...\n";
-
-        $strReturn .= "Adding cookie setting\n";
-        $this->registerConstant("_cookies_only_https_", "false", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2.1");
-        return $strReturn;
-    }
-
-
-    private function update_621_622()
-    {
-        $strReturn = "Updating 6.2.1 to 6.2.2...\n";
-
-
-        $strReturn .= "Removing system_comment column...\n";
-        $this->objDB->removeColumn("agp_system", "system_comment");
-
-        Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBQUERIES | Carrier::INT_CACHE_TYPE_DBSTATEMENTS);
-
-        $strReturn .= "Registering the id generator\n";
-        // install idgenerator table
-        $objSchemamanager = new OrmSchemamanager();
-        $objSchemamanager->createTable(IdGenerator::class);
-
-        $strReturn .= "Altering group table...\n";
-        $this->objDB->addColumn("agp_user_group", "group_short_id", DbDatatypes::STR_TYPE_INT);
-
-        $strReturn .= "Adding ids to each group\n";
-        $strQuery = "SELECT group_id FROM agp_user_group WHERE group_short_id < 1 OR group_short_id IS NULL";
-        foreach($this->objDB->getPArray($strQuery, array()) as $arrOneRow) {
-            $strQuery = "UPDATE agp_user_group set group_short_id = ? WHERE group_id = ?";
-            $this->objDB->_pQuery($strQuery, array(IdGenerator::generateNextId(UserGroup::INT_SHORTID_IDENTIFIER), $arrOneRow["group_id"]));
-        }
-
-        $strReturn .= $this->migrateUserData(2500);
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2.2");
-        return $strReturn;
-    }
-
-    private function update_622_623()
-    {
-        $strReturn = "Updating 6.2.2 to 6.2.3...\n";
-
-        $strReturn .= "Adding permission columns to system table";
-        $this->objDB->addColumn("agp_system", "right_inherit", DbDatatypes::STR_TYPE_INT);
-        $this->objDB->addColumn("agp_system", "right_view", DbDatatypes::STR_TYPE_TEXT);
-        $this->objDB->addColumn("agp_system", "right_edit", DbDatatypes::STR_TYPE_TEXT);
-        $this->objDB->addColumn("agp_system", "right_delete", DbDatatypes::STR_TYPE_TEXT);
-        $this->objDB->addColumn("agp_system", "right_right", DbDatatypes::STR_TYPE_TEXT);
-        $this->objDB->addColumn("agp_system", "right_right1", DbDatatypes::STR_TYPE_TEXT);
-        $this->objDB->addColumn("agp_system", "right_right2", DbDatatypes::STR_TYPE_TEXT);
-        $this->objDB->addColumn("agp_system", "right_right3", DbDatatypes::STR_TYPE_TEXT);
-        $this->objDB->addColumn("agp_system", "right_right4", DbDatatypes::STR_TYPE_TEXT);
-        $this->objDB->addColumn("agp_system", "right_right5", DbDatatypes::STR_TYPE_TEXT);
-        $this->objDB->addColumn("agp_system", "right_changelog", DbDatatypes::STR_TYPE_TEXT);
-
-
-        $strReturn .= "Moving data...\n";
-
-        foreach ($this->objDB->getGenerator("SELECT * FROM agp_system_right ORDER BY right_id", []) as $arrResultSet) {
-            foreach ($arrResultSet as $arrRow) {
-                $strQuery = "UPDATE agp_system 
-                            SET right_inherit = ?, right_view = ?, right_edit = ?, right_delete = ?, right_right = ?, right_right1 = ?, 
-                                right_right2 = ?, right_right3 = ?, right_right4 = ?, right_right5 = ?, right_changelog = ? 
-                          WHERE system_id = ?";
-
-                $this->objDB->_pQuery($strQuery,
-                    [
-                        $arrRow["right_inherit"],
-                        $arrRow["right_view"],
-                        $arrRow["right_edit"],
-                        $arrRow["right_delete"],
-                        $arrRow["right_right"],
-                        $arrRow["right_right1"],
-                        $arrRow["right_right2"],
-                        $arrRow["right_right3"],
-                        $arrRow["right_right4"],
-                        $arrRow["right_right5"],
-                        $arrRow["right_changelog"],
-                        $arrRow["right_id"]
-                    ]
-                );
-            }
-        }
-
-
-        Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBQUERIES | Carrier::INT_CACHE_TYPE_DBSTATEMENTS);
-
-
-        $strReturn .= "Dropping old permissions table...\n";
-        $this->objDB->_pQuery("DROP TABLE agp_system_right", array());
-
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2.3");
-        return $strReturn;
-    }
-
-    private function update_623_624()
-    {
-        $strReturn = "Updating 6.2.3 to 6.2.4...\n";
-        $strReturn .= "Shifting settings to 'real' objects\n";
-
-        $arrSystemModule = $this->objDB->getPRow("SELECT module_id FROM agp_system_module WHERE module_name = 'system'", []);
-
-        $strQuery = "SELECT system_config_id FROM agp_system_config";
-        foreach ($this->objDB->getPArray($strQuery, []) as $arrOneRow) {
-
-            if($this->objDB->getPRow("SELECT COUNT(*) as anz FROM agp_system WHERE system_id = ?", array($arrOneRow["system_config_id"]))["anz"] > 0) {
-                continue;
-            }
-
-            $strQuery = "INSERT INTO agp_system 
-                (system_id, system_prev_id, system_module_nr, system_sort, system_status, system_class, system_deleted, right_inherit) values 
-                (?, ?, ?, ?, ?, ?, ?, ?)";
-            $this->objDB->_pQuery($strQuery, [
-                $arrOneRow["system_config_id"],
-                $arrSystemModule["module_id"],
-                _system_modul_id_,
-                -1,
-                1,
-                SystemSetting::class,
-                0,
-                1
-            ]);
-        }
-
-        Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBQUERIES | Carrier::INT_CACHE_TYPE_DBSTATEMENTS | Carrier::INT_CACHE_TYPE_ORMCACHE | Carrier::INT_CACHE_TYPE_OBJECTFACTORY);
-
-        Rights::getInstance()->rebuildRightsStructure($arrSystemModule["module_id"]);
-
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.2.4");
-        return $strReturn;
-    }
-
-
-    private function update_625_65()
-    {
-        $strReturn = "Updating 6.2.4 to 6.5...\n";
-        $strReturn .= "Adding alert table\n";
-
-        $objManager = new OrmSchemamanager();
-        $objManager->createTable(MessagingAlert::class);
-
-        $strReturn .= "Adding user group flag\n";
-        $this->objDB->addColumn("agp_user_group", "group_system_group", DbDatatypes::STR_TYPE_INT);
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5");
-        return $strReturn;
-    }
-
-    private function update_65_651()
-    {
-        $strReturn = "Updating 6.5 to 6.5.1...\n";
-        $strReturn .= "Adding session setting\n";
-
-        $this->registerConstant("_system_session_ipfixation_", "true", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.1");
-        return $strReturn;
-    }
-
-
-    private function update_651_652()
-    {
-        $strReturn = "Updating 6.5.1 to 6.5.2...\n";
-        $strReturn .= "Install message queue\n";
-
-        $objManager = new OrmSchemamanager();
-        $objManager->createTable(MessagingQueue::class);
-
-        // add workflow
-        $strReturn .= "Registering message queue workflow...\n";
-        if (SystemModule::getModuleByName("workflows") !== null) {
-            if (WorkflowsWorkflow::getWorkflowsForClassCount(WorkflowMessageQueue::class, false) == 0) {
-                $objWorkflow = new WorkflowsWorkflow();
-                $objWorkflow->setStrClass(WorkflowMessageQueue::class);
-                ServiceLifeCycleFactory::getLifeCycle(get_class($objWorkflow))->update($objWorkflow);
-            }
-        }
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.2");
-        return $strReturn;
-    }
-
-    private function update_652_653()
-    {
-        $strReturn = "Updating 6.5.2 to 6.5.3...\n";
-        $strReturn .= "Upgrade message queue\n";
-
-        if (!$this->objDB->hasColumn("agp_messages_alert", "alert_priority")) {
-            $this->objDB->addColumn("agp_messages_alert", "alert_priority", DbDatatypes::STR_TYPE_INT);
-        }
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.5.3");
-        return $strReturn;
-    }
-
-    private function update_66_661()
-    {
-        $strReturn = "Updating 6.6 to 6.6.1...\n";
-
-        // password history
-        $strReturn .= "Installing password history...\n";
-        $objManager = new OrmSchemamanager();
-        $objManager->createTable(SystemPwHistory::class);
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6.1");
-        return $strReturn;
-    }
-
-
-    private function update_661_70()
-    {
-        $strReturn = "Updating 6.6.1 to 7.0...\n";
-
-        // password history
-        $strReturn .= "Updating session table...\n";
-        $this->objDB->addColumn("agp_session", "session_resetuser", DbDatatypes::STR_TYPE_INT);
-
-        $strReturn .= "Updating module-versions...\n";
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
-        return $strReturn;
     }
 
     private function update_70_701()
@@ -841,16 +542,24 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         }
 
         foreach($arrTables as $strOneTable) {
-            //Need to do it this way since under oracle converting from varchar2 to clob is not possible
-            Database::getInstance()->addColumn($strOneTable, "temp_change_oldvalue", DbDatatypes::STR_TYPE_LONGTEXT);
-            Database::getInstance()->_pQuery("UPDATE $strOneTable SET temp_change_oldvalue=change_oldvalue", []);
-            Database::getInstance()->removeColumn($strOneTable, "change_oldvalue");
-            Database::getInstance()->changeColumn($strOneTable, "temp_change_oldvalue", "change_oldvalue", DbDatatypes::STR_TYPE_LONGTEXT);
 
-            Database::getInstance()->addColumn($strOneTable, "temp_change_newvalue", DbDatatypes::STR_TYPE_LONGTEXT);
-            Database::getInstance()->_pQuery("UPDATE $strOneTable SET temp_change_newvalue=change_newvalue", []);
-            Database::getInstance()->removeColumn($strOneTable, "change_newvalue");
-            Database::getInstance()->changeColumn($strOneTable, "temp_change_newvalue", "change_newvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+            if (Config::getInstance()->getConfig("dbdriver") == "mysqli") {
+                //direct change on the table
+                Database::getInstance()->changeColumn($strOneTable, "change_oldvalue", "change_oldvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+                Database::getInstance()->changeColumn($strOneTable, "change_newvalue", "change_newvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+
+            } else {
+                //Need to do it this way since under oracle converting from varchar2 to clob is not possible
+                Database::getInstance()->addColumn($strOneTable, "temp_change_oldvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+                Database::getInstance()->_pQuery("UPDATE $strOneTable SET temp_change_oldvalue=change_oldvalue", []);
+                Database::getInstance()->removeColumn($strOneTable, "change_oldvalue");
+                Database::getInstance()->changeColumn($strOneTable, "temp_change_oldvalue", "change_oldvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+
+                Database::getInstance()->addColumn($strOneTable, "temp_change_newvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+                Database::getInstance()->_pQuery("UPDATE $strOneTable SET temp_change_newvalue=change_newvalue", []);
+                Database::getInstance()->removeColumn($strOneTable, "change_newvalue");
+                Database::getInstance()->changeColumn($strOneTable, "temp_change_newvalue", "change_newvalue", DbDatatypes::STR_TYPE_LONGTEXT);
+            }
         }
 
         $strReturn .= "Upating module version".PHP_EOL;

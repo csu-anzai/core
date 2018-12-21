@@ -10,6 +10,7 @@ use Kajona\System\Admin\FormentryPrintableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\Validators\TextValidator;
+use Kajona\System\View\Components\Formentry\Wysiwygeditor\WysiwygEditor;
 
 
 /**
@@ -60,7 +61,8 @@ class FormentryWysiwyg extends FormentryBase implements FormentryPrintableInterf
             $strReturn .= $objToolkit->formTextRow($this->getStrHint());
         }
 
-        $strReturn .= $objToolkit->formWysiwygEditor($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue(), $this->strToolbarset, $this->getBitReadonly(), $this->strOpener);
+        $wysiwygEditor = new WysiwygEditor($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue(), $this->strToolbarset, $this->getBitReadonly(), $this->strOpener);
+        $strReturn .= $wysiwygEditor->renderComponent();
 
         return $strReturn;
     }

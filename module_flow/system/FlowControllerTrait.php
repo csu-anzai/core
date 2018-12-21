@@ -331,7 +331,7 @@ HTML;
 
             if ($objTransition instanceof FlowTransition) {
                 $arrActions = $objTransition->getArrActions();
-                $objForm = new AdminFormgenerator("", null);
+                $objForm = new AdminFormgenerator("", $objObject);
                 $bitInputRequired = false;
 
                 foreach ($arrActions as $objAction) {
