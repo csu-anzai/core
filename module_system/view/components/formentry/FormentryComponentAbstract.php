@@ -118,6 +118,7 @@ abstract class FormentryComponentAbstract extends AbstractComponent
     protected function buildContext()
     {
         return [
+            "id" => generateSystemid(), // every components gets a unique id
             "name" => $this->name,
             "title" => $this->title,
             "readOnly" => $this->readOnly,
