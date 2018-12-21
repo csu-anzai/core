@@ -205,10 +205,6 @@ class UsersourcesUserLdap extends \Kajona\System\System\Model implements \Kajona
         $sourceKajona = new UsersourcesUserKajona($this->getSystemid());
         $arrReturn = array_merge($arrReturn, $sourceKajona->getGroupIdsForUser());
 
-        //may include kajona-source group ids
-        $sourceKajona = new UsersourcesUserKajona($this->getSystemid());
-        $arrReturn = array_merge($sourceKajona->getGroupIdsForUser());
-
         return $arrReturn;
     }
 
