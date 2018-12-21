@@ -79,6 +79,7 @@ class ToolkitAdmin extends Toolkit
      * @throws Exception
      * @return string
      * @since 3.2.0.9
+     * @deprecated
      */
     public function formDateSingle($strName, $strTitle, $objDateToShow, $strClass = "", $bitWithTime = false, $bitReadOnly = false)
     {
