@@ -37,7 +37,9 @@ use Kajona\System\View\Components\Datatable\Datatable;
 use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
 use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
+use Kajona\System\View\Components\Formentry\Inputtext\Buttonbar;
 use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
+use Kajona\System\View\Components\Formentry\Inputtext\Radiogroup;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Popover\Popover;
 use Kajona\System\View\Components\Tabbedcontent\Tabbedcontent;
@@ -1011,33 +1013,16 @@ HTML;
      * @param string $strTitle
      * @param array $arrKeysSelected
      * @param bool $bitEnabled
-     *
      * @return string
+     * @deprecated
      */
     public function formToggleButtonBar($strName, array $arrKeyValues, $strTitle = "", $arrKeysSelected = array(), $bitEnabled = true, $strType = "checkbox")
     {
-        $strOptions = "";
-        //Iterating over the array to create the options
-        foreach ($arrKeyValues as $strKey => $strValue) {
-            $arrTemplate = array();
-            $arrTemplate["name"] = $strName;
-            $arrTemplate["type"] = $strType;
-            $arrTemplate["key"] = $strKey;
-            $arrTemplate["value"] = $strValue;
-            $arrTemplate["disabled"] = ($bitEnabled ? "" : "disabled=\"disabled\"");
-            $arrTemplate["btnclass"] = ($bitEnabled ? "" : "disabled");
-            if (in_array($strKey, $arrKeysSelected)) {
-                $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_toggle_buttonbar_button_selected");
-            } else {
-                $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_toggle_buttonbar_button");
-            }
-        }
+        $buttonBar = new Buttonbar($strName, $strTitle, $arrKeyValues, $arrKeysSelected);
+        $buttonBar->setReadOnly($bitEnabled);
+        $buttonBar->setType($strType);
 
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["options"] = $strOptions;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_toggle_buttonbar", true);
+        return $buttonBar->renderComponent();
     }
 
     /**
@@ -1051,29 +1036,16 @@ HTML;
      * @param string $strKeySelected
      * @param string $strClass
      * @param bool $bitEnabled
-     *
      * @return string
+     * @deprecated
      */
     public function formInputRadiogroup($strName, array $arrKeyValues, $strTitle = "", $strKeySelected = "", $strClass = "", $bitEnabled = true)
     {
-        $strOptions = "";
-        //Iterating over the array to create the options
-        foreach ($arrKeyValues as $strKey => $strValue) {
-            $arrTemplate = array();
-            $arrTemplate["key"] = $strKey;
-            $arrTemplate["value"] = $strValue;
-            $arrTemplate["name"] = $strName;
-            $arrTemplate["class"] = $strClass;
-            $arrTemplate["disabled"] = ($bitEnabled ? "" : "disabled=\"disabled\"");
-            $arrTemplate["checked"] = ((string)$strKey == (string)$strKeySelected ? " checked " : "");
-            $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_radiogroup_row");
-        }
+        $radioGroup = new Radiogroup($strName, $strTitle, $arrKeyValues, $strKeySelected);
+        $radioGroup->setClass($strClass);
+        $radioGroup->setReadOnly($bitEnabled);
 
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["radios"] = $strOptions;
-        $arrTemplate["class"] = $strClass;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_radiogroup", true);
+        return $radioGroup->renderComponent();
     }
 
     /**
