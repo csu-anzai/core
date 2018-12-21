@@ -58,7 +58,9 @@ use Kajona\System\System\VersionableInterface;
 use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
 use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
+use Kajona\System\View\Components\Formentry\Buttonbar\Buttonbar;
 use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
+use Kajona\System\View\Components\Formentry\Radiogroup\Radiogroup;
 use Kajona\System\View\Components\Formentry\Listeditor\Listeditor;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Formentry\Objectselector\Objectselector;
@@ -1642,6 +1644,23 @@ JS;
         $inputOnOff = new Inputonoff("input_onoff_disabled", "Onoff (disabled)", true);
         $inputOnOff->setReadOnly(true);
         $result[] = $inputOnOff;
+
+        $buttonBar = new Buttonbar("buttonbar", "Buttonbar", range(0, 10), [5]);
+        $result[] = $buttonBar;
+
+        $buttonBar = new Buttonbar("buttonbar_radio", "Buttonbar (radio)", range(0, 10), [5], Buttonbar::TYPE_RADIO);
+        $result[] = $buttonBar;
+
+        $buttonBar = new Buttonbar("buttonbar_disabled", "Buttonbar (disabled)", range(0, 10), [5]);
+        $buttonBar->setReadOnly(true);
+        $result[] = $buttonBar;
+
+        $radioGroup = new Radiogroup("radiogroup", "Radiogroup", range(0, 10), 5);
+        $result[] = $radioGroup;
+
+        $radioGroup = new Radiogroup("radiogroup_disabled", "Radiogroup (disabled)", range(0, 10), 5);
+        $radioGroup->setReadOnly(true);
+        $result[] = $radioGroup;
 
         $listEditor = new Listeditor("listeditor", "Listeditor", ["foo", "bar"]);
         $result[] = $listEditor;
