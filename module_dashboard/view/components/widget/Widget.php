@@ -6,7 +6,7 @@
 
 declare(strict_types = 1);
 
-namespace Kajona\Dashobard\View\Components\Widget;
+namespace Kajona\Dashboard\View\Components\Widget;
 
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\Carrier;
