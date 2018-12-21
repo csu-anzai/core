@@ -42,9 +42,9 @@ class Buttonbar extends Dropdown
     }
 
     /**
-     * @param array $type
+     * @param string $type
      */
-    public function setType(array $type)
+    public function setType(string $type)
     {
         $this->type = $type;
     }
