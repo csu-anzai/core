@@ -50,6 +50,8 @@ class FilterListTest extends Testbase
      */
     public function testFilterListFiltered()
     {
+        $this->markTestSkipped();
+
         $arrObject2Filter = $this->getObject2Filter();
 
         foreach($arrObject2Filter as $arrModelFilter) {
