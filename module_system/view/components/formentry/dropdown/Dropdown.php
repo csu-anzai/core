@@ -87,6 +87,7 @@ class Dropdown extends FormentryComponentAbstract
         $context = parent::buildContext();
         $context["options"] = $this->options;
         $context["selected"] = $this->selected;
+        $context["no_select"] = $this->selected === null || $this->selected === '';
         $context["addons"] = $this->addons;
 
         return $context;
