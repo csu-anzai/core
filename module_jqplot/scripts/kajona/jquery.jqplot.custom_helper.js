@@ -2,7 +2,7 @@
 //       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt
 //       $Id$
 
-define([
+define("jqlot.custom_helper", [
     'jquery',
     'folderview',
     'util',

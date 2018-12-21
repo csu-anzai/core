@@ -1,5 +1,5 @@
 
-define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'statusDisplay', 'messaging', 'ajax', 'util', 'folderview', 'breadcrumb', 'lang'], function ($, bootstrap, jqueryui, workingIndicator, tooltip, statusDisplay, messaging, ajax, util, folderview, breadcrumb, lang) {
+define("v4skin", ['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'statusDisplay', 'messaging', 'ajax', 'util', 'folderview', 'breadcrumb', 'lang'], function ($, bootstrap, jqueryui, workingIndicator, tooltip, statusDisplay, messaging, ajax, util, folderview, breadcrumb, lang) {
 
 
 
@@ -44,13 +44,19 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
                 self._renderItemData(ul, item);
             });
 
-            ul.append('<li class="detailedResults"><div href="#">'+searchExtendText+'</div></li>');
+            $('<li class="ui-menu-item detailedResults"></li>')
+                .data('ui-autocomplete-item', {})
+                .append('<div><i class="fa fa-search"></i> <span data-lang-property="search:search_details"></span></div>')
+                .appendTo(ul);
+
             ul.addClass('dropdown-menu');
             ul.addClass('search-dropdown-menu');
 
-            ul.find('.detailedResults a').click(function () {
+            ul.find('.detailedResults div').on('click', function () {
                 $('.navbar-search').submit();
             });
+
+            lang.initializeProperties(ul);
         },
         _renderItemData: function (ul, item) {
             return $('<li></li>')
@@ -80,7 +86,7 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
             });
         },
         select: function (event, ui) {
-            if(ui.item) {
+            if(ui.item && ui.item.link) {
                 document.location = ui.item.link;
             }
         },
@@ -93,7 +99,6 @@ define(['jquery', 'bootstrap', 'jquery-ui', 'workingIndicator', 'tooltip', 'stat
             workingIndicator.start();
         },
         response: function(event, ui) {
-            //$(this).css("background-image", "none");
             $(this).parent().find('.input-group-addon').html('<i class="fa fa-search"></i></span>');
             workingIndicator.stop();
         }

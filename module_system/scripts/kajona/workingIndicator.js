@@ -6,7 +6,7 @@
 /**
  * @module workingIndicator
  */
-define(['jquery'], function ($) {
+define('workingIndicator', ['jquery'], function ($) {
 
     var intWorkingCount = 0;
 

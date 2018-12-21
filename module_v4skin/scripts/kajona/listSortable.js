@@ -1,7 +1,7 @@
 //   (c) 2007-2016 by Kajona, www.kajona.de
 //       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt
 
-define(["jquery", "jquery-ui", "ajax", "statusDisplay", "tooltip", "util", "lang"], function($, jqueryui, ajax, statusDisplay, tooltip, util, lang)  {
+define("listSortable", ["jquery", "jquery-ui", "ajax", "statusDisplay", "tooltip", "util", "lang"], function($, jqueryui, ajax, statusDisplay, tooltip, util, lang)  {
 
     /**
      * Creates a new sortable list, fully featured with next / previous page drop-zones

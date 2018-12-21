@@ -7,7 +7,7 @@
 	if ( typeof define === "function" && define.amd ) {
 
 		// AMD. Register as an anonymous module.
-		define([ "jquery" ], factory );
+		define("jquery-ui/ui/widget", [ "jquery" ], factory );
 
 	} else if ( typeof exports === "object" ) {
 

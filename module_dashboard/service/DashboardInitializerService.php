@@ -11,7 +11,6 @@ use Kajona\Dashboard\Admin\Widgets\AdminwidgetSystemcheck;
 use Kajona\Dashboard\Admin\Widgets\AdminwidgetSysteminfo;
 use Kajona\Dashboard\Admin\Widgets\AdminwidgetSystemlog;
 use Kajona\Dashboard\Admin\Widgets\AdminwidgetTodo;
-use Kajona\Dashboard\Admin\Widgets\AdminwidgetUpdatecheck;
 use Kajona\Dashboard\System\DashboardWidget;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\SystemAspect;
@@ -51,12 +50,6 @@ class DashboardInitializerService
                         <input type=\"hidden\" name=\"currency_code\" value=\"EUR\" /> <input type=\"hidden\" name=\"tax\" value=\"0\" /> <input type=\"hidden\" name=\"bn\" value=\"PP-DonationsBF\" /> 
                         <input type=\"image\" border=\"0\" src=\"https://www.paypal.com/en_US/i/btn/btn_donate_LG.gif\" name=\"submit\" alt=\"PayPal - The safer, easier way to pay online!\" /> 
                         <img height=\"1\" width=\"1\" border=\"0\" alt=\"\" src=\"https://www.paypal.com/en_US/i/scr/pixel.gif\" /></form>"]));
-            ServiceLifeCycleFactory::getLifeCycle(get_class($objDashboard))->update($objDashboard, DashboardWidget::getWidgetsRootNodeForUser($strUserid, $strContentAspectId));
-
-            $objDashboard = new DashboardWidget();
-            $objDashboard->setStrColumn("column2");
-            $objDashboard->setStrUser($strUserid);
-            $objDashboard->setStrClass(AdminwidgetUpdatecheck::class);
             ServiceLifeCycleFactory::getLifeCycle(get_class($objDashboard))->update($objDashboard, DashboardWidget::getWidgetsRootNodeForUser($strUserid, $strContentAspectId));
 
             $objDashboard = new DashboardWidget();

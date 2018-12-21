@@ -25,7 +25,7 @@ class GraphFactory {
     public static $STR_TYPE_PCHART = "pchart";
     public static $STR_TYPE_FLOT = "flot";
     public static $STR_TYPE_JQPLOT = "jqplot";
-
+    public static $STR_TYPE_CHARTJS = "chartjs";
 
     /**
      * Creates a graph-instance either based on the current config or

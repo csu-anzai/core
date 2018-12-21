@@ -15,7 +15,7 @@
  *
  * systemid#strPropertyName
  */
-define(['jquery', 'ajax'], function ($, ajax) {
+define("instantSave", ['jquery', 'ajax'], function ($, ajax) {
 
     saveChangeHandler = function () {
 

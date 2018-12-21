@@ -5,11 +5,11 @@
     >
     <title>dbdump</title>
     <description>Creates database dumps independent from the underlying db-system.</description>
-    <version>7.0</version>
+    <version>7.1</version>
     <author>Kajona Team</author>
     <providesInstaller>FALSE</providesInstaller>
     <requiredModules>
-        <module name="system" version="7.0" />
+        <module name="system" version="7.1" />
     </requiredModules>
     <constants />
 </package>

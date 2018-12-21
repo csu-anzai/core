@@ -10,6 +10,7 @@ namespace Kajona\Search\Event;
 use Kajona\Search\System\SearchIndexwriter;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\GenericeventListenerInterface;
+use Kajona\System\System\Reflection;
 use Kajona\System\System\SystemEventidentifier;
 
 
@@ -32,19 +33,25 @@ class SearchRecordupdatedlistener implements GenericeventListenerInterface
      * @param array $arrArguments
      *
      * @return bool
+     * @throws \Kajona\System\System\Exception
      */
     public function handleEvent($strEventName, array $arrArguments)
     {
 
         $objRecord = $arrArguments[0];
 
+        //check if the object provides indexable properties
+        $objReflection = new Reflection($objRecord);
+        $arrProperties = $objReflection->getPropertiesWithAnnotation(SearchIndexwriter::STR_ANNOTATION_ADDSEARCHINDEX);
+        if (count($arrProperties) == 0) {
+            return true;
+        }
+
         if (self::$BIT_UPDATE_INDEX_ON_END_OF_REQUEST) {
             SearchRequestEndprocessinglistener::addIdToIndex($objRecord);
-        }
-        else {
+        } else {
             $objIndex = new SearchIndexwriter();
             $objIndex->indexObject($objRecord);
-
         }
 
         return true;

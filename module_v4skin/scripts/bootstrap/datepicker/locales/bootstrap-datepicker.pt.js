@@ -3,7 +3,7 @@
  * Original code: Cauan Cabral <cauan@radig.com.br>
  * Tiago Melo <tiago.blackcode@gmail.com>
  */
-;(function($){
+define("bootstrap-datepicker-pt", ["jquery"], function($){
 	$.fn.datepicker.dates['pt'] = {
 		days: ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"],
 		daysShort: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
@@ -15,4 +15,4 @@
 		clear: "Limpar",
 		format: "dd/mm/yyyy"
 	};
-}(jQuery));
+});

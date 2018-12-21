@@ -58,7 +58,7 @@ class FormentryBase
     private $bitSkipValidation = false;
 
 
-    private $strLabel = null;
+    private $strLabel = "";
     private $strValidationErrorMsg = "";
     private $strEntryName = null;
     private $bitMandatory = false;

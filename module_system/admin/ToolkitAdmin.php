@@ -26,7 +26,6 @@ use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
-use Kajona\System\System\Resourceloader;
 use Kajona\System\System\Session;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemAspect;
@@ -38,10 +37,11 @@ use Kajona\System\View\Components\Datatable\Datatable;
 use Kajona\System\View\Components\Formentry\Dropdown\Dropdown;
 use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
 use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
+use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
 use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
-use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
 use Kajona\System\View\Components\Popover\Popover;
+use Kajona\System\View\Components\Tabbedcontent\Tabbedcontent;
 use Kajona\System\View\Components\Textrow\TextRow;
 use Kajona\System\View\Components\Warningbox\Warningbox;
 use Kajona\Tags\System\TagsFavorite;
@@ -115,83 +115,6 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["readonly"] = ($bitReadOnly ? "disabled=\"disabled\"" : "");
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", $bitWithTime ? "input_datetime_simple" : "input_date_simple");
-    }
-
-
-    /**
-     * Returns a text-field using the cool WYSIWYG editor
-     * You can use the different toolbar sets defined in /scripts/ckeditor/config.js
-     *
-     * @param string $strName
-     * @param string $strTitle
-     * @param string $strContent
-     * @param string $strToolbarset
-     * @param bool $bitReadonly
-     * @return string
-     */
-    public function formWysiwygEditor($strName = "inhalt", $strTitle = "", $strContent = "", $strToolbarset = "standard", $bitReadonly = false, $strOpener = "")
-    {
-        $strReturn = "";
-
-        //create the html-input element
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["opener"] = $strOpener;
-        $arrTemplate["editorid"] = generateSystemid();
-        $arrTemplate["readonly"] = ($bitReadonly ? " readonly=\"readonly\" " : "");
-        $arrTemplate["content"] = htmlentities($strContent, ENT_COMPAT, "UTF-8");
-        $strReturn .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "wysiwyg_ckeditor");
-        //for the popups, we need the skinwebpath
-        $strReturn .= $this->formInputHidden("skinwebpath", _skinwebpath_);
-
-        //set the language the user defined for the admin
-        $strLanguage = Session::getInstance()->getAdminLanguage();
-        if ($strLanguage == "") {
-            $strLanguage = "en";
-        }
-
-        //include the settings made by admin skin
-        $strTemplateInit = $this->objTemplate->fillTemplateFile(array(), "/admin/skins/kajona_v4/elements.tpl", "wysiwyg_ckeditor_inits");
-
-        //check if a customized editor-config is available
-        $strConfigFile = "'config_kajona_standard.js'";
-        //BC
-        if (is_file(_realpath_."project/module_system/scripts/admin/ckeditor/config_kajona_standard.js")) {
-            $strConfigFile = "KAJONA_WEBPATH+'/project/module_system/admin/scripts/ckeditor/config_kajona_standard.js'";
-        }
-
-        if (is_file(_realpath_."project/module_system/scripts/ckeditor/config_kajona_standard.js")) {
-            $strConfigFile = "KAJONA_WEBPATH+'/project/module_system/scripts/ckeditor/config_kajona_standard.js'";
-        }
-
-        //to add role-based editors, you could load a different toolbar or also a different CKEditor config file
-        //the editor code
-        $strReturn .= " <script type=\"text/javascript\" src=\""._webpath_.Resourceloader::getInstance()->getWebPathForModule("module_system")."/scripts/ckeditor/ckeditor.js\"></script>\n";
-        $strReturn .= " <script type=\"text/javascript\">\n";
-        $strReturn .= "
-            var ckeditorConfig = {
-                customConfig : ".$strConfigFile.",
-                toolbar : '".$strToolbarset."',
-                ".$strTemplateInit."
-                language : '".$strLanguage."',
-                filebrowserBrowseUrl : '".StringUtil::replace("&amp;", "&", getLinkAdminHref("folderview", "browserChooser", "&form_element=ckeditor&download=1"))."',
-                filebrowserImageBrowseUrl : '".StringUtil::replace("&amp;", "&", getLinkAdminHref("mediamanager", "folderContentFolderviewMode", "systemid=".SystemSetting::getConfigValue("_mediamanager_default_imagesrepoid_")."&form_element=ckeditor&bit_link=1"))."'
-	        };
-            var curEditor = CKEDITOR.replace($(\"textarea[name='".$strName."'][data-kajona-editorid='".$arrTemplate["editorid"]."']\")[0], ckeditorConfig);
-            curEditor.on('change', function(event) {
-                $(\"textarea[name='".$strName."'][data-kajona-editorid='".$arrTemplate["editorid"]."']\").val(event.editor.getData());
-            });
-            curEditor.on('instanceReady', function(event) {
-                if($(\"textarea[name='".$strName."'][data-kajona-editorid='".$arrTemplate["editorid"]."']\").hasClass('mandatoryFormElement')) {
-                        event.editor.container.addClass('mandatoryFormElement')
-                }
-            });
-            
-        ";
-        $strReturn .= "</script>\n";
-
-        return $strReturn;
     }
 
 
@@ -300,7 +223,7 @@ class ToolkitAdmin extends Toolkit
      */
     public function formInputText($strName, $strTitle = "", $strValue = "", $strClass = "", $strOpener = "", $bitReadonly = false, $strInstantEditor = "")
     {
-        $inputCheckbox = new Inputtext($strName, $strTitle, $strValue);
+        $inputCheckbox = new Inputtext($strName, (string) $strTitle, $strValue);
         $inputCheckbox->setClass($strClass);
         $inputCheckbox->setReadOnly($bitReadonly);
         $inputCheckbox->setOpener($strOpener);
@@ -1777,7 +1700,8 @@ HTML;
         $objHistory = new History();
         $strParam = "";
         if (StringUtil::indexOf($strConfirmationLinkHref, "javascript:") === false) {
-            $strParam = "?reloadUrl='+encodeURIComponent(document.location.hash.substr(1))+'";
+            $strParam .= StringUtil::indexOf($strConfirmationLinkHref, "?") === false ? '?' : '&';
+            $strParam .= "reloadUrl='+encodeURIComponent(document.location.hash.substr(1))+'";
         }
 
         if ($strConfirmationButtonLabel == "") {
@@ -1976,60 +1900,14 @@ JS;
      * @param $arrTabs array(key => content)
      * @param bool $bitFullHeight whether the tab content should use full height
      *
+     * @deprecated use direct the Tabbedcontent component
+     *
      * @return string
      */
     public function getTabbedContent(array $arrTabs, $bitFullHeight = false)
     {
-
-        $strMainTabId = generateSystemid();
-        $bitRemoteContent = false;
-
-        $strTabs = "";
-        $strTabContent = "";
-        $strClassaddon = "active in ";
-        foreach ($arrTabs as $strTitle => $strContent) {
-            $strTabId = generateSystemid();
-            // if content is an url enable ajax loading
-            if (substr($strContent, 0, 7) == 'http://' || substr($strContent, 0, 8) == 'https://') {
-                $strTabs .= $this->objTemplate->fillTemplateFile(array("tabid" => $strTabId, "tabtitle" => $strTitle, "href" => $strContent, "classaddon" => $strClassaddon), "/admin/skins/kajona_v4/elements.tpl", "tabbed_content_tabheader");
-                $strTabContent .= $this->objTemplate->fillTemplateFile(array("tabid" => $strTabId, "tabcontent" => "", "classaddon" => $strClassaddon . "contentLoading"), "/admin/skins/kajona_v4/elements.tpl", "tabbed_content_tabcontent");
-                $bitRemoteContent = true;
-            } else {
-                $strTabs .= $this->objTemplate->fillTemplateFile(array("tabid" => $strTabId, "tabtitle" => $strTitle, "href" => "", "classaddon" => $strClassaddon), "/admin/skins/kajona_v4/elements.tpl", "tabbed_content_tabheader");
-                $strTabContent .= $this->objTemplate->fillTemplateFile(array("tabid" => $strTabId, "tabcontent" => $strContent, "classaddon" => $strClassaddon), "/admin/skins/kajona_v4/elements.tpl", "tabbed_content_tabcontent");
-            }
-            $strClassaddon = "";
-        }
-
-        $strHtml = $this->objTemplate->fillTemplateFile(array("id" => $strMainTabId, "tabheader" => $strTabs, "tabcontent" => $strTabContent, "classaddon" => ($bitFullHeight === true ? 'fullHeight' : '')), "/admin/skins/kajona_v4/elements.tpl", "tabbed_content_wrapper");
-
-        // add ajax loader if we have content which we need to fetch per ajax
-        if ($bitRemoteContent) {
-            $strHtml.= <<<HTML
-<script type="text/javascript">
-require(['jquery', 'forms'], function($, forms){
-    $('#{$strMainTabId} > li > a[data-href!=""]').on('click', function(e){
-        if(!$(e.target).data('loaded')) {
-            forms.loadTab($(e.target).data('target').substr(1), $(e.target).data('href'));
-            $(e.target).data('loaded', true);
-        }
-    });
-    
-    $(document).ready(function(){
-        var el = $('#{$strMainTabId} > li.active > a[data-href!=""]');
-        if (el.length > 0) {
-            if(!el.data('loaded')) {
-                forms.loadTab(el.data('target').substr(1), el.data('href'));
-                el.data('loaded', true);
-            }
-        }
-    });
-});
-</script>
-HTML;
-        }
-
-        return $strHtml;
+        $objTabbedContent = new Tabbedcontent($arrTabs, $bitFullHeight);
+        return $objTabbedContent->renderComponent();
     }
 
     /**

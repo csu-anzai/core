@@ -11,7 +11,7 @@
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module unless amdModuleId is set
-    define(["jquery"], function(jq) {
+    define("bootstrap-colorpicker", ["jquery"], function(jq) {
       return (factory(jq));
     });
   } else if (typeof exports === 'object') {

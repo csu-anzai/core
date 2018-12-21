@@ -486,6 +486,9 @@ footer {
             &:hover {
                 text-decoration: none;
                 border-radius: 0;
+                color: @white !important;
+                background-color: @dropdown-link-active-bg;
+                border-color: @dropdown-link-active-bg;
             }
 
             .smaller {
@@ -503,11 +506,7 @@ footer {
 
 
     .ui-state-active {
-        color: @white;
-        text-decoration: none;
         background-color: @dropdown-link-active-bg;
-        background-image: none;
-        border-radius: 0;
         border-color: @dropdown-link-active-bg;
     }
 
@@ -519,6 +518,7 @@ footer {
     .ui-autocomplete-category h3 {
         padding-left: 5px;
         clear: both;
+        font-family: @font-family-base;
         border-radius: 0;
     }
 
