@@ -35,7 +35,7 @@ class MediamanagerLogbook extends \Kajona\System\System\Model implements \Kajona
 	                   (?, ?, ?, ?, ?)";
 
         $objDB->_pQuery($strQuery, array(generateSystemid(), (int)time(), basename($objFile->getStrFilename()),
-            Carrier::getInstance()->getObjSession()->getUsername(), getServer("REMOTE_ADDR")));
+            Carrier::getInstance()->getObjSession()->getUserID(), getServer("REMOTE_ADDR")));
 
         $objFile->increaseHits();
     }
