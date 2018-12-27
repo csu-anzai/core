@@ -160,6 +160,11 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "7.0.1") {
+            $strReturn .= $this->update701_702();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.0.2") {
             $strReturn .= "Updating to 7.1...\n";
             $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1");
         }
@@ -168,6 +173,7 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
         if($arrModule["module_version"] == "7.1") {
             $strReturn .= $this->update71_711();
         }
+
 
         return $strReturn."\n\n";
     }
@@ -196,6 +202,16 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
         $objSetting->updateObjectToDb();
 
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.1");
+        return $strReturn;
+    }
+
+    private function update701_702()
+    {
+        $strReturn = "Update to 7.0.2".PHP_EOL;
+        $strReturn .= "Changing log table".PHP_EOL;
+        $this->objDB->changeColumn("mediamanager_dllog", "downloads_log_ip", "downloads_log_ip", DbDatatypes::STR_TYPE_CHAR254);
+
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.2");
         return $strReturn;
     }
 
