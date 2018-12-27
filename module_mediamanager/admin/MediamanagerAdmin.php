@@ -797,8 +797,6 @@ HTML;
 
         $intNrOfRecordsPerPage = 25;
 
-        $strReturn .= $this->objToolkit->getTextRow(Link::getLinkAdmin($this->getArrModule("modul"), "logbookFlush", "", $this->getLang("action_logbook_flush"), "")."<br />");
-
         $objLogbook = new MediamanagerLogbook();
         $objArraySectionIterator = new ArraySectionIterator($objLogbook->getLogbookDataCount());
         $objArraySectionIterator->setIntElementsPerPage($intNrOfRecordsPerPage);
@@ -830,37 +828,6 @@ HTML;
         $strReturn .= $this->objToolkit->dataTable($arrHeader, $arrLogs);
         $strReturn .= $this->objToolkit->getPageview($objArraySectionIterator, $this->getArrModule("modul"), "logbook");
 
-        return $strReturn;
-    }
-
-    /**
-     * Shows a form or deltes a timeintervall from the logs
-     *
-     * @throws Exception
-     * @return string "" in case of success
-     * @permissions edit
-     * @autoTestable
-     */
-    protected function actionLogbookFlush()
-    {
-        $strReturn = "";
-        if ($this->getParam("flush") == "") {
-            $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "logbookFlush", "flush=1"));
-            $strReturn .= $this->objToolkit->formTextRow($this->getLang("logbook_hint_date"));
-            $strReturn .= $this->objToolkit->formDateSingle("date", $this->getLang("commons_date"), new Date());
-            $strReturn .= $this->objToolkit->formInputSubmit($this->getLang("commons_save"));
-            $strReturn .= $this->objToolkit->formClose();
-        } elseif ($this->getParam("flush") == "1") {
-            //Build the date
-            $objDate = new Date();
-            $objDate->generateDateFromParams("date", $this->getAllParams());
-
-            if (!MediamanagerLogbook::deleteFromLogs($objDate->getTimeInOldStyle())) {
-                throw new Exception("Error deleting log-rows", Exception::$level_ERROR);
-            }
-
-            $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "logbook"));
-        }
         return $strReturn;
     }
 
