@@ -1139,6 +1139,7 @@ HTML;
                 'inline'   => $bitInline ? '-inline' : '',
                 'readonly' => $bitReadonly ? 'disabled' : '',
                 'css'      => "",
+                'level'    => " level1 ",
             );
 
             switch ($intType) {
@@ -1163,11 +1164,13 @@ HTML;
                 if ($bitIndent) {
                     $arrTemplateRow["title"] = substr($strValue, 1);
                     $arrTemplateRow["css"] = "style='margin-left:20px;'";
+                    $arrTemplateRow["level"] = " level2 ";
                 }
                 $bitIndent = substr($strValue, 1, 1) == "-";
                 if ($bitIndent) {
                     $arrTemplateRow["title"] = substr($strValue, 2);
                     $arrTemplateRow["css"] = "style='margin-left:40px;'";
+                    $arrTemplateRow["level"] = " level3 ";
                 }
 
                 $strElements .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/admin/skins/kajona_v4/elements.tpl", $strElementRow, true);
