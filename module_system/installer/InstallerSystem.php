@@ -292,7 +292,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         //3.4: cache buster to be able to flush the browsers cache (JS and CSS files)
         $this->registerConstant("_system_browser_cachebuster_", 0, SystemSetting::$int_TYPE_INT, _system_modul_id_);
         //3.4: Adding constant _system_graph_type_ indicating the chart-engine to use
-        $this->registerConstant("_system_graph_type_", "jqplot", SystemSetting::$int_TYPE_STRING, _system_modul_id_);
+        $this->registerConstant("_system_graph_type_", "chartjs", SystemSetting::$int_TYPE_STRING, _system_modul_id_);
         //3.4: Enabling or disabling the internal changehistory
         $this->registerConstant("_system_changehistory_enabled_", "false", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
 
@@ -500,6 +500,11 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             $strReturn .= $this->update_703_71();
         }
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.1") {
+            $strReturn .= $this->update_71_711();
+        }
+
         return $strReturn."\n\n";
     }
 
@@ -601,7 +606,16 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         return $strReturn;
     }
 
+    private function update_71_711()
+    {
+        $strReturn = "Updating to 7.1.1...".PHP_EOL;
+        $strReturn .= "Changing default charting engine".PHP_EOL;
+        $cfg = SystemSetting::getConfigByName("_system_graph_type_");
+        $cfg->setStrValue("chartjs");
+        ServiceLifeCycleFactory::getLifeCycle(get_class($cfg))->update($cfg);
 
+        return $strReturn;
+    }
 
     /**
      * Helper to migrate the system-id based permission table to an int based one
