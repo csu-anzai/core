@@ -614,6 +614,9 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $cfg->setStrValue("chartjs");
         ServiceLifeCycleFactory::getLifeCycle(get_class($cfg))->update($cfg);
 
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.1");
+
         return $strReturn;
     }
 
