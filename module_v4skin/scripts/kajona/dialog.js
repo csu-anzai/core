@@ -1,12 +1,11 @@
 
-define('dialog', ['jquery', 'bootstrap', 'router', 'util', 'folderview'], function ($, bootstrap, router, util, folderview) {
+define('dialog', ['jquery', 'bootstrap', 'router', 'util', 'folderview', 'ajax', 'tooltip'], function ($, bootstrap, router, util, folderview, ajax, tooltip) {
 
     var dialogStack = [];
 
     return /** @alias module:dialog */ function (strDialogId, intDialogType, bitDragging, bitResizing) {
         this.dialog = null;
         this.containerId = strDialogId;
-        this.iframeId = null;
         this.iframeURL = null;
         this.bitLarge = false;
 
@@ -85,9 +84,8 @@ define('dialog', ['jquery', 'bootstrap', 'router', 'util', 'folderview'], functi
         };
 
         this.setContentIFrame = function(strUrl) {
-            this.iframeId = this.containerId + '_iframe';
             strUrl = router.generateUrl(strUrl);
-            strUrl = KAJONA_WEBPATH+strUrl.url+"&combinedLoad=1";
+            strUrl = KAJONA_WEBPATH+strUrl.url;
             this.iframeURL = strUrl;
         };
 
@@ -116,8 +114,8 @@ define('dialog', ['jquery', 'bootstrap', 'router', 'util', 'folderview'], functi
                 if(this.iframeURL != null) {
 
                     //TODO: POC:
-                    parent.KAJONA.util.dialogHelper.showIframeDialogStacked(this.iframeURL, $('#' + this.containerId + '_title').text());
-                    parent.KAJONA.util.folderviewHandler = folderview;
+                    KAJONA.util.dialogHelper.showIframeDialogStacked(this.iframeURL, $('#' + this.containerId + '_title').text());
+                    KAJONA.util.folderviewHandler = folderview;
 
                     //open the iframe in a regular popup
                     //workaround for stacked dialogs. if a modal is already opened, the second iframe is loaded in a popup window.
@@ -135,20 +133,26 @@ define('dialog', ['jquery', 'bootstrap', 'router', 'util', 'folderview'], functi
                 }
             }
 
+
             if(this.iframeURL != null) {
                 $("#"+this.containerId+"_loading").css('display', 'block');
-                $('#' + this.containerId + '_content').html('<iframe src="' + this.iframeURL + '" width="100%" height="'+(intHeight)+'" name="' + this.iframeId + '" id="' + this.iframeId + '" class="seamless" seamless></iframe>');
+                $('#' + this.containerId + '_content').html('');
+
+                //$('#' + this.containerId).modal('show');
+                //router.loadUrl(this.iframeURL, '#folderviewDialog_content');
+                var containerId = '#' + this.containerId + '_content';
+                ajax.loadUrlToElement('#' + this.containerId + '_content', this.iframeURL, null, false, 'GET', router.defaultDialogCallback);
+
                 this.iframeURL = null;
 
-                var id = this.iframeId;
-                var containerId = this.containerId;
-                $("#"+this.iframeId).on('load', function() {
-                    $("#"+containerId+"_loading").css('display', 'none');
-                    $('#'+id).contents().find("body").addClass('dialogBody')
-
-                });
+                // var id = this.iframeId;
+                // var containerId = this.containerId;
+                // $("#"+this.iframeId).on('load', function() {
+                //     $("#"+containerId+"_loading").css('display', 'none');
+                //     $('#'+id).contents().find("body").addClass('dialogBody')
+                //
+                // });
             }
-
 
             if(!util.isStackedDialog() && this.bitLarge) {
                 $('#' + this.containerId+" .modal-dialog").addClass("modal-lg-lg");
@@ -173,6 +177,7 @@ define('dialog', ['jquery', 'bootstrap', 'router', 'util', 'folderview'], functi
         };
 
         this.hide = function() {
+            tooltip.removeTooltip($('*[rel=tooltip]'));
             $('#' + this.containerId).modal('hide');
             this.unbindEvents();
         };

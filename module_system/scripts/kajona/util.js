@@ -90,7 +90,7 @@ define('util', ['jquery'], function ($) {
      * @returns {boolean}
      */
     util.isStackedDialog = function() {
-        return !!(window.frameElement && window.frameElement.nodeName && window.frameElement.nodeName.toLowerCase() == 'iframe');
+        return $('body').hasClass('modal-open');//  !!(window.frameElement && window.frameElement.nodeName && window.frameElement.nodeName.toLowerCase() == 'iframe');
     };
 
     /**

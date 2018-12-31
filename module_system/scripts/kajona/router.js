@@ -43,17 +43,25 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
                 return;
             }
 
-            cleanPage();
+
             //moduleNavigation.setModuleActive(objUrl.module);
 
             applyLoadCallbacks();
+
+            var target = '#moduleOutput';
+            //if ($('#folderviewDialog_content').is(':visible')) {
+            if ($('body').hasClass("modal-open")) {
+                target = '#folderviewDialog_content';
+            } else {
+                cleanPage();
+            }
 
             //split between post and get
             if (markedElements.forms.submittedEl != null) {
                 var data = $(markedElements.forms.submittedEl).serialize();
                 markedElements.forms.submittedEl = null;
                 markedElements.forms.monitoredEl = null;
-                ajax.loadUrlToElement('#moduleOutput', objUrl.url, data, false, 'POST', function(){
+                ajax.loadUrlToElement(target, objUrl.url, data, false, 'POST', function(){
                     applyFormCallbacks();
                 });
             } else {
@@ -68,7 +76,7 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
                     }
                 }
 
-                ajax.loadUrlToElement('#moduleOutput', objUrl.url, null, true);
+                ajax.loadUrlToElement(target, objUrl.url, null, true);
             }
 
 
@@ -262,6 +270,23 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
          * Global namespace to store some montitored elements
          */
         markerElements : markedElements,
+
+        defaultDialogCallback : function() {
+            // return true;//TODO: merge mit lade-logik oben
+            $('#folderviewDialog_content a').each(function (key, val) {
+                var $link = $(this);
+                if ($link.attr('href').indexOf("#") >= 0 && $link.attr('onclick') === "") {
+                    var link = $link.attr('href');
+                    $link.on('click', function () {
+                        var strUrl = require('router').generateUrl(link);
+                        strUrl = KAJONA_WEBPATH+strUrl.url;
+                        require('ajax').loadUrlToElement('#folderviewDialog_content', strUrl, null, true, 'GET', require('router').defaultDialogCallback);
+                        return false;
+                    });
+                    $link.attr('href', '');
+                }
+            });
+        }
     };
 
 
