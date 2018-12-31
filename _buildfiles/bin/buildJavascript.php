@@ -3,6 +3,8 @@
 
 echo "merge and install js dependencies".PHP_EOL;
 
+const DEV = false;
+
 $strRoot = realpath(__DIR__."/../../..");
 
 $arrIncludedModules = [];
@@ -100,7 +102,7 @@ echo "found " . count($jsFiles) . " js files\n";
 file_put_contents("{$plainJsFile}.js", $content);
 
 // minify
-if (is_file("{$plainJsFile}.js")) {
+if (!DEV && is_file("{$plainJsFile}.js")) {
     echo "minfiy merged js files\n";
     $strUglifyjsBin = "node {$uglifyBin}";
     system($strUglifyjsBin . " {$plainJsFile}.js -o {$plainJsFile}.min.js");
@@ -112,16 +114,24 @@ $strTscBin = "node {$tsBin}";
 system($strTscBin . " --build {$tsConfig}");
 
 // minify ts
-if (is_file("{$tscJsFile}.js")) {
-    echo "minfy type script file\n";
+if (!DEV && is_file("{$tscJsFile}.js")) {
+    echo "minify type script file\n";
     $strUglifyjsBin = "node {$uglifyBin}";
     system($strUglifyjsBin . " {$tscJsFile}.js -o {$tscJsFile}.min.js");
 }
 
 // merge type script and js files
 echo "Build agp js\n";
-$plain = is_file("{$plainJsFile}.min.js") ? file_get_contents("{$plainJsFile}.min.js") : "";
-$tsc = is_file("{$tscJsFile}.min.js") ? file_get_contents("{$tscJsFile}.min.js") : "";
+if (DEV) {
+    $plain = is_file("{$plainJsFile}.js") ? file_get_contents("{$plainJsFile}.js") : "";
+} else {
+    $plain = is_file("{$plainJsFile}.min.js") ? file_get_contents("{$plainJsFile}.min.js") : "";
+}
+if (DEV) {
+    $tsc = is_file("{$tscJsFile}.js") ? file_get_contents("{$tscJsFile}.js") : "";
+} else {
+    $tsc = is_file("{$tscJsFile}.min.js") ? file_get_contents("{$tscJsFile}.min.js") : "";
+}
 
 file_put_contents($strRoot . "/core/module_system/scripts/agp.min.js", $plain . "\n\n" . $tsc);
 
