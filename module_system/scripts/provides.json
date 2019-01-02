@@ -37,7 +37,6 @@
     "systemTask": "kajona/systemTask",
     "tooltip": "kajona/tooltip",
     "tree": "kajona/tree",
-    "util": "kajona/util",
     "user": "kajona/user",
     "workingIndicator": "kajona/workingIndicator"
   },
