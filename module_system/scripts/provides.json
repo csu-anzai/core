@@ -33,7 +33,6 @@
     "permissions": "kajona/permissions",
     "quickhelp": "kajona/quickhelp",
     "router": "kajona/router",
-    "statusDisplay": "kajona/statusDisplay",
     "systemTask": "kajona/systemTask",
     "tooltip": "kajona/tooltip",
     "tree": "kajona/tree",
