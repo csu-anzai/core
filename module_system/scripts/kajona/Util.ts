@@ -1,20 +1,22 @@
-/**
- * (c) 2013-2017 by Kajona, www.kajona.de
- * Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt
- */
+///<reference path="../defs/jquery.d.ts" />
+///<reference path="../../../_buildfiles/jstests/node_modules/@types/ckeditor/index.d.ts" />
+///<amd-module name="util"/>
 
-/**
- * @module util
- */
-define('util', ['jquery'], function ($) {
+import * as $ from "jquery";
 
-    /** @exports util */
-    var util = {};
+declare global {
+    interface Window {
+        KAJONA: any;
+        $: any;
+        execScript: any;
+    }
+}
 
+class Util {
 
-    util.isEllipsisActive = function(element) {
+    public static isEllipsisActive(element) {
         return element.offsetWidth + 2 < element.scrollWidth;
-    };
+    }
 
     /**
      * Function to get the element from the current opener.
@@ -22,7 +24,7 @@ define('util', ['jquery'], function ($) {
      * @param strElementId
      * @returns {*}
      */
-    util.getElementFromOpener = function(strElementId) {
+    public static getElementFromOpener(strElementId: string) {
         if (window.opener) {
             return $('#' + strElementId, window.opener.document);
         } else if (parent){
@@ -38,15 +40,15 @@ define('util', ['jquery'], function ($) {
         else {
             return $('#' + strElementId);
         }
-    };
+    }
 
     /**
      * Function to evaluate the script-tags in a passed string, e.g. loaded by an ajax-request
      *
      * @param {String} scripts
      * @see http://wiki.ajax-community.de/know-how:nachladen-von-javascript
-     **/
-    util.evalScript = function (scripts) {
+     */
+    public static evalScript(scripts: string) {
         try {
             if(scripts != '')	{
                 var script = "";
@@ -63,12 +65,11 @@ define('util', ['jquery'], function ($) {
         catch(e) {
             alert(e);
         }
-    };
+    }
 
-    util.isTouchDevice = function() {
+    public static isTouchDevice() {
         return !!('ontouchstart' in window) ? 1 : 0;
-    };
-
+    }
 
     /**
      * Checks if the given array contains the given string
@@ -76,22 +77,22 @@ define('util', ['jquery'], function ($) {
      * @param {String} strNeedle
      * @param {String[]} arrHaystack
      */
-    util.inArray = function (strNeedle, arrHaystack) {
+    public static inArray(strNeedle: string, arrHaystack: Array<any>) {
         for (var i = 0; i < arrHaystack.length; i++) {
             if (arrHaystack[i] == strNeedle) {
                 return true;
             }
         }
         return false;
-    };
+    }
 
     /**
      * Detects if the current viewport is embedded in an iframe or a popup
      * @returns {boolean}
      */
-    util.isStackedDialog = function() {
+    public static isStackedDialog() {
         return !!(window.frameElement && window.frameElement.nodeName && window.frameElement.nodeName.toLowerCase() == 'iframe');
-    };
+    }
 
     /**
      * Used to show/hide an html element
@@ -100,7 +101,7 @@ define('util', ['jquery'], function ($) {
      * @param {Function} objCallbackVisible
      * @param {Function} objCallbackInvisible
      */
-    util.fold = function (strElementId, objCallbackVisible, objCallbackInvisible) {
+    public static fold(strElementId: string, objCallbackVisible: Function, objCallbackInvisible: Function) {
         var $element = $('#'+strElementId);
         if ($element.hasClass("folderHidden")) 	{
             $element.removeClass("folderHidden");
@@ -116,7 +117,7 @@ define('util', ['jquery'], function ($) {
                 objCallbackInvisible(strElementId);
             }
         }
-    };
+    }
 
     /**
      * Used to show/hide an html element and switch an image (e.g. a button)
@@ -126,23 +127,23 @@ define('util', ['jquery'], function ($) {
      * @param {String} strImageVisible
      * @param {String} strImageHidden
      */
-    util.foldImage = function (strElementId, strImageId, strImageVisible, strImageHidden) {
+    public static foldImage(strElementId: string, strImageId: string, strImageVisible: string, strImageHidden: string) {
         var element = document.getElementById(strElementId);
         var image = document.getElementById(strImageId);
         if (element.style.display == 'none') 	{
             element.style.display = 'block';
-            image.src = strImageVisible;
+            image.setAttribute("src", strImageVisible);
         }
         else {
             element.style.display = 'none';
-            image.src = strImageHidden;
+            image.setAttribute("src", strImageHidden);
         }
-    };
+    }
 
-    util.setBrowserFocus = function (strElementId) {
+    public static setBrowserFocus(strElementId: string) {
         $(function() {
             try {
-                focusElement = $("#"+strElementId);
+                let focusElement = $("#"+strElementId);
                 if (focusElement.hasClass("inputWysiwyg")) {
                     CKEDITOR.config.startupFocus = true;
                 } else {
@@ -150,69 +151,24 @@ define('util', ['jquery'], function ($) {
                 }
             } catch (e) {}
         });
-    };
+    }
 
     /**
      * Simple method to generate a system id
      */
-    util.generateSystemId = function(){
+    public static generateSystemId() {
         var chars = ['a', 'b', 'c', 'd', 'e', 'f', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
         var result = "";
 
         for (var i = 0; i < 20; i++) {
-            var k = parseInt(chars.length * Math.random());
+            var k = parseInt("" + (chars.length * Math.random()));
             if (chars[k]) {
                 result+= chars[k];
             }
         }
 
         return result;
-    };
-
-    /**
-     * some functions to track the mouse position and move an element
-     * @deprecated will be removed with Kajona 3.4 or 3.5, use YUI Panel instead
-     */
-    util.mover = (function() {
-        var currentMouseXPos;
-        var currentMouseYPos;
-        var objToMove = null;
-        var objDiffX = 0;
-        var objDiffY = 0;
-
-        function checkMousePosition(e) {
-            if (document.all) {
-                currentMouseXPos = event.clientX + document.body.scrollLeft;
-                currentMouseYPos = event.clientY + document.body.scrollTop;
-            } else {
-                currentMouseXPos = e.pageX;
-                currentMouseYPos = e.pageY;
-            }
-
-            if (objToMove != null) {
-                objToMove.style.left = currentMouseXPos - objDiffX + "px";
-                objToMove.style.top = currentMouseYPos - objDiffY + "px";
-            }
-        }
-
-        function setMousePressed(obj) {
-            objToMove = obj;
-            objDiffX = currentMouseXPos - objToMove.offsetLeft;
-            objDiffY = currentMouseYPos - objToMove.offsetTop;
-        }
-
-        function unsetMousePressed() {
-            objToMove = null;
-        }
-
-
-        //public variables and methods
-        return {
-            checkMousePosition : checkMousePosition,
-            setMousePressed : setMousePressed,
-            unsetMousePressed : unsetMousePressed
-        }
-    }());
+    }
 
     /**
      * Converts a string into an integer representation of the string regarding thousands and decimal separator.
@@ -224,14 +180,14 @@ define('util', ['jquery'], function ($) {
      * @param strStyleDecimal
      * @returns {string}
      */
-    util.convertValueToInt = function(objValue, strStyleThousand, strStyleDecimal) {
+    public static convertValueToInt(objValue: any, strStyleThousand: string, strStyleDecimal: string) {
         var strValue = objValue+"";
 
         var strRegExpThousand = new RegExp("\\"+strStyleThousand, 'g')
         strValue = strValue.replace(strRegExpThousand, "");//remove first thousand separator
 
         return parseInt(strValue);
-    };
+    }
 
     /**
      * Converts a string into a float representation of the string regarding thousands and decimal separator.
@@ -242,7 +198,7 @@ define('util', ['jquery'], function ($) {
      * @param strStyleDecimal
      * @returns {string}
      */
-    util.convertValueToFloat = function(objValue, strStyleThousand, strStyleDecimal) {
+    public static convertValueToFloat(objValue: any, strStyleThousand: string, strStyleDecimal: string) {
         var strValue = objValue+"";
 
         var strRegExpThousand = new RegExp("\\"+strStyleThousand, 'g')
@@ -254,7 +210,7 @@ define('util', ['jquery'], function ($) {
         strValue = strValue.replace(strRegExpDecimal, ".");//replace decimal with decimal point for db
 
         return parseFloat(strValue);
-    };
+    }
 
     /**
      * Formats a number into a formatted string
@@ -270,12 +226,13 @@ define('util', ['jquery'], function ($) {
      * @param strDelimiterSections mixed: sections delimiter
      * @param strDelimiterDecimal mixed: decimal delimiter
      */
-    util.formatNumber = function(floatValue, intDecimalLength, intLengthWholePart, strDelimiterSections, strDelimiterDecimal) {
+    public static formatNumber(floatValue, intDecimalLength, intLengthWholePart, strDelimiterSections, strDelimiterDecimal) {
         var re = '\\d(?=(\\d{' + (intLengthWholePart || 3) + '})+' + (intDecimalLength > 0 ? '\\D' : '$') + ')',
             num = floatValue.toFixed(Math.max(0, ~~intDecimalLength));
 
         return (strDelimiterDecimal ? num.replace('.', strDelimiterDecimal) : num).replace(new RegExp(re, 'g'), '$&' + (strDelimiterSections || ','));
-    };
+
+    }
 
     /**
      * Formats a kajona date format to a specific javascript format string
@@ -283,7 +240,7 @@ define('util', ['jquery'], function ($) {
      * @param {string} format
      * @param {string} type
      */
-    util.transformDateFormat = function(format, type) {
+    public static transformDateFormat(format: string, type: string) {
         if (type == 'bootstrap-datepicker') {
             return format.replace('d', 'dd').replace('m', 'mm').replace('Y', 'yyyy');
         } else if (type == 'momentjs') {
@@ -291,7 +248,8 @@ define('util', ['jquery'], function ($) {
         } else {
             return format;
         }
-    };
+
+    }
 
     /**
      * Extracts an query parameter from the location query string
@@ -299,7 +257,7 @@ define('util', ['jquery'], function ($) {
      * @param {string} name
      * @returns string
      */
-    util.getQueryParameter = function(name) {
+    public static getQueryParameter(name: string) {
         var pos = location.search.indexOf("&" + name + "=");
         if(pos != -1) {
             var endPos = location.search.indexOf("&", pos + 1);
@@ -311,14 +269,15 @@ define('util', ['jquery'], function ($) {
             }
         }
         return null;
-    };
+
+    }
 
     /**
      * Gets the jQuery object
      *
      * @param objElement - my be a jquery object or an id selector
      */
-    util.getElement = function (objElement) {
+    public static getElement(objElement) {
         // If objElement is already a jQuery object
         if(objElement instanceof jQuery) {
             return objElement
@@ -326,14 +285,14 @@ define('util', ['jquery'], function ($) {
             // Convert to jQuery object
             return $(objElement);
         }
-    };
+    }
 
     /**
      * Copies text to clipboard
      *
      * @param text
      */
-    util.copyTextToClipboard = function (text) {
+    public static copyTextToClipboard(text: string) {
         var textArea = document.createElement("textarea");
         textArea.style.background = 'transparent';
         textArea.value = text;
@@ -354,7 +313,7 @@ define('util', ['jquery'], function ($) {
      * @see http://stackoverflow.com/questions/5796718/html-entity-decode/9609450#9609450
      *
      */
-    util.decodeHtmlEntities = (function() {
+    public static decodeHtmlEntities() {
         // this prevents any overhead from creating the object each time
         var element = document.createElement('div');
 
@@ -372,8 +331,6 @@ define('util', ['jquery'], function ($) {
         }
 
         return decodeHTMLEntities;
-    })();
+    }
 
-    return util;
-
-});
+}
