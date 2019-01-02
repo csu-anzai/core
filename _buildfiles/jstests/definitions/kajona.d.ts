@@ -7,3 +7,19 @@
 declare module 'jquery' {
     export = jQuery;
 }
+
+interface Admin {
+    folderview: any;
+    lang: any;
+    forms: any;
+}
+
+interface Kajona {
+    util: any;
+    admin: any;
+}
+
+declare var KAJONA_WEBPATH: string;
+declare var KAJONA_DEBUG: number;
+declare var KAJONA: Kajona;
+declare var execScript: any;
