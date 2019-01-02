@@ -8,6 +8,7 @@
     "@types/ckeditor": "^4.9.5",
     "@types/jquery": "^3.3.29",
     "@types/qtip2": "^2.2.29",
+    "@types/requirejs": "^2.1.31",
     "@types/toastr": "^2.1.35",
     "clean-css-cli": "^4.1",
     "grunt": "^1.0.0",
