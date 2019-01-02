@@ -18,7 +18,7 @@ class User {
             return true;
         }
 
-        ajax.genericAjaxCall("user", "apiGroupMemberAdd", "&userid="+userid+"&groupid="+groupid, function(data, status) {
+        ajax.genericAjaxCall("user", "apiGroupMemberAdd", "&userid="+userid+"&groupid="+groupid, function(data: any, status: string) {
             if (status == 'success') {
                 $('.admintable').append(data.row);
                 $('#group_add_id').val("");
@@ -36,7 +36,7 @@ class User {
      * @param userid
      */
     public static removeGroupFromUser(groupid: string, userid: string) {
-        ajax.genericAjaxCall("user", "apiGroupMemberDelete", "&userid="+userid+"&groupid="+groupid, function(data, status) {
+        ajax.genericAjaxCall("user", "apiGroupMemberDelete", "&userid="+userid+"&groupid="+groupid, function(data: any, status: string) {
             if (status == 'success') {
                 $('tr[data-systemid='+groupid+']').closest('tbody').remove();
             }
