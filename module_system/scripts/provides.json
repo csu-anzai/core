@@ -2,7 +2,6 @@
   "paths": {
     "app": "app",
 
-    "jquery": "jquery/jquery.min",
     "jquery-ui": "jqueryui/jquery-ui.custom.min",
     "jquerycaret": "jquerytag/jquery.caret.min",
     "jquerytageditor": "jquerytag/jquery.tag-editor.min",
@@ -34,7 +33,6 @@
     "quickhelp": "kajona/quickhelp",
     "router": "kajona/router",
     "systemTask": "kajona/systemTask",
-    "tooltip": "kajona/tooltip",
     "tree": "kajona/tree",
     "user": "kajona/user"
   },
