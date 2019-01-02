@@ -55,7 +55,7 @@ class Tooltip {
         })
     };
 
-    public static addTooltip(objElement: any, strText: string) {
+    public static addTooltip(objElement: any, strText?: string) {
         if(strText) {
             $(objElement).qtip({
                 position: {
