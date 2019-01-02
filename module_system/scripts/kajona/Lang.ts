@@ -1,24 +1,28 @@
-/**
- * (c) 2013-2017 by Kajona, www.kajona.de
- * Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt
- */
+///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
+///<amd-module name="lang"/>
+
+import * as $ from "jquery";
+import cacheManager = require("./CacheManager");
+
+interface QueueEntry {
+    text: string,
+    module: string,
+    params?: Array<string>,
+    callback?: Function,
+    scope?: any
+}
 
 /**
  * language module to load properties / localized strings from the backend
- * @type {Object}
- * @module lang
  */
-define('lang', ['jquery', 'ajax', 'cacheManager'], function ($, ajax, cacheManager) {
-
-    /** @exports lang */
-    var lang = {};
+class Lang {
 
     /**
      * Contains the list of lang properties which must be resolved
      *
      * @type {Array}
      */
-    lang.queue = [];
+    private static queue: Array<QueueEntry>;
 
     /**
      * Searches inside the container for all data-lang-property attributes and loads the specific property and replaces the
@@ -28,7 +32,7 @@ define('lang', ['jquery', 'ajax', 'cacheManager'], function ($, ajax, cacheManag
      * @param {HTMLElement} containerEl
      * @param {function} onReady
      */
-    lang.initializeProperties = function(containerEl, onReady){
+    public static initializeProperties(containerEl: any, onReady: Function){
         if (!containerEl) {
             containerEl = "body";
         }
@@ -43,11 +47,11 @@ define('lang', ['jquery', 'ajax', 'cacheManager'], function ($, ajax, cacheManag
                         arrParams = strParams.split("|");
                     }
 
-                    var objCallback = function(strText){
+                    var objCallback = function(strText: string){
                         $(this).html(strText);
                     };
 
-                    lang.queue.push({
+                    Lang.queue.push({
                         text: arrValues[1],
                         module: arrValues[0],
                         params: arrParams,
@@ -58,7 +62,7 @@ define('lang', ['jquery', 'ajax', 'cacheManager'], function ($, ajax, cacheManag
             }
         });
 
-        lang.fetchProperties(onReady);
+        this.fetchProperties(onReady);
     };
 
     /**
@@ -68,15 +72,15 @@ define('lang', ['jquery', 'ajax', 'cacheManager'], function ($, ajax, cacheManag
      * @param key
      * @param callback
      */
-    lang.fetchSingleProperty = function(module, key, callback) {
-        lang.queue.push({
+    public static fetchSingleProperty(module: string, key: string, callback: Function) {
+        this.queue.push({
             text: key,
             module: module,
             params: [],
             callback: callback
         });
 
-        lang.fetchProperties();
+        this.fetchProperties();
     };
 
     /**
@@ -86,15 +90,15 @@ define('lang', ['jquery', 'ajax', 'cacheManager'], function ($, ajax, cacheManag
      *
      * @param {function} onReady
      */
-    lang.fetchProperties = function(onReady){
-        if (lang.queue.length == 0) {
+    public static fetchProperties(onReady?: Function){
+        if (this.queue.length == 0) {
             if (onReady) {
                 onReady.apply(this);
             }
             return;
         }
 
-        var arrData = lang.queue[0];
+        var arrData = this.queue[0];
         var strKey = arrData.module + '_' + KAJONA_LANGUAGE + '_' + KAJONA_BROWSER_CACHEBUSTER;
         var objCache = cacheManager.get(strKey);
 
@@ -109,27 +113,26 @@ define('lang', ['jquery', 'ajax', 'cacheManager'], function ($, ajax, cacheManag
         }
 
         if (strResp) {
-            arrData = lang.queue.shift();
+            arrData = this.queue.shift();
 
-            strResp = lang.replacePropertyParams(strResp, arrData.params);
+            strResp = this.replacePropertyParams(strResp, arrData.params);
             if (typeof arrData.callback === "function") {
                 arrData.callback.apply(arrData.scope ? arrData.scope : this, [strResp, arrData.module, arrData.text]);
             }
 
-            lang.fetchProperties(onReady);
+            this.fetchProperties(onReady);
             return;
         }
 
-        var me = this;
         $.ajax({
             type: 'POST',
             url: KAJONA_WEBPATH + '/xml.php?admin=1&module=system&action=fetchProperty',
             data: {target_module : arrData.module},
             dataType: 'json',
             success: function(objResp) {
-                var arrData = me.queue.shift();
+                var arrData = Lang.queue.shift();
                 if(arrData === undefined) {
-                    me.fetchProperties(onReady);
+                    Lang.fetchProperties(onReady);
                     return;
                 }
 
@@ -142,13 +145,13 @@ define('lang', ['jquery', 'ajax', 'cacheManager'], function ($, ajax, cacheManag
                     }
                 }
                 if (strResp !== null) {
-                    strResp = me.replacePropertyParams(strResp, arrData.params);
+                    strResp = Lang.replacePropertyParams(strResp, arrData.params);
                     if (typeof arrData.callback === "function") {
                         arrData.callback.apply(arrData.scope ? arrData.scope : this, [strResp, arrData.module, arrData.text]);
                     }
                 }
 
-                me.fetchProperties(onReady);
+                Lang.fetchProperties(onReady);
             }
         });
 
@@ -161,16 +164,12 @@ define('lang', ['jquery', 'ajax', 'cacheManager'], function ($, ajax, cacheManag
      * @param {String} strText
      * @param {Array} arrParams
      */
-    lang.replacePropertyParams = function(strText, arrParams){
+    public static replacePropertyParams(strText: string, arrParams: Array<string>){
         for (var i = 0; i < arrParams.length; i++) {
             strText = strText.replace("{" + i + "}", arrParams[i]);
         }
         return strText;
     };
 
-    return lang;
-
-});
-
-
+}
 
