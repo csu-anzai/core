@@ -1,5 +1,5 @@
 ///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="breadcrumb"/>
+///<amd-module name="ajax"/>
 
 import * as $ from "jquery";
 import * as JQuery from "jquery";
