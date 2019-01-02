@@ -23,4 +23,3 @@ interface Kajona {
 declare var KAJONA_WEBPATH: string;
 declare var KAJONA_DEBUG: number;
 declare var KAJONA: Kajona;
-declare var execScript: any;
