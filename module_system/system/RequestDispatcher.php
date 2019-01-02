@@ -124,7 +124,7 @@ class RequestDispatcher
 
         //set the current backend skin. right here to do it only once.
         AdminskinHelper::defineSkinWebpath();
-        $objHelper = new SkinAdminController();
+
 
         //validate login-status / process login-request
         if ($strModule != "login") {
@@ -172,6 +172,7 @@ class RequestDispatcher
                             $strReturn = $objConcreteModule->action();
                             if (ResponseObject::getInstance()->getObjEntrypoint()->equals(RequestEntrypointEnum::INDEX())) {
                                 if ($strReturn != "") {
+                                    $objHelper = new SkinAdminController();
                                     $strReturn = $objHelper->actionGetPathNavigation($objConcreteModule).$strReturn;
                                     $strReturn = $objHelper->actionGetQuickHelp($objConcreteModule).$strReturn;
                                     if ($objConcreteModule instanceof AdminSimple) {
@@ -273,10 +274,6 @@ class RequestDispatcher
                 ResponseObject::getInstance()->setStrResponseType(HttpResponsetypes::STR_TYPE_XML);
                 Xml::setBitSuppressXmlHeader(true);
                 return Exception::renderException(new ActionNotFoundException("you are not authorized/authenticated to call this action", Exception::$level_FATALERROR));
-            }
-
-            if (count(Carrier::getInstance()->getObjDB()->getTables()) == 0 && file_exists(_realpath_."/installer.php")) {
-                return Link::clientRedirectManual(_webpath_."/installer.php");
             }
 
             $objHelper = new SkinAdminController();

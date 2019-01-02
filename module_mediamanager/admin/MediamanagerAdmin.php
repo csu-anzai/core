@@ -34,6 +34,7 @@ use Kajona\System\System\Resourceloader;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Rights;
 use Kajona\System\System\StringUtil;
+use Kajona\System\System\UserUser;
 
 /**
  * Admin class of the mediamanager-module. Used to sync the repos with the filesystem and to upload / manage
@@ -796,8 +797,6 @@ HTML;
 
         $intNrOfRecordsPerPage = 25;
 
-        $strReturn .= $this->objToolkit->getTextRow(Link::getLinkAdmin($this->getArrModule("modul"), "logbookFlush", "", $this->getLang("action_logbook_flush"), "")."<br />");
-
         $objLogbook = new MediamanagerLogbook();
         $objArraySectionIterator = new ArraySectionIterator($objLogbook->getLogbookDataCount());
         $objArraySectionIterator->setIntElementsPerPage($intNrOfRecordsPerPage);
@@ -806,21 +805,18 @@ HTML;
 
         $arrLogs = array();
         foreach ($objArraySectionIterator as $intKey => $arrOneLog) {
+
+            $userName = $arrOneLog["downloads_log_user"];
+            $user = Objectfactory::getInstance()->getObject($arrOneLog["downloads_log_user"]);
+            if ($user instanceof UserUser) {
+                $userName = $user->getStrDisplayName();
+            }
+
             $arrLogs[$intKey][0] = $arrOneLog["downloads_log_id"];
             $arrLogs[$intKey][1] = timeToString($arrOneLog["downloads_log_date"]);
             $arrLogs[$intKey][2] = $arrOneLog["downloads_log_file"];
-            $arrLogs[$intKey][3] = $arrOneLog["downloads_log_user"];
+            $arrLogs[$intKey][3] = $userName;
             $arrLogs[$intKey][4] = $arrOneLog["downloads_log_ip"];
-
-            $strUtraceLinkMap = "href=\"http://www.utrace.de/ip-adresse/".$arrOneLog["downloads_log_ip"]."\" target=\"_blank\"";
-            $strUtraceLinkText = "href=\"http://www.utrace.de/whois/".$arrOneLog["downloads_log_ip"]."\" target=\"_blank\"";
-            if ($arrOneLog["downloads_log_ip"] != "127.0.0.1" && $arrOneLog["downloads_log_ip"] != "::1") {
-                $arrLogs[$intKey][5] = Link::getLinkAdminManual($strUtraceLinkMap, "", $this->getLang("login_utrace_showmap", "user"), "icon_earth")
-                    ." ".Link::getLinkAdminManual($strUtraceLinkText, "", $this->getLang("login_utrace_showtext", "user"), "icon_text");
-            } else {
-                $arrLogs[$intKey][5] = AdminskinHelper::getAdminImage("icon_earthDisabled", $this->getLang("login_utrace_noinfo", "user"))." "
-                    .AdminskinHelper::getAdminImage("icon_textDisabled", $this->getLang("login_utrace_noinfo", "user"));
-            }
         }
         //Create a data-table
         $arrHeader = array();
@@ -829,41 +825,9 @@ HTML;
         $arrHeader[2] = $this->getLang("header_file");
         $arrHeader[3] = $this->getLang("header_user");
         $arrHeader[4] = $this->getLang("header_ip");
-        $arrHeader[5] = $this->getLang("login_utrace", "user");
         $strReturn .= $this->objToolkit->dataTable($arrHeader, $arrLogs);
         $strReturn .= $this->objToolkit->getPageview($objArraySectionIterator, $this->getArrModule("modul"), "logbook");
 
-        return $strReturn;
-    }
-
-    /**
-     * Shows a form or deltes a timeintervall from the logs
-     *
-     * @throws Exception
-     * @return string "" in case of success
-     * @permissions edit
-     * @autoTestable
-     */
-    protected function actionLogbookFlush()
-    {
-        $strReturn = "";
-        if ($this->getParam("flush") == "") {
-            $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "logbookFlush", "flush=1"));
-            $strReturn .= $this->objToolkit->formTextRow($this->getLang("logbook_hint_date"));
-            $strReturn .= $this->objToolkit->formDateSingle("date", $this->getLang("commons_date"), new Date());
-            $strReturn .= $this->objToolkit->formInputSubmit($this->getLang("commons_save"));
-            $strReturn .= $this->objToolkit->formClose();
-        } elseif ($this->getParam("flush") == "1") {
-            //Build the date
-            $objDate = new Date();
-            $objDate->generateDateFromParams("date", $this->getAllParams());
-
-            if (!MediamanagerLogbook::deleteFromLogs($objDate->getTimeInOldStyle())) {
-                throw new Exception("Error deleting log-rows", Exception::$level_ERROR);
-            }
-
-            $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "logbook"));
-        }
         return $strReturn;
     }
 

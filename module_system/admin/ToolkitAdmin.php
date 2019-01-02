@@ -1135,6 +1135,12 @@ HTML;
                     $arrTemplateRow["title"] = substr($strValue, 1);
                     $arrTemplateRow["css"] = "style='margin-left:20px;'";
                 }
+                $bitIndent = substr($strValue, 1, 1) == "-";
+                if ($bitIndent) {
+                    $arrTemplateRow["title"] = substr($strValue, 2);
+                    $arrTemplateRow["css"] = "style='margin-left:40px;'";
+                }
+
                 $strElements .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/admin/skins/kajona_v4/elements.tpl", $strElementRow, true);
             }
         }
