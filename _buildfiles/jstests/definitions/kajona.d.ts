@@ -22,4 +22,6 @@ interface Kajona {
 
 declare var KAJONA_WEBPATH: string;
 declare var KAJONA_DEBUG: number;
+declare var KAJONA_LANGUAGE: string;
+declare var KAJONA_BROWSER_CACHEBUSTER: number;
 declare var KAJONA: Kajona;
