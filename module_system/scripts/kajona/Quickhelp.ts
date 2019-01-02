@@ -28,3 +28,5 @@ class Quickhelp {
     };
 
 }
+
+export = Quickhelp;
