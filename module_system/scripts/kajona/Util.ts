@@ -5,8 +5,8 @@ import * as $ from "jquery";
 
 declare global {
     interface Window {
-        KAJONA: any;
-        $: any;
+        KAJONA: Kajona;
+        $: JQueryStatic;
         execScript: any;
     }
 }
