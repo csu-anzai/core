@@ -24,4 +24,15 @@ declare var KAJONA_WEBPATH: string;
 declare var KAJONA_DEBUG: number;
 declare var KAJONA_LANGUAGE: string;
 declare var KAJONA_BROWSER_CACHEBUSTER: number;
+
+/** @deprecated */
 declare var KAJONA: Kajona;
+
+/** @deprecated */
+declare var jsDialog_0: any;
+/** @deprecated */
+declare var jsDialog_1: any;
+/** @deprecated */
+declare var jsDialog_2: any;
+/** @deprecated */
+declare var jsDialog_3: any;
