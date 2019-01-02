@@ -22,7 +22,6 @@ foreach ($objCoreDirs as $objCoreDir) {
     if ($objCoreDir->isDir() && substr($objCoreDir->getFilename(), 0, 4) == 'core') {
         $objModuleDirs = new DirectoryIterator($objCoreDir->getRealPath());
         foreach ($objModuleDirs as $objDir) {
-
             //defined as included?
             if (isset($arrIncludedModules[$objCoreDir->getFilename()]) && !in_array($objDir->getFilename(), $arrIncludedModules[$objCoreDir->getFilename()])) {
                 continue;
@@ -36,6 +35,9 @@ foreach ($objCoreDirs as $objCoreDir) {
             $providesJson = $objDir->getRealPath() . "/scripts/provides.json";
             if (is_file($providesJson)) {
                 $provides = json_decode(file_get_contents($providesJson), true);
+                if (!is_array($provides)) {
+                    throw new \RuntimeException($objDir->getRealPath()."/scripts/provides.json is malformed");
+                }
                 if (isset($provides["paths"])) {
                     foreach ($provides["paths"] as $name => $jsFile) {
                         $path = realpath($objDir->getRealPath() . "/scripts/{$jsFile}.js");
