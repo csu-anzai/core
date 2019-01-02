@@ -6,6 +6,7 @@
   "license": "LGPL-2.1",
   "dependencies": {
     "@types/ckeditor": "^4.9.5",
+    "@types/toastr": "^2.1.35",
     "clean-css-cli": "^4.1",
     "grunt": "^1.0.0",
     "grunt-contrib-concat": "^1.0.1",
