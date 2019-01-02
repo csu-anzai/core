@@ -1136,6 +1136,12 @@ HTML;
                     $arrTemplateRow["title"] = substr($strValue, 1);
                     $arrTemplateRow["css"] = "style='margin-left:20px;'";
                 }
+                $bitIndent = substr($strValue, 1, 1) == "-";
+                if ($bitIndent) {
+                    $arrTemplateRow["title"] = substr($strValue, 2);
+                    $arrTemplateRow["css"] = "style='margin-left:40px;'";
+                }
+
                 $strElements .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/admin/skins/kajona_v4/elements.tpl", $strElementRow, true);
             }
         }
@@ -1701,7 +1707,8 @@ HTML;
         $objHistory = new History();
         $strParam = "";
         if (StringUtil::indexOf($strConfirmationLinkHref, "javascript:") === false) {
-            $strParam = "?reloadUrl='+encodeURIComponent(document.location.hash.substr(1))+'";
+            $strParam .= StringUtil::indexOf($strConfirmationLinkHref, "?") === false ? '?' : '&';
+            $strParam .= "reloadUrl='+encodeURIComponent(document.location.hash.substr(1))+'";
         }
 
         if ($strConfirmationButtonLabel == "") {
