@@ -28,7 +28,6 @@
     "messaging": "kajona/messaging",
     "moduleNavigation": "kajona/moduleNavigation",
     "permissions": "kajona/permissions",
-    "quickhelp": "kajona/quickhelp",
     "router": "kajona/router",
     "systemTask": "kajona/systemTask",
     "tree": "kajona/tree",
