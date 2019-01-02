@@ -1,5 +1,4 @@
-///<reference path="../defs/jquery.d.ts" />
-///<reference path="../../../_buildfiles/jstests/node_modules/@types/ckeditor/index.d.ts" />
+///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
 ///<amd-module name="util"/>
 
 import * as $ from "jquery";

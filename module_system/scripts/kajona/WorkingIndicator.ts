@@ -1,4 +1,4 @@
-///<reference path="../defs/jquery.d.ts" />
+///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
 ///<amd-module name="workingIndicator"/>
 
 import * as $ from "jquery";
