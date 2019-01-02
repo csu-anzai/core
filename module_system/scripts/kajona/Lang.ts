@@ -173,3 +173,5 @@ class Lang {
 
 }
 
+export = Lang;
+
