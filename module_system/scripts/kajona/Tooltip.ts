@@ -12,6 +12,15 @@ class Tooltip {
     public static initTooltip() {
 
         $('*[rel=tooltip][title!=""]').qtip({
+            position: {
+                viewport: $("body"),
+                adjust: {
+                    method: 'flip'
+                }
+            },
+            show: {
+                solo: true
+            },
             style: {
                 classes: 'qtip-bootstrap'
             }
@@ -20,6 +29,15 @@ class Tooltip {
         //tag tooltips
         $('*[rel=tagtooltip][title!=""]').each( function() {
             $(this).qtip({
+                position: {
+                    viewport: $("body"),
+                    adjust: {
+                        method: 'flip'
+                    }
+                },
+                show: {
+                    solo: true
+                },
                 style: {
                     classes: 'qtip-bootstrap'
                 },
@@ -27,12 +45,10 @@ class Tooltip {
                     text: $(this).attr("title")+"<div id='tags_"+$(this).data('systemid')+"' data-systemid='"+$(this).data('systemid')+"'></div>"
                 },
                 events: {
-                    render: function(event, api) {
-                        /*
-                        require(['tags'], function(tags) {
+                    render: function(event, api : any) {
+                        require(['tags'], function(tags : any) {
                             tags.loadTagTooltipContent($(api.elements.content).find('div').data('systemid'), "", $(api.elements.content).find('div').attr('id'));
                         })
-                        */
                     }
                 }
             });
@@ -42,6 +58,15 @@ class Tooltip {
     public static addTooltip(objElement: any, strText: string) {
         if(strText) {
             $(objElement).qtip({
+                position: {
+                    viewport: $("body"),
+                    adjust: {
+                        method: 'flip'
+                    }
+                },
+                show: {
+                    solo: true
+                },
                 style: {
                     classes: 'qtip-bootstrap'
                 },
