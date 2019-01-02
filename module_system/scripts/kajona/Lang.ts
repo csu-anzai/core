@@ -22,7 +22,7 @@ class Lang {
      *
      * @type {Array}
      */
-    private static queue: Array<QueueEntry>;
+    private static queue: Array<QueueEntry> = [];
 
     /**
      * Searches inside the container for all data-lang-property attributes and loads the specific property and replaces the
