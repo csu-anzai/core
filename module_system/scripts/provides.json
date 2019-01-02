@@ -14,7 +14,6 @@
     "toastr": "toastr/toastr.min",
     "vue": "vue/vue.min",
 
-    "ajax": "kajona/ajax",
     "cacheManager": "kajona/cacheManager",
     "contentToolbar": "kajona/contentToolbar",
     "changelog": "kajona/changelog",
