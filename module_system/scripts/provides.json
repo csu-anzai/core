@@ -37,8 +37,7 @@
     "systemTask": "kajona/systemTask",
     "tooltip": "kajona/tooltip",
     "tree": "kajona/tree",
-    "user": "kajona/user",
-    "workingIndicator": "kajona/workingIndicator"
+    "user": "kajona/user"
   },
   "shim": {
     "jquery-ui" : {
