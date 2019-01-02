@@ -57,9 +57,9 @@ $content = "";
 
 // add global js libs
 $globals = [
+    __DIR__ . "/../../module_system/scripts/requirejs/require.js",
     __DIR__ . "/../../module_system/scripts/jquery/jquery.min.js",
     __DIR__ . "/../../module_system/scripts/routie/routie.min.js",
-    __DIR__ . "/../../module_system/scripts/requirejs/require.js",
 ];
 
 foreach ($globals as $file) {
