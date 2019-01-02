@@ -334,3 +334,5 @@ class Util {
     }
 
 }
+
+export = Util
