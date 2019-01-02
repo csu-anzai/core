@@ -14,7 +14,7 @@ declare global {
 
 class Util {
 
-    public static isEllipsisActive(element) {
+    public static isEllipsisActive(element: HTMLElement) {
         return element.offsetWidth + 2 < element.scrollWidth;
     }
 
@@ -226,7 +226,7 @@ class Util {
      * @param strDelimiterSections mixed: sections delimiter
      * @param strDelimiterDecimal mixed: decimal delimiter
      */
-    public static formatNumber(floatValue, intDecimalLength, intLengthWholePart, strDelimiterSections, strDelimiterDecimal) {
+    public static formatNumber(floatValue: number, intDecimalLength: number, intLengthWholePart: number, strDelimiterSections: string, strDelimiterDecimal: string) {
         var re = '\\d(?=(\\d{' + (intLengthWholePart || 3) + '})+' + (intDecimalLength > 0 ? '\\D' : '$') + ')',
             num = floatValue.toFixed(Math.max(0, ~~intDecimalLength));
 
@@ -277,7 +277,7 @@ class Util {
      *
      * @param objElement - my be a jquery object or an id selector
      */
-    public static getElement(objElement) {
+    public static getElement(objElement: any) {
         // If objElement is already a jQuery object
         if(objElement instanceof jQuery) {
             return objElement
@@ -317,7 +317,7 @@ class Util {
         // this prevents any overhead from creating the object each time
         var element = document.createElement('div');
 
-        function decodeHTMLEntities (strText) {
+        function decodeHTMLEntities (strText: string) {
             if(strText && typeof strText === 'string') {
                 // strip script/html tags
                 strText = strText.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
