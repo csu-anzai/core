@@ -23,8 +23,6 @@ define("app", ['router', 'jquery', 'jquery-ui', 'jquery-touchPunch', 'bootstrap'
     KAJONA.admin.folderview.dialog = new Dialog('folderviewDialog', 0);
     folderview.dialog = KAJONA.admin.folderview.dialog;
 
-    $ = jquery;
-
     //register the global router
     router.init();
 
