@@ -30,8 +30,7 @@
     "permissions": "kajona/permissions",
     "router": "kajona/router",
     "systemTask": "kajona/systemTask",
-    "tree": "kajona/tree",
-    "user": "kajona/user"
+    "tree": "kajona/tree"
   },
   "shim": {
     "jquery-ui" : {
