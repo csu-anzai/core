@@ -75,7 +75,7 @@ class ContentToolbar {
      *
      * @param $objContainer
      */
-    public static registerRecordActions($objContainer) {
+    public static registerRecordActions($objContainer : JQuery) {
         if (!util.isStackedDialog()) {
             var $objNode = $('<div>').attr('class', 'actionToolbar pull-right').append($objContainer.children());
             this.$objActionToolbarContainer.append($objNode);
