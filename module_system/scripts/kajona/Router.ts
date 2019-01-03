@@ -49,12 +49,17 @@ class Router {
      * Global markers to reference on leave / save monitored elements
      * @type {{forms: {monitoredEl: null, submittedEl: null}}}
      */
-    private static markedElements : MarkedElements = {
+    public static markedElements : MarkedElements = {
         forms : {
             monitoredEl : null,
             submittedEl : null
         }
     };
+
+    /**
+     * Global namespace to store some montitored elements
+     */
+    public static markerElements : MarkedElements = Router.markedElements;
 
     public static init() {
         routie('*', function(url: string) {
