@@ -1,6 +1,6 @@
 
-require(['router', 'jquery', 'jquery-ui', 'jquery-touchPunch', 'bootstrap', 'v4skin', 'loader', 'dialog', 'folderview', 'lists', 'dialogHelper', 'ajax'],
-    function(router, jquery, jqueryui, touch, bootstrap, v4skin, loader, Dialog, folderview, lists, dialogHelper, ajax) {
+define("app", ['router', 'jquery', 'jquery-ui', 'jquery-touchPunch', 'bootstrap', 'v4skin', 'loader', 'dialog', 'folderview', 'lists', 'dialogHelper', 'ajax', 'toastr'],
+    function(router, jquery, jqueryui, touch, bootstrap, v4skin, loader, Dialog, folderview, lists, dialogHelper, ajax, toastr) {
 
     //backwards compatibility
     if (typeof KAJONA == "undefined") {
@@ -42,8 +42,7 @@ require(['router', 'jquery', 'jquery-ui', 'jquery-touchPunch', 'bootstrap', 'v4s
     KAJONA.admin.forms.submittedEl = null;
     KAJONA.admin.forms.monitoredEl = null;
 
-
-
-
+    // configure toastr global
+    toastr.options.positionClass = "toast-bottom-right";
 
 });

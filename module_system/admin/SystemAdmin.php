@@ -52,8 +52,17 @@ use Kajona\System\System\SysteminfoInterface;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSession;
 use Kajona\System\System\SystemSetting;
+use Kajona\System\System\UserGroup;
 use Kajona\System\System\Validators\EmailValidator;
 use Kajona\System\System\VersionableInterface;
+use Kajona\System\View\Components\Formentry\Dropdown\Dropdown;
+use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
+use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
+use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
+use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
+use Kajona\System\View\Components\Formentry\Listeditor\Listeditor;
+use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
+use Kajona\System\View\Components\Formentry\Objectselector\Objectselector;
 use PHPExcel_Style_Alignment;
 use PHPExcel_Style_Border;
 use PHPExcel_Style_Fill;
@@ -1588,4 +1597,94 @@ JS;
 
         return json_encode($arrChart);
     }
+
+    /**
+     * @return string
+     * @permissions view
+     * @autoTestable
+     * @throws Exception
+     */
+    protected function actionShowComponents()
+    {
+        $result = [];
+
+        $inputText = new Inputtext("input_text", "Text", "foo");
+        $result[] = $inputText;
+
+        $inputText = new Inputtext("input_text_disabled", "Text (disabled)", "foo");
+        $inputText->setReadOnly(true);
+        $result[] = $inputText;
+
+        $inputText = new Inputtext("input_text_password", "Text (password)", "foo");
+        $inputText->setType("password");
+        $result[] = $inputText;
+
+        $inputText = new Inputtext("input_text_date", "Text (date)", "");
+        $inputText->setType("date");
+        $result[] = $inputText;
+
+        $inputColorpicker = new Inputcolorpicker("input_colorpicker", "Colorpicker", "#852a2a");
+        $result[] = $inputColorpicker;
+
+        $inputColorpicker = new Inputcolorpicker("input_colorpicker_disabled", "Colorpicker (disabled)", "#852a2a");
+        $inputColorpicker->setReadOnly(true);
+        $result[] = $inputColorpicker;
+
+        $inputCheckbox = new Inputcheckbox("input_checkbox", "Checkbox", true);
+        $result[] = $inputCheckbox;
+
+        $inputCheckbox = new Inputcheckbox("input_checkbox_disabled", "Checkbox (disabled)", true);
+        $inputCheckbox->setReadOnly(true);
+        $result[] = $inputCheckbox;
+
+        $inputOnOff = new Inputonoff("input_onoff", "Onoff", true);
+        $result[] = $inputOnOff;
+
+        $inputOnOff = new Inputonoff("input_onoff_disabled", "Onoff (disabled)", true);
+        $inputOnOff->setReadOnly(true);
+        $result[] = $inputOnOff;
+
+        $inputDropdown = new Dropdown("input_dropdown", "Dropdown", range(0, 10), 5);
+        $result[] = $inputDropdown;
+
+        $inputDropdown = new Dropdown("input_dropdown_disabled", "Dropdown (disabled)", range(0, 10), 5);
+        $inputDropdown->setReadOnly(true);
+        $result[] = $inputDropdown;
+
+        $listEditor = new Listeditor("listeditor", "Listeditor", ["foo", "bar"]);
+        $result[] = $listEditor;
+
+        $listEditor = new Listeditor("listeditor_disabled", "Listeditor (disabled)", ["foo", "bar"]);
+        $listEditor->setReadOnly(true);
+        $result[] = $listEditor;
+
+        $objectList = new Objectlist("objectlist", "Objectlist", UserGroup::getObjectListFiltered(null, "", 0, 3));
+        $result[] = $objectList;
+
+        $objectList = new Objectlist("objectlist_disabled", "Objectlist (disabled)", UserGroup::getObjectListFiltered(null, "", 0, 3));
+        $objectList->setReadOnly(true);
+        $result[] = $objectList;
+
+        $objectSelector = new Objectselector("objectselector", "Objectselector", null, UserGroup::getGroupByName("Admins"));
+        $result[] = $objectSelector;
+
+        $objectSelector = new Objectselector("objectselector_disabled", "Objectselector (disabled)", null, UserGroup::getGroupByName("Admins"));
+        $objectSelector->setReadOnly(true);
+        $result[] = $objectSelector;
+
+        $html = "";
+        $html.= "<pre>" . json_encode($this->getAllParams(), JSON_PRETTY_PRINT) . "</pre>";
+        $html.= "<hr>";
+
+        $html.= $this->objToolkit->formHeader("");
+        foreach ($result as $component) {
+            $html.= $component->renderComponent();
+            $html.= "<hr>";
+        }
+        $html.= $this->objToolkit->formInputSubmit();
+        $html.= $this->objToolkit->formClose();
+
+        return $html;
+    }
+
 }

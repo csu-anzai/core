@@ -110,6 +110,7 @@ class class_project_setup
         self::loadNpmDependencies();
         self::scanComposer();
         self::buildSkinStyles();
+        self::buildJavascript();
 
         echo "\n<b>Done.</b>\nIf everything went well, <a href=\"../installer.php\">open the installer</a>\n";
     }
@@ -195,7 +196,7 @@ TEXT;
         echo "Installing node dependencies" . PHP_EOL;
 
         //only if required
-        if (is_dir(self::$strRealPath."/core/_buildfiles/jstests/node_modules/clean-css") && is_dir(self::$strRealPath."/core/_buildfiles/jstests/node_modules/less")) {
+        if (is_dir(self::$strRealPath."/core/_buildfiles/jstests/node_modules/clean-css") && is_dir(self::$strRealPath."/core/_buildfiles/jstests/node_modules/less") && is_dir( self::$strRealPath . "/core/_buildfiles/jstests/node_modules/typescript/")) {
             echo "  not required".PHP_EOL;
             return;
         }
@@ -214,6 +215,18 @@ TEXT;
             echo "   " . implode("\n   ", $arrOutput);
         } else {
             echo "<span style='color: red;'>Missing buildSkinStyles.php helper</span>";
+        }
+    }
+
+    private static function buildJavascript()
+    {
+        if (is_file(__DIR__ . "/_buildfiles/bin/buildJavascript.php")) {
+            echo "Compress and merge js files" . PHP_EOL;
+            $arrOutput = array();
+            exec("php -f " . escapeshellarg(self::$strRealPath . "/core/_buildfiles/bin/buildJavascript.php"), $arrOutput);
+            echo "   " . implode("\n   ", $arrOutput);
+        } else {
+            echo "<span style='color: red;'>Missing buildJavascript.php helper</span>";
         }
     }
 

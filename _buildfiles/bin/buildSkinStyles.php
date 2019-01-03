@@ -27,7 +27,6 @@ if (!isset($arrExcludedModules["core"])) {
 }
 $arrExcludedModules["core"][] = "_buildfiles";
 $arrExcludedModules["core"][] = "module_installer";
-$arrExcludedModules["core"][] = "module_v4skin";
 
 $arrFolders = [];
 foreach ($objIterator as $strPath => $objDir) {
@@ -47,6 +46,10 @@ foreach ($objIterator as $strPath => $objDir) {
             if (in_array($arrPath[1], $arrExcludedModules[$arrPath[0]])) {
                 continue;
             }
+        }
+
+        if (strpos($strTestPath, "module_v4skin/admin/skins/kajona_v4") !== false) {
+            continue;
         }
     } else {
         continue;

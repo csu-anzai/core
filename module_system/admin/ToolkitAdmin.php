@@ -20,13 +20,13 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\Config;
 use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
+use Kajona\System\System\HierarchicalListableInterface;
 use Kajona\System\System\History;
 use Kajona\System\System\Lang;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
-use Kajona\System\System\Resourceloader;
 use Kajona\System\System\Session;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemAspect;
@@ -35,8 +35,15 @@ use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\Toolkit;
 use Kajona\System\View\Components\Datatable\Datatable;
+use Kajona\System\View\Components\Formentry\Dropdown\Dropdown;
+use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
+use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
+use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
+use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
+use Kajona\System\View\Components\Listbody\Listbody;
 use Kajona\System\View\Components\Popover\Popover;
+use Kajona\System\View\Components\Tabbedcontent\Tabbedcontent;
 use Kajona\System\View\Components\Textrow\TextRow;
 use Kajona\System\View\Components\Warningbox\Warningbox;
 use Kajona\Tags\System\TagsFavorite;
@@ -114,83 +121,6 @@ class ToolkitAdmin extends Toolkit
 
 
     /**
-     * Returns a text-field using the cool WYSIWYG editor
-     * You can use the different toolbar sets defined in /scripts/ckeditor/config.js
-     *
-     * @param string $strName
-     * @param string $strTitle
-     * @param string $strContent
-     * @param string $strToolbarset
-     * @param bool $bitReadonly
-     * @return string
-     */
-    public function formWysiwygEditor($strName = "inhalt", $strTitle = "", $strContent = "", $strToolbarset = "standard", $bitReadonly = false, $strOpener = "")
-    {
-        $strReturn = "";
-
-        //create the html-input element
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["opener"] = $strOpener;
-        $arrTemplate["editorid"] = generateSystemid();
-        $arrTemplate["readonly"] = ($bitReadonly ? " readonly=\"readonly\" " : "");
-        $arrTemplate["content"] = htmlentities($strContent, ENT_COMPAT, "UTF-8");
-        $strReturn .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "wysiwyg_ckeditor");
-        //for the popups, we need the skinwebpath
-        $strReturn .= $this->formInputHidden("skinwebpath", _skinwebpath_);
-
-        //set the language the user defined for the admin
-        $strLanguage = Session::getInstance()->getAdminLanguage();
-        if ($strLanguage == "") {
-            $strLanguage = "en";
-        }
-
-        //include the settings made by admin skin
-        $strTemplateInit = $this->objTemplate->fillTemplateFile(array(), "/admin/skins/kajona_v4/elements.tpl", "wysiwyg_ckeditor_inits");
-
-        //check if a customized editor-config is available
-        $strConfigFile = "'config_kajona_standard.js'";
-        //BC
-        if (is_file(_realpath_."project/module_system/scripts/admin/ckeditor/config_kajona_standard.js")) {
-            $strConfigFile = "KAJONA_WEBPATH+'/project/module_system/admin/scripts/ckeditor/config_kajona_standard.js'";
-        }
-
-        if (is_file(_realpath_."project/module_system/scripts/ckeditor/config_kajona_standard.js")) {
-            $strConfigFile = "KAJONA_WEBPATH+'/project/module_system/scripts/ckeditor/config_kajona_standard.js'";
-        }
-
-        //to add role-based editors, you could load a different toolbar or also a different CKEditor config file
-        //the editor code
-        $strReturn .= " <script type=\"text/javascript\" src=\""._webpath_.Resourceloader::getInstance()->getWebPathForModule("module_system")."/scripts/ckeditor/ckeditor.js\"></script>\n";
-        $strReturn .= " <script type=\"text/javascript\">\n";
-        $strReturn .= "
-            var ckeditorConfig = {
-                customConfig : ".$strConfigFile.",
-                toolbar : '".$strToolbarset."',
-                ".$strTemplateInit."
-                language : '".$strLanguage."',
-                filebrowserBrowseUrl : '".StringUtil::replace("&amp;", "&", getLinkAdminHref("folderview", "browserChooser", "&form_element=ckeditor&download=1"))."',
-                filebrowserImageBrowseUrl : '".StringUtil::replace("&amp;", "&", getLinkAdminHref("mediamanager", "folderContentFolderviewMode", "systemid=".SystemSetting::getConfigValue("_mediamanager_default_imagesrepoid_")."&form_element=ckeditor&bit_link=1"))."'
-	        };
-            var curEditor = CKEDITOR.replace($(\"textarea[name='".$strName."'][data-kajona-editorid='".$arrTemplate["editorid"]."']\")[0], ckeditorConfig);
-            curEditor.on('change', function(event) {
-                $(\"textarea[name='".$strName."'][data-kajona-editorid='".$arrTemplate["editorid"]."']\").val(event.editor.getData());
-            });
-            curEditor.on('instanceReady', function(event) {
-                if($(\"textarea[name='".$strName."'][data-kajona-editorid='".$arrTemplate["editorid"]."']\").hasClass('mandatoryFormElement')) {
-                        event.editor.container.addClass('mandatoryFormElement')
-                }
-            });
-            
-        ";
-        $strReturn .= "</script>\n";
-
-        return $strReturn;
-    }
-
-
-    /**
      * Returns a divider to split up a page in logical sections
      *
      * @param string $strClass
@@ -230,18 +160,16 @@ class ToolkitAdmin extends Toolkit
      * @param bool $bitChecked
      * @param string $strClass
      * @param bool $bitReadOnly
-     *
      * @return string
+     * @deprecated
      */
     public function formInputCheckbox($strName, $strTitle, $bitChecked = false, $strClass = "", $bitReadOnly = false)
     {
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["class"] = $strClass;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["checked"] = ($bitChecked ? "checked=\"checked\"" : "");
-        $arrTemplate["readonly"] = ($bitReadOnly ? "disabled=\"disabled\"" : "");
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_checkbox");
+        $inputCheckbox = new Inputcheckbox($strName, $strTitle, $bitChecked);
+        $inputCheckbox->setReadOnly($bitReadOnly);
+        $inputCheckbox->setClass($strClass);
+
+        return $inputCheckbox->renderComponent();
     }
 
     /**
@@ -253,19 +181,17 @@ class ToolkitAdmin extends Toolkit
      * @param bool $bitReadOnly
      * @param string $strOnSwitchJSCallback
      * @param string $strClass
-     *
      * @return string
+     * @deprecated
      */
     public function formInputOnOff($strName, $strTitle, $bitChecked = false, $bitReadOnly = false, $strOnSwitchJSCallback = "", $strClass = "")
     {
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["class"] = $strClass;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["checked"] = ($bitChecked ? "checked=\"checked\"" : "");
-        $arrTemplate["readonly"] = ($bitReadOnly ? "disabled=\"disabled\"" : "");
-        $arrTemplate["onSwitchJSCallback"] = $strOnSwitchJSCallback;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_on_off_switch");
+        $inputOnoff = new Inputonoff($strName, $strTitle, $bitChecked);
+        $inputOnoff->setReadOnly($bitReadOnly);
+        $inputOnoff->setClass($strClass);
+        $inputOnoff->setCallback($strOnSwitchJSCallback);
+
+        return $inputOnoff->renderComponent();
     }
 
     /**
@@ -293,22 +219,22 @@ class ToolkitAdmin extends Toolkit
      * @param string $strClass
      * @param string $strOpener
      * @param bool $bitReadonly
-     *
      * @param string $strInstantEditor
      * @return string
+     * @deprecated
      */
     public function formInputText($strName, $strTitle = "", $strValue = "", $strClass = "", $strOpener = "", $bitReadonly = false, $strInstantEditor = "")
     {
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["value"] = htmlspecialchars($strValue, ENT_QUOTES, "UTF-8", false);
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["class"] = $strClass;
-        $arrTemplate["opener"] = $strOpener;
-        $arrTemplate["instantEditor"] = $strInstantEditor;
-        $arrTemplate["readonly"] = ($bitReadonly ? "readonly=\"readonly\"" : "");
+        $inputCheckbox = new Inputtext($strName, (string) $strTitle, $strValue);
+        $inputCheckbox->setClass($strClass);
+        $inputCheckbox->setReadOnly($bitReadonly);
+        $inputCheckbox->setOpener($strOpener);
 
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_text");
+        if (!empty($strInstantEditor)) {
+            $inputCheckbox->setData("kajona-instantsave", $strInstantEditor);
+        }
+
+        return $inputCheckbox->renderComponent();
     }
 
 
@@ -319,19 +245,19 @@ class ToolkitAdmin extends Toolkit
      * @param string $strTitle
      * @param string $strValue
      * @param bool $bitReadonly
-     *
      * @return string
+     * @deprecated
      */
     public function formInputColorPicker($strName, $strTitle = "", $strValue = "", $bitReadonly = false, $strInstantEditor = "")
     {
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["value"] = htmlspecialchars($strValue, ENT_QUOTES, "UTF-8", false);
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["instantEditor"] = $strInstantEditor;
-        $arrTemplate["readonly"] = ($bitReadonly ? "readonly=\"readonly\"" : "");
+        $inputColorpicker = new Inputcolorpicker($strName, $strTitle, $strValue);
+        $inputColorpicker->setReadOnly($bitReadonly);
 
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_colorpicker");
+        if (!empty($strInstantEditor)) {
+            $inputColorpicker->setData("kajona-instantsave", $strInstantEditor);
+        }
+
+        return $inputColorpicker->renderComponent();
     }
 
     /**
@@ -834,55 +760,25 @@ class ToolkitAdmin extends Toolkit
      * @param string $strAddons
      * @param string $strDataPlaceholder
      * @param string $strOpener
-     *
      * @return string
      * @throws Exception
+     * @deprecated
      */
     public function formInputDropdown($strName, array $arrKeyValues, $strTitle = "", $strKeySelected = "", $strClass = "", $bitEnabled = true, $strAddons = "", $strDataPlaceholder = "", $strOpener = "", $strInstantEditor = "")
     {
-        $strOptions = "";
-        foreach (array("", 0, "\"\"") as $strOneKeyToCheck) {
-            if (array_key_exists($strOneKeyToCheck, $arrKeyValues) && trim($arrKeyValues[$strOneKeyToCheck]) == "") {
-                unset($arrKeyValues[$strOneKeyToCheck]);
-            }
+        $dropdown = new Dropdown($strName, $strTitle, $arrKeyValues, $strKeySelected);
+        $dropdown->setClass($strClass);
+        $dropdown->setReadOnly(!$bitEnabled);
+        $dropdown->setOpener($strOpener);
+        $dropdown->setAddons($strAddons);
+
+        if (!empty($strDataPlaceholder)) {
+            $dropdown->setData('placeholder', $strDataPlaceholder);
         }
 
-        //see if the selected value is valid
-        if (!in_array($strKeySelected, array_keys($arrKeyValues))) {
-            $strKeySelected = "";
-        }
+        $dropdown->setData('kajona-instantsave', $strInstantEditor);
 
-        if (!isset($arrKeyValues[""])) {
-            $strPlaceholder = $strDataPlaceholder != "" ? $strDataPlaceholder : Carrier::getInstance()->getObjLang()->getLang("commons_dropdown_dataplaceholder", "system");
-            $strOptions .= "<option value='' disabled ".($strKeySelected == "" ? " selected " : "").">".$strPlaceholder."</option>";
-        }
-
-        //Iterating over the array to create the options
-        foreach ($arrKeyValues as $strKey => $strValue) {
-            $arrTemplate = array();
-            $arrTemplate["key"] = $strKey;
-            $arrTemplate["value"] = $strValue;
-            if ((string)$strKey == (string)$strKeySelected) {
-                $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_dropdown_row_selected");
-            } else {
-                $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_dropdown_row");
-            }
-        }
-
-
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["class"] = $strClass;
-        $arrTemplate["disabled"] = ($bitEnabled ? "" : "disabled=\"disabled\"");
-        $arrTemplate["options"] = $strOptions;
-        $arrTemplate["addons"] = $strAddons;
-        $arrTemplate["opener"] = $strOpener;
-        $arrTemplate["instantEditor"] = $strInstantEditor;
-        $arrTemplate["dataplaceholder"] = $strDataPlaceholder != "" ? $strDataPlaceholder : Carrier::getInstance()->getObjLang()->getLang("commons_dropdown_dataplaceholder", "system"); //TODO noch benötigt?
-
-
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_dropdown", true);
+        return $dropdown->renderComponent();
     }
 
     /**
@@ -1241,6 +1137,12 @@ HTML;
                     $arrTemplateRow["title"] = substr($strValue, 1);
                     $arrTemplateRow["css"] = "style='margin-left:20px;'";
                 }
+                $bitIndent = substr($strValue, 1, 1) == "-";
+                if ($bitIndent) {
+                    $arrTemplateRow["title"] = substr($strValue, 2);
+                    $arrTemplateRow["css"] = "style='margin-left:40px;'";
+                }
+
                 $strElements .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/admin/skins/kajona_v4/elements.tpl", $strElementRow, true);
             }
         }
@@ -1384,7 +1286,9 @@ HTML;
     public function formTextHint($hint, $hideLongText = false)
     {
         if ($hideLongText) {
-            return $this->formTextRow('<div class="form-hint-container" onclick="require(\'jquery\')(this).removeClass(\'form-hint-container\')">' . $hint . '</div>');
+            $id = generateSystemid();
+            return $this->formTextRow('<div class="form-hint-container" id="'.$id.'" onclick="require(\'jquery\')(this).toggleClass(\'form-hint-container\')">' . $hint . '</div><script type="text/javascript">require([\'util\', \'jquery\'], function(u, $) { 
+                var $el = $("#'.$id.'"); if (!u.isEllipsisActive($el[0])) { $el.toggleClass(\'form-hint-container\'); } })</script>');
         } else {
             return $this->formTextRow($hint);
         }
@@ -1587,17 +1491,18 @@ HTML;
             $strCSSAddon = $objEntry->getIntRecordStatus() == 0 ? "disabled" : "";
         }
 
-        return $this->genericAdminList(
-            $objEntry->getSystemid(),
-            $objEntry->getStrDisplayName(),
-            $strImage,
-            $strActions,
-            $objEntry->getStrAdditionalInfo(),
-            $objEntry->getStrLongDescription(),
-            $bitCheckbox,
-            $strCSSAddon,
-            $objEntry->getIntRecordDeleted() != 1 ? "" : "1"
-        );
+        $comp = new Listbody($objEntry->getSystemid(), $objEntry->getStrDisplayName(), $strImage, $strActions);
+        $comp->setAdditionalInfo($objEntry->getStrAdditionalInfo())
+            ->setDescription($objEntry->getStrLongDescription())
+            ->setCheckbox($bitCheckbox)
+            ->setCssAddon($strCSSAddon)
+            ->setDeleted($objEntry->getIntRecordDeleted() != 1 ? "" : "1");
+
+        if ($objEntry instanceof HierarchicalListableInterface) {
+            $comp->setPath($objEntry->getHierarchicalPath());
+        }
+
+        return $comp->renderComponent();
     }
 
     /**
@@ -1616,36 +1521,9 @@ HTML;
      */
     public function genericAdminList($strId, $strName, $strIcon, $strActions, $strAdditionalInfo = "", $strDescription = "", $bitCheckbox = false, $strCssAddon = "", $strDeleted = "")
     {
-        $arrTemplate = array();
-        $arrTemplate["listitemid"] = $strId;
-        $arrTemplate["image"] = $strIcon;
-        $arrTemplate["title"] = $strName;
-        $arrTemplate["center"] = $strAdditionalInfo;
-        $arrTemplate["actions"] = $strActions;
-        $arrTemplate["description"] = $strDescription;
-        $arrTemplate["cssaddon"] = $strCssAddon;
-        $arrTemplate["deleted"] = $strDeleted;
-
-        if ($bitCheckbox) {
-            $arrTemplate["checkbox"] = $this->objTemplate->fillTemplateFile(array("systemid" => $strId), "/admin/skins/kajona_v4/elements.tpl", "generallist_checkbox");
-        }
-
-
-        if ($strDescription != "") {
-            if ($this->objTemplate->providesSection("/admin/skins/kajona_v4/elements.tpl", "generallist_desc")) {
-                $strSection = "generallist_desc";
-            } else {
-                $strSection = "generallist_desc_1";
-            }
-        } else {
-            if ($this->objTemplate->providesSection("/admin/skins/kajona_v4/elements.tpl", "generallist")) {
-                $strSection = "generallist";
-            } else {
-                $strSection = "generallist_1";
-            }
-        }
-
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", $strSection);
+        $comp = new Listbody($strId, $strName, $strIcon, $strActions);
+        $comp->setAdditionalInfo($strAdditionalInfo)->setDescription($strDescription)->setCheckbox($bitCheckbox)->setCssAddon($strCssAddon)->setDeleted($strDeleted);
+        return $comp->renderComponent();
     }
 
     /**
@@ -1753,9 +1631,21 @@ HTML;
     public function listConfirmationButton($strDialogContent, $strConfirmationLinkHref, $strButton, $strButtonTooltip, $strHeader = "", $strConfirmationButtonLabel = "")
     {
         //get the reload-url
-        $strParam = "";
         if (StringUtil::indexOf($strConfirmationLinkHref, "javascript:") === false) {
             $strParam = (StringUtil::indexOf($strConfirmationLinkHref, "?") ? "&" : "?") ."reloadUrl='+encodeURIComponent(document.location.hash.substr(1))+'";
+
+            $strConfirmationLink = "'".$strConfirmationLinkHref.$strParam."'";
+        } elseif (StringUtil::indexOf($strConfirmationLinkHref, "javascript:") === 0) {
+            // if starts with javascript: we use a closure because on some browser the user gets redirected to a blank
+            // page which displays the output of the javascript expression. But in our case we want that the user stays
+            // on the same site. Because of this we pass a function to the dialog setContent method which gets executed
+            // on click
+            $strConfirmationLinkHref = substr($strConfirmationLinkHref, 11);
+            $strConfirmationLinkHref = stripslashes($strConfirmationLinkHref);
+
+            $strConfirmationLink = "function() { {$strConfirmationLinkHref}; return false; }";
+        } else {
+            $strConfirmationLink = "'".$strConfirmationLinkHref."'";
         }
 
         if ($strConfirmationButtonLabel == "") {
@@ -1764,7 +1654,7 @@ HTML;
 
         //create the list-button and the js code to show the dialog
         $strButton = Link::getLinkAdminManual(
-            "href=\"#\" onclick=\"javascript:jsDialog_1.setTitle('{$strHeader}'); jsDialog_1.setContent('{$strDialogContent}', '{$strConfirmationButtonLabel}',  '".$strConfirmationLinkHref.$strParam."'); jsDialog_1.init(); return false;\"",
+            "href=\"#\" onclick=\"javascript:jsDialog_1.setTitle('{$strHeader}'); jsDialog_1.setContent('{$strDialogContent}', '{$strConfirmationButtonLabel}', {$strConfirmationLink}); jsDialog_1.init(); return false;\"",
             "",
             $strButtonTooltip,
             $strButton
@@ -1792,7 +1682,8 @@ HTML;
         $objHistory = new History();
         $strParam = "";
         if (StringUtil::indexOf($strConfirmationLinkHref, "javascript:") === false) {
-            $strParam = "?reloadUrl='+encodeURIComponent(document.location.hash.substr(1))+'";
+            $strParam .= StringUtil::indexOf($strConfirmationLinkHref, "?") === false ? '?' : '&';
+            $strParam .= "reloadUrl='+encodeURIComponent(document.location.hash.substr(1))+'";
         }
 
         if ($strConfirmationButtonLabel == "") {
@@ -1991,60 +1882,14 @@ JS;
      * @param $arrTabs array(key => content)
      * @param bool $bitFullHeight whether the tab content should use full height
      *
+     * @deprecated use direct the Tabbedcontent component
+     *
      * @return string
      */
     public function getTabbedContent(array $arrTabs, $bitFullHeight = false)
     {
-
-        $strMainTabId = generateSystemid();
-        $bitRemoteContent = false;
-
-        $strTabs = "";
-        $strTabContent = "";
-        $strClassaddon = "active in ";
-        foreach ($arrTabs as $strTitle => $strContent) {
-            $strTabId = generateSystemid();
-            // if content is an url enable ajax loading
-            if (substr($strContent, 0, 7) == 'http://' || substr($strContent, 0, 8) == 'https://') {
-                $strTabs .= $this->objTemplate->fillTemplateFile(array("tabid" => $strTabId, "tabtitle" => $strTitle, "href" => $strContent, "classaddon" => $strClassaddon), "/admin/skins/kajona_v4/elements.tpl", "tabbed_content_tabheader");
-                $strTabContent .= $this->objTemplate->fillTemplateFile(array("tabid" => $strTabId, "tabcontent" => "", "classaddon" => $strClassaddon . "contentLoading"), "/admin/skins/kajona_v4/elements.tpl", "tabbed_content_tabcontent");
-                $bitRemoteContent = true;
-            } else {
-                $strTabs .= $this->objTemplate->fillTemplateFile(array("tabid" => $strTabId, "tabtitle" => $strTitle, "href" => "", "classaddon" => $strClassaddon), "/admin/skins/kajona_v4/elements.tpl", "tabbed_content_tabheader");
-                $strTabContent .= $this->objTemplate->fillTemplateFile(array("tabid" => $strTabId, "tabcontent" => $strContent, "classaddon" => $strClassaddon), "/admin/skins/kajona_v4/elements.tpl", "tabbed_content_tabcontent");
-            }
-            $strClassaddon = "";
-        }
-
-        $strHtml = $this->objTemplate->fillTemplateFile(array("id" => $strMainTabId, "tabheader" => $strTabs, "tabcontent" => $strTabContent, "classaddon" => ($bitFullHeight === true ? 'fullHeight' : '')), "/admin/skins/kajona_v4/elements.tpl", "tabbed_content_wrapper");
-
-        // add ajax loader if we have content which we need to fetch per ajax
-        if ($bitRemoteContent) {
-            $strHtml.= <<<HTML
-<script type="text/javascript">
-require(['jquery', 'forms'], function($, forms){
-    $('#{$strMainTabId} > li > a[data-href!=""]').on('click', function(e){
-        if(!$(e.target).data('loaded')) {
-            forms.loadTab($(e.target).data('target').substr(1), $(e.target).data('href'));
-            $(e.target).data('loaded', true);
-        }
-    });
-    
-    $(document).ready(function(){
-        var el = $('#{$strMainTabId} > li.active > a[data-href!=""]');
-        if (el.length > 0) {
-            if(!el.data('loaded')) {
-                forms.loadTab(el.data('target').substr(1), el.data('href'));
-                el.data('loaded', true);
-            }
-        }
-    });
-});
-</script>
-HTML;
-        }
-
-        return $strHtml;
+        $objTabbedContent = new Tabbedcontent($arrTabs, $bitFullHeight);
+        return $objTabbedContent->renderComponent();
     }
 
     /**

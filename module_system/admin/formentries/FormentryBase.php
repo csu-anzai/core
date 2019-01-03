@@ -59,7 +59,7 @@ abstract class FormentryBase
     private $bitSkipValidation = false;
 
 
-    private $strLabel = null;
+    private $strLabel = "";
     private $strValidationErrorMsg = "";
     private $strEntryName = null;
     private $bitMandatory = false;
@@ -508,5 +508,6 @@ abstract class FormentryBase
     public function setBitHideLongHints(bool $bitHideLongHints)
     {
         $this->bitHideLongHints = $bitHideLongHints;
+        return $this;
     }
 }

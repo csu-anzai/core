@@ -2,7 +2,7 @@
 //       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt
 //       $Id$
 
-define(["jquery", "moment", "fullcalendar", "dashboard", "tooltip", "workingIndicator", "loader"], function ($, moment, fullcalendar, dashboard, tooltip, workingIndicator, loader) {
+define("dashboard-calendar", ["jquery", "moment", "fullcalendar", "dashboard", "tooltip", "workingIndicator", "loader"], function ($, moment, fullcalendar, dashboard, tooltip, workingIndicator, loader) {
 
 
     return {

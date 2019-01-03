@@ -7,7 +7,7 @@
  *
  * @module user
  */
-define("user", ["jquery", "ajax"], function($, ajax){
+define("user", ["jquery", "ajax", "statusDisplay"], function($, ajax, statusDisplay){
 
     /** @exports user */
     var user = {
@@ -26,6 +26,11 @@ define("user", ["jquery", "ajax"], function($, ajax){
             ajax.genericAjaxCall("user", "apiGroupMemberAdd", "&userid="+userid+"&groupid="+groupid, function(data, status) {
                 if (status == 'success') {
                     $('.admintable').append(data.row);
+                    $('#group_add_id').val("");
+                    $('#group_add').val("");
+                    statusDisplay.messageOK(data.message);
+                } else {
+                    statusDisplay.messageError(data);
                 }
             }, null, null, 'post', 'json');
         },

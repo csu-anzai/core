@@ -31,11 +31,11 @@ class MediamanagerLogbook extends \Kajona\System\System\Model implements \Kajona
     {
         $objDB = Carrier::getInstance()->getObjDB();
         $strQuery = "INSERT INTO agp_mediamanager_dllog
-	                   (downloads_log_id, downloads_log_date, downloads_log_file, downloads_log_user, downloads_log_ip) VALUES
-	                   (?, ?, ?, ?, ?)";
+	                   (downloads_log_id, downloads_log_date, downloads_log_file, downloads_log_user, downloads_log_ip, downloads_log_file_id) VALUES
+	                   (?, ?, ?, ?, ?, ?)";
 
         $objDB->_pQuery($strQuery, array(generateSystemid(), (int)time(), basename($objFile->getStrFilename()),
-            Carrier::getInstance()->getObjSession()->getUsername(), getServer("REMOTE_ADDR")));
+            Carrier::getInstance()->getObjSession()->getUserID(), getServer("REMOTE_ADDR"), $objFile->getSystemid()));
 
         $objFile->increaseHits();
     }
@@ -73,23 +73,6 @@ class MediamanagerLogbook extends \Kajona\System\System\Model implements \Kajona
 
     }
 
-
-    /**
-     * Deletes logrecords from db older than the passed timestamp
-     *
-     * @static
-     *
-     * @param $intOlderDate
-     *
-     * @return bool
-     */
-    public static function deleteFromLogs($intOlderDate)
-    {
-        $strSql = "DELETE FROM agp_mediamanager_dllog
-			           WHERE downloads_log_date < ?";
-
-        return Carrier::getInstance()->getObjDB()->_pQuery($strSql, array((int)$intOlderDate));
-    }
 
     /**
      * Returns the name to be used when rendering the current object, e.g. in admin-lists.

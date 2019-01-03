@@ -49,8 +49,7 @@ trait FlowConfigurationFormgeneratorTrait
 
             if (!empty($arrParameters)) {
                 foreach ($arrParameters as $strKey => $strValue) {
-                    $strVal = Carrier::getInstance()->getParam($strKey);
-                    if (empty($strVal)) {
+                    if (!isset(Carrier::getAllParams()[$strKey])) {
                         Carrier::getInstance()->setParam($strKey, $strValue);
                     }
                 }

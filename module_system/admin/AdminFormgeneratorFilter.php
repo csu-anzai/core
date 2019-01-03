@@ -9,12 +9,12 @@
 namespace Kajona\System\Admin;
 
 use Kajona\System\Admin\Formentries\FormentryHidden;
+use Kajona\System\Admin\Formentries\FormentryPlaintext;
+use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\FilterBase;
-use Kajona\System\System\SystemModule;
-
-
+use Kajona\System\System\Link;
 
 /**
  * @author christoph.kappestein@gmail.com
@@ -110,7 +110,7 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
         /* Display filter active/inactive */
         $bitFilterActive = false;
         foreach ($this->getArrFields() as $objOneField) {
-            if (!$objOneField instanceof FormentryHidden) {
+            if (!$objOneField instanceof FormentryHidden && !$objOneField instanceof FormentryPlaintext) {
                 $bitFilterActive = $bitFilterActive || !$objOneField->isFieldEmpty();
             }
         }
@@ -158,7 +158,8 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
             $bitInitiallyVisible
         );
 
-        $strFilterUrlButton = $objToolkit->getJsActionButton('icon_link', $objLang->getLang("commons_filter_url", "system"), "require('forms').getFilterURL()");
+        $title = AdminskinHelper::getAdminImage("icon_treeLink") . " " . $objLang->getLang("commons_filter_url", "system");
+        $strFilterUrlButton = Link::getLinkAdminManual(["href" => "#", "onclick" => "require('forms').getFilterURL();return false"], $title);
 
         return $objToolkit->addToContentToolbar($arrFolder[1]) . $objToolkit->addToContentToolbar(trim($strFilterUrlButton)). $arrFolder[0];
     }

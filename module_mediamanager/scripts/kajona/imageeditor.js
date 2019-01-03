@@ -3,7 +3,7 @@
 //       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt
 
 
-define(["jquery", "ajax", "statusDisplay", "jcrop"], function($, ajax, statusDisplay, jcrop) {
+define("imageeditor", ["jquery", "ajax", "statusDisplay", "jcrop"], function($, ajax, statusDisplay, jcrop) {
 
 
     var imageEditor = {

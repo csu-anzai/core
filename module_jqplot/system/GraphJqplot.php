@@ -6,13 +6,15 @@
 *	$Id$                                      *
 ********************************************************************************************************/
 
+declare(strict_types = 1);
+
 namespace Kajona\Jqplot\System;
 
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\GraphCommons;
-use Kajona\System\System\GraphInterface;
+use Kajona\System\System\GraphInterfaceFronted;
 use Kajona\System\System\Lang;
 use Kajona\System\System\Resourceloader;
 
@@ -24,7 +26,7 @@ use Kajona\System\System\Resourceloader;
  * @since 4.3
  * @author stefan.meyer1@yahoo.de
  */
-class GraphJqplot implements GraphInterface
+class GraphJqplot implements GraphInterfaceFronted
 {
 
     private $intWidth = 700;
@@ -546,13 +548,13 @@ class GraphJqplot implements GraphInterface
         $strThousandsChar = Carrier::getInstance()->getObjLang()->getLang("numberStyleThousands", "system");
 
         //5. Init Chart
-        $strCoreDirectory = Resourceloader::getInstance()->getCorePathForModule("module_jqplot");
+        $strCoreDirectory = Resourceloader::getInstance()->getWebPathForModule("module_jqplot");
         $strReturn .= "<script type='text/javascript'>
             require(['jqplot', 'loader'], function(jqplot, loader) {
                 
                 loader.loadFile([
-                    '{$strCoreDirectory}/module_jqplot/scripts/jqplot/jquery.jqplot.css',
-                    '{$strCoreDirectory}/module_jqplot/scripts/kajona/jquery.jqplot.custom.css'
+                    '{$strCoreDirectory}/scripts/jqplot/jquery.jqplot.css',
+                    '{$strCoreDirectory}/scripts/kajona/jquery.jqplot.custom.css'
                 ], function() {});
                 
                 require(['jqlot.custom_helper'], function(jqplotHelper) {
@@ -1069,7 +1071,7 @@ class GraphJqplot implements GraphInterface
      *
      * @param bool $bitIsHorizontalBar
      */
-    public function setBarHorizontal($bitIsHorizontalBar)
+    public function setBarHorizontal(bool $bitIsHorizontalBar)
     {
         $this->bitIsHorizontalBar = $bitIsHorizontalBar;
     }
@@ -1081,7 +1083,7 @@ class GraphJqplot implements GraphInterface
      *
      * @param bool $bitHideXAxis
      */
-    public function setHideXAxis($bitHideXAxis)
+    public function setHideXAxis(bool $bitHideXAxis = true)
     {
         if ($bitHideXAxis) {
             $this->arrOptions["axes"]["xaxis"]["rendererOptions"]["drawBaseline"] = false;
@@ -1100,7 +1102,7 @@ class GraphJqplot implements GraphInterface
      *
      * @param bool $bitHideYAxis
      */
-    public function setHideYAxis($bitHideYAxis)
+    public function setHideYAxis(bool $bitHideYAxis = true)
     {
         if ($bitHideYAxis) {
             $this->arrOptions["axes"]["yaxis"]["rendererOptions"]["drawBaseline"] = false;
@@ -1117,7 +1119,7 @@ class GraphJqplot implements GraphInterface
      *
      * @param $bitVaryBarColors
      */
-    public function setVaryBarColorsForAllSeries($bitVaryBarColors)
+    public function setVaryBarColorsForAllSeries($bitVaryBarColors = true)
     {
         if ($this->containsChartType(GraphJqplotCharttype::BAR)) {
             /** $arrData GraphJqplotSeriesdata */
@@ -1137,7 +1139,7 @@ class GraphJqplot implements GraphInterface
         $this->arrOptions["axes"]["yaxis"]["tickOptions"]["formatString"] = $strFormat;
     }
 
-    public function drawBorder($bitDrawBorder)
+    public function drawBorder(bool $bitDrawBorder = true)
     {
         $this->arrOptions["grid"]["drawBorder"] = $bitDrawBorder;
     }
@@ -1173,7 +1175,7 @@ class GraphJqplot implements GraphInterface
     /**
      * @param boolean $bitIsResizeable
      */
-    public function setBitIsResizeable($bitIsResizeable)
+    public function setBitIsResizeable(bool $bitIsResizeable = true)
     {
         $this->bitIsResizeable = $bitIsResizeable;
     }
@@ -1189,8 +1191,28 @@ class GraphJqplot implements GraphInterface
     /**
      * @param boolean $bitDownloadLink
      */
-    public function setBitDownloadLink($bitDownloadLink)
+    public function setBitDownloadLink(bool $bitDownloadLink = true)
     {
         $this->bitDownloadLink = $bitDownloadLink;
+    }
+
+    /**
+     * @param bool $autoHeight
+     * @return mixed|void
+     *
+     * @inheritdoc
+     */
+    public function setAsHorizontalInLineStackedChart($autoHeight = false)
+    {
+        $this->setBarHorizontal(true);
+        $this->setHideXAxis(true);
+        $this->setHideYAxis(true);
+        $this->drawBorder(true);
+        $this->setBitIsResizeable(false);
+        $this->setBitDownloadLink(false);
+        if ($autoHeight && count($this->arrSeriesData) != 0) {
+            $countGraphs = count($this->arrSeriesData[0]->getArrDataPoints());
+            $this->setIntHeight(10 + $countGraphs * 35);
+        }
     }
 }

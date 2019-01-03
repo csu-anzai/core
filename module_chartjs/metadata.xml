@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://apidocs.kajona.de/xsd/package_v2.xsd"
+    >
+    <title>chartjs</title>
+    <description>chartjs charting engine. Used to render charts on the client-side, based on the common Chart.js library.</description>
+    <version>7.1</version>
+    <author>Artemeon Team</author>
+    <type>MODULE</type>
+    <providesInstaller>FALSE</providesInstaller>
+    <requiredModules>
+        <module name="system" version="7.0" />
+    </requiredModules>
+    <constants />
+</package>

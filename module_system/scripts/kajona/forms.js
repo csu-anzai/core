@@ -23,8 +23,9 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
      * Hides a field in the form
      *
      * @param objField - my be a jquery field or a id selector
+     * @param isResetValue if enabled, sets the fields value to emtpy / ""
      */
-    forms.hideField = function(objField) {
+    forms.hideField = function(objField, isResetValue) {
         objField = util.getElement(objField);
 
         var objFormGroup = objField.is('h3') || objField.is('h4') || objField.is('p') ? objField : objField.closest('.form-group');
@@ -36,6 +37,16 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
         var objHintFormGroup = objFormGroup.prev('.form-group');
         if(objHintFormGroup.find('div > span.help-block').length > 0) {
             objHintFormGroup.slideUp(0);
+        }
+
+        //reset value
+        if (isResetValue && objField.attr('id')) {
+            (objField.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            }));
+
+
+            objField.val('');
         }
     };
 
@@ -67,12 +78,16 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
     forms.setFieldReadOnly = function(objField) {
         objField = util.getElement(objField);
 
-        if (objField.is('input:checkbox') || objField.is('select') || objField.data('datepicker') !== null) {
+        if ($('#'+objField.attr('id')+'_upl') && $('#'+objField.attr('id')+'_upl').fileupload) {
+            $('#'+objField.attr('id')+'_upl').fileupload('disable');
+        }
+        else if (objField.is('input:checkbox') || objField.is('select') || objField.data('datepicker') !== null) {
             objField.prop("disabled", "disabled");
         }
         else {
             objField.attr("readonly", "readonly");
         }
+
     };
 
     /**
@@ -83,10 +98,13 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
     forms.setFieldEditable = function(objField) {
         objField = util.getElement(objField);
 
-        if (objField.is('input:checkbox') || objField.is('select') || objField.data('datepicker') !== null) {
-            objField.removeProp("disabled");
+
+        if($('#'+objField.attr('id')+'_upl') && $('#'+objField.attr('id')+'_upl').fileupload) {
+            $('#'+objField.attr('id')+'_upl').fileupload('enable');
         }
-        else {
+        else if (objField.is('input:checkbox') || objField.is('select') || objField.data('datepicker') !== null) {
+            objField.removeProp("disabled");
+        } else {
             objField.removeProp("readonly");
         }
     };

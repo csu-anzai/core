@@ -1,0 +1,17 @@
+
+<div class="form-group core-component-formentry-inputcheckbox">
+    <label for="{{ name|e('html_attr') }}" class="col-sm-3 control-label"></label>
+    <div class="col-sm-6">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="{{ name|e('html_attr') }}" value="checked" id="{{ name|e('html_attr') }}" {% if class %}class="{{ class|e('html_attr') }}"{% endif %} {% if checked %}checked{% endif %} {% if readOnly %}disabled{% endif %} {% for key, value in data %}data-{{ key }}="{{ value|e('html_attr') }}"{% endfor %}>
+                {{ title }}
+            </label>
+        </div>
+    </div>
+    {% if opener %}
+    <div class="col-sm-2 form-opener">
+        {{ opener|raw }}
+    </div>
+    {% endif %}
+</div>

@@ -31,6 +31,7 @@ Reference: Formentries
 | Kajona\System\Admin\Formentries\FormentryPage                     | 4.0        | Page-Selctor, text-input with autocomplete and select-popup |
 | Kajona\System\Admin\Formentries\FormentryPassword                 | 4.0        | Password input field |
 | Kajona\System\Admin\Formentries\FormentryPlaintext                | 4.3        | Use this formentry to inject plaintext into the html-output. May be used to add js-script tags and code. |
+| Kajona\System\Admin\Formentries\FormentryRadiogroup               | 7.1        | Same as the dropdown, but rendered as a radio-group
 | Kajona\System\Admin\Formentries\FormentrySubheadline              | 4.7        | Headline-Element to nest headlines  |
 | Kajona\System\Admin\Formentries\FormentryText                     | 4.0        | Text-input field, single line |
 | Kajona\System\Admin\Formentries\FormentryTextrow                  | 4.3        | Formentry useable as a graphical element, adds a line or paragaph of text to the current output. |

@@ -16,6 +16,7 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\Link;
 use Kajona\System\System\MessagingAlert;
 use Kajona\System\System\MessagingMessagehandler;
+use Kajona\System\System\MessagingNotification;
 use Kajona\System\System\Model;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\RedirectException;
@@ -330,7 +331,7 @@ HTML;
 
             if ($objTransition instanceof FlowTransition) {
                 $arrActions = $objTransition->getArrActions();
-                $objForm = new AdminFormgenerator("", null);
+                $objForm = new AdminFormgenerator("", $objObject);
                 $bitInputRequired = false;
 
                 foreach ($arrActions as $objAction) {
@@ -375,7 +376,7 @@ HTML;
                             // execute status transition
                             $objFlow->getHandler()->handleStatusTransition($objObject, $objTransition);
 
-                            $objAlert = new MessagingAlert();
+                            $objAlert = new MessagingNotification();
                             $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
                             $objAlert->setStrBody($this->getLang("action_status_change_success", "flow"));
                             $objAlert->setObjAlertAction(new MessagingAlertActionVoid());
@@ -388,7 +389,7 @@ HTML;
                         }
 
                     } catch (RedirectException $e) {
-                        $objAlert = new MessagingAlert();
+                        $objAlert = new MessagingNotification();
                         $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
                         $objAlert->setStrBody($this->getLang("action_status_change_success", "flow"));
                         $objAlert->setObjAlertAction(new MessagingAlertActionRedirect($e->getHref()));

@@ -81,7 +81,6 @@ class AdminwidgetSysteminfo extends Adminwidget implements AdminwidgetInterface
 
 
             $strReturn .= $this->widgetText($this->getLang("sysinfo_kajona_version")." ".SystemModule::getModuleByName("system")->getStrVersion());
-            $strReturn .= $this->widgetText($this->getLang("sysinfo_kajona_versionAvail")." ".$this->getLatestKernelVersion());
             $strReturn .= $this->widgetText($this->getLang("sysinfo_kajona_nrOfModules")." ".count(SystemModule::getAllModules()));
             $strReturn .= $this->widgetText($this->getLang("sysinfo_kajona_nrOfPackages")." ".count($arrPackageMetadata));
         }
@@ -96,25 +95,6 @@ class AdminwidgetSysteminfo extends Adminwidget implements AdminwidgetInterface
     public function getWidgetName()
     {
         return $this->getLang("sysinfo_name");
-    }
-
-    /**
-     * Queries the kajona-updatecheck-server to fetch the latest version
-     *
-     * @return string
-     */
-    private function getLatestKernelVersion()
-    {
-
-        $objManager = new PackagemanagerManager();
-        $arrPackages = $objManager->scanForUpdates();
-
-        $strVersion = "n.a.";
-        if (isset($arrPackages["system"])) {
-            $strVersion = $arrPackages["system"];
-        }
-
-        return $strVersion;
     }
 
     public function getWidgetDescription()

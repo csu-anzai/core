@@ -16,7 +16,7 @@
     'use strict';
     if (typeof define === 'function' && define.amd) {
         // Register as an anonymous AMD module:
-        define([
+        define("jquery.fileupload", [
             'jquery',
             'jquery-ui/ui/widget'
         ], factory);

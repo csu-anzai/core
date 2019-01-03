@@ -82,6 +82,12 @@ class InstallerDbbrowser extends InstallerBase implements InstallerRemovableInte
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         $strReturn .= "Version found:\n\t Module: ".$arrModule["module_name"].", Version: ".$arrModule["module_version"]."\n\n";
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.0") {
+            $strReturn .= "Updating to 7.1...\n";
+            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1");
+        }
+
         return $strReturn."\n\n";
     }
 

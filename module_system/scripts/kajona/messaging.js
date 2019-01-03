@@ -8,7 +8,7 @@
  *
  * @module messaging
  */
-define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util', 'router'], function ($, ajax, dialogHelper, util, router) {
+define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util', 'router', 'toastr'], function ($, ajax, dialogHelper, util, router, toastr) {
 
 
     var pollInterval = 30000;
@@ -55,7 +55,17 @@ define('messaging', ['jquery', 'ajax', 'dialogHelper', 'util', 'router'], functi
      * @param $objAlert
      */
     var renderAlert = function($objAlert) {
-        dialog = dialogHelper.showConfirmationDialog($objAlert.title, $objAlert.body, $objAlert.confirmLabel, getActionCallback($objAlert.onAccept));
+        if ($objAlert.type === "Kajona\\System\\System\\MessagingNotification") {
+            var options = {
+                onclick: getActionCallback($objAlert.onAccept),
+            };
+
+            toastr.info($objAlert.title, $objAlert.body, options);
+        } else {
+            if (!dialog || (dialog && !dialog.isVisible())) {
+                dialog = dialogHelper.showConfirmationDialog($objAlert.title, $objAlert.body, $objAlert.confirmLabel, getActionCallback($objAlert.onAccept));
+            }
+        }
         ajax.genericAjaxCall("messaging", "deleteAlert", $objAlert.systemid);
     };
 

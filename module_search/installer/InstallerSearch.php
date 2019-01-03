@@ -60,7 +60,7 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
 		$arrFields["search_queue_systemid"] = array("char20", true);
 		$arrFields["search_queue_action"] 	= array("char20", true);
 
-		if(!$this->objDB->createTable("agp_search_queue", $arrFields, array("search_queue_id")))
+		if(!$this->objDB->createTable("agp_search_queue", $arrFields, array("search_queue_id"), array("search_queue_systemid")))
 			$strReturn .= "An error occurred! ...\n";
 
 
@@ -137,47 +137,34 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         $strReturn .= "Version found:\n\t Module: ".$arrModule["module_name"].", Version: ".$arrModule["module_version"]."\n\n";
 
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.2") {
-            $strReturn .= "Updating to 6.5...\n";
-            $this->updateModuleVersion("search", "6.5");
-        }
 
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.5") {
-            $strReturn .= "Updating to 6.6...\n";
-            $this->updateModuleVersion($this->objMetadata->getStrTitle(), "6.6");
-        }
-
-        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "6.6") {
-            $strReturn .= $this->update_66_70();
-        }
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "7.0") {
-            $strReturn .= $this->update_70_71();
+            $strReturn .= $this->update_70_701();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.0.1") {
+            $strReturn .= $this->update_701_71();
         }
 
 
         return $strReturn."\n\n";
 	}
 
-
-    private function update_66_70()
+    private function update_70_701()
     {
-        $strReturn = "Update to 7.0".PHP_EOL;
+        $strReturn = "Update to 7.0.1".PHP_EOL;
 
         $strReturn .= "Updating schema".PHP_EOL;
-        $this->objDB->removeColumn("agp_search_ix_document", "search_ix_content_lang");
-        $this->objDB->removeColumn("agp_search_ix_document", "search_ix_portal_object");
-
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0");
-
+        $this->objDB->createIndex("agp_search_queue", "ix_".generateSystemid(), ["search_queue_systemid"]);
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.1");
         return $strReturn;
-	}
+    }
 
-    private function update_70_71()
+
+    private function update_701_71()
     {
         $strReturn = "Updating to 7.1...\n";
 
