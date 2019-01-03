@@ -16,7 +16,6 @@
 
     "changelog": "kajona/changelog",
     "downloadIndicator": "kajona/downloadIndicator",
-    "folderview": "kajona/folderview",
     "forms": "kajona/forms",
     "instantSave": "kajona/instantSave",
     "loader": "kajona/loader",
