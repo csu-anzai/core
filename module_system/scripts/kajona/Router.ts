@@ -1,14 +1,32 @@
-/**
- * (c) 2013-2017 by Kajona, www.kajona.de
- * Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt
- */
+///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
+///<amd-module name="router"/>
 
-/**
- *
- *
- * @module router
- */
-define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNavigation', 'quickhelp', 'ajax', 'util'], function ($, contentToolbar, tooltip, breadcrumb, moduleNavigation, quickhelp, ajax, util) {
+import * as $ from "jquery";
+import tooltip = require("./Tooltip");
+import quickhelp = require("./Quickhelp");
+import ajax = require("./Ajax");
+import util = require("./Util");
+
+declare global {
+    interface Window {
+        routie: any;
+    }
+}
+
+interface Callbacks {
+    [key: string] : Function;
+}
+
+interface MarkedElements {
+    forms: Forms
+}
+
+interface Forms {
+    monitoredEl: string
+    submittedEl: string
+}
+
+class Router {
 
     /**
      * An array / list of callbacks to be fired as soon as a url is being loaded.
@@ -16,7 +34,7 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
      *
      * @type {Object<string, Function>}
      */
-    var arrLoadCallbacks = {};
+    private static arrLoadCallbacks : Callbacks = {};
 
     /**
      * An array of callbacks which is called after the url content was loaded.
@@ -25,11 +43,21 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
      *
      * @type {Object<string, Function>}
      */
-    var arrFormCallbacks = {};
+    private static arrFormCallbacks : Callbacks = {};
 
-    var initRouter = function() {
+    /**
+     * Global markers to reference on leave / save monitored elements
+     * @type {{forms: {monitoredEl: null, submittedEl: null}}}
+     */
+    private static markedElements : MarkedElements = {
+        forms : {
+            monitoredEl : null,
+            submittedEl : null
+        }
+    };
 
-        routie('*', function(url) {
+    public static init() {
+        routie('*', function(url: string) {
             // in case we receive an absolute url with no hash redirect the user to this url
             // since we cant resolve this url to a hash route
             if (url.indexOf(KAJONA_WEBPATH) === 0 && url.indexOf("/#") === -1) {
@@ -37,34 +65,34 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
                 return;
             }
 
-            var objUrl = generateUrl(url);
+            var objUrl = Router.generateUrl(url);
 
             if(!objUrl) {
                 return;
             }
 
-            cleanPage();
+            Router.cleanPage();
             //moduleNavigation.setModuleActive(objUrl.module);
 
-            applyLoadCallbacks();
+            Router.applyLoadCallbacks();
 
             //split between post and get
-            if (markedElements.forms.submittedEl != null) {
-                var data = $(markedElements.forms.submittedEl).serialize();
-                markedElements.forms.submittedEl = null;
-                markedElements.forms.monitoredEl = null;
+            if (Router.markedElements.forms.submittedEl != null) {
+                var data = $(Router.markedElements.forms.submittedEl).serialize();
+                Router.markedElements.forms.submittedEl = null;
+                Router.markedElements.forms.monitoredEl = null;
                 ajax.loadUrlToElement('#moduleOutput', objUrl.url, data, false, 'POST', function(){
-                    applyFormCallbacks();
+                    Router.applyFormCallbacks();
                 });
             } else {
 
-                if (markedElements.forms.monitoredEl != null) {
-                    if (require('forms').hasChanged(markedElements.forms.monitoredEl)) {
+                if (Router.markedElements.forms.monitoredEl != null) {
+                    if (require('forms').hasChanged(Router.markedElements.forms.monitoredEl)) {
                         var doLeave = confirm(require('forms').leaveUnsaved);
                         if (!doLeave) {
                             return;
                         }
-                        markedElements.forms.monitoredEl = null;
+                        Router.markedElements.forms.monitoredEl = null;
                     }
                 }
 
@@ -73,10 +101,9 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
 
 
         });
-    };
+    }
 
-
-    var generateUrl = function(url) {
+    public static generateUrl(url: string) {
 
         //if we have a php url, return directly
         if (url.indexOf("index.php") > 0) {
@@ -148,7 +175,7 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
         return { url: strUrlToLoad, module: arrSections[0]};
     };
 
-    var cleanPage = function() {
+    private static cleanPage() {
         //contentToolbar.resetBar(); //TODO: aktuell in ToolkitAdmin und RequestDispatcher, muss aber in einen Callback bevor der content in das target div geschrieben wird
         //breadcrumb.resetBar();
         quickhelp.resetQuickhelp();
@@ -157,113 +184,85 @@ define("router", ['jquery', 'contentToolbar', 'tooltip', 'breadcrumb', 'moduleNa
         $('.qtip:visible').css('display', '');
     };
 
-    var applyLoadCallbacks = function() {
+    private static applyLoadCallbacks() {
         var key;
-        for (key in arrLoadCallbacks) {
-            if (typeof arrLoadCallbacks[key] === 'function') {
-                arrLoadCallbacks[key]();
+        for (key in this.arrLoadCallbacks) {
+            if (typeof this.arrLoadCallbacks[key] === 'function') {
+                this.arrLoadCallbacks[key]();
                 // we always delete the callback after it was executed
-                delete arrLoadCallbacks[key];
+                delete this.arrLoadCallbacks[key];
             }
         }
     };
 
-    var applyFormCallbacks = function() {
+    private static applyFormCallbacks() {
         var key;
-        for (key in arrFormCallbacks) {
-            if (typeof arrFormCallbacks[key] === 'function') {
-                arrFormCallbacks[key]();
+        for (key in this.arrFormCallbacks) {
+            if (typeof this.arrFormCallbacks[key] === 'function') {
+                this.arrFormCallbacks[key]();
                 // we always delete the callback after it was executed
-                delete arrFormCallbacks[key];
+                delete this.arrFormCallbacks[key];
             }
         }
-    };
+    }
+
+    public static loadUrl(strUrl: string) {
+        var actionHash = strUrl;
+        if (strUrl.indexOf('#') > 0) {
+            var parser = document.createElement('a');
+            parser.href = strUrl;
+            actionHash = parser.hash;
+        }
+
+        if (actionHash === location.hash) {
+            routie.reload();
+        } else {
+            routie(actionHash);
+        }
+    }
+
+    public static reload() {
+        routie.reload();
+    }
 
     /**
-     * Global markers to reference on leave / save monitored elements
-     * @type {{forms: {monitoredEl: null, submittedEl: null}}}
+     * Adds a new callback fired as soon as a new url-request is fired
+     *
+     * @param {String} strName
+     * @param {Function} objCallback
      */
-    var markedElements = {
-        forms : {
-            monitoredEl : null,
-            submittedEl : null
-        }
-    };
+    public static registerLoadCallback(strName: string, objCallback: Function) {
+        this.arrLoadCallbacks[strName] = objCallback;
+    }
 
-    /** @alias module:router */
-    return {
+    /**
+     * Removes a registered load-callback
+     *
+     * @param strName
+     */
+    public static removeLoadCallback(strName: string) {
+        delete this.arrLoadCallbacks[strName];
+    }
 
-        loadUrl : function(strUrl) {
-            var actionHash = strUrl;
-            if (strUrl.indexOf('#') > 0) {
-                var parser = document.createElement('a');
-                parser.href = strUrl;
-                actionHash = parser.hash;
-            }
+    /**
+     * Adds a new callback after a form was submitted
+     *
+     * @param {String} strName
+     * @param {Function} objCallback
+     */
+    public static registerFormCallback(strName: string, objCallback: Function) {
+        this.arrFormCallbacks[strName] = objCallback;
+    }
 
-            if (actionHash === location.hash) {
-                routie.reload();
-            } else {
-                routie(actionHash);
-            }
-        },
+    /**
+     * Removes a registered form-callback
+     *
+     * @param strName
+     */
+    public static removeFormCallback(strName: string) {
+        delete this.arrFormCallbacks[strName];
+    }
 
-        reload : function() {
-            routie.reload();
-        },
+}
 
-        init : function() {
-            initRouter();
-        },
-
-        generateUrl : function (url) {
-            return generateUrl(url);
-        },
-
-        /**
-         * Adds a new callback fired as soon as a new url-request is fired
-         *
-         * @param {String} strName
-         * @param {Function} objCallback
-         */
-        registerLoadCallback : function (strName, objCallback) {
-            arrLoadCallbacks[strName] = objCallback;
-        },
-
-        /**
-         * Removes a registered load-callback
-         *
-         * @param strName
-         */
-        removeLoadCallback : function (strName) {
-            delete arrLoadCallbacks[strName];
-        },
-
-        /**
-         * Adds a new callback after a form was submitted
-         *
-         * @param {String} strName
-         * @param {Function} objCallback
-         */
-        registerFormCallback: function (strName, objCallback) {
-            arrFormCallbacks[strName] = objCallback;
-        },
-
-        /**
-         * Removes a registered form-callback
-         *
-         * @param strName
-         */
-        removeFormCallback: function (strName) {
-            delete arrFormCallbacks[strName];
-        },
-
-        /**
-         * Global namespace to store some montitored elements
-         */
-        markerElements : markedElements,
-    };
-
-
-});
-
+export = Router;
