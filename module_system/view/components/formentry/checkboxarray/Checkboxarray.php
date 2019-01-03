@@ -6,18 +6,17 @@
 
 declare(strict_types=1);
 
-namespace Kajona\System\View\Components\Formentry\Objectlist;
+namespace Kajona\System\View\Components\Formentry\Checkboxarray;
 
 use Kajona\System\Admin\Formentries\FormentryCheckboxarray;
 use Kajona\System\View\Components\Formentry\FormentryComponentAbstract;
 
 /**
- * General objectlist form entry which can display a list of models. It is possible to configure an add button where
- * the user can add new objects or you can also configure a search input which lets the user search objects through an
- * auto complete
+ * Renders a list of options, either as a checkbox or as a radio button.
+ * Hierarchical lists are rendered as ul / li combinations.
  *
  * @author stefan.idler@artemeon.de
- * @since 7.
+ * @since 7.1
  * @componentTemplate core/module_system/view/components/formentry/checkboxarray/template.twig
  */
 class Checkboxarray extends FormentryComponentAbstract
