@@ -1,5 +1,5 @@
 ///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="loader"/>
+///<amd-module name="moduleNavigation"/>
 
 import * as $ from "jquery";
 import ajax = require("./Ajax");
