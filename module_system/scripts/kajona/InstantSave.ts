@@ -1,7 +1,43 @@
+///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
+///<amd-module name="instantSave"/>
+
+import * as $ from "jquery";
+import ajax = require("./Ajax");
+
 /**
- * (c) 2013-2017 by Kajona, www.kajona.de
- * Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt
+ * The saveIndicator is used to show a working-indicator associated with a ui element.
+ * currently the indicator may represent various states:
+ * - showProgress showing the indicator
+ * - addClass adding a class, e.g. to indicate a new status
+ * - hide destroying the indicator completely
+ *
+ * @param $objSourceElement
  */
+class SaveIndicator {
+
+    private objDiv : JQuery;
+    private objSourceElement : JQuery<any>;
+
+    constructor(objSourceElement : JQuery<any>) {
+        this.objSourceElement = objSourceElement;
+    }
+
+    public showProgress() {
+        this.objDiv = $('<div>').addClass('peProgressIndicator peSaving');
+        $('body').append(this.objDiv);
+        this.objDiv.css('left', this.objSourceElement.offset().left+this.objSourceElement.width()+10).css('top', this.objSourceElement.offset().top);
+    };
+
+    public addClass(strClass: string) {
+        this.objDiv.addClass(strClass);
+    };
+
+    public hide() {
+        this.objSourceElement.removeClass('peFailed');
+        this.objDiv.remove();
+        this.objDiv = null;
+    };
+}
 
 /**
  * The instant save module is used to save changes made to input elements directly to the baackend.
@@ -10,14 +46,10 @@
  * On success or error, the handler throws a 'kajona.instantsave.updated' event.
  * Register for them like this:
  * $('#id').on('kajona.instantsave.updated', function(){console.log('update registered')});
- *
- * @module instantSave
- *
- * systemid#strPropertyName
  */
-define("instantSave", ['jquery', 'ajax'], function ($, ajax) {
+class InstantSave {
 
-    saveChangeHandler = function () {
+    private static saveChangeHandler() {
 
         var $objChanged = $(this);
         var keySplitted = $objChanged.data('kajona-instantsave').split('#');
@@ -45,49 +77,18 @@ define("instantSave", ['jquery', 'ajax'], function ($, ajax) {
 
     };
 
-    /**
-     * The saveIndicator is used to show a working-indicator associated with a ui element.
-     * currently the indicator may represent various states:
-     * - showProgress showing the indicator
-     * - addClass adding a class, e.g. to indicate a new status
-     * - hide destroying the indicator completely
-     *
-     * @param $objSourceElement
-     */
-    SaveIndicator = function($objSourceElement) {
-
-        var objDiv = null;
-        var objSourceElement = $objSourceElement;
-
-        this.showProgress = function () {
-            objDiv = $('<div>').addClass('peProgressIndicator peSaving');
-            $('body').append(objDiv);
-            objDiv.css('left', objSourceElement.offset().left+objSourceElement.width()+10).css('top', objSourceElement.offset().top);
-        };
-
-        this.addClass = function(strClass) {
-            objDiv.addClass(strClass);
-        };
-
-        this.hide = function() {
-            objSourceElement.removeClass('peFailed');
-            objDiv.remove();
-            objDiv = null;
-        };
-    };
-
-    scanElements = function() {
+    private static scanElements() {
         $('[data-kajona-instantsave][data-kajona-instantsave != ""]').each(function(key, value) {
             if (!$(this)[0].hasAttribute('data-kajona-instantsave-init')) {
-                $(this).on('change', saveChangeHandler);
+                $(this).on('change', InstantSave.saveChangeHandler);
                 $(this).attr('data-kajona-instantsave-init', 'true');
             }
         });
     };
 
-    return {
-        init : function() {
-            scanElements();
-        }
-    };
-});
+    public static init() {
+        this.scanElements();
+    }
+}
+
+export = InstantSave;
