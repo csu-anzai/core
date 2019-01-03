@@ -20,6 +20,7 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\Config;
 use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
+use Kajona\System\System\HierarchicalListableInterface;
 use Kajona\System\System\History;
 use Kajona\System\System\Lang;
 use Kajona\System\System\Link;
@@ -40,6 +41,7 @@ use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
 use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
+use Kajona\System\View\Components\Popover\Listbody;
 use Kajona\System\View\Components\Popover\Popover;
 use Kajona\System\View\Components\Tabbedcontent\Tabbedcontent;
 use Kajona\System\View\Components\Textrow\TextRow;
@@ -1489,17 +1491,30 @@ HTML;
             $strCSSAddon = $objEntry->getIntRecordStatus() == 0 ? "disabled" : "";
         }
 
-        return $this->genericAdminList(
-            $objEntry->getSystemid(),
-            $objEntry->getStrDisplayName(),
-            $strImage,
-            $strActions,
-            $objEntry->getStrAdditionalInfo(),
-            $objEntry->getStrLongDescription(),
-            $bitCheckbox,
-            $strCSSAddon,
-            $objEntry->getIntRecordDeleted() != 1 ? "" : "1"
-        );
+//        return $this->genericAdminList(
+//            $objEntry->getSystemid(),
+//            $objEntry->getStrDisplayName(),
+//            $strImage,
+//            $strActions,
+//            $objEntry->getStrAdditionalInfo(),
+//            $objEntry->getStrLongDescription(),
+//            $bitCheckbox,
+//            $strCSSAddon,
+//            $objEntry->getIntRecordDeleted() != 1 ? "" : "1"
+
+
+            $comp = new Listbody($objEntry->getSystemid(), $objEntry->getStrDisplayName(), $strImage, $strActions);
+            $comp->setAdditionalInfo($objEntry->getStrAdditionalInfo())
+                ->setDescription($objEntry->getStrLongDescription())
+                ->setCheckbox($bitCheckbox)
+                ->setCssAddon($strCSSAddon)
+                ->setDeleted($objEntry->getIntRecordDeleted() != 1 ? "" : "1");
+
+            if ($objEntry instanceof HierarchicalListableInterface) {
+                $comp->setPath($objEntry->getHierarchicalPath());
+            }
+
+            return $comp->renderComponent();
     }
 
     /**
@@ -1518,36 +1533,9 @@ HTML;
      */
     public function genericAdminList($strId, $strName, $strIcon, $strActions, $strAdditionalInfo = "", $strDescription = "", $bitCheckbox = false, $strCssAddon = "", $strDeleted = "")
     {
-        $arrTemplate = array();
-        $arrTemplate["listitemid"] = $strId;
-        $arrTemplate["image"] = $strIcon;
-        $arrTemplate["title"] = $strName;
-        $arrTemplate["center"] = $strAdditionalInfo;
-        $arrTemplate["actions"] = $strActions;
-        $arrTemplate["description"] = $strDescription;
-        $arrTemplate["cssaddon"] = $strCssAddon;
-        $arrTemplate["deleted"] = $strDeleted;
-
-        if ($bitCheckbox) {
-            $arrTemplate["checkbox"] = $this->objTemplate->fillTemplateFile(array("systemid" => $strId), "/admin/skins/kajona_v4/elements.tpl", "generallist_checkbox");
-        }
-
-
-        if ($strDescription != "") {
-            if ($this->objTemplate->providesSection("/admin/skins/kajona_v4/elements.tpl", "generallist_desc")) {
-                $strSection = "generallist_desc";
-            } else {
-                $strSection = "generallist_desc_1";
-            }
-        } else {
-            if ($this->objTemplate->providesSection("/admin/skins/kajona_v4/elements.tpl", "generallist")) {
-                $strSection = "generallist";
-            } else {
-                $strSection = "generallist_1";
-            }
-        }
-
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", $strSection);
+        $comp = new Listbody($strId, $strName, $strIcon, $strActions);
+        $comp->setAdditionalInfo($strAdditionalInfo)->setDescription($strDescription)->setCheckbox($bitCheckbox)->setCssAddon($strCssAddon)->setDeleted($strDeleted);
+        return $comp->renderComponent();
     }
 
     /**

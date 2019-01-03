@@ -1,0 +1,28 @@
+
+<tbody class="generalListSet {{ cssaddon }}">
+    {% if path %}
+        <tr>
+            <td colspan="4" class="path"></td>
+            <td colspan="3" class="path">{{ path|raw }}</td>
+        </tr>
+    {% endif %}
+    <tr data-systemid="{{ listitemid }}" data-deleted="{{ deleted }}">
+        <td class="treedrag"></td>
+        <td class="listsorthandle"></td>
+        <td class="listcheckbox">{% if checkbox %}
+            <input type="checkbox" name="kj_cb_{{ listitemid }}" id="kj_cb_{{ listitemid }}" onchange="require('lists').updateToolbar();">
+        {% endif %}</td>
+        <td class="listimage">{{ image|raw }}</td>
+        <td class="title">
+            {{ title|raw }}
+        </td>
+        <td class="center">{{ center|raw }}</td>
+        <td class="actions">{{ actions|raw }}</td>
+    </tr>
+    {% if description %}
+    <tr>
+        <td colspan="4" class="description"></td>
+        <td colspan="3" class="description">{{ description|raw }}</td>
+    </tr>
+    {% endif %}
+</tbody>
