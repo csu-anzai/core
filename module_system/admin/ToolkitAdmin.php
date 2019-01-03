@@ -1491,30 +1491,18 @@ HTML;
             $strCSSAddon = $objEntry->getIntRecordStatus() == 0 ? "disabled" : "";
         }
 
-//        return $this->genericAdminList(
-//            $objEntry->getSystemid(),
-//            $objEntry->getStrDisplayName(),
-//            $strImage,
-//            $strActions,
-//            $objEntry->getStrAdditionalInfo(),
-//            $objEntry->getStrLongDescription(),
-//            $bitCheckbox,
-//            $strCSSAddon,
-//            $objEntry->getIntRecordDeleted() != 1 ? "" : "1"
+        $comp = new Listbody($objEntry->getSystemid(), $objEntry->getStrDisplayName(), $strImage, $strActions);
+        $comp->setAdditionalInfo($objEntry->getStrAdditionalInfo())
+            ->setDescription($objEntry->getStrLongDescription())
+            ->setCheckbox($bitCheckbox)
+            ->setCssAddon($strCSSAddon)
+            ->setDeleted($objEntry->getIntRecordDeleted() != 1 ? "" : "1");
 
+        if ($objEntry instanceof HierarchicalListableInterface) {
+            $comp->setPath($objEntry->getHierarchicalPath());
+        }
 
-            $comp = new Listbody($objEntry->getSystemid(), $objEntry->getStrDisplayName(), $strImage, $strActions);
-            $comp->setAdditionalInfo($objEntry->getStrAdditionalInfo())
-                ->setDescription($objEntry->getStrLongDescription())
-                ->setCheckbox($bitCheckbox)
-                ->setCssAddon($strCSSAddon)
-                ->setDeleted($objEntry->getIntRecordDeleted() != 1 ? "" : "1");
-
-            if ($objEntry instanceof HierarchicalListableInterface) {
-                $comp->setPath($objEntry->getHierarchicalPath());
-            }
-
-            return $comp->renderComponent();
+        return $comp->renderComponent();
     }
 
     /**
