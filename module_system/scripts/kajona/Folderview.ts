@@ -72,12 +72,11 @@ class Folderview {
             let key = arrTargetsValues[i][0];
             let value = arrTargetsValues[i][1];
 
-            if (key == "ckeditor") {
-                CKEDITOR.instances["ckeditor"].setData(value);
-            } else {
-                let formField = $("#" + key);
-
-                if (formField != null) {
+            let formField = $("#" + key);
+            if (formField.length > 0) {
+                if (formField.hasClass("inputWysiwyg")) {
+                    CKEDITOR.instances[key].setData(value);
+                } else {
                     formField.val(value);
                     formField.trigger("change");
                 }
