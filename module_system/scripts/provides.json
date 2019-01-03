@@ -3,8 +3,8 @@
     "app": "app",
 
     "jquery-ui": "jqueryui/jquery-ui.custom.min",
-    "jquerycaret": "jquerytag/jquery.caret.min",
-    "jquerytageditor": "jquerytag/jquery.tag-editor.min",
+    "jquerycaret": "jquerytag/jquery.caret",
+    "jquerytageditor": "jquerytag/jquery.tag-editor",
     "d3": "d3/d3.min",
     "calendar-heatmap": "d3/calendar-heatmap",
     "jstree": "jstree3/dist/jstree.min",
@@ -30,12 +30,6 @@
   "shim": {
     "jquery-ui" : {
       "deps": ["jquery"]
-    },
-    "jquerycaret" : {
-      "deps": ["jquery"]
-    },
-    "jquerytageditor" : {
-      "deps": ["jquery", "jquerycaret"]
     }
   }
 }
