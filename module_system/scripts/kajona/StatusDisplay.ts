@@ -1,6 +1,8 @@
 ///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
 ///<amd-module name="statusDisplay"/>
 
+import "toastr";
+
 /**
  * General way to display a status message using toastr
  *
