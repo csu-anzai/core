@@ -17,7 +17,6 @@
     "changelog": "kajona/changelog",
     "downloadIndicator": "kajona/downloadIndicator",
     "forms": "kajona/forms",
-    "loader": "kajona/loader",
     "messaging": "kajona/messaging",
     "moduleNavigation": "kajona/moduleNavigation",
     "permissions": "kajona/permissions",
