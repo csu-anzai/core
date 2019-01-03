@@ -142,7 +142,7 @@ class Ajax {
      * @param strMethod default is POST
      * @param dataType
      */
-    public static genericAjaxCall(module: string, action: string, systemid: any, objCallback: Function, objDoneCallback?: Function, objErrorCallback?: Function, strMethod?: string, dataType?: string) {
+    public static genericAjaxCall(module: string, action: string, systemid: any, objCallback?: Function, objDoneCallback?: Function, objErrorCallback?: Function, strMethod?: string, dataType?: string) {
         var postTarget = KAJONA_WEBPATH + '/xml.php?admin=1&module='+module+'&action='+action;
         var data;
         if(systemid) {
@@ -155,10 +155,14 @@ class Ajax {
             url: postTarget,
             data: data,
             error: function(xhr: JQuery.jqXHR, textStatus: string, errorThrown: string){
-                objCallback(xhr, textStatus, errorThrown);
+                if (objCallback) {
+                    objCallback(xhr, textStatus, errorThrown);
+                }
             },
             success: function(data: any, textStatus: string, xhr: JQuery.jqXHR){
-                objCallback(data, textStatus, xhr);
+                if (objCallback) {
+                    objCallback(data, textStatus, xhr);
+                }
             },
             dataType: dataType ? dataType : 'text'
         }).always(
