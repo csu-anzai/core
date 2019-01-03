@@ -6,7 +6,7 @@
 
 declare(strict_types = 1);
 
-namespace Kajona\System\View\Components\Popover;
+namespace Kajona\System\View\Components\Listbody;
 
 use Kajona\System\View\Components\AbstractComponent;
 

@@ -41,7 +41,7 @@ use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
 use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
-use Kajona\System\View\Components\Popover\Listbody;
+use Kajona\System\View\Components\Listbody\Listbody;
 use Kajona\System\View\Components\Popover\Popover;
 use Kajona\System\View\Components\Tabbedcontent\Tabbedcontent;
 use Kajona\System\View\Components\Textrow\TextRow;
