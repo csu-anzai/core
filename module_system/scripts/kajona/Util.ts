@@ -303,6 +303,8 @@ class Util {
         document.body.removeChild(textArea);
     }
 
+    private static element = document.createElement('div');
+
     /**
      * decodes html entites, call it just like
      * util decodeHTMLEntities(strText)
@@ -312,24 +314,18 @@ class Util {
      * @see http://stackoverflow.com/questions/5796718/html-entity-decode/9609450#9609450
      *
      */
-    public static decodeHtmlEntities() {
+    public static decodeHtmlEntities(strText: string) {
         // this prevents any overhead from creating the object each time
-        var element = document.createElement('div');
-
-        function decodeHTMLEntities (strText: string) {
-            if(strText && typeof strText === 'string') {
-                // strip script/html tags
-                strText = strText.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
-                strText = strText.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
-                element.innerHTML = strText;
-                strText = element.textContent;
-                element.textContent = '';
-            }
-
-            return strText;
+        if(strText && typeof strText === 'string') {
+            // strip script/html tags
+            strText = strText.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
+            strText = strText.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
+            this.element.innerHTML = strText;
+            strText = this.element.textContent;
+            this.element.textContent = '';
         }
 
-        return decodeHTMLEntities;
+        return strText;
     }
 
 }
