@@ -13,6 +13,7 @@ use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\Validators\DummyValidator;
+use Kajona\System\View\Components\Formentry\Objectlist\Checkboxarray;
 
 /**
  * A formelement rendering an array of checkboxes.
@@ -73,7 +74,12 @@ class FormentryCheckboxarray extends FormentryBase implements FormentryPrintable
             $strReturn .= $objToolkit->formTextRow($this->getStrHint());
         }
 
-        $strReturn .= $objToolkit->formInputCheckboxArray($this->getStrEntryName(), $this->getStrLabel(), $this->intType, $this->arrKeyValues, $this->getStrValue(), $this->bitInline, $this->getBitReadonly());
+        $cmp = new Checkboxarray($this->getStrEntryName(), $this->getStrLabel(), $this->arrKeyValues, $this->getStrValue());
+        $cmp->setType($this->intType);
+        $cmp->setInline($this->bitInline);
+        $cmp->setReadOnly($this->getBitReadonly());
+
+        $strReturn .= $cmp->renderComponent();
         $strReturn .= $objToolkit->formInputHidden($this->getPresCheckKey(), "1");
 
         return $strReturn;
