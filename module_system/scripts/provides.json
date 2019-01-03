@@ -15,7 +15,6 @@
     "vue": "vue/vue.min",
 
     "changelog": "kajona/changelog",
-    "desktopNotification": "kajona/desktopNotification",
     "downloadIndicator": "kajona/downloadIndicator",
     "folderview": "kajona/folderview",
     "forms": "kajona/forms",
