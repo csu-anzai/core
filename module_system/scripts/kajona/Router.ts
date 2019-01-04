@@ -22,7 +22,7 @@ interface MarkedElements {
 }
 
 interface Forms {
-    monitoredEl: string
+    monitoredEl: JQuery<HTMLElement>
     submittedEl: string
 }
 
