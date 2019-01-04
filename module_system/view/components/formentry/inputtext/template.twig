@@ -2,7 +2,7 @@
 <div class="form-group core-component-formentry-inputtext">
     <label for="{{ name|e('html_attr') }}" class="col-sm-3 control-label">{{ title }}</label>
     <div class="col-sm-6 {{ class|e('html_attr') }}">
-        <input type="{{ type|e('html_attr') }}" id="{{ name|e('html_attr') }}" name="{{ name|e('html_attr') }}" value="{{ value|e('html_attr') }}" class="form-control {{ class|e('html_attr') }}" {% if readOnly %}readonly{% endif %} {% for key, value in data %}data-{{ key }}="{{ value|e('html_attr') }}"{% endfor %}>
+        <input type="{{ type|e('html_attr') }}" id="{{ name|e('html_attr') }}" name="{{ name|e('html_attr') }}" value="{{ value|e('html_attr') }}" class="form-control " {% if readOnly %}readonly{% endif %} {% for key, value in data %}data-{{ key }}="{{ value|e('html_attr') }}"{% endfor %}>
     </div>
     {% if opener %}
     <div class="col-sm-2 form-opener">
