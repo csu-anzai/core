@@ -3,9 +3,9 @@
 
 import * as $ from "jquery";
 import "bootstrap";
-import router = require("../../../module_system/scripts/kajona/Router");
-import util = require("../../../module_system/scripts/kajona/Util");
-import folderview = require("../../../module_system/scripts/kajona/Folderview");
+import Router = require("../../../module_system/scripts/kajona/Router");
+import Util = require("../../../module_system/scripts/kajona/Util");
+import Folderview = require("../../../module_system/scripts/kajona/Folderview");
 
 class Dialog {
 
@@ -115,7 +115,7 @@ class Dialog {
 
     public setContentIFrame(strUrl : string) {
         this.iframeId = this.containerId + '_iframe';
-        let result = router.generateUrl(strUrl);
+        let result = Router.generateUrl(strUrl);
         strUrl = KAJONA_WEBPATH+result.url+"&combinedLoad=1";
         this.iframeURL = strUrl;
     };
@@ -138,7 +138,7 @@ class Dialog {
         }
 
 
-        if ( util.isStackedDialog()) {
+        if ( Util.isStackedDialog()) {
 
             //trigger a new dialog on the base window
 
@@ -146,7 +146,7 @@ class Dialog {
 
                 //TODO: POC:
                 parent.KAJONA.util.dialogHelper.showIframeDialogStacked(this.iframeURL, $('#' + this.containerId + '_title').text());
-                parent.KAJONA.util.folderviewHandler = folderview;
+                parent.KAJONA.util.folderviewHandler = Folderview;
 
                 //open the iframe in a regular popup
                 //workaround for stacked dialogs. if a modal is already opened, the second iframe is loaded in a popup window.
@@ -179,7 +179,7 @@ class Dialog {
         }
 
 
-        if(!util.isStackedDialog() && this.bitLarge) {
+        if(!Util.isStackedDialog() && this.bitLarge) {
             $('#' + this.containerId+" .modal-dialog").addClass("modal-lg-lg");
 
             $('#' + this.containerId).on('hidden.bs.modal', function (e) {
