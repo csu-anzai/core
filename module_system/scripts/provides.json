@@ -6,7 +6,7 @@
     "jquerycaret": "jquerytag/jquery.caret",
     "jquerytageditor": "jquerytag/jquery.tag-editor",
     "d3": "d3/d3.min",
-    "calendar-heatmap": "d3/calendar-heatmap",
+    "calendarheatmap": "d3/calendar-heatmap",
     "jstree": "jstree3/dist/jstree.min",
     "moment": "moment/moment.min",
     "qtip": "qtip2/jquery.qtip.min",
@@ -14,7 +14,6 @@
     "toastr": "toastr/toastr.min",
     "vue": "vue/vue.min",
 
-    "changelog": "kajona/changelog",
     "downloadIndicator": "kajona/downloadIndicator",
     "forms": "kajona/forms",
     "messaging": "kajona/messaging",
