@@ -4,6 +4,7 @@
 import * as $ from "jquery";
 import util = require("./Util");
 import lists = require("./Lists");
+import Dialog = require("../../../module_v4skin/scripts/kajona/Dialog");
 
 declare global {
     interface Window {
@@ -25,6 +26,11 @@ interface ObjectListItem {
  * Folderview functions
  */
 class Folderview {
+
+    /**
+     * holds a reference to the ModalDialog
+     */
+    public static dialog : Dialog;
 
     /**
      * Loads the passed url to the parent frame and closes the dialog
