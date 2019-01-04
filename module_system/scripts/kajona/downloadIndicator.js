@@ -5,7 +5,7 @@
 
 /**
  * The downloadIndicator may be used when starting a complex backend operation the browser needs to wait for.
- * Therefor an indicator is shown and being closed by the backend using a cookie
+ * Therefore an indicator is shown and being closed by the backend using a cookie
  *
  * Frontend:
  * <code>
