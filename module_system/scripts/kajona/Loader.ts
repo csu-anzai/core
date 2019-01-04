@@ -2,7 +2,7 @@
 ///<amd-module name="loader"/>
 
 import * as $ from "jquery";
-import util = require("./Util");
+import Util = require("./Util");
 
 interface Callback {
     requiredModules: Array<string>
@@ -89,7 +89,7 @@ class Loader {
         //see if the path has to be changed according to a phar-extracted content
         if(KAJONA_PHARMAP && !bitPreventPathAdding) {
             var arrMatches = strPath.match(/(core(.*))\/((module_|element_)([a-zA-Z0-9_])*)/i);
-            if (strPath.indexOf("files/extract") === -1 && arrMatches && util.inArray(arrMatches[3], KAJONA_PHARMAP)) {
+            if (strPath.indexOf("files/extract") === -1 && arrMatches && Util.inArray(arrMatches[3], KAJONA_PHARMAP)) {
                 strPath = strPath.replace(arrMatches[1], "files/extract")
             }
         }

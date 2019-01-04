@@ -2,10 +2,10 @@
 ///<amd-module name="router"/>
 
 import * as $ from "jquery";
-import tooltip = require("./Tooltip");
-import quickhelp = require("./Quickhelp");
-import ajax = require("./Ajax");
-import util = require("./Util");
+import Quickhelp = require("./Quickhelp");
+import Tooltip = require("./Tooltip");
+import Ajax = require("./Ajax");
+import Util = require("./Util");
 
 declare global {
     interface Window {
@@ -86,7 +86,7 @@ class Router {
                 var data = $(Router.markedElements.forms.submittedEl).serialize();
                 Router.markedElements.forms.submittedEl = null;
                 Router.markedElements.forms.monitoredEl = null;
-                ajax.loadUrlToElement('#moduleOutput', objUrl.url, data, false, 'POST', function(){
+                Ajax.loadUrlToElement('#moduleOutput', objUrl.url, data, false, 'POST', function(){
                     Router.applyFormCallbacks();
                 });
             } else {
@@ -101,7 +101,7 @@ class Router {
                     }
                 }
 
-                ajax.loadUrlToElement('#moduleOutput', objUrl.url, null, true);
+                Ajax.loadUrlToElement('#moduleOutput', objUrl.url, null, true);
             }
 
 
@@ -117,7 +117,7 @@ class Router {
 
 
         // detect where the page was loaded from an iframe and thus is displayed in a dialog
-        var isStackedDialog = util.isStackedDialog();
+        var isStackedDialog = Util.isStackedDialog();
 
         //strip webpaths injected into the url
         if (url.indexOf(KAJONA_WEBPATH) === 0) {
@@ -183,8 +183,8 @@ class Router {
     private static cleanPage() {
         //contentToolbar.resetBar(); //TODO: aktuell in ToolkitAdmin und RequestDispatcher, muss aber in einen Callback bevor der content in das target div geschrieben wird
         //breadcrumb.resetBar();
-        quickhelp.resetQuickhelp();
-        tooltip.removeTooltip($('*[rel=tooltip]'));
+        Quickhelp.resetQuickhelp();
+        Tooltip.removeTooltip($('*[rel=tooltip]'));
         //disable visible tooltips
         $('.qtip:visible').css('display', '');
     };

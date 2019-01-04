@@ -2,7 +2,7 @@
 ///<amd-module name="instantSave"/>
 
 import * as $ from "jquery";
-import ajax = require("./Ajax");
+import Ajax = require("./Ajax");
 
 /**
  * The saveIndicator is used to show a working-indicator associated with a ui element.
@@ -58,7 +58,7 @@ class InstantSave {
         var objStatusIndicator = new SaveIndicator($objChanged);
 
         objStatusIndicator.showProgress();
-        ajax.genericAjaxCall("system", "updateObjectProperty", keySplitted[0]+"&property="+keySplitted[1]+"&value="+$objChanged.val(), null,
+        Ajax.genericAjaxCall("system", "updateObjectProperty", keySplitted[0]+"&property="+keySplitted[1]+"&value="+$objChanged.val(), null,
             function() {
                 objStatusIndicator.addClass('peSaved');
                 window.setTimeout(function () {

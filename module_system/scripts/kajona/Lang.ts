@@ -2,7 +2,7 @@
 ///<amd-module name="lang"/>
 
 import * as $ from "jquery";
-import cacheManager = require("./CacheManager");
+import CacheManager = require("./CacheManager");
 
 interface QueueEntry {
     text: string,
@@ -100,7 +100,7 @@ class Lang {
 
         var arrData = this.queue[0];
         var strKey = arrData.module + '_' + KAJONA_LANGUAGE + '_' + KAJONA_BROWSER_CACHEBUSTER;
-        var objCache = cacheManager.get(strKey);
+        var objCache = CacheManager.get(strKey);
 
         if(objCache) {
             objCache = $.parseJSON(objCache);
@@ -136,7 +136,7 @@ class Lang {
                     return;
                 }
 
-                cacheManager.set(arrData.module + '_' + KAJONA_LANGUAGE + '_' + KAJONA_BROWSER_CACHEBUSTER, JSON.stringify(objResp));
+                CacheManager.set(arrData.module + '_' + KAJONA_LANGUAGE + '_' + KAJONA_BROWSER_CACHEBUSTER, JSON.stringify(objResp));
 
                 var strResp = null;
                 for (strKey in objResp) {

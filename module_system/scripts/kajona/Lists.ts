@@ -2,8 +2,8 @@
 ///<amd-module name="lists"/>
 
 import * as $ from "jquery";
-import lang = require("./Lang");
-import utils = require("./Util");
+import Lang = require("./Lang");
+import Util = require("./Util");
 
 class Lists {
 
@@ -138,7 +138,7 @@ class Lists {
             else {
                 $('#jsDialog_1_cancelButton').css('display', 'none');
                 $('#jsDialog_1_confirmButton').remove('click').on('click', function() {document.location.reload();}).html('<span data-lang-property="system:systemtask_close_dialog"></span>');
-                lang.initializeProperties($('#jsDialog_1_confirmButton'));
+                Lang.initializeProperties($('#jsDialog_1_confirmButton'));
             }
         }
     };
@@ -187,7 +187,7 @@ class Lists {
      * Enables selection by clicking a row-entry
      */
     public static initRowClick() {
-        var dialog = utils.isStackedDialog();
+        var dialog = Util.isStackedDialog();
         var tds = $('#moduleOutput .admintable tr td');
         tds.addClass('clickable');
         tds.on('click', function(e) {

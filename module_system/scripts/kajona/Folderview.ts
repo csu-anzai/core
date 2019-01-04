@@ -2,9 +2,9 @@
 ///<amd-module name="folderview"/>
 
 import * as $ from "jquery";
-import util = require("./Util");
-import lists = require("./Lists");
 import Dialog = require("../../../module_v4skin/scripts/kajona/Dialog");
+import Util = require("./Util");
+import Lists = require("./Lists");
 
 declare global {
     interface Window {
@@ -100,7 +100,7 @@ class Folderview {
      * @param {boolean} bitStayOpen
      */
     public static setObjectListItems(strElementName: string, arrItems: Array<ObjectListItem>, arrAvailableIds: Array<string>, strDeleteButton: string, bitStayOpen?: boolean){
-        var table = util.getElementFromOpener(strElementName);
+        var table = Util.getElementFromOpener(strElementName);
 
         var tbody = table.find('tbody');
         if(tbody.length > 0) {
@@ -143,7 +143,7 @@ class Folderview {
      * @param {Array} arrItems        - array with item of the following format {strSystemId: <systemid>, strDisplayName:<displayname>, strIcon:<icon>, strPath:<string>}
      */
     public static setCheckboxArrayObjectListItems(strElementName: string, arrItems: Array<ObjectListItem>){
-        var form = util.getElementFromOpener(strElementName);
+        var form = Util.getElementFromOpener(strElementName);
 
         var table = form.find('table');
         if(table.length > 0) {
@@ -209,7 +209,7 @@ class Folderview {
      * @deprecated
      */
     public static initRowClick() {
-        return lists.initRowClick();
+        return Lists.initRowClick();
     }
 
 }

@@ -2,8 +2,8 @@
 ///<amd-module name="user"/>
 
 import * as $ from "jquery";
-import ajax = require("./Ajax");
-import statusDisplay = require("./StatusDisplay");
+import Ajax = require("./Ajax");
+import StatusDisplay = require("./StatusDisplay");
 
 class User {
 
@@ -18,14 +18,14 @@ class User {
             return true;
         }
 
-        ajax.genericAjaxCall("user", "apiGroupMemberAdd", "&userid="+userid+"&groupid="+groupid, function(data: any, status: string) {
+        Ajax.genericAjaxCall("user", "apiGroupMemberAdd", "&userid="+userid+"&groupid="+groupid, function(data: any, status: string) {
             if (status == 'success') {
                 $('.admintable').append(data.row);
                 $('#group_add_id').val("");
                 $('#group_add').val("");
-                statusDisplay.messageOK(data.message);
+                StatusDisplay.messageOK(data.message);
             } else {
-                statusDisplay.messageError(data);
+                StatusDisplay.messageError(data);
             }
         }, null, null, 'post', 'json');
     };
@@ -36,7 +36,7 @@ class User {
      * @param userid
      */
     public static removeGroupFromUser(groupid: string, userid: string) {
-        ajax.genericAjaxCall("user", "apiGroupMemberDelete", "&userid="+userid+"&groupid="+groupid, function(data: any, status: string) {
+        Ajax.genericAjaxCall("user", "apiGroupMemberDelete", "&userid="+userid+"&groupid="+groupid, function(data: any, status: string) {
             if (status == 'success') {
                 $('tr[data-systemid='+groupid+']').closest('tbody').remove();
             }

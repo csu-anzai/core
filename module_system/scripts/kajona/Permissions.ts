@@ -2,7 +2,7 @@
 ///<amd-module name="permissions"/>
 
 import * as $ from "jquery";
-import ajax = require("./Ajax");
+import Ajax = require("./Ajax");
 
 interface Response {
     bitInherited: boolean
@@ -114,7 +114,7 @@ class Permissions {
     }
 
     public static loadRights(){
-        ajax.loadUrlToElement("#rightsContainer", KAJONA_WEBPATH + '/xml.php?module=right&action=loadRights&systemid=' + $('#systemid').val() + '&folderview=1', "", true, "GET", function(){
+        Ajax.loadUrlToElement("#rightsContainer", KAJONA_WEBPATH + '/xml.php?module=right&action=loadRights&systemid=' + $('#systemid').val() + '&folderview=1', "", true, "GET", function(){
             Permissions.toggleInherit();
         });
     }

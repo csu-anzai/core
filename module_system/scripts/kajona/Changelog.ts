@@ -4,8 +4,8 @@
 import * as $ from "jquery";
 import * as moment from "moment";
 import * as calHeatmap from "calendarheatmap";
-import ajax = require("./Ajax");
 import "d3";
+import Ajax = require("./Ajax");
 
 declare global {
     // the d3 type definition does not contains the time API
@@ -102,7 +102,7 @@ class Changelog {
     public static loadDate(strSystemId : string, strDate : string, strType : string, objCallback? : Function) {
         $('#date_' + strType).html("");
         $('.changelog_property_' + strType).html("");
-        ajax.genericAjaxCall("system", "changelogPropertiesForDate", "&systemid="+strSystemId+"&date="+strDate, function(body : any, status : string, jqXHR : any) {
+        Ajax.genericAjaxCall("system", "changelogPropertiesForDate", "&systemid="+strSystemId+"&date="+strDate, function(body : any, status : string, jqXHR : any) {
             let data = JSON.parse(body);
             let props = data.properties;
             $('#date_' + strType).html("<a href='#' onclick='require(\"changelog\").selectColumn(\"" + strType + "\");return false;' style='display:block;'>" + data.date + "</a>");
@@ -156,7 +156,7 @@ class Changelog {
         var now = moment(Changelog.now).format("YYYYMMDD235959");
         var yearAgo = moment(Changelog.yearAgo).format("YYYYMMDD235959");
 
-        ajax.genericAjaxCall("system", "changelogChartData", "&systemid=" + Changelog.systemId + "&now=" + now + "&yearAgo=" + yearAgo, function(body : any, status : string, jqXHR : any) {
+        Ajax.genericAjaxCall("system", "changelogChartData", "&systemid=" + Changelog.systemId + "&now=" + now + "&yearAgo=" + yearAgo, function(body : any, status : string, jqXHR : any) {
             let data = JSON.parse(body);
 
             var chartData = d3.time.days(Changelog.yearAgo, Changelog.now).map(function (dateElement) {

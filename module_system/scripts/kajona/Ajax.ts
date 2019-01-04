@@ -3,10 +3,10 @@
 
 import * as $ from "jquery";
 import * as JQuery from "jquery";
-import workingIndicator = require("./WorkingIndicator");
-import util = require("./Util");
-import tooltip = require("./Tooltip");
-import statusDisplay = require("./StatusDisplay");
+import WorkingIndicator = require("./WorkingIndicator");
+import Util = require("./Util");
+import Tooltip = require("./Tooltip");
+import StatusDisplay = require("./StatusDisplay");
 
 interface SystemStatusMessages {
     strInActiveIcon: string
@@ -43,9 +43,9 @@ class Ajax {
      * @param {Function} objCallback - is called if the request was successful
      */
     public static loadUrlToElement(strElementSelector: string, strUrl: string, strData?: any, bitBlockLoadingContainer?: boolean, strMethod?: string, objCallback?: Function) {
-        workingIndicator.start();
+        WorkingIndicator.start();
 
-        var objElement = util.getElement(strElementSelector);
+        var objElement = Util.getElement(strElementSelector);
 
         if (!bitBlockLoadingContainer) {
             objElement.html('<div class="loadingContainer"></div>');
@@ -77,7 +77,7 @@ class Ajax {
                     objElement.html(data);
                     objElement.css('opacity', '1');
 
-                    tooltip.initTooltip();
+                    Tooltip.initTooltip();
 
                     if (typeof objCallback === 'function') {
                         objCallback();
@@ -86,7 +86,7 @@ class Ajax {
             }
         ).always(
             function(response) {
-                workingIndicator.stop();
+                WorkingIndicator.stop();
                 objElement.css('opacity', '1');
             }
         ).fail(function(data) {
@@ -105,7 +105,7 @@ class Ajax {
             }
 
             //maybe it was xml, so strip
-            statusDisplay.messageError("<b>Request failed!</b><br />");
+            StatusDisplay.messageError("<b>Request failed!</b><br />");
         });
     };
 
@@ -136,10 +136,10 @@ class Ajax {
 
     public static regularCallback(data: any, status: string, jqXHR: XMLHttpRequest) {
         if(status == 'success') {
-            statusDisplay.displayXMLMessage(data)
+            StatusDisplay.displayXMLMessage(data)
         }
         else {
-            statusDisplay.messageError("<b>Request failed!</b>")
+            StatusDisplay.messageError("<b>Request failed!</b>")
         }
     };
 
@@ -162,7 +162,7 @@ class Ajax {
             data = this.getDataObjectFromString(systemid, true);
         }
 
-        workingIndicator.start();
+        WorkingIndicator.start();
         $.ajax({
             type: strMethod ? strMethod : 'POST',
             url: postTarget,
@@ -180,7 +180,7 @@ class Ajax {
             dataType: dataType ? dataType : 'text'
         }).always(
             function() {
-                workingIndicator.stop();
+                WorkingIndicator.stop();
             }
         ).fail(function() {
             if (objErrorCallback) {
@@ -209,7 +209,7 @@ class Ajax {
         var me = this;
         var objCallback = function(data: any, status: string, jqXHR: JQuery.jqXHR) {
             if (status == 'success') {
-                statusDisplay.displayXMLMessage(data);
+                StatusDisplay.displayXMLMessage(data);
 
                 if (bitReload !== null && bitReload === true) {
                     location.reload();
@@ -232,16 +232,16 @@ class Ajax {
                         adminListRow.removeClass('disabled');
                     }
 
-                    tooltip.addTooltip($('#statusLink_' + strSystemIdToSet).find("[rel='tooltip']"));
+                    Tooltip.addTooltip($('#statusLink_' + strSystemIdToSet).find("[rel='tooltip']"));
                 }
             } else {
                 // in the error case the arguments are (jqXHR, status) so we need to get the responseText from the
                 // xhr object
-                statusDisplay.messageError(data.responseText);
+                StatusDisplay.messageError(data.responseText);
             }
         };
 
-        tooltip.removeTooltip($('#statusLink_' + strSystemIdToSet).find("[rel='tooltip']"));
+        Tooltip.removeTooltip($('#statusLink_' + strSystemIdToSet).find("[rel='tooltip']"));
         this.genericAjaxCall("system", "setStatus", strSystemIdToSet, objCallback);
     };
 

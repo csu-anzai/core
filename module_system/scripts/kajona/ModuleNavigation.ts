@@ -2,7 +2,7 @@
 ///<amd-module name="moduleNavigation"/>
 
 import * as $ from "jquery";
-import ajax = require("./Ajax");
+import Ajax = require("./Ajax");
 
 class ModuleNavigation {
 
@@ -42,7 +42,7 @@ class ModuleNavigation {
         if (!strAspect) {
             strAspect = "";
         }
-        ajax.loadUrlToElement("#moduleNavigation", '/xml.php?admin=1&module=v4skin&action=getBackendNavi&aspect='+(strAspect ? strAspect : ""));
+        Ajax.loadUrlToElement("#moduleNavigation", '/xml.php?admin=1&module=v4skin&action=getBackendNavi&aspect='+(strAspect ? strAspect : ""));
     }
 
     /**

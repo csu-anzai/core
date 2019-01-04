@@ -2,7 +2,7 @@
 ///<amd-module name="contentToolbar"/>
 
 import * as $ from "jquery";
-import util = require("./Util");
+import Util = require("./Util");
 
 /**
  * The object representing a single toolbar entry
@@ -76,7 +76,7 @@ class ContentToolbar {
      * @param $objContainer
      */
     public static registerRecordActions($objContainer : JQuery) {
-        if (!util.isStackedDialog()) {
+        if (!Util.isStackedDialog()) {
             var $objNode = $('<div>').attr('class', 'actionToolbar pull-right').append($objContainer.children());
             this.$objActionToolbarContainer.append($objNode);
 
