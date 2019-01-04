@@ -20,7 +20,7 @@ class Dialog {
 
     private unbindOnClick : boolean = false;
 
-    constructor(strDialogId : string, intDialogType : number, bitDragging : boolean, bitResizing : boolean) {
+    constructor(strDialogId : string, intDialogType : number, bitDragging? : boolean, bitResizing? : boolean) {
         this.intDialogType = intDialogType;
         this.bitDragging = bitDragging;
         this.bitResizing = bitResizing;
@@ -52,7 +52,7 @@ class Dialog {
         this.bitLarge = bitLarge
     };
 
-    public setContent(strContent : string, strConfirmButton : string, strLinkHref : string, blockHide : boolean) {
+    public setContent(strContent : string, strConfirmButton : string, strLinkHref : string, blockHide? : boolean) {
 
         if (this.intDialogType == 1) {
             this.unbindEvents();
@@ -120,7 +120,7 @@ class Dialog {
         this.iframeURL = strUrl;
     };
 
-    public init(intWidth : number, intHeight : number) {
+    public init(intWidth? : number, intHeight? : number) {
 
         var $modal = $('#' + this.containerId).modal({
             backdrop: true,
