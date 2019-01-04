@@ -1,5 +1,5 @@
 ///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="dialog"/>
+///<amd-module name="dialogHelper"/>
 
 import Dialog = require("./Dialog");
 import Folderview = require("../../../module_system/scripts/kajona/Folderview");
