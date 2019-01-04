@@ -222,3 +222,5 @@ class Messaging {
     };
 
 }
+
+export = Messaging;
