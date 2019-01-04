@@ -8,10 +8,23 @@ import util = require("./Util");
 import tooltip = require("./Tooltip");
 import statusDisplay = require("./StatusDisplay");
 
+interface SystemStatusMessages {
+    strInActiveIcon: string
+    strActiveIcon: string
+}
+
 /**
  * AJAX functions for connecting to the server
  */
 class Ajax {
+
+    /**
+     * @deprecated
+     */
+    public static setSystemStatusMessages : SystemStatusMessages = {
+        strInActiveIcon : '',
+        strActiveIcon : ''
+    };
 
     /**
      * Shorthand method to load a html fragement into a node identified by the selector.
@@ -231,11 +244,6 @@ class Ajax {
         tooltip.removeTooltip($('#statusLink_' + strSystemIdToSet).find("[rel='tooltip']"));
         this.genericAjaxCall("system", "setStatus", strSystemIdToSet, objCallback);
     };
-
-    private static setSystemStatusMessages : {
-        strInActiveIcon : '',
-        strActiveIcon : ''
-    }
 
 }
 
