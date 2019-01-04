@@ -93,7 +93,7 @@ define("loader", ["jquery", "util"], function ($, util) {
             if(KAJONA_PHARMAP && !bitPreventPathAdding) {
                 var arrMatches = strPath.match(/(core(.*))\/((module_|element_)([a-zA-Z0-9_])*)/i);
                 if (strPath.indexOf("files/extract") === -1 && arrMatches && util.inArray(arrMatches[3], KAJONA_PHARMAP)) {
-                    strPath = strPath.replace(arrMatches[1], "files/extract")
+                    strPath = '/files/extract'+strPath
                 }
             }
 
