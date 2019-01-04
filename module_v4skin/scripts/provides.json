@@ -14,7 +14,6 @@
     "jquery-floatThread": "jquery/jquery.floatThead.min",
     "jquery-touchPunch": "jquery/jquery.ui.touch-punch.min",
 
-    "dialogHelper": "kajona/dialogHelper",
     "listSortable" : "kajona/listSortable",
     "tagEditor" : "kajona/tagEditor",
     "v4skin": "kajona/v4skin"
