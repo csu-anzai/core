@@ -13,7 +13,6 @@ class Dialog {
     private bitDragging : boolean;
     private bitResizing : boolean;
 
-    private dialog = null;
     private containerId : string;
     private iframeId : string = null;
     private iframeURL : string = null;
@@ -26,7 +25,6 @@ class Dialog {
         this.bitDragging = bitDragging;
         this.bitResizing = bitResizing;
 
-        this.dialog = null;
         this.containerId = strDialogId;
         this.iframeId = null;
         this.iframeURL = null;
