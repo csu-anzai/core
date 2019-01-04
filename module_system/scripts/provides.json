@@ -16,7 +16,6 @@
 
     "downloadIndicator": "kajona/downloadIndicator",
     "forms": "kajona/forms",
-    "messaging": "kajona/messaging",
     "systemTask": "kajona/systemTask",
     "tree": "kajona/tree"
   },
