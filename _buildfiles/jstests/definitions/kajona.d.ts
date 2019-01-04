@@ -5,6 +5,9 @@
 ///<reference path="../node_modules/@types/requirejs/index.d.ts" />
 ///<reference path="../node_modules/@types/bootstrap/index.d.ts" />
 ///<reference path="../node_modules/@types/jqueryui/index.d.ts" />
+///<reference path="../node_modules/@types/d3/index.d.ts" />
+///<reference path="moment.d.ts" />
+///<reference path="calendarheatmap.d.ts" />
 
 declare module 'jquery' {
     export = jQuery;
