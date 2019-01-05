@@ -1521,7 +1521,7 @@ HTML;
      */
     public function genericAdminList($strId, $strName, $strIcon, $strActions, $strAdditionalInfo = "", $strDescription = "", $bitCheckbox = false, $strCssAddon = "", $strDeleted = "")
     {
-        $comp = new Listbody($strId, $strName, $strIcon, $strActions);
+        $comp = new Listbody($strId, $strName ?? "", $strIcon, $strActions);
         $comp->setAdditionalInfo($strAdditionalInfo)->setDescription($strDescription)->setCheckbox($bitCheckbox)->setCssAddon($strCssAddon)->setDeleted($strDeleted);
         return $comp->renderComponent();
     }
