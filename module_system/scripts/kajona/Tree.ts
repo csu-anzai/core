@@ -151,10 +151,6 @@ class JSTree {
     private treeviewExpanders : Array<string> = null; //array of ids
     private initiallySelectedNodes : Array<string> = null; //array of ids
 
-    public constructor() {
-        this.initTree();
-    }
-
     /**
      * Moves nodes below another node.
      * Triggers a reload of the page after node was moved
@@ -473,14 +469,13 @@ class JSTree {
 
                     var node = arrArguments[0];
                     var nodeDataAttribute = treeContext.getNodeWithDataAttribute(node, 'is_not_draggable');
-                    if(nodeDataAttribute !== null){
+                    if (nodeDataAttribute !== null){
                         return false;
                     }
 
                     return true;
                 }
             },
-            'types': {},
             'conditionalselect': ConditionalSelect.handleConditionalSelect,
 
             'plugins': ['conditionalselect']
@@ -488,12 +483,11 @@ class JSTree {
 
         /* Extend Js Tree Object due to jsTreeConfig*/
         if (this.treeConfig.checkbox) {
-            jsTreeObj.plugins.push('checkbox');
-
             let defaultsCheckbox : JSTreeStaticDefaultsCheckbox = {
                 three_state: false//disable three state checkboxes by default
             };
 
+            jsTreeObj.plugins.push('checkbox');
             jsTreeObj.checkbox = defaultsCheckbox;
         }
         if (this.treeConfig.dnd) {
@@ -504,13 +498,12 @@ class JSTree {
             jsTreeObj.types = this.treeConfig.types;
         }
         if (this.treeConfig.contextmenu) {
-            jsTreeObj.plugins.push('contextmenu');
-
             let defaultsContextMenu : JSTreeStaticDefaultsContextMenu = {
                 items: this.treeConfig.contextmenu.items,
                 show_at_node: false
             };
 
+            jsTreeObj.plugins.push('contextmenu');
             jsTreeObj.contextmenu = defaultsContextMenu;
         }
 
@@ -578,7 +571,7 @@ class Tree {
     private static conditionalselect : ConditionalSelect = ConditionalSelect;
 
     public static jstree() {
-        return JSTree;
+        return new JSTree();
     }
 
     /**
