@@ -14,7 +14,7 @@ class Dbbrowser {
      * @param column
      */
     public static addIndex(tableName: string, column: string) {
-        Ajax.genericAjaxCall("dbbrowser", "apiAddIndex", "&table="+tableName+"&column="+column, function(data, status) {
+        Ajax.genericAjaxCall("dbbrowser", "apiAddIndex", "&table="+tableName+"&column="+column, function(data: any, status: string) {
             if (status == 'success') {
                 Ajax.loadUrlToElement('.schemaDetails', '/xml.php?module=dbbrowser&action=apiSystemSchema&table='+tableName);
             }
@@ -28,7 +28,7 @@ class Dbbrowser {
      * @param indexName
      */
     public static deleteIndex(tableName: string, indexName: string) {
-        Ajax.genericAjaxCall("dbbrowser", "apiDeleteIndex", "&table="+tableName+"&index="+indexName, function(data, status) {
+        Ajax.genericAjaxCall("dbbrowser", "apiDeleteIndex", "&table="+tableName+"&index="+indexName, function(data: any, status: string) {
             if (status == 'success') {
                 Ajax.loadUrlToElement('.schemaDetails', '/xml.php?module=dbbrowser&action=apiSystemSchema&table='+tableName);
             }
@@ -42,7 +42,7 @@ class Dbbrowser {
      * @param indexName
      */
     public static recreateIndex(tableName: string, indexName: string) {
-        Ajax.genericAjaxCall("dbbrowser", "apiRecreateIndex", "&table="+tableName+"&index="+indexName, function(data, status) {
+        Ajax.genericAjaxCall("dbbrowser", "apiRecreateIndex", "&table="+tableName+"&index="+indexName, function(data: any, status: string) {
             if (status == 'success') {
                 Ajax.loadUrlToElement('.schemaDetails', '/xml.php?module=dbbrowser&action=apiSystemSchema&table='+tableName);
             }
