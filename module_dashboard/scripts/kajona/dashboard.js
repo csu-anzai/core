@@ -26,25 +26,9 @@ define("dashboard", ["jquery", "jquery-ui", "ajax", "statusDisplay", "tooltip", 
 
             $('.adminwidgetColumn > div.core-component-widget').each(function () {
                 var systemId = $(this).data('systemid');
-                ajax.genericAjaxCall('dashboard', 'getWidgetContent', systemId, function(data, status, jqXHR) {
 
-                    content = $("div.core-component-widget[data-systemid='"+systemId+"'] .content");
+                ajax.loadUrlToElement("div.core-component-widget[data-systemid='"+systemId+"'] .content", "/xml.php?admin=1&module=dashboard&action=getWidgetContent&systemid="+systemId);
 
-                    if (status == 'success') {
-                        var $parent = content.parent();
-                        content.remove();
-
-                        var $newNode = $("<div class='content loaded'></div>").append($.parseJSON(data));
-                        $parent.append($newNode);
-
-                        //TODO use jquerys eval?
-                        util.evalScript(data);
-                        tooltip.initTooltip();
-
-                    } else {
-                        //statusDisplay.messageError('<b>Request failed!</b><br />' + data);
-                    }
-                });
             });
 
             $("div.adminwidgetColumn").each(function(index) {
@@ -75,6 +59,11 @@ define("dashboard", ["jquery", "jquery-ui", "ajax", "statusDisplay", "tooltip", 
                 }).find("h2").css("cursor", "move");
             });
 
+        },
+
+        updateWidget: function (form, strSystemid) {
+            var data = $(form).serialize();
+            ajax.loadUrlToElement("div.core-component-widget[data-systemid='"+strSystemid+"'] .content", "/xml.php?admin=1&module=dashboard&action=updateWidgetContent&systemid="+strSystemid+"&"+data);
         }
     };
 

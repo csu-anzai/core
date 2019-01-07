@@ -420,9 +420,10 @@ JS;
     }
 
     /**
-     * Renderes the content of a single widget.
+     * Renders the content of a single widget.
      *
      * @return string
+     * @throws Exception
      * @permissions view
      * @responseType json
      */
@@ -435,6 +436,45 @@ JS;
         $objWidgetModel = new DashboardWidget($this->getSystemid());
         if ($objWidgetModel->rightView()) {
             $objConcreteWidget = $objWidgetModel->getConcreteAdminwidget();
+
+            if (!$objConcreteWidget->getBitBlockSessionClose()) {
+                Carrier::getInstance()->getObjSession()->sessionClose();
+            }
+
+            //disable the internal changelog
+            SystemChangelog::$bitChangelogEnabled = false;
+            $strReturn = json_encode($objConcreteWidget->generateWidgetOutput());
+
+        } else {
+            ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
+            $strReturn = "<message><error>".xmlSafeString($this->getLang("commons_error_permissions"))."</error></message>";
+        }
+
+        return $strReturn;
+    }
+
+    /**
+     * Updates and renders the content of a single widget.
+     *
+     * @return string
+     * @throws Exception
+     * @permissions view
+     * @responseType json
+     */
+    protected function actionUpdateWidgetContent()
+    {
+
+        //load the aspect and close the session afterwards
+        SystemAspect::getCurrentAspect();
+        $strSystemId = $this->getParam('systemid');
+        $objWidgetModel = new DashboardWidget($strSystemId);
+        if ($objWidgetModel->rightView()) {
+            $objConcreteWidget = $objWidgetModel->getConcreteAdminwidget();
+            foreach ($this->getAllParams() as $key => $value) {
+                $arrAllParams[rtrim($key, "_")] = $value;
+            }
+            $objConcreteWidget->loadFieldsFromArray($arrAllParams);
+            $objWidgetModel->setStrContent($objConcreteWidget->getFieldsAsString());
 
             if (!$objConcreteWidget->getBitBlockSessionClose()) {
                 Carrier::getInstance()->getObjSession()->sessionClose();
