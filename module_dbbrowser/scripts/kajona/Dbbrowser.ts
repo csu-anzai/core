@@ -52,3 +52,4 @@ class Dbbrowser {
 
 }
 
+export = Dbbrowser;
