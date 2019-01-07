@@ -52,7 +52,11 @@ class Dialog {
         this.bitLarge = bitLarge
     };
 
-    public setContent(strContent : string, strConfirmButton : string, strLinkHref : string, blockHide? : boolean) {
+    public getContainerId() : string {
+        return this.containerId;
+    }
+
+    public setContent(strContent : string, strConfirmButton : string, strLinkHref : string|Function, blockHide? : boolean) {
 
         if (this.intDialogType == 1) {
             this.unbindEvents();
