@@ -1,5 +1,5 @@
 ///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="user"/>
+///<amd-module name="tree"/>
 
 import * as $ from "jquery";
 import "jstree";
