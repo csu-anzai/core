@@ -14,8 +14,7 @@
     "toastr": "toastr/toastr.min",
     "vue": "vue/vue.min",
 
-    "systemTask": "kajona/systemTask",
-    "tree": "kajona/tree"
+    "systemTask": "kajona/systemTask"
   },
   "shim": {
     "jquery-ui" : {
