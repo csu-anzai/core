@@ -32,7 +32,7 @@ class Lang {
      * @param {HTMLElement} containerEl
      * @param {function} onReady
      */
-    public static initializeProperties(containerEl: any, onReady?: Function){
+    public static initializeProperties(containerEl?: any, onReady?: Function){
         if (!containerEl) {
             containerEl = "body";
         }
