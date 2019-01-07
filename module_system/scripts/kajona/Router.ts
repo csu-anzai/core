@@ -23,7 +23,7 @@ interface MarkedElements {
 
 interface Forms {
     monitoredEl: JQuery<HTMLElement>
-    submittedEl: string
+    submittedEl: HTMLFormElement
 }
 
 class Router {
