@@ -11,7 +11,6 @@
     "@types/jquery": "^3.3.29",
     "@types/jquery.fileupload": "^9.22.0",
     "@types/jqueryui": "^1.12.6",
-    "@types/jstree": "^3.3.37",
     "@types/qtip2": "^2.2.29",
     "@types/requirejs": "^2.1.31",
     "@types/toastr": "^2.1.35",
