@@ -25,6 +25,7 @@
     "less": "^2.5.3",
     "requirejs": "^2.3.5",
     "typescript": "^3.0.1",
-    "uglify-js": "^2.8.29"
+    "uglify-js": "^2.8.29",
+    "vue": "^2.5.21"
   }
 }
