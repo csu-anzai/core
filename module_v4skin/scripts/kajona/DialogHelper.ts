@@ -17,7 +17,7 @@ class DialogHelper {
      * @param strConfirmationHref
      * @returns {module:dialog}
      */
-    public static showConfirmationDialog(strTitle : string, strContent : string, strConfirmationLabel : string, strConfirmationHref : string) {
+    public static showConfirmationDialog(strTitle : string, strContent : string, strConfirmationLabel : string, strConfirmationHref : string|Function) {
         var dialogInstance = new Dialog('jsDialog_1', 1);
         dialogInstance.setTitle(strTitle);
         dialogInstance.setContent(strContent, strConfirmationLabel, strConfirmationHref);
