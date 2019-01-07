@@ -276,7 +276,7 @@ class Util {
      *
      * @param objElement - my be a jquery object or an id selector
      */
-    public static getElement(objElement: any) {
+    public static getElement(objElement: any) : JQuery {
         // If objElement is already a jQuery object
         if(objElement instanceof jQuery) {
             return objElement
