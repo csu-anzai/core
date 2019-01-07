@@ -1,23 +1,23 @@
-/**
- * (c) 2013-2017 by Kajona, www.kajona.de
- * Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt
- */
+///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
+///<amd-module name="forms"/>
+
+import * as $ from "jquery";
+import Util = require("./Util");
+import Router = require("./Router");
+import Tooltip = require("./Tooltip");
+import Ajax = require("./Ajax");
+import Messaging = require("./Messaging");
+import DialogHelper = require("../../../module_v4skin/scripts/kajona/DialogHelper");
+import Lang = require("./Lang");
 
 /**
  * Form management
- *
- * @module forms
  */
+class Forms {
 
-define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'dialogHelper'], function ($, tooltip, router, util, messaging, ajax, dialogHelper) {
-
-
-        /** @exports forms */
-    var forms = {};
-
-    forms.changeLabel = '';
-    forms.changeConfirmation = '';
-    forms.leaveUnsaved = '';
+    public static changeLabel : string = '';
+    public static changeConfirmation : string = '';
+    public static leaveUnsaved : string = '';
 
     /**
      * Hides a field in the form
@@ -25,8 +25,8 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
      * @param objField - my be a jquery field or a id selector
      * @param isResetValue if enabled, sets the fields value to emtpy / ""
      */
-    forms.hideField = function(objField, isResetValue) {
-        objField = util.getElement(objField);
+    public static hideField(objField : string|JQuery, isResetValue : boolean) {
+        objField = Util.getElement(objField);
 
         var objFormGroup = objField.is('h3') || objField.is('h4') || objField.is('p') ? objField : objField.closest('.form-group');
 
@@ -42,21 +42,20 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
         //reset value
         if (isResetValue && objField.attr('id')) {
             (objField.find('input[type=checkbox]').each(function() {
-                this.checked = false;
+                $(this).prop("checked", false);
             }));
-
 
             objField.val('');
         }
-    };
+    }
 
     /**
      * Shows a field in the form
      *
      * @param objField - my be a jquery object or an id selector
      */
-    forms.showField = function(objField) {
-        objField = util.getElement(objField);
+    public static showField(objField : string|JQuery) {
+        objField = Util.getElement(objField);
 
         var objFormGroup = objField.is('h3') || objField.is('h4') || objField.is('p') ? objField : objField.closest('.form-group');
 
@@ -68,15 +67,15 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
         if(objHintFormGroup.find('div > span.help-block').length > 0) {
             objHintFormGroup.slideDown(0);
         }
-    };
+    }
 
     /**
      * Disables a field
      *
      * @param objField - my be a jquery object or an id selector
      */
-    forms.setFieldReadOnly = function(objField) {
-        objField = util.getElement(objField);
+    public static setFieldReadOnly(objField : string|JQuery) {
+        objField = Util.getElement(objField);
 
         if ($('#'+objField.attr('id')+'_upl') && $('#'+objField.attr('id')+'_upl').fileupload) {
             $('#'+objField.attr('id')+'_upl').fileupload('disable');
@@ -88,15 +87,15 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
             objField.attr("readonly", "readonly");
         }
 
-    };
+    }
 
     /**
      * Enables a field
      *
      * @param objField - my be a jquery object or an id selector
      */
-    forms.setFieldEditable = function(objField) {
-        objField = util.getElement(objField);
+    public static setFieldEditable(objField : string|JQuery) {
+        objField = Util.getElement(objField);
 
 
         if($('#'+objField.attr('id')+'_upl') && $('#'+objField.attr('id')+'_upl').fileupload) {
@@ -107,7 +106,7 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
         } else {
             objField.removeProp("readonly");
         }
-    };
+    }
 
     /**
      * Gets the jQuery object
@@ -115,35 +114,35 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
      * @param objField - my be a jquery object or an id selector
      * @deprecated
      */
-    forms.getObjField = function (objField) {
+    public static getObjField(objField : string|JQuery) {
         // If objField is already a jQuery object
-        return util.getElement(objField);
-    };
+        return Util.getElement(objField);
+    }
 
     /**
      * Internal callback to initialize a form
      * @param strFormid
      * @param onChangeDetection
      */
-    forms.initForm = function(strFormid, onChangeDetection) {
+    public static initForm(strFormid : string, onChangeDetection : Function) {
         $('#'+strFormid+' input , #'+strFormid+' select , #'+strFormid+' textarea ').each(function() {
-            if ($(this).attr('data-kajona-block-initval')) {
-                return true;
+            if ($(this).data('kajona-block-initval')) {
+                return;
             }
-            $(this).attr("data-kajona-initval", $(this).val());
+            $(this).data("kajona-initval", $(this).val());
         });
 
         if (onChangeDetection) {
-            router.markerElements.forms.monitoredEl = $('#' + strFormid);
+            Router.markerElements.forms.monitoredEl = $('#' + strFormid);
         }
 
-    };
+    }
 
     /**
      * May be triggered to determine whether a form has been changed or not
      * @param $objForm
      */
-    forms.hasChanged = function($objForm) {
+    public static hasChanged($objForm : JQuery) {
         var changed = false;
         $objForm.find('[data-kajona-initval]').each(function() {
             var el = $(this);
@@ -154,13 +153,13 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
         });
 
         return changed;
-    };
+    }
 
     /**
      * Fires the animation on the submit button
      * @param objForm
      */
-    forms.animateSubmitStart = function(objForm) {
+    public static animateSubmitStart(objForm : HTMLFormElement) {
         var processingElemet = undefined;
         //try to get the button currently clicked
         if($(document.activeElement).prop('tagName') == "BUTTON") {
@@ -171,17 +170,14 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
         }
         processingElemet.addClass('processing');
         processingElemet.attr('disabled', 'disabled');
-    };
+    }
 
-    forms.animateSubmitStop = function(objForm) {
+    public static animateSubmitStop(objForm : HTMLFormElement) {
         var processingElemet = $(objForm).find('.savechanges');
 
         processingElemet.removeClass('processing');
         processingElemet.removeAttr('disabled');
-    };
-
-
-
+    }
 
     /**
      * Adds an onchange listener to the formentry with the passed ID. If the value is changed, a warning is rendered below the field.
@@ -190,13 +186,13 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
      * @param strElementId
      * @param bitConfirmChange
      */
-    forms.addChangelistener = function(strElementId, bitConfirmChange) {
+    public static addChangelistener(strElementId : string, bitConfirmChange : boolean) {
         $('#'+strElementId).on('change', function(objEvent) {
             if($(this).val() != $(this).attr("data-kajona-initval")) {
                 if($(this).closest(".form-group").find("div.changeHint").length == 0) {
 
                     if(bitConfirmChange && bitConfirmChange == true) {
-                        var bitResponse = confirm(forms.changeConfirmation);
+                        var bitResponse = confirm(Forms.changeConfirmation);
                         if(!bitResponse) {
                             $(this).val($(this).attr("data-kajona-initval"));
                             objEvent.preventDefault();
@@ -204,33 +200,33 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
                         }
                     }
 
-                    forms.addHint(strElementId, forms.changeLabel);
+                    Forms.addHint(strElementId, Forms.changeLabel);
                 }
             }
             else {
-                forms.removeHint(strElementId);
+                Forms.removeHint(strElementId);
             }
         });
 
-    };
+    }
 
     /**
      * Renders a hint below an input field
      * @param strElementId
      * @param strHint
      */
-    forms.addHint = function(strElementId, strHint) {
+    public static addHint(strElementId : string, strHint : string) {
         var $objTarget = $('#'+strElementId);
-        forms.removeHint(strElementId);
+        Forms.removeHint(strElementId);
         $objTarget.closest(".form-group").addClass("has-warning");
         $objTarget.closest(".form-group").children("div:first").append($('<div class="changeHint text-warning"><span class="glyphicon glyphicon-warning-sign"></span> ' + strHint + '</div>'));
-    };
+    }
 
     /**
      * Removes a hint from an input field
      * @param strElementId
      */
-    forms.removeHint = function(strElementId) {
+    public static removeHint(strElementId : string) {
         var $objTarget = $('#'+strElementId);
         $objTarget.closest(".form-group").removeClass("has-warning");
         if($objTarget.closest(".form-group").find("div.changeHint")) {
@@ -239,9 +235,7 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
 
     };
 
-
-
-    forms.renderMandatoryFields = function(arrFields) {
+    public static renderMandatoryFields(arrFields : Array<Array<string>>) {
         for(var i=0; i<arrFields.length; i++) {
             var arrElement = arrFields[i];
             if(arrElement.length == 2) {
@@ -252,9 +246,9 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
                 }
             }
         }
-    };
+    }
 
-    forms.renderMissingMandatoryFields = function(arrFields) {
+    public static renderMissingMandatoryFields(arrFields : Array<Array<string>>) {
         $(arrFields).each(function(intIndex, strField) {
             var strFieldName = strField[0];
             if($("#"+strFieldName) && !$("#"+strFieldName).hasClass('inputWysiwyg')) {
@@ -263,31 +257,31 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
                 $("#"+strFieldName).closest("div:not(.input-group)").append(objNode);
             }
         });
-    };
+    }
 
-    forms.loadTab = function(strEl, strHref) {
+    public static loadTab(strEl : string, strHref : string) {
         if (strHref && $("#" + strEl).length > 0) {
             $("#" + strEl).html("");
             $("#" + strEl).addClass("loadingContainer");
             $.get(strHref, function(data) {
                 $("#" + strEl).removeClass("loadingContainer");
                 $("#" + strEl).html(data);
-                tooltip.initTooltip();
+                Tooltip.initTooltip();
             });
         }
-    };
+    }
 
-    forms.defaultOnSubmit = function (objForm) {
+    public static defaultOnSubmit(objForm : HTMLFormElement) {
         $(objForm).on('submit', function() {
             return false;
         });
-        router.markerElements.forms.submittedEl = objForm;
+        Router.markerElements.forms.submittedEl = objForm;
         $(window).off('unload');
 
         this.animateSubmitStart(objForm);
 
         // disable polling on form submit
-        messaging.setPollingEnabled(false);
+        Messaging.setPollingEnabled(false);
 
         var $btn = $(document.activeElement);
         if (
@@ -295,39 +289,38 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
             $btn.length &&
 
             /* it's a child of the form */
-            $(objForm).has($btn) &&
+            $(objForm).has($btn.get(0)) &&
 
             /* it's really a submit element */
             $btn.is('button[type="submit"], input[type="submit"], input[type="image"]') &&
 
             /* it has a "name" attribute */
             $btn.is('[name]')
-            ) {
-                //name, value
-                $(objForm).append($('<input type="hidden">').attr('name', $btn.attr('name')).attr('value', $btn.val()));
-                /* access $btn.attr("name") and $btn.val() for data */
+        ) {
+            //name, value
+            $(objForm).append($('<input type="hidden">').attr('name', $btn.attr('name')).attr('value', $btn.attr('value')));
+            /* access $btn.attr("name") and $btn.val() for data */
         }
 
-        router.registerFormCallback("activate_polling", function(){
+        Router.registerFormCallback("activate_polling", function(){
             // enable polling after we receive the response of the form
-            messaging.setPollingEnabled(true);
+            Messaging.setPollingEnabled(true);
         });
 
-        router.loadUrl(objForm.action);
+        Router.loadUrl(objForm.action);
 
         return false;
-    };
+    }
 
-
-    forms.registerUnlockId = function (strId) {
-        router.registerLoadCallback("form_unlock", function() {
+    public static registerUnlockId(strId : string) {
+        Router.registerLoadCallback("form_unlock", function() {
             $.ajax({url: KAJONA_WEBPATH + '/xml.php?admin=1&module=system&action=unlockRecord&systemid='+strId});
         });
-    };
+    }
 
-    forms.getFilterURL = function () {
+    public static getFilterURL() {
         var filterUrl = $(".contentFolder form").attr('action') + '&' + $(".contentFolder form").serialize();
-        ajax.genericAjaxCall("tinyurl", "getShortUrl", {url: filterUrl}, function (data) {
+        Ajax.genericAjaxCall("tinyurl", "getShortUrl", {url: filterUrl}, function (data : any) {
             if (data) {
                 var modalContent = '<div class="input-group">' +
                     '<input type="text" class="form-control" value="' + data.url + '">' +
@@ -338,19 +331,16 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
                     '</span>' +
                     '</div>';
 
-                dialogHelper.showInfoModal("<span data-lang-property=\"system:copy_page_url\"></span>", modalContent);
-                require(["lang", "jquery"], function(lang, $) {
-                    lang.initializeProperties();
-                    lang.fetchSingleProperty("system", "copy_to_clipboard", function(value) {
-                        $(".copy-btn").attr("title", value);
-                    })
+                DialogHelper.showInfoModal("<span data-lang-property=\"system:copy_page_url\"></span>", modalContent);
+
+                Lang.initializeProperties();
+                Lang.fetchSingleProperty("system", "copy_to_clipboard", function(value : string) {
+                    $(".copy-btn").attr("title", value);
                 })
             }
         }, null, null, null, 'json');
     };
 
-    return forms;
+}
 
-});
-
-
+export = Forms;
