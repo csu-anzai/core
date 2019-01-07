@@ -7,6 +7,7 @@
 ///<reference path="../node_modules/@types/jqueryui/index.d.ts" />
 ///<reference path="../node_modules/@types/d3/index.d.ts" />
 ///<reference path="../node_modules/@types/jquery.fileupload/index.d.ts" />
+///<reference path="../node_modules/@types/jstree/index.d.ts" />
 ///<reference path="moment.d.ts" />
 ///<reference path="calendarheatmap.d.ts" />
 
