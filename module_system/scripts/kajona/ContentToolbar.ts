@@ -13,7 +13,7 @@ class Entry
     public strIdentifier: string;
     public bitActive: boolean;
 
-    constructor(strContent: string, strIdentifier: string, bitActive: any){
+    constructor(strContent: string, strIdentifier?: string, bitActive?: any){
         this.strContent = strContent;
         this.strIdentifier = strIdentifier;
         this.bitActive = bitActive != undefined && bitActive != '' ? bitActive : false;
