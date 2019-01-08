@@ -36,7 +36,7 @@ class Loader {
         }
     }
 
-    public static loadFile(arrInputFiles: Array<string>, objCallback: Function, bitPreventPathAdding : boolean) {
+    public static loadFile(arrInputFiles: Array<string>, objCallback?: Function, bitPreventPathAdding?: boolean) {
         var arrFilesToLoad : Array<string> = [];
 
         if(!$.isArray(arrInputFiles))
