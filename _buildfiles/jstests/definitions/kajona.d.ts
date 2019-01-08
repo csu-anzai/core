@@ -10,8 +10,10 @@
 ///<reference path="../node_modules/@types/chart.js/index.d.ts" />
 ///<reference path="../node_modules/vue/types/index.d.ts" />
 ///<reference path="calendarheatmap.d.ts" />
+///<reference path="catcomplete.d.ts" />
 ///<reference path="jstree.ts" />
 ///<reference path="moment.d.ts" />
+///<reference path="tageditor.d.ts" />
 
 declare module 'jquery' {
     export = jQuery;
@@ -29,6 +31,7 @@ interface Admin {
 
 interface Kajona {
     util: any;
+    portal: any;
     admin: any;
 }
 
