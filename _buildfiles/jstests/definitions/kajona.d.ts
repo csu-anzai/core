@@ -9,6 +9,7 @@
 ///<reference path="../node_modules/@types/jquery.fileupload/index.d.ts" />
 ///<reference path="../node_modules/@types/chart.js/index.d.ts" />
 ///<reference path="../node_modules/vue/types/index.d.ts" />
+///<reference path="../node_modules/fullcalendar/dist/fullcalendar.d.ts" />
 ///<reference path="calendarheatmap.d.ts" />
 ///<reference path="catcomplete.d.ts" />
 ///<reference path="jstree.ts" />
