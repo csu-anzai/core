@@ -12,10 +12,7 @@
     "bootstrap-colorpicker": "bootstrap/bootstrap-colorpicker/js/bootstrap-colorpicker.min",
     "html5": "html5/html5",
     "jquery-floatThread": "jquery/jquery.floatThead.min",
-    "jquery-touchPunch": "jquery/jquery.ui.touch-punch.min",
-
-    "tagEditor" : "kajona/tagEditor",
-    "v4skin": "kajona/v4skin"
+    "jquery-touchPunch": "jquery/jquery.ui.touch-punch.min"
   },
   "shim": {
     "bootstrap" : {
