@@ -4,6 +4,7 @@
     GitHub: https://github.com/Pixabay/jQuery-tagEditor
 	License: http://www.opensource.org/licenses/mit-license.php
 */
+define("jquerytageditor", ["jquery", "jquerycaret"], function(jq, caret){
 
 (function($){
     // auto grow input (stackoverflow.com/questions/931207)
@@ -367,4 +368,6 @@
         beforeTagSave: function(){},
         beforeTagDelete: function(){}
     };
-}(jQuery));
+}(jq));
+
+});

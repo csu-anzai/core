@@ -5,7 +5,7 @@
     "jquery": "jquery/jquery.min",
     "jquery-ui": "jqueryui/jquery-ui.custom.min",
     "jquerycaret": "jquerytag/jquery.caret.min",
-    "jquerytageditor": "jquerytag/jquery.tag-editor.min",
+    "jquerytageditor": "jquerytag/jquery.tag-editor",
     "d3": "d3/d3.min",
     "calendar-heatmap": "d3/calendar-heatmap",
     "jstree": "jstree3/dist/jstree.min",
