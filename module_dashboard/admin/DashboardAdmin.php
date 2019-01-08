@@ -122,14 +122,15 @@ class DashboardAdmin extends AdminController implements AdminInterface
      * @return string
      * @permissions view
      */
-    protected function actionListWidgets() {
+    protected function actionListWidgets()
+    {
 
         $arrWidgetsAvailable = DashboardWidget::getListOfWidgetsAvailable();
         foreach ($arrWidgetsAvailable as $strOneWidget) {
             /** @var $objWidget AdminwidgetInterface|Adminwidget */
             $objWidget = new $strOneWidget();
             $img = "<img src='"._webpath_."/image.php?image=".urlencode($objWidget->getWidgetImg())."&amp;maxWidth=100&amp;maxHeight=60' />";
-            $arrWidget[] = ['name' => $objWidget->getWidgetName(), 'info'=>$objWidget->getWidgetDescription(), 'img'=>$img, 'class' => get_class($objWidget)];
+            $arrWidget[] = ['name' => $objWidget->getWidgetName(), 'info' => $objWidget->getWidgetDescription(), 'img' => $img, 'class' => get_class($objWidget)];
         }
 
         $wListService = new WidgetList($arrWidget);
@@ -160,7 +161,7 @@ class DashboardAdmin extends AdminController implements AdminInterface
                     $objDashboardWidget->getConcreteAdminwidget()->getWidgetName(),
                     false
 
-            );
+                );
         }
         if ($objDashboardWidget->rightDelete()) {
             $strQuestion = StringUtil::replace("%%element_name%%", StringUtil::jsSafeString($objConcreteWidget->getWidgetName()), $this->getLang("widgetDeleteQuestion"));
@@ -172,9 +173,9 @@ class DashboardAdmin extends AdminController implements AdminInterface
             $arrActions[] =
                 Link::getLinkAdminManual(
                     "href=\"#\" onclick=\"require(['dialogHelper'], function(dialog) { dialog.showConfirmationDialog('{$strHeader}', '{$strQuestion}', '{$strConfirmationButtonLabel}', '{$strConfirmationLinkHref}'); } ); return false;\"",
-                    (AdminskinHelper::getAdminImage("icon_delete")). " ". Carrier::getInstance()->getObjLang()->getLang("commons_delete", "system"), "", "", "", "", false
+                    (AdminskinHelper::getAdminImage("icon_delete"))." ".Carrier::getInstance()->getObjLang()->getLang("commons_delete", "system"), "", "", "", "", false
 
-            );
+                );
         }
 
         $widget = new Widget();
@@ -518,11 +519,11 @@ JS;
             /** @var EventEntry $objEvent */
             $strIcon = AdminskinHelper::getAdminImage($objEvent->getStrIcon());
             $arrRow = array(
-                "title"     => strip_tags($objEvent->getStrDisplayName()),
-                "tooltip"   => $objEvent->getStrDisplayName(),
-                "icon"      => $strIcon,
-                "allDay"    => true,
-                "url"       => htmlspecialchars_decode($objEvent->getStrHref()),
+                "title" => strip_tags($objEvent->getStrDisplayName()),
+                "tooltip" => $objEvent->getStrDisplayName(),
+                "icon" => $strIcon,
+                "allDay" => true,
+                "url" => htmlspecialchars_decode($objEvent->getStrHref()),
                 "className" => array($objEvent->getStrCategory(), "calendar-event"),
             );
 
