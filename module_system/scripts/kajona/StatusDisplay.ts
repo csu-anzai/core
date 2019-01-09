@@ -20,14 +20,14 @@ class StatusDisplay {
     public static displayXMLMessage(message: string) {
         //decide, whether to show an error or a message, message only in debug mode
         if(message.indexOf("<message>") != -1 && message.indexOf("<error>") == -1) {
-            var intStart = message.indexOf("<message>")+9;
-            var responseText = message.substr(intStart, message.indexOf("</message>")-intStart);
+            let intStart = message.indexOf("<message>")+9;
+            let responseText = message.substr(intStart, message.indexOf("</message>")-intStart);
             this.messageOK(responseText);
         }
 
         if(message.indexOf("<error>") != -1) {
-            var intStart = message.indexOf("<error>")+7;
-            var responseText = message.substr(intStart, message.indexOf("</error>")-intStart);
+            let intStart = message.indexOf("<error>")+7;
+            let responseText = message.substr(intStart, message.indexOf("</error>")-intStart);
             this.messageError(responseText);
         }
     };
