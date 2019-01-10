@@ -71,7 +71,7 @@ class FormentryCheckboxarray extends FormentryBase implements FormentryPrintable
         $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
         $strReturn = "";
         if ($this->getStrHint() != null) {
-            $strReturn .= $objToolkit->formTextRow($this->getStrHint());
+            $strReturn .= $objToolkit->formTextHint($this->getStrHint(), $this->getBitHideLongHints());
         }
 
         $cmp = new Checkboxarray($this->getStrEntryName(), $this->getStrLabel(), $this->arrKeyValues, $this->getStrValue());

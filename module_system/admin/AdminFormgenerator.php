@@ -1435,7 +1435,7 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
     }
 
     /**
-     * @inheritdoc
+     * @return FormentryBase[]
      */
     public function getFields(): array
     {
