@@ -1394,7 +1394,7 @@ class AdminFormgenerator implements \Countable
      * @return ObjectvalidatorBase|null
      * @throws Exception
      */
-    private function getObjectValidatorForObject(Root $objObject)
+    private function getObjectValidatorForObject($objObject)
     {
         $objReflection = new Reflection($objObject);
         $arrObjectValidator = $objReflection->getAnnotationValuesFromClass(self::STR_OBJECTVALIDATOR_ANNOTATION);
