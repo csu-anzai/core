@@ -289,7 +289,6 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
         router.markerElements.forms.submittedEl = objForm;
         $(window).off('unload');
 
-        debugger;
         this.animateSubmitStart(objForm);
 
         // disable polling on form submit
