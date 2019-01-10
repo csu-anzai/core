@@ -54,7 +54,7 @@ class TinyUrlController extends AdminController implements AdminInterface
             $objGenerator = new AdminFormgenerator("linkredirect", null);
 
             foreach ($formParams as $strParamName => $strParamValue) {
-                $strParamValue = (is_array($strParamValue)) ? '['.implode(',', $strParamValue).']' :  $strParamValue;
+                $strParamValue = (is_array($strParamValue)) ? implode(',', $strParamValue) :  $strParamValue;
                 $objGenerator->addField(new FormentryHidden("", $strParamName))->setStrValue($strParamValue);
             }
 
@@ -88,9 +88,14 @@ class TinyUrlController extends AdminController implements AdminInterface
             // it should be converted to "$formParams['riskanalysistemplatefilter_riskcategory[]'] = '[0,3,6]'"
             if (isset($formParams[$arrEntry[0]])) {
                 if (is_array($formParams[$arrEntry[0]])) {
-                    $formParams[$arrEntry[0]][] = (int)$arrEntry[1];
+                    $formParams[$arrEntry[0]][] = is_numeric($arrEntry[1]) ? (int)$arrEntry[1] : $arrEntry[1];
                 } else {
-                    $formParams[$arrEntry[0]] = [(int)$formParams[$arrEntry[0]], (int)$arrEntry[1]];
+                    if (is_numeric($arrEntry[1])) {
+                        $formParams[$arrEntry[0]] = [(int)$formParams[$arrEntry[0]], (int)$arrEntry[1]];
+                    } else {
+                        $formParams[$arrEntry[0]] = [$formParams[$arrEntry[0]], $arrEntry[1]];
+                    }
+
                 }
             } else {
                 $formParams[$arrEntry[0]] = $arrEntry[1];
