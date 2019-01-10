@@ -162,8 +162,12 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
      */
     forms.animateSubmitStart = function(objForm) {
         var processingElemet = undefined;
-        //try to get the button currently clicked
-        if($(document.activeElement).prop('tagName') == "BUTTON") {
+
+        if ($('button.clicked').length == 1) {
+            processingElemet = $('button.clicked');
+        }
+        else if($(document.activeElement).prop('tagName') == "BUTTON") {
+            //try to get the button currently clicked
             processingElemet = $(document.activeElement);
         }
         else {
@@ -177,6 +181,7 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
         var processingElemet = $(objForm).find('.savechanges');
 
         processingElemet.removeClass('processing');
+        processingElemet.removeClass('clicked');
         processingElemet.removeAttr('disabled');
     };
 
@@ -284,25 +289,15 @@ define('forms', ['jquery', 'tooltip', 'router', 'util', 'messaging', 'ajax', 'di
         router.markerElements.forms.submittedEl = objForm;
         $(window).off('unload');
 
+        debugger;
         this.animateSubmitStart(objForm);
 
         // disable polling on form submit
         messaging.setPollingEnabled(false);
 
-        var $btn = $(document.activeElement);
-        if (
-            /* there is an activeElement at all */
-            $btn.length &&
-
-            /* it's a child of the form */
-            $(objForm).has($btn) &&
-
-            /* it's really a submit element */
-            $btn.is('button[type="submit"], input[type="submit"], input[type="image"]') &&
-
-            /* it has a "name" attribute */
-            $btn.is('[name]')
-            ) {
+        var $btn = $('button.clicked');
+            /* there is an activeElement at all && it's a child of the form && it's really a submit element && it has a "name" attribute */
+        if ($btn.length && $(objForm).has($btn) && $btn.is('button[type="submit"], input[type="submit"], input[type="image"]') && $btn.is('[name]')) {
                 //name, value
                 $(objForm).append($('<input type="hidden">').attr('name', $btn.attr('name')).attr('value', $btn.val()));
                 /* access $btn.attr("name") and $btn.val() for data */
