@@ -109,6 +109,7 @@ class class_project_setup
 
         self::loadNpmDependencies();
         self::scanComposer();
+        self::buildSkinStyles();
         self::buildJavascript();
 
         echo "\n<b>Done.</b>\nIf everything went well, <a href=\"../installer.php\">open the installer</a>\n";
@@ -203,6 +204,18 @@ TEXT;
         $arrOutput = array();
         exec("ant -f ".escapeshellarg(self::$strRealPath."/core/_buildfiles/build.xml")." installNpmBuildDependencies ", $arrOutput);
         echo "   " . implode("\n   ", $arrOutput);
+    }
+
+    private static function buildSkinStyles()
+    {
+        if (is_file(__DIR__ . "/_buildfiles/bin/buildSkinStyles.php")) {
+            echo "Building sking css styles" . PHP_EOL;
+            $arrOutput = array();
+            exec("php -f " . escapeshellarg(self::$strRealPath . "/core/_buildfiles/bin/buildSkinStyles.php"), $arrOutput);
+            echo "   " . implode("\n   ", $arrOutput);
+        } else {
+            echo "<span style='color: red;'>Missing buildSkinStyles.php helper</span>";
+        }
     }
 
     private static function buildJavascript()
