@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace Kajona\System\View\Components\Formentry\Inputtext;
+namespace Kajona\System\View\Components\Formentry\Submit;
 
 use Kajona\System\System\Carrier;
 use Kajona\System\System\StringUtil;
