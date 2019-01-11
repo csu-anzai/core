@@ -45,14 +45,12 @@
                     window.close();
                 } else if (parent) {
                     var context = parent.require('folderview');
+                    parent.require("router").reload();
                     if (context.dialog) {
                         context.dialog.hide();
                         context.dialog.setContentRaw("");
                     }
                 }
-
-                //     parent.router.reload();
-                //     parent.router.reload();
             });
         });
     }
