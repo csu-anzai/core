@@ -90,7 +90,7 @@ class TinyUrlController extends AdminController implements AdminInterface
                 if (is_array($formParams[$arrEntry[0]])) {
                     $formParams[$arrEntry[0]][] = is_numeric($arrEntry[1]) ? (int)$arrEntry[1] : $arrEntry[1];
                 } else {
-                    if (is_numeric($arrEntry[1])) {
+                    if (is_numeric($arrEntry[1]) && is_numeric($formParams[$arrEntry[0]])) {
                         $formParams[$arrEntry[0]] = [(int)$formParams[$arrEntry[0]], (int)$arrEntry[1]];
                     } else {
                         $formParams[$arrEntry[0]] = [$formParams[$arrEntry[0]], $arrEntry[1]];
