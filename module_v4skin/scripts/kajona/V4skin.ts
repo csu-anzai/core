@@ -163,7 +163,7 @@ class V4skin {
      * @param strElementName
      * @returns {Array}
      */
-    public static getObjectListItems(strElementName: string){
+    public static getObjectListItems(strElementName: string): Array<string|number|string[]> {
         var table = Util.getElementFromOpener(strElementName);
 
         var arrItems : Array<string|number|string[]> = [];

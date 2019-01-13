@@ -99,7 +99,7 @@ class Folderview {
      * @param {string} strDeleteButton -
      * @param {boolean} bitStayOpen
      */
-    public static setObjectListItems(strElementName: string, arrItems: Array<ObjectListItem>, arrAvailableIds: Array<string>, strDeleteButton: string, bitStayOpen?: boolean){
+    public static setObjectListItems(strElementName: string, arrItems: Array<ObjectListItem>, arrAvailableIds: Array<string|number|string[]>, strDeleteButton: string, bitStayOpen?: boolean){
         var table = Util.getElementFromOpener(strElementName);
 
         var tbody = table.find('tbody');

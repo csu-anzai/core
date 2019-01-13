@@ -42,7 +42,7 @@ class Ajax {
      * @param {String} strMethod default is GET
      * @param {Function} objCallback - is called if the request was successful
      */
-    public static loadUrlToElement(strElementSelector: string, strUrl: string, strData?: any, bitBlockLoadingContainer?: boolean, strMethod?: string, objCallback?: Function) {
+    public static loadUrlToElement(strElementSelector: string|JQuery, strUrl: string, strData?: any, bitBlockLoadingContainer?: boolean, strMethod?: string, objCallback?: Function) {
         WorkingIndicator.start();
 
         var objElement = Util.getElement(strElementSelector);
