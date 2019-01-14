@@ -10,6 +10,7 @@
 namespace Kajona\Dashboard\Admin\Widgets;
 
 use Kajona\Dashboard\System\TodoRepository;
+use Kajona\System\Admin\Formentries\FormentryCheckbox;
 use Kajona\System\System\Link;
 
 /**
@@ -49,6 +50,28 @@ class AdminwidgetTodo extends Adminwidget implements AdminwidgetInterface
         return $strReturn;
     }
 
+    public function getEditDynamicForm()
+    {
+        // create the form
+        $objFormgenerator = new AdminFormgenerator("edittodowidget", null);
+
+        $objFormgenerator->setStrOnSubmit("require('dashboard').updateWidget(this, '{$this->getSystemid()}');return false");
+
+        $arrCategories = TodoRepository::getAllCategories();
+        foreach ($arrCategories as $strTitle => $arrRows) {
+            $strKey = md5($strTitle);
+            $objFormgenerator->addField(new FormentryCheckbox("todo", ""), "")
+                ->setBitMandatory(true)
+                ->setStrLabel($strKey)
+                ->setStrValue($this->getFieldValue($strKey));
+        }
+
+        //render filter
+        $strReturn = $objFormgenerator->renderForm(Link::getLinkAdminHref("dashboard", "updateWidgetContent"), AdminFormgenerator::BIT_BUTTON_SUBMIT);
+
+        return $strReturn;
+    }
+
     /**
      * This method is called, when the widget should generate it's content.
      * Return the complete content using the methods provided by the base class.
@@ -63,8 +86,9 @@ class AdminwidgetTodo extends Adminwidget implements AdminwidgetInterface
         $arrCategories = TodoRepository::getAllCategories();
 
         if (empty($arrCategories)) {
-            $strReturn .= $this->objToolkit->warningBox($this->getLang("no_tasks_available"), "alert-info");
-            return $strReturn;
+//            $strReturn .= $this->objToolkit->warningBox($this->getLang("no_tasks_available"), "alert-info");
+//            return $strReturn;
+            return $this->getEditDynamicForm();
         }
 
         $bitConfiguration = $this->hasConfiguration();

@@ -61,6 +61,10 @@ define("dashboard", ["jquery", "jquery-ui", "ajax", "statusDisplay", "tooltip", 
 
         },
 
+        editWidget: function (strSystemid) {
+            ajax.loadUrlToElement("div.core-component-widget[data-systemid='"+strSystemid+"'] .content", "/xml.php?admin=1&module=dashboard&action=editWidgetMode&systemid="+strSystemid);
+        },
+
         updateWidget: function (form, strSystemid) {
             var data = $(form).serialize();
             ajax.loadUrlToElement("div.core-component-widget[data-systemid='"+strSystemid+"'] .content", "/xml.php?admin=1&module=dashboard&action=updateWidgetContent&systemid="+strSystemid+"&"+data);

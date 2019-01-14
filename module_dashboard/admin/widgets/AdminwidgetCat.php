@@ -52,11 +52,23 @@ class AdminwidgetCat extends Adminwidget implements AdminwidgetInterface
      */
     public function getEditForm()
     {
-        $strReturn = $this->getLang("cat_select");
-
-        $strReturn .= $this->objToolkit->formInputRadiogroup("cat", $this->arrCats, $this->getLang("cats"), $this->getFieldValue("cat"));
+        $strReturn = $this->objToolkit->formInputRadiogroup("cat", $this->arrCats, $this->getLang("cats"), $this->getFieldValue("cat"));
 
         return $strReturn;
+    }
+
+    /**
+     * Allows the widget to add additional fields to the edit-/create form.
+     * Use the toolkit class as usual.
+     *
+     * @return string
+     */
+    public function getEditFormNew(AdminFormgenerator $form)
+    {
+        $form->addField(new FormentryRadiogroup("cat", ""), "")
+            ->setBitMandatory(true)
+            ->setStrLabel( $this->getLang("cat_select"))
+            ->setArrKeyValues($this->arrCats);
     }
 
     public function getEditDynamicForm()
@@ -67,11 +79,7 @@ class AdminwidgetCat extends Adminwidget implements AdminwidgetInterface
 
         $objFormgenerator->setStrOnSubmit("require('dashboard').updateWidget(this, '{$this->getSystemid()}');return false");
 
-        $objFormgenerator->addField(new FormentryRadiogroup("cat", ""), "")
-            ->setBitMandatory(true)
-            ->setStrLabel('title')
-            ->setArrKeyValues($this->arrCats);
-
+        $this->getEditFormNew($objFormgenerator);
 
         //render filter
         $strReturn = $objFormgenerator->renderForm(Link::getLinkAdminHref("dashboard", "updateWidgetContent"), AdminFormgenerator::BIT_BUTTON_SUBMIT);
