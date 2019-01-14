@@ -194,7 +194,7 @@ class Ajax {
 
     };
 
-    public static setAbsolutePosition(systemIdToMove: string, intNewPos: number, strIdOfList: string, objCallback: Function, strTargetModule: string) {
+    public static setAbsolutePosition(systemIdToMove: string, intNewPos: number, strIdOfList: string, objCallback: Function, strTargetModule?: string) {
         if(strTargetModule == null || strTargetModule == "")
             strTargetModule = "system";
 
