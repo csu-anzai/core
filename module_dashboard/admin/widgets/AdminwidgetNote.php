@@ -9,6 +9,9 @@
 
 namespace Kajona\Dashboard\Admin\Widgets;
 
+use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\Formentries\FormentryTextarea;
+
 /**
  * @package module_dashboard
  *
@@ -41,6 +44,19 @@ class AdminwidgetNote extends Adminwidget implements AdminwidgetInterface
     }
 
     /**
+     * Allows the widget to add additional fields to the edit-/create form.
+     * Use the toolkit class as usual.
+     *
+     * @param AdminFormgenerator $form
+     * @return string
+     */
+    public function getEditFormContent(AdminFormgenerator $form)
+    {
+        $form->addField(new FormentryTextarea("content", ""), "")
+        ->setStrValue($this->getFieldValue("content"));
+    }
+
+    /**
      * This method is called, when the widget should generate it's content.
      * Return the complete content using the methods provided by the base class.
      * Do NOT use the toolkit right here!
@@ -60,6 +76,14 @@ class AdminwidgetNote extends Adminwidget implements AdminwidgetInterface
     public function getWidgetName()
     {
         return $this->getLang("note_name");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getWidgetDescription()
+    {
+        return $this->getLang("note_description");
     }
 
 }
