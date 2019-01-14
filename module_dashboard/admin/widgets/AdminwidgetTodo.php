@@ -10,6 +10,7 @@
 namespace Kajona\Dashboard\Admin\Widgets;
 
 use Kajona\Dashboard\System\TodoRepository;
+use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\Formentries\FormentryCheckbox;
 use Kajona\System\System\Link;
 
@@ -50,26 +51,19 @@ class AdminwidgetTodo extends Adminwidget implements AdminwidgetInterface
         return $strReturn;
     }
 
-    public function getEditDynamicForm()
+    /**
+     * @param AdminFormgenerator $form
+     */
+    public function getEditFormContent(AdminFormgenerator $form)
     {
-        // create the form
-        $objFormgenerator = new AdminFormgenerator("edittodowidget", null);
-
-        $objFormgenerator->setStrOnSubmit("require('dashboard').updateWidget(this, '{$this->getSystemid()}');return false");
-
         $arrCategories = TodoRepository::getAllCategories();
+
         foreach ($arrCategories as $strTitle => $arrRows) {
             $strKey = md5($strTitle);
-            $objFormgenerator->addField(new FormentryCheckbox("todo", ""), "")
-                ->setBitMandatory(true)
-                ->setStrLabel($strKey)
+            $form->addField(new FormentryCheckbox($strKey, ""), "")
+                ->setStrLabel($strTitle)
                 ->setStrValue($this->getFieldValue($strKey));
         }
-
-        //render filter
-        $strReturn = $objFormgenerator->renderForm(Link::getLinkAdminHref("dashboard", "updateWidgetContent"), AdminFormgenerator::BIT_BUTTON_SUBMIT);
-
-        return $strReturn;
     }
 
     /**
@@ -86,9 +80,7 @@ class AdminwidgetTodo extends Adminwidget implements AdminwidgetInterface
         $arrCategories = TodoRepository::getAllCategories();
 
         if (empty($arrCategories)) {
-//            $strReturn .= $this->objToolkit->warningBox($this->getLang("no_tasks_available"), "alert-info");
-//            return $strReturn;
-            return $this->getEditDynamicForm();
+            return $this->getEditWidgetForm();
         }
 
         $bitConfiguration = $this->hasConfiguration();
@@ -146,5 +138,13 @@ class AdminwidgetTodo extends Adminwidget implements AdminwidgetInterface
             }
         }
         return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getWidgetDescription()
+    {
+        return $this->getLang("todo_description");
     }
 }

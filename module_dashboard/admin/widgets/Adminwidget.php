@@ -9,10 +9,12 @@
 
 namespace Kajona\Dashboard\Admin\Widgets;
 
+use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\ToolkitAdmin;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Database;
 use Kajona\System\System\Lang;
+use Kajona\System\System\Link;
 
 /**
  * Base class to be extended by all adminwidgets.
@@ -275,6 +277,27 @@ abstract class Adminwidget
     {
         return "/files/extract/widgets/default.png";
         //return Resourceloader::getInstance()->getWebPathForModule("module_dashboard")."/img/widgets/default.png";
+    }
+
+    /**
+     * @return mixed
+     * @throws \Kajona\System\System\Exception
+     */
+    public function getEditWidgetForm()
+    {
+        // create the form
+        $objFormgenerator = new AdminFormgenerator("edit".$this->getWidgetName(), null);
+
+
+        $objFormgenerator->setStrOnSubmit("require('dashboard').updateWidget(this, '{$this->getSystemid()}');return false");
+
+        $this->getEditFormContent($objFormgenerator);
+
+        //render filter
+        $strReturn = $objFormgenerator->renderForm(Link::getLinkAdminHref("dashboard", "updateWidgetContent"), AdminFormgenerator::BIT_BUTTON_SUBMIT);
+
+
+        return $strReturn;
     }
 }
 

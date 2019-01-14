@@ -150,18 +150,18 @@ class DashboardAdmin extends AdminController implements AdminInterface
 
         $arrActions = array();
         if ($objDashboardWidget->rightEdit()) {
-//            $arrActions[] =
-//                Link::getLinkAdminManual(
-//                    "href=\"#\" onclick=\"require(['dashboard'], function(dashboard) { dashboard.editWidget('{$objDashboardWidget->getSystemid()}'); } ); return false;\"",
-//                    "editWidgetMode",
-//                    "&systemid=".$objDashboardWidget->getSystemid(),
-//                    (AdminskinHelper::getAdminImage("icon_edit"))." ".$this->getLang("editWidget"),
-//                    "",
-//                    "",
-//                    $objDashboardWidget->getConcreteAdminwidget()->getWidgetName(),
-//                    false
-//
-//                );
+            $arrActions[] =
+                Link::getLinkAdminDialog(
+                    "dashboard",
+                    "editWidget",
+                    "&systemid=".$objDashboardWidget->getSystemid(),
+                    (AdminskinHelper::getAdminImage("icon_edit"))." ".$this->getLang("editWidgetOld"),
+                    "",
+                    "",
+                    $objDashboardWidget->getConcreteAdminwidget()->getWidgetName(),
+                    false
+
+                );
             $arrActions[] =
                 Link::getLinkAdminManual(
                     "href=\"#\" onclick=\"require(['dashboard'], function(dashboard) { dashboard.editWidget('{$objDashboardWidget->getSystemid()}'); } ); return false;\"",
@@ -390,15 +390,11 @@ JS;
      * @permissions edit
      * @responseType json
      */
-    protected function actionEditWidgetMode()
+    protected function actionSwitchOnEditMode()
     {
         $objDashboardwidget = new DashboardWidget($this->getSystemid());
         $objWidget = $objDashboardwidget->getConcreteAdminwidget();
-
-        $objFormgenerator = new AdminFormgenerator("widgeteditor", null);
-        $objFormgenerator->setStrOnSubmit("require('dashboard').updateWidget(this, '{$this->getSystemid()}');return false");
-        $objWidget->getEditFormNew($objFormgenerator);
-        $strReturn = $objFormgenerator->renderForm(Link::getLinkAdminHref("dashboard", "updateWidgetContent"), AdminFormgenerator::BIT_BUTTON_SUBMIT);
+        $strReturn = $objWidget->getEditWidgetForm();
 
         return json_encode($strReturn);
     }

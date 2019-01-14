@@ -62,7 +62,7 @@ define("dashboard", ["jquery", "jquery-ui", "ajax", "statusDisplay", "tooltip", 
         },
 
         editWidget: function (strSystemid) {
-            ajax.loadUrlToElement("div.core-component-widget[data-systemid='"+strSystemid+"'] .content", "/xml.php?admin=1&module=dashboard&action=editWidgetMode&systemid="+strSystemid);
+            ajax.loadUrlToElement("div.core-component-widget[data-systemid='"+strSystemid+"'] .content", "/xml.php?admin=1&module=dashboard&action=switchOnEditMode&systemid="+strSystemid);
         },
 
         updateWidget: function (form, strSystemid) {
