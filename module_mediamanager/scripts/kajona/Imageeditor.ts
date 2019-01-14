@@ -4,11 +4,13 @@
 import * as $ from "jquery";
 import Ajax = require("../../../module_system/scripts/kajona/Ajax");
 import StatusDisplay = require("../../../module_system/scripts/kajona/StatusDisplay");
+import * as JQuery from "jquery";
+
 
 class Imageeditor {
 
-    public static cropArea = null;
-    public static fm_cropObj = null;
+    public static cropArea: any = null;
+    public static fm_cropObj: any = null;
     public static fm_image_isScaled = true;
 
     public static strCropEnabled = '';
@@ -20,9 +22,9 @@ class Imageeditor {
     public static fm_image_scaledMaxHeight = '';
     public static fm_file = '';
 
-    public static init_fm_crop_save_warning_dialog = null;
-    public static init_fm_screenlock_dialog = null;
-    public static hide_fm_screenlock_dialog = null;
+    public static init_fm_crop_save_warning_dialog: Function = null;
+    public static init_fm_screenlock_dialog: Function = null;
+    public static hide_fm_screenlock_dialog: Function = null;
 
     public static saveImageCropping(intX: number, intY: number, intWidth: number, intHeight: number, strFile: string, objCallback: Function) {
         var postBody = 'file=' + strFile + '&intX=' + intX + '&intY=' + intY
