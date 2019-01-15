@@ -400,7 +400,11 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
 
                 /** @var Root $model */
                 $model = new $targetClass();
-                $label = Lang::getInstance()->getLang("flow_roles_{$role}", $model->getArrModule("module"));
+
+                $label = $permissionHandler->getRoleLabel($role);
+                if ($label === null) {
+                    $label = Lang::getInstance()->getLang("flow_roles_{$role}", $model->getArrModule("module"));
+                }
 
                 $table->addRow([$label, $rights]);
             }
