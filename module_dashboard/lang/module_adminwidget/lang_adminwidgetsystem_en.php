@@ -34,6 +34,7 @@ $lang["systemcheck_checkboxphp"]         = "PHP Check";
 $lang["systemcheck_kajona_filepresent"]  = "present: ";
 $lang["systemcheck_kajona_writeper"]     = "Write perm. on";
 $lang["systemcheck_name"]                = "Systemcheck";
+$lang["systemcheck_description"]         = "Checklist with important PHP and AGP modules";
 $lang["systemcheck_php_regglobal"]       = "PHP Register globals: ";
 $lang["systemcheck_php_safemode"]        = "PHP Safe mode: ";
 $lang["systemcheck_php_urlfopen"]        = "PHP Allow url fopen: ";

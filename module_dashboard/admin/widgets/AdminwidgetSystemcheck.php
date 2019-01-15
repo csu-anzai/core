@@ -9,6 +9,8 @@
 
 namespace Kajona\Dashboard\Admin\Widgets;
 
+use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\Formentries\FormentryCheckbox;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Classloader;
 use Kajona\System\System\SystemModule;
@@ -46,6 +48,21 @@ class AdminwidgetSystemcheck extends Adminwidget implements AdminwidgetInterface
     }
 
     /**
+     * @param AdminFormgenerator $form
+     */
+    public function getEditFormContent(AdminFormgenerator $form)
+    {
+
+        $form->addField(new FormentryCheckbox("php", ""), "")
+            ->setStrLabel($this->getLang("systemcheck_checkboxphp"))
+            ->setStrValue($this->getFieldValue("php"));
+        $form->addField(new FormentryCheckbox("kajona", ""), "")
+            ->setStrLabel($this->getLang("systemcheck_checkboxkajona"))
+            ->setStrValue($this->getFieldValue("kajona"));
+
+    }
+
+    /**
      * This method is called, when the widget should generate it's content.
      * Return the complete content using the methods provided by the base class.
      * Do NOT use the toolkit right here!
@@ -57,6 +74,10 @@ class AdminwidgetSystemcheck extends Adminwidget implements AdminwidgetInterface
 
         if (!SystemModule::getModuleByName("system")->rightView() || !Carrier::getInstance()->getObjSession()->isSuperAdmin()) {
             return $this->getLang("commons_error_permissions");
+        }
+
+        if ($this->getFieldValue("php") == "" && $this->getFieldValue("kajona") == "") {
+            return $this->getEditWidgetForm();
         }
 
         $strReturn = "<style type=\"text/css\">
@@ -140,6 +161,14 @@ class AdminwidgetSystemcheck extends Adminwidget implements AdminwidgetInterface
     public function getWidgetName()
     {
         return $this->getLang("systemcheck_name");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getWidgetDescription()
+    {
+        return $this->getLang("systemcheck_description");
     }
 
 }
