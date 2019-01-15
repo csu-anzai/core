@@ -65,6 +65,10 @@ class AdminwidgetNote extends Adminwidget implements AdminwidgetInterface
      */
     public function getWidgetOutput()
     {
+        if ($this->getFieldValue("content") == "") {
+            return $this->getEditWidgetForm();
+        }
+
         return $this->widgetText(nl2br($this->getFieldValue("content")));
     }
 
