@@ -33,8 +33,6 @@ use Kajona\System\System\ServiceProvider;
  *
  * @module workflows
  * @moduleId _workflows_module_id_
- *
- * @blockFromAutosave
  */
 class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\System\System\ModelInterface, AdminListableInterface
 {
