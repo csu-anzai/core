@@ -38,15 +38,16 @@ body.installer {
     .navbar {
         padding-top: 15px;
         background: @gray-light;
-        box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid @kajona-brand-color;
 
         li {
             list-style: none;
 
             a {
                 padding-left: 5px;
-                padding-right: 25px;
+                padding-right: 5px;
                 margin-right: 5px;
+                margin-left: 5px;
                 color: @black;
                 cursor: progress;
                 text-decoration:none;
@@ -77,6 +78,7 @@ body.installer {
                 &:before {
                     padding: 5px;
                     content: @fa-var-check;
+                    color: green;
                     font-family: fontawesome;
                 }
             }
