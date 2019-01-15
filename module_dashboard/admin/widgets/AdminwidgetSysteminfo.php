@@ -10,6 +10,8 @@
 namespace Kajona\Dashboard\Admin\Widgets;
 
 use Kajona\Packagemanager\System\PackagemanagerManager;
+use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\Formentries\FormentryCheckbox;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\SystemModule;
 
@@ -47,6 +49,24 @@ class AdminwidgetSysteminfo extends Adminwidget implements AdminwidgetInterface
     }
 
     /**
+     * @param AdminFormgenerator $form
+     */
+    public function getEditFormContent(AdminFormgenerator $form)
+    {
+
+        $form->addField(new FormentryCheckbox("php", ""), "")
+            ->setStrLabel($this->getLang("sysinfo_checkboxphp"))
+            ->setStrValue($this->getFieldValue("php"));
+        $form->addField(new FormentryCheckbox("server", ""), "")
+            ->setStrLabel($this->getLang("sysinfo_checkboxserver"))
+            ->setStrValue($this->getFieldValue("server"));
+        $form->addField(new FormentryCheckbox("kajona", ""), "")
+            ->setStrLabel($this->getLang("sysinfo_checkboxkajona"))
+            ->setStrValue($this->getFieldValue("kajona"));
+
+    }
+
+    /**
      * This method is called, when the widget should generate it's content.
      * Return the complete content using the methods provided by the base class.
      * Do NOT use the toolkit right here!
@@ -59,6 +79,10 @@ class AdminwidgetSysteminfo extends Adminwidget implements AdminwidgetInterface
 
         if (!SystemModule::getModuleByName("system")->rightView() || !Carrier::getInstance()->getObjSession()->isSuperAdmin()) {
             return $this->getLang("commons_error_permissions");
+        }
+
+        if ($this->getFieldValue("php") == "" && $this->getFieldValue("server") == "" && $this->getFieldValue("kajona") == "") {
+            return $this->getEditWidgetForm();
         }
 
         //check wich infos to produce
@@ -97,9 +121,12 @@ class AdminwidgetSysteminfo extends Adminwidget implements AdminwidgetInterface
         return $this->getLang("sysinfo_name");
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getWidgetDescription()
     {
-        return "System info description!!!!!";
+        return $this->getLang("sysinfo_description");
     }
 
     public function getWidgetImg()

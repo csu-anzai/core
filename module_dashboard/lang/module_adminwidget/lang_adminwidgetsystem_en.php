@@ -22,6 +22,7 @@ $lang["sysinfo_kajona_nrOfPackages"]     = "Number of Kajona packages";
 $lang["sysinfo_kajona_version"]          = "Kajona Version: ";
 $lang["sysinfo_kajona_versionAvail"]     = "Latest Version: ";
 $lang["sysinfo_name"]                    = "Systeminformation";
+$lang["sysinfo_description"]             = "Important System information, brief information about PHP and AGP";
 $lang["sysinfo_php_memlimit"]            = "PHP Memory Limit: ";
 $lang["sysinfo_php_version"]             = "PHP Version: ";
 $lang["sysinfo_server_diskspace"]        = "Total diskspace: ";
