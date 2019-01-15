@@ -268,11 +268,17 @@ abstract class Adminwidget
         return "";
     }
 
+    /**
+     * @return string
+     */
     public function getWidgetDescription()
     {
         return "Artemeon Widget.";
     }
 
+    /**
+     * @return string
+     */
     public function getWidgetImg()
     {
         return "/files/extract/widgets/default.png";
@@ -298,6 +304,16 @@ abstract class Adminwidget
 
 
         return $strReturn;
+    }
+
+    /**
+     * Should return false if a widget has not getEditFormContent method
+     *
+     * @return bool
+     */
+    public static function isEditable()
+    {
+        return true;
     }
 }
 

@@ -162,12 +162,15 @@ class DashboardAdmin extends AdminController implements AdminInterface
                     false
 
                 );
-            $arrActions[] =
-                Link::getLinkAdminManual(
-                    "href=\"#\" onclick=\"require(['dashboard'], function(dashboard) { dashboard.editWidget('{$objDashboardWidget->getSystemid()}'); } ); return false;\"",
-                    (AdminskinHelper::getAdminImage("icon_edit"))." ".$this->getLang("editWidget"), "", "", "", "", false
+            $strWidgetClass = $objDashboardWidget->getStrClass();
+            if ($strWidgetClass::isEditable()) {
+                $arrActions[] =
+                    Link::getLinkAdminManual(
+                        "href=\"#\" onclick=\"require(['dashboard'], function(dashboard) { dashboard.editWidget('{$objDashboardWidget->getSystemid()}'); } ); return false;\"",
+                        (AdminskinHelper::getAdminImage("icon_edit"))." ".$this->getLang("editWidget"), "", "", "", "", false
 
-                );
+                    );
+            }
         }
         if ($objDashboardWidget->rightDelete()) {
             $strQuestion = StringUtil::replace("%%element_name%%", StringUtil::jsSafeString($objConcreteWidget->getWidgetName()), $this->getLang("widgetDeleteQuestion"));
