@@ -9,6 +9,9 @@
 
 namespace Kajona\Dashboard\Admin\Widgets;
 
+use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\Formentries\FormentryDropdown;
+use Kajona\System\Admin\Formentries\FormentryText;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Remoteloader;
 use Kajona\System\System\StringUtil;
@@ -52,6 +55,19 @@ class AdminwidgetWeather extends Adminwidget implements AdminwidgetInterface
     }
 
     /**
+     * @param AdminFormgenerator $form
+     */
+    public function getEditFormContent(AdminFormgenerator $form)
+    {
+        $form->addField(new FormentryText("location", ""), "")
+            ->setStrValue($this->getFieldValue("location"))
+            ->setStrLabel($this->getLang("weather_location"));
+        $form->addField(new FormentryDropdown("unit", ""))->setArrKeyValues(["f" => $this->getLang("weather_fahrenheit"), "c" => $this->getLang("weather_celsius")])
+            ->setStrValue(($this->getFieldValue("unit")))
+            ->setStrLabel($this->getLang("weather_unit"));
+    }
+
+    /**
      * This method is called, when the widget should generate it's content.
      * Return the complete content using the methods provided by the base class.
      * Do NOT use the toolkit right here!
@@ -63,11 +79,13 @@ class AdminwidgetWeather extends Adminwidget implements AdminwidgetInterface
         $strReturn = "";
 
         if ($this->getFieldValue("location") == "") {
-            return "Please set up a location";
+            return $this->getEditWidgetForm();
         }
 
         if (StringUtil::indexOf($this->getFieldValue("location"), "GM") !== false) {
-            return "This widget changed, please update your location by editing the widget";
+            $strReturn = "This widget changed, please update your location by editing the widget";
+            $strReturn .= $this->getEditWidgetForm();
+            return $strReturn;
         }
 
 
@@ -117,4 +135,11 @@ class AdminwidgetWeather extends Adminwidget implements AdminwidgetInterface
         return $this->getLang("weather_name");
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getWidgetDescription()
+    {
+        return $this->getLang("weather_description");
+    }
 }

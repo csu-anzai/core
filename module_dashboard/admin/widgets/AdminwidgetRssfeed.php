@@ -49,11 +49,7 @@ class AdminwidgetRssfeed extends Adminwidget implements AdminwidgetInterface
     }
 
     /**
-     * Allows the widget to add additional fields to the edit-/create form.
-     * Use the toolkit class as usual.
-     *
      * @param AdminFormgenerator $form
-     * @return string
      */
     public function getEditFormContent(AdminFormgenerator $form)
     {
