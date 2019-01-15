@@ -29,6 +29,7 @@ $lang["sysinfo_server_diskspace"]        = "Total diskspace: ";
 $lang["sysinfo_server_diskspacef"]       = "Free diskspace: ";
 $lang["sysinfo_server_system"]           = "System: ";
 $lang["syslog_name"]                     = "Systemlog";
+$lang["syslog_description"]              = "System Log information";
 $lang["syslog_nrofrows"]                 = "Number of entries";
 $lang["systemcheck_checkboxkajona"]      = "Kajona Check";
 $lang["systemcheck_checkboxphp"]         = "PHP Check";

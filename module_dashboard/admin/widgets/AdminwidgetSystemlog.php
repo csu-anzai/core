@@ -9,6 +9,8 @@
 
 namespace Kajona\Dashboard\Admin\Widgets;
 
+use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\Formentries\FormentryText;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Filesystem;
 use Kajona\System\System\SystemModule;
@@ -45,6 +47,16 @@ class AdminwidgetSystemlog extends Adminwidget implements AdminwidgetInterface
     }
 
     /**
+     * @param AdminFormgenerator $form
+     */
+    public function getEditFormContent(AdminFormgenerator $form)
+    {
+        $form->addField(new FormentryText("nrofrows", ""), "")
+            ->setStrLabel($this->getLang("syslog_nrofrows"))
+            ->setStrValue($this->getFieldValue("nrofrows"));
+    }
+
+    /**
      * This method is called, when the widget should generate it's content.
      * Return the complete content using the methods provided by the base class.
      * Do NOT use the toolkit right here!
@@ -57,6 +69,10 @@ class AdminwidgetSystemlog extends Adminwidget implements AdminwidgetInterface
 
         if (!SystemModule::getModuleByName("system")->rightRight3() || !Carrier::getInstance()->getObjSession()->isSuperAdmin()) {
             return $this->getLang("commons_error_permissions");
+        }
+
+        if ($this->getFieldValue("nrofrows") == "") {
+            return $this->getEditWidgetForm();
         }
 
         $objFilesystem = new Filesystem();
@@ -86,9 +102,12 @@ class AdminwidgetSystemlog extends Adminwidget implements AdminwidgetInterface
         return $this->getLang("syslog_name");
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getWidgetDescription()
     {
-        return "This is a system log description!!!!!";
+        return $this->getLang("syslog_description");
     }
 
     public function getWidgetImg()

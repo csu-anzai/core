@@ -29,6 +29,7 @@ $lang["sysinfo_server_diskspace"]        = "Gesamter Plattenplatz: ";
 $lang["sysinfo_server_diskspacef"]       = "Freier Plattenplatz: ";
 $lang["sysinfo_server_system"]           = "System: ";
 $lang["syslog_name"]                     = "Systemlog";
+$lang["syslog_description"]              = "Informationen zum Systemprotokoll";
 $lang["syslog_nrofrows"]                 = "Anzahl Einträge";
 $lang["systemcheck_checkboxkajona"]      = "Kajona Check";
 $lang["systemcheck_checkboxphp"]         = "PHP Check";
