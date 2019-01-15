@@ -290,9 +290,9 @@ class Forms {
 
         var $btn = $('button.clicked');
             /* there is an activeElement at all && it's a child of the form && it's really a submit element && it has a "name" attribute */
-        if ($btn.length && $(objForm).has($btn) && $btn.is('button[type="submit"], input[type="submit"], input[type="image"]') && $btn.is('[name]')) {
+        if ($btn.length && $(objForm).has($btn.get(0)) && $btn.is('button[type="submit"], input[type="submit"], input[type="image"]') && $btn.is('[name]')) {
                 //name, value
-                $(objForm).append($('<input type="hidden">').attr('name', $btn.attr('name')).attr('value', $btn.val()));
+                $(objForm).append($('<input type="hidden">').attr('name', $btn.attr('name')).attr('value', <string>$btn.val()));
                 /* access $btn.attr("name") and $btn.val() for data */
         }
 
