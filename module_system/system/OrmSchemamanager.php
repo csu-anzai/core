@@ -13,14 +13,12 @@ namespace Kajona\System\System;
  *
  * As per Kajona 4.6, only the initial create table is supported.
  *
- * @todo extend the annotation system with version numbers, to that the schema-manager is able to generate alter-table statements, too.
  * @package module_system
  * @author sidler@mulchprod.de
  * @since 4.6
  */
 class OrmSchemamanager extends OrmBase
 {
-
     private static $arrColumnDataTypes = array(
         DbDatatypes::STR_TYPE_INT,
         DbDatatypes::STR_TYPE_LONG,
@@ -34,7 +32,13 @@ class OrmSchemamanager extends OrmBase
         DbDatatypes::STR_TYPE_LONGTEXT
     );
 
-
+    /**
+     * Creates all tables associated with the model class
+     *
+     * @param string $strClass
+     * @throws Exception
+     * @throws OrmException
+     */
     public function createTable($strClass)
     {
         $this->setObjObject($strClass);
@@ -42,43 +46,89 @@ class OrmSchemamanager extends OrmBase
             throw new OrmException("Class ".$strClass." provides no target-table!", OrmException::$level_ERROR);
         }
 
-        $arrTargetTables = $this->collectTableDefinitions($strClass);
-        $arrTargetTables = array_merge($arrTargetTables, $this->collectAssignmentDefinitions($strClass));
-        $this->processTableDefinitions($arrTargetTables);
+        $connection = Database::getInstance();
+        $definitions = $this->collectTableDefinitions($strClass);
+        $definitions = array_merge($definitions, $this->collectAssignmentDefinitions($strClass));
+
+        foreach ($definitions as $table) {
+            if (!$connection->hasTable($table->getStrName())) {
+                $this->createTableSchema($table);
+            }
+        }
     }
 
     /**
-     * @param OrmSchemamanagerTable[] $arrTableDefinitions
+     * Checks all table definitions of the model class and updates the missing columns on each table
      *
-     * @throws OrmException
+     * @param string $strClass
      * @throws Exception
-     * @return void
+     * @throws OrmException
      */
-    private function processTableDefinitions($arrTableDefinitions)
+    public function updateTable($strClass)
     {
-        foreach ($arrTableDefinitions as $objOneTable) {
-            $arrIndex = array();
-            $arrPrimary = array();
+        $connection = Database::getInstance();
+        $definitions = $this->collectTableDefinitions($strClass);
+        $definitions = array_merge($definitions, $this->collectAssignmentDefinitions($strClass));
 
-            $arrFields = array();
-            /** @var OrmSchemamanagerRow $objOneColumn */
-            foreach ($objOneTable->getArrRows() as $objOneColumn) {
-                $arrFields[$objOneColumn->getStrName()] = array($objOneColumn->getStrDatatype(), $objOneColumn->getBitNull());
+        foreach ($definitions as $table) {
+            if ($connection->hasTable($table->getStrName())) {
+                $this->updateTableSchema($table);
+            } else {
+                $this->createTableSchema($table);
+            }
+        }
+    }
 
-                if ($objOneColumn->getBitPrimaryKey()) {
-                    $arrPrimary[] = $objOneColumn->getStrName();
-                }
+    /**
+     * @param OrmSchemamanagerTable $table
+     * @throws Exception
+     * @throws OrmException
+     */
+    private function createTableSchema(OrmSchemamanagerTable $table)
+    {
+        $connection = Carrier::getInstance()->getObjDB();
+        $index = array();
+        $primary = array();
+        $fields = array();
 
-                if ($objOneColumn->getBitIndex()) {
-                    $arrIndex[] = $objOneColumn->getStrName();
-                }
+        /** @var OrmSchemamanagerRow $column */
+        foreach ($table->getArrRows() as $column) {
+            $fields[$column->getStrName()] = array($column->getStrDatatype(), $column->getBitNull());
+
+            if ($column->getBitPrimaryKey()) {
+                $primary[] = $column->getStrName();
             }
 
-
-            if (!Carrier::getInstance()->getObjDB()->createTable($objOneTable->getStrName(), $arrFields, $arrPrimary, $arrIndex)) {
-                throw new OrmException("error creating table ".$objOneTable->getStrName(), OrmException::$level_ERROR);
+            if ($column->getBitIndex()) {
+                $index[] = $column->getStrName();
             }
+        }
 
+        $return = $connection->createTable($table->getStrName(), $fields, $primary, $index);
+        if (!$return) {
+            throw new OrmException("Error creating table " . $table->getStrName());
+        }
+    }
+
+    /**
+     * @param OrmSchemamanagerTable $table
+     * @throws OrmException
+     */
+    private function updateTableSchema(OrmSchemamanagerTable $table)
+    {
+        $connection = Carrier::getInstance()->getObjDB();
+
+        /** @var OrmSchemamanagerTable $table */
+        foreach ($table->getArrRows() as $column) {
+            /** @var OrmSchemamanagerRow $column */
+            if (!$connection->hasColumn($table->getStrName(), $column->getStrName())) {
+                $return = $connection->addColumn($table->getStrName(), $column->getStrName(), $column->getStrDatatype(), $column->getBitNull());
+                if (!$return) {
+                    throw new OrmException("Could not add column " . $column->getStrName() . " on table " . $table->getStrName());
+                }
+            } else {
+                // @TODO maybe change column type
+            }
         }
     }
 
