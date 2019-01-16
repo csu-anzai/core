@@ -1,55 +1,20 @@
 {
   "paths": {
-    "app": "app",
-
-    "jquery": "jquery/jquery.min",
     "jquery-ui": "jqueryui/jquery-ui.custom.min",
-    "jquerycaret": "jquerytag/jquery.caret.min",
+    "jquerycaret": "jquerytag/jquery.caret",
     "jquerytageditor": "jquerytag/jquery.tag-editor",
     "d3": "d3/d3.min",
-    "calendar-heatmap": "d3/calendar-heatmap",
+    "calendarheatmap": "d3/calendar-heatmap",
     "jstree": "jstree3/dist/jstree.min",
     "moment": "moment/moment.min",
     "qtip": "qtip2/jquery.qtip.min",
     "domReady": "requirejs/domReady",
     "toastr": "toastr/toastr.min",
-    "vue": "vue/vue.min",
-
-    "ajax": "kajona/ajax",
-    "cacheManager": "kajona/cacheManager",
-    "contentToolbar": "kajona/contentToolbar",
-    "changelog": "kajona/changelog",
-    "dashboardCalendar": "kajona/dashboardCalendar",
-    "desktopNotification": "kajona/desktopNotification",
-    "downloadIndicator": "kajona/downloadIndicator",
-    "folderview": "kajona/folderview",
-    "forms": "kajona/forms",
-    "instantSave": "kajona/instantSave",
-    "lang": "kajona/lang",
-    "lists": "kajona/lists",
-    "loader": "kajona/loader",
-    "messaging": "kajona/messaging",
-    "moduleNavigation": "kajona/moduleNavigation",
-    "permissions": "kajona/permissions",
-    "quickhelp": "kajona/quickhelp",
-    "router": "kajona/router",
-    "statusDisplay": "kajona/statusDisplay",
-    "systemTask": "kajona/systemTask",
-    "tooltip": "kajona/tooltip",
-    "tree": "kajona/tree",
-    "util": "kajona/util",
-    "user": "kajona/user",
-    "workingIndicator": "kajona/workingIndicator"
+    "vue": "vue/vue.min"
   },
   "shim": {
     "jquery-ui" : {
       "deps": ["jquery"]
-    },
-    "jquerycaret" : {
-      "deps": ["jquery"]
-    },
-    "jquerytageditor" : {
-      "deps": ["jquery", "jquerycaret"]
     }
   }
 }

@@ -34,6 +34,7 @@ use Kajona\System\System\SystemJSTreeConfig;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\Toolkit;
+use Kajona\System\View\Components\Buttonwrapper\Buttonwrapper;
 use Kajona\System\View\Components\Datatable\Datatable;
 use Kajona\System\View\Components\Formentry\Dropdown\Dropdown;
 use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
@@ -41,6 +42,7 @@ use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
 use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
+use Kajona\System\View\Components\Formentry\Submit\Submit;
 use Kajona\System\View\Components\Listbody\Listbody;
 use Kajona\System\View\Components\Popover\Popover;
 use Kajona\System\View\Components\Tabbedcontent\Tabbedcontent;
@@ -589,7 +591,7 @@ class ToolkitAdmin extends Toolkit
      *
      * @param string $strValue
      * @param string $strName
-     * @param string $strEventhandler
+     * @param string $strOnclick
      * @param string $strClass use cancelbutton for cancel-buttons
      * @param bool $bitEnabled
      *
@@ -597,25 +599,16 @@ class ToolkitAdmin extends Toolkit
      *
      * @return string
      */
-    public function formInputSubmit($strValue = null, $strName = "Submit", $strEventhandler = "", $strClass = "", $bitEnabled = true, $bitWithWrapper = true)
+    public function formInputSubmit($strValue = null, $strName = "Submit", $strOnclick = null, $strClass = "", $bitEnabled = true, $bitWithWrapper = true)
     {
-        if ($strValue === null) {
-            $strValue = Carrier::getInstance()->getObjLang()->getLang("commons_save", "system");
+        $cmp = new Submit($strName, $strValue);
+        if ($strOnclick !== null) {
+            $cmp->setOnClick($strOnclick);
         }
-
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["value"] = $strValue;
-        $arrTemplate["eventhandler"] = $strEventhandler;
-        $arrTemplate["class"] = $strClass;
-        $arrTemplate["disabled"] = $bitEnabled ? "" : "disabled=\"disabled\"";
-
-        $strButton = $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_submit");
-
-        if ($bitWithWrapper) {
-            $strButton = $this->objTemplate->fillTemplateFile(array("button" => $strButton), "/admin/skins/kajona_v4/elements.tpl", "input_submit_wrapper");
-        }
-        return $strButton;
+        $cmp->setClass($strClass);
+        $cmp->setReadOnly(!$bitEnabled);
+        $cmp->setWithWrapper($bitWithWrapper);
+        return $cmp->renderComponent();
     }
 
     /**
@@ -626,7 +619,8 @@ class ToolkitAdmin extends Toolkit
      */
     public function formInputButtonWrapper($strButtons)
     {
-        return $this->objTemplate->fillTemplateFile(array("button" => $strButtons), "/admin/skins/kajona_v4/elements.tpl", "input_submit_wrapper");
+        $cmp = new Buttonwrapper($strButtons);
+        return $cmp->renderComponent();
     }
 
     /**

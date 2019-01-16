@@ -12,5 +12,8 @@
         <module name="mediamanager" version="7.1" />
         <module name="search" version="7.1" />
     </requiredModules>
-    <constants />
+    <constants>
+        <constant name="_fileindexer_module_id_" value="1510915351" />
+    </constants>
+
 </package>

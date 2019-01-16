@@ -12,7 +12,7 @@ use Kajona\System\System\Filesystem;
 class Database2FillBench extends AbstractBench
 {
 
-    const INSERT_ROWS = 4000;
+    const INSERT_ROWS = 2000;
     private $generatedStrings = [];
 
     public function bench()
@@ -26,7 +26,7 @@ class Database2FillBench extends AbstractBench
     {
         for ($i = 0; $i < self::INSERT_ROWS; $i++) {
             Database::getInstance()->_pQuery(
-                "INSERT INTO agp_bench_1 (bench_id, bench_char20, bench_char100, bench_char254, bench_char500, bench_charText, bench_charLongtext, bench_int, bench_long, bench_double) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO agp_bench_1 (bench_id, bench_char20, bench_char100, bench_char254, bench_char500, bench_charText, bench_int, bench_long, bench_double) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 $this->getRandomRow()
             );
         }
@@ -37,11 +37,10 @@ class Database2FillBench extends AbstractBench
     {
         $rows = [];
         for ($i = 0; $i < self::INSERT_ROWS; $i++) {
-
             $rows[] = $this->getRandomRow();
         }
 
-        Database::getInstance()->multiInsert("agp_bench_2", ["bench_id", "bench_char20", "bench_char100", "bench_char254", "bench_char500", "bench_charText", "bench_charLongtext", "bench_int", "bench_long", "bench_double"], $rows);
+        Database::getInstance()->multiInsert("agp_bench_2", ["bench_id", "bench_char20", "bench_char100", "bench_char254", "bench_char500", "bench_charText", "bench_int", "bench_long", "bench_double"], $rows);
     }
 
     private function getRandomRow()
@@ -52,7 +51,6 @@ class Database2FillBench extends AbstractBench
             $this->generateRandomString(100),
             $this->generateRandomString(254),
             $this->generateRandomString(500),
-            $this->generateRandomString(2000),
             $this->generateRandomString(2000),
             rand(0, 3200000),
             rand(0, PHP_INT_MAX),

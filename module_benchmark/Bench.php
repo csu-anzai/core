@@ -10,6 +10,8 @@
 namespace Kajona\Benchmark;
 
 use Kajona\Benchmark\System\AbstractBench;
+use Kajona\Benchmark\System\Bench\Database3aListLobQueries;
+use Kajona\Benchmark\System\Bench\Database3ListQueries;
 use Kajona\Benchmark\System\BenchInterface;
 use Kajona\System\System\Config;
 use Kajona\System\System\Pluginmanager;
@@ -46,6 +48,11 @@ class Bench
         for ($i = 0; $i < self::ITERATIONS; $i++) {
             /** @var BenchInterface $bench */
             foreach ($manager->getPlugins() as $bench) {
+
+//                if (!$bench instanceof Database3aListLobQueries) {
+//                    continue;
+//                }
+
                 echo "| ".str_pad(get_class($bench), 60)."| ";
                 ob_flush();
                 flush();
