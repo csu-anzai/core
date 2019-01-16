@@ -118,7 +118,14 @@ class OrmSchemamanager extends OrmBase
     {
         $connection = Carrier::getInstance()->getObjDB();
 
+        $existingTable = $connection->getTableInformation($table->getStrName());
+        $existingColumns = [];
+        foreach ($existingTable->getColumns() as $column) {
+            $existingColumns[] = $column->getName();
+        }
+
         /** @var OrmSchemamanagerTable $table */
+        $newColumns = [];
         foreach ($table->getArrRows() as $column) {
             /** @var OrmSchemamanagerRow $column */
             if (!$connection->hasColumn($table->getStrName(), $column->getStrName())) {
@@ -129,6 +136,14 @@ class OrmSchemamanager extends OrmBase
             } else {
                 // @TODO maybe change column type
             }
+
+            $newColumns[] = $column->getStrName();
+        }
+
+        // remove all existing columns which are not available anymore
+        $removedColumns = array_diff($existingColumns, $newColumns);
+        foreach ($removedColumns as $columnName) {
+            $connection->removeColumn($table->getStrName(), $columnName);
         }
     }
 
