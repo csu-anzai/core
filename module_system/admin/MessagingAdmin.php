@@ -478,7 +478,7 @@ JS;
 
         return $this->objToolkit->warningBox($this->getLang("message_sent_success")).
             $this->objToolkit->formHeader("").
-            $this->objToolkit->formInputSubmit($this->getLang("commons_ok"), "", "onclick=parent.require('folderview').dialog.hide();").
+            $this->objToolkit->formInputSubmit($this->getLang("commons_ok"), "", "parent.require('folderview').dialog.hide();").
             $this->objToolkit->formClose();
     }
 

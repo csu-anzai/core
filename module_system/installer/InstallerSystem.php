@@ -578,10 +578,15 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $strReturn = "Updating 7.0.3 to 7.1...\n";
 
         $strReturn .= "Removing languageset table".PHP_EOL;
-        $this->objDB->_pQuery("DROP TABLE agp_languages_languageset", []);
+        $aExistingTables = $this->objDB->getTables();
+        if(in_array("agp_languages_languageset", $aExistingTables)) {
+            $this->objDB->_pQuery("DROP TABLE agp_languages_languageset", []);
+        }
 
         $strReturn .= "Removing cache table".PHP_EOL;
-        $this->objDB->_pQuery("DROP TABLE agp_cache", []);
+        if(in_array("agp_cache", $aExistingTables)) {
+            $this->objDB->_pQuery("DROP TABLE agp_cache", []);
+        }
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1");

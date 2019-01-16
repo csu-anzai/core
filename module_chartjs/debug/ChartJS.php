@@ -38,7 +38,7 @@ class ChartJS
         </script>";
         echo "<script language=\"javascript\" type=\"text/javascript\" src=\""._webpath_.Resourceloader::getInstance()->getCorePathForModule("module_system")."/module_system/scripts/requirejs/require.js\"></script>";
         echo "<script type=\"text/javascript\">
-            require(['app'], function() {});
+            require(['app'], function(app) { app.init(); });
         </script>
         ";
 

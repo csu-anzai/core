@@ -1,6 +1,7 @@
 <?php
 
-echo "<link href='" . _webpath_ . "/core/module_v4skin/admin/skins/kajona_v4/less/styles.min.css' rel='stylesheet' type='text/css'>\n";
+echo "<link rel=\"stylesheet\" href=\"" . _webpath_ . "/core/module_v4skin/admin/skins/kajona_v4/less/styles.min.css?0\" type=\"text/css\">\n";
+
 define("_skinwebpath_", "/");
 
 $arrIcons = \Kajona\V4skin\Admin\Skins\Kajona_V4\AdminskinImageresolver::$arrFAImages;

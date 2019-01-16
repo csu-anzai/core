@@ -530,39 +530,39 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
         }
 
         if ($intButtonConfig & self::BIT_BUTTON_BACK) {
-            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_back", "system"), "backbtn", "", "", true, false);
+            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_back", "system"), "backbtn", null, "", true, false);
         }
 
         if ($intButtonConfig & self::BIT_BUTTON_SUBMIT) {
-            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_submit", "system"), "submitbtn", "", "", true, false);
+            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_submit", "system"), "submitbtn", null, "", true, false);
         }
 
         if ($intButtonConfig & self::BIT_BUTTON_SAVE) {
-            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_save", "system"), "submitbtn", "", "", true, false);
+            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_save", "system"), "submitbtn", null, "", true, false);
         }
 
         if ($intButtonConfig & self::BIT_BUTTON_CANCEL) {
-            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_cancel", "system"), "cancelbtn", "", "", true, false);
+            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_cancel", "system"), "cancelbtn", null, "", true, false);
         }
 
         if ($intButtonConfig & self::BIT_BUTTON_CLOSE) {
-            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_close", "system"), "closebtn", "", "", true, false);
+            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_close", "system"), "closebtn", null, "", true, false);
         }
 
         if ($intButtonConfig & self::BIT_BUTTON_DELETE) {
-            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_delete", "system"), "deletebtn", "", "", true, false);
+            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_delete", "system"), "deletebtn", null, "", true, false);
         }
 
         if ($intButtonConfig & self::BIT_BUTTON_RESET) {
-            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_reset", "system"), "reset", "", "cancelbutton", true, false);
+            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_reset", "system"), "reset", null, "cancelbutton", true, false);
         }
 
         if ($intButtonConfig & self::BIT_BUTTON_CONTINUE) {
-            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_continue", "system"), "continuebtn", "", "", true, false);
+            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_continue", "system"), "continuebtn", null, "", true, false);
         }
 
         if ($intButtonConfig & self::BIT_BUTTON_SAVENEXT) {
-            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_savenext", "system"), "savenextbtn", "", "", true, false);
+            $strButtons .= $this->objToolkit->formInputSubmit(Lang::getInstance()->getLang("commons_savenext", "system"), "savenextbtn", null, "", true, false);
         }
 
         $strReturn .= $this->objToolkit->formInputButtonWrapper($strButtons);
