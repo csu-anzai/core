@@ -27,7 +27,7 @@ class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
         results: function() {return ''}
     };
 
-    public search(event: any, ui: any) {
+    public search: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
         //If input field changes -> reset hidden id field
         var $objCur = $(this);
         if(!$objCur.is('[readonly]')) {
@@ -43,18 +43,18 @@ class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
         }
         $objCur.parent().find('.loading-feedback').html('<i class="fa fa-spinner fa-spin"></i>');
         WorkingIndicator.getInstance().start();
-    }
+    };
 
-    public response(event: any, ui: any) {
+    public response: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
         $(this).parent().find('.loading-feedback').html('');
         WorkingIndicator.getInstance().stop();
-    }
+    };
 
-    public focus(event: any, ui: any) {
+    public focus: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
         return false;
-    }
+    };
 
-    public select(event: any, ui: any) {
+    public select: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
         if(ui.item) {
             var $objCur = $(this);
             $objCur.val( ui.item.title );
@@ -65,7 +65,7 @@ class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
         }
     };
 
-    public create(event: any, ui: any) {
+    public create: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
         var $objCur = $(this);
         $objCur.closest('.form-group').addClass('has-feedback');
         $objCur.after("<span class='form-control-feedback loading-feedback'><i class='fa fa-keyboard-o'></i></span>");
