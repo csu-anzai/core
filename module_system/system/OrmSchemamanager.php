@@ -140,11 +140,15 @@ class OrmSchemamanager extends OrmBase
             $newColumns[] = $column->getStrName();
         }
 
-        // remove all existing columns which are not available anymore
+        // currently we dont drop any columns since if we rename a column we still need the old values. Through the old
+        // column we can migrate the values to the new column. If we can detect a rename of a column we could implement
+        // this here
+        /*
         $removedColumns = array_diff($existingColumns, $newColumns);
         foreach ($removedColumns as $columnName) {
             $connection->removeColumn($table->getStrName(), $columnName);
         }
+        */
     }
 
     /**
