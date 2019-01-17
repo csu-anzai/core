@@ -147,4 +147,12 @@ class AdminwidgetTodo extends Adminwidget implements AdminwidgetInterface
     {
         return $this->getLang("todo_description");
     }
+
+    /**
+     * @return string
+     */
+    public function getWidgetImg()
+    {
+        return "/files/extract/widgets/todo.png";
+    }
 }

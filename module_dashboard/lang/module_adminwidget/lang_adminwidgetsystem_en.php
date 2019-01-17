@@ -13,7 +13,7 @@
 //editable entries
 $lang["note_content"]                    = "Content";
 $lang["note_name"]                       = "Notes";
-$lang["note_description"]                = "Create a text note on you dashboard";
+$lang["note_description"]                = "Creates a note within the dashboard";
 $lang["sysinfo_checkboxkajona"]          = "Show kajona information";
 $lang["sysinfo_checkboxphp"]             = "Show PHP information";
 $lang["sysinfo_checkboxserver"]          = "Show server information";

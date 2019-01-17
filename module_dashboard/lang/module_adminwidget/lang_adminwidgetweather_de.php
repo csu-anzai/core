@@ -18,6 +18,6 @@ $lang["weather_forecast"]                = "Vorhersage";
 $lang["weather_location"]                = "Ort";
 $lang["weather_location_string"]         = "Ort: ";
 $lang["weather_name"]                    = "Wetter";
-$lang["weather_description"]             = "Wettervorhersage für die nahe Zukunft";
+$lang["weather_description"]             = "Erstellt eine Wettervorhersage für die nächsten drei Tage";
 $lang["weather_temp_string"]             = "Temperatur: ";
 $lang["weather_unit"]                    = "Einheit";

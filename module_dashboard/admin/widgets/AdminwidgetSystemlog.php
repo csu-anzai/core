@@ -113,7 +113,6 @@ class AdminwidgetSystemlog extends Adminwidget implements AdminwidgetInterface
     public function getWidgetImg()
     {
         return "/files/extract/widgets/systemlog.png";
-        //return Resourceloader::getInstance()->getWebPathForModule("module_dashboard")."/img/widgets/systeminfo.png";
     }
 }
 

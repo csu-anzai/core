@@ -315,6 +315,15 @@ abstract class Adminwidget
     {
         return true;
     }
+
+    /**
+     * @return bool
+     */
+    public function showInAddList()
+    {
+        return true;
+    }
+
 }
 
 

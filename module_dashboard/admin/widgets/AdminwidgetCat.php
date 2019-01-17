@@ -110,4 +110,11 @@ class AdminwidgetCat extends Adminwidget implements AdminwidgetInterface
         return $this->getLang("cat_description");
     }
 
+    /**
+     * @return string
+     */
+    public function getWidgetImg()
+    {
+        return "/files/extract/widgets/cat.png";
+    }
 }

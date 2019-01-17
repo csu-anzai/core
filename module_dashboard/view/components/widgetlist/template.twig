@@ -38,9 +38,9 @@
     }
 
     function addWidgetToDashboard(widgetClass, column) {
-        var data = "&step=3&widget="+widgetClass+"&column=column"+column+"&ajax=true";
+        var data = "&widget="+widgetClass+"&column=column"+column+"&ajax=true";
         require(['ajax', 'router'], function (ajax, router) {
-            ajax.genericAjaxCall("dashboard", "addWidgetToDashboard", data, null, function() {
+            ajax.genericAjaxCall("dashboard", "addWidget", data, null, function() {
                 if (window.opener) {
                     window.close();
                 } else if (parent) {

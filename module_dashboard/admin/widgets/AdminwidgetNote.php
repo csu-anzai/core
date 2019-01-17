@@ -86,5 +86,13 @@ class AdminwidgetNote extends Adminwidget implements AdminwidgetInterface
         return $this->getLang("note_description");
     }
 
+    /**
+     * @return string
+     */
+    public function getWidgetImg()
+    {
+        return "/files/extract/widgets/note.png";
+    }
+
 }
 

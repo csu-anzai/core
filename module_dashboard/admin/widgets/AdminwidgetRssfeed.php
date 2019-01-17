@@ -174,5 +174,13 @@ class AdminwidgetRssfeed extends Adminwidget implements AdminwidgetInterface
         return $this->getLang("rssfeed_description");
     }
 
+    /**
+     * @return string
+     */
+    public function getWidgetImg()
+    {
+        return "/files/extract/widgets/newsfeed.png";
+    }
+
 }
 

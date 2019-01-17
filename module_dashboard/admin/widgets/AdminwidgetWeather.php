@@ -142,4 +142,12 @@ class AdminwidgetWeather extends Adminwidget implements AdminwidgetInterface
     {
         return $this->getLang("weather_description");
     }
+
+    /**
+     * @return string
+     */
+    public function getWidgetImg()
+    {
+        return "/files/extract/widgets/weather.png";
+    }
 }

@@ -171,5 +171,12 @@ class AdminwidgetSystemcheck extends Adminwidget implements AdminwidgetInterface
         return $this->getLang("systemcheck_description");
     }
 
+    /**
+     * @return string
+     */
+    public function getWidgetImg()
+    {
+        return "/files/extract/widgets/systemcheck.png";
+    }
 }
 
