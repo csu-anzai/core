@@ -1,15 +1,15 @@
-<div class="container">
+<div class="container core-component-widgetlist">
     {% set wid = 0 %}
     {% for widget in widgets %}
         <div class="row">
-            <div class="col-xs-2">
-                <div style="margin: 10px 10px 10px 10px; height:60px">{{ widget['img']|raw }}</div>
-                <div style="padding-top:10px; text-align: center; font-weight: 600">{{ widget['name'] }}</div>
+            <div class="img-col col-sm-3">
+                <div class="widget-img">{{ widget['img']|raw }}</div>
+                <div class="widget-title">{{ widget['name'] }}</div>
             </div>
-            <div style="border-left:1px solid lightgrey; height:100px" class="col-xs-7 hidden-xs">{{ widget['info'] }}</div>
-            <div style="border-left:1px solid lightgrey; height:100px" class="col-xs-3">
-                <button id="addWidget" class="btn" onclick="showColumnSelect({{ wid }})">Add</button>
-                <div id="selectColumn{{ wid }}" style="display: none" class="btn-toolbar" role="toolbar">
+            <div class="info-col col-sm-7 hidden-xs">{{ widget['info'] }}</div>
+            <div class="button-col col-sm-2">
+                <button id="addWidget{{ wid }}" class="add-widget-btn btn" onclick="showColumnSelect({{ wid }})">{{ "add_button_title"|lang("dashboard") }}</button>
+                <div id="selectColumn{{ wid }}" class="select-col-btn btn-toolbar" role="toolbar">
                     <div class="btn-group mr-2" role="group" aria-label="First group">
                         <button type="button" class="btn btn-secondary" onclick="addWidgetToDashboard('{{ widget['class']|e('js') }}', 1)">1</button>
                         <button type="button" class="btn btn-secondary" onclick="addWidgetToDashboard('{{ widget['class']|e('js') }}', 2)">2</button>
@@ -18,6 +18,9 @@
                     <div class="btn-group mr-2" role="group" aria-label="Second group">
                         <button type="button" class="btn btn-secondary" onclick="hideColumnSelect({{ wid }})">×</button>
                     </div>
+                </div>
+                <div id="selectColumnInfo{{ wid }}" class="select-col-info">
+                    {{ "select_col_button_info"|lang("dashboard") }}
                 </div>
             </div>
         </div>
@@ -28,12 +31,17 @@
 <script>
 
     function showColumnSelect(widgetId) {
-        $("button#addWidget").hide();
+        $("button#addWidget"+widgetId).hide();
+        $("button.add-widget-btn").attr("disabled", "disabled");
         $("div#selectColumn"+widgetId).show();
+        $("div#selectColumnInfo"+widgetId).show();
     }
 
     function hideColumnSelect(widgetId) {
         $("div#selectColumn"+widgetId).hide();
+        $("div#selectColumnInfo"+widgetId).hide();
+        $("button#addWidget"+widgetId).show();
+        $("button.add-widget-btn").removeAttr("disabled");
         $("button#addWidget").show();
     }
 

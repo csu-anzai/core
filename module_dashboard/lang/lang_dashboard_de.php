@@ -43,4 +43,6 @@ $lang["filter_all_categories"]           = "Alle Kategorien";
 $lang["todo_task_col_object"]            = "Objekt";
 $lang["todo_task_col_category"]          = "Kategorie";
 $lang["todo_task_col_date"]              = "Fälligkeitsdatum";
-$lang["todo_provider_category"]              = "Kategorie";
+$lang["todo_provider_category"]          = "Kategorie";
+$lang["add_button_title"]                = "Hinzufügen";
+$lang["select_col_button_info"]          = "Wählen Sie hier die Spalte aus";

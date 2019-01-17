@@ -44,4 +44,6 @@ $lang["filter_all_categories"]           = "All categories";
 $lang["todo_task_col_object"]            = "Object";
 $lang["todo_task_col_category"]          = "Category";
 $lang["todo_task_col_date"]              = "Resolution date";
-$lang["todo_provider_category"]              = "Category";
+$lang["todo_provider_category"]          = "Category";
+$lang["add_button_title"]                = "Add";
+$lang["select_col_button_info"]          = "Select dashboard column";
