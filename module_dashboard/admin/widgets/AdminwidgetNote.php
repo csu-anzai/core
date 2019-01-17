@@ -31,20 +31,7 @@ class AdminwidgetNote extends Adminwidget implements AdminwidgetInterface
     }
 
     /**
-     * Allows the widget to add additional fields to the edit-/create form.
-     * Use the toolkit class as usual.
-     *
-     * @return string
-     */
-    public function getEditForm()
-    {
-        $strReturn = "";
-        $strReturn .= $this->objToolkit->formInputTextArea("content", $this->getLang("note_content"), $this->getFieldValue("content"));
-        return $strReturn;
-    }
-
-    /**
-     * @param AdminFormgenerator $form
+     * @inheritdoc
      */
     public function getEditFormContent(AdminFormgenerator $form)
     {
@@ -58,6 +45,7 @@ class AdminwidgetNote extends Adminwidget implements AdminwidgetInterface
      * Do NOT use the toolkit right here!
      *
      * @return string
+     * @throws \Kajona\System\System\Exception
      */
     public function getWidgetOutput()
     {

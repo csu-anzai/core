@@ -97,11 +97,10 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
         $arrWidgets = Resourceloader::getInstance()->getFolderContent("/admin/widgets", array(".php"));
 
         $arrReturn = array();
-        foreach($arrWidgets as $strPath => $strFilename) {
-
+        foreach ($arrWidgets as $strPath => $strFilename) {
             $objInstance = Classloader::getInstance()->getInstanceFromFilename($strPath, "Kajona\\Dashboard\\Admin\\Widgets\\Adminwidget", "Kajona\\Dashboard\\Admin\\Widgets\\AdminwidgetInterface");
 
-            if($objInstance !== null) {
+            if ($objInstance !== null) {
                 $arrReturn[] = get_class($objInstance);
             }
         }

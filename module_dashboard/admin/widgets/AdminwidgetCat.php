@@ -44,30 +44,13 @@ class AdminwidgetCat extends Adminwidget implements AdminwidgetInterface
     }
 
     /**
-     * Allows the widget to add additional fields to the edit-/create form.
-     * Use the toolkit class as usual.
-     *
-     * @return string
-     */
-    public function getEditForm()
-    {
-        $strReturn = $this->objToolkit->formInputRadiogroup("cat", $this->arrCats, $this->getLang("cats"), $this->getFieldValue("cat"));
-
-        return $strReturn;
-    }
-
-    /**
-     * Allows the widget to add additional fields to the edit-/create form.
-     * Use the toolkit class as usual.
-     *
-     * @param AdminFormgenerator $form
-     * @return string
+     * @inheritdoc
      */
     public function getEditFormContent(AdminFormgenerator $form)
     {
         $form->addField(new FormentryRadiogroup("cat", ""), "")
             ->setBitMandatory(true)
-            ->setStrLabel( $this->getLang("cat_select"))
+            ->setStrLabel($this->getLang("cat_select"))
             ->setArrKeyValues($this->arrCats)
             ->setStrValue($this->getFieldValue('cat'));
     }

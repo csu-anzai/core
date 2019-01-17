@@ -32,27 +32,6 @@ class AdminwidgetWeather extends Adminwidget implements AdminwidgetInterface
         $this->setPersistenceKeys(array("unit", "location"));
     }
 
-    /**
-     * Allows the widget to add additional fields to the edit-/create form.
-     * Use the toolkit class as usual.
-     *
-     * @return string
-     */
-    public function getEditForm()
-    {
-        $strReturn = "";
-        $strReturn .= $this->objToolkit->formInputDropdown(
-            "unit",
-            array(
-                "f" => $this->getLang("weather_fahrenheit"),
-                "c" => $this->getLang("weather_celsius")
-            ),
-            $this->getLang("weather_unit"),
-            $this->getFieldValue("unit")
-        );
-        $strReturn .= $this->objToolkit->formInputText("location", $this->getLang("weather_location"), $this->getFieldValue("location"));
-        return $strReturn;
-    }
 
     /**
      * @param AdminFormgenerator $form
@@ -62,7 +41,8 @@ class AdminwidgetWeather extends Adminwidget implements AdminwidgetInterface
         $form->addField(new FormentryText("location", ""), "")
             ->setStrValue($this->getFieldValue("location"))
             ->setStrLabel($this->getLang("weather_location"));
-        $form->addField(new FormentryDropdown("unit", ""))->setArrKeyValues(["f" => $this->getLang("weather_fahrenheit"), "c" => $this->getLang("weather_celsius")])
+        $form->addField(new FormentryDropdown("unit", ""))
+            ->setArrKeyValues(["f" => $this->getLang("weather_fahrenheit"), "c" => $this->getLang("weather_celsius")])
             ->setStrValue(($this->getFieldValue("unit")))
             ->setStrLabel($this->getLang("weather_unit"));
     }
@@ -73,6 +53,7 @@ class AdminwidgetWeather extends Adminwidget implements AdminwidgetInterface
      * Do NOT use the toolkit right here!
      *
      * @return string
+     * @throws Exception
      */
     public function getWidgetOutput()
     {

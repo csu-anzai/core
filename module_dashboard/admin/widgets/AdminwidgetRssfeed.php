@@ -35,21 +35,7 @@ class AdminwidgetRssfeed extends Adminwidget implements AdminwidgetInterface
     }
 
     /**
-     * Allows the widget to add additional fields to the edit-/create form.
-     * Use the toolkit class as usual.
-     *
-     * @return string
-     */
-    public function getEditForm()
-    {
-        $strReturn = "";
-        $strReturn .= $this->objToolkit->formInputText("feedurl", $this->getLang("rssfeed_feedurl"), $this->getFieldValue("feedurl"));
-        $strReturn .= $this->objToolkit->formInputText("posts", $this->getLang("rssfeed_posts"), $this->getFieldValue("posts"));
-        return $strReturn;
-    }
-
-    /**
-     * @param AdminFormgenerator $form
+     * @inheritdoc
      */
     public function getEditFormContent(AdminFormgenerator $form)
     {

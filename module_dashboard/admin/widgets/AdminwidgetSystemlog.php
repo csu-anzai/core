@@ -34,20 +34,7 @@ class AdminwidgetSystemlog extends Adminwidget implements AdminwidgetInterface
     }
 
     /**
-     * Allows the widget to add additional fields to the edit-/create form.
-     * Use the toolkit class as usual.
-     *
-     * @return string
-     */
-    public function getEditForm()
-    {
-        $strReturn = "";
-        $strReturn .= $this->objToolkit->formInputText("nrofrows", $this->getLang("syslog_nrofrows"), $this->getFieldValue("nrofrows"));
-        return $strReturn;
-    }
-
-    /**
-     * @param AdminFormgenerator $form
+     * @inheritdoc
      */
     public function getEditFormContent(AdminFormgenerator $form)
     {

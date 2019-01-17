@@ -34,21 +34,7 @@ class AdminwidgetSystemcheck extends Adminwidget implements AdminwidgetInterface
     }
 
     /**
-     * Allows the widget to add additional fields to the edit-/create form.
-     * Use the toolkit class as usual.
-     *
-     * @return string
-     */
-    public function getEditForm()
-    {
-        $strReturn = "";
-        $strReturn .= $this->objToolkit->formInputCheckbox("php", $this->getLang("systemcheck_checkboxphp"), $this->getFieldValue("php"));
-        $strReturn .= $this->objToolkit->formInputCheckbox("kajona", $this->getLang("systemcheck_checkboxkajona"), $this->getFieldValue("kajona"));
-        return $strReturn;
-    }
-
-    /**
-     * @param AdminFormgenerator $form
+     * @inheritdoc
      */
     public function getEditFormContent(AdminFormgenerator $form)
     {
