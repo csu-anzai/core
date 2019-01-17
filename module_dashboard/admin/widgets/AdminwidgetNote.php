@@ -20,6 +20,11 @@ class AdminwidgetNote extends Adminwidget implements AdminwidgetInterface
 {
 
     /**
+     * @var string
+     */
+    private $imgFileName = "note.png";
+
+    /**
      * Basic constructor, registers the fields to be persisted and loaded
      *
      */
@@ -77,9 +82,9 @@ class AdminwidgetNote extends Adminwidget implements AdminwidgetInterface
     /**
      * @return string
      */
-    public function getWidgetImg()
+    public function getImgFileName(): string
     {
-        return "/files/extract/widgets/note.png";
+        return $this->imgFileName;
     }
 
 }

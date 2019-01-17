@@ -10,6 +10,7 @@ namespace Kajona\Dashboard\Admin\Widgets;
 
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\Formentries\FormentryRadiogroup;
+use Kajona\System\System\Filesystem;
 use Kajona\System\System\Resourceloader;
 
 /**
@@ -18,6 +19,10 @@ use Kajona\System\System\Resourceloader;
 class AdminwidgetCat extends Adminwidget implements AdminwidgetInterface
 {
 
+    /**
+     * @var string
+     */
+    private $imgFileName = "cat.png";
     /**
      * @var array
      */
@@ -96,8 +101,8 @@ class AdminwidgetCat extends Adminwidget implements AdminwidgetInterface
     /**
      * @return string
      */
-    public function getWidgetImg()
+    public function getImgFileName(): string
     {
-        return "/files/extract/widgets/cat.png";
+        return $this->imgFileName;
     }
 }

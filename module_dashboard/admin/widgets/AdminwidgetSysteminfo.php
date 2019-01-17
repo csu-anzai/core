@@ -23,6 +23,11 @@ class AdminwidgetSysteminfo extends Adminwidget implements AdminwidgetInterface
 {
 
     /**
+     * @var string
+     */
+    private $imgFileName = "systeminfo.png";
+
+    /**
      * Basic constructor, registers the fields to be persisted and loaded
      *
      */
@@ -114,10 +119,12 @@ class AdminwidgetSysteminfo extends Adminwidget implements AdminwidgetInterface
         return $this->getLang("sysinfo_description");
     }
 
-    public function getWidgetImg()
+    /**
+     * @return string
+     */
+    public function getImgFileName(): string
     {
-        return "/files/extract/widgets/systeminfo.png";
-        //return Resourceloader::getInstance()->getWebPathForModule("module_dashboard")."/img/widgets/systeminfo.png";
+        return $this->imgFileName;
     }
 }
 

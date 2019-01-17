@@ -13,8 +13,10 @@ use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\ToolkitAdmin;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Database;
+use Kajona\System\System\Filesystem;
 use Kajona\System\System\Lang;
 use Kajona\System\System\Link;
+use Kajona\System\System\Resourceloader;
 
 /**
  * Base class to be extended by all adminwidgets.
@@ -25,7 +27,18 @@ use Kajona\System\System\Link;
  */
 abstract class Adminwidget
 {
+    const STR_IMG_SOURCE_PATH = "/admin/widgets/images/";
+    const STR_IMG_FILE_PATH = "files/extract/core/module_dashboard/admin/widgets/images/";
 
+    /**
+     * @var string
+     */
+    private $imgFileName = "default.png";
+
+    /**
+     * @var string
+     */
+    private $moduleName = "module_dashboard";
     private $arrFields = array();
     private $arrPersistenceKeys = array();
     private $strSystemid = "";
@@ -281,8 +294,14 @@ abstract class Adminwidget
      */
     public function getWidgetImg()
     {
-        return "/files/extract/widgets/default.png";
-        //return Resourceloader::getInstance()->getWebPathForModule("module_dashboard")."/img/widgets/default.png";
+        $fileName = $this->getImgFileName();
+
+        $path = Resourceloader::getInstance()->getAbsolutePathForModule($this->getModuleName()).self::STR_IMG_SOURCE_PATH.$fileName;
+        $fs = new Filesystem();
+        if (!file_exists(_realpath_.self::STR_IMG_FILE_PATH.$fileName)) {
+            $fs->fileCopy($path, self::STR_IMG_FILE_PATH.$fileName, true);
+        }
+        return self::STR_IMG_FILE_PATH.$fileName;
     }
 
     /**
@@ -317,11 +336,19 @@ abstract class Adminwidget
     }
 
     /**
-     * @return bool
+     * @return string
      */
-    public function showInAddList()
+    public function getImgFileName(): string
     {
-        return true;
+        return $this->imgFileName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModuleName(): string
+    {
+        return $this->moduleName;
     }
 
 }

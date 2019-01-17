@@ -22,6 +22,10 @@ use Kajona\System\System\XmlParser;
  */
 class AdminwidgetRssfeed extends Adminwidget implements AdminwidgetInterface
 {
+    /**
+     * @var string
+     */
+    private $imgFileName = "newsfeed.png";
 
     /**
      * Basic constructor, registers the fields to be persisted and loaded
@@ -163,9 +167,9 @@ class AdminwidgetRssfeed extends Adminwidget implements AdminwidgetInterface
     /**
      * @return string
      */
-    public function getWidgetImg()
+    public function getImgFileName(): string
     {
-        return "/files/extract/widgets/newsfeed.png";
+        return $this->imgFileName;
     }
 
 }

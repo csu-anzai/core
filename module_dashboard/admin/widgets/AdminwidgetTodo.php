@@ -19,6 +19,11 @@ use Kajona\System\System\Link;
  */
 class AdminwidgetTodo extends Adminwidget implements AdminwidgetInterface
 {
+    /**
+     * @var string
+     */
+    private $imgFileName = "todo.png";
+
     public function __construct()
     {
         parent::__construct();
@@ -151,8 +156,8 @@ class AdminwidgetTodo extends Adminwidget implements AdminwidgetInterface
     /**
      * @return string
      */
-    public function getWidgetImg()
+    public function getImgFileName(): string
     {
-        return "/files/extract/widgets/todo.png";
+        return $this->imgFileName;
     }
 }

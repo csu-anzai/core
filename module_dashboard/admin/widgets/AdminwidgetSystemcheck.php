@@ -21,6 +21,10 @@ use Kajona\System\System\SystemModule;
  */
 class AdminwidgetSystemcheck extends Adminwidget implements AdminwidgetInterface
 {
+    /**
+     * @var string
+     */
+    private $imgFileName = "systemcheck.png";
 
     /**
      * Basic constructor, registers the fields to be persisted and loaded
@@ -45,7 +49,6 @@ class AdminwidgetSystemcheck extends Adminwidget implements AdminwidgetInterface
         $form->addField(new FormentryCheckbox("kajona", ""), "")
             ->setStrLabel($this->getLang("systemcheck_checkboxkajona"))
             ->setStrValue($this->getFieldValue("kajona"));
-
     }
 
     /**
@@ -54,6 +57,7 @@ class AdminwidgetSystemcheck extends Adminwidget implements AdminwidgetInterface
      * Do NOT use the toolkit right here!
      *
      * @return string
+     * @throws \Kajona\System\System\Exception
      */
     public function getWidgetOutput()
     {
@@ -160,9 +164,9 @@ class AdminwidgetSystemcheck extends Adminwidget implements AdminwidgetInterface
     /**
      * @return string
      */
-    public function getWidgetImg()
+    public function getImgFileName(): string
     {
-        return "/files/extract/widgets/systemcheck.png";
+        return $this->imgFileName;
     }
 }
 

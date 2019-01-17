@@ -21,6 +21,10 @@ use Kajona\System\System\SystemModule;
  */
 class AdminwidgetSystemlog extends Adminwidget implements AdminwidgetInterface
 {
+    /**
+     * @var string
+     */
+    private $imgFileName = "systemlog.png";
 
     /**
      * Basic constructor, registers the fields to be persisted and loaded
@@ -49,6 +53,7 @@ class AdminwidgetSystemlog extends Adminwidget implements AdminwidgetInterface
      * Do NOT use the toolkit right here!
      *
      * @return string
+     * @throws \Kajona\System\System\Exception
      */
     public function getWidgetOutput()
     {
@@ -97,9 +102,12 @@ class AdminwidgetSystemlog extends Adminwidget implements AdminwidgetInterface
         return $this->getLang("syslog_description");
     }
 
-    public function getWidgetImg()
+    /**
+     * @return string
+     */
+    public function getImgFileName(): string
     {
-        return "/files/extract/widgets/systemlog.png";
+        return $this->imgFileName;
     }
 }
 

@@ -23,6 +23,11 @@ class AdminwidgetWeather extends Adminwidget implements AdminwidgetInterface
 {
 
     /**
+     * @var string
+     */
+    private $imgFileName = "weather.png";
+
+    /**
      * Basic constructor, registers the fields to be persisted and loaded
      */
     public function __construct()
@@ -127,8 +132,8 @@ class AdminwidgetWeather extends Adminwidget implements AdminwidgetInterface
     /**
      * @return string
      */
-    public function getWidgetImg()
+    public function getImgFileName(): string
     {
-        return "/files/extract/widgets/weather.png";
+        return $this->imgFileName;
     }
 }
