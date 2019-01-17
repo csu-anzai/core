@@ -2,7 +2,7 @@
 ///<amd-module name="messaging"/>
 
 import * as $ from "jquery";
-import "toastr";
+import * as toastr from "toastr";
 import Ajax = require("./Ajax");
 import Util = require("./Util");
 import DialogHelper = require("../../../module_v4skin/scripts/kajona/DialogHelper");
