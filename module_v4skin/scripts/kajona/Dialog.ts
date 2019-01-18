@@ -44,7 +44,7 @@ class Dialog {
 
     public setTitle(strTitle : string) {
         if(strTitle == "")
-            strTitle = "&nbsp;";
+            strTitle = " ";
         $('#' + this.containerId + '_title').text(strTitle);
     }
 
