@@ -346,7 +346,7 @@ final class Session
             return $strLanguage;
         }
 
-        if ($this->isLoggedin()) {
+        if (!$bitSkipSessionEntry && $this->isLoggedin()) {
             if ($this->isAdmin()) {
                 if ($this->getUser() != null && $this->getUser()->getStrAdminlanguage() != "") {
                     $strLang = $this->getUser()->getStrAdminlanguage();

@@ -1,7 +1,13 @@
 cache.properties
 vendor/
-.vagrant/
 *.phar
 _buildfiles/jstests/node_modules
-_buildfiles/jstests/guideps/node_modules
+_buildfiles/jstests/package-lock.json
+_buildfiles/packages
+_buildfiles/temp
+_buildfiles/build
+_buildfiles/bin/plain*.js
+_buildfiles/bin/tsc*.js*
+_buildfiles/buildproject
 module_v4skin/admin/skins/kajona_v4/less/styles.min.css
+module_system/scripts/agp*.js
