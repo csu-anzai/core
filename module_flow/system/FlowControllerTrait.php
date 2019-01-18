@@ -213,6 +213,10 @@ require(["jquery", "ajax"], function($, ajax){
                 /** @var FlowTransition $objTransition */
                 $objTargetStatus = $objTransition->getTargetStatus();
 
+                if ($objTargetStatus === null) {
+                    continue;
+                }
+
                 // validation
                 $objResult = $objFlow->getHandler()->validateStatusTransition($objObject, $objTransition);
 
