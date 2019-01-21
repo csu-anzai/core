@@ -209,7 +209,7 @@ TEXT;
     private static function buildSkinStyles()
     {
         if (is_file(__DIR__ . "/_buildfiles/bin/buildSkinStyles.php")) {
-            echo "Building sking css styles" . PHP_EOL;
+            echo "Building skin css styles" . PHP_EOL;
             $arrOutput = array();
             exec("php -f " . escapeshellarg(self::$strRealPath . "/core/_buildfiles/bin/buildSkinStyles.php"), $arrOutput);
             echo "   " . implode("\n   ", $arrOutput);

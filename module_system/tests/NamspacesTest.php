@@ -45,8 +45,12 @@ class NamspacesTest extends TestCase
                 continue;
             }
 
-            //do not check legacy classes
-            if(StringUtil::startsWith($strClassName, "class_") || StringUtil::startsWith($strClassName, "interface_") || StringUtil::startsWith($strClassName, "trait_")) {
+
+            if (StringUtil::indexOf($strFileName, "/debug/") !== false) {
+                continue;
+            }
+
+            if (StringUtil::indexOf($strFileName, "/config/") !== false) {
                 continue;
             }
 

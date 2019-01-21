@@ -19,8 +19,6 @@ namespace Kajona\System\System;
  * @moduleId _system_modul_id_
  * @targetTable agp_system_config.system_config_id
  *
- * @blockFromAutosave
- *
  */
 class SystemSetting extends Model implements ModelInterface, VersionableInterface
 {
@@ -174,10 +172,10 @@ class SystemSetting extends Model implements ModelInterface, VersionableInterfac
      * @return SystemSetting[]
      * @static
      */
-    public static function getAllConfigValues()
+    private static function getAllConfigValues()
     {
         if (self::$arrInstanceCache == null) {
-            if (count(Database::getInstance()->getTables()) == 0) {
+            if (!in_array("agp_system_config", Database::getInstance()->getTables())) {
                 return array();
             }
 

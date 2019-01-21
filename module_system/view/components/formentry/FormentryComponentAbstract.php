@@ -46,6 +46,11 @@ abstract class FormentryComponentAbstract extends AbstractComponent
     protected $data = [];
 
     /**
+     * @var string
+     */
+    protected $opener;
+
+    /**
      * @param string $name
      * @param string $title
      */
@@ -103,6 +108,14 @@ abstract class FormentryComponentAbstract extends AbstractComponent
     }
 
     /**
+     * @param string $opener
+     */
+    public function setOpener(string $opener)
+    {
+        $this->opener = $opener;
+    }
+
+    /**
      * @inheritdoc
      */
     public function renderComponent(): string
@@ -124,6 +137,7 @@ abstract class FormentryComponentAbstract extends AbstractComponent
             "readOnly" => $this->readOnly,
             "class" => $this->class,
             "data" => $this->data,
+            "opener" => $this->opener,
         ];
     }
 }

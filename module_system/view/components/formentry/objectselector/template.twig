@@ -1,6 +1,6 @@
 
 <div class="form-group core-component-formentry-objectselector">
-    <label for="{{ name }}" class="col-sm-3 control-label">{{ title }}</label>
+    <label for="{{ name }}" class="col-sm-3 control-label">{{ title|raw }}</label>
     <div class="col-sm-6">
         <input type="text" id="{{ name }}" name="{{ name }}" {% if object %}value="{{ object.strDisplayName }}"{% endif %} class="form-control" {% if readOnly %}readonly{% endif %} autocomplete="off">
         <input type="hidden" id="{{ name }}_id" name="{{ name }}_id" {% if object %}value="{{ object.systemId }}"{% endif %} />

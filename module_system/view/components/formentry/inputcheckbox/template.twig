@@ -9,4 +9,9 @@
             </label>
         </div>
     </div>
+    {% if opener %}
+    <div class="col-sm-2 form-opener">
+        {{ opener|raw }}
+    </div>
+    {% endif %}
 </div>

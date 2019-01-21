@@ -1,7 +1,8 @@
 #!/usr/bin/php
 <?php
 
-class BuildHelper {
+class BuildHelper
+{
 
     public $strProjectPath = "";
 
@@ -9,8 +10,8 @@ class BuildHelper {
 
     public $strConfigFile = "";
 
-    public function main() {
-
+    public function main()
+    {
 
         echo "\n";
         echo "Kajona Build Project Helper\n";
@@ -24,21 +25,20 @@ class BuildHelper {
         echo "\n";
 
 
-
         $arrCores = array();
-        foreach(scandir(__DIR__."/".$this->strProjectPath) as $strRootFolder) {
-            if(strpos($strRootFolder, "core") === false)
+        foreach (scandir(__DIR__."/".$this->strProjectPath) as $strRootFolder) {
+            if (strpos($strRootFolder, "core") === false) {
                 continue;
+            }
             $arrCores[] = $strRootFolder;
         }
 
         //trigger the setup script, try to get the matching one
-        foreach(array_reverse($arrCores) as $strOneCore) {
-            if(file_exists(__DIR__."/".$this->strProjectPath."/".$strOneCore."/setupproject.php")) {
+        foreach (array_reverse($arrCores) as $strOneCore) {
+            if (file_exists(__DIR__."/".$this->strProjectPath."/".$strOneCore."/setupproject.php")) {
                 require(__DIR__."/".$this->strProjectPath."/".$strOneCore."/setupproject.php");
                 break;
             }
-
         }
 
         echo "calling cleanCore script: php -f '".__DIR__."/cleanCore.php' '".$this->strProjectPath."'\n";
@@ -47,7 +47,7 @@ class BuildHelper {
         echo implode("\n", $arrReturn)."\n";
 
 
-        if($this->bitOnlyProjectsetup) {
+        if ($this->bitOnlyProjectsetup) {
             return;
         }
 
@@ -60,8 +60,8 @@ class BuildHelper {
         echo "using db-driver ".DB_DRIVER."...\n";
         $strConfigfile = file_get_contents(__DIR__."/".$this->strProjectPath."/core/module_system/system/config/config.php");
         $strConfigfile = str_replace(
-            array("%%defaulthost%%", "%%defaultusername%%", "%%defaultpassword%%", "%%defaultdbname%%", "%%defaultprefix%%", "%%defaultdriver%%", "%%defaultport%%"),
-            array(DB_HOST, DB_USER, DB_PASS, DB_DB, "autotest_", DB_DRIVER, ""),
+            array("%%defaulthost%%", "%%defaultusername%%", "%%defaultpassword%%", "%%defaultdbname%%", "%%defaultdriver%%", "%%defaultport%%"),
+            array(DB_HOST, DB_USER, DB_PASS, DB_DB, DB_DRIVER, ""),
             $strConfigfile
         );
 
@@ -82,7 +82,7 @@ class BuildHelper {
         $objDB = $objCarrier->getObjDB();
         $arrTables = $objDB->getTables();
 
-        foreach($arrTables as $strOneTable) {
+        foreach ($arrTables as $strOneTable) {
             $objDB->_pQuery("DROP TABLE ".$strOneTable, array());
         }
 
@@ -92,13 +92,8 @@ class BuildHelper {
         echo "\n";
         echo "Searching for packages to be installed...".PHP_EOL;
         $objManager = new \Kajona\Packagemanager\System\PackagemanagerManager();
-        $arrPackageMetadata = $objManager->getAvailablePackages();
+        $arrPackagesToInstall = $objManager->getAvailablePackages();
 
-        $arrPackagesToInstall = array();
-        foreach($arrPackageMetadata as $objOneMetadata) {
-            if(!in_array($objOneMetadata->getStrTitle(), array("samplecontent")))
-                $arrPackagesToInstall[] = $objOneMetadata;
-        }
 
         echo "nr of packages found to install: ".count($arrPackagesToInstall)."\n";
         echo "\n";
@@ -107,19 +102,28 @@ class BuildHelper {
         echo "starting installations...\n";
         \Kajona\System\System\ResponseObject::getInstance()->setObjEntrypoint(\Kajona\System\System\RequestEntrypointEnum::INSTALLER());
 
-        while(count($arrPackagesToInstall) > 0 && ++$intMaxLoops < 100) {
-            /** @var \Kajona\Packagemanager\System\PackagemanagerMetadata $objOneMetadata */
-            foreach($arrPackagesToInstall as $intKey => $objOneMetadata) {
+//        //start with the system package
+//        foreach ($arrPackagesToInstall as $intKey => $objOneMetadata) {
+//            if ($objOneMetadata->getStrTitle() == "system") {
+//                $objHandler = $objManager->getPackageManagerForPath($objOneMetadata->getStrPath());
+//                echo dateToString(new \Kajona\System\System\Date())." Installing ".$objOneMetadata->getStrTitle()."...\n";
+//                $objHandler->installOrUpdate();
+//                unset($arrPackagesToInstall[$intKey]);
+//            }
+//        }
 
+        while (count($arrPackagesToInstall) > 0 && ++$intMaxLoops < 100) {
+            /** @var \Kajona\Packagemanager\System\PackagemanagerMetadata $objOneMetadata */
+            foreach ($arrPackagesToInstall as $intKey => $objOneMetadata) {
                 $objHandler = $objManager->getPackageManagerForPath($objOneMetadata->getStrPath());
-                if(!$objOneMetadata->getBitProvidesInstaller()) {
+                if (!$objOneMetadata->getBitProvidesInstaller()) {
                     $objHandler->installOrUpdate();
                     unset($arrPackagesToInstall[$intKey]);
                     continue;
                 }
 
 
-                if(!$objHandler->isInstallable()) {
+                if (!$objHandler->isInstallable()) {
                     continue;
                 }
 
@@ -132,23 +136,23 @@ class BuildHelper {
 
 
         echo "Installing samplecontent...\n\n";
-        foreach(\Kajona\Installer\System\SamplecontentInstallerHelper::getSamplecontentInstallers() as $objOneInstaller) {
-            if(!$objOneInstaller->isInstalled()) {
+        foreach (\Kajona\Installer\System\SamplecontentInstallerHelper::getSamplecontentInstallers() as $objOneInstaller) {
+            if (!$objOneInstaller->isInstalled()) {
                 echo dateToString(new \Kajona\System\System\Date())." Installing ".get_class($objOneInstaller)."...\n";
                 $objOneInstaller->install();
             }
         }
 
 
-        echo dateToString(new \Kajona\System\System\Date()). " Finished buildProject\n";
+        echo dateToString(new \Kajona\System\System\Date())." Finished buildProject\n";
     }
-
 }
 
-$objTestmanager = new BuildHelper();
-$objTestmanager->strProjectPath = $argv[1];
-$objTestmanager->bitOnlyProjectsetup = $argv[2] == "onlySetup";
-if(isset($argv[3]))
-    $objTestmanager->strConfigFile = $argv[3];
-$objTestmanager->main();
+$build = new BuildHelper();
+$build->strProjectPath = $argv[1];
+$build->bitOnlyProjectsetup = $argv[2] == "onlySetup";
+if (isset($argv[3])) {
+    $build->strConfigFile = $argv[3];
+}
+$build->main();
 
