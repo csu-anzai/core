@@ -14,6 +14,7 @@ use Kajona\Dashboard\Admin\Widgets\AdminwidgetInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Classloader;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
+use Kajona\System\System\ObjectBuilder;
 use Kajona\System\System\OrmCondition;
 use Kajona\System\System\OrmObjectlist;
 use Kajona\System\System\Resourceloader;
@@ -116,8 +117,11 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
      */
     public function getConcreteAdminwidget()
     {
+        /** @var ObjectBuilder $builder */
+        $builder = Carrier::getInstance()->getContainer()->offsetGet(\Kajona\System\System\ServiceProvider::STR_OBJECT_BUILDER);
+
         /** @var $objWidget AdminwidgetInterface|Adminwidget */
-        $objWidget = new $this->strClass();
+        $objWidget = $builder->factory($this->strClass);
         //Pass the field-values
         $objWidget->setFieldsAsString($this->getStrContent());
         $objWidget->setSystemid($this->getSystemid());

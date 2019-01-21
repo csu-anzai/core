@@ -261,7 +261,7 @@ JS;
         //instantiate the concrete widget
         $strWidgetClass = $this->getParam("widget");
         /** @var Adminwidget|AdminwidgetInterface $objWidget */
-        $objWidget = new $strWidgetClass();
+        $objWidget = $this->objBuilder->factory($strWidgetClass);
 
         //let it process its fields
         $objWidget->loadFieldsFromArray($this->getAllParams());
