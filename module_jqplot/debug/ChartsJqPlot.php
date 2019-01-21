@@ -27,7 +27,7 @@ class ChartsJqPlot
         echo "<script type=\"text/javascript\">KAJONA_PHARMAP = ".json_encode(array_values(\Kajona\System\System\Classloader::getInstance()->getArrPharModules())).";</script>";
         echo "<script type=\"text/javascript\" src=\""._webpath_.Resourceloader::getInstance()->getCorePathForModule("module_system")."/module_system/scripts/agp.min.js\"></script>";
         echo "<script type=\"text/javascript\">
-            require(['app'], function() {});
+            require(['app'], function(app) { app.init(); });
         </script>
 ";
 

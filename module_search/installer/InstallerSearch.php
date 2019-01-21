@@ -179,6 +179,7 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
             }
         }
 
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1");
         return $strReturn;
     }
 

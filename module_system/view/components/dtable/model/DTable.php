@@ -51,7 +51,7 @@ class DTable
     }
 
     /**
-     * @return array
+     * @return DRow[]
      */
     public function getRows(): array
     {
@@ -75,7 +75,7 @@ class DTable
     }
 
     /**
-     * @return array
+     * @return DRow[]
      */
     public function getHeaders(): array
     {

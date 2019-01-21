@@ -48,8 +48,9 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
         $arrFields["downloads_log_id"] = array("char20", false);
         $arrFields["downloads_log_date"] = array("int", true);
         $arrFields["downloads_log_file"] = array("char254", true);
+        $arrFields["downloads_log_file_id"] = array("char20", true);
         $arrFields["downloads_log_user"] = array("char20", true);
-        $arrFields["downloads_log_ip"] = array("char20", true);
+        $arrFields["downloads_log_ip"] = array("char254", true);
 
         if (!$this->objDB->createTable("agp_mediamanager_dllog", $arrFields, array("downloads_log_id"))) {
             $strReturn .= "An error occurred! ...\n";
@@ -159,9 +160,20 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "7.0.1") {
+            $strReturn .= $this->update701_702();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.0.2") {
             $strReturn .= "Updating to 7.1...\n";
             $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1");
         }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.1") {
+            $strReturn .= $this->update71_711();
+        }
+
 
         return $strReturn."\n\n";
     }
@@ -190,6 +202,28 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
         $objSetting->updateObjectToDb();
 
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.1");
+        return $strReturn;
+    }
+
+    private function update701_702()
+    {
+        $strReturn = "Update to 7.0.2".PHP_EOL;
+        $strReturn .= "Changing log table".PHP_EOL;
+        $this->objDB->changeColumn("mediamanager_dllog", "downloads_log_ip", "downloads_log_ip", DbDatatypes::STR_TYPE_CHAR254);
+
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.2");
+        return $strReturn;
+    }
+
+    private function update71_711()
+    {
+        $strReturn = "Update to 7.1.1".PHP_EOL;
+
+        $strReturn .= "Updateing log schema".PHP_EOL;
+        $this->objDB->addColumn("agp_mediamanager_dllog", "downloads_log_file_id", DbDatatypes::STR_TYPE_CHAR20);
+        $this->objDB->changeColumn("agp_mediamanager_dllog", "downloads_log_ip", "downloads_log_ip", DbDatatypes::STR_TYPE_CHAR254);
+
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.1");
         return $strReturn;
     }
 

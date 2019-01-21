@@ -1,5 +1,5 @@
 <div class="form-group core-component-wysiwygeditor">
-    <label for="{{ name }}" class="col-sm-3 control-label">{{ title }}</label>
+    <label for="{{ name }}" class="col-sm-3 control-label">{{ title|raw }}</label>
     <div class="col-sm-6">
             <textarea name="{{ name }}" id="{{ name }}" class="form-control inputWysiwyg"
                       data-kajona-editorid="{{ editorid }}" {{ readonly }}>{{ content }}</textarea>

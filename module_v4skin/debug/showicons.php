@@ -1,8 +1,6 @@
 <?php
 
-echo "<link href=\"" . _webpath_ . "/core_agp/module_agpskin/admin/skins/agp/less/bootstrap.less?0\" rel=\"stylesheet/less\">\n";
-echo "<script> less = { env:'production' }; </script>\n";
-echo "<script src=\"" . _webpath_ . "/core/module_v4skin/admin/skins/kajona_v4/less/less.min.js\"></script>\n";
+echo "<link rel=\"stylesheet\" href=\"" . _webpath_ . "/core/module_v4skin/admin/skins/kajona_v4/less/styles.min.css?0\" type=\"text/css\">\n";
 
 define("_skinwebpath_", "/");
 

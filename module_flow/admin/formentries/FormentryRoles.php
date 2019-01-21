@@ -204,7 +204,10 @@ class FormentryRoles extends FormentryBase
             /** @var Root $objModel */
             $objModel = new $objTargetModel();
 
-            $strLabel = Lang::getInstance()->getLang("{$strFormName}_{$strSourceProperty}_{$strRole}", $objModel->getArrModule("module"));
+            $strLabel = $this->objPermissionHandler->getRoleLabel($strRole);
+            if ($strLabel === null) {
+                $strLabel = Lang::getInstance()->getLang("{$strFormName}_{$strSourceProperty}_{$strRole}", $objModel->getArrModule("module"));
+            }
 
             $objEntry = new FormentryCheckboxarray($strFormName, "{$strSourceProperty}_{$strRole}");
             $objEntry->setStrLabel($strLabel);
