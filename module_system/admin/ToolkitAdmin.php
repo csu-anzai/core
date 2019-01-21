@@ -986,7 +986,7 @@ HTML;
     public function formToggleButtonBar($strName, array $arrKeyValues, $strTitle = "", $arrKeysSelected = array(), $bitEnabled = true, $strType = "checkbox")
     {
         $buttonBar = new Buttonbar($strName, $strTitle, $arrKeyValues, $arrKeysSelected);
-        $buttonBar->setReadOnly($bitEnabled);
+        $buttonBar->setReadOnly(!$bitEnabled);
         $buttonBar->setType($strType);
 
         return $buttonBar->renderComponent();
@@ -1010,7 +1010,7 @@ HTML;
     {
         $radioGroup = new Radiogroup($strName, $strTitle, $arrKeyValues, $strKeySelected);
         $radioGroup->setClass($strClass);
-        $radioGroup->setReadOnly($bitEnabled);
+        $radioGroup->setReadOnly(!$bitEnabled);
 
         return $radioGroup->renderComponent();
     }
