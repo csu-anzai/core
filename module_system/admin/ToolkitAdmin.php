@@ -20,6 +20,7 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\Config;
 use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
+use Kajona\System\System\HierarchicalListableInterface;
 use Kajona\System\System\History;
 use Kajona\System\System\Lang;
 use Kajona\System\System\Link;
@@ -33,7 +34,9 @@ use Kajona\System\System\SystemJSTreeConfig;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\Toolkit;
+use Kajona\System\View\Components\Buttonwrapper\Buttonwrapper;
 use Kajona\System\View\Components\Datatable\Datatable;
+use Kajona\System\View\Components\Formentry\Dropdown\Dropdown;
 use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
 use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
@@ -41,6 +44,8 @@ use Kajona\System\View\Components\Formentry\Inputtext\Buttonbar;
 use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
 use Kajona\System\View\Components\Formentry\Inputtext\Radiogroup;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
+use Kajona\System\View\Components\Formentry\Submit\Submit;
+use Kajona\System\View\Components\Listbody\Listbody;
 use Kajona\System\View\Components\Popover\Popover;
 use Kajona\System\View\Components\Tabbedcontent\Tabbedcontent;
 use Kajona\System\View\Components\Textrow\TextRow;
@@ -588,7 +593,7 @@ class ToolkitAdmin extends Toolkit
      *
      * @param string $strValue
      * @param string $strName
-     * @param string $strEventhandler
+     * @param string $strOnclick
      * @param string $strClass use cancelbutton for cancel-buttons
      * @param bool $bitEnabled
      *
@@ -596,25 +601,16 @@ class ToolkitAdmin extends Toolkit
      *
      * @return string
      */
-    public function formInputSubmit($strValue = null, $strName = "Submit", $strEventhandler = "", $strClass = "", $bitEnabled = true, $bitWithWrapper = true)
+    public function formInputSubmit($strValue = null, $strName = "Submit", $strOnclick = null, $strClass = "", $bitEnabled = true, $bitWithWrapper = true)
     {
-        if ($strValue === null) {
-            $strValue = Carrier::getInstance()->getObjLang()->getLang("commons_save", "system");
+        $cmp = new Submit($strName, $strValue);
+        if ($strOnclick !== null) {
+            $cmp->setOnClick($strOnclick);
         }
-
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["value"] = $strValue;
-        $arrTemplate["eventhandler"] = $strEventhandler;
-        $arrTemplate["class"] = $strClass;
-        $arrTemplate["disabled"] = $bitEnabled ? "" : "disabled=\"disabled\"";
-
-        $strButton = $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_submit");
-
-        if ($bitWithWrapper) {
-            $strButton = $this->objTemplate->fillTemplateFile(array("button" => $strButton), "/admin/skins/kajona_v4/elements.tpl", "input_submit_wrapper");
-        }
-        return $strButton;
+        $cmp->setClass($strClass);
+        $cmp->setReadOnly(!$bitEnabled);
+        $cmp->setWithWrapper($bitWithWrapper);
+        return $cmp->renderComponent();
     }
 
     /**
@@ -625,7 +621,8 @@ class ToolkitAdmin extends Toolkit
      */
     public function formInputButtonWrapper($strButtons)
     {
-        return $this->objTemplate->fillTemplateFile(array("button" => $strButtons), "/admin/skins/kajona_v4/elements.tpl", "input_submit_wrapper");
+        $cmp = new Buttonwrapper($strButtons);
+        return $cmp->renderComponent();
     }
 
     /**
@@ -759,55 +756,25 @@ class ToolkitAdmin extends Toolkit
      * @param string $strAddons
      * @param string $strDataPlaceholder
      * @param string $strOpener
-     *
      * @return string
      * @throws Exception
+     * @deprecated
      */
     public function formInputDropdown($strName, array $arrKeyValues, $strTitle = "", $strKeySelected = "", $strClass = "", $bitEnabled = true, $strAddons = "", $strDataPlaceholder = "", $strOpener = "", $strInstantEditor = "")
     {
-        $strOptions = "";
-        foreach (array("", 0, "\"\"") as $strOneKeyToCheck) {
-            if (array_key_exists($strOneKeyToCheck, $arrKeyValues) && trim($arrKeyValues[$strOneKeyToCheck]) == "") {
-                unset($arrKeyValues[$strOneKeyToCheck]);
-            }
+        $dropdown = new Dropdown($strName, $strTitle, $arrKeyValues, $strKeySelected);
+        $dropdown->setClass($strClass);
+        $dropdown->setReadOnly(!$bitEnabled);
+        $dropdown->setOpener($strOpener);
+        $dropdown->setAddons($strAddons);
+
+        if (!empty($strDataPlaceholder)) {
+            $dropdown->setData('placeholder', $strDataPlaceholder);
         }
 
-        //see if the selected value is valid
-        if (!in_array($strKeySelected, array_keys($arrKeyValues))) {
-            $strKeySelected = "";
-        }
+        $dropdown->setData('kajona-instantsave', $strInstantEditor);
 
-        if (!isset($arrKeyValues[""])) {
-            $strPlaceholder = $strDataPlaceholder != "" ? $strDataPlaceholder : Carrier::getInstance()->getObjLang()->getLang("commons_dropdown_dataplaceholder", "system");
-            $strOptions .= "<option value='' disabled ".($strKeySelected == "" ? " selected " : "").">".$strPlaceholder."</option>";
-        }
-
-        //Iterating over the array to create the options
-        foreach ($arrKeyValues as $strKey => $strValue) {
-            $arrTemplate = array();
-            $arrTemplate["key"] = $strKey;
-            $arrTemplate["value"] = $strValue;
-            if ((string)$strKey == (string)$strKeySelected) {
-                $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_dropdown_row_selected");
-            } else {
-                $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_dropdown_row");
-            }
-        }
-
-
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["class"] = $strClass;
-        $arrTemplate["disabled"] = ($bitEnabled ? "" : "disabled=\"disabled\"");
-        $arrTemplate["options"] = $strOptions;
-        $arrTemplate["addons"] = $strAddons;
-        $arrTemplate["opener"] = $strOpener;
-        $arrTemplate["instantEditor"] = $strInstantEditor;
-        $arrTemplate["dataplaceholder"] = $strDataPlaceholder != "" ? $strDataPlaceholder : Carrier::getInstance()->getObjLang()->getLang("commons_dropdown_dataplaceholder", "system"); //TODO noch benötigt?
-
-
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_dropdown", true);
+        return $dropdown->renderComponent();
     }
 
     /**
@@ -1490,17 +1457,18 @@ HTML;
             $strCSSAddon = $objEntry->getIntRecordStatus() == 0 ? "disabled" : "";
         }
 
-        return $this->genericAdminList(
-            $objEntry->getSystemid(),
-            $objEntry->getStrDisplayName(),
-            $strImage,
-            $strActions,
-            $objEntry->getStrAdditionalInfo(),
-            $objEntry->getStrLongDescription(),
-            $bitCheckbox,
-            $strCSSAddon,
-            $objEntry->getIntRecordDeleted() != 1 ? "" : "1"
-        );
+        $comp = new Listbody($objEntry->getSystemid(), $objEntry->getStrDisplayName(), $strImage, $strActions);
+        $comp->setAdditionalInfo($objEntry->getStrAdditionalInfo())
+            ->setDescription($objEntry->getStrLongDescription())
+            ->setCheckbox($bitCheckbox)
+            ->setCssAddon($strCSSAddon)
+            ->setDeleted($objEntry->getIntRecordDeleted() != 1 ? "" : "1");
+
+        if ($objEntry instanceof HierarchicalListableInterface) {
+            $comp->setPath($objEntry->getHierarchicalPath());
+        }
+
+        return $comp->renderComponent();
     }
 
     /**
@@ -1519,36 +1487,9 @@ HTML;
      */
     public function genericAdminList($strId, $strName, $strIcon, $strActions, $strAdditionalInfo = "", $strDescription = "", $bitCheckbox = false, $strCssAddon = "", $strDeleted = "")
     {
-        $arrTemplate = array();
-        $arrTemplate["listitemid"] = $strId;
-        $arrTemplate["image"] = $strIcon;
-        $arrTemplate["title"] = $strName;
-        $arrTemplate["center"] = $strAdditionalInfo;
-        $arrTemplate["actions"] = $strActions;
-        $arrTemplate["description"] = $strDescription;
-        $arrTemplate["cssaddon"] = $strCssAddon;
-        $arrTemplate["deleted"] = $strDeleted;
-
-        if ($bitCheckbox) {
-            $arrTemplate["checkbox"] = $this->objTemplate->fillTemplateFile(array("systemid" => $strId), "/admin/skins/kajona_v4/elements.tpl", "generallist_checkbox");
-        }
-
-
-        if ($strDescription != "") {
-            if ($this->objTemplate->providesSection("/admin/skins/kajona_v4/elements.tpl", "generallist_desc")) {
-                $strSection = "generallist_desc";
-            } else {
-                $strSection = "generallist_desc_1";
-            }
-        } else {
-            if ($this->objTemplate->providesSection("/admin/skins/kajona_v4/elements.tpl", "generallist")) {
-                $strSection = "generallist";
-            } else {
-                $strSection = "generallist_1";
-            }
-        }
-
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", $strSection);
+        $comp = new Listbody($strId, $strName ?? "", $strIcon, $strActions ?? "");
+        $comp->setAdditionalInfo($strAdditionalInfo ?? "")->setDescription($strDescription ?? "")->setCheckbox($bitCheckbox)->setCssAddon($strCssAddon)->setDeleted($strDeleted);
+        return $comp->renderComponent();
     }
 
     /**

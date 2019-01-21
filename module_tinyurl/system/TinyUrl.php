@@ -50,7 +50,7 @@ class TinyUrl
             $strQuery = "SELECT url FROM agp_tinyurl WHERE url_id=?";
             $arrRow = Carrier::getInstance()->getObjDB()->getPRow($strQuery, [$strUrlId]);
             if (!empty($arrRow)) {
-                $strReturn = html_entity_decode($arrRow['url']);
+                $strReturn = html_entity_decode($arrRow['url']."");
             }
         }
 

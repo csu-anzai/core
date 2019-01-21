@@ -330,5 +330,21 @@ class OrmObjectlist extends OrmBase
         $this->arrOrderBy[] = $objOrder;
     }
 
+    /**
+     * Returns SQL query string which returns system_id for predefined where restrictions with parameters
+     *
+     * @param $strTargetClass
+     * @return array
+     * @throws OrmException
+     */
+    public function getSystemIdSubQuery($strTargetClass)
+    {
+        $strQuery = "SELECT system_id ".$this->getQueryBase($strTargetClass);
+        $arrParams = array();
+        $this->addLogicalDeleteRestriction();
+        $this->processWhereRestrictions($strQuery, $arrParams, $strTargetClass);
+
+        return [$strQuery, $arrParams];
+    }
 
 }
