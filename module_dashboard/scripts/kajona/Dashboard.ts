@@ -50,11 +50,11 @@ class Dashboard {
 
     public static init() {
 
-        $('.adminwidgetColumn > div.dbEntry').each(function () {
+        $('.adminwidgetColumn > div.core-component-widget').each(function () {
             var systemId = $(this).data('systemid');
             Ajax.genericAjaxCall('dashboard', 'getWidgetContent', systemId, function(data: any, status: string, jqXHR: XMLHttpRequest) {
 
-                var content = $("div.dbEntry[data-systemid='"+systemId+"'] .content");
+                var content = $("div.core-component-widget[data-systemid='"+systemId+"'] .content");
 
                 if (status == 'success') {
                     var $parent = content.parent();
@@ -76,7 +76,7 @@ class Dashboard {
         $("div.adminwidgetColumn").each(function(index: number) {
 
             $(this).sortable({
-                items: 'div.dbEntry',
+                items: 'div.core-component-widget',
                 handle: 'h2',
                 forcePlaceholderSize: true,
                 cursor: 'move',
