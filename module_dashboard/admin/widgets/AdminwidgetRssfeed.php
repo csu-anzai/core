@@ -43,10 +43,10 @@ class AdminwidgetRssfeed extends Adminwidget implements AdminwidgetInterface
      */
     public function getEditFormContent(AdminFormgenerator $form)
     {
-        $form->addField(new FormentryText("feedurl", ""), "")
+        $form->addField(new FormentryText("", "feedurl"), "")
             ->setStrValue($this->getFieldValue("feedurl"))
             ->setStrLabel($this->getLang("rssfeed_feedurl"));
-        $form->addField(new FormentryDropdown("posts", ""))->setArrKeyValues([1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9, 10 => 10])
+        $form->addField(new FormentryDropdown("", "posts"))->setArrKeyValues([1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9, 10 => 10])
             ->setStrValue(($this->getFieldValue("posts")))
             ->setStrLabel($this->getLang("rssfeed_posts"));
     }
@@ -57,6 +57,7 @@ class AdminwidgetRssfeed extends Adminwidget implements AdminwidgetInterface
      * Do NOT use the toolkit right here!
      *
      * @return string
+     * @throws Exception
      */
     public function getWidgetOutput()
     {
@@ -67,9 +68,7 @@ class AdminwidgetRssfeed extends Adminwidget implements AdminwidgetInterface
         $strReturn = "";
 
         //request the xml...
-
         try {
-
             $arrUrl = parse_url(trim($this->getFieldValue("feedurl")));
             $objRemoteloader = new Remoteloader();
 
@@ -85,8 +84,7 @@ class AdminwidgetRssfeed extends Adminwidget implements AdminwidgetInterface
             $objRemoteloader->setIntPort($intPort);
             $objRemoteloader->setStrProtocolHeader($arrUrl["scheme"]."://");
             $strContent = $objRemoteloader->getRemoteContent();
-        }
-        catch (Exception $objExeption) {
+        } catch (Exception $objExeption) {
             $strContent = "";
         }
 
@@ -97,12 +95,10 @@ class AdminwidgetRssfeed extends Adminwidget implements AdminwidgetInterface
             $arrFeed = $objXmlparser->xmlToArray();
 
             if (count($arrFeed) >= 1) {
-
                 //rss feed
                 if (isset($arrFeed["rss"])) {
                     $intCounter = 0;
                     foreach ($arrFeed["rss"][0]["channel"][0]["item"] as $arrOneItem) {
-
                         $strTitle = (isset($arrOneItem["title"][0]["value"]) ? $arrOneItem["title"][0]["value"] : "");
                         $strLink = (isset($arrOneItem["link"][0]["value"]) ? $arrOneItem["link"][0]["value"] : "");
 
@@ -120,7 +116,6 @@ class AdminwidgetRssfeed extends Adminwidget implements AdminwidgetInterface
                 if (isset($arrFeed["feed"]) && isset($arrFeed["feed"][0]["entry"])) {
                     $intCounter = 0;
                     foreach ($arrFeed["feed"][0]["entry"] as $arrOneItem) {
-
                         $strTitle = (isset($arrOneItem["title"][0]["value"]) ? $arrOneItem["title"][0]["value"] : "");
                         $strLink = (isset($arrOneItem["link"][0]["attributes"]["href"]) ? $arrOneItem["link"][0]["attributes"]["href"] : "");
 

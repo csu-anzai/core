@@ -43,10 +43,10 @@ class AdminwidgetWeather extends Adminwidget implements AdminwidgetInterface
      */
     public function getEditFormContent(AdminFormgenerator $form)
     {
-        $form->addField(new FormentryText("location", ""), "")
+        $form->addField(new FormentryText("", "location"), "")
             ->setStrValue($this->getFieldValue("location"))
             ->setStrLabel($this->getLang("weather_location"));
-        $form->addField(new FormentryDropdown("unit", ""))
+        $form->addField(new FormentryDropdown("", "unit"))
             ->setArrKeyValues(["f" => $this->getLang("weather_fahrenheit"), "c" => $this->getLang("weather_celsius")])
             ->setStrValue(($this->getFieldValue("unit")))
             ->setStrLabel($this->getLang("weather_unit"));

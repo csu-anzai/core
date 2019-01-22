@@ -43,10 +43,10 @@ class AdminwidgetSystemcheck extends Adminwidget implements AdminwidgetInterface
     public function getEditFormContent(AdminFormgenerator $form)
     {
 
-        $form->addField(new FormentryCheckbox("php", ""), "")
+        $form->addField(new FormentryCheckbox("", "php"), "")
             ->setStrLabel($this->getLang("systemcheck_checkboxphp"))
             ->setStrValue($this->getFieldValue("php"));
-        $form->addField(new FormentryCheckbox("kajona", ""), "")
+        $form->addField(new FormentryCheckbox("", "kajona"), "")
             ->setStrLabel($this->getLang("systemcheck_checkboxkajona"))
             ->setStrValue($this->getFieldValue("kajona"));
     }

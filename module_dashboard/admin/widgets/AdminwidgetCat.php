@@ -53,7 +53,7 @@ class AdminwidgetCat extends Adminwidget implements AdminwidgetInterface
      */
     public function getEditFormContent(AdminFormgenerator $form)
     {
-        $form->addField(new FormentryRadiogroup("cat", ""), "")
+        $form->addField(new FormentryRadiogroup("", "cat"), "")
             ->setBitMandatory(true)
             ->setStrLabel($this->getLang("cat_select"))
             ->setArrKeyValues($this->arrCats)

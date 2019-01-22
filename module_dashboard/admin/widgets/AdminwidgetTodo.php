@@ -65,7 +65,7 @@ class AdminwidgetTodo extends Adminwidget implements AdminwidgetInterface
 
         foreach ($arrCategories as $strTitle => $arrRows) {
             $strKey = md5($strTitle);
-            $form->addField(new FormentryCheckbox($strKey, ""), "")
+            $form->addField(new FormentryCheckbox("", $strKey), "")
                 ->setStrLabel($strTitle)
                 ->setStrValue($this->getFieldValue($strKey));
         }

@@ -44,13 +44,13 @@ class AdminwidgetSysteminfo extends Adminwidget implements AdminwidgetInterface
     public function getEditFormContent(AdminFormgenerator $form)
     {
 
-        $form->addField(new FormentryCheckbox("php", ""), "")
+        $form->addField(new FormentryCheckbox("", "php"), "")
             ->setStrLabel($this->getLang("sysinfo_checkboxphp"))
             ->setStrValue($this->getFieldValue("php"));
-        $form->addField(new FormentryCheckbox("server", ""), "")
+        $form->addField(new FormentryCheckbox("", "server"), "")
             ->setStrLabel($this->getLang("sysinfo_checkboxserver"))
             ->setStrValue($this->getFieldValue("server"));
-        $form->addField(new FormentryCheckbox("kajona", ""), "")
+        $form->addField(new FormentryCheckbox("", "kajona"), "")
             ->setStrLabel($this->getLang("sysinfo_checkboxkajona"))
             ->setStrValue($this->getFieldValue("kajona"));
 

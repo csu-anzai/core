@@ -42,7 +42,7 @@ class AdminwidgetSystemlog extends Adminwidget implements AdminwidgetInterface
      */
     public function getEditFormContent(AdminFormgenerator $form)
     {
-        $form->addField(new FormentryText("nrofrows", ""), "")
+        $form->addField(new FormentryText("", "nrofrows"), "")
             ->setStrLabel($this->getLang("syslog_nrofrows"))
             ->setStrValue($this->getFieldValue("nrofrows"));
     }

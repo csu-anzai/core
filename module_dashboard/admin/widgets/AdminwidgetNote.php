@@ -40,7 +40,7 @@ class AdminwidgetNote extends Adminwidget implements AdminwidgetInterface
      */
     public function getEditFormContent(AdminFormgenerator $form)
     {
-        $form->addField(new FormentryTextarea("content", ""), "")
+        $form->addField(new FormentryTextarea("", "content"), "")
         ->setStrValue($this->getFieldValue("content"));
     }
 
