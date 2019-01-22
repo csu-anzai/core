@@ -30,7 +30,7 @@ class VarAnnotationTest extends Testbase
      * @dataProvider varAnnotationProvider
      * @throws \Kajona\System\System\Exception
      */
-    public function testVarAnnotationPresent(string $class, string $property, string $tableName)
+    public function testVarAnnotationPresent(string $class, string $property, ?string $tableName)
     {
         $reflection = new Reflection($class);
 
@@ -39,8 +39,10 @@ class VarAnnotationTest extends Testbase
         $this->assertNotNull($varAnnotation, "Missing @var for {$class}:{$property}");
         $this->assertTrue(in_array($varAnnotation, self::$allowValues), "Wrong @var value {$varAnnotation} for {$class}:{$property}");
 
-        // table name must start with agp_
-        $this->assertTrue(StringUtil::startsWith($tableName, "agp_"), "Missing agp_ prefix at @tableName for {$class}:{$property}");
+        if ($tableName !== null) {
+            // table name must start with agp_
+            $this->assertTrue(StringUtil::startsWith($tableName, "agp_"), "Missing agp_ prefix at @tableName for {$class}:{$property}");
+        }
     }
 
 
@@ -76,12 +78,13 @@ class VarAnnotationTest extends Testbase
                     continue;
                 }
 
+                $filter = $ref->isSubclassOf(FilterBase::class);
 
 
                 $reflection = new Reflection($classname);
 
                 foreach ($reflection->getPropertiesWithAnnotation("@tableColumn") as $prop => $val) {
-                    $map[] = [$classname, $prop, $val];
+                    $map[] = [$classname, $prop, $filter ? null : $val];
                 }
             } catch (\Throwable $e) {
                 echo $filename.PHP_EOL;
