@@ -77,10 +77,21 @@ class DatabasePreparedTest extends Testbase
         $strQuery = "SELECT * FROM agp_temp_autotest ORDER BY temp_long ASC";
         $arrRow = $objDB->getPArray($strQuery, array(), 0, 9);
         $this->assertEquals(count($arrRow), 10, "testDataBase getArraySection count");
+        $this->assertEquals($arrRow[0]["temp_char10"], 1);
+        $this->assertEquals($arrRow[9]["temp_char10"], 10);
 
         $intI = 1;
-        foreach ($arrRow as $arrSingleRow)
+        foreach ($arrRow as $arrSingleRow) {
             $this->assertEquals($arrSingleRow["temp_char10"], $intI++, "testDataBase getArraySection content");
+        }
+
+
+        $strQuery = "SELECT * FROM agp_temp_autotest ORDER BY temp_long ASC";
+        $arrRow = $objDB->getPArray($strQuery, array(), 5, 14);
+        $this->assertEquals(count($arrRow), 10, "testDataBase getArraySection offset count");
+        $this->assertEquals($arrRow[0]["temp_char10"], 6);
+        $this->assertEquals($arrRow[9]["temp_char10"], 15);
+
 
         $this->flushDBCache();
         $strQuery = "SELECT * FROM agp_temp_autotest WHERE temp_char10 LIKE ? ORDER BY temp_long ASC";
@@ -88,8 +99,9 @@ class DatabasePreparedTest extends Testbase
         $this->assertEquals(count($arrRow), 10, "testDataBase getArraySection param count");
 
         $intI = 1;
-        foreach ($arrRow as $arrSingleRow)
+        foreach ($arrRow as $arrSingleRow) {
             $this->assertEquals($arrSingleRow["temp_char10"], $intI++, "testDataBase getArraySection param content");
+        }
 
         $strQuery = "SELECT * FROM agp_temp_autotest  WHERE temp_char10 = ? AND temp_char20 = ? ORDER BY temp_long ASC";
         $arrRow = $objDB->getPArray($strQuery, array('2', 'char202'));

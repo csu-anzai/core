@@ -51,7 +51,7 @@
 
 <script src="_webpath_{{ "module_system"|webpath }}/scripts/agp.min.js?_system_browser_cachebuster_"></script>
 <script type="text/javascript">
-    require(['app'], function() {});
+    require(['app'], function(app) { app.init(); });
 </script>
 
 </html>

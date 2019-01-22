@@ -1,6 +1,6 @@
 
 <div class="form-group core-component-formentry-colorpicker">
-    <label for="{{ name|e('html_attr') }}" class="col-sm-3 control-label">{{ title }}</label>
+    <label for="{{ name|e('html_attr') }}" class="col-sm-3 control-label">{{ title|raw }}</label>
     <div class="col-sm-6">
         <div class="input-group colorpicker-component" id="c_{{ name|e('html_attr') }}">
             <div class="input-group-addon"><i></i></div>

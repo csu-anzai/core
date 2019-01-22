@@ -1,9 +1,5 @@
 {
   "paths": {
-    "mediamanager": "kajona/mediamanager",
-    "imageeditor": "kajona/imageeditor",
-    "fileupload": "kajona/fileupload",
-
     "blueimp-tmpl": "jquery-fileupload/js/tmpl.min",
     "load-image": "jquery-fileupload/js/load-image",
     "load-image-exif": "jquery-fileupload/js/load-image-exif",

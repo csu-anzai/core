@@ -956,8 +956,8 @@ JS;
         foreach ($objIterator as $objOneEntry) {
             $arrRowData = array();
 
-            $strOldValue = htmlStripTags($objVersionable->renderVersionValue($objOneEntry->getStrProperty(), $objOneEntry->getStrOldValue()));
-            $strNewValue = htmlStripTags($objVersionable->renderVersionValue($objOneEntry->getStrProperty(), $objOneEntry->getStrNewValue()));
+            $strOldValue = htmlentities($objVersionable->renderVersionValue($objOneEntry->getStrProperty(), $objOneEntry->getStrOldValue()));
+            $strNewValue = htmlentities($objVersionable->renderVersionValue($objOneEntry->getStrProperty(), $objOneEntry->getStrNewValue()));
 
             $arrRowData[] = dateToString($objOneEntry->getObjDate());
             $arrRowData[] = $objOneEntry->getStrUsername();
