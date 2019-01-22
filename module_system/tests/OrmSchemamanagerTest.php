@@ -3,21 +3,37 @@
 namespace Kajona\System\Tests;
 
 use Kajona\System\System\Carrier;
-use Kajona\System\System\OrmException;
+use Kajona\System\System\Database;
 use Kajona\System\System\OrmSchemamanager;
-use Kajona\System\System\StringUtil;
 
 class OrmSchemamanagerTest extends Testbase
 {
+    /**
+     * @var Database
+     */
+    private $connection;
 
+    /**
+     * @var OrmSchemamanager
+     */
+    private $manager;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->connection = Carrier::getInstance()->getObjDB();
+        $this->manager = new OrmSchemamanager();
+    }
 
     protected function tearDown()
     {
-        $objDb = Carrier::getInstance()->getObjDB();
+        $connection = Carrier::getInstance()->getObjDB();
+        $tableNames = ["agp_ormtest", "agp_testclass", "agp_testclass_rel", "agp_testclass2_rel"];
 
-        foreach (array("agp_ormtest", "agp_testclass", "agp_testclass_rel", "agp_testclass2_rel") as $strOneTable) {
-            if (in_array($strOneTable, $objDb->getTables())) {
-                $objDb->_pQuery("DROP TABLE " .$strOneTable, array());
+        foreach ($tableNames as $tableName) {
+            if ($connection->hasTable($tableName)) {
+                $connection->_pQuery("DROP TABLE " .$tableName, array());
                 Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBTABLES);
             }
         }
@@ -25,142 +41,98 @@ class OrmSchemamanagerTest extends Testbase
         parent::tearDown();
     }
 
-
-    public function testSchemamanager()
+    public function testCreateTable()
     {
-        $objDb = Carrier::getInstance()->getObjDB();
+        $this->assertTrue(!$this->connection->hasTable("agp_ormtest"));
 
-        $objManager = new OrmSchemamanager();
-
-        $arrTables = $objDb->getTables();
-        $this->assertTrue(!in_array("agp_ormtest", $arrTables));
-
-        $objManager->createTable("Kajona\\System\\Tests\\OrmSchematestTestclass");
+        $this->manager->createTable(OrmSchematestTestclass::class);
         Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBTABLES);
 
-        $arrTables = $objDb->getTables();
-        $this->assertTrue(in_array("agp_ormtest", $arrTables));
+        $this->assertTrue($this->connection->hasTable("agp_ormtest"));
 
         //fetch table informations
-        $arrTable = $objDb->getColumnsOfTable("agp_ormtest");
+        $columnNames = $this->connection->getTableInformation("agp_ormtest")->getColumnNames();
 
-        $arrColumnNamesToDatatype = array();
-        array_walk($arrTable, function ($arrValue) use (&$arrColumnNamesToDatatype) {
-            $arrColumnNamesToDatatype[$arrValue["columnName"]] = $arrValue["columnType"];
-        });
-
-        $arrColumnNames = array_map(function ($arrValue) {
-            return $arrValue["columnName"];
-        }, $arrTable);
-
-
-        $this->assertTrue(in_array("content_id", $arrColumnNames));
-        $this->assertTrue(in_array("col1", $arrColumnNames));
-        $this->assertTrue(in_array("col2", $arrColumnNames));
-        $this->assertTrue(in_array("col3", $arrColumnNames));
+        $this->assertTrue(in_array("content_id", $columnNames));
+        $this->assertTrue(in_array("col1", $columnNames));
+        $this->assertTrue(in_array("col2", $columnNames));
+        $this->assertTrue(in_array("col3", $columnNames));
     }
 
+    /**
+     * @expectedException \Kajona\System\System\OrmException
+     * @expectedExceptionMessage Class Kajona\System\Tests\OrmSchematestTestclassTargettable1 provides no target-table!
+     */
     public function testTargetTableException1()
     {
-        $objManager = new OrmSchemamanager();
-
-        $objEx = null;
-        try {
-            $objManager->createTable("Kajona\\System\\Tests\\OrmSchematestTestclassTargettable1");
-        } catch (OrmException $objException) {
-            $objEx = $objException;
-        }
-
-        $this->assertNotNull($objEx);
-        $this->assertTrue(StringUtil::indexOf($objEx->getMessage(), "provides no target-table!") !== false);
+        $this->manager->createTable(OrmSchematestTestclassTargettable1::class);
     }
 
+    /**
+     * @expectedException \Kajona\System\System\OrmException
+     * @expectedExceptionMessage Target table for Kajona\System\Tests\OrmSchematestTestclassTargettable2 is not in table.primaryColumn format
+     */
     public function testTargetTableException2()
     {
-        $objManager = new OrmSchemamanager();
-
-        $objEx = null;
-        try {
-            $objManager->createTable("Kajona\\System\\Tests\\OrmSchematestTestclassTargettable2");
-        } catch (OrmException $objException) {
-            $objEx = $objException;
-        }
-
-        $this->assertNotNull($objEx);
-        $this->assertTrue(StringUtil::indexOf($objEx->getMessage(), "is not in table.primaryColumn format") !== false);
+        $this->manager->createTable(OrmSchematestTestclassTargettable2::class);
     }
 
+    /**
+     * @expectedException \Kajona\System\System\OrmException
+     * @expectedExceptionMessage Datatype extralong is unknown (longCol3@Kajona\System\Tests\OrmSchematestTestclassDatatype)
+     */
     public function testDataTypeException()
     {
-        $objManager = new OrmSchemamanager();
-
-        $objEx = null;
-        try {
-            $objManager->createTable("Kajona\\System\\Tests\\OrmSchematestTestclassDatatype");
-        } catch (OrmException $objException) {
-            $objEx = $objException;
-        }
-
-        $this->assertNotNull($objEx);
-        $this->assertTrue(StringUtil::indexOf($objEx->getMessage(), " is unknown (") !== false);
+        $this->manager->createTable(OrmSchematestTestclassDatatype::class);
     }
 
+    /**
+     * @expectedException \Kajona\System\System\OrmException
+     * @expectedExceptionMessage Syntax for tableColumn annotation at property longCol3@Kajona\System\Tests\OrmSchematestTestclassTablecolumn not in format table.columnName
+     */
     public function testTableColumnSyntaxException()
     {
-        $objManager = new OrmSchemamanager();
-
-        $objEx = null;
-        try {
-            $objManager->createTable("Kajona\\System\\Tests\\OrmSchematestTestclassTablecolumn");
-        } catch (OrmException $objException) {
-            $objEx = $objException;
-        }
-
-        $this->assertNotNull($objEx);
-        $this->assertTrue(StringUtil::indexOf($objEx->getMessage(), "Syntax for tableColumn annotation at property") !== false);
+        $this->manager->createTable(OrmSchematestTestclassTablecolumn::class);
     }
-
 
     public function testAssignmentTableCreation()
     {
-        $objDb = Carrier::getInstance()->getObjDB();
+        $this->assertTrue(!$this->connection->hasTable("agp_testclass"));
+        $this->assertTrue(!$this->connection->hasTable("agp_testclass_rel"));
+        $this->assertTrue(!$this->connection->hasTable("agp_testclass2_rel"));
 
-        $objManager = new OrmSchemamanager();
-
-        $arrTables = $objDb->getTables();
-        $this->assertTrue(!in_array("agp_testclass", $arrTables));
-        $this->assertTrue(!in_array("agp_testclass_rel", $arrTables));
-        $this->assertTrue(!in_array("agp_testclass2_rel", $arrTables));
-
-        $objManager->createTable("Kajona\\System\\Tests\\OrmSchematestTestclassAssignments");
+        $this->manager->createTable(OrmSchematestTestclassAssignments::class);
         Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBTABLES);
 
-        $arrTables = $objDb->getTables();
-        $this->assertTrue(in_array("agp_testclass", $arrTables));
-        $this->assertTrue(in_array("agp_testclass_rel", $arrTables));
-        $this->assertTrue(in_array("agp_testclass2_rel", $arrTables));
+        $this->assertTrue($this->connection->hasTable("agp_testclass"));
+        $this->assertTrue($this->connection->hasTable("agp_testclass_rel"));
+        $this->assertTrue($this->connection->hasTable("agp_testclass2_rel"));
 
         //fetch table informations
-        $arrTable = $objDb->getColumnsOfTable("agp_testclass_rel");
+        $columnNames = $this->connection->getTableInformation("agp_testclass_rel")->getColumnNames();
 
-        $arrColumnNames = array_map(function ($arrValue) {
-            return $arrValue["columnName"];
-        }, $arrTable);
+        $this->assertTrue(in_array("testclass_source_id", $columnNames));
+        $this->assertTrue(in_array("testclass_target_id", $columnNames));
 
+        $columnNames = $this->connection->getTableInformation("agp_testclass2_rel")->getColumnNames();
 
-        $this->assertTrue(in_array("testclass_source_id", $arrColumnNames));
-        $this->assertTrue(in_array("testclass_target_id", $arrColumnNames));
+        $this->assertTrue(in_array("testclass_source_id", $columnNames));
+        $this->assertTrue(in_array("testclass_target_id", $columnNames));
+    }
 
-        $arrTable = $objDb->getColumnsOfTable("agp_testclass2_rel");
+    public function testUpdateTable()
+    {
+        $this->manager->createTable(OrmSchematestTestclass::class);
+        Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBTABLES);
 
-        $arrColumnNames = array_map(function ($arrValue) {
-            return $arrValue["columnName"];
-        }, $arrTable);
+        $columnNames = $this->connection->getTableInformation("agp_ormtest")->getColumnNames();
+        $this->assertEquals(["content_id", "col1", "col2", "col3"], $columnNames);
 
+        $this->manager->updateTable(OrmSchematestUpdateTestclass::class);
+        Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBTABLES);
 
-        $this->assertTrue(in_array("testclass_source_id", $arrColumnNames));
-        $this->assertTrue(in_array("testclass_target_id", $arrColumnNames));
-
+        $columnNames = $this->connection->getTableInformation("agp_ormtest")->getColumnNames();
+        $this->assertEquals(["content_id", "col1", "col2", "col3", "col4"],$columnNames);
     }
 }
 
@@ -262,4 +234,19 @@ class OrmSchematestTestclassAssignments
      */
     private $arrObject2 = array();
 
+}
+
+
+/**
+ *
+ * @targetTable agp_ormtest.content_id
+ */
+class OrmSchematestUpdateTestclass
+{
+
+    /**
+     * @var string
+     * @tableColumn agp_ormtest.col4
+     */
+    private $strCol4 = "";
 }
