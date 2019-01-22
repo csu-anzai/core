@@ -6,6 +6,7 @@ namespace Kajona\Benchmark\System\Bench;
 
 use Kajona\Benchmark\System\AbstractBench;
 use Kajona\System\System\Database;
+use Kajona\System\System\Date;
 use Kajona\System\System\DbDatatypes;
 use Kajona\System\System\Filesystem;
 
@@ -52,9 +53,9 @@ class Database2FillBench extends AbstractBench
             $this->generateRandomString(254),
             $this->generateRandomString(500),
             $this->generateRandomString(2000),
-            rand(0, 3200000),
-            rand(0, PHP_INT_MAX),
-            (float)rand(0, 40)/11.2
+            rand(1, 3200000),
+            Date::getCurrentTimestamp(),
+            (float)rand(1, 40)/11.2
         ];
     }
 
