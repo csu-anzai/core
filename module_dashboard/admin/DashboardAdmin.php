@@ -142,6 +142,7 @@ class DashboardAdmin extends AdminController implements AdminInterface
      * @param DashboardWidget $objDashboardWidget
      *
      * @return Widget
+     * @throws Exception
      */
     protected function layoutAdminWidget($objDashboardWidget): Widget
     {
@@ -154,7 +155,12 @@ class DashboardAdmin extends AdminController implements AdminInterface
                 $arrActions[] =
                     Link::getLinkAdminManual(
                         "href=\"#\" onclick=\"require(['dashboard'], function(dashboard) { dashboard.editWidget('{$objDashboardWidget->getSystemid()}'); } ); return false;\"",
-                        (AdminskinHelper::getAdminImage("icon_edit"))." ".$this->getLang("editWidget"), "", "", "", "", false
+                        (AdminskinHelper::getAdminImage("icon_edit"))." ".$this->getLang("editWidget"),
+                        "",
+                        "",
+                        "",
+                        "",
+                        false
                     );
             }
         }
@@ -342,13 +348,15 @@ JS;
      *
      * @permissions delete
      * @return string
+     * @throws Exception
      */
     protected function actionDeleteWidget()
     {
         $objWidget = new DashboardWidget($this->getSystemid());
-        $strName = $objWidget->getStrDisplayName();
+        $objConcreteWidget = $objWidget->getConcreteAdminwidget();
+        $strWidgetName = $objConcreteWidget->getWidgetName();
         $objWidget->deleteObject();
-        return "<message>".$this->getLang("deleteWidgetSuccess", array($strName))."</message>";
+        return "<message>".$this->getLang("deleteWidgetSuccess", array(StringUtil::jsSafeString($strWidgetName)))."</message>";
     }
 
     /**
@@ -356,6 +364,8 @@ JS;
      * updates the sorting AND the assigned column
      *
      * @return string
+     * @throws Exception
+     * @throws ServiceLifeCycleUpdateException
      * @permissions edit
      */
     protected function actionSetDashboardPosition()
@@ -449,9 +459,6 @@ JS;
             } catch (ServiceLifeCycleUpdateException $e) {
                 $strReturn = $this->getLang("errorSavingWidget");
             }
-
-
-
 
         } else {
             ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
