@@ -2,16 +2,9 @@
 
 namespace Kajona\System\Tests\Filter;
 
-use AGP\Prozessverwaltung\Admin\Formentries\FormentryObjectGroups;
-use Kajona\System\Admin\AdminEvensimpler;
-use Kajona\System\Admin\AdminInterface;
 use Kajona\System\System\BootstrapCache;
 use Kajona\System\System\Classloader;
-use Kajona\System\System\Date;
-use Kajona\System\System\FilterBase;
 use Kajona\System\System\Reflection;
-use Kajona\System\System\ReflectionEnum;
-use Kajona\System\System\Resourceloader;
 use Kajona\System\System\Root;
 use Kajona\System\System\StringUtil;
 use Kajona\System\Tests\Testbase;
@@ -78,13 +71,11 @@ class VarAnnotationTest extends Testbase
                     continue;
                 }
 
-                $filter = $ref->isSubclassOf(FilterBase::class);
-
-
+                $isEntity = $ref->isSubclassOf(Root::class);
                 $reflection = new Reflection($classname);
 
                 foreach ($reflection->getPropertiesWithAnnotation("@tableColumn") as $prop => $val) {
-                    $map[] = [$classname, $prop, $filter ? null : $val];
+                    $map[] = [$classname, $prop, $isEntity ? $val : null];
                 }
             } catch (\Throwable $e) {
                 echo $filename.PHP_EOL;
