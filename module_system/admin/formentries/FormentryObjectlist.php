@@ -61,6 +61,9 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
     /** @var bool */
     protected $showDeleteAllButton = true;
 
+    /** @var bool  */
+    protected $showEditButton = false;
+
     /**
      * @param string $strAddLink
      */
@@ -148,6 +151,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         $objectList->setSearchInput($this->endpointUrl, $this->objectTypes);
         $objectList->setShowAddButton($this->isShowAddButton());
         $objectList->setShowDeleteAllButton($this->isShowDeleteAllButton());
+        $objectList->setShowEditButton($this->isShowEditButton());
         $strReturn .= $objectList->renderComponent();
 
         return $strReturn;
@@ -366,10 +370,12 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
 
     /**
      * @param bool $showAddButton
+     * @return FormentryObjectlist
      */
     public function setShowAddButton(bool $showAddButton)
     {
         $this->showAddButton = $showAddButton;
+        return $this;
     }
 
     /**
@@ -382,10 +388,30 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
 
     /**
      * @param bool $showDeleteAllButton
+     * @return FormentryObjectlist
      */
     public function setShowDeleteAllButton(bool $showDeleteAllButton)
     {
         $this->showDeleteAllButton = $showDeleteAllButton;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowEditButton(): bool
+    {
+        return $this->showEditButton;
+    }
+
+    /**
+     * @param bool $showEditButton
+     * @return FormentryObjectlist
+     */
+    public function setShowEditButton(bool $showEditButton): FormentryObjectlist
+    {
+        $this->showEditButton = $showEditButton;
+        return $this;
     }
 
 

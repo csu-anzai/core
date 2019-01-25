@@ -20,6 +20,7 @@ interface ObjectListItem {
     strPath?: string;
     strIcon?: string;
     strValue?: string;
+    strEditLink?: string
 }
 
 /**
@@ -94,7 +95,7 @@ class Folderview {
      * Sets an array of items to an object list. We remove only elements which are available in the arrAvailableIds array
      *
      * @param {string} strElementName  - name of the objectlist element
-     * @param {Array} arrItems        - array with item of the following format {strSystemId: <systemid>, strDisplayName:<displayname>, strIcon:<icon>}
+     * @param {Array} arrItems        - array with item of the following format {strSystemId: <systemid>, strDisplayName:<displayname>, strIcon:<icon>, strEditLink: <string>}
      * @param {Array} arrAvailableIds -
      * @param {string} strDeleteButton -
      * @param {boolean} bitStayOpen
@@ -118,15 +119,23 @@ class Folderview {
                 var strEscapedPath = $('<div></div>').text(arrItems[i].strPath).html();
 
                 var html = '';
-                html+= '<tr>';
+                html+= '<tr data-kajona-systemid="' + arrItems[i].strSystemId + '">';
                 html+= '    <td class="listimage">' + arrItems[i].strIcon + '</td>';
                 html+= '    <td class="title"><div class="smaller">'+strEscapedPath+'</div>' + strEscapedTitle + ' <input type="hidden" name="' + strElementName + '[]" value="' + arrItems[i].strSystemId + '" data-kajona-initval="" /></td>';
                 html+= '    <td class="icon-cell">';
                 html+= '        <a href="#" class="removeLink" onclick="require(\'v4skin\').removeObjectListItem(this);return false">' + strDeleteButton + '</a>';
                 html+= '    </td>';
+
+                if(arrItems[i].strEditLink) {
+                    html+= '    <td class="icon-cell">'+arrItems[i].strEditLink+'</td>';
+                }
                 html+= '</tr>';
 
-                tbody.append(html);
+                if (tbody.find('tr[data-kajona-systemid='+ arrItems[i].strSystemId +']').length > 0) {
+                    tbody.find('tr[data-kajona-systemid='+ arrItems[i].strSystemId +']').replaceWith(html);
+                } else {
+                    tbody.append(html);
+                }
             }
             table.trigger('updated');
         }
