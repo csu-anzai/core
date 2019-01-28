@@ -19,6 +19,8 @@ namespace Kajona\System\System;
 trait I18nTrait
 {
 
+    private $i18NEnabled = false;
+
     /**
      * Evaluates if a value represents an i18n value
      * @param $value
@@ -87,6 +89,9 @@ trait I18nTrait
      */
     protected function getI18nValueForString(string $value, string $lang = null): string
     {
+        if (!$this->i18NEnabled) {
+            return $value;
+        }
         $lang = $lang ?? $this->getCurrentI18nLanguage();
         $arr = $this->toI18nValueArray($value);
         return isset($arr[$lang]) ? $arr[$lang] : "";
@@ -101,4 +106,22 @@ trait I18nTrait
     {
         return Session::getInstance()->getAdminLanguage();
     }
+
+    /**
+     * @return bool
+     */
+    public function getI18NEnabled(): bool
+    {
+        return $this->i18NEnabled;
+    }
+
+    /**
+     * @param bool $i18NEnabled
+     */
+    public function setI18NEnabled(bool $i18NEnabled): void
+    {
+        $this->i18NEnabled = $i18NEnabled;
+    }
+
+
 }
