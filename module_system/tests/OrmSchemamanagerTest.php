@@ -126,13 +126,15 @@ class OrmSchemamanagerTest extends Testbase
         Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBTABLES);
 
         $columnNames = $this->connection->getTableInformation("agp_ormtest")->getColumnNames();
-        $this->assertEquals(["content_id", "col1", "col2", "col3"], $columnNames);
+        sort($columnNames);
+        $this->assertEquals(["col1", "col2", "col3", "content_id"], $columnNames);
 
         $this->manager->updateTable(OrmSchematestUpdateTestclass::class);
         Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBTABLES);
 
         $columnNames = $this->connection->getTableInformation("agp_ormtest")->getColumnNames();
-        $this->assertEquals(["content_id", "col1", "col2", "col3", "col4"],$columnNames);
+        sort($columnNames);
+        $this->assertEquals(["col1", "col2", "col3", "col4", "content_id"],$columnNames);
     }
 }
 
