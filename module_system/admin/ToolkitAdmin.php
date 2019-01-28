@@ -34,13 +34,16 @@ use Kajona\System\System\SystemJSTreeConfig;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\Toolkit;
+use Kajona\System\View\Components\Buttonwrapper\Buttonwrapper;
 use Kajona\System\View\Components\Datatable\Datatable;
 use Kajona\System\View\Components\Formentry\Dropdown\Dropdown;
 use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
 use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
 use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
+use Kajona\System\View\Components\Formentry\Checkboxarray\Checkboxarray;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
+use Kajona\System\View\Components\Formentry\Submit\Submit;
 use Kajona\System\View\Components\Listbody\Listbody;
 use Kajona\System\View\Components\Popover\Popover;
 use Kajona\System\View\Components\Tabbedcontent\Tabbedcontent;
@@ -589,7 +592,7 @@ class ToolkitAdmin extends Toolkit
      *
      * @param string $strValue
      * @param string $strName
-     * @param string $strEventhandler
+     * @param string $strOnclick
      * @param string $strClass use cancelbutton for cancel-buttons
      * @param bool $bitEnabled
      *
@@ -597,25 +600,16 @@ class ToolkitAdmin extends Toolkit
      *
      * @return string
      */
-    public function formInputSubmit($strValue = null, $strName = "Submit", $strEventhandler = "", $strClass = "", $bitEnabled = true, $bitWithWrapper = true)
+    public function formInputSubmit($strValue = null, $strName = "Submit", $strOnclick = null, $strClass = "", $bitEnabled = true, $bitWithWrapper = true)
     {
-        if ($strValue === null) {
-            $strValue = Carrier::getInstance()->getObjLang()->getLang("commons_save", "system");
+        $cmp = new Submit($strName, $strValue);
+        if ($strOnclick !== null) {
+            $cmp->setOnClick($strOnclick);
         }
-
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["value"] = $strValue;
-        $arrTemplate["eventhandler"] = $strEventhandler;
-        $arrTemplate["class"] = $strClass;
-        $arrTemplate["disabled"] = $bitEnabled ? "" : "disabled=\"disabled\"";
-
-        $strButton = $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_submit");
-
-        if ($bitWithWrapper) {
-            $strButton = $this->objTemplate->fillTemplateFile(array("button" => $strButton), "/admin/skins/kajona_v4/elements.tpl", "input_submit_wrapper");
-        }
-        return $strButton;
+        $cmp->setClass($strClass);
+        $cmp->setReadOnly(!$bitEnabled);
+        $cmp->setWithWrapper($bitWithWrapper);
+        return $cmp->renderComponent();
     }
 
     /**
@@ -626,7 +620,8 @@ class ToolkitAdmin extends Toolkit
      */
     public function formInputButtonWrapper($strButtons)
     {
-        return $this->objTemplate->fillTemplateFile(array("button" => $strButtons), "/admin/skins/kajona_v4/elements.tpl", "input_submit_wrapper");
+        $cmp = new Buttonwrapper($strButtons);
+        return $cmp->renderComponent();
     }
 
     /**
@@ -1088,69 +1083,17 @@ HTML;
      * @param string $strOpener
      *
      * @return string
+     * @deprecated
      */
     public function formInputCheckboxArray($strName, $strTitle, $intType, array $arrValues, array $arrSelected, $bitInline = false, $bitReadonly = false, $strOpener = "")
     {
-        $strElement = "input_checkboxarray";
-        $strElementRow = "input_checkboxarray_checkbox";
-        if ($intType == FormentryCheckboxarray::TYPE_RADIO) {
-            $strElement = "input_radioarray";
-            $strElementRow = "input_radioarray_radio";
-        }
+        $cmp = new Checkboxarray($strName, $strTitle, $arrValues, $arrSelected);
+        $cmp->setType($intType);
+        $cmp->setInline($bitInline);
+        $cmp->setReadOnly($bitReadonly);
 
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["opener"] = $strOpener;
-
-        $strElements = '';
-        foreach ($arrValues as $strKey => $strValue) {
-            $arrTemplateRow = array(
-                'key'      => $strKey,
-                'title'    => $strValue,
-                'checked'  => in_array($strKey, $arrSelected) ? 'checked' : '',
-                'inline'   => $bitInline ? '-inline' : '',
-                'readonly' => $bitReadonly ? 'disabled' : '',
-                'css'      => "",
-            );
-
-            switch ($intType) {
-                case FormentryCheckboxarray::TYPE_RADIO:
-                    $arrTemplateRow['type'] = 'radio';
-                    $arrTemplateRow['name'] = $strName;
-                    $arrTemplateRow['value'] = $strKey;
-                    break;
-                case FormentryCheckboxarray::TYPE_CHECKBOX:
-                    $arrTemplateRow['type'] = 'checkbox';
-                    $arrTemplateRow['name'] = $strName.'['.$strKey.']';
-                    $arrTemplateRow['value'] = 'checked';
-                    break;
-            }
-
-            $bitHeadline = substr($strValue, 0, 1) == "#";
-            if ($bitHeadline) {
-                $strTitle = trim(substr($strValue, 1));
-                $strElements .= "<b>{$strTitle}</b><br>";
-            } else {
-                $bitIndent = substr($strValue, 0, 1) == "-";
-                if ($bitIndent) {
-                    $arrTemplateRow["title"] = substr($strValue, 1);
-                    $arrTemplateRow["css"] = "style='margin-left:20px;'";
-                }
-                $bitIndent = substr($strValue, 1, 1) == "-";
-                if ($bitIndent) {
-                    $arrTemplateRow["title"] = substr($strValue, 2);
-                    $arrTemplateRow["css"] = "style='margin-left:40px;'";
-                }
-
-                $strElements .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/admin/skins/kajona_v4/elements.tpl", $strElementRow, true);
-            }
-        }
-
-        $arrTemplate["elements"] = $strElements;
-
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", $strElement, true);
-    }
+        return $cmp->renderComponent();
+     }
 
     /**
      * Creates a list of checkboxes based on an object array
@@ -1521,8 +1464,8 @@ HTML;
      */
     public function genericAdminList($strId, $strName, $strIcon, $strActions, $strAdditionalInfo = "", $strDescription = "", $bitCheckbox = false, $strCssAddon = "", $strDeleted = "")
     {
-        $comp = new Listbody($strId, $strName, $strIcon, $strActions);
-        $comp->setAdditionalInfo($strAdditionalInfo)->setDescription($strDescription)->setCheckbox($bitCheckbox)->setCssAddon($strCssAddon)->setDeleted($strDeleted);
+        $comp = new Listbody($strId, $strName ?? "", $strIcon, $strActions ?? "");
+        $comp->setAdditionalInfo($strAdditionalInfo ?? "")->setDescription($strDescription ?? "")->setCheckbox($bitCheckbox)->setCssAddon($strCssAddon)->setDeleted($strDeleted);
         return $comp->renderComponent();
     }
 

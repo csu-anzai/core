@@ -7,22 +7,27 @@
 namespace Kajona\System\System;
 
 use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\AdminFormgeneratorContainerInterface;
 use Kajona\System\Admin\AdminFormgeneratorFilter;
-use Kajona\System\Admin\Formentries\FormentryDropdown;
-use Kajona\System\Admin\Formentries\FormentryYesno;
 use ReflectionClass;
 
 
 /**
  * Base filter class
+ * If you want to remove fields from a filter, you may use the common "remove/default" config logic similar to common form objects.
+ * Therefore the filter looks for a config entry named
+ * <code>$config["filter_field_config"][FilterClass::class]["fieldname"] => ["action"]</code>
+ * The config location is taken from the <code>@module</code> annotation provided by the current filter class.
  *
  * @package module_system
  * @author stefan.meyer@artemeon.de
  * @author christoph.kappestein@artemeon.de
+ * @author stefan.idler@artemeon.de
  */
 abstract class FilterBase
 {
     const STR_ANNOTATION_FILTER_COMPARE_OPERATOR = "@filterCompareOperator";
+    const STR_CONFIG_ENTRY = "filter_field_config";
 
     const STR_COMPAREOPERATOR_EQ = "EQ";
     const STR_COMPAREOPERATOR_GT = "GT";
@@ -214,7 +219,7 @@ abstract class FilterBase
     {
         //get properties
         $objReflection = new Reflection($this);
-        $arrProperties = $objReflection->getPropertiesWithAnnotation(OrmBase::STR_ANNOTATION_TABLECOLUMN);
+        $arrProperties = $objReflection->getPropertiesWithAnnotation(AdminFormgenerator::STR_TYPE_ANNOTATION);
 
         //get params
         $arrParams = Carrier::getAllParams();
@@ -409,10 +414,42 @@ abstract class FilterBase
      * Method is being called when the form for the filter is being generated.
      *
      * @param AdminFormgeneratorFilter $objFilterForm
+     * @throws Exception
      */
     public function updateFilterForm(AdminFormgeneratorFilter $objFilterForm)
     {
 
+        if (!empty($this->getArrModule())) {
+            $cfg = Config::getInstance("module_".$this->getArrModule())->getConfig(self::STR_CONFIG_ENTRY);
+
+            if (!empty($cfg[get_class($this)])) {
+                foreach ($cfg[get_class($this)] as $strFieldName => $arrVisibility) {
+                    $field = $objFilterForm->getField($strFieldName);
+
+                    if (in_array("remove", $arrVisibility)) {
+                        $objFilterForm->removeField($strFieldName);
+                    }
+
+                    if ($field === null) {
+                        $this->removeNestedField($strFieldName, $objFilterForm);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Tries to find an entry in a nested form-entry, so a list of subentries
+     * @param string $name
+     * @param AdminFormgeneratorFilter $form
+     */
+    private function removeNestedField(string $name, AdminFormgeneratorFilter $form)
+    {
+        foreach ($form->getArrFields() as $field) {
+            if ($field instanceof AdminFormgeneratorContainerInterface) {
+                $field->removeField($name);
+            }
+        }
     }
 
     /**

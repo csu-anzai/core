@@ -250,7 +250,10 @@ class SystemChangelogRenderer
             || StringUtil::indexOf($strType, "objectlist", false) !== false) {
             $strType = FormentryObjectlist::class;
         }
-
+        $strValue = $strValue ?? "";
+        if (is_object($strValue)) {
+            $strValue = (string)$strValue;
+        }
         switch ($strType) {
             case FormentryDate::class:
             case FormentryDatetime::class:

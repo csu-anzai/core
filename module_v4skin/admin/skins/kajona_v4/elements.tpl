@@ -695,25 +695,6 @@ Upload-Field for multiple files with progress bar
     </script>
 </input_upload_inline>
 
-Regular Submit-Button
-<input_submit>
-        <button type="submit" class="btn btn-default savechanges %%class%%" name="%%name%%" value="%%value%%" %%disabled%% %%eventhandler%%>
-            <span class="btn-text">%%value%%</span>
-            <span class="statusicon"></span>
-        </button>
-</input_submit>
-
-
-<input_submit_wrapper>
-    <div class="form-group">
-        <label class="col-sm-3 control-label"></label>
-        <div class="col-sm-6">
-            %%button%%
-        </div>
-    </div>
-</input_submit_wrapper>
-
-
 An easy date-selector
 If you want to use the js-date-picker, leave %%calendarCommands%% at the end of the section
 in addition, a container for the calendar is needed. Use %%calendarContainerId%% as an identifier.
@@ -897,67 +878,6 @@ have a surrounding div with class "ac_container" and a div with id "%%name%%_con
     </div>
 </div>
 </input_userselector>
-
-A list of checkbox input elements
-<input_checkboxarray>
-    <div class="form-group form-list">
-        <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
-
-        <div class="col-sm-6 inputText">
-            <div id="%%name%%" class="inputContainer %%class%%">
-                %%elements%%
-            </div>
-        </div>
-
-        <div class="col-sm-12">
-            <label class="col-sm-3 control-label"></label>
-            <div class="col-sm-6">
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="checkAll_%%name%%" id="checkAll_%%name%%" %%readonly%%> [lang,commons_select_all,system]
-                    </label>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-    <script type='text/javascript'>
-require(["jquery"], function($) {
-$("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
-    var checkBoxes = $("input:checkbox[name^='%%name%%']").not("[disabled]");
-    checkBoxes.prop('checked', $("input:checkbox[name='checkAll_%%name%%']").prop('checked')).trigger('change');
-});
-});
-    </script>
-</input_checkboxarray>
-
-<input_checkboxarray_checkbox>
-    <div class="%%type%%%%inline%%" %%css%%>
-        <label><input type="%%type%%" name="%%name%%" id="%%name%%" value="%%value%%" data-index="%%key%%" %%checked%% %%readonly%% /> %%title%%</label>
-    </div>
-</input_checkboxarray_checkbox>
-
-
-A list of radio input elements
-<input_radioarray>
-    <div class="form-group form-list">
-        <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
-
-        <div class="col-sm-6 inputText">
-            <div id="%%name%%" class="inputContainer %%class%%">
-                %%elements%%
-            </div>
-        </div>
-    </div>
-</input_radioarray>
-
-<input_radioarray_radio>
-    <div class="%%type%%%%inline%%">
-        <label><input type="%%type%%" name="%%name%%" value="%%value%%" %%checked%% %%readonly%% /> %%title%%</label>
-    </div>
-</input_radioarray_radio>
 
 
 A list of checkbox for object elements

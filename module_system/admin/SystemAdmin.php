@@ -63,9 +63,6 @@ use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
 use Kajona\System\View\Components\Formentry\Listeditor\Listeditor;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Formentry\Objectselector\Objectselector;
-use PHPExcel_Style_Alignment;
-use PHPExcel_Style_Border;
-use PHPExcel_Style_Fill;
 
 
 /**
@@ -959,8 +956,8 @@ JS;
         foreach ($objIterator as $objOneEntry) {
             $arrRowData = array();
 
-            $strOldValue = htmlStripTags($objVersionable->renderVersionValue($objOneEntry->getStrProperty(), $objOneEntry->getStrOldValue()));
-            $strNewValue = htmlStripTags($objVersionable->renderVersionValue($objOneEntry->getStrProperty(), $objOneEntry->getStrNewValue()));
+            $strOldValue = htmlentities($objVersionable->renderVersionValue($objOneEntry->getStrProperty(), $objOneEntry->getStrOldValue()));
+            $strNewValue = htmlentities($objVersionable->renderVersionValue($objOneEntry->getStrProperty(), $objOneEntry->getStrNewValue()));
 
             $arrRowData[] = dateToString($objOneEntry->getObjDate());
             $arrRowData[] = $objOneEntry->getStrUsername();
@@ -1242,40 +1239,6 @@ JS;
             }
         }
         return null;
-    }
-
-    /**
-     * Returns the style parameters for the changelog excel export
-     *
-     * @return array
-     */
-    private function getStylesArray()
-    {
-        $arrStlyes = array();
-
-        $arrStlyes["header_1"] = array(
-            'fill'      => array(
-                'type'       => PHPExcel_Style_Fill::FILL_SOLID,
-                'startcolor' => array('rgb' => 'EBF1DE'),
-                'endcolor'   => array('rgb' => 'EBF1DE')
-            ),
-            'borders'   => array(
-                'allborders' => array(
-                    'style' => PHPExcel_Style_Border::BORDER_THIN,
-                    'color' => array(
-                        'rgb' => '000000'
-                    )
-                ),
-            ),
-            'alignment' => array(
-                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-                'vertical'   => PHPExcel_Style_Alignment::VERTICAL_BOTTOM,
-                'rotation'   => 0,
-                'wrap'       => true
-            )
-        );
-
-        return $arrStlyes;
     }
 
     /**

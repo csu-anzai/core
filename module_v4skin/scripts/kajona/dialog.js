@@ -16,7 +16,7 @@ define('dialog', ['jquery', 'bootstrap', 'router', 'util', 'folderview'], functi
         this.setTitle = function (strTitle) {
             if(strTitle == "")
                 strTitle = "&nbsp;";
-            $('#' + this.containerId + '_title').html(strTitle);
+            $('#' + this.containerId + '_title').text(strTitle);
         };
 
         this.setBitLarge = function (bitLarge) {

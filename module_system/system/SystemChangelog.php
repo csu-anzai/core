@@ -437,7 +437,8 @@ class SystemChangelog
                 $bitReturn = Carrier::getInstance()->getObjDB()->multiInsert(
                     $strTable,
                     array("change_id", "change_date", "change_systemid", "change_system_previd", "change_user", "change_class", "change_action", "change_property", "change_oldvalue", "change_newvalue"),
-                    $arrRows
+                    $arrRows,
+                    [false, false, false, false, false, false, false, false, false, false]
                 ) && $bitReturn;
 
                 self::$arrInsertCache[$strTable] = array();
@@ -519,6 +520,12 @@ class SystemChangelog
             //update the values
             $arrChangeSet["oldvalue"] = $strOldvalue;
             $arrChangeSet["newvalue"] = $strNewvalue;
+
+            if (StringUtil::length($strOldvalue) > 3990 || StringUtil::length($strNewvalue) > 3990) {
+                Logger::getInstance()->warning("Truncating changelog entries larger 3990 char, oldval: {$strOldvalue} newval: {$strNewvalue}");
+                $arrChangeSet["oldvalue"] = StringUtil::truncate($strOldvalue, 3990, '');
+                $arrChangeSet["newvalue"] = StringUtil::truncate($strNewvalue, 3990, '');
+            }
 
             //add entry right here
             $arrReturn[] = $arrChangeSet;

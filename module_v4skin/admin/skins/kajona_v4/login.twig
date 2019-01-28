@@ -27,7 +27,7 @@
 
             <div class="panel panelDefault" id="loginContainer">
                 <div class="panel-header">
-                    <h3>{{ "commons_skin_header"|lang("commons") }}</h3>
+                    <h3>{{ "commons_skin_header"|lang("commons")|raw }}</h3>
                 </div>
                 <div class="panel-body">
                     <!--[if lt IE 9]>
@@ -51,7 +51,7 @@
 
 <script src="_webpath_{{ "module_system"|webpath }}/scripts/agp.min.js?_system_browser_cachebuster_"></script>
 <script type="text/javascript">
-    require(['app'], function() {});
+    require(['app'], function(app) { app.init(); });
 </script>
 
 </html>

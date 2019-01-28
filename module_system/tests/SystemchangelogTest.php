@@ -122,11 +122,11 @@ class SystemchangelogTest extends Testbase
 
         foreach ($arrChanges as $objOneChangeSet) {
             if ($objOneChangeSet->getStrOldValue() != "") {
-                $this->assertTrue(in_array($objOneChangeSet->getStrOldValue(), array(1, 2)));
+                $this->assertTrue(in_array($objOneChangeSet->getStrOldValue()."", array("1", "2")));
             }
 
             if ($objOneChangeSet->getStrNewValue() != "") {
-                $this->assertTrue(in_array($objOneChangeSet->getStrNewValue(), array(6, 7)));
+                $this->assertTrue(in_array($objOneChangeSet->getStrNewValue()."", array("6", "7")));
             }
         }
 
@@ -137,8 +137,8 @@ class SystemchangelogTest extends Testbase
         /** @var ChangelogContainer $container */
         $container = $arrChanges[0];
 
-        $this->assertEquals(2, $container->getStrOldValue());
-        $this->assertEquals("", $container->getStrNewValue());
+        $this->assertEquals("2", $container->getStrOldValue()."");
+        $this->assertEquals("", $container->getStrNewValue()."");
     }
 
     public function testArrayHandling()

@@ -47,7 +47,7 @@ class DRow
     }
 
     /**
-     * @return array
+     * @return DCell[]
      */
     public function getCells()
     {
