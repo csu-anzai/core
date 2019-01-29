@@ -138,12 +138,9 @@ if (!DEV && is_file("{$tscJsFile}.js")) {
 echo "Build agp js\n";
 if (DEV) {
     $plain = is_file("{$plainJsFile}.js") ? file_get_contents("{$plainJsFile}.js") : "";
-} else {
-    $plain = is_file("{$plainJsFile}.min.js") ? file_get_contents("{$plainJsFile}.min.js") : "";
-}
-if (DEV) {
     $tsc = is_file("{$tscJsFile}.js") ? file_get_contents("{$tscJsFile}.js") : "";
 } else {
+    $plain = is_file("{$plainJsFile}.min.js") ? file_get_contents("{$plainJsFile}.min.js") : "";
     $tsc = is_file("{$tscJsFile}.min.js") ? file_get_contents("{$tscJsFile}.min.js") : "";
 }
 

@@ -41,6 +41,7 @@ use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
 use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
 use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
+use Kajona\System\View\Components\Formentry\Checkboxarray\Checkboxarray;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Formentry\Submit\Submit;
 use Kajona\System\View\Components\Listbody\Listbody;
@@ -1082,69 +1083,17 @@ HTML;
      * @param string $strOpener
      *
      * @return string
+     * @deprecated
      */
     public function formInputCheckboxArray($strName, $strTitle, $intType, array $arrValues, array $arrSelected, $bitInline = false, $bitReadonly = false, $strOpener = "")
     {
-        $strElement = "input_checkboxarray";
-        $strElementRow = "input_checkboxarray_checkbox";
-        if ($intType == FormentryCheckboxarray::TYPE_RADIO) {
-            $strElement = "input_radioarray";
-            $strElementRow = "input_radioarray_radio";
-        }
+        $cmp = new Checkboxarray($strName, $strTitle, $arrValues, $arrSelected);
+        $cmp->setType($intType);
+        $cmp->setInline($bitInline);
+        $cmp->setReadOnly($bitReadonly);
 
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["opener"] = $strOpener;
-
-        $strElements = '';
-        foreach ($arrValues as $strKey => $strValue) {
-            $arrTemplateRow = array(
-                'key'      => $strKey,
-                'title'    => $strValue,
-                'checked'  => in_array($strKey, $arrSelected) ? 'checked' : '',
-                'inline'   => $bitInline ? '-inline' : '',
-                'readonly' => $bitReadonly ? 'disabled' : '',
-                'css'      => "",
-            );
-
-            switch ($intType) {
-                case FormentryCheckboxarray::TYPE_RADIO:
-                    $arrTemplateRow['type'] = 'radio';
-                    $arrTemplateRow['name'] = $strName;
-                    $arrTemplateRow['value'] = $strKey;
-                    break;
-                case FormentryCheckboxarray::TYPE_CHECKBOX:
-                    $arrTemplateRow['type'] = 'checkbox';
-                    $arrTemplateRow['name'] = $strName.'['.$strKey.']';
-                    $arrTemplateRow['value'] = 'checked';
-                    break;
-            }
-
-            $bitHeadline = substr($strValue, 0, 1) == "#";
-            if ($bitHeadline) {
-                $strTitle = trim(substr($strValue, 1));
-                $strElements .= "<b>{$strTitle}</b><br>";
-            } else {
-                $bitIndent = substr($strValue, 0, 1) == "-";
-                if ($bitIndent) {
-                    $arrTemplateRow["title"] = substr($strValue, 1);
-                    $arrTemplateRow["css"] = "style='margin-left:20px;'";
-                }
-                $bitIndent = substr($strValue, 1, 1) == "-";
-                if ($bitIndent) {
-                    $arrTemplateRow["title"] = substr($strValue, 2);
-                    $arrTemplateRow["css"] = "style='margin-left:40px;'";
-                }
-
-                $strElements .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/admin/skins/kajona_v4/elements.tpl", $strElementRow, true);
-            }
-        }
-
-        $arrTemplate["elements"] = $strElements;
-
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", $strElement, true);
-    }
+        return $cmp->renderComponent();
+     }
 
     /**
      * Creates a list of checkboxes based on an object array

@@ -213,6 +213,10 @@ require(["jquery", "ajax"], function($, ajax){
                 /** @var FlowTransition $objTransition */
                 $objTargetStatus = $objTransition->getTargetStatus();
 
+                if ($objTargetStatus === null) {
+                    continue;
+                }
+
                 // validation
                 $objResult = $objFlow->getHandler()->validateStatusTransition($objObject, $objTransition);
 
@@ -258,7 +262,7 @@ require(["jquery", "ajax"], function($, ajax){
 
         // flow chart
         $currentStatus = $objFlow->getStatusByIndex($objObject->getIntRecordStatus());
-        $menu->addItem(new Dialog($currentStatus->getStrName(), Link::getLinkAdminHref("flow", "showFlow", ["systemid" => $this->getSystemid(), "folderview" => "1"]), $currentStatus->getStrIcon()));
+        $menu->addItem(new Dialog($currentStatus->getStrDisplayName(), Link::getLinkAdminHref("flow", "showFlow", ["systemid" => $this->getSystemid(), "folderview" => "1"]), $currentStatus->getStrIcon()));
 
         if (count($statusItems) > 0) {
             // status

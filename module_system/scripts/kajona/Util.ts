@@ -2,6 +2,7 @@
 ///<amd-module name="util"/>
 
 import * as $ from "jquery";
+import * as jQuery from "jquery";
 
 declare global {
     interface Window {
@@ -279,7 +280,7 @@ class Util {
     public static getElement(objElement: any) : JQuery {
         // If objElement is already a jQuery object
         if(objElement instanceof jQuery) {
-            return objElement
+            return <JQuery>objElement;
         } else {
             // Convert to jQuery object
             return $(objElement);

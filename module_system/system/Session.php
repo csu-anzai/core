@@ -726,10 +726,12 @@ final class Session
     public function initInternalSession()
     {
 
-//        $arrTables = Database::getInstance()->getTables();
-//        if (!in_array("agp_session", $arrTables)) {
-//            return;
-//        }
+        if ($this->getSession("KAJONA_INTERNAL_SESSID") == false) {
+            $arrTables = Database::getInstance()->getTables();
+            if (!in_array("agp_session", $arrTables)) {
+                return;
+            }
+        }
 
         $this->bitLazyLoaded = true;
 

@@ -26,7 +26,6 @@ use Kajona\System\System\MessagingMessage;
 use Kajona\System\System\MessagingQueue;
 use Kajona\System\System\OrmSchemamanager;
 use Kajona\System\System\Resourceloader;
-use Kajona\System\System\Rights;
 use Kajona\System\System\Session;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemAspect;
@@ -38,8 +37,6 @@ use Kajona\System\System\SystemPwHistory;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserUser;
-use Kajona\System\System\Workflows\WorkflowMessageQueue;
-use Kajona\Workflows\System\WorkflowsWorkflow;
 
 /**
  * Installer for the system-module
@@ -444,8 +441,8 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["change_class"]          = array("char254", true);
         $arrFields["change_action"]         = array("char254", true);
         $arrFields["change_property"]       = array("char254", true);
-        $arrFields["change_oldvalue"]       = array(DbDatatypes::STR_TYPE_LONGTEXT, true);
-        $arrFields["change_newvalue"]       = array(DbDatatypes::STR_TYPE_LONGTEXT, true);
+        $arrFields["change_oldvalue"]       = array(DbDatatypes::STR_TYPE_TEXT, true);
+        $arrFields["change_newvalue"]       = array(DbDatatypes::STR_TYPE_TEXT, true);
 
 
         $arrTables = array("agp_changelog");
@@ -505,6 +502,11 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             $strReturn .= $this->update_71_711();
         }
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.1.1") {
+            $strReturn .= $this->update_711_712();
+        }
+
         return $strReturn."\n\n";
     }
 
@@ -537,35 +539,6 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
     private function update_702_703()
     {
         $strReturn = "Updating 7.0.2 to 7.0.3...\n";
-
-        $strReturn .= "Migrating oldvalue and newvalue columns of change tables to longtext".PHP_EOL;
-
-        $arrTables = array("agp_changelog");
-        $arrProvider = SystemChangelog::getAdditionalProviders();
-        foreach($arrProvider as $objOneProvider) {
-            $arrTables[] = $objOneProvider->getTargetTable();
-        }
-
-        foreach($arrTables as $strOneTable) {
-
-            if (Config::getInstance()->getConfig("dbdriver") == "mysqli") {
-                //direct change on the table
-                Database::getInstance()->changeColumn($strOneTable, "change_oldvalue", "change_oldvalue", DbDatatypes::STR_TYPE_LONGTEXT);
-                Database::getInstance()->changeColumn($strOneTable, "change_newvalue", "change_newvalue", DbDatatypes::STR_TYPE_LONGTEXT);
-
-            } else {
-                //Need to do it this way since under oracle converting from varchar2 to clob is not possible
-                Database::getInstance()->addColumn($strOneTable, "temp_change_oldvalue", DbDatatypes::STR_TYPE_LONGTEXT);
-                Database::getInstance()->_pQuery("UPDATE $strOneTable SET temp_change_oldvalue=change_oldvalue", []);
-                Database::getInstance()->removeColumn($strOneTable, "change_oldvalue");
-                Database::getInstance()->changeColumn($strOneTable, "temp_change_oldvalue", "change_oldvalue", DbDatatypes::STR_TYPE_LONGTEXT);
-
-                Database::getInstance()->addColumn($strOneTable, "temp_change_newvalue", DbDatatypes::STR_TYPE_LONGTEXT);
-                Database::getInstance()->_pQuery("UPDATE $strOneTable SET temp_change_newvalue=change_newvalue", []);
-                Database::getInstance()->removeColumn($strOneTable, "change_newvalue");
-                Database::getInstance()->changeColumn($strOneTable, "temp_change_newvalue", "change_newvalue", DbDatatypes::STR_TYPE_LONGTEXT);
-            }
-        }
 
         $strReturn .= "Upating module version".PHP_EOL;
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.3");
@@ -625,59 +598,56 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         return $strReturn;
     }
 
-    /**
-     * Helper to migrate the system-id based permission table to an int based one
-     *
-     * @param null|int $intPagesize
-     * @param bool $bitEchodata
-     * @return string
-     */
-    public function migrateUserData($intPagesize = null, $bitEchodata = false) {
+    private function update_711_712()
+    {
+        $strReturn = "Updating to 7.1.2...".PHP_EOL;
+        $strReturn .= "Updating changelog column types".PHP_EOL;
 
-        $strRun = "Migrating old permissions table to new table data...\n";
-
-        $arrIdToInt = array();
-        foreach ($this->objDB->getPArray("SELECT group_id, group_short_id FROM agp_user_group ORDER BY group_id DESC", array()) as $arrOneRow) {
-            $arrIdToInt[$arrOneRow["group_id"]] = $arrOneRow["group_short_id"];
+        $arrTables = array("agp_changelog");
+        $arrProvider = SystemChangelog::getAdditionalProviders();
+        foreach($arrProvider as $objOneProvider) {
+            $arrTables[] = $objOneProvider->getTargetTable();
         }
 
-        $objGenerator = $this->objDB->getGenerator("SELECT * FROM agp_system_right ORDER BY right_id DESC", [], $intPagesize);
-        foreach ($objGenerator as $arrResultSet) {
-            foreach ($arrResultSet as $arrSingleRow) {
-                $arrParams = array();
-
-                foreach (["right_changelog", "right_delete", "right_edit", "right_right", "right_right1", "right_right2", "right_right3", "right_right4", "right_right5", "right_view"] as $strOneCol) {
-                    $strNewString = ",";
-                    foreach (explode(",", $arrSingleRow[$strOneCol]) as $strOneGroup) {
-                        if (!empty($strOneGroup) && isset($arrIdToInt[$strOneGroup])) {
-                            $strNewString .= $arrIdToInt[$strOneGroup].",";
-                        } elseif (validateSystemid($strOneGroup)) {
-                            //do nothing, seems to be an old id
-                        } else {
-                            //keep migrated ones
-                            $strNewString .= $strOneGroup.",";
-                        }
-                    }
-                    $arrParams[] = $strNewString;
-                }
-
-                $strQuery = "UPDATE agp_system_right SET right_changelog = ?,right_delete = ?,right_edit = ?,right_right = ?,right_right1 = ?,right_right2 = ?,right_right3 = ?,right_right4 = ?,right_right5 = ?,right_view =? WHERE right_id = ?";
-                $arrParams[] = $arrSingleRow["right_id"];
-
-                $this->objDB->_pQuery($strQuery, $arrParams);
+        foreach($arrTables as $strOneTable) {
+            $strReturn .= "Checking {$strOneTable}...";
+            //only transform if required
+            $metainfo = Database::getInstance()->getTableInformation($strOneTable);
+            $col = $metainfo->getColumnByName("change_oldvalue");
+            if ($col === null) {
+                continue;
+            }
+            if ($col->getInternalType() == DbDatatypes::STR_TYPE_TEXT) {
+                $strReturn .= " not required".PHP_EOL;
+                continue;
             }
 
-            $strLoop = "Converted ".count($arrResultSet)." source rows ".PHP_EOL;
+            if (Config::getInstance()->getConfig("dbdriver") == "mysqli") {
+                //direct change on the table, if required
+                Database::getInstance()->changeColumn($strOneTable, "change_oldvalue", "change_oldvalue", DbDatatypes::STR_TYPE_TEXT);
+                Database::getInstance()->changeColumn($strOneTable, "change_newvalue", "change_newvalue", DbDatatypes::STR_TYPE_TEXT);
 
-            if ($bitEchodata) {
-                echo $strLoop;
-                flush();
-                ob_flush();
+            } elseif (Config::getInstance()->getConfig("dbdriver") == "oci8") {
+
+                //Need to do it this way since under oracle converting from varchar2 to clob is not possible
+                Database::getInstance()->addColumn($strOneTable, "temp_change_oldvalue", DbDatatypes::STR_TYPE_TEXT);
+                Database::getInstance()->_pQuery("UPDATE $strOneTable SET temp_change_oldvalue=change_oldvalue", []);
+                Database::getInstance()->removeColumn($strOneTable, "change_oldvalue");
+                Database::getInstance()->changeColumn($strOneTable, "temp_change_oldvalue", "change_oldvalue", DbDatatypes::STR_TYPE_TEXT);
+
+                Database::getInstance()->addColumn($strOneTable, "temp_change_newvalue", DbDatatypes::STR_TYPE_TEXT);
+                Database::getInstance()->_pQuery("UPDATE $strOneTable SET temp_change_newvalue=change_newvalue", []);
+                Database::getInstance()->removeColumn($strOneTable, "change_newvalue");
+                Database::getInstance()->changeColumn($strOneTable, "temp_change_newvalue", "change_newvalue", DbDatatypes::STR_TYPE_TEXT);
             }
 
-            $strRun .= $strLoop;
+            $strReturn .= " migrated".PHP_EOL;
         }
 
-        return $strRun;
+        $strReturn .= "Updating module-versions...\n";
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.2");
+
+        return $strReturn;
     }
+
 }

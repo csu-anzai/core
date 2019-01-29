@@ -7,6 +7,7 @@
 namespace Kajona\System\Admin\Formentries;
 
 use Kajona\System\Admin\FormentryPrintableInterface;
+use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Link;
@@ -60,6 +61,9 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
 
     /** @var bool */
     protected $showDeleteAllButton = true;
+
+    /** @var bool */
+    protected $showEditButton = false;
 
     /**
      * @param string $strAddLink
@@ -148,6 +152,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         $objectList->setSearchInput($this->endpointUrl, $this->objectTypes);
         $objectList->setShowAddButton($this->isShowAddButton());
         $objectList->setShowDeleteAllButton($this->isShowDeleteAllButton());
+        $objectList->setShowEditButton($this->isShowEditButton());
         $strReturn .= $objectList->renderComponent();
 
         return $strReturn;
@@ -233,11 +238,8 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
             $strHtml = "";
             foreach ($this->arrKeyValues as $objObject) {
                 if ($objObject instanceof Model && $objObject instanceof ModelInterface) {
-
                     $strTitle = self::getDisplayName($objObject);
-
                     if ($objObject->rightView()) {
-
                         //see, if the matching target-module provides a showSummary method
                         $objModule = SystemModule::getModuleByName($objObject->getArrModule("modul"));
                         if ($objModule != null) {
@@ -248,7 +250,11 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
                             }
                         }
                     }
-                    $strHtml .= $strTitle."<br/>\n";
+                    $strHtml .= $strTitle;
+                    if ($objObject instanceof AdminListableInterface && $objObject->rightView()) {
+                        $strHtml .= " ".strip_tags($objObject->getStrAdditionalInfo());
+                    }
+                    $strHtml .= "<br />";
                 } else {
                     throw new Exception("Array must contain objects", Exception::$level_ERROR);
                 }
@@ -277,7 +283,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
     /**
      * Renders the display name for the object and, if possible, also the object type
      *
-     * @param ModelInterface $objObject
+     * @param ModelInterface|AdminListableInterface $objObject
      * @return string
      * @throws \ReflectionException
      * @deprecated
@@ -366,10 +372,12 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
 
     /**
      * @param bool $showAddButton
+     * @return FormentryObjectlist
      */
     public function setShowAddButton(bool $showAddButton)
     {
         $this->showAddButton = $showAddButton;
+        return $this;
     }
 
     /**
@@ -382,10 +390,30 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
 
     /**
      * @param bool $showDeleteAllButton
+     * @return FormentryObjectlist
      */
     public function setShowDeleteAllButton(bool $showDeleteAllButton)
     {
         $this->showDeleteAllButton = $showDeleteAllButton;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowEditButton(): bool
+    {
+        return $this->showEditButton;
+    }
+
+    /**
+     * @param bool $showEditButton
+     * @return FormentryObjectlist
+     */
+    public function setShowEditButton(bool $showEditButton): FormentryObjectlist
+    {
+        $this->showEditButton = $showEditButton;
+        return $this;
     }
 
 

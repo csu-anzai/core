@@ -325,12 +325,15 @@ class Forms {
                     '</span>' +
                     '</div>';
 
-                DialogHelper.showInfoModal("<span data-lang-property=\"system:copy_page_url\"></span>", modalContent);
+                DialogHelper.showInfoModal("", modalContent);
 
-                Lang.initializeProperties();
                 Lang.fetchSingleProperty("system", "copy_to_clipboard", function(value : string) {
                     $(".copy-btn").attr("title", value);
-                })
+                });
+
+                Lang.fetchSingleProperty("system", "copy_page_url", function(value : string) {
+                    $("#jsDialog_0_title").text(value);
+                });
             }
         }, null, null, null, 'json');
     };

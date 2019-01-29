@@ -29,6 +29,7 @@ pipeline {
                             checkout([
                                 $class: 'GitSCM', branches: scm.branches, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'core']], userRemoteConfigs: scm.userRemoteConfigs
                             ])
+                            lastChanges since: 'LAST_SUCCESSFUL_BUILD', format:'SIDE',matching: 'LINE'
 
                             withAnt(installation: 'Ant') {
                                 bat "ant -buildfile core/_buildfiles/build.xml buildSqliteFast"
@@ -53,6 +54,7 @@ pipeline {
                             checkout([
                                 $class: 'GitSCM', branches: scm.branches, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'core']], userRemoteConfigs: scm.userRemoteConfigs
                             ])
+                            lastChanges since: 'LAST_SUCCESSFUL_BUILD', format:'SIDE',matching: 'LINE'
 
                             withAnt(installation: 'Ant') {
                                 sh "ant -buildfile core/_buildfiles/build.xml buildSqliteFast"
