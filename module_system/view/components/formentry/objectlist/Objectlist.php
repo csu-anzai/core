@@ -56,6 +56,9 @@ class Objectlist extends FormentryComponentAbstract
     /** @var bool  */
     protected $showDeleteAllButton = true;
 
+    /** @var bool  */
+    protected $showEditButton = false;
+
     /**
      * @param string $name
      * @param string $title
@@ -114,6 +117,12 @@ class Objectlist extends FormentryComponentAbstract
                 ];
                 $removeLink = Link::getLinkAdminManual($attributes, $deleteAlt, $deleteAlt, "icon_delete");
 
+                $editLink = "";
+                if ($this->isShowEditButton() && $item->rightEdit()) {
+                    $editLinkText = Carrier::getInstance()->getObjLang()->getLang("commons_list_edit", "system");
+                    $editLink = Link::getLinkAdminDialog($item->getArrModule("modul"), "edit", ["systemid" => $item->getSystemid(), "form_element" => $this->name], $editLinkText, $editLinkText, "icon_edit", $item->getStrDisplayName());
+                }
+
                 $icon = is_array($item->getStrIcon()) ? $item->getStrIcon()[0] : $item->getStrIcon();
 
                 $rows[] = [
@@ -122,6 +131,7 @@ class Objectlist extends FormentryComponentAbstract
                     'path'        => $this->getPathName($item),
                     'icon'        => AdminskinHelper::getAdminImage($icon),
                     'removeLink'  => $removeLink,
+                    'editLink'    => $editLink
                 ];
                 $ids[] = $item->getSystemid();
             }
@@ -248,6 +258,22 @@ class Objectlist extends FormentryComponentAbstract
     public function setShowDeleteAllButton(bool $showDeleteAllButton)
     {
         $this->showDeleteAllButton = $showDeleteAllButton;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowEditButton(): bool
+    {
+        return $this->showEditButton;
+    }
+
+    /**
+     * @param bool $showEditButton
+     */
+    public function setShowEditButton(bool $showEditButton): void
+    {
+        $this->showEditButton = $showEditButton;
     }
 
 
