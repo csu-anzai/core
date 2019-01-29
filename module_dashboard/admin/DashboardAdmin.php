@@ -20,6 +20,7 @@ use Kajona\Dashboard\View\Components\Dashboard\Dashboard;
 use Kajona\Dashboard\View\Components\Widget\Widget;
 use Kajona\Dashboard\View\Components\WidgetList\WidgetList;
 use Kajona\System\Admin\AdminController;
+use Kajona\System\Admin\AdminEvensimpler;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminInterface;
 use Kajona\System\Admin\Formentries\FormentryText;
@@ -37,6 +38,9 @@ use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemChangelog;
 use Kajona\System\System\SystemJSTreeBuilder;
 use Kajona\System\System\SystemJSTreeConfig;
+use Kajona\System\View\Components\Datatable\Datatable;
+use Kajona\System\View\Components\Dtable\DTableComponent;
+use Kajona\System\View\Components\Dtable\Model\DTable;
 
 
 /**
@@ -48,7 +52,7 @@ use Kajona\System\System\SystemJSTreeConfig;
  * @module dashboard
  * @moduleId _dashboard_module_id_
  */
-class DashboardAdmin extends AdminController implements AdminInterface
+class DashboardAdmin extends AdminEvensimpler implements AdminInterface
 {
 
     protected $arrColumnsOnDashboard = array("column1", "column2", "column3");
@@ -91,22 +95,19 @@ class DashboardAdmin extends AdminController implements AdminInterface
      */
     protected function actionList()
     {
-
-        $board = new Dashboard();
-
         $widgets = [];
 
         //load the widgets for each column. currently supporting 3 columns on the dashboard.
-        $objDashboardmodel = new DashboardWidget();
         //build each row
         foreach ($this->arrColumnsOnDashboard as $strColumnName) {
             $widgets[$strColumnName] = [];
 
-            foreach ($objDashboardmodel->getWidgetsForColumn($strColumnName, SystemAspect::getCurrentAspectId()) as $objOneSystemmodel) {
+            foreach (DashboardWidget::getWidgetsForColumn($strColumnName, SystemAspect::getCurrentAspectId()) as $objOneSystemmodel) {
                 $widgets[$strColumnName][] = $this->layoutAdminWidget($objOneSystemmodel)->renderComponent();
             }
         }
 
+        $board = new Dashboard();
         $board->setWidgets($widgets);
         $return = $board->renderComponent();
 
@@ -122,14 +123,14 @@ class DashboardAdmin extends AdminController implements AdminInterface
      * @return string
      * @permissions view
      */
-    protected function actionListWidgets() {
-
+    protected function actionListWidgets()
+    {
         $arrWidgetsAvailable = DashboardWidget::getListOfWidgetsAvailable();
         foreach ($arrWidgetsAvailable as $strOneWidget) {
             /** @var $objWidget AdminwidgetInterface|Adminwidget */
             $objWidget = new $strOneWidget();
             $img = "<img src='"._webpath_."/image.php?image=".urlencode($objWidget->getWidgetImg())."&amp;maxWidth=100&amp;maxHeight=60' />";
-            $arrWidget[] = ['name' => $objWidget->getWidgetName(), 'info'=>$objWidget->getWidgetDescription(), 'img'=>$img, 'class' => get_class($objWidget)];
+            $arrWidget[] = ['name' => $objWidget->getWidgetName(), 'info' => $objWidget->getWidgetDescription(), 'img' => $img, 'class' => get_class($objWidget)];
         }
 
         $wListService = new WidgetList($arrWidget);
@@ -142,6 +143,7 @@ class DashboardAdmin extends AdminController implements AdminInterface
      * @param DashboardWidget $objDashboardWidget
      *
      * @return Widget
+     * @throws Exception
      */
     protected function layoutAdminWidget($objDashboardWidget): Widget
     {
@@ -160,7 +162,7 @@ class DashboardAdmin extends AdminController implements AdminInterface
                     $objDashboardWidget->getConcreteAdminwidget()->getWidgetName(),
                     false
 
-            );
+                );
         }
         if ($objDashboardWidget->rightDelete()) {
             $strQuestion = StringUtil::replace("%%element_name%%", StringUtil::jsSafeString($objConcreteWidget->getWidgetName()), $this->getLang("widgetDeleteQuestion"));
@@ -172,9 +174,9 @@ class DashboardAdmin extends AdminController implements AdminInterface
             $arrActions[] =
                 Link::getLinkAdminManual(
                     "href=\"#\" onclick=\"require(['dialogHelper'], function(dialog) { dialog.showConfirmationDialog('{$strHeader}', '{$strQuestion}', '{$strConfirmationButtonLabel}', '{$strConfirmationLinkHref}'); } ); return false;\"",
-                    (AdminskinHelper::getAdminImage("icon_delete")). " ". Carrier::getInstance()->getObjLang()->getLang("commons_delete", "system"), "", "", "", "", false
+                    (AdminskinHelper::getAdminImage("icon_delete"))." ".Carrier::getInstance()->getObjLang()->getLang("commons_delete", "system"), "", "", "", "", false
 
-            );
+                );
         }
 
         $widget = new Widget();
@@ -261,6 +263,7 @@ JS;
      * @return string, "" in case of success
      * @autoTestable
      * @permissions edit
+     * @throws Exception
      */
     protected function actionAddWidgetToDashboard()
     {
@@ -274,7 +277,6 @@ JS;
                 /** @var $objWidget AdminwidgetInterface|Adminwidget */
                 $objWidget = new $strOneWidget();
                 $arrDD[$strOneWidget] = $objWidget->getWidgetName();
-
             }
 
             $arrColumnsAvailable = array();
@@ -382,6 +384,7 @@ JS;
      *
      * @permissions delete
      * @return string
+     * @throws Exception
      */
     protected function actionDeleteWidget()
     {
@@ -396,6 +399,8 @@ JS;
      * updates the sorting AND the assigned column
      *
      * @return string
+     * @throws Exception
+     * @throws ServiceLifeCycleUpdateException
      * @permissions edit
      */
     protected function actionSetDashboardPosition()
@@ -424,7 +429,8 @@ JS;
      *
      * @return string
      * @permissions view
-     * @responseType json
+     * @responseType j  son
+     * @throws Exception
      */
     protected function actionGetWidgetContent()
     {
@@ -443,7 +449,6 @@ JS;
             //disable the internal changelog
             SystemChangelog::$bitChangelogEnabled = false;
             $strReturn = json_encode($objConcreteWidget->generateWidgetOutput());
-
         } else {
             ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
             $strReturn = "<message><error>".xmlSafeString($this->getLang("commons_error_permissions"))."</error></message>";
@@ -478,11 +483,11 @@ JS;
             /** @var EventEntry $objEvent */
             $strIcon = AdminskinHelper::getAdminImage($objEvent->getStrIcon());
             $arrRow = array(
-                "title"     => strip_tags($objEvent->getStrDisplayName()),
-                "tooltip"   => $objEvent->getStrDisplayName(),
-                "icon"      => $strIcon,
-                "allDay"    => true,
-                "url"       => htmlspecialchars_decode($objEvent->getStrHref()),
+                "title" => strip_tags($objEvent->getStrDisplayName()),
+                "tooltip" => $objEvent->getStrDisplayName(),
+                "icon" => $strIcon,
+                "allDay" => true,
+                "url" => htmlspecialchars_decode($objEvent->getStrHref()),
                 "className" => array($objEvent->getStrCategory(), "calendar-event"),
             );
 
@@ -528,7 +533,7 @@ JS;
 
         $arrHeaders = array(
             "0 " => "",
-            "1"  => $this->getLang("todo_task_col_object"),
+            "1" => $this->getLang("todo_task_col_object"),
             "2 " => $this->getLang("todo_task_col_category"),
             "3 " => $this->getLang("todo_task_col_date"),
             "4 " => "",
@@ -564,7 +569,9 @@ JS;
             }
         }
 
-        return $this->objToolkit->dataTable($arrHeaders, $arrValues, "admintable");
+        $cmp = new Datatable($arrHeaders, $arrValues);
+        $cmp->setStrTableCssAddon("admintable");
+        return $cmp->renderComponent();
     }
 
     /**

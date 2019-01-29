@@ -47,6 +47,8 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
      * @tableColumn agp_dashboard.dashboard_user
      * @tableColumnDatatype char20
      * @tableColumnIndex
+     *
+     * @deprecated
      */
     private $strUser = "";
 
@@ -55,6 +57,8 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
      * @tableColumn agp_dashboard.dashboard_aspect
      * @tableColumnDatatype char254
      * @tableColumnIndex
+     *
+     * @deprecated
      */
     private $strAspect = "";
 
@@ -97,11 +101,10 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
         $arrWidgets = Resourceloader::getInstance()->getFolderContent("/admin/widgets", array(".php"));
 
         $arrReturn = array();
-        foreach($arrWidgets as $strPath => $strFilename) {
+        foreach ($arrWidgets as $strPath => $strFilename) {
+            $objInstance = Classloader::getInstance()->getInstanceFromFilename($strPath, Adminwidget::class, AdminwidgetInterface::class);
 
-            $objInstance = Classloader::getInstance()->getInstanceFromFilename($strPath, "Kajona\\Dashboard\\Admin\\Widgets\\Adminwidget", "Kajona\\Dashboard\\Admin\\Widgets\\AdminwidgetInterface");
-
-            if($objInstance !== null) {
+            if ($objInstance !== null) {
                 $arrReturn[] = get_class($objInstance);
             }
         }
@@ -134,20 +137,22 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
      * @param string $strAspectFilter
      * @param string $strUserId
      *
-     * @return array of DashboardWidget
+     * @deprecated
+     *
+     * @return DashboardWidget[]|\Kajona\System\System\Model[]|\Kajona\System\System\ModelInterface[]
+     * @throws \Kajona\System\System\Exception
      */
-    public function getWidgetsForColumn($strColumn, $strAspectFilter = "", $strUserId = "")
+    public static function getWidgetsForColumn($strColumn, $strAspectFilter = "", $strUserId = "")
     {
 
-        if($strUserId == "") {
-            $strUserId = $this->objSession->getUserID();
+        if ($strUserId == "") {
+            $strUserId = Carrier::getInstance()->getObjSession()->getUserID();
         }
 
         $objORM = new OrmObjectlist();
         $objORM->addWhereRestriction(new OrmCondition("dashboard_user = ?", array($strUserId)));
         $objORM->addWhereRestriction(new OrmCondition("dashboard_column = ?", array($strColumn)));
         return $objORM->getObjectList(get_called_class(), self::getWidgetsRootNodeForUser($strUserId, $strAspectFilter));
-
     }
 
     /**
@@ -158,13 +163,17 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
      * @param string $strUserid
      * @param string $strAspectId
      *
+     * @deprecated
+     *
      * @return string
+     * @throws \Kajona\System\System\Exception
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      * @static
      */
     public static function getWidgetsRootNodeForUser($strUserid, $strAspectId = "")
     {
 
-        if($strAspectId == "") {
+        if ($strAspectId == "") {
             $strAspectId = SystemAspect::getCurrentAspectId();
         }
 
@@ -185,7 +194,7 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
             "root_node"
         ));
 
-        if(!isset($arrRow["system_id"]) || !validateSystemid($arrRow["system_id"])) {
+        if (!isset($arrRow["system_id"]) || !validateSystemid($arrRow["system_id"])) {
             //Create a new root-node on the fly
             $objWidget = new DashboardWidget();
             $objWidget->setStrAspect($strAspectId);
@@ -195,43 +204,11 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
             ServiceLifeCycleFactory::getLifeCycle(get_class($objWidget))->update($objWidget, SystemModule::getModuleByName("dashboard")->getSystemid());
 
             $strReturnId = $objWidget->getSystemid();
-        }
-        else {
+        } else {
             $strReturnId = $arrRow["system_id"];
         }
 
         return $strReturnId;
-    }
-
-
-    /**
-     * Looks up the widgets placed in a given column and
-     * returns a list of instances
-     * Use with care!
-     *
-     * @return DashboardWidget[]
-     * @deprecated will be removed as soon as the v3->v4 update sequences will be removed
-     */
-    public static function getAllWidgets()
-    {
-
-        $arrParams = array();
-
-        $strQuery = "SELECT system_id
-        			  FROM agp_dashboard,
-        			  	   agp_system
-        			 WHERE dashboard_id = system_id
-        	     ORDER BY system_sort ASC ";
-
-        $arrRows = Carrier::getInstance()->getObjDB()->getPArray($strQuery, $arrParams);
-        $arrReturn = array();
-        if(count($arrRows) > 0) {
-            foreach($arrRows as $arrOneRow) {
-                $arrReturn[] = new DashboardWidget($arrOneRow["system_id"]);
-            }
-
-        }
-        return $arrReturn;
     }
 
 
@@ -324,8 +301,4 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
     {
         return $this->strContent;
     }
-
-
 }
-
-

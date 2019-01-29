@@ -9,10 +9,15 @@
 
 namespace Kajona\Dashboard\Installer;
 
+use Kajona\Dashboard\System\DashboardConfig;
+use Kajona\Dashboard\System\DashboardUserRoot;
 use Kajona\Dashboard\System\DashboardWidget;
 use Kajona\System\System\InstallerBase;
 use Kajona\System\System\InstallerInterface;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
+use Kajona\System\System\Objectfactory;
 use Kajona\System\System\OrmSchemamanager;
+use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemModule;
 
 /**
@@ -30,6 +35,8 @@ class InstallerDashboard extends InstallerBase implements InstallerInterface {
         $objManager = new OrmSchemamanager();
 		$strReturn .= "Installing table dashboard...\n";
         $objManager->createTable(DashboardWidget::class);
+        $objManager->createTable(DashboardConfig::class);
+        $objManager->createTable(DashboardUserRoot::class);
 
         //the dashboard
         $this->registerModule("dashboard", _dashboard_module_id_, "", "DashboardAdmin.php", $this->objMetadata->getStrVersion());
@@ -55,7 +62,86 @@ class InstallerDashboard extends InstallerBase implements InstallerInterface {
             $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1");
         }
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.1") {
+            $strReturn .= $this->update_71_711();
+        }
+
         return $strReturn."\n\n";
+	}
+
+    private function update_71_711()
+    {
+        $return = "Updating to 7.1.1".PHP_EOL;
+
+        $return .= "Schema udate".PHP_EOL;
+        $objManager = new OrmSchemamanager();
+        $objManager->createTable(DashboardConfig::class);
+        $objManager->createTable(DashboardUserRoot::class);
+
+        $return .= "Migrating dashboards to configurable dashboards".PHP_EOL;
+
+        $return .= "Adding user root".PHP_EOL;
+        $strQuery = "SELECT dashboard_id, dashboard_user, dashboard_aspect
+        			  FROM agp_dashboard,
+        			  	   agp_system
+        			 WHERE dashboard_id = system_id
+        			   AND system_prev_id = ?
+        			   AND dashboard_class = ?
+        	     ORDER BY system_sort ASC ";
+
+        $legacyRootData = $this->objDB->getPArray($strQuery, [SystemModule::getModuleByName("dashboard")->getSystemid(), "root_node"]);
+
+        foreach ($legacyRootData as $row) {
+            $userId = $row['dashboard_user'];
+            $aspectId = $row['dashboard_aspect'];
+            $legacyRootId = $row['dashboard_id'];
+
+            $root = DashboardUserRoot::getOrCreateForUser($userId);
+
+            $objAspect = Objectfactory::getInstance()->getObject($aspectId);
+            if ($objAspect instanceof SystemAspect) {
+
+                $strQuery = "SELECT system_id
+        			  FROM agp_dashboard,
+        			  	   agp_system
+        			 WHERE dashboard_id = system_id
+        			   AND system_prev_id = ?
+        			   AND dashboard_user = ?
+        			   AND dashboard_aspect = ?";
+
+                $arrOldWidgets = $this->objDB->getPArray($strQuery, array($legacyRootId, $userId, $aspectId));
+
+
+                if (in_array($objAspect->getStrName(), ["dls", "riskmanager"])) {
+                    //create dashboard node
+                    $cfgNode = new DashboardConfig();
+                    $cfgNode->setStrTitle($objAspect->getStrDisplayName());
+                    ServiceLifeCycleFactory::getLifeCycle($cfgNode)->update($cfgNode, $root->getSystemid());
+                    //migrate widgets
+                    foreach ($arrOldWidgets as $data) {
+                        $oldWidget = Objectfactory::getInstance()->getObject($data["system_id"]);
+                        ServiceLifeCycleFactory::getLifeCycle($oldWidget)->update($oldWidget, $cfgNode->getSystemid());
+                    }
+
+
+                } else {
+                    //delete subordinate widgets
+                    foreach ($arrOldWidgets as $data) {
+                        $oldWidget = Objectfactory::getInstance()->getObject($data["system_id"]);
+                        ServiceLifeCycleFactory::getLifeCycle($oldWidget)->deleteObjectFromDatabase();
+                    }
+                }
+
+                //remove
+                $oldCfg = Objectfactory::getInstance()->getObject($legacyRootId);
+                ServiceLifeCycleFactory::getLifeCycle($oldCfg)->deleteObjectFromDatabase($oldCfg);
+            }
+
+        }
+
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.1");
+        return $return;
 	}
 
 
