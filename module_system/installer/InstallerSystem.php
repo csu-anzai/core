@@ -614,6 +614,9 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             //only transform if required
             $metainfo = Database::getInstance()->getTableInformation($strOneTable);
             $col = $metainfo->getColumnByName("change_oldvalue");
+            if ($col === null) {
+                continue;
+            }
             if ($col->getInternalType() == DbDatatypes::STR_TYPE_TEXT) {
                 $strReturn .= " not required".PHP_EOL;
                 continue;

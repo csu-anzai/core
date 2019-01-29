@@ -19,7 +19,7 @@ class Database8DropBench extends AbstractBench
     {
         foreach (Database::getInstance()->getTables() as $name) {
             if (StringUtil::indexOf($name, "agp_bench") !== false) {
-                Database::getInstance()->_pQuery("DROP TABLE ".$name, []);
+              //  Database::getInstance()->_pQuery("DROP TABLE ".$name, []);
             }
         }
     }

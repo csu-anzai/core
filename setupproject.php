@@ -202,7 +202,11 @@ TEXT;
         }
 
         $arrOutput = array();
-        exec("ant -f ".escapeshellarg(self::$strRealPath."/core/_buildfiles/build.xml")." installNpmBuildDependencies ", $arrOutput);
+        exec("ant -f ".escapeshellarg(self::$strRealPath."/core/_buildfiles/build.xml")." installNpmBuildDependencies ", $arrOutput, $exitCode);
+        if ($exitCode !== 0) {
+            echo "Error exited with a non successful status code";
+            exit(1);
+        }
         echo "   " . implode("\n   ", $arrOutput);
     }
 
@@ -211,7 +215,11 @@ TEXT;
         if (is_file(__DIR__ . "/_buildfiles/bin/buildSkinStyles.php")) {
             echo "Building skin css styles" . PHP_EOL;
             $arrOutput = array();
-            exec("php -f " . escapeshellarg(self::$strRealPath . "/core/_buildfiles/bin/buildSkinStyles.php"), $arrOutput);
+            exec("php -f " . escapeshellarg(self::$strRealPath . "/core/_buildfiles/bin/buildSkinStyles.php"), $arrOutput, $exitCode);
+            if ($exitCode !== 0) {
+                echo "Error exited with a non successful status code";
+                exit(1);
+            }
             echo "   " . implode("\n   ", $arrOutput);
         } else {
             echo "<span style='color: red;'>Missing buildSkinStyles.php helper</span>";
@@ -223,7 +231,11 @@ TEXT;
         if (is_file(__DIR__ . "/_buildfiles/bin/buildJavascript.php")) {
             echo "Compress and merge js files" . PHP_EOL;
             $arrOutput = array();
-            exec("php -f " . escapeshellarg(self::$strRealPath . "/core/_buildfiles/bin/buildJavascript.php"), $arrOutput);
+            exec("php -f " . escapeshellarg(self::$strRealPath . "/core/_buildfiles/bin/buildJavascript.php"), $arrOutput, $exitCode);
+            if ($exitCode !== 0) {
+                echo "Error exited with a non successful status code";
+                exit(1);
+            }
             echo "   " . implode("\n   ", $arrOutput);
         } else {
             echo "<span style='color: red;'>Missing buildJavascript.php helper</span>";
@@ -235,7 +247,11 @@ TEXT;
         if (is_file(__DIR__ . "/_buildfiles/bin/buildComposer.php")) {
             echo "Install composer dependencies" . PHP_EOL;
             $arrOutput = array();
-            exec("php -f " . escapeshellarg(self::$strRealPath . "/core/_buildfiles/bin/buildComposer.php"), $arrOutput);
+            exec("php -f " . escapeshellarg(self::$strRealPath . "/core/_buildfiles/bin/buildComposer.php"), $arrOutput, $exitCode);
+            if ($exitCode !== 0) {
+                echo "Error exited with a non successful status code";
+                exit(1);
+            }
             echo "   " . implode("\n   ", $arrOutput);
         } else {
             echo "<span style='color: red;'>Missing buildComposer.php helper</span>";
