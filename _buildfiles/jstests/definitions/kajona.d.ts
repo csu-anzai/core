@@ -17,6 +17,7 @@
 ///<reference path="jstree.ts" />
 ///<reference path="moment.d.ts" />
 ///<reference path="tageditor.d.ts" />
+///<reference path="vue.d.ts" />
 
 declare module 'jquery' {
     export = jQuery;

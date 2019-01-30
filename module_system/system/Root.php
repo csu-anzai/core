@@ -595,6 +595,8 @@ abstract class Root
      * @see \Kajona\System\System\ModelInterface
      *
      * @todo move to OrmObjectupdate completely
+     *
+     * @internal use ServiceLifeCycleFactory::getLifeCycle($obj)->update($obj); instead
      */
     public function updateObjectToDb($strPrevId = false)
     {

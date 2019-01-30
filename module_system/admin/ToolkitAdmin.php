@@ -42,7 +42,10 @@ use Kajona\System\View\Components\Formentry\Dropdown\Dropdown;
 use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
 use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
+use Kajona\System\View\Components\Formentry\Buttonbar\Buttonbar;
 use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
+use Kajona\System\View\Components\Formentry\Radiogroup\Radiogroup;
+use Kajona\System\View\Components\Formentry\Checkboxarray\Checkboxarray;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Formentry\Submit\Submit;
 use Kajona\System\View\Components\Listbody\Listbody;
@@ -958,33 +961,16 @@ HTML;
      * @param string $strTitle
      * @param array $arrKeysSelected
      * @param bool $bitEnabled
-     *
      * @return string
+     * @deprecated
      */
     public function formToggleButtonBar($strName, array $arrKeyValues, $strTitle = "", $arrKeysSelected = array(), $bitEnabled = true, $strType = "checkbox")
     {
-        $strOptions = "";
-        //Iterating over the array to create the options
-        foreach ($arrKeyValues as $strKey => $strValue) {
-            $arrTemplate = array();
-            $arrTemplate["name"] = $strName;
-            $arrTemplate["type"] = $strType;
-            $arrTemplate["key"] = $strKey;
-            $arrTemplate["value"] = $strValue;
-            $arrTemplate["disabled"] = ($bitEnabled ? "" : "disabled=\"disabled\"");
-            $arrTemplate["btnclass"] = ($bitEnabled ? "" : "disabled");
-            if (in_array($strKey, $arrKeysSelected)) {
-                $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_toggle_buttonbar_button_selected");
-            } else {
-                $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_toggle_buttonbar_button");
-            }
-        }
+        $buttonBar = new Buttonbar($strName, $strTitle, $arrKeyValues, $arrKeysSelected);
+        $buttonBar->setReadOnly(!$bitEnabled);
+        $buttonBar->setType($strType);
 
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["options"] = $strOptions;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_toggle_buttonbar", true);
+        return $buttonBar->renderComponent();
     }
 
     /**
@@ -998,29 +984,16 @@ HTML;
      * @param string $strKeySelected
      * @param string $strClass
      * @param bool $bitEnabled
-     *
      * @return string
+     * @deprecated
      */
     public function formInputRadiogroup($strName, array $arrKeyValues, $strTitle = "", $strKeySelected = "", $strClass = "", $bitEnabled = true)
     {
-        $strOptions = "";
-        //Iterating over the array to create the options
-        foreach ($arrKeyValues as $strKey => $strValue) {
-            $arrTemplate = array();
-            $arrTemplate["key"] = $strKey;
-            $arrTemplate["value"] = $strValue;
-            $arrTemplate["name"] = $strName;
-            $arrTemplate["class"] = $strClass;
-            $arrTemplate["disabled"] = ($bitEnabled ? "" : "disabled=\"disabled\"");
-            $arrTemplate["checked"] = ((string)$strKey == (string)$strKeySelected ? " checked " : "");
-            $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_radiogroup_row");
-        }
+        $radioGroup = new Radiogroup($strName, $strTitle, $arrKeyValues, $strKeySelected);
+        $radioGroup->setClass($strClass);
+        $radioGroup->setReadOnly(!$bitEnabled);
 
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["radios"] = $strOptions;
-        $arrTemplate["class"] = $strClass;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_radiogroup", true);
+        return $radioGroup->renderComponent();
     }
 
     /**
@@ -1062,69 +1035,17 @@ HTML;
      * @param string $strOpener
      *
      * @return string
+     * @deprecated
      */
     public function formInputCheckboxArray($strName, $strTitle, $intType, array $arrValues, array $arrSelected, $bitInline = false, $bitReadonly = false, $strOpener = "")
     {
-        $strElement = "input_checkboxarray";
-        $strElementRow = "input_checkboxarray_checkbox";
-        if ($intType == FormentryCheckboxarray::TYPE_RADIO) {
-            $strElement = "input_radioarray";
-            $strElementRow = "input_radioarray_radio";
-        }
+        $cmp = new Checkboxarray($strName, $strTitle, $arrValues, $arrSelected);
+        $cmp->setType($intType);
+        $cmp->setInline($bitInline);
+        $cmp->setReadOnly($bitReadonly);
 
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["opener"] = $strOpener;
-
-        $strElements = '';
-        foreach ($arrValues as $strKey => $strValue) {
-            $arrTemplateRow = array(
-                'key'      => $strKey,
-                'title'    => $strValue,
-                'checked'  => in_array($strKey, $arrSelected) ? 'checked' : '',
-                'inline'   => $bitInline ? '-inline' : '',
-                'readonly' => $bitReadonly ? 'disabled' : '',
-                'css'      => "",
-            );
-
-            switch ($intType) {
-                case FormentryCheckboxarray::TYPE_RADIO:
-                    $arrTemplateRow['type'] = 'radio';
-                    $arrTemplateRow['name'] = $strName;
-                    $arrTemplateRow['value'] = $strKey;
-                    break;
-                case FormentryCheckboxarray::TYPE_CHECKBOX:
-                    $arrTemplateRow['type'] = 'checkbox';
-                    $arrTemplateRow['name'] = $strName.'['.$strKey.']';
-                    $arrTemplateRow['value'] = 'checked';
-                    break;
-            }
-
-            $bitHeadline = substr($strValue, 0, 1) == "#";
-            if ($bitHeadline) {
-                $strTitle = trim(substr($strValue, 1));
-                $strElements .= "<b>{$strTitle}</b><br>";
-            } else {
-                $bitIndent = substr($strValue, 0, 1) == "-";
-                if ($bitIndent) {
-                    $arrTemplateRow["title"] = substr($strValue, 1);
-                    $arrTemplateRow["css"] = "style='margin-left:20px;'";
-                }
-                $bitIndent = substr($strValue, 1, 1) == "-";
-                if ($bitIndent) {
-                    $arrTemplateRow["title"] = substr($strValue, 2);
-                    $arrTemplateRow["css"] = "style='margin-left:40px;'";
-                }
-
-                $strElements .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/admin/skins/kajona_v4/elements.tpl", $strElementRow, true);
-            }
-        }
-
-        $arrTemplate["elements"] = $strElements;
-
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", $strElement, true);
-    }
+        return $cmp->renderComponent();
+     }
 
     /**
      * Creates a list of checkboxes based on an object array

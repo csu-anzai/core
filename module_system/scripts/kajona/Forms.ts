@@ -25,7 +25,7 @@ class Forms {
      * @param objField - my be a jquery field or a id selector
      * @param isResetValue if enabled, sets the fields value to emtpy / ""
      */
-    public static hideField(objField : string|JQuery, isResetValue : boolean) {
+    public static hideField(objField : string|JQuery, isResetValue? : boolean) {
         objField = Util.getElement(objField);
 
         var objFormGroup = objField.is('h3') || objField.is('h4') || objField.is('p') ? objField : objField.closest('.form-group');

@@ -10,8 +10,6 @@
 namespace Kajona\Benchmark;
 
 use Kajona\Benchmark\System\AbstractBench;
-use Kajona\Benchmark\System\Bench\Database3aListLobQueries;
-use Kajona\Benchmark\System\Bench\Database3ListQueries;
 use Kajona\Benchmark\System\BenchInterface;
 use Kajona\System\System\Config;
 use Kajona\System\System\Pluginmanager;
@@ -42,19 +40,14 @@ class Bench
         echo PHP_EOL;
         echo "| ".str_pad("Bench", 60)."| ".str_pad("Duration", 30)."|".PHP_EOL;
         echo "|-".str_pad("", 60, "-")."|-".str_pad("", 30, "-")."|".PHP_EOL;
-        ob_flush();
+        @ob_flush();
         flush();
 
         for ($i = 0; $i < self::ITERATIONS; $i++) {
             /** @var BenchInterface $bench */
             foreach ($manager->getPlugins() as $bench) {
-
-//                if (!$bench instanceof Database3aListLobQueries) {
-//                    continue;
-//                }
-
                 echo "| ".str_pad(get_class($bench), 60)."| ";
-                ob_flush();
+                @ob_flush();
                 flush();
 
                 $timer->start();
@@ -62,7 +55,7 @@ class Bench
                 $timer->end();
 
                 echo str_pad($timer->getDurationsInSec()." sec", 30)."|".PHP_EOL;
-                ob_flush();
+                @ob_flush();
                 flush();
             }
 

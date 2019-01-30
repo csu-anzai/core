@@ -8,11 +8,19 @@ use Kajona\Benchmark\System\AbstractBench;
 use Kajona\System\System\Database;
 use Kajona\System\System\DbDatatypes;
 use Kajona\System\System\Filesystem;
+use Kajona\System\System\StringUtil;
 
 class Database1CreateBench extends AbstractBench
 {
     public function bench()
     {
+
+        foreach (Database::getInstance()->getTables() as $name) {
+            if (StringUtil::indexOf($name, "agp_bench") !== false) {
+                Database::getInstance()->_pQuery("DROP TABLE ".$name, []);
+            }
+        }
+
         $this->createTables();
     }
 

@@ -106,6 +106,7 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
 
         /* Add hidden specific filter param */
         $this->addField(new FormentryHidden($this->getStrFormname(), self::STR_FORM_PARAM_FILTER))->setStrValue("true");
+        $this->addField(new FormentryHidden("", self::STR_FORM_PARAM_SESSION))->setStrValue($this->getStrFormname());
 
         /* Update sourceobject */
         if(!$this->validateForm()) {
