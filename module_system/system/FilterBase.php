@@ -6,6 +6,7 @@
 
 namespace Kajona\System\System;
 
+use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminFormgeneratorContainerInterface;
 use Kajona\System\Admin\AdminFormgeneratorFilter;
 use ReflectionClass;
@@ -218,7 +219,7 @@ abstract class FilterBase
     {
         //get properties
         $objReflection = new Reflection($this);
-        $arrProperties = $objReflection->getPropertiesWithAnnotation(OrmBase::STR_ANNOTATION_TABLECOLUMN);
+        $arrProperties = $objReflection->getPropertiesWithAnnotation(AdminFormgenerator::STR_TYPE_ANNOTATION);
 
         //get params
         $arrParams = Carrier::getAllParams();
