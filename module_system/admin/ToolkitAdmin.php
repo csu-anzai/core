@@ -97,7 +97,6 @@ class ToolkitAdmin extends Toolkit
             $date = new Datesingle($strName, $strTitle, $objDateToShow);
         }
 
-        $date = new Datesingle($strName, $strTitle, $objDateToShow);
         $date->setReadOnly($bitReadOnly);
         $date->setClass($strClass);
 
