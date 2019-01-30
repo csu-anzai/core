@@ -29,9 +29,9 @@ abstract class AbstractFormentryI18n extends FormentryBase implements FormentryP
     /**
      * Contains all child form entries
      *
-     * @var array
+     * @var FormentryBase[]
      */
-    protected $arrEntries;
+    protected $arrEntries = [];
 
 
     public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
@@ -143,4 +143,28 @@ abstract class AbstractFormentryI18n extends FormentryBase implements FormentryP
             unset($this->arrEntries[$name]);
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function setStrLabel($strLabel)
+    {
+        foreach ($this->arrEntries as $lang => $objEntry) {
+            $objEntry->setStrLabel($strLabel." (".$lang.")");
+        }
+        return parent::setStrLabel($strLabel);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setStrHint($strHint)
+    {
+        foreach ($this->arrEntries as $lang => $objEntry) {
+            $objEntry->setStrHint($strHint);
+        }
+        return parent::setStrHint($strHint);
+    }
+
+
 }

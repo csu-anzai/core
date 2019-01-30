@@ -113,7 +113,7 @@ abstract class FormentryBase
     final public function readValue()
     {
         $this->updateValue();
-        if ($this instanceof AdminFormgeneratorContainerInterface) {
+        if ($this instanceof AdminFormgeneratorContainerInterface && !$this instanceof AbstractFormentryI18n) {
             foreach ($this->getFields() as $field) {
                 $field->readValue();
             }
@@ -154,9 +154,9 @@ abstract class FormentryBase
 
         //check, if label is set as a property
         if ($strKey != "") {
-            $this->strLabel = Carrier::getInstance()->getObjLang()->getLang($strKey, $strModule);
+            $this->setStrLabel(Carrier::getInstance()->getObjLang()->getLang($strKey, $strModule));
         } else {
-            $this->strLabel = Carrier::getInstance()->getObjLang()->getLang("form_".$this->strFormName."_".$this->strSourceProperty, $strModule);
+            $this->setStrLabel(Carrier::getInstance()->getObjLang()->getLang("form_".$this->strFormName."_".$this->strSourceProperty, $strModule));
             $strKey = "form_".$this->strFormName."_".$this->strSourceProperty;
         }
 

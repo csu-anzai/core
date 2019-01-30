@@ -32,6 +32,7 @@ class FormentryTextI18n extends AbstractFormentryI18n
             $entry->setStrLabel($this->getStrLabel()." ({$lang})");
             $entry->setStrHint($this->getStrHint());
             $entry->setBitMandatory($this->getBitMandatory());
+            $entry->setBitHideLongHints($this->getBitHideLongHints());
             $this->arrEntries[$lang] = $entry;
         }
     }

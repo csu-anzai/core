@@ -84,12 +84,13 @@ trait I18nTrait
      * value string
      * @param string $value json-string
      * @param string|null $lang
+     * @param bool $forceI18n
      * @return string
      * @throws Exception
      */
-    protected function getI18nValueForString(string $value, string $lang = null): string
+    protected function getI18nValueForString(string $value, string $lang = null, $forceI18n = false): string
     {
-        if (!$this->i18NEnabled) {
+        if (!$forceI18n && !$this->i18NEnabled) {
             return $value;
         }
         $lang = $lang ?? $this->getCurrentI18nLanguage();
