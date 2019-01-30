@@ -38,6 +38,16 @@ class ConfigLifecycle extends ServiceLifeCycleImpl
     }
 
     /**
+     * Sets a given config active, based on the id of the config
+     * @param string $id
+     * @throws \Kajona\System\System\Exception
+     */
+    public function setActiveConfigId(string $id)
+    {
+        $this->session->setSession(self::CONFIG_DASHBOARD_SESSION_KEY, $id);
+    }
+
+    /**
      * Tries to load the currently active dashboard for the user
      * @param DashboardUserRoot $userRoot
      * @return DashboardConfig|null

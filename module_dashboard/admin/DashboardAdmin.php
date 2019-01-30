@@ -18,6 +18,7 @@ use Kajona\Dashboard\System\EventEntry;
 use Kajona\Dashboard\System\EventRepository;
 use Kajona\Dashboard\System\TodoJstreeNodeLoader;
 use Kajona\Dashboard\System\TodoRepository;
+use Kajona\Dashboard\View\Components\Configswitcher\ConfigSwitcher;
 use Kajona\Dashboard\View\Components\Dashboard\Dashboard;
 use Kajona\Dashboard\View\Components\Widget\Widget;
 use Kajona\Dashboard\View\Components\WidgetList\WidgetList;
@@ -44,6 +45,12 @@ use Kajona\System\System\SystemJSTreeConfig;
 use Kajona\System\View\Components\Datatable\Datatable;
 use Kajona\System\View\Components\Dtable\DTableComponent;
 use Kajona\System\View\Components\Dtable\Model\DTable;
+use Kajona\System\View\Components\Formentry\Dropdown\Dropdown;
+use Kajona\System\View\Components\Menu\DynamicMenu;
+use Kajona\System\View\Components\Menu\Item\Separator;
+use Kajona\System\View\Components\Menu\Item\Text;
+use Kajona\System\View\Components\Menu\Menu;
+use Kajona\System\View\Components\Menu\MenuItem;
 
 
 /**
@@ -98,13 +105,20 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
      */
     protected function actionList()
     {
+        /** @var ConfigLifecycle $lc */
+        $lc = ServiceLifeCycleFactory::getLifeCycle(DashboardConfig::class);
+
+        //need to react on a new configid?
+        if (validateSystemid($this->getParam("configid"))) {
+            $lc->setActiveConfigId($this->getParam("configid"));
+        }
+
         $widgets = [];
         foreach ($this->arrColumnsOnDashboard as $strColumnName) {
             $widgets[$strColumnName] = [];
         }
 
-        /** @var ConfigLifecycle $lc */
-        $lc = ServiceLifeCycleFactory::getLifeCycle(DashboardConfig::class);
+
         $root = DashboardUserRoot::getOrCreateForUser(Carrier::getInstance()->getObjSession()->getUserID());
         $cfg = $lc->getActiveConfig($root);
 
@@ -123,7 +137,53 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
 
         //add a toolbar
         $return .= $this->objToolkit->addToContentToolbar(Link::getLinkAdminDialog("dashboard", "listWidgets", [], $this->getLang("action_add_widget_to_dashboard"), $this->getLang("action_add_widget_to_dashboard"), "icon_new"));
+
+
+        $menu = new DynamicMenu(
+            "{$cfg->getStrDisplayName()}<i class='fa fa-caret-down'></i>",
+            Link::getLinkAdminXml("dashboard", "apiGetDashboardMenu", [])
+        );
+
+        $menu = $menu->renderComponent();
+        $return .= $this->objToolkit->addToContentToolbar($menu);
         return $return;
+    }
+
+
+    /**
+     * Renders the status menu
+     *
+     * @return string
+     * @permissions view
+     * @responseType html
+     * @throws Exception
+     */
+    protected function actionApiGetDashboardMenu()
+    {
+        $root = DashboardUserRoot::getOrCreateForUser(Carrier::getInstance()->getObjSession()->getUserID());
+
+        $dd = [];
+        $items = [];
+
+        $return = "";
+        /** @var DashboardConfig $singleCfg */
+        foreach (DashboardConfig::getObjectListFiltered(null, $root->getSystemid()) as $singleCfg) {
+            $dd[$singleCfg->getSystemid()] = $singleCfg->getStrDisplayName();
+            $text = new Text(Link::getLinkAdmin("dashboard", "list", ["configid" => $singleCfg->getSystemid()], AdminskinHelper::getAdminImage("icon_dashboard")." ".$singleCfg->getStrDisplayName(), "", "", false));
+            $items[] = $text;
+        }
+
+        if ($this->getObjModule()->rightEdit()) {
+            $items[] = new Separator();
+            $items[] = new Text(Link::getLinkAdmin("dashboard", "listConfig", [], AdminskinHelper::getAdminImage("icon_edit")." ".$this->getLang("commons_list_edit"), "", "", false));
+        }
+
+        //create a switch-menu
+        $menu = new Menu();
+        $menu->setItems($items);
+        $menu->setRenderMenuContainer(false);
+
+        return $menu->renderComponent();
     }
 
     /**
