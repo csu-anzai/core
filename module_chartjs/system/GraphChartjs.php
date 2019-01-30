@@ -148,7 +148,11 @@ class GraphChartjs implements GraphInterfaceFronted
     {
         $arrDataPointObjects = GraphCommons::convertArrValuesToDataPointArray($arrValues);
 
-        $intDatasetNumber = isset($this->arrChartData['data']['datasets']) ? count($this->arrChartData['data']['datasets'])-1 : 0;
+        $intDatasetNumber = isset($this->arrChartData['data']['datasets']) ? count($this->arrChartData['data']['datasets']) : 0;
+        $intColorsCount = count($this->arrColors);
+        if ($intDatasetNumber >= $intColorsCount) {
+            $intDatasetNumber = $intDatasetNumber % $intColorsCount;
+        }
         $this->arrChartData['data']['datasets'][] = [
             "dataPoints" => $this->dataPointObjArrayToArray($arrDataPointObjects),
             "type" => $type,
