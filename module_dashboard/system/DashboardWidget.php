@@ -44,26 +44,6 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
 
     /**
      * @var string
-     * @tableColumn agp_dashboard.dashboard_user
-     * @tableColumnDatatype char20
-     * @tableColumnIndex
-     *
-     * @deprecated
-     */
-    private $strUser = "";
-
-    /**
-     * @var string
-     * @tableColumn agp_dashboard.dashboard_aspect
-     * @tableColumnDatatype char254
-     * @tableColumnIndex
-     *
-     * @deprecated
-     */
-    private $strAspect = "";
-
-    /**
-     * @var string
      * @tableColumn agp_dashboard.dashboard_class
      * @tableColumnDatatype char254
      */
@@ -199,47 +179,11 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
     }
 
     /**
-     * @param string $strUser
-     *
-     * @return void
-     */
-    public function setStrUser($strUser)
-    {
-        $this->strUser = $strUser;
-    }
-
-    /**
      * @return string
      */
     public function getStrColumn()
     {
         return $this->strColumn;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStrUser()
-    {
-        return $this->strUser;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStrAspect()
-    {
-        return $this->strAspect;
-    }
-
-    /**
-     * @param string $strAspect
-     *
-     * @return void
-     */
-    public function setStrAspect($strAspect)
-    {
-        $this->strAspect = $strAspect;
     }
 
     /**

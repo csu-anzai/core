@@ -140,6 +140,9 @@ class InstallerDashboard extends InstallerBase implements InstallerInterface {
 
         }
 
+        $this->objDB->removeColumn("agp_dashboard", "dashboard_user");
+        $this->objDB->removeColumn("agp_dashboard", "dashboard_aspect");
+
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.1");
         return $return;
 	}

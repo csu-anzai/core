@@ -37,6 +37,7 @@ use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException;
 use Kajona\System\System\Link;
 use Kajona\System\System\ResponseObject;
+use Kajona\System\System\Session;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemChangelog;
@@ -395,11 +396,13 @@ JS;
             $objDashboard->setStrClass($strWidgetClass);
             $objDashboard->setStrContent($objWidget->getFieldsAsString());
             $objDashboard->setStrColumn($this->getParam("column"));
-            $objDashboard->setStrUser($this->objSession->getUserID());
-            $objDashboard->setStrAspect(SystemAspect::getCurrentAspectId());
 
             try {
-                $this->objLifeCycleFactory->factory(get_class($objDashboard))->update($objDashboard, DashboardWidget::getWidgetsRootNodeForUser($this->objSession->getUserID(), SystemAspect::getCurrentAspectId()));
+                $userNode = DashboardUserRoot::getOrCreateForUser(Session::getInstance()->getUserID());
+                /** @var ConfigLifecycle $lc */
+                $lc = ServiceLifeCycleFactory::getLifeCycle(DashboardConfig::class);
+
+                $this->objLifeCycleFactory->factory(get_class($objDashboard))->update($objDashboard, $lc->getActiveConfig($userNode)->getSystemid());
                 $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul")));
             } catch (ServiceLifeCycleUpdateException $e) {
                 return $this->getLang("errorSavingWidget");
