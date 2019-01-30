@@ -2015,7 +2015,7 @@ JS;
      */
     public function addToContentToolbar($strButton, $strIdentifier = '', $bitActive = false)
     {
-        $strEntry = $this->objTemplate->fillTemplateFile(array("entry" => addslashes($strButton), "identifier" => $strIdentifier, "active" => $bitActive ? 'true' : 'false'), "/admin/skins/kajona_v4/elements.tpl", "contentToolbar_entry");
+        $strEntry = $this->objTemplate->fillTemplateFile(array("entry" => StringUtil::jsSafeString($strButton), "identifier" => $strIdentifier, "active" => $bitActive ? 'true' : 'false'), "/admin/skins/kajona_v4/elements.tpl", "contentToolbar_entry");
         return $this->objTemplate->fillTemplateFile(array("entries" => $strEntry), "/admin/skins/kajona_v4/elements.tpl", "contentToolbar_wrapper");
     }
 
