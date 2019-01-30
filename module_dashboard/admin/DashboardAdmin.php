@@ -36,6 +36,7 @@ use Kajona\System\System\HttpStatuscodes;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException;
 use Kajona\System\System\Link;
+use Kajona\System\System\Model;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Session;
 use Kajona\System\System\StringUtil;
@@ -62,6 +63,10 @@ use Kajona\System\View\Components\Menu\MenuItem;
  *
  * @module dashboard
  * @moduleId _dashboard_module_id_
+ *
+ * @objectListConfig Kajona\Dashboard\System\DashboardConfig
+ * @objectEditConfig Kajona\Dashboard\System\DashboardConfig
+ * @objectNewConfig Kajona\Dashboard\System\DashboardConfig
  */
 class DashboardAdmin extends AdminEvensimpler implements AdminInterface
 {
@@ -94,6 +99,22 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
         return $arrReturn;
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function renderStatusAction(Model $objListEntry, $strAltActive = "", $strAltInactive = "")
+    {
+        return "";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function renderCopyAction(Model $objListEntry)
+    {
+        return "";
+    }
+
 
     /**
      * Generates the dashboard itself.
@@ -106,6 +127,15 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
      */
     protected function actionList()
     {
+
+        if ($this->getParam("action") == "listConfig") {
+            $this->setSystemid(DashboardUserRoot::getOrCreateForUser(Carrier::getInstance()->getObjSession()->getUserID())->getSystemid());
+            $this->setStrCurObjectTypeName("Config");
+            $this->setCurObjectClassName(DashboardConfig::class);
+            return parent::actionList();
+        }
+
+
         /** @var ConfigLifecycle $lc */
         $lc = ServiceLifeCycleFactory::getLifeCycle(DashboardConfig::class);
 

@@ -9,9 +9,12 @@ namespace Kajona\Dashobard\System\Lifecycle;
 
 use Kajona\Dashboard\System\DashboardConfig;
 use Kajona\Dashboard\System\DashboardUserRoot;
+use Kajona\System\System\Carrier;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleImpl;
 use Kajona\System\System\Objectfactory;
+use Kajona\System\System\OrmObjectlist;
 use Kajona\System\System\Permissions\PermissionHandlerFactory;
+use Kajona\System\System\Root;
 use Kajona\System\System\Session;
 
 /**
@@ -36,6 +39,33 @@ class ConfigLifecycle extends ServiceLifeCycleImpl
         $this->session = $session;
         parent::__construct($objPermissionFactory);
     }
+
+    /**
+     * @param DashboardConfig $objModel
+     * @param bool $strPrevId
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
+     */
+    public function update(Root $objModel, $strPrevId = false)
+    {
+
+        parent::update($objModel, $strPrevId);
+
+        if ($objModel->getBitDefault()) {
+            //mark all other ones as non-default
+            $orm = new OrmObjectlist();
+            $ids = $orm->getObjectListIds(DashboardConfig::class, $objModel->getStrPrevId());
+            $ids = array_filter($ids, function (string $id) use ($objModel){
+                return $id != $objModel->getSystemid();
+            });
+
+
+            $placeholder = array_fill(0, count($ids), "?");
+            $query = "UPDATE agp_dashboard_cfg SET cfg_default = 0 WHERE cfg_id IN (".implode(",", $placeholder).")";
+            Carrier::getInstance()->getObjDB()->_pQuery($query, $ids);
+
+        }
+    }
+
 
     /**
      * Sets a given config active, based on the id of the config

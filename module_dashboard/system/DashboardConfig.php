@@ -40,6 +40,9 @@ class DashboardConfig extends Model implements ModelInterface, AdminListableInte
 
     /**
      * @var string
+     * @fieldType Kajona\System\Admin\Formentries\FormentryText
+     * @fieldMandatory
+     * @fieldLabel commons_title
      * @tableColumn agp_dashboard_cfg.cfg_title
      * @tableColumnDatatype char254
      */
@@ -47,9 +50,10 @@ class DashboardConfig extends Model implements ModelInterface, AdminListableInte
 
     /**
      * @var bool
+     * @fieldType Kajona\System\Admin\Formentries\FormentryYesno
      * @tableColumn agp_dashboard_cfg.cfg_default
      * @tableColumnDatatype char20
-     * @listOrder
+     * @listOrder DESC
      */
     private $bitDefault = false;
 
@@ -77,7 +81,7 @@ class DashboardConfig extends Model implements ModelInterface, AdminListableInte
      */
     public function getStrAdditionalInfo()
     {
-        return "";
+        return $this->bitDefault ? $this->getLang("form_dashboard_default") : "";
     }
 
     /**
@@ -107,7 +111,7 @@ class DashboardConfig extends Model implements ModelInterface, AdminListableInte
     /**
      * @return bool
      */
-    public function isBitDefault()
+    public function getBitDefault()
     {
         return $this->bitDefault;
     }
