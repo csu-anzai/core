@@ -700,15 +700,30 @@ abstract class AdminSimple extends AdminController
         $arrActionMenuEntries = array();
         foreach ($arrActions as $strOneAction) {
             $strOneAction = trim($strOneAction);
+
+            //extract a possible icon
+            $iStart = StringUtil::indexOf($strOneAction, "<i");
+            $icon = "";
+            if ($iStart !== false) {
+                $icon = StringUtil::substring($strOneAction, $iStart, StringUtil::lastIndexOf($strOneAction, "</i>")-$iStart+4);
+                $strOneAction = StringUtil::replace($icon, "", $strOneAction);
+
+                $icon = $this->objToolkit->listButton($icon);
+            }
+
             //search for a title attribute
-            $arrMatches = array();
-            if (preg_match('/<a.*?title=(["\'])(.*?)\1.*$/i', $strOneAction, $arrMatches)) {
+            $arrMatchesLink = array();
+            if (preg_match('/<a.*?title=(["\'])(.*?)\1.*$/i', $strOneAction, $arrMatchesLink)) {
                 if (StringUtil::substring($strOneAction, -11) == "</a></span>") {
-                    $strOneAction = StringUtil::substring($strOneAction, 0, -11).$arrMatches[2]."</a></span>";
+                    $strOneAction = StringUtil::substring($strOneAction, 0, -11).$icon.$arrMatchesLink[2]."</a></span>";
+                } else {
+                    $strOneAction .= $icon.$arrMatchesLink[2];
                 }
-                else {
-                    $strOneAction .= $arrMatches[2];
-                }
+            }
+
+            //strip a possible span at the beginning
+            if ($icon != "" && StringUtil::startsWith($strOneAction, "<span")) {
+                $strOneAction = StringUtil::substring($strOneAction, StringUtil::indexOf($strOneAction, ">")+1, -7);
             }
 
             $arrActionMenuEntries[] = array("fullentry" => $strOneAction);

@@ -200,13 +200,14 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
         /** @var DashboardConfig $singleCfg */
         foreach (DashboardConfig::getObjectListFiltered(null, $root->getSystemid()) as $singleCfg) {
             $dd[$singleCfg->getSystemid()] = $singleCfg->getStrDisplayName();
-            $text = new Text(Link::getLinkAdmin("dashboard", "list", ["configid" => $singleCfg->getSystemid()], AdminskinHelper::getAdminImage("icon_dashboard")." ".$singleCfg->getStrDisplayName(), "", "", false));
+
+            $text = new Text(Link::getLinkAdmin("dashboard", "list", ["configid" => $singleCfg->getSystemid()], $this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_dashboard"))." ".$singleCfg->getStrDisplayName(), "", "", false));
             $items[] = $text;
         }
 
         if ($this->getObjModule()->rightEdit()) {
             $items[] = new Separator();
-            $items[] = new Text(Link::getLinkAdmin("dashboard", "listConfig", [], AdminskinHelper::getAdminImage("icon_edit")." ".$this->getLang("commons_list_edit"), "", "", false));
+            $items[] = new Text(Link::getLinkAdmin("dashboard", "listConfig", [], $this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_edit"))." ".$this->getLang("commons_list_edit"), "", "", false));
         }
 
         //create a switch-menu
