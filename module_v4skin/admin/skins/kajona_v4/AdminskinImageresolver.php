@@ -106,6 +106,7 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_crop"                   => "<i class='kj-icon fa fa-crop'></i>",
         "icon_crop_accept"            => "<span class='kj-icon fa-stack'><i class='fa fa-crop'></i><i class='fa fa-check fa-stack-1x kj-stack' style='color: green'></i></span>",
         "icon_crop_acceptDisabled"    => "<span class='kj-icon fa-stack'><i class='fa fa-crop'></i><i class='fa fa-ban fa-stack-1x kj-stack' style='color: red'></i></span>",
+        "icon_dashboard"              => "<i class='kj-icon fa fa-tachometer'></i>",
         "icon_delete"                 => "<i class='kj-icon fa fa-trash-o'></i>",
         "icon_deleteDisabled"         => "<span class='kj-icon fa-stack'><i class='fa fa-trash-o'></i><i class='fa fa-ban fa-stack-1x kj-stack' style='color: red'></i></span>",
         "icon_deleteLocked"           => "<span class='kj-icon fa-stack'><i class='fa fa-trash-o'></i><i class='fa fa-lock fa-stack-1x kj-stack' style='color: red'></i></span>",
