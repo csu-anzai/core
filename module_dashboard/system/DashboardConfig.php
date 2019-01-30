@@ -32,6 +32,8 @@ use Kajona\System\System\SystemModule;
  * @targetTable agp_dashboard_cfg.cfg_id
  * @module dashboard
  * @moduleId _dashboard_module_id_
+ *
+ * @lifeCycleService dashboard_life_cycle_config
  */
 class DashboardConfig extends Model implements ModelInterface, AdminListableInterface
 {
@@ -47,6 +49,7 @@ class DashboardConfig extends Model implements ModelInterface, AdminListableInte
      * @var bool
      * @tableColumn agp_dashboard_cfg.cfg_default
      * @tableColumnDatatype char20
+     * @listOrder
      */
     private $bitDefault = false;
 

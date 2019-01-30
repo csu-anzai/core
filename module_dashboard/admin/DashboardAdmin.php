@@ -11,6 +11,8 @@ namespace Kajona\Dashboard\Admin;
 
 use Kajona\Dashboard\Admin\Widgets\Adminwidget;
 use Kajona\Dashboard\Admin\Widgets\AdminwidgetInterface;
+use Kajona\Dashboard\System\DashboardConfig;
+use Kajona\Dashboard\System\DashboardUserRoot;
 use Kajona\Dashboard\System\DashboardWidget;
 use Kajona\Dashboard\System\EventEntry;
 use Kajona\Dashboard\System\EventRepository;
@@ -19,6 +21,7 @@ use Kajona\Dashboard\System\TodoRepository;
 use Kajona\Dashboard\View\Components\Dashboard\Dashboard;
 use Kajona\Dashboard\View\Components\Widget\Widget;
 use Kajona\Dashboard\View\Components\WidgetList\WidgetList;
+use Kajona\Dashobard\System\Lifecycle\ConfigLifecycle;
 use Kajona\System\Admin\AdminController;
 use Kajona\System\Admin\AdminEvensimpler;
 use Kajona\System\Admin\AdminFormgenerator;
@@ -96,14 +99,21 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
     protected function actionList()
     {
         $widgets = [];
-
-        //load the widgets for each column. currently supporting 3 columns on the dashboard.
-        //build each row
         foreach ($this->arrColumnsOnDashboard as $strColumnName) {
             $widgets[$strColumnName] = [];
+        }
 
-            foreach (DashboardWidget::getWidgetsForColumn($strColumnName, SystemAspect::getCurrentAspectId()) as $objOneSystemmodel) {
-                $widgets[$strColumnName][] = $this->layoutAdminWidget($objOneSystemmodel)->renderComponent();
+        /** @var ConfigLifecycle $lc */
+        $lc = ServiceLifeCycleFactory::getLifeCycle(DashboardConfig::class);
+        $root = DashboardUserRoot::getOrCreateForUser(Carrier::getInstance()->getObjSession()->getUserID());
+        $cfg = $lc->getActiveConfig($root);
+
+        $widgets = [];
+        if ($cfg instanceof DashboardConfig) {
+
+            /** @var DashboardWidget $widget */
+            foreach (DashboardWidget::getObjectListFiltered(null, $cfg->getSystemid()) as $widget) {
+                $widgets[$widget->getStrColumn()][] = $this->layoutAdminWidget($widget)->renderComponent();
             }
         }
 
@@ -145,7 +155,7 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
      * @return Widget
      * @throws Exception
      */
-    protected function layoutAdminWidget($objDashboardWidget): Widget
+    protected function layoutAdminWidget(DashboardWidget $objDashboardWidget): Widget
     {
         $objConcreteWidget = $objDashboardWidget->getConcreteAdminwidget();
 
@@ -175,7 +185,6 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
                 Link::getLinkAdminManual(
                     "href=\"#\" onclick=\"require(['dialogHelper'], function(dialog) { dialog.showConfirmationDialog('{$strHeader}', '{$strQuestion}', '{$strConfirmationButtonLabel}', '{$strConfirmationLinkHref}'); } ); return false;\"",
                     (AdminskinHelper::getAdminImage("icon_delete"))." ".Carrier::getInstance()->getObjLang()->getLang("commons_delete", "system"), "", "", "", "", false
-
                 );
         }
 

@@ -35,12 +35,11 @@ class Dashboard extends AbstractComponent
 
         return $this->renderTemplate([
             "columnNames" => [
-                ["name" => "column1", "widgets" => $this->widgets["column1"]],
-                ["name" => "column2", "widgets" => $this->widgets["column2"]],
-                ["name" => "column3", "widgets" => $this->widgets["column3"]],
+                ["name" => "column1", "widgets" => $this->widgets["column1"] ?? []],
+                ["name" => "column2", "widgets" => $this->widgets["column2"] ?? []],
+                ["name" => "column3", "widgets" => $this->widgets["column3"] ?? []],
             ]
         ]);
-
     }
 
     /**

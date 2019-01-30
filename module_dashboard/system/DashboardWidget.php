@@ -129,31 +129,7 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
     }
 
 
-    /**
-     * Looks up the widgets placed in a given column and
-     * returns a list of instances, reduced for the current user
-     *
-     * @param string $strColumn
-     * @param string $strAspectFilter
-     * @param string $strUserId
-     *
-     * @deprecated
-     *
-     * @return DashboardWidget[]|\Kajona\System\System\Model[]|\Kajona\System\System\ModelInterface[]
-     * @throws \Kajona\System\System\Exception
-     */
-    public static function getWidgetsForColumn($strColumn, $strAspectFilter = "", $strUserId = "")
-    {
 
-        if ($strUserId == "") {
-            $strUserId = Carrier::getInstance()->getObjSession()->getUserID();
-        }
-
-        $objORM = new OrmObjectlist();
-        $objORM->addWhereRestriction(new OrmCondition("dashboard_user = ?", array($strUserId)));
-        $objORM->addWhereRestriction(new OrmCondition("dashboard_column = ?", array($strColumn)));
-        return $objORM->getObjectList(get_called_class(), self::getWidgetsRootNodeForUser($strUserId, $strAspectFilter));
-    }
 
     /**
      * Searches the root-node for a users' widgets.
