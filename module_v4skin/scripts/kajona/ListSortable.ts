@@ -106,6 +106,7 @@ class ListSortable {
 
                 //hack the placeholder
                 ui.placeholder.html(ui.helper.html());
+                ui.placeholder.height(ui.item.height());
             },
             stop: function (event, ui) {
                 if (oldPos != ui.item.index() && !ui.item.parent().is('div')) {

@@ -1991,18 +1991,15 @@ JS;
      * @param int $intActiveEntry Array-counting, so first element is 0, last is array-length - 1
      *
      * @return string
+     * @deprecated use addToContentToolbar instead
      */
     public function getContentToolbar(array $arrEntries, $intActiveEntry = -1)
     {
         $strRows = "";
         foreach ($arrEntries as $intI => $strOneEntry) {
-            if ($intI == $intActiveEntry) {
-                $strRows .= $this->objTemplate->fillTemplateFile(array("entry" => addslashes($strOneEntry), "active" => 'true'), "/admin/skins/kajona_v4/elements.tpl", "contentToolbar_entry");
-            } else {
-                $strRows .= $this->objTemplate->fillTemplateFile(array("entry" => addslashes($strOneEntry), "active" => 'false'), "/admin/skins/kajona_v4/elements.tpl", "contentToolbar_entry");
-            }
+            $strRows .= $this->addToContentToolbar($strOneEntry, "", $intI == $intActiveEntry);
         }
-        return $this->objTemplate->fillTemplateFile(array("entries" => $strRows), "/admin/skins/kajona_v4/elements.tpl", "contentToolbar_wrapper");
+        return $strRows;
     }
 
 
