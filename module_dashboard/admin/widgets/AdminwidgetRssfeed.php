@@ -9,6 +9,9 @@
 
 namespace Kajona\Dashboard\Admin\Widgets;
 
+use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\Formentries\FormentryDropdown;
+use Kajona\System\Admin\Formentries\FormentryText;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Remoteloader;
 use Kajona\System\System\XmlParser;
@@ -19,6 +22,10 @@ use Kajona\System\System\XmlParser;
  */
 class AdminwidgetRssfeed extends Adminwidget implements AdminwidgetInterface
 {
+    /**
+     * @var string
+     */
+    private $imgFileName = "newsfeed.png";
 
     /**
      * Basic constructor, registers the fields to be persisted and loaded
@@ -32,17 +39,16 @@ class AdminwidgetRssfeed extends Adminwidget implements AdminwidgetInterface
     }
 
     /**
-     * Allows the widget to add additional fields to the edit-/create form.
-     * Use the toolkit class as usual.
-     *
-     * @return string
+     * @inheritdoc
      */
-    public function getEditForm()
+    public function getEditFormContent(AdminFormgenerator $form)
     {
-        $strReturn = "";
-        $strReturn .= $this->objToolkit->formInputText("feedurl", $this->getLang("rssfeed_feedurl"), $this->getFieldValue("feedurl"));
-        $strReturn .= $this->objToolkit->formInputText("posts", $this->getLang("rssfeed_posts"), $this->getFieldValue("posts"));
-        return $strReturn;
+        $form->addField(new FormentryText("", "feedurl"), "")
+            ->setStrValue($this->getFieldValue("feedurl"))
+            ->setStrLabel($this->getLang("rssfeed_feedurl"));
+        $form->addField(new FormentryDropdown("", "posts"))->setArrKeyValues([1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9, 10 => 10])
+            ->setStrValue(($this->getFieldValue("posts")))
+            ->setStrLabel($this->getLang("rssfeed_posts"));
     }
 
     /**
@@ -51,16 +57,19 @@ class AdminwidgetRssfeed extends Adminwidget implements AdminwidgetInterface
      * Do NOT use the toolkit right here!
      *
      * @return string
+     * @throws Exception
      */
     public function getWidgetOutput()
     {
+        if ($this->getFieldValue("feedurl") == "") {
+            return $this->getEditWidgetForm();
+        }
+
         $strReturn = "";
 
         //request the xml...
-
         try {
-
-            $arrUrl = parse_url($this->getFieldValue("feedurl"));
+            $arrUrl = parse_url(trim($this->getFieldValue("feedurl")));
             $objRemoteloader = new Remoteloader();
 
             $intPort = isset($arrUrl["port"]) ? $arrUrl["port"] : "";
@@ -75,8 +84,7 @@ class AdminwidgetRssfeed extends Adminwidget implements AdminwidgetInterface
             $objRemoteloader->setIntPort($intPort);
             $objRemoteloader->setStrProtocolHeader($arrUrl["scheme"]."://");
             $strContent = $objRemoteloader->getRemoteContent();
-        }
-        catch (Exception $objExeption) {
+        } catch (Exception $objExeption) {
             $strContent = "";
         }
 
@@ -87,12 +95,10 @@ class AdminwidgetRssfeed extends Adminwidget implements AdminwidgetInterface
             $arrFeed = $objXmlparser->xmlToArray();
 
             if (count($arrFeed) >= 1) {
-
                 //rss feed
                 if (isset($arrFeed["rss"])) {
                     $intCounter = 0;
                     foreach ($arrFeed["rss"][0]["channel"][0]["item"] as $arrOneItem) {
-
                         $strTitle = (isset($arrOneItem["title"][0]["value"]) ? $arrOneItem["title"][0]["value"] : "");
                         $strLink = (isset($arrOneItem["link"][0]["value"]) ? $arrOneItem["link"][0]["value"] : "");
 
@@ -110,7 +116,6 @@ class AdminwidgetRssfeed extends Adminwidget implements AdminwidgetInterface
                 if (isset($arrFeed["feed"]) && isset($arrFeed["feed"][0]["entry"])) {
                     $intCounter = 0;
                     foreach ($arrFeed["feed"][0]["entry"] as $arrOneItem) {
-
                         $strTitle = (isset($arrOneItem["title"][0]["value"]) ? $arrOneItem["title"][0]["value"] : "");
                         $strLink = (isset($arrOneItem["link"][0]["attributes"]["href"]) ? $arrOneItem["link"][0]["attributes"]["href"] : "");
 
@@ -143,6 +148,23 @@ class AdminwidgetRssfeed extends Adminwidget implements AdminwidgetInterface
     public function getWidgetName()
     {
         return $this->getLang("rssfeed_name");
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public function getWidgetDescription()
+    {
+        return $this->getLang("rssfeed_description");
+    }
+
+    /**
+     * @return string
+     */
+    public function getImgFileName(): string
+    {
+        return $this->imgFileName;
     }
 
 }

@@ -82,8 +82,7 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
         $arrReturn[] = array("view", Link::getLinkAdmin($this->getArrModule("modul"), "list", "", $this->getLang("modul_titel"), "", "", true, "adminnavi"));
         $arrReturn[] = array("view", Link::getLinkAdmin($this->getArrModule("modul"), "calendar", "", $this->getLang("action_calendar"), "", "", true, "adminnavi"));
         $arrReturn[] = array("view", Link::getLinkAdmin($this->getArrModule("modul"), "todo", "", $this->getLang("action_todo"), "", "", true, "adminnavi"));
-        $arrReturn[] = array("", "");
-        $arrReturn[] = array("edit", Link::getLinkAdmin($this->getArrModule("modul"), "addWidgetToDashboard", "", $this->getLang("action_add_widget_to_dashboard"), "", "", true, "adminnavi"));
+
         return $arrReturn;
     }
 
@@ -253,18 +252,19 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
 
         $arrActions = array();
         if ($objDashboardWidget->rightEdit()) {
-            $arrActions[] =
-                Link::getLinkAdminDialog(
-                    "dashboard",
-                    "editWidget",
-                    "&systemid=".$objDashboardWidget->getSystemid(),
-                    (AdminskinHelper::getAdminImage("icon_edit"))." ".$this->getLang("editWidget"),
-                    "",
-                    "",
-                    $objDashboardWidget->getConcreteAdminwidget()->getWidgetName(),
-                    false
-
-                );
+            $strWidgetClass = $objDashboardWidget->getStrClass();
+            if ($strWidgetClass::isEditable()) {
+                $arrActions[] =
+                    Link::getLinkAdminManual(
+                        "href=\"#\" onclick=\"require(['dashboard'], function(dashboard) { dashboard.editWidget('{$objDashboardWidget->getSystemid()}'); } ); return false;\"",
+                        (AdminskinHelper::getAdminImage("icon_edit"))." ".$this->getLang("editWidget"),
+                        "",
+                        "",
+                        "",
+                        "",
+                        false
+                    );
+                }
         }
         if ($objDashboardWidget->rightDelete()) {
             $strQuestion = StringUtil::replace("%%element_name%%", StringUtil::jsSafeString($objConcreteWidget->getWidgetName()), $this->getLang("widgetDeleteQuestion"));
@@ -359,68 +359,20 @@ JS;
 
 
     /**
-     * Generates the forms to add a widget to the dashboard
-     *
-     * @return string, "" in case of success
-     * @autoTestable
+     * @return string
+     * @throws Exception
      * @permissions edit
      * @throws Exception
      */
-    protected function actionAddWidgetToDashboard()
+    protected function actionAddWidget()
     {
-        $strReturn = "";
-        //step 1: select a widget, plz
-        if ($this->getParam("step") == "") {
-            $arrWidgetsAvailable = DashboardWidget::getListOfWidgetsAvailable();
+        //instantiate the concrete widget
+        $strWidgetClass = $this->getParam("widget");
+        /** @var Adminwidget|AdminwidgetInterface $objWidget */
+        $objWidget = $this->objBuilder->factory($strWidgetClass);
 
-            $arrDD = array();
-            foreach ($arrWidgetsAvailable as $strOneWidget) {
-                /** @var $objWidget AdminwidgetInterface|Adminwidget */
-                $objWidget = new $strOneWidget();
-                $arrDD[$strOneWidget] = $objWidget->getWidgetName();
-            }
-
-            $arrColumnsAvailable = array();
-            foreach ($this->arrColumnsOnDashboard as $strOneColumn) {
-                $arrColumnsAvailable[$strOneColumn] = $this->getLang($strOneColumn);
-            }
-
-
-            $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref("dashboard", "addWidgetToDashboard"));
-            $strReturn .= $this->objToolkit->formInputDropdown("widget", $arrDD, $this->getLang("widget"));
-            $strReturn .= $this->objToolkit->formInputDropdown("column", $arrColumnsAvailable, $this->getLang("column"));
-            $strReturn .= $this->objToolkit->formInputHidden("step", "2");
-            $strReturn .= $this->objToolkit->formInputSubmit($this->getLang("addWidgetNextStep"));
-            $strReturn .= $this->objToolkit->formClose();
-
-            $strReturn .= $this->objToolkit->setBrowserFocus("widget");
-        } //step 2: loading the widget and allow it to show a view fields
-        elseif ($this->getParam("step") == "2") {
-            $strWidgetClass = $this->getParam("widget");
-            /** @var Adminwidget|AdminwidgetInterface $objWidget */
-            $objWidget = new $strWidgetClass();
-
-            if ($objWidget->getEditForm() == "") {
-                $this->adminReload(Link::getLinkAdminHref("dashboard", "addWidgetToDashboard", "&step=3&widget=".$strWidgetClass."&column=".$this->getParam("column")));
-            } else {
-                //ask the widget to generate its form-parts and wrap our elements around
-                $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref("dashboard", "addWidgetToDashboard"));
-                $strReturn .= $objWidget->getEditForm();
-                $strReturn .= $this->objToolkit->formInputHidden("step", "3");
-                $strReturn .= $this->objToolkit->formInputHidden("widget", $strWidgetClass);
-                $strReturn .= $this->objToolkit->formInputHidden("column", $this->getParam("column"));
-                $strReturn .= $this->objToolkit->formInputSubmit($this->getLang("commons_save"));
-                $strReturn .= $this->objToolkit->formClose();
-            }
-        } //step 3: save all to the database
-        elseif ($this->getParam("step") == "3") {
-            //instantiate the concrete widget
-            $strWidgetClass = $this->getParam("widget");
-            /** @var Adminwidget|AdminwidgetInterface $objWidget */
-            $objWidget = new $strWidgetClass();
-
-            //let it process its fields
-            $objWidget->loadFieldsFromArray($this->getAllParams());
+        //let it process its fields
+        $objWidget->loadFieldsFromArray($this->getAllParams());
 
             //and save the dashboard-entry
             $objDashboard = new DashboardWidget();
@@ -428,20 +380,18 @@ JS;
             $objDashboard->setStrContent($objWidget->getFieldsAsString());
             $objDashboard->setStrColumn($this->getParam("column"));
 
-            try {
-                $userNode = DashboardUserRoot::getOrCreateForUser(Session::getInstance()->getUserID());
+        try {
+            $userNode = DashboardUserRoot::getOrCreateForUser(Session::getInstance()->getUserID());
                 /** @var ConfigLifecycle $lc */
                 $lc = ServiceLifeCycleFactory::getLifeCycle(DashboardConfig::class);
 
                 $this->objLifeCycleFactory->factory(get_class($objDashboard))->update($objDashboard, $lc->getActiveConfig($userNode)->getSystemid());
-                $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul")));
-            } catch (ServiceLifeCycleUpdateException $e) {
-                return $this->getLang("errorSavingWidget");
-            }
+            $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul")));
+        } catch (ServiceLifeCycleUpdateException $e) {
+            return $this->getLang("errorSavingWidget");
         }
 
-
-        return $strReturn;
+        return "";
     }
 
     /**
@@ -483,6 +433,21 @@ JS;
     }
 
     /**
+     * @return string
+     * @throws Exception
+     * @permissions edit
+     * @responseType json
+     */
+    protected function actionSwitchOnEditMode()
+    {
+        $objDashboardwidget = new DashboardWidget($this->getSystemid());
+        $objWidget = $objDashboardwidget->getConcreteAdminwidget();
+        $strReturn = $objWidget->getEditWidgetForm();
+
+        return json_encode($strReturn);
+    }
+
+    /**
      * Removes a single widget, called by the xml-handler
      *
      * @permissions delete
@@ -492,9 +457,10 @@ JS;
     protected function actionDeleteWidget()
     {
         $objWidget = new DashboardWidget($this->getSystemid());
-        $strName = $objWidget->getStrDisplayName();
+        $objConcreteWidget = $objWidget->getConcreteAdminwidget();
+        $strWidgetName = $objConcreteWidget->getWidgetName();
         $objWidget->deleteObject();
-        return "<message>".$this->getLang("deleteWidgetSuccess", array($strName))."</message>";
+        return "<message>".$this->getLang("deleteWidgetSuccess", array(StringUtil::jsSafeString($strWidgetName)))."</message>";
     }
 
     /**
@@ -528,9 +494,10 @@ JS;
     }
 
     /**
-     * Renderes the content of a single widget.
+     * Renders the content of a single widget.
      *
      * @return string
+     * @throws Exception
      * @permissions view
      * @responseType j  son
      * @throws Exception
@@ -552,6 +519,52 @@ JS;
             //disable the internal changelog
             SystemChangelog::$bitChangelogEnabled = false;
             $strReturn = json_encode($objConcreteWidget->generateWidgetOutput());
+
+        } else {
+            ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
+            $strReturn = "<message><error>".xmlSafeString($this->getLang("commons_error_permissions"))."</error></message>";
+        }
+
+        return $strReturn;
+    }
+
+    /**
+     * Updates and renders the content of a single widget.
+     *
+     * @return string
+     * @throws Exception
+     * @permissions view
+     * @responseType json
+     */
+    protected function actionUpdateWidgetContent()
+    {
+
+        //load the aspect and close the session afterwards
+        SystemAspect::getCurrentAspect();
+        $strSystemId = $this->getParam('systemid');
+        $objWidgetModel = new DashboardWidget($strSystemId);
+        if ($objWidgetModel->rightView()) {
+            $objConcreteWidget = $objWidgetModel->getConcreteAdminwidget();
+            foreach ($this->getAllParams() as $key => $value) {
+                $arrAllParams[rtrim($key, "_")] = $value;
+            }
+            $objConcreteWidget->loadFieldsFromArray($arrAllParams);
+            $objWidgetModel->setStrContent($objConcreteWidget->getFieldsAsString());
+
+            if (!$objConcreteWidget->getBitBlockSessionClose()) {
+                Carrier::getInstance()->getObjSession()->sessionClose();
+            }
+
+            //disable the internal changelog
+            SystemChangelog::$bitChangelogEnabled = false;
+
+            try {
+                $this->objLifeCycleFactory->factory(get_class($objWidgetModel))->update($objWidgetModel, DashboardWidget::getWidgetsRootNodeForUser($this->objSession->getUserID(), SystemAspect::getCurrentAspectId()));
+                $strReturn = json_encode($objConcreteWidget->generateWidgetOutput());
+            } catch (ServiceLifeCycleUpdateException $e) {
+                $strReturn = $this->getLang("errorSavingWidget");
+            }
+
         } else {
             ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
             $strReturn = "<message><error>".xmlSafeString($this->getLang("commons_error_permissions"))."</error></message>";

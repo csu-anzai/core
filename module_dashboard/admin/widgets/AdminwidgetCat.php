@@ -8,6 +8,9 @@ declare(strict_types=1);
 
 namespace Kajona\Dashboard\Admin\Widgets;
 
+use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\Formentries\FormentryRadiogroup;
+use Kajona\System\System\Filesystem;
 use Kajona\System\System\Resourceloader;
 
 /**
@@ -16,6 +19,10 @@ use Kajona\System\System\Resourceloader;
 class AdminwidgetCat extends Adminwidget implements AdminwidgetInterface
 {
 
+    /**
+     * @var string
+     */
+    private $imgFileName = "cat.png";
     /**
      * @var array
      */
@@ -42,31 +49,29 @@ class AdminwidgetCat extends Adminwidget implements AdminwidgetInterface
     }
 
     /**
-     * Allows the widget to add additional fields to the edit-/create form.
-     * Use the toolkit class as usual.
-     *
-     * @return string
+     * @inheritdoc
      */
-    public function getEditForm()
+    public function getEditFormContent(AdminFormgenerator $form)
     {
-        $strReturn = $this->getLang("cat_select");
-
-        $strReturn .= $this->objToolkit->formInputRadiogroup("cat", $this->arrCats, $this->getLang("cats"), $this->getFieldValue("cat"));
-
-        return $strReturn;
+        $form->addField(new FormentryRadiogroup("", "cat"), "")
+            ->setBitMandatory(true)
+            ->setStrLabel($this->getLang("cat_select"))
+            ->setArrKeyValues($this->arrCats)
+            ->setStrValue($this->getFieldValue('cat'));
     }
 
     /**
      * This method is called, when the widget should generate it's content.
      * Return the complete content using the methods provided by the base class.
-     * Do NOT use the toolkit right here444!
+     * Do NOT use the toolkit right here!
      *
      * @return string
+     * @throws \Kajona\System\System\Exception
      */
     public function getWidgetOutput()
     {
         if ($this->getFieldValue("cat") == "") {
-            return $this->getLang("cat_setup");
+            return $this->getEditWidgetForm();
         }
         $strReturn = '<div id="cat-cage" style="height: 150px; width: 100%; background-color: white">';
         $strReturn .= $this->widgetText($this->arrCats[$this->getFieldValue("cat")]);
@@ -85,4 +90,19 @@ class AdminwidgetCat extends Adminwidget implements AdminwidgetInterface
         return $this->getLang("cat_name");
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getWidgetDescription()
+    {
+        return $this->getLang("cat_description");
+    }
+
+    /**
+     * @return string
+     */
+    public function getImgFileName(): string
+    {
+        return $this->imgFileName;
+    }
 }
