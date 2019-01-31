@@ -9,8 +9,8 @@ declare(strict_types=1);
 namespace Kajona\Dashboard\Admin\Widgets;
 
 use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\Formentries\FormentryCheckboxarray;
 use Kajona\System\Admin\Formentries\FormentryRadiogroup;
-use Kajona\System\System\Filesystem;
 use Kajona\System\System\Resourceloader;
 
 /**
@@ -53,7 +53,8 @@ class AdminwidgetCat extends Adminwidget implements AdminwidgetInterface
      */
     public function getEditFormContent(AdminFormgenerator $form)
     {
-        $form->addField(new FormentryRadiogroup("", "cat"), "")
+        $form->addField(new FormentryCheckboxarray("", "cat"), "")
+            ->setIntType(FormentryCheckboxarray::TYPE_RADIO)
             ->setBitMandatory(true)
             ->setStrLabel($this->getLang("cat_select"))
             ->setArrKeyValues($this->arrCats)

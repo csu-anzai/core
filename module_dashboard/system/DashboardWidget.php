@@ -157,8 +157,6 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
         if (!isset($arrRow["system_id"]) || !validateSystemid($arrRow["system_id"])) {
             //Create a new root-node on the fly
             $objWidget = new DashboardWidget();
-            $objWidget->setStrAspect($strAspectId);
-            $objWidget->setStrUser($strUserid);
             $objWidget->setStrClass("root_node");
 
             ServiceLifeCycleFactory::getLifeCycle(get_class($objWidget))->update($objWidget, SystemModule::getModuleByName("dashboard")->getSystemid());

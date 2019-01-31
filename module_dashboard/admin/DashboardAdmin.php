@@ -45,15 +45,10 @@ use Kajona\System\System\SystemChangelog;
 use Kajona\System\System\SystemJSTreeBuilder;
 use Kajona\System\System\SystemJSTreeConfig;
 use Kajona\System\View\Components\Datatable\Datatable;
-use Kajona\System\View\Components\Dtable\DTableComponent;
-use Kajona\System\View\Components\Dtable\Model\DTable;
-use Kajona\System\View\Components\Formentry\Dropdown\Dropdown;
 use Kajona\System\View\Components\Menu\DynamicMenu;
 use Kajona\System\View\Components\Menu\Item\Separator;
 use Kajona\System\View\Components\Menu\Item\Text;
 use Kajona\System\View\Components\Menu\Menu;
-use Kajona\System\View\Components\Menu\MenuItem;
-
 
 /**
  * The dashboard admin class
@@ -382,10 +377,9 @@ JS;
 
         try {
             $userNode = DashboardUserRoot::getOrCreateForUser(Session::getInstance()->getUserID());
-                /** @var ConfigLifecycle $lc */
-                $lc = ServiceLifeCycleFactory::getLifeCycle(DashboardConfig::class);
-
-                $this->objLifeCycleFactory->factory(get_class($objDashboard))->update($objDashboard, $lc->getActiveConfig($userNode)->getSystemid());
+            /** @var ConfigLifecycle $lc */
+            $lc = ServiceLifeCycleFactory::getLifeCycle(DashboardConfig::class);
+            $this->objLifeCycleFactory->factory(get_class($objDashboard))->update($objDashboard, $lc->getActiveConfig($userNode)->getSystemid());
             $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul")));
         } catch (ServiceLifeCycleUpdateException $e) {
             return $this->getLang("errorSavingWidget");
@@ -499,7 +493,7 @@ JS;
      * @return string
      * @throws Exception
      * @permissions view
-     * @responseType j  son
+     * @responseType json
      * @throws Exception
      */
     protected function actionGetWidgetContent()
@@ -559,7 +553,10 @@ JS;
             SystemChangelog::$bitChangelogEnabled = false;
 
             try {
-                $this->objLifeCycleFactory->factory(get_class($objWidgetModel))->update($objWidgetModel, DashboardWidget::getWidgetsRootNodeForUser($this->objSession->getUserID(), SystemAspect::getCurrentAspectId()));
+                $userNode = DashboardUserRoot::getOrCreateForUser(Session::getInstance()->getUserID());
+                /** @var ConfigLifecycle $lc */
+                $lc = ServiceLifeCycleFactory::getLifeCycle(DashboardConfig::class);
+                $this->objLifeCycleFactory->factory(get_class($objWidgetModel))->update($objWidgetModel, $lc->getActiveConfig($userNode)->getSystemid());
                 $strReturn = json_encode($objConcreteWidget->generateWidgetOutput());
             } catch (ServiceLifeCycleUpdateException $e) {
                 $strReturn = $this->getLang("errorSavingWidget");

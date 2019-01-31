@@ -129,7 +129,7 @@ class InstallerDashboard extends InstallerBase implements InstallerInterface {
                     //delete subordinate widgets
                     foreach ($arrOldWidgets as $data) {
                         $oldWidget = Objectfactory::getInstance()->getObject($data["system_id"]);
-                        ServiceLifeCycleFactory::getLifeCycle($oldWidget)->deleteObjectFromDatabase();
+                        ServiceLifeCycleFactory::getLifeCycle($oldWidget)->deleteObjectFromDatabase($oldWidget);
                     }
                 }
 
