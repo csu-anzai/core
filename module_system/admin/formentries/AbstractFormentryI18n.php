@@ -104,7 +104,7 @@ abstract class AbstractFormentryI18n extends FormentryBase implements FormentryP
         $lang = $this->getCurrentI18nLanguage();
         /** @var FormentryBase|FormentryPrintableInterface $entry */
         $entry = $this->arrEntries[$lang];
-        $entry->setStrValue($this->getI18nValueForString($this->getStrValue() ?? ""));
+        $entry->setStrValue($this->getI18nValueForString($this->getStrValue() ?? "", null, true));
         return $entry->getValueAsText();
     }
 

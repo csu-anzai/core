@@ -28,7 +28,7 @@ class FormentryTextI18n extends AbstractFormentryI18n
     {
         foreach ($this->getPossibleI18nLanguages() as $lang) {
             $entry = new FormentryText($strFormName, "{$strSourceProperty}_{$lang}", $objObject);
-            $entry->setStrOpener($this->strOpener);
+            $entry->setStrOpener($this->getStrOpener());
             $entry->setStrLabel($this->getStrLabel()." ({$lang})");
             $entry->setStrHint($this->getStrHint());
             $entry->setBitMandatory($this->getBitMandatory());
@@ -44,6 +44,10 @@ class FormentryTextI18n extends AbstractFormentryI18n
      */
     public function setStrOpener(string $strOpener): FormentryBase
     {
+        /** @var FormentryText $objEntry */
+        foreach ($this->arrEntries as $lang => $objEntry) {
+            $objEntry->setStrOpener($strOpener);
+        }
         $this->strOpener = $strOpener;
         return $this;
     }

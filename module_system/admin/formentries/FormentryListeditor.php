@@ -11,6 +11,7 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\Validators\HashMapValidator;
+use Kajona\System\System\Validators\JsonHashMapValidator;
 use Kajona\System\View\Components\Formentry\Listeditor\Listeditor;
 
 /**
@@ -23,6 +24,33 @@ use Kajona\System\View\Components\Formentry\Listeditor\Listeditor;
  */
 class FormentryListeditor extends FormentryBase implements FormentryPrintableInterface
 {
+
+    private $arrValue = [];
+
+    /**
+     * @return mixed
+     */
+    public function getStrValue()
+    {
+        return json_encode((object)$this->arrValue);
+    }
+
+    /**
+     * @param mixed $strValue
+     */
+    public function setStrValue($strValue): void
+    {
+        if (!empty($strValue) && is_string($strValue)) {
+            $strValue = json_decode($strValue, true);
+            $this->arrValue = $strValue;
+        }
+        if (is_array($strValue)) {
+            $this->arrValue = $strValue;
+        }
+    }
+
+
+
     /**
      * @inheritdoc
      */
@@ -30,7 +58,7 @@ class FormentryListeditor extends FormentryBase implements FormentryPrintableInt
     {
         parent::__construct($strFormName, $strSourceProperty, $objSourceObject);
 
-        $this->setObjValidator(new HashMapValidator());
+        $this->setObjValidator(new JsonHashMapValidator());
     }
 
     /**
@@ -44,52 +72,21 @@ class FormentryListeditor extends FormentryBase implements FormentryPrintableInt
             $strReturn .= $objToolkit->formTextRow($this->getStrHint());
         }
 
-        $value = $this->getStrValue();
+        $value = $this->arrValue;
+
         $listEditor = new Listeditor($this->getStrEntryName(), $this->getStrLabel(), is_array($value) ? $value : []);
 
         $strReturn .= $listEditor->renderComponent();
         return $strReturn;
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function getValueFromObject()
-    {
-        $value = parent::getValueFromObject();
-
-        if (!empty($value) && is_string($value)) {
-            return json_decode($value, true);
-        }
-
-        return $value;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setValueToObject()
-    {
-        $objSourceObject = $this->getObjSourceObject();
-        if ($objSourceObject == null) {
-            return "";
-        }
-
-        $objReflection = new Reflection($objSourceObject);
-        $strSetter = $objReflection->getSetter($this->getStrSourceProperty());
-        if ($strSetter === null) {
-            throw new Exception("unable to find setter for value-property ".$this->getStrSourceProperty()."@".get_class($objSourceObject), Exception::$level_ERROR);
-        }
-
-        return $objSourceObject->{$strSetter}(json_encode((object) $this->getStrValue()));
-    }
 
     /**
      * @inheritdoc
      */
     public function getValueAsText()
     {
-        $value = $this->getStrValue();
+        $value = $this->arrValue;
 
         return is_array($value) ? implode(", ", $value) : "-";
     }

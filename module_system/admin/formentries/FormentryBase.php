@@ -173,6 +173,7 @@ abstract class FormentryBase
      *
      * @throws Exception
      * @return mixed
+     * @internal please do not overwrite this method. use an internal state by hooking on getStrValue()/setStrValue()
      */
     protected function getValueFromObject()
     {
@@ -197,6 +198,7 @@ abstract class FormentryBase
      *
      * @throws Exception
      * @return mixed
+     * @internal please do not overwrite this method. use an internal state by hooking on getStrValue()/setStrValue()
      */
     public function setValueToObject()
     {

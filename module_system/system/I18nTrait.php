@@ -39,10 +39,27 @@ trait I18nTrait
      */
     protected function toI18nValueArray(string $i18nString = null): array
     {
+        $langs = $this->getPossibleI18nLanguages();
         $val = json_decode($i18nString ?? "", true);
+        //we need to check is we have "another" json array right here
+        if (is_array($val)) {
+            //if we don't have at least a single lang key, handle it as a plain value
+            $keys = array_keys($val);
+            if (count(array_diff($langs, $keys)) == count($langs)) {
+                $val = null;
+            } else {
+                //may reset the internal decoded array to a json string
+                foreach ($val as $key => $value) {
+                    if (is_array($value)) {
+                        $val[$key] = json_encode($value);
+                    }
+                }
+            }
+        }
+
         $return = [];
 
-        foreach ($this->getPossibleI18nLanguages() as $lang) {
+        foreach ($langs as $lang) {
             $return[$lang] = isset($val[$lang]) ? $val[$lang] : ($val !== null ? "" : $i18nString);
         }
 

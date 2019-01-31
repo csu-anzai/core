@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Kajona\System\Admin\Formentries;
 
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Reflection;
 
 /**
  * I18n implementation of a simple text-input
@@ -28,6 +29,16 @@ class FormentryWysiwygI18n extends AbstractFormentryI18n
      */
     protected function buildFormEntries($strFormName, $strSourceProperty, $objObject)
     {
+        if ($objObject != null && $strSourceProperty != "") {
+            $objReflection = new Reflection($objObject);
+
+            //try to find the matching source property
+            $strSourceProperty = $this->getCurrentProperty(FormentryWysiwyg::STR_CONFIG_ANNOTATION);
+            if ($strSourceProperty != null) {
+                $this->strToolbarset = $objReflection->getAnnotationValueForProperty($strSourceProperty, FormentryWysiwyg::STR_CONFIG_ANNOTATION);
+            }
+        }
+
         foreach ($this->getPossibleI18nLanguages() as $lang) {
             $entry = new FormentryWysiwyg($strFormName, "{$strSourceProperty}_{$lang}", $objObject);
             $entry->setStrOpener($this->strOpener);
@@ -61,6 +72,10 @@ class FormentryWysiwygI18n extends AbstractFormentryI18n
      */
     public function setStrOpener(string $strOpener): FormentryBase
     {
+        /** @var FormentryWysiwyg $objEntry */
+        foreach ($this->arrEntries as $lang => $objEntry) {
+            $objEntry->setStrOpener($strOpener);
+        }
         $this->strOpener = $strOpener;
         return $this;
     }
@@ -87,6 +102,10 @@ class FormentryWysiwygI18n extends AbstractFormentryI18n
      */
     public function setStrToolbarset($strToolbarset)
     {
+        /** @var FormentryWysiwyg $objEntry */
+        foreach ($this->arrEntries as $lang => $objEntry) {
+            $objEntry->setStrToolbarset($strToolbarset);
+        }
         $this->strToolbarset = $strToolbarset;
         return $this;
     }
