@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($connection->hasTable($table->getStrName())) {
                 foreach ($table->getArrRows() as $column) {
                     if (!$connection->hasColumn($table->getStrName(), $column->getStrName())) {
-                        echo "<b>Column {$column->getStrName()} does not exist on table {$table}</b>\n";
+                        echo "<b>Column {$column->getStrName()} does not exist on table {$table->getStrName()}</b>\n";
                     }
                 }
             } else {
