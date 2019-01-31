@@ -150,16 +150,14 @@ class GraphChartjs implements GraphInterfaceFronted
 
         $intDatasetNumber = isset($this->arrChartData['data']['datasets']) ? count($this->arrChartData['data']['datasets']) : 0;
         $intColorsCount = count($this->arrColors);
-        if ($intDatasetNumber >= $intColorsCount) {
-            $intDatasetNumber = $intDatasetNumber % $intColorsCount;
-        }
+        $intColorNumber = $intDatasetNumber >= $intColorsCount ? $intDatasetNumber % $intColorsCount : $intDatasetNumber;
         $this->arrChartData['data']['datasets'][] = [
             "dataPoints" => $this->dataPointObjArrayToArray($arrDataPointObjects),
             "type" => $type,
             "label" => !empty($strLegend) ? $strLegend : "Dataset ".$intDatasetNumber,
             "data" => GraphCommons::getDataPointFloatValues($arrDataPointObjects),
-            "backgroundColor" => $this->arrColors[$intDatasetNumber] /*'rgba('.implode(', ', hex2rgb($this->arrColors[$intDatasetNumber])).', 0.3)'*/,
-            "borderColor" => $this->arrColors[$intDatasetNumber],
+            "backgroundColor" => $this->arrColors[$intColorNumber],
+            "borderColor" => $this->arrColors[$intColorNumber],
             "borderWidth" => 1,
             "yAxisID" => empty($yAxisID) ? "defaultYID" : $yAxisID,
             "datalabels" => $bitWriteValues ? ["display" => true] : ["display" => false],
@@ -255,7 +253,7 @@ class GraphChartjs implements GraphInterfaceFronted
         $this->setPieChart(true);
         foreach ($this->arrColors as $arrColor) {
             $arrBackgroundColors[] = $arrColor;
-            $arrBorderColors[] =  $nrOfNonNullValues <= 1 ? $arrColor : '#FFFFFF';
+            $arrBorderColors[] = $nrOfNonNullValues <= 1 ? $arrColor : '#FFFFFF';
         }
         $this->arrChartData['data']['datasets'][] = [
             "dataPoints" => $this->dataPointObjArrayToArray($arrDataPointObjects),
