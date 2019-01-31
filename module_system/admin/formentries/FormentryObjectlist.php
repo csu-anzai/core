@@ -7,6 +7,7 @@
 namespace Kajona\System\Admin\Formentries;
 
 use Kajona\System\Admin\FormentryPrintableInterface;
+use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Link;
@@ -61,7 +62,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
     /** @var bool */
     protected $showDeleteAllButton = true;
 
-    /** @var bool  */
+    /** @var bool */
     protected $showEditButton = false;
 
     /**
@@ -237,11 +238,8 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
             $strHtml = "";
             foreach ($this->arrKeyValues as $objObject) {
                 if ($objObject instanceof Model && $objObject instanceof ModelInterface) {
-
                     $strTitle = self::getDisplayName($objObject);
-
                     if ($objObject->rightView()) {
-
                         //see, if the matching target-module provides a showSummary method
                         $objModule = SystemModule::getModuleByName($objObject->getArrModule("modul"));
                         if ($objModule != null) {
@@ -252,7 +250,11 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
                             }
                         }
                     }
-                    $strHtml .= $strTitle."<br/>\n";
+                    $strHtml .= $strTitle;
+                    if ($objObject instanceof AdminListableInterface && $objObject->rightView()) {
+                        $strHtml .= " ".strip_tags($objObject->getStrAdditionalInfo());
+                    }
+                    $strHtml .= "<br />";
                 } else {
                     throw new Exception("Array must contain objects", Exception::$level_ERROR);
                 }
@@ -281,7 +283,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
     /**
      * Renders the display name for the object and, if possible, also the object type
      *
-     * @param ModelInterface $objObject
+     * @param ModelInterface|AdminListableInterface $objObject
      * @return string
      * @throws \ReflectionException
      * @deprecated

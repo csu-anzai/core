@@ -345,9 +345,7 @@ abstract class AdminEvensimpler extends AdminSimple
     {
         if ($strFilterUrl === null) {
             $arrParams = array(
-                "systemid" => $this->getSystemid(),
-                "folderview" => $this->getParam("folderview"),
-                AdminFormgeneratorFilter::STR_FORM_PARAM_SESSION => $objFilter->getSessionId(),
+                "systemid" => $this->getSystemid()
             );
 
             $strFilterUrl = Link::getLinkAdminHref($this->getArrModule("module"), $this->getAction(), $arrParams);
@@ -357,6 +355,7 @@ abstract class AdminEvensimpler extends AdminSimple
         $objFilterForm->setBitInitiallyVisible($bitInitiallyVisible);
         $objFilterForm->setStrLangActive($strLangActive);
         $objFilterForm->setStrLangInactive($strLangInactive);
+        $objFilterForm->addField(new FormentryHidden("", AdminFormgeneratorFilter::STR_FORM_PARAM_SESSION))->setStrValue($objFilter->getSessionId());
 
         $strFilterForm = $objFilterForm->renderForm($strFilterUrl);
 
