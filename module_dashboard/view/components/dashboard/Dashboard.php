@@ -1,14 +1,13 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2018 ARTEMEON                                                                                   *
-*       Published under the GNU LGPL v2.1                                                               *
-********************************************************************************************************/
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
 
 declare(strict_types = 1);
 
 namespace Kajona\Dashboard\View\Components\Dashboard;
 
-use Kajona\System\System\StringUtil;
 use Kajona\System\View\Components\AbstractComponent;
 
 /**

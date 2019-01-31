@@ -1,29 +1,15 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2004-2006 by MulchProductions, www.mulchprod.de                                                 *
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-*-------------------------------------------------------------------------------------------------------*
-*	$Id$	                        *
-********************************************************************************************************/
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
 
 namespace Kajona\Dashboard\System;
 
-use Kajona\Dashboard\Admin\Widgets\Adminwidget;
-use Kajona\Dashboard\Admin\Widgets\AdminwidgetInterface;
 use Kajona\Dashboard\System\Filter\UserRootFilter;
-use Kajona\System\System\AdminListableInterface;
-use Kajona\System\System\Carrier;
-use Kajona\System\System\Classloader;
-use Kajona\System\System\FilterBase;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
-use Kajona\System\System\OrmCondition;
-use Kajona\System\System\OrmObjectlist;
-use Kajona\System\System\Resourceloader;
-use Kajona\System\System\SystemAspect;
-use Kajona\System\System\SystemModule;
 
 /**
  * Each user gets a root-node for its dashboard configs
