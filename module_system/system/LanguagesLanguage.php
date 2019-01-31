@@ -19,6 +19,7 @@ namespace Kajona\System\System;
  *
  * @module languages
  * @moduleId _languages_modul_id_
+ * @sortManager Kajona\System\System\CommonSortmanager
  */
 class LanguagesLanguage extends Model implements ModelInterface, AdminListableInterface
 {
