@@ -112,7 +112,9 @@ abstract class FormentryBase
      */
     final public function readValue()
     {
-        $this->updateValue();
+        if ($this->strValue == null) {
+            $this->updateValue();
+        }
         if ($this instanceof AdminFormgeneratorContainerInterface && !$this instanceof AbstractFormentryI18n) {
             foreach ($this->getFields() as $field) {
                 $field->readValue();
