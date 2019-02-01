@@ -18,12 +18,10 @@ use Kajona\Dashboard\System\EventEntry;
 use Kajona\Dashboard\System\EventRepository;
 use Kajona\Dashboard\System\TodoJstreeNodeLoader;
 use Kajona\Dashboard\System\TodoRepository;
-use Kajona\Dashboard\View\Components\Configswitcher\ConfigSwitcher;
 use Kajona\Dashboard\View\Components\Dashboard\Dashboard;
 use Kajona\Dashboard\View\Components\Widget\Widget;
 use Kajona\Dashboard\View\Components\WidgetList\WidgetList;
 use Kajona\Dashobard\System\Lifecycle\ConfigLifecycle;
-use Kajona\System\Admin\AdminController;
 use Kajona\System\Admin\AdminEvensimpler;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminInterface;
@@ -33,7 +31,6 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
 use Kajona\System\System\HttpStatuscodes;
-use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
@@ -131,7 +128,7 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
 
 
         /** @var ConfigLifecycle $lc */
-        $lc = ServiceLifeCycleFactory::getLifeCycle(DashboardConfig::class);
+        $lc = $this->objLifeCycleFactory->factory(DashboardConfig::class);
 
         //need to react on a new configid?
         if (validateSystemid($this->getParam("configid"))) {
@@ -378,7 +375,7 @@ JS;
         try {
             $userNode = DashboardUserRoot::getOrCreateForUser(Session::getInstance()->getUserID());
             /** @var ConfigLifecycle $lc */
-            $lc = ServiceLifeCycleFactory::getLifeCycle(DashboardConfig::class);
+            $lc = $this->objLifeCycleFactory->factory(DashboardConfig::class);
             $this->objLifeCycleFactory->factory(get_class($objDashboard))->update($objDashboard, $lc->getActiveConfig($userNode)->getSystemid());
             $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul")));
         } catch (ServiceLifeCycleUpdateException $e) {
@@ -473,7 +470,7 @@ JS;
         $objWidget = new DashboardWidget($this->getSystemid());
         $intNewPos = $this->getParam("listPos");
         $objWidget->setStrColumn($this->getParam("listId"));
-        ServiceLifeCycleFactory::getLifeCycle(get_class($objWidget))->update($objWidget);
+        $this->objLifeCycleFactory->factory(get_class($objWidget))->update($objWidget);
         Carrier::getInstance()->getObjDB()->flushQueryCache();
 
         $objWidget = new DashboardWidget($this->getSystemid());
@@ -555,7 +552,7 @@ JS;
             try {
                 $userNode = DashboardUserRoot::getOrCreateForUser(Session::getInstance()->getUserID());
                 /** @var ConfigLifecycle $lc */
-                $lc = ServiceLifeCycleFactory::getLifeCycle(DashboardConfig::class);
+                $lc = $this->objLifeCycleFactory->factory(DashboardConfig::class);
                 $this->objLifeCycleFactory->factory(get_class($objWidgetModel))->update($objWidgetModel, $lc->getActiveConfig($userNode)->getSystemid());
                 $strReturn = json_encode($objConcreteWidget->generateWidgetOutput());
             } catch (ServiceLifeCycleUpdateException $e) {
