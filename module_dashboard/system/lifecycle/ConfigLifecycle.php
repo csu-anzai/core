@@ -55,14 +55,15 @@ class ConfigLifecycle extends ServiceLifeCycleImpl
             //mark all other ones as non-default
             $orm = new OrmObjectlist();
             $ids = $orm->getObjectListIds(DashboardConfig::class, $objModel->getStrPrevId());
-            $ids = array_filter($ids, function (string $id) use ($objModel){
+            $ids = array_filter($ids, function (string $id) use ($objModel) {
                 return $id != $objModel->getSystemid();
             });
 
-
-            $placeholder = array_fill(0, count($ids), "?");
-            $query = "UPDATE agp_dashboard_cfg SET cfg_default = 0 WHERE cfg_id IN (".implode(",", $placeholder).")";
-            Carrier::getInstance()->getObjDB()->_pQuery($query, $ids);
+            if (count($ids) > 0) {
+                $placeholder = array_fill(0, count($ids), "?");
+                $query = "UPDATE agp_dashboard_cfg SET cfg_default = 0 WHERE cfg_id IN (".implode(",", $placeholder).")";
+                Carrier::getInstance()->getObjDB()->_pQuery($query, $ids);
+            }
 
         }
     }
