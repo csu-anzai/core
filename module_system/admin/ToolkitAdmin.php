@@ -1991,18 +1991,15 @@ JS;
      * @param int $intActiveEntry Array-counting, so first element is 0, last is array-length - 1
      *
      * @return string
+     * @deprecated use addToContentToolbar instead
      */
     public function getContentToolbar(array $arrEntries, $intActiveEntry = -1)
     {
         $strRows = "";
         foreach ($arrEntries as $intI => $strOneEntry) {
-            if ($intI == $intActiveEntry) {
-                $strRows .= $this->objTemplate->fillTemplateFile(array("entry" => addslashes($strOneEntry), "active" => 'true'), "/admin/skins/kajona_v4/elements.tpl", "contentToolbar_entry");
-            } else {
-                $strRows .= $this->objTemplate->fillTemplateFile(array("entry" => addslashes($strOneEntry), "active" => 'false'), "/admin/skins/kajona_v4/elements.tpl", "contentToolbar_entry");
-            }
+            $strRows .= $this->addToContentToolbar($strOneEntry, "", $intI == $intActiveEntry);
         }
-        return $this->objTemplate->fillTemplateFile(array("entries" => $strRows), "/admin/skins/kajona_v4/elements.tpl", "contentToolbar_wrapper");
+        return $strRows;
     }
 
 
@@ -2015,7 +2012,7 @@ JS;
      */
     public function addToContentToolbar($strButton, $strIdentifier = '', $bitActive = false)
     {
-        $strEntry = $this->objTemplate->fillTemplateFile(array("entry" => addslashes($strButton), "identifier" => $strIdentifier, "active" => $bitActive ? 'true' : 'false'), "/admin/skins/kajona_v4/elements.tpl", "contentToolbar_entry");
+        $strEntry = $this->objTemplate->fillTemplateFile(array("entry" => StringUtil::jsSafeString($strButton), "identifier" => $strIdentifier, "active" => $bitActive ? 'true' : 'false'), "/admin/skins/kajona_v4/elements.tpl", "contentToolbar_entry");
         return $this->objTemplate->fillTemplateFile(array("entries" => $strEntry), "/admin/skins/kajona_v4/elements.tpl", "contentToolbar_wrapper");
     }
 
@@ -2224,125 +2221,6 @@ JS;
         }
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "pageview_body");
-    }
-
-
-
-
-
-    // --- Adminwidget / Dashboard --------------------------------------------------------------------------
-
-
-    public function getMainDashboard(array $arrColumns)
-    {
-        return $this->objTemplate->fillTemplateFile(
-            array("entries" => implode("", $arrColumns)),
-            "/admin/skins/kajona_v4/elements.tpl",
-            "dashboard_wrapper"
-        );
-    }
-
-    /**
-     * Generates the header for a column on the dashboard.
-     * Inits the ajax-componentes for this list
-     *
-     * @param string $strColumnId
-     *
-     * @return string
-     */
-    public function getDashboardColumnHeader($strColumnId)
-    {
-        return $this->objTemplate->fillTemplateFile(array("column_id" => $strColumnId), "/admin/skins/kajona_v4/elements.tpl", "dashboard_column_header");
-    }
-
-    /**
-     * The footer of a dashboard column.
-     *
-     * @return string
-     */
-    public function getDashboardColumnFooter()
-    {
-        return $this->objTemplate->fillTemplateFile(array(), "/admin/skins/kajona_v4/elements.tpl", "dashboard_column_footer");
-    }
-
-    /**
-     * The widget-enclose is the code-fragment to be built around the widget itself.
-     * Used to handle the widget on the current column.
-     *
-     * @param string $strDashboardEntryId
-     * @param string $strWidgetContent
-     *
-     * @return string
-     */
-    public function getDashboardWidgetEncloser($strDashboardEntryId, $strWidgetContent)
-    {
-        $arrTemplate = array();
-        $arrTemplate["entryid"] = $strDashboardEntryId;
-        $arrTemplate["content"] = $strWidgetContent;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "dashboard_encloser");
-    }
-
-    /**
-     * Builds the widget out of its main components.
-     *
-     * @param string $strSystemid
-     * @param string $strName
-     * @param string $strWidgetNameAdditionalContent
-     * @param string $strEditLink
-     * @param string $strDeleteLink
-     * @param string $strLayoutSection
-     *
-     * @return string
-     */
-    public function getAdminwidget($strSystemid, $strName, $strWidgetNameAdditionalContent, $strEditLink = "", $strDeleteLink = "", $strLayoutSection = "adminwidget_widget")
-    {
-        $arrTemplate = array();
-        $arrTemplate["widget_name"] = $strName;
-        $arrTemplate["widget_name_additional_content"] = $strWidgetNameAdditionalContent;
-        $arrTemplate["widget_id"] = $strSystemid;
-        $arrTemplate["widget_edit"] = $strEditLink;
-        $arrTemplate["widget_delete"] = $strDeleteLink;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", $strLayoutSection);
-    }
-
-    /**
-     * Generates a text-row in a widget
-     *
-     * @param string $strText
-     *
-     * @return string
-     */
-    public function adminwidgetText($strText)
-    {
-        return $this->objTemplate->fillTemplateFile(array("text" => $strText), "/admin/skins/kajona_v4/elements.tpl", "adminwidget_text");
-    }
-
-    /**
-     * Generate a separator / divider in a widget
-     *
-     * @return string
-     */
-    public function adminwidgetSeparator()
-    {
-        return $this->objTemplate->fillTemplateFile(array(""), "/admin/skins/kajona_v4/elements.tpl", "adminwidget_separator");
-    }
-
-    //--- modal dialog --------------------------------------------------------------------------------------
-
-    /**
-     * Creates a modal dialog on the page. By default, the dialog is hidden, so has to be set visible.
-     * The type-param decides what template is used for the dialog-layout. The name of the dialog is built via jsDialog_$intTypeNr.
-     * Set the contents via js-calls.
-     *
-     * @param int $intDialogType (0 = regular modal dialog, 1 = confirmation dialog, 2 = rawDialog, 3 = loadingDialog)
-     *
-     * @return string
-     *
-     * @deprecated no longer required, available by the skin by default
-     */
-    public function jsDialog($intDialogType)
-    {
-        return "";
     }
 
 
@@ -2588,148 +2466,7 @@ JS;
         return $popover->renderComponent();
     }
 
-    // --- Calendar Fields ----------------------------------------------------------------------------------
 
-    /**
-     * Renders a legend below the current calendar in order to illustrate the different event-types.
-     *
-     * @param array $arrEntries
-     *
-     * @return string
-     */
-    public function getCalendarLegend(array $arrEntries)
-    {
-        $strEntries = "";
-        foreach ($arrEntries as $strName => $strClass) {
-            $strEntries .= $this->objTemplate->fillTemplateFile(array("name" => $strName, "class" => $strClass), "/admin/skins/kajona_v4/elements.tpl", "calendar_legend_entry");
-        }
-
-        return $this->objTemplate->fillTemplateFile(array("entries" => $strEntries), "/admin/skins/kajona_v4/elements.tpl", "calendar_legend");
-    }
-
-    /**
-     * Renders a legend below the current calendar in order to illustrate the different event-types.
-     *
-     * @param array $arrEntries
-     *
-     * @return string
-     */
-    public function getCalendarFilter(array $arrEntries)
-    {
-        $strEntries = "";
-        foreach ($arrEntries as $strId => $strName) {
-            $strChecked = Carrier::getInstance()->getObjSession()->getSession($strId) == "disabled" ? "" : "checked";
-            $strEntries .= $this->objTemplate->fillTemplateFile(array("filterid" => $strId, "filtername" => $strName, "checked" => $strChecked), "/admin/skins/kajona_v4/elements.tpl", "calendar_filter_entry");
-        }
-
-        return $this->objTemplate->fillTemplateFile(array("entries" => $strEntries, "action" => getLinkAdminHref("dashboard", "calendar")), "/admin/skins/kajona_v4/elements.tpl", "calendar_filter");
-    }
-
-    /**
-     * Creates a pager for the calendar, used to switch the current month.
-     *
-     * @param string $strBackwards
-     * @param string $strCenter
-     * @param string $strForwards
-     *
-     * @return string
-     * @since 3.4
-     */
-    public function getCalendarPager($strBackwards, $strCenter, $strForwards)
-    {
-        return $this->objTemplate->fillTemplateFile(array("backwards" => $strBackwards, "forwards" => $strForwards, "center" => $strCenter), "/admin/skins/kajona_v4/elements.tpl", "calendar_pager");
-    }
-
-    /**
-     * Renders a container used to place the calender via ajax into.
-     *
-     * @param string $strContainerId
-     *
-     * @return string
-     * @since 3.4
-     */
-    public function getCalendarContainer($strContainerId)
-    {
-        return $this->objTemplate->fillTemplateFile(array("containerid" => $strContainerId), "/admin/skins/kajona_v4/elements.tpl", "calendar_container");
-    }
-
-    /**
-     * Creates the wrapper to embedd the calendar.
-     *
-     * @param string $strContent
-     *
-     * @return string
-     * @since 3.4
-     */
-    public function getCalendarWrapper($strContent)
-    {
-        return $this->objTemplate->fillTemplateFile(array("content" => $strContent), "/admin/skins/kajona_v4/elements.tpl", "calendar_wrapper");
-    }
-
-    /**
-     * Renders the header-row of the calendar. In general those are the days.
-     *
-     * @param array $arrHeader
-     *
-     * @return string
-     * @since 3.4
-     */
-    public function getCalendarHeaderRow(array $arrHeader)
-    {
-        $strEntries = "";
-        foreach ($arrHeader as $strOneHeader) {
-            $strEntries .= $this->objTemplate->fillTemplateFile(array("name" => $strOneHeader), "/admin/skins/kajona_v4/elements.tpl", "calendar_header_entry");
-        }
-
-        return $this->objTemplate->fillTemplateFile(array("entries" => $strEntries), "/admin/skins/kajona_v4/elements.tpl", "calendar_header_row");
-    }
-
-    /**
-     * Renders a complete row of days.
-     *
-     * @param string $strContent
-     *
-     * @return string
-     * @since 3.4
-     */
-    public function getCalendarRow($strContent)
-    {
-        return $this->objTemplate->fillTemplateFile(array("entries" => $strContent), "/admin/skins/kajona_v4/elements.tpl", "calendar_row");
-    }
-
-    /**
-     * Renders a single entry within the calendar. In most cases this is a single day.
-     *
-     * @param string $strContent
-     * @param string $strDate
-     * @param string $strClass
-     *
-     * @return string
-     * @since 3.4
-     */
-    public function getCalendarEntry($strContent, $strDate, $strClass = "calendarEntry")
-    {
-        return $this->objTemplate->fillTemplateFile(array("content" => $strContent, "date" => $strDate, "class" => $strClass), "/admin/skins/kajona_v4/elements.tpl", "calendar_entry");
-    }
-
-    /**
-     * Renders a single calendar-event
-     *
-     * @param string $strContent
-     * @param string $strId
-     * @param string $strHighlightId
-     * @param string $strClass
-     *
-     * @return string
-     * @since 3.4
-     */
-    public function getCalendarEvent($strContent, $strId = "", $strHighlightId = "", $strClass = "calendarEvent")
-    {
-        if ($strId == "") {
-            $strId = generateSystemid();
-        }
-        return $this->objTemplate->fillTemplateFile(array("content" => $strContent, "class" => $strClass, "systemid" => $strId, "highlightid" => $strHighlightId), "/admin/skins/kajona_v4/elements.tpl", "calendar_event");
-    }
 
     /**
      * Renders a button with onClick callback.

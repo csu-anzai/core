@@ -63,30 +63,6 @@ class AdminwidgetWorkflows extends Adminwidget implements AdminInterface
         return $strReturn;
     }
 
-    /**
-     * This callback is triggered on a users' first login into the system.
-     * You may use this method to install a widget as a default widget to
-     * a users dashboard.
-     *
-     * @param $strUserid
-     *
-     * @return bool
-     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
-     */
-    public function onFistLogin($strUserid)
-    {
-        if (SystemModule::getModuleByName("workflows") !== null && SystemAspect::getAspectByName("management") !== null) {
-            $objDashboard = new DashboardWidget();
-            $objDashboard->setStrColumn("column2");
-            $objDashboard->setStrUser($strUserid);
-            $objDashboard->setStrClass(__CLASS__);
-            $objDashboard->setStrContent("");
-            ServiceLifeCycleFactory::getLifeCycle(get_class($objDashboard))->update($objDashboard, DashboardWidget::getWidgetsRootNodeForUser($strUserid, SystemAspect::getAspectByName("management")->getSystemid()));
-        }
-
-        return true;
-    }
-
 
     /**
      * Return a short (!) name of the widget.

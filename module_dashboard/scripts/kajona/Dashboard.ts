@@ -50,33 +50,15 @@ class Dashboard {
 
     public static init() {
 
-        $('.adminwidgetColumn > div.dbEntry').each(function () {
-            var systemId = $(this).data('systemid');
-            Ajax.genericAjaxCall('dashboard', 'getWidgetContent', systemId, function(data: any, status: string, jqXHR: XMLHttpRequest) {
-
-                var content = $("div.dbEntry[data-systemid='"+systemId+"'] .content");
-
-                if (status == 'success') {
-                    var $parent = content.parent();
-                    content.remove();
-
-                    var $newNode = $("<div class='content loaded'></div>").append($.parseJSON(data));
-                    $parent.append($newNode);
-
-                    //TODO use jquerys eval?
-                    Util.evalScript(data);
-                    Tooltip.initTooltip();
-
-                } else {
-                    //statusDisplay.messageError('<b>Request failed!</b><br />' + data);
-                }
-            });
+        $('.adminwidgetColumn > div.core-component-widget').each(function () {
+            let systemId = $(this).data('systemid');
+            Ajax.loadUrlToElement("div.core-component-widget[data-systemid='"+systemId+"'] .content", "/xml.php?admin=1&module=dashboard&action=getWidgetContent&systemid="+systemId);
         });
 
         $("div.adminwidgetColumn").each(function(index: number) {
 
             $(this).sortable({
-                items: 'div.dbEntry',
+                items: 'div.core-component-widget',
                 handle: 'h2',
                 forcePlaceholderSize: true,
                 cursor: 'move',
@@ -85,8 +67,8 @@ class Dashboard {
                 stop: function(event: any, ui: any) {
                     ui.item.removeClass("sortActive");
                     //search list for new pos
-                    var intPos = 0;
-                    $(".dbEntry").each(function(index: number) {
+                    let intPos = 0;
+                    $(".core-component-widget").each(function(index: number) {
                         intPos++;
                         if($(this).data("systemid") == ui.item.data("systemid")) {
                             Ajax.genericAjaxCall("dashboard", "setDashboardPosition", ui.item.data("systemid") + "&listPos=" + intPos+"&listId="+ui.item.closest('div.adminwidgetColumn').attr('id'), Ajax.regularCallback);
@@ -97,10 +79,19 @@ class Dashboard {
                 delay: Util.isTouchDevice() ? 500 : 0,
                 start: function(event: any, ui: any) {
                     ui.item.addClass("sortActive");
+                    ui.placeholder.height(ui.item.height());
                 }
             }).find("h2").css("cursor", "move");
         });
+    }
 
+    public static editWidget (strSystemid: string) {
+        Ajax.loadUrlToElement("div.core-component-widget[data-systemid='"+strSystemid+"'] .content", "/xml.php?admin=1&module=dashboard&action=switchOnEditMode&systemid="+strSystemid);
+    }
+
+    public static updateWidget (form: string, strSystemid: string) {
+        let data = $(form).serialize();
+        Ajax.loadUrlToElement("div.core-component-widget[data-systemid='"+strSystemid+"'] .content", "/xml.php?admin=1&module=dashboard&action=updateWidgetContent&systemid="+strSystemid+"&"+data);
     }
 }
 

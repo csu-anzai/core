@@ -9,6 +9,8 @@
 
 namespace Kajona\Dashboard\Admin\Widgets;
 
+use Kajona\System\Admin\AdminFormgenerator;
+
 /**
  * Interface to be implemented by all adminwidgets
  *
@@ -18,12 +20,9 @@ interface AdminwidgetInterface {
 
     /**
      * Allows the widget to add additional fields to the edit-/create form.
-     * Use the toolkit class as usual.
-     * If you don't need special fields, return null or an empty string instead.
-     *
-     * @return string
+     * @param AdminFormgenerator $form
      */
-    public function getEditForm();
+    public function getEditFormContent(AdminFormgenerator $form);
 
     /**
      * This method is called, when the widget should generate its' content.
