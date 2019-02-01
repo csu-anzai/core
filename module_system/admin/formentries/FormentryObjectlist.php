@@ -284,13 +284,6 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         uasort($arrObjects, function (ModelInterface $a, ModelInterface $b) {
             return strcmp($a->getStrDisplayName(), $b->getStrDisplayName());
         });
-
-//        //Date
-//        /** @var Model[] $arrObjects*/
-//        uasort($arrObjects, function(Root $objectLeft, Root $objectRight) {
-//            return $objectLeft->getObjCreateDate()->getLongTimestamp() < $objectRight->getObjCreateDate()->getLongTimestamp();
-//        }
-//        );
     }
 
     private function toObjectArray()
