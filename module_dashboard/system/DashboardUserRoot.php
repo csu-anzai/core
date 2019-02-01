@@ -38,7 +38,7 @@ class DashboardUserRoot extends Model implements ModelInterface
      * @throws \Kajona\System\System\Exception
      * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
-    public static function getOrCreateForUser(string $userId): DashboardUserRoot
+    public static function getOrCreateForUser(string $userId, $createIfNotExisting = true): ?DashboardUserRoot
     {
         $filter = new UserRootFilter();
         $filter->setStrUser($userId);
@@ -46,6 +46,10 @@ class DashboardUserRoot extends Model implements ModelInterface
         $nodes = self::getObjectListFiltered($filter);
 
         if (empty($nodes)) {
+            if (!$createIfNotExisting) {
+                return null;
+            }
+
             $node = new DashboardUserRoot();
             $node->setStrUser($userId);
             ServiceLifeCycleFactory::getLifeCycle($node)->update($node);

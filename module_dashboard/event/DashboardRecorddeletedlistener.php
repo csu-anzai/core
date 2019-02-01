@@ -9,13 +9,9 @@
 
 namespace Kajona\Dashboard\Event;
 
-use Kajona\Dashboard\System\DashboardWidget;
+use Kajona\Dashboard\System\DashboardUserRoot;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\GenericeventListenerInterface;
-use Kajona\System\System\OrmComparatorEnum;
-use Kajona\System\System\OrmDeletedhandlingEnum;
-use Kajona\System\System\OrmObjectlist;
-use Kajona\System\System\OrmPropertyCondition;
 use Kajona\System\System\SystemEventidentifier;
 use Kajona\System\System\UserUser;
 
@@ -52,13 +48,9 @@ class DashboardRecorddeletedlistener implements GenericeventListenerInterface
         list($strSystemid, $strSourceClass) = $arrArguments;
 
         if ($strSourceClass == UserUser::class && validateSystemid($strSystemid)) {
-            $objORM = new OrmObjectlist();
-            $objORM->addWhereRestriction(new OrmPropertyCondition("strUser", OrmComparatorEnum::Equal(), $strSystemid));
-            $objORM->setObjHandleLogicalDeleted(OrmDeletedhandlingEnum::INCLUDED);
-            $arrWidgets = $objORM->getObjectList(DashboardWidget::class);
-
-            foreach ($arrWidgets as $objWidget) {
-                $objWidget->deleteObjectFromDatabase();
+            $root = DashboardUserRoot::getOrCreateForUser($strSystemid, false);
+            if ($root !== null) {
+                $root->deleteObjectFromDatabase();
             }
         }
 
