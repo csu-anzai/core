@@ -35,6 +35,16 @@ class Inputtext extends FormentryComponentAbstract
     protected $type;
 
     /**
+     * @var string
+     */
+    protected $prepend;
+
+    /**
+     * @var string
+     */
+    protected $append;
+
+    /**
      * @param string $name
      * @param string $title
      * @param mixed $value
@@ -67,6 +77,22 @@ class Inputtext extends FormentryComponentAbstract
     }
 
     /**
+     * @param string $prepend
+     */
+    public function setPrepend(string $prepend)
+    {
+        $this->prepend = $prepend;
+    }
+
+    /**
+     * @param string $append
+     */
+    public function setAppend(string $append)
+    {
+        $this->append = $append;
+    }
+
+    /**
      * @inheritdoc
      */
     public function buildContext()
@@ -74,6 +100,8 @@ class Inputtext extends FormentryComponentAbstract
         $context = parent::buildContext();
         $context["value"] = $this->value;
         $context["type"] = $this->type ?: 'text';
+        $context["prepend"] = $this->prepend;
+        $context["append"] = $this->append;
 
         return $context;
     }

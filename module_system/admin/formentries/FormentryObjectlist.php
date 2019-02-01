@@ -142,9 +142,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
             }));
         }
 
-        uasort($arrObjects, function (ModelInterface $a, ModelInterface $b) {
-            return strcmp($a->getStrDisplayName(), $b->getStrDisplayName());
-        });
+        $this->orderObject($arrObjects);
 
         $objectList = new Objectlist($this->getStrEntryName(), $this->getStrLabel(), $arrObjects);
         $objectList->setReadOnly($this->getBitReadonly());
@@ -236,28 +234,40 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
 
         if (!empty($this->arrKeyValues)) {
             $strHtml = "";
+
+            //Collect object and sort them by create date
+            $skipRightCheck = $this->options & self::OPTION_SKIP_RIGHT_CHECK;
+            $objects = [];
             foreach ($this->arrKeyValues as $objObject) {
                 if ($objObject instanceof Model && $objObject instanceof ModelInterface) {
-                    $strTitle = self::getDisplayName($objObject);
-                    if ($objObject->rightView()) {
-                        //see, if the matching target-module provides a showSummary method
-                        $objModule = SystemModule::getModuleByName($objObject->getArrModule("modul"));
-                        if ($objModule != null) {
-                            $objAdmin = $objModule->getAdminInstanceOfConcreteModule($objObject->getSystemid());
-
-                            if ($objAdmin !== null && method_exists($objAdmin, "actionShowSummary")) {
-                                $strTitle = Link::getLinkAdminDialog($objObject->getArrModule("modul"), "showSummary", "&systemid=".$objObject->getSystemid()."&folderview=".Carrier::getInstance()->getParam("folderview"), $strTitle);
-                            }
-                        }
+                    if ($skipRightCheck || $objObject->rightView()) {
+                        $objects[] = $objObject;
                     }
-                    $strHtml .= $strTitle;
-                    if ($objObject instanceof AdminListableInterface && $objObject->rightView()) {
-                        $strHtml .= " ".strip_tags($objObject->getStrAdditionalInfo());
-                    }
-                    $strHtml .= "<br />";
                 } else {
                     throw new Exception("Array must contain objects", Exception::$level_ERROR);
                 }
+            }
+            $this->orderObject($objects);
+
+            //Render content
+            foreach ($objects as $objObject) {
+                $strTitle = self::getDisplayName($objObject);
+                if ($objObject->rightView()) {
+                    //see, if the matching target-module provides a showSummary method
+                    $objModule = SystemModule::getModuleByName($objObject->getArrModule("modul"));
+                    if ($objModule != null) {
+                        $objAdmin = $objModule->getAdminInstanceOfConcreteModule($objObject->getSystemid());
+
+                        if ($objAdmin !== null && method_exists($objAdmin, "actionShowSummary")) {
+                            $strTitle = Link::getLinkAdminDialog($objObject->getArrModule("modul"), "showSummary", "&systemid=".$objObject->getSystemid()."&folderview=".Carrier::getInstance()->getParam("folderview"), $strTitle);
+                        }
+                    }
+                }
+                $strHtml .= $strTitle;
+                if ($objObject instanceof AdminListableInterface && $objObject->rightView()) {
+                    $strHtml .= " ".strip_tags($objObject->getStrAdditionalInfo());
+                }
+                $strHtml .= "<br />";
             }
             return $strHtml;
         }
@@ -265,6 +275,16 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         return "-";
     }
 
+
+    /**
+     * @param array $arrObjects
+     */
+    private function orderObject(array &$arrObjects) {
+        //Name
+        uasort($arrObjects, function (ModelInterface $a, ModelInterface $b) {
+            return strcmp($a->getStrDisplayName(), $b->getStrDisplayName());
+        });
+    }
 
     private function toObjectArray()
     {
