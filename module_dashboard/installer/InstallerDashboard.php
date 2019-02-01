@@ -107,10 +107,9 @@ class InstallerDashboard extends InstallerBase implements InstallerInterface {
         			  	   agp_system
         			 WHERE dashboard_id = system_id
         			   AND system_prev_id = ?
-        			   AND dashboard_user = ?
-        			   AND dashboard_aspect = ?";
+        			   AND dashboard_user = ?";
 
-                $arrOldWidgets = $this->objDB->getPArray($strQuery, array($legacyRootId, $userId, $aspectId));
+                $arrOldWidgets = $this->objDB->getPArray($strQuery, array($legacyRootId, $userId));
 
 
                 if (in_array($objAspect->getStrName(), ["dls", "riskmanager"])) {
