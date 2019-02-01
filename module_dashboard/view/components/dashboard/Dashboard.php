@@ -11,13 +11,10 @@ namespace Kajona\Dashboard\View\Components\Dashboard;
 use Kajona\System\View\Components\AbstractComponent;
 
 /**
- * Returns a table filled with infos.
- * The header may be build using cssclass -> value or index -> value arrays
- * Values may be build using cssclass -> value or index -> value arrays, too (per row)
- * For header, the passing of the fake-classes colspan-2 and colspan-3 are allowed in order to combine cells
+ * Dashboard base component
  *
  * @author sidler@mulchprod.de
- * @since 7.0
+ * @since 7.1
  * @componentTemplate core/module_dashboard/view/components/dashboard/template.twig
  */
 class Dashboard extends AbstractComponent
