@@ -21,7 +21,7 @@ use Kajona\Dashboard\System\TodoRepository;
 use Kajona\Dashboard\View\Components\Dashboard\Dashboard;
 use Kajona\Dashboard\View\Components\Widget\Widget;
 use Kajona\Dashboard\View\Components\WidgetList\WidgetList;
-use Kajona\Dashobard\System\Lifecycle\ConfigLifecycle;
+use Kajona\Dashboard\System\Lifecycle\ConfigLifecycle;
 use Kajona\System\Admin\AdminEvensimpler;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminInterface;
