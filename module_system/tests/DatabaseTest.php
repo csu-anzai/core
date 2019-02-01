@@ -491,6 +491,8 @@ SQL;
         foreach ($result as $rows) {
             for ($j = 0; $j < $chunkSize; $j++) {
                 if ($page == $pages && $j >= $rest) {
+                    $this->assertEquals($rest, count($rows));
+
                     // if we have reached the last row of the last chunk break
                     break 2;
                 }
@@ -499,11 +501,40 @@ SQL;
                 $i++;
             }
 
+            $this->assertEquals($chunkSize, count($rows));
             $page++;
         }
 
         $this->assertEquals($maxCount, $i);
         $this->assertEquals($pages, $page);
+    }
+
+    public function testGetGeneratorNoPaging()
+    {
+        $this->createTable();
+
+        $maxCount = 60;
+        $chunkSize = 16;
+
+        $data = array();
+        for ($i = 0; $i < $maxCount; $i++) {
+            $data[] = array(generateSystemid(), $i, $i, $i, $i, $i, $i, $i, $i);
+        }
+
+        $database = Carrier::getInstance()->getObjDB();
+        $database->multiInsert("agp_temp_autotest", array("temp_id", "temp_long", "temp_double", "temp_char10", "temp_char20", "temp_char100", "temp_char254", "temp_char500", "temp_text"), $data);
+
+        $result = $database->getGenerator("SELECT temp_id FROM agp_temp_autotest ORDER BY temp_long ASC", [], $chunkSize, false);
+        $i = 0;
+
+        foreach ($result as $rows) {
+            foreach ($rows as $row) {
+                $database->_pQuery("DELETE FROM agp_temp_autotest WHERE temp_id = ?", [$row["temp_id"]]);
+                $i++;
+            }
+        }
+
+        $this->assertEquals($maxCount, $i);
     }
 
     public function testGetGenerator()

@@ -94,6 +94,11 @@ if ($intReturn == 1) {
         echo "<span style='color: red;'>    target folder " . $vendorDir . " is not writable</span>\n";
     }
 }
+if ($intReturn !== 0) {
+    echo "Error exited with a non successful status code";
+    exit(1);
+}
+
 echo "Composer install finished for " . $vendorComposer . ": \n";
 
 echo "   " . implode("\n   ", $arrOutput);
