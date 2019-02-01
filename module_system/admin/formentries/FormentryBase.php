@@ -90,6 +90,8 @@ abstract class FormentryBase
         if ($objSourceObject != null) {
             $this->updateLabel();
         }
+
+        $this->readValue();
     }
 
     /**
