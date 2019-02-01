@@ -107,19 +107,31 @@ file_put_contents("{$plainJsFile}.js", $content);
 if (!DEV && is_file("{$plainJsFile}.js")) {
     echo "minfiy merged js files\n";
     $strUglifyjsBin = "node {$uglifyBin}";
-    system($strUglifyjsBin . " {$plainJsFile}.js -o {$plainJsFile}.min.js");
+    system($strUglifyjsBin . " {$plainJsFile}.js -o {$plainJsFile}.min.js", $exitCode);
+    if ($exitCode !== 0) {
+        echo "Error exited with a non successful status code";
+        exit(1);
+    }
 }
 
 // build type script
 echo "compile type script files\n";
 $strTscBin = "node {$tsBin}";
-system($strTscBin . " --build {$tsConfig}");
+system($strTscBin . " --build {$tsConfig}", $exitCode);
+if ($exitCode !== 0) {
+    echo "Error exited with a non successful status code";
+    exit(1);
+}
 
 // minify ts
 if (!DEV && is_file("{$tscJsFile}.js")) {
     echo "minify type script file\n";
     $strUglifyjsBin = "node {$uglifyBin}";
-    system($strUglifyjsBin . " {$tscJsFile}.js -o {$tscJsFile}.min.js");
+    system($strUglifyjsBin . " {$tscJsFile}.js -o {$tscJsFile}.min.js", $exitCode);
+    if ($exitCode !== 0) {
+        echo "Error exited with a non successful status code";
+        exit(1);
+    }
 }
 
 // merge type script and js files
