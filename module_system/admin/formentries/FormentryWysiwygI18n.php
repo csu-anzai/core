@@ -33,9 +33,9 @@ class FormentryWysiwygI18n extends AbstractFormentryI18n
             $objReflection = new Reflection($objObject);
 
             //try to find the matching source property
-            $strSourceProperty = $this->getCurrentProperty(FormentryWysiwyg::STR_CONFIG_ANNOTATION);
-            if ($strSourceProperty != null) {
-                $this->strToolbarset = $objReflection->getAnnotationValueForProperty($strSourceProperty, FormentryWysiwyg::STR_CONFIG_ANNOTATION);
+            $strSourceProperty4Annotation = $this->getCurrentProperty(FormentryWysiwyg::STR_CONFIG_ANNOTATION);
+            if ($strSourceProperty4Annotation != null) {
+                $this->strToolbarset = $objReflection->getAnnotationValueForProperty($strSourceProperty4Annotation, FormentryWysiwyg::STR_CONFIG_ANNOTATION);
             }
         }
 
@@ -49,22 +49,6 @@ class FormentryWysiwygI18n extends AbstractFormentryI18n
             $this->arrEntries[$lang] = $entry;
         }
     }
-
-    /**
-     * @inheritDoc
-     */
-    protected function updateValue()
-    {
-        $arrParams = Carrier::getAllParams();
-        if (isset($arrParams[$this->getStrEntryName()])) {
-            $this->setStrValue($this->toI18nValueString($arrParams, $this->getStrEntryName(), function ($val) {
-                return processWysiwygHtmlContent($val);
-            }));
-        } else {
-            parent::updateValue();
-        }
-    }
-
 
     /**
      * @param string $strOpener

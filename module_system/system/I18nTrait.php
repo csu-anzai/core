@@ -105,8 +105,9 @@ trait I18nTrait
      * @return string
      * @throws Exception
      */
-    protected function getI18nValueForString(string $value, string $lang = null, $forceI18n = false): string
+    protected function getI18nValueForString(?string $value, string $lang = null, $forceI18n = false): string
     {
+        $value = $value ?? "";
         if (!$forceI18n && !$this->i18NEnabled) {
             return $value;
         }

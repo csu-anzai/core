@@ -33,7 +33,7 @@ CKEDITOR.editorConfig = function(config) {
             ['Cut','Copy','Paste','PasteText','-'],
             ['Undo','Redo','-','RemoveFormat'],
             ['Link','Unlink','Anchor'],
-            ['Image','Table','HorizontalRule','SpecialChar'],['Maximize'],
+            ['Table','HorizontalRule','SpecialChar'],['Maximize'],
             '/',
             ['Font','FontSize'],
             ['Bold','Italic','Underline','Strike','Subscript','Superscript'],
@@ -62,30 +62,17 @@ CKEDITOR.editorConfig = function(config) {
     config.toolbar_minimalimage =
         [
             ['Undo','Redo','-','RemoveFormat'],
-            ['Link','Unlink', 'Image'],
+            ['Link','Unlink'],
             ['Bold','Italic','Underline'],
             ['NumberedList','BulletedList','-','Outdent','Indent']
         ];
 
-    config.toolbar_pe_full =
-        [
-            ['Undo','Redo','-','RemoveFormat'],
-            ['Bold','Italic','Underline','Strike','Subscript','Superscript'],
-            ['NumberedList','BulletedList','-','Outdent','Indent'],
-            ['Link','Unlink'],
-            ['Image','Table']
-        ];
-
-    config.toolbar_pe_lite =
-        [
-            ['Undo','Redo']
-        ];
 
     config.toolbar_minimal_nosource =
         [
             ['Undo','Redo','-','RemoveFormat'],
             ['Bold','Italic','Underline'],
-            ['NumberedList','BulletedList','-','Image']
+            ['NumberedList','BulletedList']
         ];
 
     //disable the conversion of special chars into html entities
