@@ -79,6 +79,7 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
      * @param \Kajona\System\System\Model|MediamanagerRepo|MediamanagerFile $objListEntry
      *
      * @return array
+     * @throws Exception
      */
     protected function renderAdditionalActions(\Kajona\System\System\Model $objListEntry)
     {
@@ -117,6 +118,7 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
      * @param \Kajona\System\System\ModelInterface $objListEntry
      *
      * @return string
+     * @throws Exception
      */
     protected function renderDeleteAction(ModelInterface $objListEntry)
     {
@@ -130,7 +132,7 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
                 return $this->objToolkit->listDeleteButton(
                     $objListEntry->getStrDisplayName(),
                     $this->getLang("delete_question_repo", $objListEntry->getArrModule("modul")),
-                    Link::getLinkAdminHref($objListEntry->getArrModule("modul"), "delete", "&systemid=".$objListEntry->getSystemid().$this->getStrPeAddon())
+                    Link::getLinkAdminHref($objListEntry->getArrModule("modul"), "delete", "&systemid=".$objListEntry->getSystemid())
                 );
             } else {
                 return "";
@@ -146,6 +148,7 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
      * @param bool $bitDialog
      *
      * @return array|string
+     * @throws Exception
      */
     protected function getNewEntryAction($strListIdentifier, $bitDialog = false)
     {
@@ -169,6 +172,7 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
      * @param string $strListIdentifier
      *
      * @return string
+     * @throws Exception
      */
     protected function renderLevelUpAction($strListIdentifier)
     {
@@ -209,19 +213,9 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
     {
         if ($objListEntry instanceof MediamanagerFile) {
             if ($objListEntry->rightEdit()) {
-                if ($this->getStrPeAddon() != "") {
-                    return $this->objToolkit->listButton(
-                        Link::getLinkAdmin(
-                            $objListEntry->getArrModule("modul"), "editFile", "&systemid=".$objListEntry->getSystemid().$this->getStrPeAddon(), $this->getLang("commons_list_edit"), $this->getLang("commons_list_edit"), "icon_edit"
-                        )
-                    );
-                } else {
-                    return $this->objToolkit->listButton(
-                        Link::getLinkAdminDialog(
-                            $objListEntry->getArrModule("modul"), "editFile", "&folderview=1&systemid=".$objListEntry->getSystemid().$this->getStrPeAddon(), $this->getLang("commons_list_edit"), $this->getLang("commons_list_edit"), "icon_edit"
-                        )
-                    );
-                }
+                return $this->objToolkit->listButton(
+                    Link::getLinkAdminDialog($objListEntry->getArrModule("modul"), "editFile", "&systemid=".$objListEntry->getSystemid(), $this->getLang("commons_list_edit"), $this->getLang("commons_list_edit"), "icon_edit")
+                );
             }
 
             return "";
@@ -234,6 +228,7 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
      * @param \Kajona\System\System\Model $objListEntry
      *
      * @return string
+     * @throws Exception
      */
     protected function renderCopyAction(\Kajona\System\System\Model $objListEntry)
     {
@@ -282,6 +277,7 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
      * @param string $strListIdentifier
      *
      * @return string
+     * @throws Exception
      */
     public function getActionIcons($objOneIterable, $strListIdentifier = "")
     {
@@ -317,6 +313,7 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
      *
      * @return string
      * @permissions view
+     * @throws Exception
      */
     protected function actionOpenFolder()
     {
@@ -360,6 +357,7 @@ HTML;
      * Generates the code to delete a folder via ajax
      *
      * @return string
+     * @throws Exception
      */
     private function generateNewFolderDialogCode()
     {
@@ -394,6 +392,7 @@ HTML;
      * @TODO check whether method is used
      * @permissions right1
      * @return string
+     * @throws Exception
      */
     private function actionUploadFileInternal()
     {
@@ -423,6 +422,7 @@ HTML;
      * @return string
      * @permissions edit
      * @autoTestable
+     * @throws Exception
      */
     protected function actionMassSync()
     {
@@ -447,6 +447,7 @@ HTML;
     /**
      * @return string
      * @permissions edit
+     * @throws Exception
      */
     protected function actionSaveFile()
     {
@@ -607,6 +608,7 @@ HTML;
      * @return string
      * @permissions view
      * @autoTestable
+     * @throws Exception
      */
     protected function actionFolderContentFolderviewMode()
     {
@@ -790,6 +792,7 @@ HTML;
      * @return string
      * @permissions edit
      * @autoTestable
+     * @throws Exception
      */
     protected function actionLogbook()
     {
@@ -837,6 +840,7 @@ HTML;
      *
      * @return string
      * @permissions edit
+     * @throws Exception
      */
     protected function actionCreateFolder()
     {
@@ -1042,6 +1046,7 @@ HTML;
      * Converts a mediamanager file to an array expected by the jquery fileupload plugin
      * @param MediamanagerFile $objFile
      * @return array
+     * @throws Exception
      */
     private function mediamanagerFileToJqueryFileuploadArray(MediamanagerFile $objFile)
     {
@@ -1067,6 +1072,7 @@ HTML;
      * @return string
      * @responseType html
      * @permissions view
+     * @throws Exception
      */
     protected function actionGetArchiveList()
     {
@@ -1188,6 +1194,7 @@ HTML;
      * @return string
      * @permissions view
      * @responseType json
+     * @throws Exception
      */
     protected function actionFileUploadList()
     {
@@ -1219,6 +1226,7 @@ HTML;
      *
      * @return string
      * @permissions edit
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
     protected function actionPartialSyncRepo()
     {
