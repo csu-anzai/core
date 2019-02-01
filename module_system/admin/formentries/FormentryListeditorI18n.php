@@ -1,17 +1,10 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-********************************************************************************************************/
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
 
 namespace Kajona\System\Admin\Formentries;
-
-use Kajona\System\Admin\FormentryPrintableInterface;
-use Kajona\System\System\Carrier;
-use Kajona\System\System\Exception;
-use Kajona\System\System\Reflection;
-use Kajona\System\System\Validators\HashMapValidator;
-use Kajona\System\View\Components\Formentry\Listeditor\Listeditor;
 
 /**
  * Formentry which can be used to edit multiple text options. The formentry generates for each option a unique id which

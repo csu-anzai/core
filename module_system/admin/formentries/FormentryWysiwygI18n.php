@@ -1,8 +1,8 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-********************************************************************************************************/
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
 declare(strict_types=1);
 
 namespace Kajona\System\Admin\Formentries;
@@ -11,7 +11,7 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\Reflection;
 
 /**
- * I18n implementation of a simple text-input
+ * I18n implementation of a wysiwyg-input
  *
  * @author  stefan.idler@artemeon.de
  * @since   7.1
