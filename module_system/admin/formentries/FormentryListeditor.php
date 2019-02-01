@@ -40,6 +40,7 @@ class FormentryListeditor extends FormentryBase implements FormentryPrintableInt
      */
     public function setStrValue($strValue): void
     {
+        parent::setStrValue("set");
         if (!empty($strValue) && is_string($strValue)) {
             $strValue = json_decode($strValue, true);
             $this->arrValue = $strValue;
