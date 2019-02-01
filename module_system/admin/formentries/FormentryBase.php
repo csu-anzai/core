@@ -6,7 +6,6 @@
 
 namespace Kajona\System\Admin\Formentries;
 
-use AGP\Prozessverwaltung\Admin\Formentries\FormentryObjectGroups;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminFormgeneratorContainerInterface;
 use Kajona\System\System\Carrier;
@@ -91,7 +90,6 @@ abstract class FormentryBase
         if ($objSourceObject != null) {
             $this->updateLabel();
         }
-        //$this->updateValue();
     }
 
     /**
