@@ -19,36 +19,11 @@ use Kajona\System\System\FilterBase;
 class DashboardConfigFilter extends FilterBase
 {
     /**
-     * The dashboard user root id
-     *
-     * @var string
-     * @tableColumn agp_system.system_prev_id
-     * @tableColumnDatatype char20
-     */
-    private $strRootId = "";
-
-    /**
      * @var string
      * @tableColumn agp_dashboard_cfg.cfg_title
      * @tableColumnDatatype char20
      */
     private $strTitle = "";
-
-    /**
-     * @return string
-     */
-    public function getStrRootId(): string
-    {
-        return $this->strRootId;
-    }
-
-    /**
-     * @param string $strRootId
-     */
-    public function setStrRootId(string $strRootId)
-    {
-        $this->strRootId = $strRootId;
-    }
 
     /**
      * @return string

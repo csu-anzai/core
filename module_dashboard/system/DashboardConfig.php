@@ -88,10 +88,9 @@ class DashboardConfig extends Model implements ModelInterface, AdminListableInte
     public static function getByTitle(string $rootId, string $title)
     {
         $filter = new DashboardConfigFilter();
-        $filter->setStrRootId($rootId);
         $filter->setStrTitle($title);
 
-        $result = self::getObjectListFiltered($filter);
+        $result = self::getObjectListFiltered($filter, $rootId);
         return $result[0] ?? null;
     }
 
