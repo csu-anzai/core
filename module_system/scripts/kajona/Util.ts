@@ -3,6 +3,8 @@
 
 import * as $ from "jquery";
 import * as jQuery from "jquery";
+import * as toastr from "toastr";
+import Lang = require("../../../module_system/scripts/kajona/Lang");
 
 declare global {
     interface Window {
@@ -293,13 +295,16 @@ class Util {
      * @param text
      */
     public static copyTextToClipboard(text: string) {
-        var textArea = document.createElement("textarea");
+        let textArea = document.createElement("textarea");
         textArea.style.background = 'transparent';
         textArea.value = text;
         document.body.appendChild(textArea);
         textArea.select();
         try {
             document.execCommand('copy');
+            Lang.fetchSingleProperty("system", "link_was_copied", function (value:string) {
+                toastr.success(value);
+            });
         } catch (err) {}
         document.body.removeChild(textArea);
     }
