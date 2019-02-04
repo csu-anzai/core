@@ -6,6 +6,7 @@
 
 namespace Kajona\Dashboard\System;
 
+use Kajona\Dashboard\System\Filter\DashboardConfigFilter;
 use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
@@ -77,6 +78,21 @@ class DashboardConfig extends Model implements ModelInterface, AdminListableInte
     public function getStrLongDescription()
     {
         return "";
+    }
+
+    /**
+     * @param string $rootId - The dashboard user root id
+     * @param string $title
+     * @return DashboardConfig|null
+     */
+    public static function getByTitle(string $rootId, string $title)
+    {
+        $filter = new DashboardConfigFilter();
+        $filter->setStrRootId($rootId);
+        $filter->setStrTitle($title);
+
+        $result = self::getObjectListFiltered($filter);
+        return $result[0] ?? null;
     }
 
     /**
