@@ -18,6 +18,7 @@ namespace Kajona\System\System;
  */
 trait I18nTrait
 {
+    private static $availableLangs = [];
 
     private $i18NEnabled = false;
 
@@ -91,7 +92,11 @@ trait I18nTrait
      */
     protected function getPossibleI18nLanguages(): array
     {
-        return array_map(function (LanguagesLanguage $lang) {
+        if (self::$availableLangs) {
+            return self::$availableLangs;
+        }
+
+        return self::$availableLangs = array_map(function (LanguagesLanguage $lang) {
             return $lang->getStrName();
         }, LanguagesLanguage::getObjectListFiltered());
     }
@@ -112,8 +117,16 @@ trait I18nTrait
             return $value;
         }
         $lang = $lang ?? $this->getCurrentI18nLanguage();
+        $fallback = Lang::getInstance()->getStrFallbackLanguage();
         $arr = $this->toI18nValueArray($value);
-        return isset($arr[$lang]) ? $arr[$lang] : "";
+        if (isset($arr[$lang])) {
+            return $arr[$lang];
+        } elseif (isset($arr[$fallback])) {
+            return $arr[$fallback];
+        } else {
+            // in this case we have no options
+            return reset($arr);
+        }
     }
 
     /**
@@ -123,7 +136,15 @@ trait I18nTrait
      */
     protected function getCurrentI18nLanguage(): string
     {
-        return Session::getInstance()->getAdminLanguage();
+        $lang = Session::getInstance()->getAdminLanguage();
+        $fallback = Lang::getInstance()->getStrFallbackLanguage();
+        $available = $this->getPossibleI18nLanguages();
+
+        if (in_array($lang, $available)) {
+            return $lang;
+        } else {
+            return $fallback;
+        }
     }
 
     /**
