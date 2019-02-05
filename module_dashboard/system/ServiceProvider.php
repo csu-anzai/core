@@ -3,7 +3,7 @@
 namespace Kajona\Dashboard\System;
 
 use Kajona\Dashboard\Service\DashboardInitializerService;
-use Kajona\Dashobard\System\Lifecycle\ConfigLifecycle;
+use Kajona\Dashboard\System\Lifecycle\ConfigLifecycle;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
