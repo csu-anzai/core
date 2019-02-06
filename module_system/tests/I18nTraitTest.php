@@ -37,7 +37,7 @@ class I18nTraitTest extends Testbase
         $this->setI18NEnabled(true);
         $this->assertEquals("hallo", $this->getI18nValueForString(json_encode(["de" => "hallo", "en" => "hello", "es" => ""]), "de"));
         $this->assertEquals("", $this->getI18nValueForString(json_encode(["de" => "hallo", "en" => "hello", "es" => ""]), "es"));
-        $this->assertEquals("", $this->getI18nValueForString(json_encode(["de" => "hallo", "en" => "hello", "es" => ""]), "pt"));
+        $this->assertEquals("hello", $this->getI18nValueForString(json_encode(["de" => "hallo", "en" => "hello", "es" => ""]), "pt"));
         $this->assertEquals("hallo", $this->getI18nValueForString("hallo"), "de");
         $this->assertEquals("hallo", $this->getI18nValueForString("hallo"), "pt");
 
