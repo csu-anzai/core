@@ -5,7 +5,7 @@
 >
     <title>basicauthentication</title>
     <description>Adds support for basic http authentication. Therefore an event-listener checks for authentication headers when processing the request and tries to login the user.</description>
-    <version>6.2</version>
+    <version>7.1</version>
     <author>Kajona Team</author>
     <type>MODULE</type>
     <providesInstaller>FALSE</providesInstaller>
