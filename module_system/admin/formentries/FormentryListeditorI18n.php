@@ -26,7 +26,8 @@ class FormentryListeditorI18n extends AbstractFormentryI18n
     protected function buildFormEntries($strFormName, $strSourceProperty, $objObject)
     {
         foreach ($this->getPossibleI18nLanguages() as $lang) {
-            $entry = new FormentryListeditor($strFormName, "{$strSourceProperty}_{$lang}", $objObject);
+            $entry = new FormentryListeditor($strFormName, "{$strSourceProperty}_{$lang}");
+            $entry->setObjSourceObject($objObject);
             $entry->setStrLabel($this->getStrLabel()." ({$lang})");
             $entry->setStrHint($this->getStrHint());
             $entry->setBitMandatory($this->getBitMandatory());

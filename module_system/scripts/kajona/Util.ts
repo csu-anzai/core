@@ -273,6 +273,27 @@ class Util {
     }
 
     /**
+     * Returns all available query parameters from the has route
+     *
+     * @return object
+     */
+    public static getQueryParameters() : any {
+        let result : any = {};
+        let hash = location.hash;
+        let pos = hash.indexOf("?");
+        if (pos !== -1) {
+            let rawQuery = hash.substr(pos + 1);
+            let parts = rawQuery.split("&");
+            for (let i = 0; i < parts.length; i++) {
+                let kv = parts[i].split("=", 2);
+                result[kv[0]] = kv[1];
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Gets the jQuery object
      *
      * @param objElement - my be a jquery object or an id selector

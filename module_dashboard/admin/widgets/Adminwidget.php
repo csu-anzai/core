@@ -286,7 +286,7 @@ abstract class Adminwidget
      */
     public function getWidgetDescription()
     {
-        return "Artemeon Widget.";
+        return "Artemeon Widget";
     }
 
     /**

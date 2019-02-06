@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace Kajona\Dashobard\System\Lifecycle;
+namespace Kajona\Dashboard\System\Lifecycle;
 
 use Kajona\Dashboard\System\DashboardConfig;
 use Kajona\Dashboard\System\DashboardUserRoot;
