@@ -95,4 +95,11 @@ interface PermissionHandlerInterface
      * @return void
      */
     public function calculatePermissions(Root $objRecord);
+
+    /**
+     * Get available roles with labels
+     *
+     * @return array
+     */
+    public function getAvailableRolesWithLabel(): array;
 }
