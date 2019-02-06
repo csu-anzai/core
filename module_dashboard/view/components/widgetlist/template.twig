@@ -3,8 +3,9 @@
     {% for widget in widgets %}
         <div class="row">
             <div class="img-col col-sm-3">
-                <div class="widget-img">{{ widget['img']|raw }}</div>
-                <div class="widget-title">{{ widget['name'] }}</div>
+                <div class="widget-img align-center">{{ widget['img']|raw }}</div>
+                <div class="widget-title align-center">{{ widget['name'] }}</div>
+                <div class="widget-module align-center">{% if widget['module'] != "!modul_titel!" %} {{ widget['module'] }}{% endif %}</div>
             </div>
             <div class="info-col col-sm-7 hidden-xs">{{ widget['info'] }}</div>
             <div class="button-col col-sm-2">

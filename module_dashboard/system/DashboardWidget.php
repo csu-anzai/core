@@ -74,7 +74,7 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
      * Looks up all widgets available in the filesystem.
      * ATTENTION: returns the class-name representation of a file, NOT the filename itself.
      *
-     * @return string[]
+     * @return Adminwidget[]
      */
     public static function getListOfWidgetsAvailable()
     {
@@ -86,9 +86,16 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
             $objInstance = Classloader::getInstance()->getInstanceFromFilename($strPath, Adminwidget::class, AdminwidgetInterface::class);
 
             if ($objInstance !== null) {
-                $arrReturn[] = get_class($objInstance);
+                $arrReturn[] = $objInstance;
             }
         }
+
+        uasort($arrReturn, function (Adminwidget $w1, Adminwidget $w2) {
+            if ($w1->getModuleName() != $w2->getModuleName()) {
+                return strcmp($w1->getModuleName(), $w2->getModuleName());
+            }
+            return strcmp($w1->getWidgetName(), $w2->getWidgetName());
+        });
 
         return $arrReturn;
     }
