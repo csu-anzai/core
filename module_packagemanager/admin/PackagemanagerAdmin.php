@@ -144,17 +144,7 @@ class PackagemanagerAdmin extends AdminSimple implements AdminInterface
             );
         }
         $strReturn .= $this->objToolkit->genericAdminList(generateSystemid(), "", "", $strAddActions);
-
         $strReturn .= $this->objToolkit->listFooter();
-
-        $strReturn .= "<script type='text/javascript'>
-                require(['packagemanager'], function(packagemanager) {
-                    window.setTimeout(function() {
-                        packagemanager.triggerUpdateCheck();
-                    }, 1000);
-                });
-            </script>";
-
         $strReturn .= $this->objToolkit->getPageview($objArraySectionIterator, $this->getArrModule("modul"), $this->getAction());
 
         return $strReturn;
