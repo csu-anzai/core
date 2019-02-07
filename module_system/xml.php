@@ -62,6 +62,8 @@ class Xml
         $origin = Config::getInstance()->getConfig("header_cors_origin");
         if (!empty($origin)) {
             $this->objResponse->addHeader("Access-Control-Allow-Origin: " . $origin);
+            $this->objResponse->addHeader("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
+            $this->objResponse->addHeader("Access-Control-Allow-Headers: Authorization");
         }
 
         //only allowed with a module definition. if not given skip, so that there's no exception thrown
