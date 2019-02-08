@@ -16,6 +16,7 @@ use Kajona\System\System\Exception;
 use Kajona\System\System\FilterBase;
 use Kajona\System\System\Link;
 use Kajona\System\System\StringUtil;
+use Kajona\System\System\SystemModule;
 
 
 /**
@@ -185,11 +186,15 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
             $bitFilterActive ? "icon_filter" : "icon_folderClosed",
             $bitInitiallyVisible
         );
+        $return = $objToolkit->addToContentToolbar($arrFolder[1]).$arrFolder[0];
 
-        $title = AdminskinHelper::getAdminImage("icon_treeLink") . " " . $objLang->getLang("commons_filter_url", "system");
-        $strFilterUrlButton = Link::getLinkAdminManual(["href" => "#", "onclick" => "require('forms').getFilterURL();return false"], $title);
+        if (SystemModule::getModuleByName("tinyurl") !== null) {
+            $title = AdminskinHelper::getAdminImage("icon_treeLink") . " " . $objLang->getLang("commons_filter_url", "system");
+            $strFilterUrlButton = Link::getLinkAdminManual(["href" => "#", "onclick" => "require('forms').getFilterURL();return false"], $title);
+            $return .= $objToolkit->addToContentToolbar(trim($strFilterUrlButton));
+        }
 
-        return $objToolkit->addToContentToolbar($arrFolder[1]) . $objToolkit->addToContentToolbar(trim($strFilterUrlButton)). $arrFolder[0];
+        return $return;
     }
 
     /**

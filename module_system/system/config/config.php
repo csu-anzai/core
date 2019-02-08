@@ -67,6 +67,9 @@
         'blacklist'  => [],                                            //Blacklist of specific words which are forbidden in the password
     ];
 
+    $config['header_cors_origin']   = null;                            //Specifies an origin which is allowed to request the xml.php endpoint. You can use either "*" to allow
+                                                                       //every origin or you can also specify a specific domain. By default this is disabled
+
 //--caching ---------------------------------------------------------------------------------------------
 
     $config['textcachetime']        = 1;                               //Number of seconds language-files are cached. Cached entries are shared between sessions. Reduce this amount during

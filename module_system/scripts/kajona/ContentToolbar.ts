@@ -45,8 +45,8 @@ class ContentToolbar {
                 this.$objToolbarContainer.removeClass('hidden');
             }
 
-            var strIdentifier = "";
-            var strClass = "";
+            let strIdentifier = "";
+            let strClass = "";
             if(objEntry.strIdentifier != '') {
                 strIdentifier = ' id="'+objEntry.strIdentifier+'"';
             }
@@ -55,7 +55,8 @@ class ContentToolbar {
                 strClass += ' active ';
             }
 
-            this.$objToolbarList.append('<li '+strIdentifier+' class="'+strClass+'">'+objEntry.strContent+'</li>');
+            let s = $('<div/>').html(objEntry.strContent).text();
+            this.$objToolbarList.append('<li '+strIdentifier+' class="'+strClass+'">'+ s+'</li>');
         }
     };
 
@@ -77,9 +78,8 @@ class ContentToolbar {
      */
     public static registerRecordActions($objContainer : JQuery) {
         if (!Util.isStackedDialog()) {
-            var $objNode = $('<div>').attr('class', 'actionToolbar pull-right').append($objContainer.children());
+            let $objNode = $('<div>').attr('class', 'actionToolbar pull-right').append($objContainer.children());
             this.$objActionToolbarContainer.append($objNode);
-
             this.showBar();
         }
     };

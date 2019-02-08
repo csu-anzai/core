@@ -402,6 +402,7 @@ footer {
 .generalContextMenu {
     border: 1px solid @dropdown-border !important;
     background:none @white !important;
+    padding: 5px 0 !important;
 
     span {
         padding: 0;
@@ -440,7 +441,6 @@ footer {
     }
 
     .listButton {
-        width: 100%;
         text-align: left;
 
         i, img, .fa-stack {
@@ -1260,8 +1260,12 @@ footer {
             .navbar-nav {
                 margin: 0;
 
-                li a, li div {
+                li a, li div, li div a {
                     padding: 5px 7px 5px 7px;
+
+                    &:hover, &:active, &:focus {
+                        text-decoration: none;
+                    }
 
                     img, i {
                         padding: 0 2px;
@@ -1283,11 +1287,11 @@ footer {
                 padding: 5px 5px 5px 7px;
 
                 span {
-                .opacity(50);
+                    .opacity(50);
 
-                &:hover {
-                    .opacity(100);
-                }
+                    &:hover {
+                        .opacity(100);
+                    }
                 }
             }
         }
@@ -1353,62 +1357,6 @@ footer {
 
     .progress-danger.progress-striped .bar, .progress-striped .bar {
         background-color: @kajona-brand-color;
-    }
-
-
-    /* DASHBOARD */
-    .dashBoard {
-        .adminwidgetColumn {
-
-            @media (min-width: @screen-md-min) {
-                min-height: 150px;
-            }
-
-            .dbEntry {
-
-                h2 {
-                    margin: 0 0 5px 0;
-                }
-
-                div.contentSeparator {
-                    z-index: 298;
-                    height: 8px;
-                    position: relative;
-
-                    background-image: linear-gradient(to top, rgba(234, 234, 234, 0.02), rgba(245, 245, 245, 0.99));
-
-                    //background-image: -webkit-linear-gradient(top, rgba(255,255,255,0.001) 0%, #fff 5%, #fff 100%);
-
-                }
-
-                .adminwidgetactions {
-                    display: inline;
-                    margin-top: -27px;
-                }
-
-                .additionalNameContent {
-                    font-size: @font-size-small - 1;
-                    margin-top: -6px;
-                }
-
-                .content {
-                    margin-top: -8px;
-                    padding-top: 8px;
-                    max-height: 500px;
-
-                    &.loaded {
-                        overflow-x: auto;
-                    }
-                }
-
-                &.sortActive {
-                    .opacity(0.7);
-                }
-            }
-
-
-
-        }
     }
 
     /* general dnd placeholder */

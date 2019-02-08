@@ -8,7 +8,7 @@
                     <td width="30px;"><input class="checkbox" type="checkbox" name="moduleInstallBox[installer_{{ v["module_nameShort"]|raw }}]" id="moduleInstallBox[installer_{{ v["module_nameShort"]|raw }}]" checked="checked"/></td>
                     <td onclick="document.getElementById('moduleInstallBox[installer_{{ module_nameShort }}]').click();">{{ v["module_name"]|raw }}</td>
                     <td onclick="document.getElementById('moduleInstallBox[installer_{{ module_nameShort }}]').click();">V {{ v["module_version"]|raw }}</td>
-                    <td onclick="document.getElementById('moduleInstallBox[installer_{{ module_nameShort }}]').click();">{{ v[" module_hint"]|raw }}</td>
+                    <td onclick="document.getElementById('moduleInstallBox[installer_{{ module_nameShort }}]').click();">{{ v["module_hint"]|raw }}</td>
                 </tr>
 
             {% else %}

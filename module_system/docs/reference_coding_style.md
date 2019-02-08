@@ -167,6 +167,8 @@ General commit message format, based on the [AngularJS] commit message guide:
 * test: adding missing tests, refactoring tests; no production code change
 * chore: updating grunt tasks etc; no production code change
 
+> This is also the prefix of your git-branch, e.g. `fix/agp-2344_nullpointer-in-contract`
+
 **module:**
 
 Name of the module without the `module_` prefix. You can use * if there isn't a more fitting scope.
@@ -174,6 +176,8 @@ Name of the module without the `module_` prefix. You can use * if there isn't a 
 **subject:**
 
 This is a short description of the change.
+
+
 
 ## Examples
 

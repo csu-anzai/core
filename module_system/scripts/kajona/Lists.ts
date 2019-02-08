@@ -137,7 +137,7 @@ class Lists {
             }
             else {
                 $('#jsDialog_1_cancelButton').css('display', 'none');
-                $('#jsDialog_1_confirmButton').remove('click').on('click', function() {document.location.reload();}).html('<span data-lang-property="system:systemtask_close_dialog"></span>');
+                $('#jsDialog_1_confirmButton').remove('click').on('click', function() {require('router').reload(); jsDialog_1.hide();}).html('<span data-lang-property="system:systemtask_close_dialog"></span>');
                 Lang.initializeProperties($('#jsDialog_1_confirmButton'));
             }
         }
