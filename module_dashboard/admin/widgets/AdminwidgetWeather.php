@@ -9,6 +9,9 @@
 
 namespace Kajona\Dashboard\Admin\Widgets;
 
+use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\Formentries\FormentryDropdown;
+use Kajona\System\Admin\Formentries\FormentryText;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Remoteloader;
 use Kajona\System\System\StringUtil;
@@ -20,6 +23,11 @@ class AdminwidgetWeather extends Adminwidget implements AdminwidgetInterface
 {
 
     /**
+     * @var string
+     */
+    private $imgFileName = "weather.png";
+
+    /**
      * Basic constructor, registers the fields to be persisted and loaded
      */
     public function __construct()
@@ -29,26 +37,19 @@ class AdminwidgetWeather extends Adminwidget implements AdminwidgetInterface
         $this->setPersistenceKeys(array("unit", "location"));
     }
 
+
     /**
-     * Allows the widget to add additional fields to the edit-/create form.
-     * Use the toolkit class as usual.
-     *
-     * @return string
+     * @param AdminFormgenerator $form
      */
-    public function getEditForm()
+    public function getEditFormContent(AdminFormgenerator $form)
     {
-        $strReturn = "";
-        $strReturn .= $this->objToolkit->formInputDropdown(
-            "unit",
-            array(
-                "f" => $this->getLang("weather_fahrenheit"),
-                "c" => $this->getLang("weather_celsius")
-            ),
-            $this->getLang("weather_unit"),
-            $this->getFieldValue("unit")
-        );
-        $strReturn .= $this->objToolkit->formInputText("location", $this->getLang("weather_location"), $this->getFieldValue("location"));
-        return $strReturn;
+        $form->addField(new FormentryText("", "location"), "")
+            ->setStrValue($this->getFieldValue("location"))
+            ->setStrLabel($this->getLang("weather_location"));
+        $form->addField(new FormentryDropdown("", "unit"))
+            ->setArrKeyValues(["f" => $this->getLang("weather_fahrenheit"), "c" => $this->getLang("weather_celsius")])
+            ->setStrValue(($this->getFieldValue("unit")))
+            ->setStrLabel($this->getLang("weather_unit"));
     }
 
     /**
@@ -57,17 +58,20 @@ class AdminwidgetWeather extends Adminwidget implements AdminwidgetInterface
      * Do NOT use the toolkit right here!
      *
      * @return string
+     * @throws Exception
      */
     public function getWidgetOutput()
     {
         $strReturn = "";
 
         if ($this->getFieldValue("location") == "") {
-            return "Please set up a location";
+            return $this->getEditWidgetForm();
         }
 
         if (StringUtil::indexOf($this->getFieldValue("location"), "GM") !== false) {
-            return "This widget changed, please update your location by editing the widget";
+            $strReturn = "This widget changed, please update your location by editing the widget";
+            $strReturn .= $this->getEditWidgetForm();
+            return $strReturn;
         }
 
 
@@ -117,4 +121,19 @@ class AdminwidgetWeather extends Adminwidget implements AdminwidgetInterface
         return $this->getLang("weather_name");
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getWidgetDescription()
+    {
+        return $this->getLang("weather_description");
+    }
+
+    /**
+     * @return string
+     */
+    public function getImgFileName(): string
+    {
+        return $this->imgFileName;
+    }
 }

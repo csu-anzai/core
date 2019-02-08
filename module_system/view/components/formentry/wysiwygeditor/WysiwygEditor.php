@@ -63,9 +63,9 @@ class WysiwygEditor extends FormentryComponentAbstract
      * @param string $strOpener
      * @throws \Kajona\System\System\Exception
      */
-    public function __construct($strName,  $strTitle = "", $strContent = "", $strToolbarset = "standard", $bitReadonly = false, $strOpener = "" )
+    public function __construct($strName, $strTitle = "", $strContent = "", $strToolbarset = "standard", $bitReadonly = false, $strOpener = "")
     {
-        parent::__construct($strName,  $strTitle);
+        parent::__construct($strName, $strTitle);
 
         $this->content = $strContent;
         $this->toolbarset = $strToolbarset;
@@ -89,7 +89,6 @@ class WysiwygEditor extends FormentryComponentAbstract
         if (is_file(_realpath_."project/module_system/scripts/ckeditor/config_kajona_standard.js")) {
             $this->configFile = "KAJONA_WEBPATH+'/project/module_system/scripts/ckeditor/config_kajona_standard.js'";
         }
-
     }
 
     /**
@@ -108,8 +107,6 @@ class WysiwygEditor extends FormentryComponentAbstract
             "language" => $this->language,
             "configFile" => $this->configFile,
             "modulepath" => _webpath_.Resourceloader::getInstance()->getWebPathForModule("module_system")."/view/components/formentry/wysiwygeditor/scripts/ckeditor/ckeditor.js",
-            "filebrowserBrowseUrl" => Link::getLinkAdminHref("folderview", "browserChooser", ['form_element' => 'ckeditor', 'download' => 1], false),
-            "filebrowserImageBrowseUrl" => Link::getLinkAdminHref("folderview", "browserChooser", ['form_element' => 'ckeditor', 'download' => 1], false),
         ];
 
         return $this->renderTemplate($data);

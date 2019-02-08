@@ -36,7 +36,7 @@ class WidgetList extends AbstractComponent
         $this->widgets = $widgets;
     }
 
-    /**
+    /**¡
      * @inheritdoc
      */
     public function renderComponent(): string

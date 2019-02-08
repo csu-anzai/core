@@ -22,6 +22,7 @@ use Kajona\System\System\Objectfactory;
 use Kajona\System\System\RedirectException;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Session;
+use Kajona\System\View\Components\Dynamicmenu\DynamicMenu;
 use Kajona\System\View\Components\Menu\Item\Dialog;
 use Kajona\System\View\Components\Menu\Item\Headline;
 use Kajona\System\View\Components\Menu\Item\Separator;
@@ -70,21 +71,12 @@ trait FlowControllerTrait
             return "";
         }
 
-        $strMenuId = "status-menu-" . generateSystemid();
-        $strDropdownId = "status-dropdown-" . generateSystemid();
-        $strReturn = $this->objToolkit->listButton(
-            "<span class='dropdown status-dropdown' id='" . $strDropdownId . "'><a href='#' data-toggle='dropdown' role='button'>" . $strIcon . "</a><div class='core-component-menu dropdown-menu generalContextMenu' role='menu' id='" . $strMenuId . "'></div></span>"
+        $menu = new DynamicMenu(
+            $this->objToolkit->listButton($strIcon),
+            Link::getLinkAdminXml($objListEntry->getArrModule('module'), "showStatusMenu", ["systemid" => $objListEntry->getSystemid()])
         );
 
-        $strParams = http_build_query(["admin" => 1, "module" => $objListEntry->getArrModule('module'), "action" => "showStatusMenu", "systemid" => $objListEntry->getSystemid()], null, "&");
-        $strReturn .= '<script type="text/javascript">
-require(["jquery", "ajax"], function($, ajax){
-    $("#' . $strDropdownId . '").on("show.bs.dropdown", function () {
-        ajax.loadUrlToElement("#' . $strMenuId . '", "/xml.php?' . $strParams . '");
-    });
-});
-</script>';
-
+        $strReturn = $menu->renderComponent();
         return $strReturn;
     }
 
@@ -281,10 +273,8 @@ require(["jquery", "ajax"], function($, ajax){
             $menu->addItem(new Headline($this->getLang("list_flow_no_status", "flow")));
         }
 
+        $menu->setRenderMenuContainer(false);
         $strHtml = $menu->renderComponent();
-
-        // hack to remove the div around the ul since the div is already in the html
-        preg_match("#<ul>(.*)</ul>#ims", $strHtml, $arrMatches);
 
         // js to init the tooltip for validation errors
         $strTitle = json_encode($objObject->getStrDisplayName());
@@ -301,7 +291,7 @@ require(["jquery", "ajax"], function($, ajax){
 </script>
 HTML;
 
-        return $arrMatches[0] . $strJs;
+        return $strHtml . $strJs;
     }
 
     /**

@@ -43,9 +43,11 @@ class Dialog {
 
 
     public setTitle(strTitle : string) {
-        if(strTitle == "")
-            strTitle = " ";
-        $('#' + this.containerId + '_title').text(strTitle);
+        if(strTitle == "") {
+            $('#' + this.containerId + '_title').html("&nbsp;");
+        } else {
+            $('#' + this.containerId + '_title').text(strTitle);
+        }
     }
 
     public setBitLarge(bitLarge : boolean) {

@@ -16,12 +16,14 @@ use Kajona\System\System\Validators\TextValidator;
  * @since   4.0
  * @package module_formgenerator
  */
-class FormentryText extends FormentryBase implements FormentryPrintableInterface {
+class FormentryText extends FormentryBase implements FormentryPrintableInterface
+{
 
     private $strOpener = "";
 
 
-    public function __construct($strFormName, $strSourceProperty, $objSourceObject = null) {
+    public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
+    {
         parent::__construct($strFormName, $strSourceProperty, $objSourceObject);
 
         //set the default validator
@@ -34,11 +36,13 @@ class FormentryText extends FormentryBase implements FormentryPrintableInterface
      *
      * @return string
      */
-    public function renderField() {
+    public function renderField()
+    {
         $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
         $strReturn = "";
-        if($this->getStrHint() != null)
+        if ($this->getStrHint() != null) {
             $strReturn .= $objToolkit->formTextHint($this->getStrHint(), $this->getBitHideLongHints());
+        }
 
         $strReturn .= $objToolkit->formInputText($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue(), "inputText", $this->strOpener, $this->getBitReadonly());
 
@@ -51,7 +55,8 @@ class FormentryText extends FormentryBase implements FormentryPrintableInterface
      *
      * @return string
      */
-    public function getValueAsText() {
+    public function getValueAsText()
+    {
         return $this->getStrValue();
     }
 
@@ -59,7 +64,8 @@ class FormentryText extends FormentryBase implements FormentryPrintableInterface
      * @param string $strOpener
      * @return FormentryText
      */
-    public function setStrOpener($strOpener) {
+    public function setStrOpener($strOpener)
+    {
         $this->strOpener = $strOpener;
         return $this;
     }
@@ -67,7 +73,8 @@ class FormentryText extends FormentryBase implements FormentryPrintableInterface
     /**
      * @return string
      */
-    public function getStrOpener() {
+    public function getStrOpener()
+    {
         return $this->strOpener;
     }
 

@@ -80,6 +80,19 @@ class OrmSchemamanager extends OrmBase
     }
 
     /**
+     * Returns all table definitions for a model
+     *
+     * @param string $strClass
+     * @return array
+     * @throws Exception
+     * @throws OrmException
+     */
+    public function getTableDefinitions($strClass)
+    {
+        return $this->collectTableDefinitions($strClass);
+    }
+
+    /**
      * @param OrmSchemamanagerTable $table
      * @throws Exception
      * @throws OrmException

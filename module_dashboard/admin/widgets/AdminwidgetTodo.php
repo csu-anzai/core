@@ -10,6 +10,8 @@
 namespace Kajona\Dashboard\Admin\Widgets;
 
 use Kajona\Dashboard\System\TodoRepository;
+use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\Formentries\FormentryCheckbox;
 use Kajona\System\System\Link;
 
 /**
@@ -17,6 +19,11 @@ use Kajona\System\System\Link;
  */
 class AdminwidgetTodo extends Adminwidget implements AdminwidgetInterface
 {
+    /**
+     * @var string
+     */
+    private $imgFileName = "todo.png";
+
     public function __construct()
     {
         parent::__construct();
@@ -50,6 +57,21 @@ class AdminwidgetTodo extends Adminwidget implements AdminwidgetInterface
     }
 
     /**
+     * @param AdminFormgenerator $form
+     */
+    public function getEditFormContent(AdminFormgenerator $form)
+    {
+        $arrCategories = TodoRepository::getAllCategories();
+
+        foreach ($arrCategories as $strTitle => $arrRows) {
+            $strKey = md5($strTitle);
+            $form->addField(new FormentryCheckbox("", $strKey), "")
+                ->setStrLabel($strTitle)
+                ->setStrValue($this->getFieldValue($strKey));
+        }
+    }
+
+    /**
      * This method is called, when the widget should generate it's content.
      * Return the complete content using the methods provided by the base class.
      * Do NOT use the toolkit right here!
@@ -63,8 +85,7 @@ class AdminwidgetTodo extends Adminwidget implements AdminwidgetInterface
         $arrCategories = TodoRepository::getAllCategories();
 
         if (empty($arrCategories)) {
-            $strReturn .= $this->objToolkit->warningBox($this->getLang("no_tasks_available"), "alert-info");
-            return $strReturn;
+            return $this->getEditWidgetForm();
         }
 
         $bitConfiguration = $this->hasConfiguration();
@@ -122,5 +143,21 @@ class AdminwidgetTodo extends Adminwidget implements AdminwidgetInterface
             }
         }
         return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getWidgetDescription()
+    {
+        return $this->getLang("todo_description");
+    }
+
+    /**
+     * @return string
+     */
+    public function getImgFileName(): string
+    {
+        return $this->imgFileName;
     }
 }
