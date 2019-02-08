@@ -88,7 +88,7 @@ class DbbrowserController extends AdminEvensimpler
      * @permissions view
      * @throws Exception
      * @responseType html
-     */
+     */ 
     protected function actionApiSystemSchema()
     {
         $tableName = $this->getParam("table");
@@ -165,6 +165,44 @@ class DbbrowserController extends AdminEvensimpler
         $return .= $this->objToolkit->getFieldset($this->getLang("schema_indexes"), (new DTableComponent($tableIndex))->renderComponent());
 
         return $return;
+    }
+
+
+       /**
+     * The backend call to retrun table in json
+     *
+     * @return string "" in case of success
+     * @permissions view
+     * @throws Exception
+     * @responseType json
+     */ 
+    protected function actionApiSystemSchemaJson()
+    {
+        $tableName = $this->getParam("table");
+        $details = Carrier::getInstance()->getObjDB()->getTableInformation($tableName);
+        
+        $result = [];
+        $result["columns"] = [];
+        $result["indexes"] = [] ; 
+        $result["keys"] = [] ; 
+        foreach ($details->getColumns() as $column) {
+            $result["columns"][] = [
+                "name" => $column->getName(),
+                "type" => $column->getInternalType(),
+                "dbtype" => $column->getDatabaseType(),
+                "nullable" => $column->isNullable() === true ? "null" : "not null",
+            ];
+        }
+        foreach ($details->getPrimaryKeys() as $key) {
+            $result["keys"][] = $key->getName() ; 
+        }
+        foreach ($details->getIndexes() as $index) {
+            $result["indexes"][] = [
+                "name" => $index->getName() , 
+                "description" => $index->getDescription()
+            ] ; 
+        }
+        return $result ; 
     }
 
 
