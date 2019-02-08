@@ -27,7 +27,8 @@ class FormentryTextI18n extends AbstractFormentryI18n
     protected function buildFormEntries($strFormName, $strSourceProperty, $objObject)
     {
         foreach ($this->getPossibleI18nLanguages() as $lang) {
-            $entry = new FormentryText($strFormName, "{$strSourceProperty}_{$lang}", $objObject);
+            $entry = new FormentryText($strFormName, "{$strSourceProperty}_{$lang}");
+            $entry->setObjSourceObject($objObject);
             $entry->setStrOpener($this->getStrOpener());
             $entry->setStrLabel($this->getStrLabel()." ({$lang})");
             $entry->setStrHint($this->getStrHint());

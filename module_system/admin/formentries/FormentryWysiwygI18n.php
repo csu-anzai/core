@@ -40,7 +40,8 @@ class FormentryWysiwygI18n extends AbstractFormentryI18n
         }
 
         foreach ($this->getPossibleI18nLanguages() as $lang) {
-            $entry = new FormentryWysiwyg($strFormName, "{$strSourceProperty}_{$lang}", $objObject);
+            $entry = new FormentryWysiwyg($strFormName, "{$strSourceProperty}_{$lang}");
+            $entry->setObjSourceObject($objObject);
             $entry->setStrOpener($this->strOpener);
             $entry->setStrLabel($this->getStrLabel()." ({$lang})");
             $entry->setStrHint($this->getStrHint());

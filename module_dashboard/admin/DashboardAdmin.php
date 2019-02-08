@@ -21,7 +21,7 @@ use Kajona\Dashboard\System\TodoRepository;
 use Kajona\Dashboard\View\Components\Dashboard\Dashboard;
 use Kajona\Dashboard\View\Components\Widget\Widget;
 use Kajona\Dashboard\View\Components\WidgetList\WidgetList;
-use Kajona\Dashobard\System\Lifecycle\ConfigLifecycle;
+use Kajona\Dashboard\System\Lifecycle\ConfigLifecycle;
 use Kajona\System\Admin\AdminEvensimpler;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminInterface;
@@ -41,8 +41,9 @@ use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemChangelog;
 use Kajona\System\System\SystemJSTreeBuilder;
 use Kajona\System\System\SystemJSTreeConfig;
+use Kajona\System\System\SystemModule;
 use Kajona\System\View\Components\Datatable\Datatable;
-use Kajona\System\View\Components\Menu\DynamicMenu;
+use Kajona\System\View\Components\Dynamicmenu\DynamicMenu;
 use Kajona\System\View\Components\Menu\Item\Separator;
 use Kajona\System\View\Components\Menu\Item\Text;
 use Kajona\System\View\Components\Menu\Menu;
@@ -219,11 +220,11 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
     protected function actionListWidgets()
     {
         $arrWidgetsAvailable = DashboardWidget::getListOfWidgetsAvailable();
-        foreach ($arrWidgetsAvailable as $strOneWidget) {
-            /** @var $objWidget AdminwidgetInterface|Adminwidget */
-            $objWidget = new $strOneWidget();
+        /** @var $objWidget AdminwidgetInterface|Adminwidget */
+        foreach ($arrWidgetsAvailable as $objWidget) {
             $img = "<img src='"._webpath_."/image.php?image=".urlencode($objWidget->getWidgetImg())."&amp;maxWidth=100&amp;maxHeight=60' />";
-            $arrWidget[] = ['name' => $objWidget->getWidgetName(), 'info' => $objWidget->getWidgetDescription(), 'img' => $img, 'class' => get_class($objWidget)];
+            $module = $this->getLang("modul_titel", StringUtil::replace("module_", "", $objWidget->getModuleName()));
+            $arrWidget[] = ['name' => $objWidget->getWidgetName(), 'info' => $objWidget->getWidgetDescription(), 'img' => $img, 'class' => get_class($objWidget), "module" => $module];
         }
 
         $wListService = new WidgetList($arrWidget);
@@ -256,7 +257,7 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
                         "",
                         false
                     );
-                }
+            }
         }
         if ($objDashboardWidget->rightDelete()) {
             $strQuestion = StringUtil::replace("%%element_name%%", StringUtil::jsSafeString($objConcreteWidget->getWidgetName()), $this->getLang("widgetDeleteQuestion"));
@@ -366,11 +367,11 @@ JS;
         //let it process its fields
         $objWidget->loadFieldsFromArray($this->getAllParams());
 
-            //and save the dashboard-entry
-            $objDashboard = new DashboardWidget();
-            $objDashboard->setStrClass($strWidgetClass);
-            $objDashboard->setStrContent($objWidget->getFieldsAsString());
-            $objDashboard->setStrColumn($this->getParam("column"));
+        //and save the dashboard-entry
+        $objDashboard = new DashboardWidget();
+        $objDashboard->setStrClass($strWidgetClass);
+        $objDashboard->setStrContent($objWidget->getFieldsAsString());
+        $objDashboard->setStrColumn($this->getParam("column"));
 
         try {
             $userNode = DashboardUserRoot::getOrCreateForUser(Session::getInstance()->getUserID());
@@ -510,7 +511,6 @@ JS;
             //disable the internal changelog
             SystemChangelog::$bitChangelogEnabled = false;
             $strReturn = json_encode($objConcreteWidget->generateWidgetOutput());
-
         } else {
             ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
             $strReturn = "<message><error>".xmlSafeString($this->getLang("commons_error_permissions"))."</error></message>";
@@ -558,7 +558,6 @@ JS;
             } catch (ServiceLifeCycleUpdateException $e) {
                 $strReturn = $this->getLang("errorSavingWidget");
             }
-
         } else {
             ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
             $strReturn = "<message><error>".xmlSafeString($this->getLang("commons_error_permissions"))."</error></message>";

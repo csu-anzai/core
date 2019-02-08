@@ -22,7 +22,7 @@ use Kajona\System\System\Objectfactory;
 use Kajona\System\System\RedirectException;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Session;
-use Kajona\System\View\Components\Menu\DynamicMenu;
+use Kajona\System\View\Components\Dynamicmenu\DynamicMenu;
 use Kajona\System\View\Components\Menu\Item\Dialog;
 use Kajona\System\View\Components\Menu\Item\Headline;
 use Kajona\System\View\Components\Menu\Item\Separator;
