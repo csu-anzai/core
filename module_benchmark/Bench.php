@@ -63,11 +63,16 @@ class Bench
         }
 
         echo PHP_EOL;
+        $this->checkModules();
+        echo PHP_EOL;
         echo "Finished.".PHP_EOL;
         echo "</pre>";
 
     }
 
+    private function checkModules() {
+        echo "do IT".PHP_EOL;
+    }
 }
 
 (new Bench())->main();
