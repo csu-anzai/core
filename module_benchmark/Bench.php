@@ -167,8 +167,6 @@ class Bench
             echo PHP_EOL."=> Please verify!! The PHP dir MUSST BE in PATH!!!".PHP_EOL;
         }
         echo "-".str_pad("", 120, "-").PHP_EOL;
-
-
     }
 }
 
