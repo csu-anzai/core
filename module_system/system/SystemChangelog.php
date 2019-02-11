@@ -9,6 +9,7 @@
 namespace Kajona\System\System;
 
 use ArrayAccess;
+use Kajona\System\System\Changelogprovider\ChangelogProviderInterface;
 
 /**
  * The changelog is a global wrapper to the gui-based logging.
@@ -26,7 +27,7 @@ use ArrayAccess;
  * @module system
  * @moduleId _system_modul_id_
  */
-class SystemChangelog
+class   SystemChangelog
 {
 
     const ANNOTATION_PROPERTY_VERSIONABLE = "@versionable";
@@ -1043,7 +1044,7 @@ class SystemChangelog
         }
 
         $arrReturn = Resourceloader::getInstance()->getFolderContent(
-            "/system",
+            "/system/changelogprovider",
             array(".php"),
             false,
             null,

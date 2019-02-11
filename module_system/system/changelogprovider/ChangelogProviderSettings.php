@@ -6,7 +6,9 @@
 *	$Id$                      *
 ********************************************************************************************************/
 
-namespace Kajona\System\System;
+namespace Kajona\System\System\Changelogprovider;
+
+use Kajona\System\System\SystemSetting;
 
 /**
  * A simple provider to separate settings-changes from the other changes
@@ -36,7 +38,7 @@ class ChangelogProviderSettings implements ChangelogProviderInterface
      */
     public function getHandledClasses()
     {
-        return array("Kajona\\System\\System\\SystemSetting");
+        return array(SystemSetting::class);
     }
 
 }
