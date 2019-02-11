@@ -46,6 +46,7 @@ class Bench
         "zip",
         "SourceGuardian"
     );
+
     public function main()
     {
         error_reporting(E_ALL);
@@ -117,9 +118,9 @@ class Bench
         foreach($this->extentions AS $one) {
             echo str_pad($one,25);
             if (in_array(strtolower($one), $extensionsLoaded)) {
-                echo " Loaded!".PHP_EOL;
+                echo " <span style='color:green'>Loaded!</span>".PHP_EOL;
             }
-            else echo " Missing...".PHP_EOL;
+            else echo " <span style='color:red'>Missing...</span>".PHP_EOL;
         }
         echo PHP_EOL;
 
@@ -131,14 +132,12 @@ class Bench
         echo PHP_EOL;
         echo "Check PHP values".PHP_EOL;
 
-        /*
+        /* AGP settings
         max_execution_time   = 3600
         memory_limit =1024M
         post_max_size = 20M
         upload_max_filesize = 20M
         date.timezone = Europe/Berlin
-        phar.readonly = On
-        mail.add_x_header = On
         allow_url_fopen = On
         opcache.enable=1
         */
@@ -151,8 +150,6 @@ class Bench
         echo str_pad(ini_get('post_max_size'),15). " | 20M".PHP_EOL;
         echo str_pad(ini_get('upload_max_filesize'),15). " | 20M".PHP_EOL;
         echo str_pad(ini_get('date.timezone'),15). " | Europe/Berlin".PHP_EOL;
-        //echo str_pad(ini_get('phar.readonly'),15). " | On or 1".PHP_EOL;
-        //echo str_pad(ini_get('mail.add_x_header'),15). " | On or 1".PHP_EOL;
         echo str_pad(ini_get('allow_url_fopen'),15). " | On or 1".PHP_EOL;
         echo str_pad(ini_get('opcache.enable'),15). " | 1".PHP_EOL;
         echo PHP_EOL;
@@ -171,7 +168,7 @@ class Bench
             echo PHP_EOL;
             echo PHP_EOL."We are running under Windows! Checking PATH...".PHP_EOL;
             echo exec("path");
-            echo PHP_EOL."=> Please verify!! The PHP dir MUSST BE in PATH!!!".PHP_EOL;
+            echo PHP_EOL."=> Please verify!! The PHP dir NEED TO BE in PATH!!!".PHP_EOL;
         }
         echo "-".str_pad("", 120, "-").PHP_EOL;
     }
