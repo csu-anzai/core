@@ -20,6 +20,32 @@ class Bench
 
     const ITERATIONS = 2;
 
+    private $extentions = array(
+        "curl",
+        "exif",
+        "fileinfo",
+        "gd",
+        "iconv",
+        "json",
+        "ldap",
+        "libxml",
+        "mbstring",
+        "openssl",
+        "Zend OPcache",
+        "pcre",
+        "Phar",
+        "Reflection",
+        "session",
+        "SimpleXML",
+        "sockets",
+        "SPL",
+        "xml",
+        "xmlreader",
+        "xmlwriter",
+        "xsl",
+        "zip",
+        "SourceGuardian"
+    );
     public function main()
     {
         error_reporting(E_ALL);
@@ -77,40 +103,20 @@ class Bench
         echo "</pre>";
 
     }
-    private $AGPPHPEXTENSIONS = array(
-        "curl",
-        "exif",
-        "fileinfo",
-        "gd",
-        "iconv",
-        "json",
-        "ldap",
-        "libxml",
-        "mbstring",
-        "openssl",
-        "Zend OPcache",
-        "pcre",
-        "Phar",
-        "Reflection",
-        "session",
-        "SimpleXML",
-        "sockets",
-        "SPL",
-        "xml",
-        "xmlreader",
-        "xmlwriter",
-        "xsl",
-        "zip",
-        "SourceGuardian"
-    );
+
 
     private function checkModules() {
         echo PHP_EOL;
         echo "-".str_pad("", 120, "-").PHP_EOL;
         echo "Check required php extensions".PHP_EOL;
-        foreach($this->AGPPHPEXTENSIONS AS $one) {
+
+        $extensionsLoaded = array_map(function(string $val) {
+            return strtolower($val);
+        }, get_loaded_extensions());
+
+        foreach($this->extentions AS $one) {
             echo str_pad($one,25);
-            if (in_array($one, get_loaded_extensions())) {
+            if (in_array(strtolower($one), $extensionsLoaded)) {
                 echo " Loaded!".PHP_EOL;
             }
             else echo " Missing...".PHP_EOL;
@@ -138,14 +144,15 @@ class Bench
         */
 
         echo str_pad("current value",15). " | should be ".PHP_EOL;
+        //TODO: hier muss noch der Name der Setting ausgegeben werden!
         echo "-".str_pad("", 40, "-").PHP_EOL;
         echo str_pad(ini_get('max_execution_time'),15). " | 3600".PHP_EOL;
         echo str_pad(ini_get('memory_limit'),15). " | 1024M".PHP_EOL;
         echo str_pad(ini_get('post_max_size'),15). " | 20M".PHP_EOL;
         echo str_pad(ini_get('upload_max_filesize'),15). " | 20M".PHP_EOL;
         echo str_pad(ini_get('date.timezone'),15). " | Europe/Berlin".PHP_EOL;
-        echo str_pad(ini_get('phar.readonly'),15). " | On or 1".PHP_EOL;
-        echo str_pad(ini_get('mail.add_x_header'),15). " | On or 1".PHP_EOL;
+        //echo str_pad(ini_get('phar.readonly'),15). " | On or 1".PHP_EOL;
+        //echo str_pad(ini_get('mail.add_x_header'),15). " | On or 1".PHP_EOL;
         echo str_pad(ini_get('allow_url_fopen'),15). " | On or 1".PHP_EOL;
         echo str_pad(ini_get('opcache.enable'),15). " | 1".PHP_EOL;
         echo PHP_EOL;
