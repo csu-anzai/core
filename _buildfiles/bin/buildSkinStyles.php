@@ -29,7 +29,8 @@ $arrExcludedModules["core"][] = "_buildfiles";
 $arrExcludedModules["core"][] = "module_installer";
 
 if (in_array("module_v4skin", $arrExcludedModules['core']) || !in_array("module_v4skin", $arrIncludedModules['core'])) {
-    return;
+    echo "less build not required".PHP_EOL;
+    exit(0);
 }
 
 $arrFolders = [];
