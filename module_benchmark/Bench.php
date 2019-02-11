@@ -142,16 +142,15 @@ class Bench
         opcache.enable=1
         */
 
-        echo str_pad("current value",15). " | should be ".PHP_EOL;
-        //TODO: hier muss noch der Name der Setting ausgegeben werden!
-        echo "-".str_pad("", 40, "-").PHP_EOL;
-        echo str_pad(ini_get('max_execution_time'),15). " | 3600".PHP_EOL;
-        echo str_pad(ini_get('memory_limit'),15). " | 1024M".PHP_EOL;
-        echo str_pad(ini_get('post_max_size'),15). " | 20M".PHP_EOL;
-        echo str_pad(ini_get('upload_max_filesize'),15). " | 20M".PHP_EOL;
-        echo str_pad(ini_get('date.timezone'),15). " | Europe/Berlin".PHP_EOL;
-        echo str_pad(ini_get('allow_url_fopen'),15). " | On or 1".PHP_EOL;
-        echo str_pad(ini_get('opcache.enable'),15). " | 1".PHP_EOL;
+        echo str_pad("php settings",20) .str_pad("current value",15). " | should be ".PHP_EOL;
+        echo "-".str_pad("", 60, "-").PHP_EOL;
+        echo str_pad("max_execution_time",20) .str_pad(ini_get('max_execution_time'),15). " | 3600".PHP_EOL;
+        echo str_pad("memory_limit",20) .str_pad(ini_get('memory_limit'),15). " | 1024M".PHP_EOL;
+        echo str_pad("post_max_size",20) .str_pad(ini_get('post_max_size'),15). " | 20M".PHP_EOL;
+        echo str_pad("upload_max_filesize",20) .str_pad(ini_get('upload_max_filesize'),15). " | 20M".PHP_EOL;
+        echo str_pad("date.timezone",20) .str_pad(ini_get('date.timezone'),15). " | Europe/Berlin".PHP_EOL;
+        echo str_pad("allow_url_fopen",20) .str_pad(ini_get('allow_url_fopen'),15). " | On or 1".PHP_EOL;
+        echo str_pad("opcache.enable",20) .str_pad(ini_get('opcache.enable'),15). " | 1".PHP_EOL;
         echo PHP_EOL;
 
         echo "-".str_pad("", 120, "-").PHP_EOL;
