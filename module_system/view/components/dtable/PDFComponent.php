@@ -12,7 +12,7 @@ use Kajona\System\View\Components\AbstractComponent;
 use Kajona\System\View\Components\Dtable\Model\DTable;
 
 /**
- * Component which renders a DTable model to an HTML table which can be used by the PDF HTML writer
+ * Component which renders a HTML table which is optimized for the PDF HTML writer
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.1
