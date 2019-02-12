@@ -20,6 +20,33 @@ class Bench
 
     const ITERATIONS = 2;
 
+    private $extentions = array(
+        "curl",
+        "exif",
+        "fileinfo",
+        "gd",
+        "iconv",
+        "json",
+        "ldap",
+        "libxml",
+        "mbstring",
+        "openssl",
+        "Zend OPcache",
+        "pcre",
+        "Phar",
+        "Reflection",
+        "session",
+        "SimpleXML",
+        "sockets",
+        "SPL",
+        "xml",
+        "xmlreader",
+        "xmlwriter",
+        "xsl",
+        "zip",
+        "SourceGuardian"
+    );
+
     public function main()
     {
         error_reporting(E_ALL);
@@ -77,43 +104,23 @@ class Bench
         echo "</pre>";
 
     }
-    private $AGPPHPEXTENSIONS = array(
-        "curl",
-        "exif",
-        "fileinfo",
-        "gd",
-        "iconv",
-        "json",
-        "ldap",
-        "libxml",
-        "mbstring",
-        "openssl",
-        "Zend OPcache",
-        "pcre",
-        "Phar",
-        "Reflection",
-        "session",
-        "SimpleXML",
-        "sockets",
-        "SPL",
-        "xml",
-        "xmlreader",
-        "xmlwriter",
-        "xsl",
-        "zip",
-        "SourceGuardian"
-    );
+
 
     private function checkModules() {
         echo PHP_EOL;
         echo "-".str_pad("", 120, "-").PHP_EOL;
         echo "Check required php extensions".PHP_EOL;
-        foreach($this->AGPPHPEXTENSIONS AS $one) {
+
+        $extensionsLoaded = array_map(function(string $val) {
+            return strtolower($val);
+        }, get_loaded_extensions());
+
+        foreach($this->extentions AS $one) {
             echo str_pad($one,25);
-            if (in_array($one, get_loaded_extensions())) {
-                echo " Loaded!".PHP_EOL;
+            if (in_array(strtolower($one), $extensionsLoaded)) {
+                echo " <span style='color:green'>Loaded!</span>".PHP_EOL;
             }
-            else echo " Missing...".PHP_EOL;
+            else echo " <span style='color:red'>Missing...</span>".PHP_EOL;
         }
         echo PHP_EOL;
 
@@ -125,29 +132,25 @@ class Bench
         echo PHP_EOL;
         echo "Check PHP values".PHP_EOL;
 
-        /*
+        /* AGP settings
         max_execution_time   = 3600
         memory_limit =1024M
         post_max_size = 20M
         upload_max_filesize = 20M
         date.timezone = Europe/Berlin
-        phar.readonly = On
-        mail.add_x_header = On
         allow_url_fopen = On
         opcache.enable=1
         */
 
-        echo str_pad("current value",15). " | should be ".PHP_EOL;
-        echo "-".str_pad("", 40, "-").PHP_EOL;
-        echo str_pad(ini_get('max_execution_time'),15). " | 3600".PHP_EOL;
-        echo str_pad(ini_get('memory_limit'),15). " | 1024M".PHP_EOL;
-        echo str_pad(ini_get('post_max_size'),15). " | 20M".PHP_EOL;
-        echo str_pad(ini_get('upload_max_filesize'),15). " | 20M".PHP_EOL;
-        echo str_pad(ini_get('date.timezone'),15). " | Europe/Berlin".PHP_EOL;
-        echo str_pad(ini_get('phar.readonly'),15). " | On or 1".PHP_EOL;
-        echo str_pad(ini_get('mail.add_x_header'),15). " | On or 1".PHP_EOL;
-        echo str_pad(ini_get('allow_url_fopen'),15). " | On or 1".PHP_EOL;
-        echo str_pad(ini_get('opcache.enable'),15). " | 1".PHP_EOL;
+        echo str_pad("php settings",20) .str_pad("current value",15). " | should be ".PHP_EOL;
+        echo "-".str_pad("", 60, "-").PHP_EOL;
+        echo str_pad("max_execution_time",20) .str_pad(ini_get('max_execution_time'),15). " | 3600".PHP_EOL;
+        echo str_pad("memory_limit",20) .str_pad(ini_get('memory_limit'),15). " | 1024M".PHP_EOL;
+        echo str_pad("post_max_size",20) .str_pad(ini_get('post_max_size'),15). " | 20M".PHP_EOL;
+        echo str_pad("upload_max_filesize",20) .str_pad(ini_get('upload_max_filesize'),15). " | 20M".PHP_EOL;
+        echo str_pad("date.timezone",20) .str_pad(ini_get('date.timezone'),15). " | Europe/Berlin".PHP_EOL;
+        echo str_pad("allow_url_fopen",20) .str_pad(ini_get('allow_url_fopen'),15). " | On or 1".PHP_EOL;
+        echo str_pad("opcache.enable",20) .str_pad(ini_get('opcache.enable'),15). " | 1".PHP_EOL;
         echo PHP_EOL;
 
         echo "-".str_pad("", 120, "-").PHP_EOL;
@@ -164,7 +167,7 @@ class Bench
             echo PHP_EOL;
             echo PHP_EOL."We are running under Windows! Checking PATH...".PHP_EOL;
             echo exec("path");
-            echo PHP_EOL."=> Please verify!! The PHP dir MUSST BE in PATH!!!".PHP_EOL;
+            echo PHP_EOL."=> Please verify!! The PHP dir NEED TO BE in PATH!!!".PHP_EOL;
         }
         echo "-".str_pad("", 120, "-").PHP_EOL;
     }
