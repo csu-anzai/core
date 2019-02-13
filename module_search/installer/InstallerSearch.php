@@ -172,7 +172,8 @@ class InstallerSearch extends InstallerBase implements InstallerRemovableInterfa
         $this->objDB->addColumn("agp_search_search", "search_change_start",DbDatatypes::STR_TYPE_LONG);
         $this->objDB->addColumn("agp_search_search", "search_change_end",DbDatatypes::STR_TYPE_LONG);
 
-        foreach ($this->objDB->getGenerator("SELECT system_date_start, system_date_end, search_search_id FROM agp_system_date, agp_search_search WHERE system_date_id = search_search_id ORDER BY system_date_id DESC", []) as $sets) {
+        $generator = $this->objDB->getGenerator("SELECT system_date_start, system_date_end, search_search_id FROM agp_system_date, agp_search_search WHERE system_date_id = search_search_id ORDER BY system_date_id DESC", [], 2048, false);
+        foreach ($generator as $sets) {
             foreach ($sets as $row) {
                 $this->objDB->_pQuery("UPDATE agp_search_search SET search_change_start = ?, search_change_end = ? WHERE search_search_id = ?", [$row["system_date_start"], $row["system_date_end"], $row["search_search_id"]]);
                 $this->objDB->_pQuery("DELETE FROM agp_system_date WHERE system_date_id = ?", [$row["search_search_id"]]);
