@@ -1545,6 +1545,8 @@ HTML;
      */
     public function listConfirmationButton($strDialogContent, $strConfirmationLinkHref, $strButton, $strButtonTooltip, $strHeader = "", $strConfirmationButtonLabel = "")
     {
+        $strDialogContent = StringUtil::jsSafeString($strDialogContent);
+
         //get the reload-url
         if (StringUtil::indexOf($strConfirmationLinkHref, "javascript:") === false) {
             $strParam = (StringUtil::indexOf($strConfirmationLinkHref, "?") ? "&" : "?") ."reloadUrl='+encodeURIComponent(document.location.hash.substr(1))+'";
