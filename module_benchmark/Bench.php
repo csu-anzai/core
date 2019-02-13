@@ -178,7 +178,7 @@ class Bench
         echo "-".str_pad("", 120, "-").PHP_EOL;
 
         if($missingext>0)
-            DIE("<span style='color:red'>An error occurred. Performance test will not be startet! Exit now!</span>".PHP_EOL.PHP_EOL);
+            DIE("<span style='color:red; font-weight: bold'>An error occurred. Performance test will not be startet! Exit now!</span>".PHP_EOL.PHP_EOL);
     }
 }
 
