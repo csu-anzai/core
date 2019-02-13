@@ -70,6 +70,8 @@ class Bench
         echo "OS details:      ". php_uname() .PHP_EOL;
         echo "Request:         ".date("d.m.Y H:i:s")." from ".$_SERVER['REMOTE_ADDR']    .PHP_EOL;
 
+        echo PHP_EOL;
+        $this->checkModules();
 
         echo PHP_EOL;
         echo "| ".str_pad("Bench", 60)."| ".str_pad("Duration", 30)."|".PHP_EOL;
@@ -97,9 +99,6 @@ class Bench
         }
 
         echo PHP_EOL;
-        $this->checkModules();
-
-        echo PHP_EOL;
         echo "Finished.".PHP_EOL;
         echo "</pre>";
 
@@ -115,14 +114,20 @@ class Bench
             return strtolower($val);
         }, get_loaded_extensions());
 
+        $missingext=0;
+
         foreach($this->extentions AS $one) {
             echo str_pad($one,25);
             if (in_array(strtolower($one), $extensionsLoaded)) {
                 echo " <span style='color:green'>Loaded!</span>".PHP_EOL;
             }
-            else echo " <span style='color:red'>Missing...</span>".PHP_EOL;
+            else {
+                echo " <span style='color:red'>Missing...</span>".PHP_EOL;
+                $missingext++;
+            }
         }
         echo PHP_EOL;
+        echo "Number of missing PHP extensions: ".$missingext. PHP_EOL;
 
         //### show all loaded extensions ###
         //echo "Loaded php extensions".PHP_EOL;
@@ -145,6 +150,7 @@ class Bench
         echo str_pad("php settings",20) .str_pad("current value",15). " | should be ".PHP_EOL;
         echo "-".str_pad("", 60, "-").PHP_EOL;
         echo str_pad("max_execution_time",20) .str_pad(ini_get('max_execution_time'),15). " | 3600".PHP_EOL;
+        if(ini_get('max_execution_time')<3600) echo "<span style='color:red'>Warning! max_execution_time to low!! Will not start performance test!</span>".PHP_EOL;
         echo str_pad("memory_limit",20) .str_pad(ini_get('memory_limit'),15). " | 1024M".PHP_EOL;
         echo str_pad("post_max_size",20) .str_pad(ini_get('post_max_size'),15). " | 20M".PHP_EOL;
         echo str_pad("upload_max_filesize",20) .str_pad(ini_get('upload_max_filesize'),15). " | 20M".PHP_EOL;
@@ -167,9 +173,12 @@ class Bench
             echo PHP_EOL;
             echo PHP_EOL."We are running under Windows! Checking PATH...".PHP_EOL;
             echo exec("path");
-            echo PHP_EOL."=> Please verify!! The PHP dir NEED TO BE in PATH!!!".PHP_EOL;
+            echo PHP_EOL."=> Please verify!! The PHP dir NEEDS TO BE in PATH!!!".PHP_EOL;
         }
         echo "-".str_pad("", 120, "-").PHP_EOL;
+
+        if($missingext>0)
+            DIE("<span style='color:red'>An error occurred. Performance test will not be startet! Exit now!</span>".PHP_EOL.PHP_EOL);
     }
 }
 
