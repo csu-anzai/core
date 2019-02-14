@@ -18,7 +18,7 @@ use Kajona\System\View\Components\Dtable\Model\DTable;
  * @since 7.1
  * @componentTemplate core/module_system/view/components/dtable/pdf.twig
  */
-class PDFComponent extends AbstractComponent
+class PDFTable extends AbstractComponent
 {
     /**
      * @var DTable
