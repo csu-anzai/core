@@ -29,8 +29,14 @@ Vue.component('dbbrowser-list', {
     },
     template: `<div class="dbbrowser-list">
     <h2>{{ headline }}</h2>
-    <ul>
-        <li v-for="(tableName, index) in tables"><a v-on:click="loadDetail(tableName)">{{ tableName }}</a></li>
-    </ul>
+    <table class="table admintable table-striped-tbody">
+        <tbody v-for="(tableName, index) in tables">
+            <tr>
+                <td v-on:click="loadDetail(tableName)">
+                    {{ tableName }}             
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>`
 });
