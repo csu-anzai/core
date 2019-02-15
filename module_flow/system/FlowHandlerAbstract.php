@@ -194,7 +194,7 @@ abstract class FlowHandlerAbstract implements FlowHandlerInterface
      * @param bool $shortCircuit
      * @return FlowConditionResult
      */
-    private function validateTransitionsConditions(Model $objObject, FlowTransition $objTransition, $shortCircuit = false)
+    private function validateTransitionsConditions(Model $objObject, FlowTransition $objTransition, bool $shortCircuit = false)
     {
         $objResult = new FlowConditionResult();
 
