@@ -125,7 +125,7 @@ abstract class FlowHandlerAbstract implements FlowHandlerInterface
     /**
      * @inheritdoc
      */
-    public function validateStatusTransition(Model $objObject, FlowTransition $objTransition, $shortCircuit = false) : FlowConditionResult
+    public function validateStatusTransition(Model $objObject, FlowTransition $objTransition, bool $shortCircuit = false) : FlowConditionResult
     {
         $objResult = new FlowConditionResult();
 
