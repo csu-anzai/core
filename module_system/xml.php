@@ -66,6 +66,11 @@ class Xml
             $this->objResponse->addHeader("Access-Control-Allow-Headers: Authorization");
         }
 
+        if ($_SERVER["REQUEST_METHOD"] == "OPTIONS") {
+            ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_OK);
+            return;
+        }
+
         //only allowed with a module definition. if not given skip, so that there's no exception thrown
         if (empty($strModule)) {
             ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_BADREQUEST);
