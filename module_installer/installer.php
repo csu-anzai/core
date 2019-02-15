@@ -7,7 +7,10 @@
 
 
 namespace Kajona\Installer;
-
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Headers:Origin, X-Requested-With, Content-Type, Accept,  Authorization');
+header('Access-Control-Allow-Methods: GET, POST,OPTIONS') ;
+header('Access-Control-Allow-Credentials: true');
 use Kajona\Packagemanager\System\PackagemanagerManager;
 use Kajona\Packagemanager\System\PackagemanagerMetadata;
 use Kajona\Installer\System\SamplecontentInstallerHelper;
@@ -18,6 +21,7 @@ use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\DbConnectionParams;
 use Kajona\System\System\Exception;
 use Kajona\System\System\HttpResponsetypes;
+use Kajona\System\System\HttpStatuscodes;
 use Kajona\System\System\Lang;
 use Kajona\System\System\RequestEntrypointEnum;
 use Kajona\System\System\Resourceloader;
@@ -102,6 +106,32 @@ class Installer
     }
 
 
+    private function getModuleList() {
+            //fetch all packages
+
+        $objManager = new PackagemanagerManager();
+        $arrModules = $objManager->getAvailablePackages();
+
+        $return = [];
+
+        $this->arrMetadata = array();
+        
+        foreach ($arrModules as $objOneModule) {
+            $return[]=[
+                "name" => $objOneModule->getStrTitle(),
+                "version" => $objOneModule->getStrVersion(),
+            ];
+
+            if ($objOneModule->getBitProvidesInstaller()) {
+                $this->arrMetadata[] = $objOneModule;
+            }
+        }
+
+        return json_encode($return);
+
+        $this->arrMetadata = $objManager->sortPackages($this->arrMetadata, true);
+    }
+
     /**
      * Action block to control the behaviour
      */
@@ -109,7 +139,14 @@ class Installer
     {
         ResponseObject::getInstance()->setObjEntrypoint(RequestEntrypointEnum::INSTALLER());
 
-        //fetch posts
+        if (isset($_GET['step']) && $_GET["step"] == "apiList") {
+            ResponseObject::getInstance()->setStrResponseType(HttpResponsetypes::STR_TYPE_JSON);
+            ResponseObject::getInstance()->setStrContent($this->getModuleList());
+            return;
+        }
+
+
+//        //fetch posts
         if (isset($_POST['step']) && $_POST["step"] == "getNextAutoInstall") {
             ResponseObject::getInstance()->setStrResponseType(HttpResponsetypes::STR_TYPE_JSON);
             ResponseObject::getInstance()->setStrContent($this->getNextAutoInstall());
@@ -164,10 +201,6 @@ class Installer
             $this->createModuleInstalls();
         }
 
-        elseif ($_GET["step"] == "samplecontent") {
-            $this->installSamplecontent();
-        }
-
         elseif ($_GET["step"] == "finish") {
             $this->finish();
         }
@@ -179,6 +212,136 @@ class Installer
         ResponseObject::getInstance()->setStrContent($strContent);
     }
 
+
+        public function action_api(){
+            ResponseObject::getInstance()->setObjEntrypoint(RequestEntrypointEnum::INSTALLER());
+            $payload = json_decode(file_get_contents("php://input"), true);
+
+
+
+            $arrayData = [];
+            if (Carrier::getInstance()->getParam("step") == "phpenv") {
+                $arrayData = $this->checkPHPSetting_api();
+            }
+            else if(Carrier::getInstance()->getParam("step")=="checkModule")
+            {
+                // $arrayData=$this->configWizard_api($payload);
+                $arrayData=$this->checkAvailableModules_api($payload);
+                
+            }
+            else if(Carrier::getInstance()->getParam("step")=="validateDataPassed")
+            {
+                $arrayData=$this-> validateDataPassed_api($payload);
+            }
+            else if(Carrier::getInstance()->getParam("step")=="checkAdminLoginData")
+            {
+                $arrayData=$this->adminLoginDataCheck_api();
+            }
+            else if(Carrier::getInstance()->getParam("step")=="saveAdminLoginData")
+            {
+                $arrayData=$this->adminLoginData_api($payload);
+            }
+
+            ResponseObject::getInstance()->setStrResponseType(HttpResponsetypes::STR_TYPE_JSON);
+            ResponseObject::getInstance()->setStrContent(json_encode($arrayData));
+            ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_OK);
+        }
+        private function checkPHPSetting_api(){
+            $strReturn = "";
+
+
+            $arrFilesAndFolders = array(
+                "/project/module_system/system/config",
+                "/project/dbdumps",
+                "/project/log",
+                "/project/temp",
+                "/files/cache",
+                "/files/images",
+                "/files/downloads",
+                "/files/temp",
+            );
+
+
+            $arrModules = array(
+                "curl",
+                "exif",
+                "fileinfo",
+                "gd",
+                "iconv",
+                "json",
+                "ldap",
+                "libxml",
+                "mbstring",
+                "openssl",
+                "zend opcache",
+                "pcre",
+                "phar",
+                "reflection",
+                "session",
+                "simplexml",
+                "sockets",
+                "spl",
+                "xml",
+                "xmlreader",
+                "xmlwriter",
+                "xsl",
+                "zip"
+            );
+
+            $arrChecksLanguages = [];
+            //link to different languages
+            $arrLangs = array("de", "en");
+            foreach ($arrLangs as $strOneLang) {
+                $arrChecksLanguages[] = "<a href=\""._webpath_."/installer.php?language=".$strOneLang."\">".Carrier::getInstance()->getObjLang()->getLang("lang_".$strOneLang, "user")."</a>";
+            }
+
+            if (version_compare(phpversion(), $this->strMinPhpVersion, "<")) {
+//                $minPhpVersion = "<span class=\"label label-danger label-as-badge\">&lt; ".$this->strMinPhpVersion."</span>";
+                $minPhpVersion=$this->strMinPhpVersion;
+            }
+            else {
+//                $minPhpVersion = "<span class=\"label label-success label-as-badge\">".phpversion()."</span>";
+                $minPhpVersion=phpversion();
+            }
+
+            $arrChecksFolder = [];
+            foreach ($arrFilesAndFolders as $strOneFile) {
+                if (is_writable(_realpath_.$strOneFile)) {
+                    $arrChecksFolder[$strOneFile] = true;
+                }
+                else {
+                    $arrChecksFolder[$strOneFile] = false;
+                }
+            }
+
+            $arrChecksModules = [];
+            foreach ($arrModules as $strOneModule) {
+                $extensions = array_map(function(string $val) {
+                    return strtolower($val);
+                }, get_loaded_extensions());
+                if (in_array($strOneModule, $extensions)) {
+                    $arrChecksModules[$strOneModule] = true;
+                }
+                else {
+                    $arrChecksModules[$strOneModule] = false;
+                }
+            }
+
+            $this->strForwardLink = $this->getForwardLink(_webpath_."/installer.php?step=config");
+            $this->strBackwardLink = "";
+
+            /** @var \Twig_Environment $twig */
+            $twig = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);
+
+         return [
+                "phpcheck_languages" => implode("|", $arrChecksLanguages),
+                "fileChecksFolder" => $arrChecksFolder,
+                "fileChecksModules" => $arrChecksModules,
+                "minPhpVersion" => $minPhpVersion
+            ];
+
+           # $this->strOutput = $strReturn;
+        }
     /**
      * Makes a few checks on files and settings for a correct webserver
      */
@@ -285,10 +448,10 @@ class Installer
     {
         $strReturn = "";
 
-        if ($this->checkDefaultValues()) {
-            ResponseObject::getInstance()->setStrRedirectUrl(_webpath_."/installer.php?step=loginData");
-            return;
-        }
+       if ($this->checkDefaultValues()) {
+        //    ResponseObject::getInstance()->setStrRedirectUrl(_webpath_."/installer.php?step=loginData");
+        //    return;
+       }
 
         $bitCxCheck = true;
 
@@ -375,7 +538,81 @@ class Installer
 
         $this->strOutput = $strReturn;
     }
+    // old config wizard validation 
+    private function validateDataPassed_api(array $payload){
+                 if ($this->checkDefaultValues()) {
+            //  ResponseObject::getInstance()->setStrRedirectUrl(_webpath_."/installer.php?step=loginData");
+             return array("step"=>"loginData");
+         }
 
+        $bitCxCheck = true;
+
+        if (isset($payload["write"]) && $payload["write"] == "true") {
+
+            //try to validate the data passed
+            $bitCxCheck = Carrier::getInstance()->getObjDB()->validateDbCxData($payload["driver"], new DbConnectionParams($payload["hostname"], $payload["username"], $payload["password"], $payload["dbname"], $payload["port"]));
+
+            if ($bitCxCheck) {
+                $strFileContent = "<?php\n";
+                $strFileContent .= "/*\n Kajona V7 config-file.\n If you want to overwrite additional settings, copy them from /core/module_system/system/config/config.php into this file.\n*/";
+                $strFileContent .= "\n\n\n";
+                $strFileContent .= "  \$config['dbhost']               = '".$payload["hostname"]."';                   //Server name \n";
+                $strFileContent .= "  \$config['dbusername']           = '".$payload["username"]."';                   //Username \n";
+                $strFileContent .= "  \$config['dbpassword']           = '".$payload["password"]."';                   //Password \n";
+                $strFileContent .= "  \$config['dbname']               = '".$payload["dbname"]."';                     //Database name \n";
+                $strFileContent .= "  \$config['dbdriver']             = '".$payload["driver"]."';                     //DB-Driver \n";
+                $strFileContent .= "  \$config['dbport']               = '".$payload["port"]."';                       //Database port \n";
+
+                $strFileContent .= "\n";
+                //and save to file
+                file_put_contents($this->STR_PROJECT_CONFIG_FILE, $strFileContent);
+
+                // flush cache after config was written
+                Classloader::getInstance()->flushCache();
+
+                // and reload
+//                ResponseObject::getInstance()->setStrRedirectUrl(_webpath_."/installer.php?step=loginData");
+//                $this->strOutput = "";
+                 return array("step"=>"loginData");
+            }
+        }
+        return array("step"=>"phpenv");
+    }
+    private function checkAvailableModules_api(array $payload){
+
+        if(in_array($payload["dbDriver"], get_loaded_extensions())){
+            return array("found"=>true);
+        }else
+        {
+            return array("found"=>false);
+        }
+    }
+
+     private function adminLoginDataCheck_api(){
+        $objManager=new PackagemanagerManager();
+        if ($objManager->getPackage("agp_commons") !== null || $this->isInstalled()) {
+            return array("step"=>"autoInstall");
+          }
+         
+              return array("step"=>"/");
+          
+     }
+
+     private function adminLoginData_api(array $payload){
+
+             if (isset($payload["write"]) && $payload["write"] == "true") {
+                $strUsername = $payload["username"];
+                $strPassword = $payload["password"];
+                $strEmail = $payload["email"];
+                //save to session
+                if ($strUsername != "" && $strPassword != "" && checkEmailaddress($strEmail)) {
+                    $this->objSession->setSession("install_username", $strUsername);
+                    $this->objSession->setSession("install_password", $strPassword);
+                    $this->objSession->setSession("install_email", $strEmail);
+                    return array("step"=>"autoInstall");
+                }
+            }
+     }
     /**
      * Collects the data required to create a valid admin-login
      */
@@ -385,14 +622,14 @@ class Installer
         $this->strOutput .= $this->getLang("installer_login_intro");
 
         $objManager = new PackagemanagerManager();
-        if ($objManager->getPackage("agp_commons") !== null) {
-            ResponseObject::getInstance()->setStrRedirectUrl(_webpath_."/installer.php?step=autoInstall");
-        }
+       if ($objManager->getPackage("agp_commons") !== null) {
+          ResponseObject::getInstance()->setStrRedirectUrl(_webpath_."/installer.php?step=autoInstall");
+      }
 
-        if ($this->isInstalled()) {
-            $bitShowForm = false;
-            $this->strOutput .= "<div class=\"alert alert-success\">".$this->getLang("installer_login_installed")."</div>";
-        }
+       if ($this->isInstalled()) {
+           $bitShowForm = false;
+           $this->strOutput .= "<div class=\"alert alert-success\">".$this->getLang("installer_login_installed")."</div>";
+       }
         if (isset($_POST["write"]) && $_POST["write"] == "true") {
             $strUsername = $_POST["username"];
             $strPassword = $_POST["password"];
@@ -404,19 +641,19 @@ class Installer
                 $this->objSession->setSession("install_email", $strEmail);
                 $this->strOutput = "";
                 ResponseObject::getInstance()->setStrRedirectUrl(_webpath_."/installer.php?step=autoInstall");
-                return;
+               return;
             }
         }
 
         if ($bitShowForm) {
             /** @var \Twig_Environment $twig */
             $twig = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TEMPLATE_ENGINE);
-            $this->strOutput .= $twig->render("core/module_installer/templates/adminlogin.twig" , array());
+             $this->strOutput .= $twig->render("core/module_installer/templates/adminlogin.twig" , array());
         }
 
         $this->strBackwardLink = $this->getBackwardLink(_webpath_."/installer.php");
         if ($this->isInstalled()) {
-            $this->strForwardLink = $this->getForwardLink(_webpath_."/installer.php?step=autoInstall");
+             $this->strForwardLink = $this->getForwardLink(_webpath_."/installer.php?step=autoInstall");
         }
     }
 
@@ -426,12 +663,6 @@ class Installer
     private function autoInstall()
     {
 
-        if ($this->isInstalled()) {
-            ResponseObject::getInstance()->setStrRedirectUrl(_webpath_."/installer.php?step=install");
-            return;
-        }
-
-        //fetch the relevant installers
         $objManager = new PackagemanagerManager();
         $arrPackageMetadata = $objManager->getAvailablePackages();
 
@@ -682,7 +913,7 @@ class Installer
             }
         }
 
-        return json_encode(array("module" => $_POST["module"], "status" => "error"));
+//        return json_encode(array("module" => $_POST["module"], "status" => "error"));
 
     }
 
@@ -865,9 +1096,15 @@ class Installer
 
 //Creating the Installer-Object
 $objInstaller = new Installer();
-$objInstaller->action();
+if (Carrier::getInstance()->getParam("channel") == "api") {
+    $objInstaller->action_api();
+} else {
+    $objInstaller->action();
+}
 CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_ENDPROCESSING, array());
 ResponseObject::getInstance()->sendHeaders();
+
+
 ResponseObject::getInstance()->sendContent();
 CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_AFTERCONTENTSEND, array(RequestEntrypointEnum::INSTALLER()));
 
