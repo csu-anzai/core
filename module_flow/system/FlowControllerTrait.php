@@ -210,39 +210,20 @@ trait FlowControllerTrait
                 }
 
                 // validation
-                $objResult = $objFlow->getHandler()->validateStatusTransition($objObject, $objTransition);
+                $objResult = $objFlow->getHandler()->validateStatusTransition($objObject, $objTransition, true);
 
-                $strValidation = "";
                 if (!$objResult->isValid()) {
-                    $arrErrors = $objResult->getErrors();
-                    if (!empty($arrErrors)) {
-                        $strTooltip = "<div class='alert alert-danger'>";
-                        $strTooltip.= "<ul>";
-                        foreach ($arrErrors as $strError) {
-                            if (!empty($strError)) {
-                                $strError = htmlspecialchars($strError);
-                                $strTooltip.= "<li>{$strError}</li>";
-                            }
-                        }
-                        $strTooltip.= "</ul>";
-                        $strTooltip.= "</div>";
-                        $strValidation.= '<span class="' . $strClass . '" data-validation-errors="' . $strTooltip . '"></span>';
-                    } else {
-                        // in case the result is not valid and we have no error message we skip the menu entry
-                        continue;
-                    }
-                }
+                    $link = Link::getLinkAdminDialog($objObject->getArrModule("module"), "showTransitionErrors", ["systemid" => $objObject->getSystemid(), "transition_id" => $objTransition->getSystemid()], AdminskinHelper::getAdminImage("icon_flag_hex_disabled_" . $objTargetStatus->getStrIconColor()) . " " . $objTargetStatus->getStrDisplayName());
 
-                if (!empty($strValidation)) {
                     $menuItem = new MenuItem();
-                    $menuItem->setName(AdminskinHelper::getAdminImage("icon_flag_hex_disabled_" . $objTargetStatus->getStrIconColor()) . " " . $objTargetStatus->getStrDisplayName() . $strValidation);
-                    $menuItem->setLink("#");
-                    $menuItem->setOnClick("return false;");
+                    $menuItem->setFullEntry($link);
                     $statusItems[] = $menuItem;
                 } else {
+                    $link = Link::getLinkAdminHref($this->getArrModule("modul"), "setStatus", ["systemid" => $objObject->getStrSystemid(), "transition_id" => $objTransition->getSystemid()]);
+
                     $menuItem = new MenuItem();
                     $menuItem->setName(AdminskinHelper::getAdminImage($objTargetStatus->getStrIcon()) . " " . $objTargetStatus->getStrDisplayName());
-                    $menuItem->setLink(Link::getLinkAdminHref($this->getArrModule("modul"), "setStatus", "&systemid=" . $objObject->getStrSystemid() . "&transition_id=" . $objTransition->getSystemid()));
+                    $menuItem->setLink($link);
                     $statusItems[] = $menuItem;
                 }
 
@@ -276,22 +257,38 @@ trait FlowControllerTrait
         $menu->setRenderMenuContainer(false);
         $strHtml = $menu->renderComponent();
 
-        // js to init the tooltip for validation errors
-        $strTitle = json_encode($objObject->getStrDisplayName());
-        $strJs = <<<HTML
-<script type='text/javascript'>
-    require(['jquery', 'dialogHelper'], function($, dialogHelper){
-        $('.{$strClass}').parent().on('click', function(){
-            var errors = $(this).find('.{$strClass}').data('validation-errors');
-            dialogHelper.showConfirmationDialog({$strTitle}, errors, "OK", function(){
-                $('#jsDialog_1').modal('hide');
-            });
-        });
-    });
-</script>
-HTML;
+        return $strHtml;
+    }
 
-        return $strHtml . $strJs;
+    /**
+     * @permissions view
+     * @return string
+     */
+    protected function actionShowTransitionErrors()
+    {
+        $object = Objectfactory::getInstance()->getObject($this->getSystemid());
+        $transition = Objectfactory::getInstance()->getObject($this->getParam("transition_id"));
+
+        $flow = $this->objFlowManager->getFlowForModel($object);
+
+        // validation
+        $result = $flow->getHandler()->validateStatusTransition($object, $transition);
+
+        $return = "";
+        $errors = $result->getErrors();
+        if (!empty($errors)) {
+            $return = "<div class='alert alert-danger'>";
+            $return.= "<ul>";
+            foreach ($errors as $error) {
+                if (!empty($error)) {
+                    $return.= "<li>{$error}</li>";
+                }
+            }
+            $return.= "</ul>";
+            $return.= "</div>";
+        }
+
+        return $return;
     }
 
     /**

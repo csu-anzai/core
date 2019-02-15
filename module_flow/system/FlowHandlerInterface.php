@@ -62,9 +62,10 @@ interface FlowHandlerInterface extends GenericPluginInterface
      *
      * @param Model $objModel
      * @param FlowTransition $objTransition
+     * @param bool $shortCircuit - if true the result contains only the first error
      * @return FlowConditionResult
      */
-    public function validateStatusTransition(Model $objObject, FlowTransition $objTransition) : FlowConditionResult;
+    public function validateStatusTransition(Model $objObject, FlowTransition $objTransition, $shortCircuit = false) : FlowConditionResult;
 
     /**
      * Returns whether a transition is visible in the menu. In the end the transition is only visible in the menu if:
