@@ -108,45 +108,12 @@ class Installer
     }
 
 
-    private function getModuleList() {
-            //fetch all packages
-
-        $objManager = new PackagemanagerManager();
-        $arrModules = $objManager->getAvailablePackages();
-
-        $return = [];
-
-        $this->arrMetadata = array();
-        
-        foreach ($arrModules as $objOneModule) {
-            $return[]=[
-                "name" => $objOneModule->getStrTitle(),
-                "version" => $objOneModule->getStrVersion(),
-            ];
-
-            if ($objOneModule->getBitProvidesInstaller()) {
-                $this->arrMetadata[] = $objOneModule;
-            }
-        }
-
-        return json_encode($return);
-
-        $this->arrMetadata = $objManager->sortPackages($this->arrMetadata, true);
-    }
-
     /**
      * Action block to control the behaviour
      */
     public function action()
     {
         ResponseObject::getInstance()->setObjEntrypoint(RequestEntrypointEnum::INSTALLER());
-
-        if (isset($_GET['step']) && $_GET["step"] == "apiList") {
-            ResponseObject::getInstance()->setStrResponseType(HttpResponsetypes::STR_TYPE_JSON);
-            ResponseObject::getInstance()->setStrContent($this->getModuleList());
-            return;
-        }
-
 
 //        //fetch posts
         if (isset($_POST['step']) && $_POST["step"] == "getNextAutoInstall") {
