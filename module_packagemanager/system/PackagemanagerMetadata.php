@@ -26,7 +26,7 @@ use Phar;
  * @since 4.0
  * @package module_packagemanager
  */
-class PackagemanagerMetadata implements AdminListableInterface
+class PackagemanagerMetadata implements AdminListableInterface, \JsonSerializable
 {
 
     private $strTitle;
@@ -54,6 +54,7 @@ class PackagemanagerMetadata implements AdminListableInterface
     private $strPath;
 
     private $bitIsPhar = false;
+
 
 
     /**
@@ -123,6 +124,29 @@ class PackagemanagerMetadata implements AdminListableInterface
     {
         return "Title: ".$this->getStrTitle()." Version: ".$this->getStrVersion()." Type: ".$this->getStrType()." Target: ".$this->getStrTarget()." Dependencies: ".print_r($this->getArrRequiredModules(), true);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        $objManager = new PackagemanagerManager();
+        $objHandler = $objManager->getPackageManagerForPath($this->getStrPath());
+
+        return [
+            "title" => $this->strTitle,
+            "description" => $this->strDescription,
+            "versionAvailable" => $this->strVersion,
+            "author" => $this->strAuthor,
+            "requires" => $this->arrRequiredModules,
+            "path" => $this->strPath,
+            "providesInstaller" => $this->bitProvidesInstaller,
+            "versionInstalled" => $objHandler->getVersionInstalled(),
+            "isInstallable" => $objHandler->isInstallable()
+        ];
+    }
+
+
 
     /**
      * @param string $strPath

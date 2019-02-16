@@ -103,6 +103,8 @@ class Installer
         }
 
         $this->STR_PROJECT_CONFIG_FILE = _realpath_."project/module_system/system/config/config.php";
+
+        $this->loadInstaller();
     }
 
 
@@ -178,7 +180,7 @@ class Installer
         }
 
         //load a list of available installers
-        $this->loadInstaller();
+//        $this->loadInstaller();
 
         //step one: needed php-values
         if (!isset($_GET["step"])) {
@@ -220,26 +222,31 @@ class Installer
 
 
             $arrayData = [];
-            if (Carrier::getInstance()->getParam("step") == "phpenv") {
+            $step = Carrier::getInstance()->getParam("step");
+            if ($step == "phpenv") {
                 $arrayData = $this->checkPHPSetting_api();
             }
-            else if(Carrier::getInstance()->getParam("step")=="checkModule")
+            else if($step =="checkModule")
             {
                 // $arrayData=$this->configWizard_api($payload);
                 $arrayData=$this->checkAvailableModules_api($payload);
                 
             }
-            else if(Carrier::getInstance()->getParam("step")=="validateDataPassed")
+            else if($step =="validateDataPassed")
             {
                 $arrayData=$this-> validateDataPassed_api($payload);
             }
-            else if(Carrier::getInstance()->getParam("step")=="checkAdminLoginData")
+            else if($step =="checkAdminLoginData")
             {
                 $arrayData=$this->adminLoginDataCheck_api();
             }
-            else if(Carrier::getInstance()->getParam("step")=="saveAdminLoginData")
+            else if($step =="saveAdminLoginData")
             {
                 $arrayData=$this->adminLoginData_api($payload);
+            } elseif ($step =="getModuleList") {
+                $arrayData = $this->arrMetadata;
+            } else {
+                throw new \Exception("no matching step found");
             }
 
             ResponseObject::getInstance()->setStrResponseType(HttpResponsetypes::STR_TYPE_JSON);
@@ -767,7 +774,7 @@ class Installer
         }
 
         Carrier::getInstance()->flushCache(Carrier::INT_CACHE_TYPE_DBQUERIES | Carrier::INT_CACHE_TYPE_ORMCACHE | Carrier::INT_CACHE_TYPE_OBJECTFACTORY | Carrier::INT_CACHE_TYPE_MODULES);
-        $this->loadInstaller();
+//        $this->loadInstaller();
 
         $this->strLogfile = $strInstallLog;
         $strReturn .= $this->getLang("installer_modules_found");
