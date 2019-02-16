@@ -68,10 +68,32 @@ pipeline {
                                 deleteDir()
                             }
                         }
-
                     }
 
-                    
+
+                    stage ('slave php 7.3') {
+                        agent {
+                            label 'php 7.3'
+                        }
+                        steps {
+                            checkout([
+                                $class: 'GitSCM', branches: scm.branches, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'core']], userRemoteConfigs: scm.userRemoteConfigs
+                            ])
+                            lastChanges since: 'LAST_SUCCESSFUL_BUILD', format:'SIDE',matching: 'LINE'
+
+                            withAnt(installation: 'Ant') {
+                                sh "ant -buildfile core/_buildfiles/build.xml buildSqliteFast"
+                            }
+                            archiveArtifacts 'core/_buildfiles/packages/'
+                        }
+                        post {
+                            always {
+                                junit 'core/_buildfiles/build/logs/junit.xml'
+                                step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']])])
+                                deleteDir()
+                            }
+                        }
+                    }
                 }
                 
             }
