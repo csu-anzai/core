@@ -80,7 +80,7 @@ class DbbrowserController extends AdminEvensimpler
         // $script=file_get_contents(__DIR__ . '/../scripts/DbBrowser.js') ;
         //    $component = file_get_contents(__DIR__.'/../../module_vueComponents/components/DbBrowser/DbBrowser.html') ;
         $component = "<div id='dbBrowser'></div>";
-        $component .= "<script>" . file_get_contents(__DIR__ . '/../../module_vueComponents/components/DbBrowser/DbBrowser-bundle.js') . "</script>";
+        $component .= "<script>" . file_get_contents(__DIR__ . '/../../../frontend-components/components/DbBrowser/DbBrowser-bundle.js') . "</script>";
         return $component;
     }
 
