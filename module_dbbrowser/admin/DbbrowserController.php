@@ -51,34 +51,6 @@ class DbbrowserController extends AdminEvensimpler
      */
     protected function actionList()
     {
-        /*
-        $return = $this->objToolkit->formHeadline($this->getLang("schema_tables"));
-        $return .= $this->objToolkit->listHeader();
-        foreach (Carrier::getInstance()->getObjDB()->getTables() as $tableName) {
-        $details = Link::getLinkAdminXml($this->getArrModule("module"), "apiSystemSchema", ["table" => $tableName]);
-        $link = Link::getLinkAdminManual("href=\"#\" onclick=\"require('ajax').loadUrlToElement('.schemaDetails', '{$details}'); return false;\"", $tableName);
-        $return .= $this->objToolkit->genericAdminList("", $link, AdminskinHelper::getAdminImage("icon_table"), "");
-        }
-        $return .= $this->objToolkit->listFooter();
-         */
-
-        // $listId = generateSystemid();
-        // $list = "<div id='list{$listId}'>";
-        // $list.= "<dbbrowser-list></dbbrowser-list>";
-        // $list.= "</div>";
-        // $list.= "<script>require(['vue', 'dbbrowser-list'], function(Vue, list) { new Vue({el: '#list{$listId}'}); });</script>";
-
-        // $detailUrl = Link::getLinkAdminXml($this->getArrModule("module"), "apiSystemSchema", ["table" => Carrier::getInstance()->getObjDB()->getTables()[0]]);
-        // $detail = "<div class='schemaDetails'></div><script>require(['dbbrowser', 'ajax'], function(b, ajax) { ajax.loadUrlToElement('.schemaDetails', '{$detailUrl}')});</script>";
-
-        // $grid = new Grid([3, 9]);
-        // $grid->setBitLimitHeight(true);
-        // $grid->addRow([$list, $detail]);
-        // return $grid->renderComponent();
-        // $template = file_get_contents(__DIR__ . '/../Vue-Component/template.vue');
-        // return $template ;
-        // $script=file_get_contents(__DIR__ . '/../scripts/DbBrowser.js') ;
-        //    $component = file_get_contents(__DIR__.'/../../module_vueComponents/components/DbBrowser/DbBrowser.html') ;
         $component = "<div id='dbBrowser'></div>";
         $component .= "<script>" . file_get_contents(__DIR__ . '/../../../frontend-components/components/DbBrowser/DbBrowser-bundle.js') . "</script>";
         return $component;
