@@ -556,14 +556,6 @@ class GraphChartjs implements GraphInterfaceFronted
     }
 
     /**
-     * @param bool $addSeparator
-     */
-    public function setShowThousandSeparatorAxis(bool $addSeparator = true)
-    {
-        $this->arrChartOptions['addThousandSeparator'] = $addSeparator;
-    }
-
-    /**
      * @param int $bitHideY2Axis
      */
     public function setTickStepY2Axis(int $intStep)

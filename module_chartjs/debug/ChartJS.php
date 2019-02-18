@@ -296,18 +296,6 @@ class ChartJS
         echo $objGraph->renderGraph();
         // ==== JQPLOT VS CHARTJS == END
 
-        /** @var GraphChartjs $objGraph */
-        $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
-        $objGraph->addLinePlot(array(8112, 12000, 22000, 4000), "");
-        $objGraph->addLinePlot(array(11500, 2500, 330, 4780), "");
-        $objGraph->addLinePlot(array(45880, 7100, 1000, 20000), "");
-        $objGraph->setBitRenderLegend(true);
-        $objGraph->setStrBackgroundColor("#F0F0F0");
-        $objGraph->setStrGraphTitle("19. Test thousand Separator");
-        $objGraph->setArrXAxisTickLabels(array("5000", "6000", "7000", "8000"));
-        $objGraph->setShowThousandSeparatorAxis();
-        echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';
-
     }
 }
 
