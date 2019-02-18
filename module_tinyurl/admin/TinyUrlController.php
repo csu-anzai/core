@@ -51,7 +51,7 @@ class TinyUrlController extends AdminController implements AdminInterface
         if (!empty($strUrl)) {
             $strReturn = "";
             //get string part with parameters
-            if (StringUtil::indexOf($strUrl, "?")) {
+            if (StringUtil::indexOf($strUrl, "?") !== false) {
                 $urlParts = explode("?", $strUrl);
             } else {
                 $intDelimiterPos = StringUtil::indexOf($strUrl, "&");
