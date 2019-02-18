@@ -64,6 +64,19 @@ class ChartjsHelper {
     }
 
     /**
+     * Add thousand separator in big numeric values
+     *
+     * @param value
+     * @param ctx
+     * @returns {string}
+     */
+    public static addThousandSeparator(value: number, ctx: any) {
+        let strValue = value.toString();
+        strValue = strValue.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return strValue;
+    }
+
+    /**
      * Changes "0" values to empty string
      *
      * @param value
@@ -129,6 +142,19 @@ class ChartjsHelper {
             chartData['options']['plugins']['datalabels'] = {
                 formatter: function (value: number, ctx: any) {
                     return ChartjsHelper.dataShowPercentage(value, ctx);
+                }
+            }
+        }
+
+        if (typeof (chartOptions['addThousandSeparator']) !== 'undefined' || chartOptions['addThousandSeparator']) {
+            chartData['options']['scales']['xAxes'][0]['ticks'] = {
+                userCallback: function (value: number, ctx: any) {
+                    return ChartjsHelper.addThousandSeparator(value, ctx);
+                }
+            }
+            chartData['options']['scales']['yAxes'][0]['ticks'] = {
+                userCallback: function (value: number, ctx: any) {
+                    return ChartjsHelper.addThousandSeparator(value, ctx);
                 }
             }
         }
