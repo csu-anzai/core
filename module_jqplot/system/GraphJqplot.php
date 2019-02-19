@@ -305,38 +305,7 @@ class GraphJqplot implements GraphInterfaceFronted
     }
 
     /**
-     * Registers a new plot to the current graph. Works in line-plot-mode only.
-     * Add a set of linePlot to a graph to get more then one line.
-     * If you created a bar-chart before, it it is possible to add line-plots on top of
-     * the bars. Nevertheless, the scale is calculated out of the bars, so make
-     * sure to remain inside the visible range!
-     * A sample-code could be:
-     *  $objGraph = new class_graph();
-     *  $objGraph->setStrXAxisTitle("x-axis");
-     *  $objGraph->setStrYAxisTitle("y-axis");
-     *  $objGraph->setStrGraphTitle("Test Graph");
-     *
-     *  //simple array
-     *      $objGraph->addLinePlot(array(1,4,6,7,4), "serie 1");
-     *
-     * //datapoints array
-     *      $objDataPoint1 = new GraphDatapoint(1);
-     *      $objDataPoint2 = new GraphDatapoint(2);
-     *      $objDataPoint3 = new GraphDatapoint(4);
-     *      $objDataPoint4 = new GraphDatapoint(5);
-     *
-     *      //set action handler example
-     *      $objDataPoint1->setObjActionHandler("<javascript code here>");
-     *      $objDataPoint1->getObjActionHandlerValue("<value_object> e.g. some json");
-     *
-     *      $objGraph->addLinePlot(array($objDataPoint1, $objDataPoint2, $objDataPoint3, $objDataPoint4) "serie 1");
-     *
-     *
-     * @param array $arrValues - an array with simple values or an array of data points (GraphDatapoint).
-     *                           The advantage of a data points are that action handlers can be defined for each data point which will be executed when clicking on the data point in the chart.
-     * @param string $strLegend the name of the single plot
-     *
-     * @throws Exception
+     * @inheritdoc
      */
     public function addLinePlot($arrValues, $strLegend)
     {
@@ -355,38 +324,7 @@ class GraphJqplot implements GraphInterfaceFronted
 
 
     /**
-     * Registers a new plot to the current graph. Works in line-plot-mode only.
-     * Add a set of linePlot to a graph to get more then one line.
-     * If you created a bar-chart before, it it is possible to add line-plots on top of
-     * the bars. Nevertheless, the scale is calculated out of the bars, so make
-     * sure to remain inside the visible range!
-     * A sample-code could be:
-     *  $objGraph = new class_graph();
-     *  $objGraph->setStrXAxisTitle("x-axis");
-     *  $objGraph->setStrYAxisTitle("y-axis");
-     *  $objGraph->setStrGraphTitle("Test Graph");
-     *
-     *  //simple array
-     *      $objGraph->addLinePlot(array(1,4,6,7,4), "serie 1");
-     *
-     * //datapoints array
-     *      $objDataPoint1 = new GraphDatapoint(1);
-     *      $objDataPoint2 = new GraphDatapoint(2);
-     *      $objDataPoint3 = new GraphDatapoint(4);
-     *      $objDataPoint4 = new GraphDatapoint(5);
-     *
-     *      //set action handler example
-     *      $objDataPoint1->setObjActionHandler("<javascript code here>");
-     *      $objDataPoint1->getObjActionHandlerValue("<value_object> e.g. some json");
-     *
-     *      $objGraph->addLinePlot(array($objDataPoint1, $objDataPoint2, $objDataPoint3, $objDataPoint4) "serie 1");
-     *
-     *
-     * @param array $arrValues - an array with simple values or an array of data points (GraphDatapoint).
-     *                           The advantage of a data points are that action handlers can be defined for each data point which will be executed when clicking on the data point in the chart.
-     * @param string $strLegend the name of the single plot
-     *
-     * @throws Exception
+     * @inheritdoc
      */
     public function addLinePlotY2Axis($arrValues, $strLegend)
     {
@@ -404,35 +342,7 @@ class GraphJqplot implements GraphInterfaceFronted
     }
 
     /**
-     * Creates a new pie-chart. Pass the values as the first param. If
-     * you want to use a legend and / or Colors use the second and third param.
-     * Make sure the array have the same number of elements, ohterwise they won't
-     * be uses.
-     * A sample-code could be:
-     *  $objChart = new class_graph();
-     *  $objChart->setStrGraphTitle("Test Pie Chart");
-     *
-     * //simple array
-     *      $objChart->createPieChart(array(2,6,7,3), array("val 1", "val 2", "val 3", "val 4"));
-     *
-     * //datapoints array
-     *      $objDataPoint1 = new GraphDatapoint(1);
-     *      $objDataPoint2 = new GraphDatapoint(2);
-     *      $objDataPoint3 = new GraphDatapoint(4);
-     *      $objDataPoint4 = new GraphDatapoint(5);
-     *
-     *      //set action handler example
-     *      $objDataPoint1->setObjActionHandler("<javascript code here>");
-     *      $objDataPoint1->getObjActionHandlerValue("<value_object> e.g. some json");
-     *
-     *      $objGraph->createPieChart(array($objDataPoint1, $objDataPoint2, $objDataPoint3, $objDataPoint4) , array("val 1", "val 2", "val 3", "val 4"), "serie 1");
-     *
-     *
-     * @param array $arrValues - an array with simple values or an array of data points (GraphDatapoint).
-     *                           The advantage of a data points are that action handlers can be defined for each data point which will be executed when clicking on the data point in the chart.
-     * @param array $arrLegends
-     *
-     * @throws Exception
+     * @inheritdoc
      */
     public function createPieChart($arrValues, $arrLegends)
     {
@@ -818,9 +728,7 @@ class GraphJqplot implements GraphInterfaceFronted
     }
 
     /**
-     * Set the title of the y-axis
-     *
-     * @param string $strTitle
+     * @inheritdoc
      */
     public function setStrY2AxisTitle($strTitle)
     {
@@ -1162,8 +1070,6 @@ class GraphJqplot implements GraphInterfaceFronted
         $this->bitIsResponsive = $bitIsResponsive;
     }
 
-
-
     /**
      * @return boolean
      */
@@ -1214,5 +1120,61 @@ class GraphJqplot implements GraphInterfaceFronted
             $countGraphs = count($this->arrSeriesData[0]->getArrDataPoints());
             $this->setIntHeight(10 + $countGraphs * 35);
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setTickStepXAxis(int $intStep)
+    {
+        //not supported
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setTickStepYAxis(int $intStep)
+    {
+        //not supported
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setTickStepY2Axis(int $intStep)
+    {
+        //not supported
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setShowThousandSeparatorAxis(bool $addSeparator = true)
+    {
+        //not supported
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setHideGridLinesXAxis(bool $bitHideGridLines = true)
+    {
+        //not supported
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setHideGridLinesYAxis(bool $bitHideGridLines = true)
+    {
+        //not supported
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setMaxXAxesTicksLimit(int $maxXAxesTicksLimit)
+    {
+        //not supported
     }
 }

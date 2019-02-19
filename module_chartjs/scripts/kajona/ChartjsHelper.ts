@@ -111,19 +111,6 @@ class ChartjsHelper {
         // set chart area backgroundColor
         ctx.style.backgroundColor = chartOptions['backgroundColor'];
 
-        // if (typeof (chartOptions['setDefaultTooltip']) == 'undefined' || !chartOptions['setDefaultTooltip']) {
-        //     chartData['options']['tooltips'] = {
-        //         enabled: true,
-        //         mode: 'single',
-        //
-        //         callbacks: {
-        //             label: function (tooltipItems, data) {
-        //                 return data.datasets[tooltipItems.datasetIndex].label + ' : ' + data.datasets[tooltipItems.datasetIndex].data[tooltipItems.index];
-        //             }
-        //         },
-        //     };
-        // }
-
         if (typeof (chartOptions['createImageLink']) !== 'undefined' || chartOptions['createImageLink']) {
             chartData['options']['animation'] = {
                 onComplete: createExportLink
