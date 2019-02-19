@@ -1,5 +1,5 @@
 <div class='core-component-dynamicmenu dropdown' id='{{ menuid }}'>
     <a href='#' class='navbar-link' data-toggle='dropdown'>{{ button|raw }}</a>
-    <div class='core-component-menu dropdown-menu generalContextMenu' role='menu' id='{{ menuid }}-menu'></div>
+    <div class='core-component-menu dropdown-menu generalContextMenu' role='menu' id='{{ menuid }}-menu' {% if width %}style="width:{{ width }}px;overflow:hidden;"{% endif %}></div>
     <script type="text/javascript"> require(["jquery", "ajax"], function($, ajax) { $("#{{ menuid }}").on("show.bs.dropdown", function () { ajax.loadUrlToElement("#{{ menuid }}-menu", "{{ endpoint|raw }}"); }); }); </script>
 </div>
