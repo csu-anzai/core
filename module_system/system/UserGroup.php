@@ -112,7 +112,7 @@ class UserGroup extends Model implements ModelInterface, AdminListableInterface,
      */
     public function getStrAdditionalInfo()
     {
-        return $this->getNumberOfMembers();
+        return $this->getNumberOfMembers()."";
     }
 
     /**
