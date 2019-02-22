@@ -20,7 +20,7 @@ use Kajona\Dashboard\System\TodoJstreeNodeLoader;
 use Kajona\Dashboard\System\TodoRepository;
 use Kajona\Dashboard\View\Components\Dashboard\Dashboard;
 use Kajona\Dashboard\View\Components\Widget\Widget;
-use Kajona\Dashboard\View\Components\WidgetList\WidgetList;
+use Kajona\Dashboard\View\Components\Widgetlist\WidgetList;
 use Kajona\Dashboard\System\Lifecycle\ConfigLifecycle;
 use Kajona\System\Admin\AdminEvensimpler;
 use Kajona\System\Admin\AdminFormgenerator;
@@ -161,10 +161,13 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
         //add a toolbar
         $return .= $this->objToolkit->addToContentToolbar(Link::getLinkAdminDialog("dashboard", "listWidgets", [], $this->getLang("action_add_widget_to_dashboard"), $this->getLang("action_add_widget_to_dashboard"), "icon_new"));
 
+        $params = Carrier::getAllParams();
+        unset($params["module"]);
+        unset($params["action"]);
 
         $menu = new DynamicMenu(
             "{$cfg->getStrDisplayName()}<i class='fa fa-caret-down'></i>",
-            Link::getLinkAdminXml("dashboard", "apiGetDashboardMenu", [])
+            Link::getLinkAdminXml("dashboard", "apiGetDashboardMenu", $params)
         );
 
         $menu = $menu->renderComponent();
@@ -188,12 +191,20 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
         $dd = [];
         $items = [];
 
+        $params = Carrier::getAllParams();
+        unset($params["admin"]);
+        unset($params["contentFill"]);
+        unset($params["module"]);
+        unset($params["action"]);
+
         $return = "";
         /** @var DashboardConfig $singleCfg */
         foreach (DashboardConfig::getObjectListFiltered(null, $root->getSystemid()) as $singleCfg) {
             $dd[$singleCfg->getSystemid()] = $singleCfg->getStrDisplayName();
 
-            $text = new Text(Link::getLinkAdmin("dashboard", "list", ["configid" => $singleCfg->getSystemid()], $this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_dashboard"))." ".$singleCfg->getStrDisplayName(), "", "", false));
+            $params["configid"] = $singleCfg->getSystemid();
+
+            $text = new Text(Link::getLinkAdmin("dashboard", "list", $params, $this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_dashboard"))." ".$singleCfg->getStrDisplayName(), "", "", false));
             $items[] = $text;
         }
 
