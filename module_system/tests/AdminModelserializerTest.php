@@ -38,6 +38,7 @@ class AdminModelserializerTest extends Testbase
             'strMessageProvider' => "",
             'strSenderId' => "",
             'strMessageRefId' => "",
+            'strAttachment' => "",
         ];
 
         $this->assertEquals($arrExpect, $arrActual);
