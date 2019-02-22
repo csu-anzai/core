@@ -92,7 +92,8 @@ class AdminModelserializerTest extends Testbase
   "strInternalIdentifier": "",
   "strMessageProvider": "",
   "strSenderId": "",
-  "strMessageRefId": ""
+  "strMessageRefId": "",
+  "strAttachment": ""
 }
 JSON;
 
