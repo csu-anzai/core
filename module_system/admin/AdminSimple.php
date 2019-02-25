@@ -589,8 +589,7 @@ abstract class AdminSimple extends AdminController
 
         if ($objListEntry->rightView() && SystemModule::getModuleByName("tags") !== null && SystemModule::getModuleByName("tags")->rightView()) {
             //sanitize critical chars
-            $strDialogTitle = $objListEntry->getStrDisplayName();
-            $strDialogTitle = addslashes(StringUtil::replace(array("\n", "\r"), array(), strip_tags(nl2br($strDialogTitle))));
+            $strDialogTitle = StringUtil::jsSafeString($objListEntry->getStrDisplayName());
 
 
             //the tag list is more complex and wrapped by a js-logic to load the tags by ajax afterwards
