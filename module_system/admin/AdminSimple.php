@@ -23,6 +23,10 @@ use Kajona\System\System\StringUtil;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\VersionableInterface;
+use Kajona\System\View\Components\Dropdownmenu\Dropdownmenu;
+use Kajona\System\View\Components\Menu\Item\Text;
+use Kajona\System\View\Components\Menu\Menu;
+use Kajona\System\View\Components\Menu\MenuItem;
 
 
 /**
@@ -647,7 +651,7 @@ abstract class AdminSimple extends AdminController
      * @param string $strListIdentifier an internal identifier to check the current parent-list
      * @param bool $bitDialog opens the linked pages in a dialog
      *
-     * @return string|array
+     * @return string|array|MenuItem[]
      * @throws Exception
      */
     protected function getNewEntryAction($strListIdentifier, $bitDialog = false)
@@ -662,17 +666,9 @@ abstract class AdminSimple extends AdminController
 
         if ($objObject->rightEdit()) {
             if ($bitDialog) {
-                return $this->objToolkit->listButton(
-                    Link::getLinkAdminDialog(
-                        $this->getArrModule("modul"), $this->getActionNameForClass("new", null), "&folderview=1&systemid=".$this->getSystemid(), $this->getLang("commons_list_new"), $this->getLang("commons_list_new"), "icon_new"
-                    )
-                );
+                return $this->objToolkit->listButton(Link::getLinkAdminDialog($this->getArrModule("modul"), $this->getActionNameForClass("new", null), "&folderview=1&systemid=".$this->getSystemid(), $this->getLang("commons_list_new"), $this->getLang("commons_list_new"), "icon_new"));
             } else {
-                return $this->objToolkit->listButton(
-                    Link::getLinkAdmin(
-                        $this->getArrModule("modul"), $this->getActionNameForClass("new", null), "&systemid=".$this->getSystemid(), $this->getLang("commons_list_new"), $this->getLang("commons_list_new"), "icon_new"
-                    )
-                );
+                return $this->objToolkit->listButton(Link::getLinkAdmin($this->getArrModule("modul"), $this->getActionNameForClass("new", null), "&systemid=".$this->getSystemid(), $this->getLang("commons_list_new"), $this->getLang("commons_list_new"), "icon_new"));
             }
         }
         return "";
@@ -698,39 +694,49 @@ abstract class AdminSimple extends AdminController
 
         //create a menu and merge all buttons
         $arrActionMenuEntries = array();
+
+        $menu = new Menu();
         foreach ($arrActions as $strOneAction) {
-            $strOneAction = trim($strOneAction);
+            if ($strOneAction instanceof MenuItem) {
+                $menu->addItem($strOneAction);
+            } else {
+                $strOneAction = trim($strOneAction);
 
-            //extract a possible icon
-            $iStart = StringUtil::indexOf($strOneAction, "<i");
-            $icon = "";
-            if ($iStart !== false) {
-                $icon = StringUtil::substring($strOneAction, $iStart, StringUtil::lastIndexOf($strOneAction, "</i>")-$iStart+4);
-                $strOneAction = StringUtil::replace($icon, "", $strOneAction);
+                //extract a possible icon
+                $iStart = StringUtil::indexOf($strOneAction, "<i");
+                $icon = "";
+                if ($iStart !== false) {
+                    $icon = StringUtil::substring($strOneAction, $iStart, StringUtil::lastIndexOf($strOneAction, "</i>") - $iStart + 4);
+                    $strOneAction = StringUtil::replace($icon, "", $strOneAction);
 
-                $icon = $this->objToolkit->listButton($icon);
-            }
-
-            //search for a title attribute
-            $arrMatchesLink = array();
-            if (preg_match('/<a.*?title=(["\'])(.*?)\1.*$/i', $strOneAction, $arrMatchesLink)) {
-                if (StringUtil::substring($strOneAction, -11) == "</a></span>") {
-                    $strOneAction = StringUtil::substring($strOneAction, 0, -11).$icon.$arrMatchesLink[2]."</a></span>";
-                } else {
-                    $strOneAction .= $icon.$arrMatchesLink[2];
+                    $icon = $this->objToolkit->listButton($icon);
                 }
-            }
 
-            //strip a possible span at the beginning
-            if ($icon != "" && StringUtil::startsWith($strOneAction, "<span")) {
-                $strOneAction = StringUtil::substring($strOneAction, StringUtil::indexOf($strOneAction, ">")+1, -7);
-            }
+                //search for a title attribute
+                $arrMatchesLink = array();
+                if (preg_match('/<a.*?title=(["\'])(.*?)\1.*$/i', $strOneAction, $arrMatchesLink)) {
+                    if (StringUtil::substring($strOneAction, -11) == "</a></span>") {
+                        $strOneAction = StringUtil::substring($strOneAction, 0, -11).$icon.$arrMatchesLink[2]."</a></span>";
+                    } else {
+                        $strOneAction .= $icon.$arrMatchesLink[2];
+                    }
+                }
 
-            $arrActionMenuEntries[] = array("fullentry" => $strOneAction);
+                //strip a possible span at the beginning
+                if ($icon != "" && StringUtil::startsWith($strOneAction, "<span")) {
+                    $strOneAction = StringUtil::substring($strOneAction, StringUtil::indexOf($strOneAction, ">") + 1, -7);
+                }
+
+                $arrActionMenuEntries[] = array("fullentry" => $strOneAction);
+                $menu->addItem(new Text($strOneAction));
+            }
         }
 
+
+        $dd = new Dropdownmenu(AdminskinHelper::getAdminImage("icon_new_multi"), $menu);
+
         return $this->objToolkit->listButton(
-            "<span class='dropdown pull-right'><a href='#' data-toggle='dropdown' role='button'>".AdminskinHelper::getAdminImage("icon_new_multi")."</a>".$this->objToolkit->registerMenu(generateSystemid(), $arrActionMenuEntries)."</span>"
+            $dd->renderComponent()
         );
     }
 
