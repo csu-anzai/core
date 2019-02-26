@@ -1,5 +1,4 @@
 {% if rendercontainer %}
-{#<div class="core-component-menu">#}
 <div class="core-component-menu dropdown-menu generalContextMenu" role="menu">
 {% endif %}
         <ul>
@@ -12,7 +11,6 @@
             {% endfor %}
         </ul>
 {% if rendercontainer %}
-</div>
 <script type="text/javascript">
     require(['jquery'], function($) {
         $('.dropdown-menu .dropdown-submenu a').click(function (e) {
@@ -20,5 +18,5 @@
         });
     });
 </script>
-{#</div>#}
+</div>
 {% endif %}
