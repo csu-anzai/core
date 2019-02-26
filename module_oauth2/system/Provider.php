@@ -209,7 +209,7 @@ class Provider
     /**
      * @return RedirectDetectorInterface
      */
-    public function getRedirectDetector()
+    public function getRedirectDetector(): RedirectDetectorInterface
     {
         return $this->redirectDetector;
     }
@@ -217,7 +217,7 @@ class Provider
     /**
      * @param RedirectDetectorInterface $redirectDetector
      */
-    public function setRedirectDetector($redirectDetector)
+    public function setRedirectDetector(RedirectDetectorInterface $redirectDetector)
     {
         $this->redirectDetector = $redirectDetector;
     }
