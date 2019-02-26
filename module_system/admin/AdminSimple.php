@@ -693,8 +693,6 @@ abstract class AdminSimple extends AdminController
         }
 
         //create a menu and merge all buttons
-        $arrActionMenuEntries = array();
-
         $menu = new Menu();
         foreach ($arrActions as $strOneAction) {
             if ($strOneAction instanceof MenuItem) {
@@ -727,7 +725,6 @@ abstract class AdminSimple extends AdminController
                     $strOneAction = StringUtil::substring($strOneAction, StringUtil::indexOf($strOneAction, ">") + 1, -7);
                 }
 
-                $arrActionMenuEntries[] = array("fullentry" => $strOneAction);
                 $menu->addItem(new Text($strOneAction));
             }
         }
