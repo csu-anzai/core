@@ -12,6 +12,7 @@ use Kajona\System\Admin\AdminController;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminInterface;
 use Kajona\System\Admin\Formentries\FormentryHidden;
+use Kajona\System\System\StringUtil;
 
 /**
  * Admin-Part of the TinyUrl.
@@ -49,7 +50,15 @@ class TinyUrlController extends AdminController implements AdminInterface
         $strUrl = urldecode($this->tinyurlManager->loadUrl($strUrlID));
         if (!empty($strUrl)) {
             $strReturn = "";
-            $urlParts = explode("?", $strUrl);
+            //get string part with parameters
+            if (StringUtil::indexOf($strUrl, "?") !== false) {
+                $urlParts = explode("?", $strUrl);
+            } else {
+                $intDelimiterPos = StringUtil::indexOf($strUrl, "&");
+                $urlParts[0] = StringUtil::substring($strUrl, 0, $intDelimiterPos);
+                $urlParts[1] = StringUtil::substring($strUrl, $intDelimiterPos + 1);
+            }
+
             $formParams = $this->paramStrToFormParamsArray($urlParts[1]);
             $objGenerator = new AdminFormgenerator("linkredirect", null);
 
