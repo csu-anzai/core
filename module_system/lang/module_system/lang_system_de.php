@@ -344,3 +344,5 @@ $lang["object_browser_reset"] = "Objekt entfernen";
 
 $lang["copy_to_clipboard"] = "In die Zwischenablage kopieren";
 $lang["copy_page_url"] = "Seiten-URL";
+
+$lang["error_model_not_found"] = "Fehler beim Verarbeiten der Anfrage, der zu ladende Datensatz ist nicht bekannt. Bitte starten Sie die letzte Aktion erneut.";
