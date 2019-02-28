@@ -196,12 +196,12 @@ class Installer
             else if($step =="checkModule")
             {
                 // $arrayData=$this->configWizard_api($payload);
-                $arrayData=$this->checkAvailableModules_api($payload);
+                $arrayData=$this->checkAvailableModules_api($payload ?? []);
                 
             }
             else if($step =="validateDataPassed")
             {
-                $arrayData=$this-> validateDataPassed_api($payload);
+                $arrayData=$this-> validateDataPassed_api($payload ?? []);
             }
             else if($step =="checkAdminLoginData")
             {
@@ -212,7 +212,11 @@ class Installer
                 $arrayData=$this->adminLoginData_api($payload);
             } elseif ($step =="getModuleList") {
                 $arrayData = $this->arrMetadata;
-            } else {
+            }
+                elseif($step=="triggerInstallerApi"){
+                 $arrayData=$this->triggerModuleInstallerApi($payload ?? []);
+                }
+            else {
                 throw new \Exception("no matching step found");
             }
 
@@ -704,9 +708,9 @@ class Installer
 
         $this->arrMetadata = array();
         foreach ($arrModules as $objOneModule) {
-            if ($objOneModule->getBitProvidesInstaller()) {
+             if ($objOneModule->getBitProvidesInstaller()) {
                 $this->arrMetadata[] = $objOneModule;
-            }
+             }
         }
 
         $this->arrMetadata = $objManager->sortPackages($this->arrMetadata, true);
@@ -913,7 +917,23 @@ class Installer
 
         return json_encode("");
     }
+    private function triggerModuleInstallerApi(array $payload){
+        $objManager = new PackagemanagerManager();
+        $arrPackageMetadata = $objManager->getAvailablePackages();
 
+        foreach ($arrPackageMetadata as $objOneMetadata) {
+            if ($objOneMetadata->getStrTitle() == $payload["module"]) {
+                $objHandler = $objManager->getPackageManagerForPath($objOneMetadata->getStrPath());
+
+                if ($objHandler->isInstallable()) {
+                    $strReturn = $objHandler->installOrUpdate();
+                    return json_encode(array("module" => $payload["module"], "status" => "success", "log" => $strReturn));
+                }
+            }
+        }
+
+        return json_encode(array("module" => $payload["module"], "status" => "error"));
+    }
     private function triggerNextAutoInstall()
     {
 
@@ -924,7 +944,7 @@ class Installer
             if ($objOneMetadata->getStrTitle() == $_POST["module"]) {
                 $objHandler = $objManager->getPackageManagerForPath($objOneMetadata->getStrPath());
 
-                if ($objHandler->isInstallable()) {
+                if ($objHandler->isInstallable()) { 
                     $strReturn = $objHandler->installOrUpdate();
                     return json_encode(array("module" => $_POST["module"], "status" => "success", "log" => $strReturn));
                 }
