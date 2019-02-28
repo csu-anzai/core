@@ -6,45 +6,55 @@
 
 declare(strict_types = 1);
 
-namespace Kajona\Dashboard\View\Components\Widgetlist;
+namespace Kajona\System\View\Components\Dropdownmenu;
 
 use Kajona\System\View\Components\AbstractComponent;
+use Kajona\System\View\Components\Menu\Menu;
 
 /**
- * Widget list component.
+ * Simple menu component which renders a dropdown menu
  *
- * @author andrii.konoval@artemeon.de
+ * @author stefan.idler@artemeon.de
  * @since 7.1
- * @componentTemplate core_agp/module_dashboard/view/components/widgetlist/template.twig
+ * @componentTemplate core/module_system/view/components/dropdownmenu/template.twig
  */
-class WidgetList extends AbstractComponent
+class Dropdownmenu extends AbstractComponent
 {
     /**
-     * @var array
+     * @var string
      */
-    protected $widgets;
+    private $link;
 
     /**
-     * WidgetList constructor.
-     * @param array|null $widgets
-     * @param string|null $description
+     * @var Menu
      */
-    public function __construct(array $widgets = null)
+    private $menu;
+
+    /**
+     * Dropdownmenu constructor.
+     * @param string $link
+     * @param Menu $menu
+     */
+    public function __construct(string $link, Menu $menu)
     {
         parent::__construct();
-
-        $this->widgets = $widgets;
+        $this->link = $link;
+        $this->menu = $menu;
     }
 
-    /**¡
-     * @inheritdoc
+
+    /**
+     * @inheritDoc
      */
     public function renderComponent(): string
     {
         $data = [
-            "widgets" => $this->widgets,
+            "menu" => $this->menu->renderComponent(),
+            "link" => $this->link
         ];
 
         return $this->renderTemplate($data);
     }
+
+
 }

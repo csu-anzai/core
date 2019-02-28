@@ -1523,8 +1523,7 @@ HTML;
     public function listDeleteButton($strElementName, $strQuestion, $strLinkHref)
     {
         $strElementName = StringUtil::replace(array('\''), array('\\\''), $strElementName);
-        $strQuestion = StringUtil::replace("%%element_name%%", htmlToString($strElementName, true), $strQuestion);
-
+        $strQuestion = StringUtil::replace("%%element_name%%", StringUtil::jsSafeString($strElementName), $strQuestion);
 
         return $this->listConfirmationButton($strQuestion, $strLinkHref, "icon_delete", Carrier::getInstance()->getObjLang()->getLang("commons_delete", "system"), Carrier::getInstance()->getObjLang()->getLang("dialog_deleteHeader", "system"), Carrier::getInstance()->getObjLang()->getLang("dialog_deleteButton", "system"));
     }
@@ -1545,6 +1544,8 @@ HTML;
      */
     public function listConfirmationButton($strDialogContent, $strConfirmationLinkHref, $strButton, $strButtonTooltip, $strHeader = "", $strConfirmationButtonLabel = "")
     {
+        $strDialogContent = StringUtil::jsSafeString($strDialogContent);
+
         //get the reload-url
         if (StringUtil::indexOf($strConfirmationLinkHref, "javascript:") === false) {
             $strParam = (StringUtil::indexOf($strConfirmationLinkHref, "?") ? "&" : "?") ."reloadUrl='+encodeURIComponent(document.location.hash.substr(1))+'";

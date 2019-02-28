@@ -22,6 +22,7 @@ class DynamicMenu extends AbstractComponent
 
     private $button;
     private $endpoint;
+    private $width;
 
     /**
      * DynamicMenu constructor.
@@ -35,6 +36,13 @@ class DynamicMenu extends AbstractComponent
         $this->endpoint = $endpoint;
     }
 
+    /**
+     * @param int $width
+     */
+    public function setWidth(int $width)
+    {
+        $this->width = $width;
+    }
 
     /**
      * @inheritdoc
@@ -44,7 +52,8 @@ class DynamicMenu extends AbstractComponent
         $data = [
             "button" => $this->button,
             "endpoint" => $this->endpoint,
-            "menuid" => generateSystemid()
+            "menuid" => generateSystemid(),
+            "width" => $this->width
         ];
 
         return $this->renderTemplate($data);

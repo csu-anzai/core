@@ -318,14 +318,8 @@ abstract class AdminEvensimpler extends AdminSimple
                 $strPagerAddon = "&".AdminFormgeneratorFilter::STR_FORM_PARAM_SESSION."=".$strSessionId;
             }
 
-            //see of we may make the list sortable
-            $sortable = false;
-            $ref = new Reflection($strType);
-            if ($ref->hasClassAnnotation(Root::STR_SORTMANAGER_ANNOTATION)) {
-                $sortable = true;
-            }
 
-            $strList = $this->renderList($objArraySectionIterator, $sortable, "list".$this->getStrCurObjectTypeName(), false, $strPagerAddon);
+            $strList = $this->renderList($objArraySectionIterator, $this->isListSortable("list".$this->getStrCurObjectTypeName(), $strType), "list".$this->getStrCurObjectTypeName(), false, $strPagerAddon);
             $strList = $strFilterForm.$strList;
 
             $this->setAction($strOriginalAction);
@@ -333,6 +327,23 @@ abstract class AdminEvensimpler extends AdminSimple
         } else {
             throw new Exception("error loading list current object type not known ", Exception::$level_ERROR);
         }
+    }
+
+    /**
+     * Callback/hook to detect sorting capabilities within a list-view
+     * @param string $listIdentifier
+     * @param string|null $type
+     * @return bool
+     * @throws Exception
+     */
+    protected function isListSortable(string $listIdentifier, ?string $type): bool
+    {
+        $sortable = false;
+        $ref = new Reflection($type);
+        if ($ref->hasClassAnnotation(Root::STR_SORTMANAGER_ANNOTATION)) {
+            $sortable = true;
+        }
+        return $sortable;
     }
 
 

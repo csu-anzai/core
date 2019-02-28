@@ -106,6 +106,7 @@ abstract class FilterBase
      * By Default the class name (in lower case) is being returned
      *
      * @return string
+     * @throws \ReflectionException
      */
     final public function getFilterId()
     {
@@ -122,6 +123,7 @@ abstract class FilterBase
      * possible to provide another id in case you want to store the filter under a different session key
      *
      * @return string
+     * @throws \ReflectionException
      */
     public function getSessionId()
     {
@@ -149,7 +151,7 @@ abstract class FilterBase
             return trim($arrAnnotationValues[0]);
         }
 
-        throw new Exception(Exception::$level_ERROR, "Missing ".AbstractController::STR_MODULE_ANNOTATION." annotation for class ".__CLASS__);
+        throw new Exception("Missing ".AbstractController::STR_MODULE_ANNOTATION." annotation for class ".__CLASS__, Exception::$level_ERROR);
     }
 
 
@@ -160,6 +162,8 @@ abstract class FilterBase
      * @param string $strClass
      * @param string $strSessionId
      * @return self
+     * @throws Exception
+     * @throws \ReflectionException
      */
     public static function getOrCreateFromSession($strClass = null, $strSessionId = null)
     {
@@ -283,6 +287,7 @@ abstract class FilterBase
      * Generates ORM restrictions based on the properties of the filter.
      *
      * @return OrmCondition[]
+     * @throws Exception
      */
     public function getOrmConditions()
     {
@@ -341,6 +346,7 @@ abstract class FilterBase
      * Adds all ORM restrictions to the given $objORM
      *
      * @param OrmObjectlist $objORM
+     * @throws Exception
      */
     public function addWhereConditionToORM(OrmObjectlist $objORM)
     {
@@ -457,6 +463,7 @@ abstract class FilterBase
      * A clone of the filter is being written to the session.
      *
      * @throws Exception
+     * @throws \ReflectionException
      */
     public function writeFilterToSession()
     {
@@ -472,6 +479,7 @@ abstract class FilterBase
      * @param $strParam
      *
      * @return string
+     * @throws \ReflectionException
      */
     public function getFullParamName($strParam)
     {

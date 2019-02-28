@@ -10,8 +10,10 @@
         <tr class="header-{{ i }}">
             {% set j = 0 %}
             {% for cell in header.cells %}
-                <th {% if cell.colspan > 0 %} colspan="{{ cell.colspan }}" {% endif %} class="row-{{ j }}{% if cell.classAddon!="" %} {{ cell.classAddon }}{% endif %}">
-                    {{ cell.value | raw }}
+                <th class="row-{{ j }}{% if cell.classAddon!="" %} {{ cell.classAddon }}{% endif %}"
+                        {% if cell.colspan > 0 %} colspan="{{ cell.colspan }}" {% endif %}
+                        {% if cell.tooltip!="" %} title="{{ cell.tooltip }}"{% endif %}">
+                        {{ cell.value | raw }}
                 </th>
                 {% set j = j + 1 %}
             {% endfor %}
@@ -24,7 +26,9 @@
         <tr data-systemid="{{ i }}" {% if row.classAddon!="" %} class="{{ row.classAddon }}"{% endif %}>
             {% set j = 0 %}
             {% for cell in row.cells %}
-                <td {% if cell.colspan > 0 %} colspan="{{ cell.colspan }}" {% endif %} class="row-{{ j }}{% if cell.classAddon!="" %} {{ cell.classAddon }}{% endif %}">
+                <td class="row-{{ j }}{% if cell.classAddon!="" %} {{ cell.classAddon }}{% endif %}"
+                        {% if cell.colspan > 0 %} colspan="{{ cell.colspan }}" {% endif %}
+                        {% if cell.tooltip!="" %} title="{{ cell.tooltip }}"{% endif %}">
                     {{ cell.value | raw }}
                 </td>
                 {% set j = j + 1 %}

@@ -49,12 +49,12 @@
                 {% if row.title starts with '#' %}
                     <li class="title">{{ row.title[1:] }}
 
-                {% elseif row.type == 1 %}
+                {% elseif row.type == 1 and title  %}
                     <li class="checkbox{{ row.inline }} {{ level }}" %%css%%>
-                        <label><input type="checkbox" class="{{ level }}" name="{{ row.name }}" id="{{ row.name }}" value="{{ row.value }}" data-index="{{ row.key }}" {{ row.checked }} {{ row.readonly }} /> {{ title }}</label>
+                        <label><input type="checkbox" class="{{ level }}" name="{{ row.name }}" id="{{ row.name }}" value="{{ row.value }}" data-index="{{ row.key }}" {{ row.checked }} {{ row.readonly }} /> {{ title|raw }}</label>
 
 
-                {% elseif row.type == 2 %}
+                {% elseif row.type == 2 and title  %}
                     <li class="radio{{ row.inline }}">
                         <label><input type="radio" name="{{ row.name }}" value="{{ row.value }}" {{ row.checked }} {{ row.readonly }} /> {{ title|raw}}</label>
 

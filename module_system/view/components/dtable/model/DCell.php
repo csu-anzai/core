@@ -31,10 +31,16 @@ class DCell
     private $classAddon = '';
 
     /**
+     * @var string
+     */
+    private $tooltip = '';
+
+    /**
      * DCell constructor.
      * @param string $value
      */
-    public function __construct($value) {
+    public function __construct($value)
+    {
         $this->setValue($value);
     }
 
@@ -94,6 +100,26 @@ class DCell
     public function setClassAddon(string $classAddon)
     {
         $this->classAddon = $classAddon;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTooltip(): string
+    {
+        return $this->tooltip;
+    }
+
+    /**
+     * @param string $tooltip
+     *
+     * @return DCell
+     */
+    public function setTooltip(string $tooltip)
+    {
+        $this->tooltip = $tooltip;
 
         return $this;
     }
