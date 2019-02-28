@@ -64,10 +64,6 @@ abstract class AbstractFormentryI18n extends FormentryBase implements FormentryP
         $strReturn = "";
         $strReturn .= $objToolkit->formInputHidden($this->getStrEntryName(), "1");
 
-        if ($this->getStrHint() != null) {
-            $strReturn .= $objToolkit->formTextHint($this->getStrHint());
-        }
-
         $values = $this->toI18nValueArray($this->getStrValue());
         /** @var FormentryBase|FormentryPrintableInterface $objEntry */
         foreach ($this->arrEntries as $lang => $objEntry) {
