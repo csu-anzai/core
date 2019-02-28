@@ -159,19 +159,24 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
         $return = $board->renderComponent();
 
         //add a toolbar
-        $return .= $this->objToolkit->addToContentToolbar(Link::getLinkAdminDialog("dashboard", "listWidgets", [], $this->getLang("action_add_widget_to_dashboard"), $this->getLang("action_add_widget_to_dashboard"), "icon_new"));
+        if ($cfg->rightEdit()) {
+            $return .= $this->objToolkit->addToContentToolbar(Link::getLinkAdminDialog("dashboard", "listWidgets", [], $this->getLang("action_add_widget_to_dashboard"), $this->getLang("action_add_widget_to_dashboard"), "icon_new"));
+        }
 
         $params = Carrier::getAllParams();
         unset($params["module"]);
         unset($params["action"]);
 
-        $menu = new DynamicMenu(
-            "{$cfg->getStrDisplayName()}<i class='fa fa-caret-down'></i>",
-            Link::getLinkAdminXml("dashboard", "apiGetDashboardMenu", $params)
-        );
 
-        $menu = $menu->renderComponent();
-        $return .= $this->objToolkit->addToContentToolbar($menu);
+        if ($root->rightEdit() || DashboardConfig::getObjectCountFiltered(null, $root->getSystemid()) > 1) {
+            $menu = new DynamicMenu(
+                "{$cfg->getStrDisplayName()}<i class='fa fa-caret-down'></i>",
+                Link::getLinkAdminXml("dashboard", "apiGetDashboardMenu", $params)
+            );
+            $menu = $menu->renderComponent();
+            $return .= $this->objToolkit->addToContentToolbar($menu);
+        }
+
         return $return;
     }
 

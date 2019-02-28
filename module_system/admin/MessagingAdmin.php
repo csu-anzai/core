@@ -116,6 +116,10 @@ JS;
             $bitAlwaysEnabled = $objOneProvider instanceof MessageproviderExtendedInterface && $objOneProvider->isAlwaysActive();
             $bitAlwaysMail = $objOneProvider instanceof MessageproviderExtendedInterface && $objOneProvider->isAlwaysByMail();
 
+            if ($bitAlwaysEnabled && $bitAlwaysMail) {
+                continue;
+            }
+
             $strClassname = StringUtil::replace("\\", "-", get_class($objOneProvider));
 
             $arrRows[] = array(

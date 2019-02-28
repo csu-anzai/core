@@ -64,6 +64,19 @@ class ChartjsHelper {
     }
 
     /**
+     * Add thousand separator in big numeric values
+     *
+     * @param value
+     * @param ctx
+     * @returns {string}
+     */
+    public static addThousandSeparator(value: number, ctx: any) {
+        let strValue = value.toString();
+        strValue = strValue.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return strValue;
+    }
+
+    /**
      * Changes "0" values to empty string
      *
      * @param value
@@ -98,19 +111,6 @@ class ChartjsHelper {
         // set chart area backgroundColor
         ctx.style.backgroundColor = chartOptions['backgroundColor'];
 
-        // if (typeof (chartOptions['setDefaultTooltip']) == 'undefined' || !chartOptions['setDefaultTooltip']) {
-        //     chartData['options']['tooltips'] = {
-        //         enabled: true,
-        //         mode: 'single',
-        //
-        //         callbacks: {
-        //             label: function (tooltipItems, data) {
-        //                 return data.datasets[tooltipItems.datasetIndex].label + ' : ' + data.datasets[tooltipItems.datasetIndex].data[tooltipItems.index];
-        //             }
-        //         },
-        //     };
-        // }
-
         if (typeof (chartOptions['createImageLink']) !== 'undefined' || chartOptions['createImageLink']) {
             chartData['options']['animation'] = {
                 onComplete: createExportLink
@@ -129,6 +129,19 @@ class ChartjsHelper {
             chartData['options']['plugins']['datalabels'] = {
                 formatter: function (value: number, ctx: any) {
                     return ChartjsHelper.dataShowPercentage(value, ctx);
+                }
+            }
+        }
+
+        if (typeof (chartOptions['addThousandSeparator']) !== 'undefined' || chartOptions['addThousandSeparator']) {
+            chartData['options']['scales']['xAxes'][0]['ticks'] = {
+                userCallback: function (value: number, ctx: any) {
+                    return ChartjsHelper.addThousandSeparator(value, ctx);
+                }
+            }
+            chartData['options']['scales']['yAxes'][0]['ticks'] = {
+                userCallback: function (value: number, ctx: any) {
+                    return ChartjsHelper.addThousandSeparator(value, ctx);
                 }
             }
         }

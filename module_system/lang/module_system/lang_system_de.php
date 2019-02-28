@@ -344,3 +344,4 @@ $lang["object_browser_reset"] = "Objekt entfernen";
 
 $lang["copy_to_clipboard"] = "In die Zwischenablage kopieren";
 $lang["copy_page_url"] = "Seiten-URL";
+$lang["link_was_copied"] = "Link wurde kopiert";
