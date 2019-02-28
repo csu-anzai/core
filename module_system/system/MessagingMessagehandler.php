@@ -256,6 +256,10 @@ class MessagingMessagehandler
     {
         $arrReturn = array();
 
+        if (!is_array($arrRecipients)) {
+            return [];
+        }
+
         foreach ($arrRecipients as $objOneRecipient) {
             if ($objOneRecipient instanceof UserUser && $objOneRecipient->getIntRecordDeleted() != 1) {
                 $arrReturn[$objOneRecipient->getStrSystemid()] = $objOneRecipient;
