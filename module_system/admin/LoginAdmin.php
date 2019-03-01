@@ -190,6 +190,11 @@ class LoginAdmin extends AdminController implements AdminInterface
             if (count($providers) > 0) {
                 $strForm .= $this->objToolkit->divider();
                 foreach ($providers as $provider) {
+                    if ($provider->getRedirectDetector()->forceRedirect()) {
+                        $redirectUrl = $providerManager->buildAuthorizationUrl($provider);
+                        ResponseObject::getInstance()->setStrRedirectUrl($redirectUrl);
+                    }
+
                     $strForm .= $this->objToolkit->formHeader(Link::getLinkAdminHref("oauth2", "redirect", ["provider_id" => $provider->getId()]), generateSystemid());
                     $strForm .= $this->objToolkit->formInputSubmit($this->getLang("login_with", "oauth2", [$provider->getName()]));
                     $strForm .= $this->objToolkit->formClose();

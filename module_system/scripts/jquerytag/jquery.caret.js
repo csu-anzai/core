@@ -38,11 +38,11 @@ define("jquerycaret", ["jquery"], function(jq){
           focus(target);
           //contenteditable
           if (isContentEditable) {
-              var range1 = document.selection.createRange(),
-                  range2 = document.body.createTextRange();
-              range2.moveToElementText(target);
-              range2.setEndPoint('EndToEnd', range1);
-              return range2.text.length;
+            var range1 = document.selection.createRange(),
+                range2 = document.body.createTextRange();
+            range2.moveToElementText(target);
+            range2.setEndPoint('EndToEnd', range1);
+            return range2.text.length;
           }
           //textarea
           var pos = 0,

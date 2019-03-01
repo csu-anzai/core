@@ -786,7 +786,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
 
         <div class="col-sm-6 inputText inputTagEditor">
-            <input type="text" id="%%name%%" data-name="%%name%%" style="display:none" autocomplete="off"/>
+            <input type="text" id="%%name%%" data-name="%%name%%" autocomplete="off"/>
         </div>
     </div>
     <script type="text/javascript">
@@ -814,7 +814,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
 
         <div class="col-sm-6 inputText inputTagEditor" id="tageditor_%%name%%">
-            <input type="text" id="%%name%%" data-name="%%name%%" style="display:none" class="form-control" autocomplete="off" data-kajona-block-initval="true"/>
+            <input type="text" id="%%name%%" data-name="%%name%%" class="form-control" autocomplete="off" data-kajona-block-initval="true"/>
             <div id="%%name%%-list">%%data%%</div>
         </div>
     </div>
