@@ -52,7 +52,18 @@ class Dashboard {
 
         $('.adminwidgetColumn > div.core-component-widget').each(function () {
             let systemId = $(this).data('systemid');
-            Ajax.loadUrlToElement("div.core-component-widget[data-systemid='"+systemId+"'] .content", "/xml.php?admin=1&module=dashboard&action=getWidgetContent&systemid="+systemId);
+            let data = Util.getQueryParameters();
+            data["admin"] = "1";
+            data["module"] = "dashboard";
+            data["action"] = "getWidgetContent";
+            data["systemid"] = systemId;
+
+            let params = "";
+            for (let key in data) {
+                params+= key + "=" + encodeURIComponent(data[key]) + "&";
+            }
+
+            Ajax.loadUrlToElement("div.core-component-widget[data-systemid='"+systemId+"'] .content", "/xml.php?"+params);
         });
 
         $("div.adminwidgetColumn").each(function(index: number) {

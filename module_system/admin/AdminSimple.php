@@ -14,6 +14,7 @@ use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\ArraySectionIterator;
 use Kajona\System\System\Exception;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleModelException;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
@@ -134,7 +135,11 @@ abstract class AdminSimple extends AdminController
     {
         $objRecord = $this->objFactory->getObject($this->getSystemid());
         if ($objRecord != null && $objRecord->rightDelete()) {
-            $this->objLifeCycleFactory->factory(get_class($objRecord))->delete($objRecord);
+            try {
+                $this->objLifeCycleFactory->factory(get_class($objRecord))->delete($objRecord);
+            } catch (ServiceLifeCycleModelException $e) {
+                return $this->objToolkit->warningBox($e->getMessage());
+            }
 
             $strTargetUrl = urldecode($this->getParam("reloadUrl"));
             parse_str($strTargetUrl, $arrParams);

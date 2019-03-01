@@ -6,7 +6,7 @@
 
 declare(strict_types = 1);
 
-namespace Kajona\Dashboard\View\Components\WidgetList;
+namespace Kajona\Dashboard\View\Components\Widgetlist;
 
 use Kajona\System\View\Components\AbstractComponent;
 
@@ -36,7 +36,7 @@ class WidgetList extends AbstractComponent
         $this->widgets = $widgets;
     }
 
-    /**
+    /**¡
      * @inheritdoc
      */
     public function renderComponent(): string

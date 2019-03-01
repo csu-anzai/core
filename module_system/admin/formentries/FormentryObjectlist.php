@@ -265,7 +265,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
                 }
                 $strHtml .= $strTitle;
                 if ($objObject instanceof AdminListableInterface && $objObject->rightView()) {
-                    $strHtml .= " ".strip_tags($objObject->getStrAdditionalInfo());
+                    $strHtml .= " ".$objObject->getStrAdditionalInfo();
                 }
                 $strHtml .= "<br />";
             }

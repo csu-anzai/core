@@ -10,6 +10,7 @@ namespace Kajona\System;
 
 //Determine the area to load
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Config;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\HttpResponsetypes;
 use Kajona\System\System\HttpStatuscodes;
@@ -57,6 +58,20 @@ class Xml
         $this->objResponse->setStrResponseType(HttpResponsetypes::STR_TYPE_XML);
         $this->objResponse->setStrStatusCode(HttpStatuscodes::SC_OK);
         $this->objResponse->setObjEntrypoint(RequestEntrypointEnum::XML());
+
+        $origin = Config::getInstance()->getConfig("header_cors_origin");
+        if (!empty($origin)) {
+            $this->objResponse->addHeader("Access-Control-Allow-Origin: " . $origin);
+            $this->objResponse->addHeader("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
+            $this->objResponse->addHeader("Access-Control-Allow-Headers: Authorization");
+        }
+
+        // in case for options requests i.e. preflight requests we always want to set an ok status code otherwise the
+        // browser will deny the request
+        if ($_SERVER["REQUEST_METHOD"] == "OPTIONS") {
+            ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_OK);
+            return;
+        }
 
         //only allowed with a module definition. if not given skip, so that there's no exception thrown
         if (empty($strModule)) {

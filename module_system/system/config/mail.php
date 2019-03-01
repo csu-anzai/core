@@ -14,6 +14,7 @@ $config['smtp_enabled']         = false;                //if disabled, the local
 $config['smtp_host']            = "mail.exmaple.com";   //with backup: mail1.test.com;mail2.test.com
 $config['smtp_port']            = 25;                   //default: 25, tls: 587, ssl: 465
 $config['smtp_encryption']      = "";                   //one of '', 'ssl', 'tls'
+$config['smtp_auto_tls']        = true;                 //switches to tls if the server requests it (STARTTLS), even if smtp_auto_tls is set to ''. requires a valid certificate.
 $config['smtp_debug']           = 0;                    // 0: off, 1: +client, 2: +server 3: +connection.
                                                           // requires $debug['debuglogging_overwrite']['mail.log'] to be set to 3
 
