@@ -5,7 +5,7 @@
 ********************************************************************************************************/
 
 
-$config['mail_relay_enabled']   = true;                 //enables email-sending in general. if disabled, the mail subsystem
+$config['mail_relay_enabled']   = false;                 //enables email-sending in general. if disabled, the mail subsystem
                                                         //drops mails, but behaves as if sending was successful
 $config['mail_copy2file']       = false;                //if enabled, outgoing mail are copied to /project/log/mail for debugging purposes
 

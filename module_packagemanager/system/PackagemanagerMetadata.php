@@ -11,9 +11,13 @@ namespace Kajona\Packagemanager\System;
 
 use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Classloader;
 use Kajona\System\System\Exception;
 use Kajona\System\System\PharModule;
+use Kajona\System\System\Resourceloader;
+use Kajona\System\System\SamplecontentInstallerInterface;
 use Kajona\System\System\StringUtil;
+use Kajona\System\System\SystemModule;
 use Kajona\System\System\XmlParser;
 use Kajona\System\System\Zip;
 use Phar;
@@ -133,6 +137,21 @@ class PackagemanagerMetadata implements AdminListableInterface, \JsonSerializabl
         $objManager = new PackagemanagerManager();
         $objHandler = $objManager->getPackageManagerForPath($this->getStrPath());
 
+        $sc = $this->getSamplecontentInstallerForPackage();
+
+        $scInfo = [];
+        if ($sc !== null) {
+            $moduleModel = null;
+            $module = $sc->getCorrespondingModule();
+            if (!empty($module) && !empty($objHandler->getVersionInstalled())) {
+                //$moduleModel = SystemModule::getModuleByName($module);
+
+            }
+
+            $scInfo["name"] = get_class($sc);
+            $scInfo["isInstalled"] = $moduleModel !== null ? $sc->isInstalled() : false;
+        }
+
         return [
             "title" => $this->strTitle,
             "description" => $this->strDescription,
@@ -142,10 +161,37 @@ class PackagemanagerMetadata implements AdminListableInterface, \JsonSerializabl
             "path" => $this->strPath,
             "providesInstaller" => $this->bitProvidesInstaller,
             "versionInstalled" => $objHandler->getVersionInstalled(),
-            "isInstallable" => $objHandler->isInstallable()
+            "isInstallable" => $objHandler->isInstallable(),
+            "samplecontent" => $scInfo
         ];
     }
 
+
+    /**
+     * @param PackagemanagerMetadata $objPackage
+     *
+     * @return SamplecontentInstallerInterface
+     */
+    private function getSamplecontentInstallerForPackage()
+    {
+        $arrTempInstaller = Resourceloader::getInstance()->getFolderContent("/installer", array(".php"));
+        foreach($arrTempInstaller as $strPath => $strFilename) {
+            if(StringUtil::indexOf($strPath, $this->getStrPath()) !== false) {
+
+                /** @var SamplecontentInstallerInterface $objInstance */
+                $objInstance = Classloader::getInstance()->getInstanceFromFilename($strPath, null, SamplecontentInstallerInterface::class, null, true);
+                if($objInstance != null) {
+
+                    $objInstance->setObjDb(Carrier::getInstance()->getObjDB());
+                    $objInstance->setStrContentlanguage(Carrier::getInstance()->getObjSession()->getAdminLanguage(true, true));
+
+                    return $objInstance;
+                }
+            }
+        }
+
+        return null;
+    }
 
 
     /**

@@ -213,9 +213,9 @@ class Installer
             } elseif ($step =="getModuleList") {
                 $arrayData = $this->arrMetadata;
             }
-                elseif($step=="triggerInstallerApi"){
+            elseif($step=="triggerInstallerApi"){
                  $arrayData=$this->triggerModuleInstallerApi($payload ?? []);
-                }
+            }
             else {
                 throw new \Exception("no matching step found");
             }
@@ -921,6 +921,8 @@ class Installer
         $objManager = new PackagemanagerManager();
         $arrPackageMetadata = $objManager->getAvailablePackages();
 
+        Session::getInstance()->sessionClose();
+
         foreach ($arrPackageMetadata as $objOneMetadata) {
             if ($objOneMetadata->getStrTitle() == $payload["module"]) {
                 $objHandler = $objManager->getPackageManagerForPath($objOneMetadata->getStrPath());
@@ -934,6 +936,9 @@ class Installer
 
         return json_encode(array("module" => $payload["module"], "status" => "error"));
     }
+
+
+
     private function triggerNextAutoInstall()
     {
 
