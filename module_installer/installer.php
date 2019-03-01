@@ -209,7 +209,14 @@ class Installer
             {
                 $arrayData=$this->adminLoginData_api($payload);
             } elseif ($step =="getModuleList") {
-                $arrayData = $this->arrMetadata;
+
+                $objManager = new PackagemanagerManager();
+                $arrModules = $objManager->getAvailablePackages();
+                $arrayData = [];
+                foreach ($arrModules as $objOneModule) {
+                    $arrayData[] = $objOneModule;
+                }
+
             }
             elseif($step=="triggerInstallerApi"){
                  $arrayData=$this->triggerModuleInstallerApi($payload ?? []);
