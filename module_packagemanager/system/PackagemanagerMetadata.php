@@ -144,12 +144,13 @@ class PackagemanagerMetadata implements AdminListableInterface, \JsonSerializabl
             $moduleModel = null;
             $module = $sc->getCorrespondingModule();
             if (!empty($module) && !empty($objHandler->getVersionInstalled())) {
-                //$moduleModel = SystemModule::getModuleByName($module);
+                $moduleModel = SystemModule::getModuleByName($module);
 
             }
 
             $scInfo["name"] = get_class($sc);
             $scInfo["isInstalled"] = $moduleModel !== null ? $sc->isInstalled() : false;
+            $scInfo["isInstallable"] = $moduleModel !== null;
         }
 
         return [

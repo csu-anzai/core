@@ -90,17 +90,15 @@ class Installer
         //set a different language?
         if (issetGet("language")) {
             if (in_array(getGet("language"), explode(",", Carrier::getInstance()->getObjConfig()->getConfig("adminlangs")))) {
-                $this->objLang->setStrTextLanguage(getGet("language"));
-                //and save to a cookie
-                $objCookie = new Cookie();
-                $objCookie->setCookie("adminlanguage", getGet("language"));
-
+                $this->objSession->setSession(Session::STR_SESSION_ADMIN_LANG_KEY, getGet("language"));
             }
         }
-        else {
-            //init correct text-file handling as in admins
-            $this->objLang->setStrTextLanguage($this->objSession->getAdminLanguage(true, true));
+
+        $lang = $this->objSession->getSession(Session::STR_SESSION_ADMIN_LANG_KEY);
+        if ($lang == "") {
+            $lang = "en";
         }
+        $this->objLang->setStrTextLanguage($lang);
 
         $this->STR_PROJECT_CONFIG_FILE = _realpath_."project/module_system/system/config/config.php";
 
