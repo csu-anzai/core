@@ -7,9 +7,7 @@
 *	$Id$	                                        *
 ********************************************************************************************************/
 
-namespace Kajona\Admin\Exceptions;
-
-
+namespace Kajona\System\Admin\Exceptions;
 
 use Kajona\System\System\Exception;
 
