@@ -6,6 +6,7 @@ import "bootstrap";
 import Router = require("../../../module_system/scripts/kajona/Router");
 import Util = require("../../../module_system/scripts/kajona/Util");
 import Folderview = require("../../../module_system/scripts/kajona/Folderview");
+import Ajax = require("../../../module_system/scripts/kajona/Ajax");
 
 class Dialog {
 
@@ -120,10 +121,9 @@ class Dialog {
     };
 
     public setContentIFrame(strUrl : string) {
-        this.iframeId = this.containerId + '_iframe';
-        let result = Router.generateUrl(strUrl);
-        strUrl = KAJONA_WEBPATH+result.url+"&combinedLoad=1";
-        this.iframeURL = strUrl;
+        let strUrl2 = Router.generateUrl(strUrl);
+        strUrl2 = KAJONA_WEBPATH+strUrl2.url;
+        this.iframeURL = strUrl2;
     };
 
     public init(intWidth? : number, intHeight? : number) {
@@ -170,19 +170,40 @@ class Dialog {
             }
         }
 
+
         if(this.iframeURL != null) {
             $("#"+this.containerId+"_loading").css('display', 'block');
-            $('#' + this.containerId + '_content').html('<iframe src="' + this.iframeURL + '" width="100%" height="'+(intHeight)+'" name="' + this.iframeId + '" id="' + this.iframeId + '" class="seamless" seamless></iframe>');
+            $('#' + this.containerId + '_content').html('');
+
+            //$('#' + this.containerId).modal('show');
+            //router.loadUrl(this.iframeURL, '#folderviewDialog_content');
+            var containerId = '#' + this.containerId + '_content';
+            Ajax.loadUrlToElement('#' + this.containerId + '_content', this.iframeURL, null, false, 'GET', Router.defaultDialogCallback);
+
             this.iframeURL = null;
 
-            var id = this.iframeId;
-            var containerId = this.containerId;
-            $("#"+this.iframeId).on('load', function() {
-                $("#"+containerId+"_loading").css('display', 'none');
-                $('#'+id).contents().find("body").addClass('dialogBody')
-
-            });
+            // var id = this.iframeId;
+            // var containerId = this.containerId;
+            // $("#"+this.iframeId).on('load', function() {
+            //     $("#"+containerId+"_loading").css('display', 'none');
+            //     $('#'+id).contents().find("body").addClass('dialogBody')
+            //
+            // });
         }
+
+        // if(this.iframeURL != null) {
+        //     $("#"+this.containerId+"_loading").css('display', 'block');
+        //     $('#' + this.containerId + '_content').html('<iframe src="' + this.iframeURL + '" width="100%" height="'+(intHeight)+'" name="' + this.iframeId + '" id="' + this.iframeId + '" class="seamless" seamless></iframe>');
+        //     this.iframeURL = null;
+        //
+        //     var id = this.iframeId;
+        //     var containerId = this.containerId;
+        //     $("#"+this.iframeId).on('load', function() {
+        //         $("#"+containerId+"_loading").css('display', 'none');
+        //         $('#'+id).contents().find("body").addClass('dialogBody')
+        //
+        //     });
+        // }
 
 
         if(!Util.isStackedDialog() && this.bitLarge) {

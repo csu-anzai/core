@@ -76,7 +76,7 @@ class Router {
                 return;
             }
 
-            Router.cleanPage();
+
             //moduleNavigation.setModuleActive(objUrl.module);
 
             Router.applyLoadCallbacks();
@@ -86,7 +86,7 @@ class Router {
             if ($('body').hasClass("modal-open")) {
                 target = '#folderviewDialog_content';
             } else {
-                cleanPage();
+                Router.cleanPage();
             }
 
             //split between post and get
@@ -116,7 +116,7 @@ class Router {
         });
     }
 
-    public static generateUrl(url: string) {
+    public static generateUrl(url: string): any {
 
         //if we have a php url, return directly
         if (url.indexOf("index.php") > 0) {
@@ -276,7 +276,7 @@ class Router {
         delete this.arrFormCallbacks[strName];
     }
 
-    public static defaultDialogCallback : function() {
+    public static defaultDialogCallback() {
         // return true;//TODO: merge mit lade-logik oben
         $('#folderviewDialog_content a').each(function (key, val) {
             var $link = $(this);
