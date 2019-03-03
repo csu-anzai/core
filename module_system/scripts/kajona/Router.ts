@@ -174,7 +174,9 @@ class Router {
             strUrlToLoad += '&systemid='+arrSections[2];
         }
 
-        strUrlToLoad += "&"+strParams;
+        if (strParams != '') {
+            strUrlToLoad += "&" + strParams;
+        }
         strUrlToLoad += "&contentFill=1";
 
         return { url: strUrlToLoad, module: arrSections[0]};
