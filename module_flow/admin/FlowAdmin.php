@@ -275,7 +275,7 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
                 $objAction = new $strActionClass();
                 $arrLinks[] = $this->objToolkit->listButton(
                     Link::getLinkAdmin(
-                        $this->getArrModule("modul"), $this->getActionNameForClass("newTransitionAction", null), "&systemid=".$this->getSystemid()."&class=".$strActionClass.$this->getStrPeAddon(), $objAction->getTitle(), $objAction->getTitle(), "icon_textfield", $objAction->getTitle()
+                        $this->getArrModule("modul"), $this->getActionNameForClass("newTransitionAction", null), "&systemid=".$this->getSystemid()."&class=".$strActionClass, $objAction->getTitle(), $objAction->getTitle(), "icon_textfield", $objAction->getTitle()
                     )
                 );
             }
@@ -288,7 +288,7 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
                 $objCondition = new $strConditionClass();
                 $arrLinks[] = $this->objToolkit->listButton(
                     Link::getLinkAdmin(
-                        $this->getArrModule("modul"), $this->getActionNameForClass("newTransitionCondition", null), "&systemid=".$this->getSystemid()."&class=".$strConditionClass.$this->getStrPeAddon(), $objCondition->getTitle(), $objCondition->getTitle(), "icon_textfield", $objCondition->getTitle()
+                        $this->getArrModule("modul"), $this->getActionNameForClass("newTransitionCondition", null), "&systemid=".$this->getSystemid()."&class=".$strConditionClass, $objCondition->getTitle(), $objCondition->getTitle(), "icon_textfield", $objCondition->getTitle()
                     )
                 );
             }
@@ -400,7 +400,11 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
 
                 /** @var Root $model */
                 $model = new $targetClass();
-                $label = Lang::getInstance()->getLang("flow_roles_{$role}", $model->getArrModule("module"));
+
+                $label = $permissionHandler->getRoleLabel($role);
+                if ($label === null) {
+                    $label = Lang::getInstance()->getLang("flow_roles_{$role}", $model->getArrModule("module"));
+                }
 
                 $table->addRow([$label, $rights]);
             }

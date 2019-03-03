@@ -34,7 +34,7 @@ class FormentryButton extends FormentryBase implements FormentryInterface {
      * @return string
      */
     public function renderField() {
-        $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
+        $objToolkit = Carrier::getInstance()->getObjToolkit();
         $strReturn = "";
         if($this->getStrHint() != null)
             $strReturn .= $objToolkit->formTextRow($this->getStrHint());

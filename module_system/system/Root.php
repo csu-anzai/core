@@ -595,6 +595,8 @@ abstract class Root
      * @see \Kajona\System\System\ModelInterface
      *
      * @todo move to OrmObjectupdate completely
+     *
+     * @internal use ServiceLifeCycleFactory::getLifeCycle($obj)->update($obj); instead
      */
     public function updateObjectToDb($strPrevId = false)
     {
@@ -731,7 +733,7 @@ abstract class Root
      * Please be aware that you are working on the new object afterwards!
      *
      * @param string $strNewPrevid
-     * @param bool $bitChangeTitle
+     * @param @deprecated bool $bitChangeTitle
      * @param bool $bitCopyChilds
      *
      * @throws Exception
@@ -750,16 +752,6 @@ abstract class Root
 
         //check if there's a title field, in most cases that could be used to change the title
         $objReflection = new Reflection($this);
-        if ($bitChangeTitle) {
-            $strGetter = $objReflection->getGetter("strTitle");
-            $strSetter = $objReflection->getSetter("strTitle");
-            if ($strGetter != null && $strSetter != null) {
-                $strTitle = $this->{$strGetter}();
-                if ($strTitle != "") {
-                    $this->{$strSetter}($strTitle."_copy");
-                }
-            }
-        }
 
         //resolve all OrmAssignments in order to trigger the lazy loading
         $arrProperties = $objReflection->getPropertiesWithAnnotation(OrmBase::STR_ANNOTATION_OBJECTLIST, ReflectionEnum::PARAMS);

@@ -143,40 +143,10 @@ Every file must contain the following copyright header.
 
 # Javascript
 
-We use an AMD loader to split up our javascript code base into multiple modules. Each module must be documented using
-the [JSDoc] syntax to document the defined functions and objects. For more information take a look at: 
-http://usejsdoc.org/howto-amd-modules.html
-
-In the following some examples how to document a module. In case you return a variable you have to use the `@exports`
-annotation:
-
-    /**
-     * @module mymodule
-     */
-    define('mymodule', ['dep1', 'dep2'], function (foo, bar) {
-    
-        /** @exports mymodule */
-        var obj = {};
-    
-        return obj;
-    
-    });
-
-In case you return directly an object you have to use the `@alias` annotation:
-
-    /**
-     * @module mymodule
-     */
-    define('mymodule', ['dep1', 'dep2'], function (foo, bar) {
-    
-        return /** @alias module:mymodule */ {
-            foo: function(){
-                return "bar";
-            }
-        };
-    
-    });
-
+Since AGP 7.1 we have migrated our javascript code base to TypeScript. This helps us to improve the
+structure and design of our code base. We still use an AMD loader and all of our type script classes
+are converted to a fitting AMD module on build. As coding style we try to follow the type script
+coding guidlines: https://github.com/Microsoft/TypeScript/wiki/Coding-guidelines
 
 # Commit messages
 
@@ -197,6 +167,8 @@ General commit message format, based on the [AngularJS] commit message guide:
 * test: adding missing tests, refactoring tests; no production code change
 * chore: updating grunt tasks etc; no production code change
 
+> This is also the prefix of your git-branch, e.g. `fix/agp-2344_nullpointer-in-contract`
+
 **module:**
 
 Name of the module without the `module_` prefix. You can use * if there isn't a more fitting scope.
@@ -204,6 +176,8 @@ Name of the module without the `module_` prefix. You can use * if there isn't a 
 **subject:**
 
 This is a short description of the change.
+
+
 
 ## Examples
 

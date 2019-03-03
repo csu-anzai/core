@@ -37,7 +37,12 @@ class Inputtext extends FormentryComponentAbstract
     /**
      * @var string
      */
-    protected $opener;
+    protected $prepend;
+
+    /**
+     * @var string
+     */
+    protected $append;
 
     /**
      * @param string $name
@@ -72,11 +77,19 @@ class Inputtext extends FormentryComponentAbstract
     }
 
     /**
-     * @param string $opener
+     * @param string $prepend
      */
-    public function setOpener($opener)
+    public function setPrepend(string $prepend)
     {
-        $this->opener = $opener;
+        $this->prepend = $prepend;
+    }
+
+    /**
+     * @param string $append
+     */
+    public function setAppend(string $append)
+    {
+        $this->append = $append;
     }
 
     /**
@@ -87,7 +100,8 @@ class Inputtext extends FormentryComponentAbstract
         $context = parent::buildContext();
         $context["value"] = $this->value;
         $context["type"] = $this->type ?: 'text';
-        $context["opener"] = $this->opener;
+        $context["prepend"] = $this->prepend;
+        $context["append"] = $this->append;
 
         return $context;
     }

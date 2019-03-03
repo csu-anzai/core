@@ -20,6 +20,7 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\Config;
 use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
+use Kajona\System\System\HierarchicalListableInterface;
 use Kajona\System\System\History;
 use Kajona\System\System\Lang;
 use Kajona\System\System\Link;
@@ -33,12 +34,19 @@ use Kajona\System\System\SystemJSTreeConfig;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\Toolkit;
+use Kajona\System\View\Components\Buttonwrapper\Buttonwrapper;
 use Kajona\System\View\Components\Datatable\Datatable;
+use Kajona\System\View\Components\Formentry\Dropdown\Dropdown;
 use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
 use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
+use Kajona\System\View\Components\Formentry\Buttonbar\Buttonbar;
 use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
+use Kajona\System\View\Components\Formentry\Radiogroup\Radiogroup;
+use Kajona\System\View\Components\Formentry\Checkboxarray\Checkboxarray;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
+use Kajona\System\View\Components\Formentry\Submit\Submit;
+use Kajona\System\View\Components\Listbody\Listbody;
 use Kajona\System\View\Components\Popover\Popover;
 use Kajona\System\View\Components\Tabbedcontent\Tabbedcontent;
 use Kajona\System\View\Components\Textrow\TextRow;
@@ -586,7 +594,7 @@ class ToolkitAdmin extends Toolkit
      *
      * @param string $strValue
      * @param string $strName
-     * @param string $strEventhandler
+     * @param string $strOnclick
      * @param string $strClass use cancelbutton for cancel-buttons
      * @param bool $bitEnabled
      *
@@ -594,25 +602,16 @@ class ToolkitAdmin extends Toolkit
      *
      * @return string
      */
-    public function formInputSubmit($strValue = null, $strName = "Submit", $strEventhandler = "", $strClass = "", $bitEnabled = true, $bitWithWrapper = true)
+    public function formInputSubmit($strValue = null, $strName = "Submit", $strOnclick = null, $strClass = "", $bitEnabled = true, $bitWithWrapper = true)
     {
-        if ($strValue === null) {
-            $strValue = Carrier::getInstance()->getObjLang()->getLang("commons_save", "system");
+        $cmp = new Submit($strName, $strValue);
+        if ($strOnclick !== null) {
+            $cmp->setOnClick($strOnclick);
         }
-
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["value"] = $strValue;
-        $arrTemplate["eventhandler"] = $strEventhandler;
-        $arrTemplate["class"] = $strClass;
-        $arrTemplate["disabled"] = $bitEnabled ? "" : "disabled=\"disabled\"";
-
-        $strButton = $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_submit");
-
-        if ($bitWithWrapper) {
-            $strButton = $this->objTemplate->fillTemplateFile(array("button" => $strButton), "/admin/skins/kajona_v4/elements.tpl", "input_submit_wrapper");
-        }
-        return $strButton;
+        $cmp->setClass($strClass);
+        $cmp->setReadOnly(!$bitEnabled);
+        $cmp->setWithWrapper($bitWithWrapper);
+        return $cmp->renderComponent();
     }
 
     /**
@@ -623,7 +622,8 @@ class ToolkitAdmin extends Toolkit
      */
     public function formInputButtonWrapper($strButtons)
     {
-        return $this->objTemplate->fillTemplateFile(array("button" => $strButtons), "/admin/skins/kajona_v4/elements.tpl", "input_submit_wrapper");
+        $cmp = new Buttonwrapper($strButtons);
+        return $cmp->renderComponent();
     }
 
     /**
@@ -757,55 +757,25 @@ class ToolkitAdmin extends Toolkit
      * @param string $strAddons
      * @param string $strDataPlaceholder
      * @param string $strOpener
-     *
      * @return string
      * @throws Exception
+     * @deprecated
      */
     public function formInputDropdown($strName, array $arrKeyValues, $strTitle = "", $strKeySelected = "", $strClass = "", $bitEnabled = true, $strAddons = "", $strDataPlaceholder = "", $strOpener = "", $strInstantEditor = "")
     {
-        $strOptions = "";
-        foreach (array("", 0, "\"\"") as $strOneKeyToCheck) {
-            if (array_key_exists($strOneKeyToCheck, $arrKeyValues) && trim($arrKeyValues[$strOneKeyToCheck]) == "") {
-                unset($arrKeyValues[$strOneKeyToCheck]);
-            }
+        $dropdown = new Dropdown($strName, $strTitle, $arrKeyValues, $strKeySelected);
+        $dropdown->setClass($strClass);
+        $dropdown->setReadOnly(!$bitEnabled);
+        $dropdown->setOpener($strOpener);
+        $dropdown->setAddons($strAddons);
+
+        if (!empty($strDataPlaceholder)) {
+            $dropdown->setData('placeholder', $strDataPlaceholder);
         }
 
-        //see if the selected value is valid
-        if (!in_array($strKeySelected, array_keys($arrKeyValues))) {
-            $strKeySelected = "";
-        }
+        $dropdown->setData('kajona-instantsave', $strInstantEditor);
 
-        if (!isset($arrKeyValues[""])) {
-            $strPlaceholder = $strDataPlaceholder != "" ? $strDataPlaceholder : Carrier::getInstance()->getObjLang()->getLang("commons_dropdown_dataplaceholder", "system");
-            $strOptions .= "<option value='' disabled ".($strKeySelected == "" ? " selected " : "").">".$strPlaceholder."</option>";
-        }
-
-        //Iterating over the array to create the options
-        foreach ($arrKeyValues as $strKey => $strValue) {
-            $arrTemplate = array();
-            $arrTemplate["key"] = $strKey;
-            $arrTemplate["value"] = $strValue;
-            if ((string)$strKey == (string)$strKeySelected) {
-                $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_dropdown_row_selected");
-            } else {
-                $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_dropdown_row");
-            }
-        }
-
-
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["class"] = $strClass;
-        $arrTemplate["disabled"] = ($bitEnabled ? "" : "disabled=\"disabled\"");
-        $arrTemplate["options"] = $strOptions;
-        $arrTemplate["addons"] = $strAddons;
-        $arrTemplate["opener"] = $strOpener;
-        $arrTemplate["instantEditor"] = $strInstantEditor;
-        $arrTemplate["dataplaceholder"] = $strDataPlaceholder != "" ? $strDataPlaceholder : Carrier::getInstance()->getObjLang()->getLang("commons_dropdown_dataplaceholder", "system"); //TODO noch benötigt?
-
-
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_dropdown", true);
+        return $dropdown->renderComponent();
     }
 
     /**
@@ -1011,33 +981,16 @@ HTML;
      * @param string $strTitle
      * @param array $arrKeysSelected
      * @param bool $bitEnabled
-     *
      * @return string
+     * @deprecated
      */
     public function formToggleButtonBar($strName, array $arrKeyValues, $strTitle = "", $arrKeysSelected = array(), $bitEnabled = true, $strType = "checkbox")
     {
-        $strOptions = "";
-        //Iterating over the array to create the options
-        foreach ($arrKeyValues as $strKey => $strValue) {
-            $arrTemplate = array();
-            $arrTemplate["name"] = $strName;
-            $arrTemplate["type"] = $strType;
-            $arrTemplate["key"] = $strKey;
-            $arrTemplate["value"] = $strValue;
-            $arrTemplate["disabled"] = ($bitEnabled ? "" : "disabled=\"disabled\"");
-            $arrTemplate["btnclass"] = ($bitEnabled ? "" : "disabled");
-            if (in_array($strKey, $arrKeysSelected)) {
-                $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_toggle_buttonbar_button_selected");
-            } else {
-                $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_toggle_buttonbar_button");
-            }
-        }
+        $buttonBar = new Buttonbar($strName, $strTitle, $arrKeyValues, $arrKeysSelected);
+        $buttonBar->setReadOnly(!$bitEnabled);
+        $buttonBar->setType($strType);
 
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["options"] = $strOptions;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_toggle_buttonbar", true);
+        return $buttonBar->renderComponent();
     }
 
     /**
@@ -1051,29 +1004,16 @@ HTML;
      * @param string $strKeySelected
      * @param string $strClass
      * @param bool $bitEnabled
-     *
      * @return string
+     * @deprecated
      */
     public function formInputRadiogroup($strName, array $arrKeyValues, $strTitle = "", $strKeySelected = "", $strClass = "", $bitEnabled = true)
     {
-        $strOptions = "";
-        //Iterating over the array to create the options
-        foreach ($arrKeyValues as $strKey => $strValue) {
-            $arrTemplate = array();
-            $arrTemplate["key"] = $strKey;
-            $arrTemplate["value"] = $strValue;
-            $arrTemplate["name"] = $strName;
-            $arrTemplate["class"] = $strClass;
-            $arrTemplate["disabled"] = ($bitEnabled ? "" : "disabled=\"disabled\"");
-            $arrTemplate["checked"] = ((string)$strKey == (string)$strKeySelected ? " checked " : "");
-            $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_radiogroup_row");
-        }
+        $radioGroup = new Radiogroup($strName, $strTitle, $arrKeyValues, $strKeySelected);
+        $radioGroup->setClass($strClass);
+        $radioGroup->setReadOnly(!$bitEnabled);
 
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["radios"] = $strOptions;
-        $arrTemplate["class"] = $strClass;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_radiogroup", true);
+        return $radioGroup->renderComponent();
     }
 
     /**
@@ -1115,69 +1055,17 @@ HTML;
      * @param string $strOpener
      *
      * @return string
+     * @deprecated
      */
     public function formInputCheckboxArray($strName, $strTitle, $intType, array $arrValues, array $arrSelected, $bitInline = false, $bitReadonly = false, $strOpener = "")
     {
-        $strElement = "input_checkboxarray";
-        $strElementRow = "input_checkboxarray_checkbox";
-        if ($intType == FormentryCheckboxarray::TYPE_RADIO) {
-            $strElement = "input_radioarray";
-            $strElementRow = "input_radioarray_radio";
-        }
+        $cmp = new Checkboxarray($strName, $strTitle, $arrValues, $arrSelected);
+        $cmp->setType($intType);
+        $cmp->setInline($bitInline);
+        $cmp->setReadOnly($bitReadonly);
 
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["opener"] = $strOpener;
-
-        $strElements = '';
-        foreach ($arrValues as $strKey => $strValue) {
-            $arrTemplateRow = array(
-                'key'      => $strKey,
-                'title'    => $strValue,
-                'checked'  => in_array($strKey, $arrSelected) ? 'checked' : '',
-                'inline'   => $bitInline ? '-inline' : '',
-                'readonly' => $bitReadonly ? 'disabled' : '',
-                'css'      => "",
-            );
-
-            switch ($intType) {
-                case FormentryCheckboxarray::TYPE_RADIO:
-                    $arrTemplateRow['type'] = 'radio';
-                    $arrTemplateRow['name'] = $strName;
-                    $arrTemplateRow['value'] = $strKey;
-                    break;
-                case FormentryCheckboxarray::TYPE_CHECKBOX:
-                    $arrTemplateRow['type'] = 'checkbox';
-                    $arrTemplateRow['name'] = $strName.'['.$strKey.']';
-                    $arrTemplateRow['value'] = 'checked';
-                    break;
-            }
-
-            $bitHeadline = substr($strValue, 0, 1) == "#";
-            if ($bitHeadline) {
-                $strTitle = trim(substr($strValue, 1));
-                $strElements .= "<b>{$strTitle}</b><br>";
-            } else {
-                $bitIndent = substr($strValue, 0, 1) == "-";
-                if ($bitIndent) {
-                    $arrTemplateRow["title"] = substr($strValue, 1);
-                    $arrTemplateRow["css"] = "style='margin-left:20px;'";
-                }
-                $bitIndent = substr($strValue, 1, 1) == "-";
-                if ($bitIndent) {
-                    $arrTemplateRow["title"] = substr($strValue, 2);
-                    $arrTemplateRow["css"] = "style='margin-left:40px;'";
-                }
-
-                $strElements .= $this->objTemplate->fillTemplateFile($arrTemplateRow, "/admin/skins/kajona_v4/elements.tpl", $strElementRow, true);
-            }
-        }
-
-        $arrTemplate["elements"] = $strElements;
-
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", $strElement, true);
-    }
+        return $cmp->renderComponent();
+     }
 
     /**
      * Creates a list of checkboxes based on an object array
@@ -1518,17 +1406,18 @@ HTML;
             $strCSSAddon = $objEntry->getIntRecordStatus() == 0 ? "disabled" : "";
         }
 
-        return $this->genericAdminList(
-            $objEntry->getSystemid(),
-            $objEntry->getStrDisplayName(),
-            $strImage,
-            $strActions,
-            $objEntry->getStrAdditionalInfo(),
-            $objEntry->getStrLongDescription(),
-            $bitCheckbox,
-            $strCSSAddon,
-            $objEntry->getIntRecordDeleted() != 1 ? "" : "1"
-        );
+        $comp = new Listbody($objEntry->getSystemid(), $objEntry->getStrDisplayName(), $strImage, $strActions);
+        $comp->setAdditionalInfo($objEntry->getStrAdditionalInfo())
+            ->setDescription($objEntry->getStrLongDescription())
+            ->setCheckbox($bitCheckbox)
+            ->setCssAddon($strCSSAddon)
+            ->setDeleted($objEntry->getIntRecordDeleted() != 1 ? "" : "1");
+
+        if ($objEntry instanceof HierarchicalListableInterface) {
+            $comp->setPath($objEntry->getHierarchicalPath());
+        }
+
+        return $comp->renderComponent();
     }
 
     /**
@@ -1547,36 +1436,9 @@ HTML;
      */
     public function genericAdminList($strId, $strName, $strIcon, $strActions, $strAdditionalInfo = "", $strDescription = "", $bitCheckbox = false, $strCssAddon = "", $strDeleted = "")
     {
-        $arrTemplate = array();
-        $arrTemplate["listitemid"] = $strId;
-        $arrTemplate["image"] = $strIcon;
-        $arrTemplate["title"] = $strName;
-        $arrTemplate["center"] = $strAdditionalInfo;
-        $arrTemplate["actions"] = $strActions;
-        $arrTemplate["description"] = $strDescription;
-        $arrTemplate["cssaddon"] = $strCssAddon;
-        $arrTemplate["deleted"] = $strDeleted;
-
-        if ($bitCheckbox) {
-            $arrTemplate["checkbox"] = $this->objTemplate->fillTemplateFile(array("systemid" => $strId), "/admin/skins/kajona_v4/elements.tpl", "generallist_checkbox");
-        }
-
-
-        if ($strDescription != "") {
-            if ($this->objTemplate->providesSection("/admin/skins/kajona_v4/elements.tpl", "generallist_desc")) {
-                $strSection = "generallist_desc";
-            } else {
-                $strSection = "generallist_desc_1";
-            }
-        } else {
-            if ($this->objTemplate->providesSection("/admin/skins/kajona_v4/elements.tpl", "generallist")) {
-                $strSection = "generallist";
-            } else {
-                $strSection = "generallist_1";
-            }
-        }
-
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", $strSection);
+        $comp = new Listbody($strId, $strName ?? "", $strIcon, $strActions ?? "");
+        $comp->setAdditionalInfo($strAdditionalInfo ?? "")->setDescription($strDescription ?? "")->setCheckbox($bitCheckbox)->setCssAddon($strCssAddon)->setDeleted($strDeleted);
+        return $comp->renderComponent();
     }
 
     /**
@@ -1661,8 +1523,7 @@ HTML;
     public function listDeleteButton($strElementName, $strQuestion, $strLinkHref)
     {
         $strElementName = StringUtil::replace(array('\''), array('\\\''), $strElementName);
-        $strQuestion = StringUtil::replace("%%element_name%%", htmlToString($strElementName, true), $strQuestion);
-
+        $strQuestion = StringUtil::replace("%%element_name%%", StringUtil::jsSafeString($strElementName), $strQuestion);
 
         return $this->listConfirmationButton($strQuestion, $strLinkHref, "icon_delete", Carrier::getInstance()->getObjLang()->getLang("commons_delete", "system"), Carrier::getInstance()->getObjLang()->getLang("dialog_deleteHeader", "system"), Carrier::getInstance()->getObjLang()->getLang("dialog_deleteButton", "system"));
     }
@@ -1683,6 +1544,8 @@ HTML;
      */
     public function listConfirmationButton($strDialogContent, $strConfirmationLinkHref, $strButton, $strButtonTooltip, $strHeader = "", $strConfirmationButtonLabel = "")
     {
+        $strDialogContent = StringUtil::jsSafeString($strDialogContent);
+
         //get the reload-url
         if (StringUtil::indexOf($strConfirmationLinkHref, "javascript:") === false) {
             $strParam = (StringUtil::indexOf($strConfirmationLinkHref, "?") ? "&" : "?") ."reloadUrl='+encodeURIComponent(document.location.hash.substr(1))+'";
@@ -2129,18 +1992,15 @@ JS;
      * @param int $intActiveEntry Array-counting, so first element is 0, last is array-length - 1
      *
      * @return string
+     * @deprecated use addToContentToolbar instead
      */
     public function getContentToolbar(array $arrEntries, $intActiveEntry = -1)
     {
         $strRows = "";
         foreach ($arrEntries as $intI => $strOneEntry) {
-            if ($intI == $intActiveEntry) {
-                $strRows .= $this->objTemplate->fillTemplateFile(array("entry" => addslashes($strOneEntry), "active" => 'true'), "/admin/skins/kajona_v4/elements.tpl", "contentToolbar_entry");
-            } else {
-                $strRows .= $this->objTemplate->fillTemplateFile(array("entry" => addslashes($strOneEntry), "active" => 'false'), "/admin/skins/kajona_v4/elements.tpl", "contentToolbar_entry");
-            }
+            $strRows .= $this->addToContentToolbar($strOneEntry, "", $intI == $intActiveEntry);
         }
-        return $this->objTemplate->fillTemplateFile(array("entries" => $strRows), "/admin/skins/kajona_v4/elements.tpl", "contentToolbar_wrapper");
+        return $strRows;
     }
 
 
@@ -2153,7 +2013,7 @@ JS;
      */
     public function addToContentToolbar($strButton, $strIdentifier = '', $bitActive = false)
     {
-        $strEntry = $this->objTemplate->fillTemplateFile(array("entry" => addslashes($strButton), "identifier" => $strIdentifier, "active" => $bitActive ? 'true' : 'false'), "/admin/skins/kajona_v4/elements.tpl", "contentToolbar_entry");
+        $strEntry = $this->objTemplate->fillTemplateFile(array("entry" => StringUtil::jsSafeString($strButton), "identifier" => $strIdentifier, "active" => $bitActive ? 'true' : 'false'), "/admin/skins/kajona_v4/elements.tpl", "contentToolbar_entry");
         return $this->objTemplate->fillTemplateFile(array("entries" => $strEntry), "/admin/skins/kajona_v4/elements.tpl", "contentToolbar_wrapper");
     }
 
@@ -2362,125 +2222,6 @@ JS;
         }
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "pageview_body");
-    }
-
-
-
-
-
-    // --- Adminwidget / Dashboard --------------------------------------------------------------------------
-
-
-    public function getMainDashboard(array $arrColumns)
-    {
-        return $this->objTemplate->fillTemplateFile(
-            array("entries" => implode("", $arrColumns)),
-            "/admin/skins/kajona_v4/elements.tpl",
-            "dashboard_wrapper"
-        );
-    }
-
-    /**
-     * Generates the header for a column on the dashboard.
-     * Inits the ajax-componentes for this list
-     *
-     * @param string $strColumnId
-     *
-     * @return string
-     */
-    public function getDashboardColumnHeader($strColumnId)
-    {
-        return $this->objTemplate->fillTemplateFile(array("column_id" => $strColumnId), "/admin/skins/kajona_v4/elements.tpl", "dashboard_column_header");
-    }
-
-    /**
-     * The footer of a dashboard column.
-     *
-     * @return string
-     */
-    public function getDashboardColumnFooter()
-    {
-        return $this->objTemplate->fillTemplateFile(array(), "/admin/skins/kajona_v4/elements.tpl", "dashboard_column_footer");
-    }
-
-    /**
-     * The widget-enclose is the code-fragment to be built around the widget itself.
-     * Used to handle the widget on the current column.
-     *
-     * @param string $strDashboardEntryId
-     * @param string $strWidgetContent
-     *
-     * @return string
-     */
-    public function getDashboardWidgetEncloser($strDashboardEntryId, $strWidgetContent)
-    {
-        $arrTemplate = array();
-        $arrTemplate["entryid"] = $strDashboardEntryId;
-        $arrTemplate["content"] = $strWidgetContent;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "dashboard_encloser");
-    }
-
-    /**
-     * Builds the widget out of its main components.
-     *
-     * @param string $strSystemid
-     * @param string $strName
-     * @param string $strWidgetNameAdditionalContent
-     * @param string $strEditLink
-     * @param string $strDeleteLink
-     * @param string $strLayoutSection
-     *
-     * @return string
-     */
-    public function getAdminwidget($strSystemid, $strName, $strWidgetNameAdditionalContent, $strEditLink = "", $strDeleteLink = "", $strLayoutSection = "adminwidget_widget")
-    {
-        $arrTemplate = array();
-        $arrTemplate["widget_name"] = $strName;
-        $arrTemplate["widget_name_additional_content"] = $strWidgetNameAdditionalContent;
-        $arrTemplate["widget_id"] = $strSystemid;
-        $arrTemplate["widget_edit"] = $strEditLink;
-        $arrTemplate["widget_delete"] = $strDeleteLink;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", $strLayoutSection);
-    }
-
-    /**
-     * Generates a text-row in a widget
-     *
-     * @param string $strText
-     *
-     * @return string
-     */
-    public function adminwidgetText($strText)
-    {
-        return $this->objTemplate->fillTemplateFile(array("text" => $strText), "/admin/skins/kajona_v4/elements.tpl", "adminwidget_text");
-    }
-
-    /**
-     * Generate a separator / divider in a widget
-     *
-     * @return string
-     */
-    public function adminwidgetSeparator()
-    {
-        return $this->objTemplate->fillTemplateFile(array(""), "/admin/skins/kajona_v4/elements.tpl", "adminwidget_separator");
-    }
-
-    //--- modal dialog --------------------------------------------------------------------------------------
-
-    /**
-     * Creates a modal dialog on the page. By default, the dialog is hidden, so has to be set visible.
-     * The type-param decides what template is used for the dialog-layout. The name of the dialog is built via jsDialog_$intTypeNr.
-     * Set the contents via js-calls.
-     *
-     * @param int $intDialogType (0 = regular modal dialog, 1 = confirmation dialog, 2 = rawDialog, 3 = loadingDialog)
-     *
-     * @return string
-     *
-     * @deprecated no longer required, available by the skin by default
-     */
-    public function jsDialog($intDialogType)
-    {
-        return "";
     }
 
 
@@ -2726,148 +2467,7 @@ JS;
         return $popover->renderComponent();
     }
 
-    // --- Calendar Fields ----------------------------------------------------------------------------------
 
-    /**
-     * Renders a legend below the current calendar in order to illustrate the different event-types.
-     *
-     * @param array $arrEntries
-     *
-     * @return string
-     */
-    public function getCalendarLegend(array $arrEntries)
-    {
-        $strEntries = "";
-        foreach ($arrEntries as $strName => $strClass) {
-            $strEntries .= $this->objTemplate->fillTemplateFile(array("name" => $strName, "class" => $strClass), "/admin/skins/kajona_v4/elements.tpl", "calendar_legend_entry");
-        }
-
-        return $this->objTemplate->fillTemplateFile(array("entries" => $strEntries), "/admin/skins/kajona_v4/elements.tpl", "calendar_legend");
-    }
-
-    /**
-     * Renders a legend below the current calendar in order to illustrate the different event-types.
-     *
-     * @param array $arrEntries
-     *
-     * @return string
-     */
-    public function getCalendarFilter(array $arrEntries)
-    {
-        $strEntries = "";
-        foreach ($arrEntries as $strId => $strName) {
-            $strChecked = Carrier::getInstance()->getObjSession()->getSession($strId) == "disabled" ? "" : "checked";
-            $strEntries .= $this->objTemplate->fillTemplateFile(array("filterid" => $strId, "filtername" => $strName, "checked" => $strChecked), "/admin/skins/kajona_v4/elements.tpl", "calendar_filter_entry");
-        }
-
-        return $this->objTemplate->fillTemplateFile(array("entries" => $strEntries, "action" => getLinkAdminHref("dashboard", "calendar")), "/admin/skins/kajona_v4/elements.tpl", "calendar_filter");
-    }
-
-    /**
-     * Creates a pager for the calendar, used to switch the current month.
-     *
-     * @param string $strBackwards
-     * @param string $strCenter
-     * @param string $strForwards
-     *
-     * @return string
-     * @since 3.4
-     */
-    public function getCalendarPager($strBackwards, $strCenter, $strForwards)
-    {
-        return $this->objTemplate->fillTemplateFile(array("backwards" => $strBackwards, "forwards" => $strForwards, "center" => $strCenter), "/admin/skins/kajona_v4/elements.tpl", "calendar_pager");
-    }
-
-    /**
-     * Renders a container used to place the calender via ajax into.
-     *
-     * @param string $strContainerId
-     *
-     * @return string
-     * @since 3.4
-     */
-    public function getCalendarContainer($strContainerId)
-    {
-        return $this->objTemplate->fillTemplateFile(array("containerid" => $strContainerId), "/admin/skins/kajona_v4/elements.tpl", "calendar_container");
-    }
-
-    /**
-     * Creates the wrapper to embedd the calendar.
-     *
-     * @param string $strContent
-     *
-     * @return string
-     * @since 3.4
-     */
-    public function getCalendarWrapper($strContent)
-    {
-        return $this->objTemplate->fillTemplateFile(array("content" => $strContent), "/admin/skins/kajona_v4/elements.tpl", "calendar_wrapper");
-    }
-
-    /**
-     * Renders the header-row of the calendar. In general those are the days.
-     *
-     * @param array $arrHeader
-     *
-     * @return string
-     * @since 3.4
-     */
-    public function getCalendarHeaderRow(array $arrHeader)
-    {
-        $strEntries = "";
-        foreach ($arrHeader as $strOneHeader) {
-            $strEntries .= $this->objTemplate->fillTemplateFile(array("name" => $strOneHeader), "/admin/skins/kajona_v4/elements.tpl", "calendar_header_entry");
-        }
-
-        return $this->objTemplate->fillTemplateFile(array("entries" => $strEntries), "/admin/skins/kajona_v4/elements.tpl", "calendar_header_row");
-    }
-
-    /**
-     * Renders a complete row of days.
-     *
-     * @param string $strContent
-     *
-     * @return string
-     * @since 3.4
-     */
-    public function getCalendarRow($strContent)
-    {
-        return $this->objTemplate->fillTemplateFile(array("entries" => $strContent), "/admin/skins/kajona_v4/elements.tpl", "calendar_row");
-    }
-
-    /**
-     * Renders a single entry within the calendar. In most cases this is a single day.
-     *
-     * @param string $strContent
-     * @param string $strDate
-     * @param string $strClass
-     *
-     * @return string
-     * @since 3.4
-     */
-    public function getCalendarEntry($strContent, $strDate, $strClass = "calendarEntry")
-    {
-        return $this->objTemplate->fillTemplateFile(array("content" => $strContent, "date" => $strDate, "class" => $strClass), "/admin/skins/kajona_v4/elements.tpl", "calendar_entry");
-    }
-
-    /**
-     * Renders a single calendar-event
-     *
-     * @param string $strContent
-     * @param string $strId
-     * @param string $strHighlightId
-     * @param string $strClass
-     *
-     * @return string
-     * @since 3.4
-     */
-    public function getCalendarEvent($strContent, $strId = "", $strHighlightId = "", $strClass = "calendarEvent")
-    {
-        if ($strId == "") {
-            $strId = generateSystemid();
-        }
-        return $this->objTemplate->fillTemplateFile(array("content" => $strContent, "class" => $strClass, "systemid" => $strId, "highlightid" => $strHighlightId), "/admin/skins/kajona_v4/elements.tpl", "calendar_event");
-    }
 
     /**
      * Renders a button with onClick callback.

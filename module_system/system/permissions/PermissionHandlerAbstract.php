@@ -154,4 +154,24 @@ abstract class PermissionHandlerAbstract implements PermissionHandlerInterface
 
         return is_array($arrRoles);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getRoleLabel($strRole)
+    {
+        return null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAvailableRolesWithLabel(): array {
+        $availableRoles = [];
+        foreach($this->getRoles() as $role) {
+            $availableRoles[$role] = $this->getRoleLabel($role);
+        }
+    }
+
+
 }

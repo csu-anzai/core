@@ -12,6 +12,7 @@ use Kajona\System\Admin\AdminController;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminInterface;
 use Kajona\System\Admin\Formentries\FormentryHidden;
+use Kajona\System\System\StringUtil;
 
 /**
  * Admin-Part of the TinyUrl.
@@ -49,12 +50,20 @@ class TinyUrlController extends AdminController implements AdminInterface
         $strUrl = urldecode($this->tinyurlManager->loadUrl($strUrlID));
         if (!empty($strUrl)) {
             $strReturn = "";
-            $urlParts = explode("?", $strUrl);
+            //get string part with parameters
+            if (StringUtil::indexOf($strUrl, "?") !== false) {
+                $urlParts = explode("?", $strUrl);
+            } else {
+                $intDelimiterPos = StringUtil::indexOf($strUrl, "&");
+                $urlParts[0] = StringUtil::substring($strUrl, 0, $intDelimiterPos);
+                $urlParts[1] = StringUtil::substring($strUrl, $intDelimiterPos + 1);
+            }
+
             $formParams = $this->paramStrToFormParamsArray($urlParts[1]);
             $objGenerator = new AdminFormgenerator("linkredirect", null);
 
             foreach ($formParams as $strParamName => $strParamValue) {
-                $strParamValue = (is_array($strParamValue)) ? '['.implode(',', $strParamValue).']' :  $strParamValue;
+                $strParamValue = (is_array($strParamValue)) ? implode(',', $strParamValue) :  $strParamValue;
                 $objGenerator->addField(new FormentryHidden("", $strParamName))->setStrValue($strParamValue);
             }
 
@@ -88,9 +97,14 @@ class TinyUrlController extends AdminController implements AdminInterface
             // it should be converted to "$formParams['riskanalysistemplatefilter_riskcategory[]'] = '[0,3,6]'"
             if (isset($formParams[$arrEntry[0]])) {
                 if (is_array($formParams[$arrEntry[0]])) {
-                    $formParams[$arrEntry[0]][] = (int)$arrEntry[1];
+                    $formParams[$arrEntry[0]][] = is_numeric($arrEntry[1]) ? (int)$arrEntry[1] : $arrEntry[1];
                 } else {
-                    $formParams[$arrEntry[0]] = [(int)$formParams[$arrEntry[0]], (int)$arrEntry[1]];
+                    if (is_numeric($arrEntry[1]) && is_numeric($formParams[$arrEntry[0]])) {
+                        $formParams[$arrEntry[0]] = [(int)$formParams[$arrEntry[0]], (int)$arrEntry[1]];
+                    } else {
+                        $formParams[$arrEntry[0]] = [$formParams[$arrEntry[0]], $arrEntry[1]];
+                    }
+
                 }
             } else {
                 $formParams[$arrEntry[0]] = $arrEntry[1];

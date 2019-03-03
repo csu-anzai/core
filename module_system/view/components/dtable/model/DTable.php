@@ -30,10 +30,14 @@ class DTable
      * @param DRow[]|array $headers
      * @param DRow[]|array $rows
      */
-    public function __construct(array $headers=[], array $rows=[])
+    public function __construct(array $headers = [], array $rows = [])
     {
-        if (!empty($headers)) $this->setHeaders($headers);
-        if (!empty($rows)) $this->setRows($rows);
+        if (!empty($headers)) {
+            $this->setHeaders($headers);
+        }
+        if (!empty($rows)) {
+            $this->setRows($rows);
+        };
     }
 
     /**
@@ -51,7 +55,7 @@ class DTable
     }
 
     /**
-     * @return array
+     * @return DRow[]
      */
     public function getRows(): array
     {
@@ -75,7 +79,7 @@ class DTable
     }
 
     /**
-     * @return array
+     * @return DRow[]
      */
     public function getHeaders(): array
     {
@@ -111,6 +115,7 @@ class DTable
     /**
      * Return table data as a string.
      *
+     * @param string $separator
      * @return string
      */
     function getStringView(string $separator = " ")

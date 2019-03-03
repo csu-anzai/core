@@ -695,25 +695,6 @@ Upload-Field for multiple files with progress bar
     </script>
 </input_upload_inline>
 
-Regular Submit-Button
-<input_submit>
-        <button type="submit" class="btn btn-default savechanges %%class%%" name="%%name%%" value="%%value%%" %%disabled%% %%eventhandler%%>
-            <span class="btn-text">%%value%%</span>
-            <span class="statusicon"></span>
-        </button>
-</input_submit>
-
-
-<input_submit_wrapper>
-    <div class="form-group">
-        <label class="col-sm-3 control-label"></label>
-        <div class="col-sm-6">
-            %%button%%
-        </div>
-    </div>
-</input_submit_wrapper>
-
-
 An easy date-selector
 If you want to use the js-date-picker, leave %%calendarCommands%% at the end of the section
 in addition, a container for the calendar is needed. Use %%calendarContainerId%% as an identifier.
@@ -805,7 +786,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
 
         <div class="col-sm-6 inputText inputTagEditor">
-            <input type="text" id="%%name%%" data-name="%%name%%" style="display:none" autocomplete="off"/>
+            <input type="text" id="%%name%%" data-name="%%name%%" autocomplete="off"/>
         </div>
     </div>
     <script type="text/javascript">
@@ -833,7 +814,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
 
         <div class="col-sm-6 inputText inputTagEditor" id="tageditor_%%name%%">
-            <input type="text" id="%%name%%" data-name="%%name%%" style="display:none" class="form-control" autocomplete="off" data-kajona-block-initval="true"/>
+            <input type="text" id="%%name%%" data-name="%%name%%" class="form-control" autocomplete="off" data-kajona-block-initval="true"/>
             <div id="%%name%%-list">%%data%%</div>
         </div>
     </div>
@@ -897,67 +878,6 @@ have a surrounding div with class "ac_container" and a div with id "%%name%%_con
     </div>
 </div>
 </input_userselector>
-
-A list of checkbox input elements
-<input_checkboxarray>
-    <div class="form-group form-list">
-        <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
-
-        <div class="col-sm-6 inputText">
-            <div id="%%name%%" class="inputContainer %%class%%">
-                %%elements%%
-            </div>
-        </div>
-
-        <div class="col-sm-12">
-            <label class="col-sm-3 control-label"></label>
-            <div class="col-sm-6">
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="checkAll_%%name%%" id="checkAll_%%name%%" %%readonly%%> [lang,commons_select_all,system]
-                    </label>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-    <script type='text/javascript'>
-require(["jquery"], function($) {
-$("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
-    var checkBoxes = $("input:checkbox[name^='%%name%%']").not("[disabled]");
-    checkBoxes.prop('checked', $("input:checkbox[name='checkAll_%%name%%']").prop('checked')).trigger('change');
-});
-});
-    </script>
-</input_checkboxarray>
-
-<input_checkboxarray_checkbox>
-    <div class="%%type%%%%inline%%" %%css%%>
-        <label><input type="%%type%%" name="%%name%%" id="%%name%%" value="%%value%%" data-index="%%key%%" %%checked%% %%readonly%% /> %%title%%</label>
-    </div>
-</input_checkboxarray_checkbox>
-
-
-A list of radio input elements
-<input_radioarray>
-    <div class="form-group form-list">
-        <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
-
-        <div class="col-sm-6 inputText">
-            <div id="%%name%%" class="inputContainer %%class%%">
-                %%elements%%
-            </div>
-        </div>
-    </div>
-</input_radioarray>
-
-<input_radioarray_radio>
-    <div class="%%type%%%%inline%%">
-        <label><input type="%%type%%" name="%%name%%" value="%%value%%" %%checked%% %%readonly%% /> %%title%%</label>
-    </div>
-</input_radioarray_radio>
 
 
 A list of checkbox for object elements
@@ -1428,48 +1348,6 @@ pe_iconbar, pe_disable
     </li>
 </pageview_list_item_active>
 
----------------------------------------------------------------------------------------------------------
--- WIDGETS / DASHBOAORD  --------------------------------------------------------------------------------
-<adminwidget_widget>
-    <div class="well well-sm">
-        <h2 class="">%%widget_name%%</h2>
-        <div class="adminwidgetactions pull-right">%%widget_edit%% %%widget_delete%%</div>
-        <div class="additionalNameContent">%%widget_name_additional_content%%</div>
-        <div class="contentSeparator"></div>
-        <div class="content loadingContainer">
-            %%widget_content%%
-        </div>
-    </div>
-</adminwidget_widget>
-
-<dashboard_column_header>
-	<div id="%%column_id%%" class="col-md-4 adminwidgetColumn" data-sortable-handle="h2">
-</dashboard_column_header>
-
-<dashboard_column_footer>
-	</div>
-</dashboard_column_footer>
-
-<dashboard_encloser>
-	<div class="dbEntry" data-systemid="%%entryid%%">%%content%%</div>
-</dashboard_encloser>
-
-<adminwidget_text>
-<div>%%text%%</div>
-</adminwidget_text>
-
-<adminwidget_separator>
-&nbsp;<br />
-</adminwidget_separator>
-
-<dashboard_wrapper>
-    <div class="row dashBoard">%%entries%%</div>
-    <script type="text/javascript">
-        require(['dashboard'], function(dashboard){
-            dashboard.init();
-        });
-    </script>
-</dashboard_wrapper>
 
 ---------------------------------------------------------------------------------------------------------
 -- TREE VIEW --------------------------------------------------------------------------------------------
@@ -1570,75 +1448,6 @@ place ajaxScript before the closing input_tagselector-tag.
     <span title="%%tooltip%%" rel="tooltip">%%text%%</span>
 </tooltip_text>
 
-
----------------------------------------------------------------------------------------------------------
--- CALENDAR ---------------------------------------------------------------------------------------------
-
-<calendar_legend>
-    <div class="calendarLegend">%%entries%%</div>
-</calendar_legend>
-
-<calendar_legend_entry>
-    <div class="%%class%% calendarLegendEntry">%%name%%</div>
-</calendar_legend_entry>
-
-<calendar_filter>
-    <div id="calendarFilter">
-        <form action="%%action%%" method="post">
-            <input type="hidden" name="doCalendarFilter" value="set" />
-        %%entries%%
-        </form>
-    </div>
-</calendar_filter>
-
-<calendar_filter_entry>
-    <div><input type="checkbox" id="%%filterid%%" name="%%filterid%%" onchange="this.form.submit();" %%checked%% /><label for="%%filterid%%">%%filtername%%</label></div>
-</calendar_filter_entry>
-
-<calendar_pager>
-    <table class="calendarPager">
-        <tr>
-            <td width="20%" style="text-align: left;">%%backwards%%</td>
-            <td width="60%" style="text-align: center; font-weight: bold;">%%center%%</td>
-            <td width="20%" style="text-align: right;">%%forwards%%</td>
-        </tr>
-    </table>
-</calendar_pager>
-
-<calendar_wrapper>
-    <table class="calendar">%%content%%</table>
-</calendar_wrapper>
-
-<calendar_container>
-<div id="%%containerid%%"><div class="loadingContainer"></div></div>
-</calendar_container>
-
-<calendar_header_row>
-    <tr >%%entries%%</tr>
-</calendar_header_row>
-
-<calendar_header_entry>
-    <td width="14%">%%name%%</td>
-</calendar_header_entry>
-
-<calendar_row>
-    <tr>%%entries%%</tr>
-</calendar_row>
-
-<calendar_entry>
-    <td class="%%class%%">
-        <div class="calendarHeader">%%date%%</div>
-        <div>
-            %%content%%
-        </div>
-    </td>
-</calendar_entry>
-
-<calendar_event>
-    <div class="%%class%%" id="event_%%systemid%%" onmouseover="require('dashboardCalendar').eventMouseOver('%%highlightid%%')" onmouseout="require('dashboardCalendar').eventMouseOut('%%highlightid%%')">
-        %%content%%
-    </div>
-</calendar_event>
 
 ---------------------------------------------------------------------------------------------------------
 -- MENU -------------------------------------------------------------------------------------------------

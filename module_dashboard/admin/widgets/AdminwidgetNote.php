@@ -9,12 +9,20 @@
 
 namespace Kajona\Dashboard\Admin\Widgets;
 
+use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\Formentries\FormentryTextarea;
+
 /**
  * @package module_dashboard
  *
  */
 class AdminwidgetNote extends Adminwidget implements AdminwidgetInterface
 {
+
+    /**
+     * @var string
+     */
+    private $imgFileName = "note.png";
 
     /**
      * Basic constructor, registers the fields to be persisted and loaded
@@ -28,16 +36,12 @@ class AdminwidgetNote extends Adminwidget implements AdminwidgetInterface
     }
 
     /**
-     * Allows the widget to add additional fields to the edit-/create form.
-     * Use the toolkit class as usual.
-     *
-     * @return string
+     * @inheritdoc
      */
-    public function getEditForm()
+    public function getEditFormContent(AdminFormgenerator $form)
     {
-        $strReturn = "";
-        $strReturn .= $this->objToolkit->formInputTextArea("content", $this->getLang("note_content"), $this->getFieldValue("content"));
-        return $strReturn;
+        $form->addField(new FormentryTextarea("", "content"), "")
+        ->setStrValue($this->getFieldValue("content"));
     }
 
     /**
@@ -46,9 +50,14 @@ class AdminwidgetNote extends Adminwidget implements AdminwidgetInterface
      * Do NOT use the toolkit right here!
      *
      * @return string
+     * @throws \Kajona\System\System\Exception
      */
     public function getWidgetOutput()
     {
+        if ($this->getFieldValue("content") == "") {
+            return $this->getEditWidgetForm();
+        }
+
         return $this->widgetText(nl2br($this->getFieldValue("content")));
     }
 
@@ -60,6 +69,22 @@ class AdminwidgetNote extends Adminwidget implements AdminwidgetInterface
     public function getWidgetName()
     {
         return $this->getLang("note_name");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getWidgetDescription()
+    {
+        return $this->getLang("note_description");
+    }
+
+    /**
+     * @return string
+     */
+    public function getImgFileName(): string
+    {
+        return $this->imgFileName;
     }
 
 }

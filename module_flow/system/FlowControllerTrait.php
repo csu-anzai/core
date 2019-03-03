@@ -22,6 +22,7 @@ use Kajona\System\System\Objectfactory;
 use Kajona\System\System\RedirectException;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Session;
+use Kajona\System\View\Components\Dynamicmenu\DynamicMenu;
 use Kajona\System\View\Components\Menu\Item\Dialog;
 use Kajona\System\View\Components\Menu\Item\Headline;
 use Kajona\System\View\Components\Menu\Item\Separator;
@@ -70,21 +71,12 @@ trait FlowControllerTrait
             return "";
         }
 
-        $strMenuId = "status-menu-" . generateSystemid();
-        $strDropdownId = "status-dropdown-" . generateSystemid();
-        $strReturn = $this->objToolkit->listButton(
-            "<span class='dropdown status-dropdown' id='" . $strDropdownId . "'><a href='#' data-toggle='dropdown' role='button'>" . $strIcon . "</a><div class='core-component-menu dropdown-menu generalContextMenu' role='menu' id='" . $strMenuId . "'></div></span>"
+        $menu = new DynamicMenu(
+            $this->objToolkit->listButton($strIcon),
+            Link::getLinkAdminXml($objListEntry->getArrModule('module'), "showStatusMenu", ["systemid" => $objListEntry->getSystemid()])
         );
 
-        $strParams = http_build_query(["admin" => 1, "module" => $objListEntry->getArrModule('module'), "action" => "showStatusMenu", "systemid" => $objListEntry->getSystemid()], null, "&");
-        $strReturn .= '<script type="text/javascript">
-require(["jquery", "ajax"], function($, ajax){
-    $("#' . $strDropdownId . '").on("show.bs.dropdown", function () {
-        ajax.loadUrlToElement("#' . $strMenuId . '", "/xml.php?' . $strParams . '");
-    });
-});
-</script>';
-
+        $strReturn = $menu->renderComponent();
         return $strReturn;
     }
 
@@ -213,40 +205,25 @@ require(["jquery", "ajax"], function($, ajax){
                 /** @var FlowTransition $objTransition */
                 $objTargetStatus = $objTransition->getTargetStatus();
 
-                // validation
-                $objResult = $objFlow->getHandler()->validateStatusTransition($objObject, $objTransition);
-
-                $strValidation = "";
-                if (!$objResult->isValid()) {
-                    $arrErrors = $objResult->getErrors();
-                    if (!empty($arrErrors)) {
-                        $strTooltip = "<div class='alert alert-danger'>";
-                        $strTooltip.= "<ul>";
-                        foreach ($arrErrors as $strError) {
-                            if (!empty($strError)) {
-                                $strError = htmlspecialchars($strError);
-                                $strTooltip.= "<li>{$strError}</li>";
-                            }
-                        }
-                        $strTooltip.= "</ul>";
-                        $strTooltip.= "</div>";
-                        $strValidation.= '<span class="' . $strClass . '" data-validation-errors="' . $strTooltip . '"></span>';
-                    } else {
-                        // in case the result is not valid and we have no error message we skip the menu entry
-                        continue;
-                    }
+                if ($objTargetStatus === null) {
+                    continue;
                 }
 
-                if (!empty($strValidation)) {
+                // validation
+                $objResult = $objFlow->getHandler()->validateStatusTransition($objObject, $objTransition, true);
+
+                if (!$objResult->isValid()) {
+                    $link = Link::getLinkAdminDialog($objObject->getArrModule("module"), "showTransitionErrors", ["systemid" => $objObject->getSystemid(), "transition_id" => $objTransition->getSystemid()], AdminskinHelper::getAdminImage("icon_flag_hex_disabled_" . $objTargetStatus->getStrIconColor()) . " " . $objTargetStatus->getStrDisplayName());
+
                     $menuItem = new MenuItem();
-                    $menuItem->setName(AdminskinHelper::getAdminImage("icon_flag_hex_disabled_" . $objTargetStatus->getStrIconColor()) . " " . $objTargetStatus->getStrDisplayName() . $strValidation);
-                    $menuItem->setLink("#");
-                    $menuItem->setOnClick("return false;");
+                    $menuItem->setFullEntry($link);
                     $statusItems[] = $menuItem;
                 } else {
+                    $link = Link::getLinkAdminHref($this->getArrModule("modul"), "setStatus", ["systemid" => $objObject->getStrSystemid(), "transition_id" => $objTransition->getSystemid()]);
+
                     $menuItem = new MenuItem();
                     $menuItem->setName(AdminskinHelper::getAdminImage($objTargetStatus->getStrIcon()) . " " . $objTargetStatus->getStrDisplayName());
-                    $menuItem->setLink(Link::getLinkAdminHref($this->getArrModule("modul"), "setStatus", "&systemid=" . $objObject->getStrSystemid() . "&transition_id=" . $objTransition->getSystemid()));
+                    $menuItem->setLink($link);
                     $statusItems[] = $menuItem;
                 }
 
@@ -258,7 +235,7 @@ require(["jquery", "ajax"], function($, ajax){
 
         // flow chart
         $currentStatus = $objFlow->getStatusByIndex($objObject->getIntRecordStatus());
-        $menu->addItem(new Dialog($currentStatus->getStrName(), Link::getLinkAdminHref("flow", "showFlow", ["systemid" => $this->getSystemid(), "folderview" => "1"]), $currentStatus->getStrIcon()));
+        $menu->addItem(new Dialog($currentStatus->getStrDisplayName(), Link::getLinkAdminHref("flow", "showFlow", ["systemid" => $this->getSystemid(), "folderview" => "1"]), $currentStatus->getStrIcon()));
 
         if (count($statusItems) > 0) {
             // status
@@ -277,27 +254,41 @@ require(["jquery", "ajax"], function($, ajax){
             $menu->addItem(new Headline($this->getLang("list_flow_no_status", "flow")));
         }
 
+        $menu->setRenderMenuContainer(false);
         $strHtml = $menu->renderComponent();
 
-        // hack to remove the div around the ul since the div is already in the html
-        preg_match("#<ul>(.*)</ul>#ims", $strHtml, $arrMatches);
+        return $strHtml;
+    }
 
-        // js to init the tooltip for validation errors
-        $strTitle = json_encode($objObject->getStrDisplayName());
-        $strJs = <<<HTML
-<script type='text/javascript'>
-    require(['jquery', 'dialogHelper'], function($, dialogHelper){
-        $('.{$strClass}').parent().on('click', function(){
-            var errors = $(this).find('.{$strClass}').data('validation-errors');
-            dialogHelper.showConfirmationDialog({$strTitle}, errors, "OK", function(){
-                $('#jsDialog_1').modal('hide');
-            });
-        });
-    });
-</script>
-HTML;
+    /**
+     * @permissions view
+     * @return string
+     */
+    protected function actionShowTransitionErrors()
+    {
+        $object = Objectfactory::getInstance()->getObject($this->getSystemid());
+        $transition = Objectfactory::getInstance()->getObject($this->getParam("transition_id"));
 
-        return $arrMatches[0] . $strJs;
+        $flow = $this->objFlowManager->getFlowForModel($object);
+
+        // validation
+        $result = $flow->getHandler()->validateStatusTransition($object, $transition);
+
+        $return = "";
+        $errors = $result->getErrors();
+        if (!empty($errors)) {
+            $return = "<div class='alert alert-danger'>";
+            $return.= "<ul>";
+            foreach ($errors as $error) {
+                if (!empty($error)) {
+                    $return.= "<li>{$error}</li>";
+                }
+            }
+            $return.= "</ul>";
+            $return.= "</div>";
+        }
+
+        return $return;
     }
 
     /**

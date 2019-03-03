@@ -46,6 +46,14 @@ interface PermissionHandlerInterface
     public function getRoles();
 
     /**
+     * Returns label for role
+     *
+     * @param $strRole
+     * @return string
+     */
+    public function getRoleLabel($strRole);
+
+    /**
      * Returns an array of user groups or an empty array. The key of the array must contain the systemid of the group
      * this simplfies handling or merging multiple groups
      *
@@ -87,4 +95,11 @@ interface PermissionHandlerInterface
      * @return void
      */
     public function calculatePermissions(Root $objRecord);
+
+    /**
+     * Get available roles with labels
+     *
+     * @return array
+     */
+    public function getAvailableRolesWithLabel(): array;
 }

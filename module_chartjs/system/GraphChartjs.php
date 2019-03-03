@@ -148,14 +148,16 @@ class GraphChartjs implements GraphInterfaceFronted
     {
         $arrDataPointObjects = GraphCommons::convertArrValuesToDataPointArray($arrValues);
 
-        $intDatasetNumber = isset($this->arrChartData['data']['datasets']) ? count($this->arrChartData['data']['datasets'])-1 : 0;
+        $intDatasetNumber = isset($this->arrChartData['data']['datasets']) ? count($this->arrChartData['data']['datasets']) : 0;
+        $intColorsCount = count($this->arrColors);
+        $intColorNumber = $intDatasetNumber >= $intColorsCount ? $intDatasetNumber % $intColorsCount : $intDatasetNumber;
         $this->arrChartData['data']['datasets'][] = [
             "dataPoints" => $this->dataPointObjArrayToArray($arrDataPointObjects),
             "type" => $type,
             "label" => !empty($strLegend) ? $strLegend : "Dataset ".$intDatasetNumber,
             "data" => GraphCommons::getDataPointFloatValues($arrDataPointObjects),
-            "backgroundColor" => $this->arrColors[$intDatasetNumber] /*'rgba('.implode(', ', hex2rgb($this->arrColors[$intDatasetNumber])).', 0.3)'*/,
-            "borderColor" => $this->arrColors[$intDatasetNumber],
+            "backgroundColor" => $this->arrColors[$intColorNumber],
+            "borderColor" => $this->arrColors[$intColorNumber],
             "borderWidth" => 1,
             "yAxisID" => empty($yAxisID) ? "defaultYID" : $yAxisID,
             "datalabels" => $bitWriteValues ? ["display" => true] : ["display" => false],
@@ -251,7 +253,7 @@ class GraphChartjs implements GraphInterfaceFronted
         $this->setPieChart(true);
         foreach ($this->arrColors as $arrColor) {
             $arrBackgroundColors[] = $arrColor;
-            $arrBorderColors[] =  $nrOfNonNullValues <= 1 ? $arrColor : '#FFFFFF';
+            $arrBorderColors[] = $nrOfNonNullValues <= 1 ? $arrColor : '#FFFFFF';
         }
         $this->arrChartData['data']['datasets'][] = [
             "dataPoints" => $this->dataPointObjArrayToArray($arrDataPointObjects),
@@ -328,9 +330,7 @@ class GraphChartjs implements GraphInterfaceFronted
     }
 
     /**
-     * @param string $strTitle
-     *
-     * @see GraphInterface::setStrY2AxisTitle()
+     * @inheritdoc
      */
     public function setStrY2AxisTitle($strTitle)
     {
@@ -488,14 +488,6 @@ class GraphChartjs implements GraphInterfaceFronted
     }
 
     /**
-     * @return bool
-     * @deprecated
-     */
-    public function isBitIsResponsive(): bool
-    {
-    }
-
-    /**
      * @param bool $bitHorizontal
      */
     public function setBarHorizontal(bool $bitHorizontal)
@@ -506,7 +498,7 @@ class GraphChartjs implements GraphInterfaceFronted
     /**
      * @param bool $bitPie
      */
-    public function setPieChart(bool $bitPie)
+    private function setPieChart(bool $bitPie)
     {
         if ($bitPie) {
             $this->arrChartData['type'] = "pie";
@@ -516,7 +508,7 @@ class GraphChartjs implements GraphInterfaceFronted
     /**
      * @return mixed
      */
-    public function getChartType()
+    private function getChartType()
     {
         return $this->arrChartData['type'];
     }
@@ -554,7 +546,15 @@ class GraphChartjs implements GraphInterfaceFronted
     }
 
     /**
-     * @param int $bitHideY2Axis
+     * @param bool $addSeparator
+     */
+    public function setShowThousandSeparatorAxis(bool $addSeparator = true)
+    {
+        $this->arrChartOptions['addThousandSeparator'] = $addSeparator;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function setTickStepY2Axis(int $intStep)
     {
@@ -578,20 +578,12 @@ class GraphChartjs implements GraphInterfaceFronted
     }
 
     /**
-     * @param int $maxXAxesTicksLimit
+     * @inheritdoc
      */
     public function setMaxXAxesTicksLimit(int $maxXAxesTicksLimit)
     {
         $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['autoSkip'] = true;
         $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['maxTicksLimit'] = $maxXAxesTicksLimit;
-    }
-
-    /**
-     * @param bool $beginAtZero
-     */
-    public function setBeginAtZero(bool $beginAtZero = true)
-    {
-        $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['beginAtZero'] = $beginAtZero;
     }
 
     /**
@@ -615,7 +607,7 @@ class GraphChartjs implements GraphInterfaceFronted
      *
      * @param bool $bitSetPercentageValues
      */
-    public function setValueTypePercentage(bool $bitSetPercentageValues = true)
+    private function setValueTypePercentage(bool $bitSetPercentageValues = true)
     {
         $this->arrChartOptions['percentageValues'] = $bitSetPercentageValues;
     }
@@ -625,20 +617,9 @@ class GraphChartjs implements GraphInterfaceFronted
      *
      * @param bool $bitNotShowNullValues
      */
-    public function setNotShowNullValues(bool $bitNotShowNullValues = true)
+    private function setNotShowNullValues(bool $bitNotShowNullValues = true)
     {
         $this->arrChartOptions['notShowNullValues'] = $bitNotShowNullValues;
-    }
-
-    /**
-     * Switch on default tooltip.
-     * By default chartjs render used customized tooltip.
-     *
-     * @param bool $bitSetDefaultTooltip
-     */
-    public function setDefaultTooltip(bool $bitSetDefaultTooltip = true)
-    {
-        $this->arrChartOptions['setDefaultTooltip'] = $bitSetDefaultTooltip;
     }
 
     /**
@@ -757,10 +738,6 @@ class GraphChartjs implements GraphInterfaceFronted
         $strResizeableId = "resize_".$strSystemId;
         $strChartId = "chart_".$strSystemId;
         $strLinkExportId = $strChartId."_exportlink";
-
-//        $strWidth = $this->isBitIsResponsive() ? "100%" : $this->intWidth."px";
-//        $strHeight = $this->isBitIsResponsive() ? "100%" : $this->intHeight."px";
-//        $strReturn = "<div onmouseover='$(\"#$strLinkExportId\").show();' onmouseout='$(\"#$strLinkExportId\").hide();' id=\"$strResizeableId\" style=\"width:{$strWidth}; height:{$strHeight};\">";
 
         $style = "";
         if ($this->intWidth !== null) {

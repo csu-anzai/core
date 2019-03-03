@@ -1,0 +1,91 @@
+<div class="form-group form-list core-component-formentry-checkboxarray">
+    <label for="{{ name }}" class="col-sm-3 control-label">{{ title }}</label>
+    <div class="col-sm-6 inputText">
+        <div id="{{ name }}" class="inputContainer">
+            <ul class="level1">
+            {% set nesting = 1 %}
+
+            {% for row in rows %}
+
+                {% if row.title starts with '--' %}
+                    {% set level='level3' %}
+                    {% set title = row.title[2:] %}
+
+                    {% if nesting == 2 %}
+                        <ul class="level3">
+                    {%  endif %}
+
+
+                    {% set nesting = 3 %}
+                {% elseif row.title starts with '-' %}
+
+                    {% set level='level2' %}
+                    {% set title = row.title[1:] %}
+
+                    {% if nesting == 1 %}
+                        <ul class="level2">
+                    {%  endif %}
+
+                    {% if nesting == 3 %}
+                        </li></ul>
+                    {%  endif %}
+
+                    {% set nesting = 2 %}
+                {% else %}
+                    {% set level='level1' %}
+                    {% set title = row.title %}
+
+                    {% if nesting == 3 %}
+                        </li></ul></li></ul>
+                    {%  endif %}
+
+                    {% if nesting == 2 %}
+                        </li></ul>
+                    {%  endif %}
+
+                    {% set nesting = 1 %}
+                {% endif %}
+
+                {% if row.title starts with '#' %}
+                    <li class="title">{{ row.title[1:] }}
+
+                {% elseif row.type == 1 and title  %}
+                    <li class="checkbox{{ row.inline }} {{ level }}" %%css%%>
+                        <label><input type="checkbox" class="{{ level }}" name="{{ row.name }}" id="{{ row.name }}" value="{{ row.value }}" data-index="{{ row.key }}" {{ row.checked }} {{ row.readonly }} /> {{ title|raw }}</label>
+
+
+                {% elseif row.type == 2 and title  %}
+                    <li class="radio{{ row.inline }}">
+                        <label><input type="radio" name="{{ row.name }}" value="{{ row.value }}" {{ row.checked }} {{ row.readonly }} /> {{ title|raw}}</label>
+
+
+                {% endif %}
+
+            {% endfor %}
+            </li>
+            </ul>
+        </div>
+    </div>
+
+    {% if type == 1 %}
+        <div class="col-sm-12">
+            <label class="col-sm-3 control-label"></label>
+            <div class="col-sm-6">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="checkAll_{{ name }}" id="checkAll_{{ name }}" %%readonly%%>{{ "commons_select_all"|lang("system")|raw }}
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            require(["jquery"], function($) {
+                $("input:checkbox[name='checkAll_{{ name }}']").on('change', function() {
+                    var checkBoxes = $("input:checkbox[name^='{{ name }}']").not("[disabled]");
+                    checkBoxes.prop('checked', $("input:checkbox[name='checkAll_{{ name }}']").prop('checked')).trigger('change');
+                });
+            });
+        </script>
+    {% endif %}
+</div>

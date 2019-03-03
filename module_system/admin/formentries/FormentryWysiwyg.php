@@ -67,16 +67,6 @@ class FormentryWysiwyg extends FormentryBase implements FormentryPrintableInterf
         return $strReturn;
     }
 
-    public function setValueToObject()
-    {
-        $strOldValue = $this->getStrValue();
-        $this->setStrValue(processWysiwygHtmlContent($this->getStrValue()));
-        $bitReturn = parent::setValueToObject();
-        $this->setStrValue($strOldValue);
-        return $bitReturn;
-    }
-
-
     /**
      * Returns a textual representation of the formentries' value.
      * May contain html, but should be stripped down to text-only.

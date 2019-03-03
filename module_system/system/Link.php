@@ -347,7 +347,7 @@ class Link
      */
     public static function getLinkAdminDialog($strModule, $strAction, $strParams = "", $strText = "", $strAlt = "", $strImage = "", $strTitle = "", $bitTooltip = true, $bitPortalEditor = false, $strOnClick = "")
     {
-        $strTitle = addslashes(StringUtil::replace(array("\n", "\r"), array(), strip_tags(nl2br($strTitle))));
+        $strTitle = StringUtil::jsSafeString(StringUtil::replace(array("\n", "\r"), array(), strip_tags(nl2br(html_entity_decode($strTitle)))));
 
         if (is_string($strParams)) {
             if ($bitPortalEditor) {

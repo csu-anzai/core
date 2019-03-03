@@ -28,6 +28,11 @@ if (!isset($arrExcludedModules["core"])) {
 $arrExcludedModules["core"][] = "_buildfiles";
 $arrExcludedModules["core"][] = "module_installer";
 
+if (in_array("module_v4skin", $arrExcludedModules['core']) || !in_array("module_v4skin", $arrIncludedModules['core'] ?? ["module_v4skin"])) {
+    echo "less build not required".PHP_EOL;
+    exit(0);
+}
+
 $arrFolders = [];
 foreach ($objIterator as $strPath => $objDir) {
     $strTestPath = str_replace([$strRoot.DIRECTORY_SEPARATOR, "\\"], ["", "/"], $strPath);
@@ -92,12 +97,19 @@ foreach ($arrFilesToCompile as $strSourceFile => $strTargetFile) {
     if (is_file($strSourceFile)) {
         echo "Compiling ".$strSourceFile.PHP_EOL;
         $strLessBin = "node " . __DIR__ . "/../jstests/node_modules/less/bin/lessc";
-        system($strLessBin . " --verbose " . escapeshellarg($strSourceFile) . " " . escapeshellarg($strTargetFile));
+        system($strLessBin . " --verbose " . escapeshellarg($strSourceFile) . " " . escapeshellarg($strTargetFile), $exitCode);
+        if ($exitCode !== 0) {
+            echo "Error exited with a non successful status code";
+            exit(1);
+        }
 
         echo "Minifiying ".$strTargetFile.PHP_EOL;
         $strMinifyBin = "node " . __DIR__ . "/../jstests/node_modules/clean-css-cli/bin/cleancss";
-        system($strMinifyBin . " -o ". escapeshellarg($strTargetFile)." ". escapeshellarg($strTargetFile));
-
+        system($strMinifyBin . " -o ". escapeshellarg($strTargetFile)." ". escapeshellarg($strTargetFile), $exitCode);
+        if ($exitCode !== 0) {
+            echo "Error exited with a non successful status code";
+            exit(1);
+        }
     } else {
         echo "Skipping ".$strSourceFile.", not existing".PHP_EOL;
     }

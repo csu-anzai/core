@@ -1,6 +1,6 @@
-
-<div class="core-component-menu">
-    <div class="core-component-menu dropdown-menu generalContextMenu" role="menu">
+{% if rendercontainer %}
+<div class="core-component-menu dropdown-menu generalContextMenu" role="menu">
+{% endif %}
         <ul>
             {% for item in items %}
                 {% if item.fullEntry %}
@@ -10,12 +10,13 @@
                 {% endif %}
             {% endfor %}
         </ul>
-    </div>
-    <script type="text/javascript">
-        require(['jquery'], function($) {
-            $('.dropdown-menu .dropdown-submenu a').click(function (e) {
-                e.stopPropagation();
-            });
+{% if rendercontainer %}
+<script type="text/javascript">
+    require(['jquery'], function($) {
+        $('.dropdown-menu .dropdown-submenu a').click(function (e) {
+            e.stopPropagation();
         });
-    </script>
+    });
+</script>
 </div>
+{% endif %}

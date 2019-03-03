@@ -28,7 +28,8 @@ class DRow
      * DRow constructor.
      * @param array $cells
      */
-    public function __construct(array $cells = []) {
+    public function __construct(array $cells = [])
+    {
         $this->setCells($cells);
     }
 
@@ -47,7 +48,7 @@ class DRow
     }
 
     /**
-     * @return array
+     * @return DCell[]
      */
     public function getCells()
     {

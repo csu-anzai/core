@@ -55,16 +55,16 @@ use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\Validators\EmailValidator;
 use Kajona\System\System\VersionableInterface;
+use Kajona\System\View\Components\Formentry\Dropdown\Dropdown;
 use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
 use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
+use Kajona\System\View\Components\Formentry\Buttonbar\Buttonbar;
 use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
+use Kajona\System\View\Components\Formentry\Radiogroup\Radiogroup;
 use Kajona\System\View\Components\Formentry\Listeditor\Listeditor;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Formentry\Objectselector\Objectselector;
-use PHPExcel_Style_Alignment;
-use PHPExcel_Style_Border;
-use PHPExcel_Style_Fill;
 
 
 /**
@@ -958,8 +958,8 @@ JS;
         foreach ($objIterator as $objOneEntry) {
             $arrRowData = array();
 
-            $strOldValue = htmlStripTags($objVersionable->renderVersionValue($objOneEntry->getStrProperty(), $objOneEntry->getStrOldValue()));
-            $strNewValue = htmlStripTags($objVersionable->renderVersionValue($objOneEntry->getStrProperty(), $objOneEntry->getStrNewValue()));
+            $strOldValue = htmlentities($objVersionable->renderVersionValue($objOneEntry->getStrProperty(), $objOneEntry->getStrOldValue()));
+            $strNewValue = htmlentities($objVersionable->renderVersionValue($objOneEntry->getStrProperty(), $objOneEntry->getStrNewValue()));
 
             $arrRowData[] = dateToString($objOneEntry->getObjDate());
             $arrRowData[] = $objOneEntry->getStrUsername();
@@ -1241,40 +1241,6 @@ JS;
             }
         }
         return null;
-    }
-
-    /**
-     * Returns the style parameters for the changelog excel export
-     *
-     * @return array
-     */
-    private function getStylesArray()
-    {
-        $arrStlyes = array();
-
-        $arrStlyes["header_1"] = array(
-            'fill'      => array(
-                'type'       => PHPExcel_Style_Fill::FILL_SOLID,
-                'startcolor' => array('rgb' => 'EBF1DE'),
-                'endcolor'   => array('rgb' => 'EBF1DE')
-            ),
-            'borders'   => array(
-                'allborders' => array(
-                    'style' => PHPExcel_Style_Border::BORDER_THIN,
-                    'color' => array(
-                        'rgb' => '000000'
-                    )
-                ),
-            ),
-            'alignment' => array(
-                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-                'vertical'   => PHPExcel_Style_Alignment::VERTICAL_BOTTOM,
-                'rotation'   => 0,
-                'wrap'       => true
-            )
-        );
-
-        return $arrStlyes;
     }
 
     /**
@@ -1642,6 +1608,30 @@ JS;
         $inputOnOff = new Inputonoff("input_onoff_disabled", "Onoff (disabled)", true);
         $inputOnOff->setReadOnly(true);
         $result[] = $inputOnOff;
+
+        $buttonBar = new Buttonbar("buttonbar", "Buttonbar", range(0, 10), [5]);
+        $result[] = $buttonBar;
+
+        $buttonBar = new Buttonbar("buttonbar_radio", "Buttonbar (radio)", range(0, 10), [5], Buttonbar::TYPE_RADIO);
+        $result[] = $buttonBar;
+
+        $buttonBar = new Buttonbar("buttonbar_disabled", "Buttonbar (disabled)", range(0, 10), [5]);
+        $buttonBar->setReadOnly(true);
+        $result[] = $buttonBar;
+
+        $radioGroup = new Radiogroup("radiogroup", "Radiogroup", range(0, 10), 5);
+        $result[] = $radioGroup;
+
+        $radioGroup = new Radiogroup("radiogroup_disabled", "Radiogroup (disabled)", range(0, 10), 5);
+        $radioGroup->setReadOnly(true);
+        $result[] = $radioGroup;
+
+        $inputDropdown = new Dropdown("input_dropdown", "Dropdown", range(0, 10), 5);
+        $result[] = $inputDropdown;
+
+        $inputDropdown = new Dropdown("input_dropdown_disabled", "Dropdown (disabled)", range(0, 10), 5);
+        $inputDropdown->setReadOnly(true);
+        $result[] = $inputDropdown;
 
         $listEditor = new Listeditor("listeditor", "Listeditor", ["foo", "bar"]);
         $result[] = $listEditor;

@@ -294,6 +294,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
         $objValidator = new EmailValidator();
 
         if ($objListEntry instanceof UserUser
+            && $objListEntry->getObjSourceUser() != null
             && $objListEntry->getObjSourceUser()->isEditable()
             && $objListEntry->getIntRecordStatus() == 1
             && $objListEntry->getObjSourceUser()->isPasswordResettable()

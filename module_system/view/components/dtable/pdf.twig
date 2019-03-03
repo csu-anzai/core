@@ -1,0 +1,30 @@
+<style>
+.green {
+    background-color:green;
+}
+.yellow {
+    background-color:yellow;
+}
+.red {
+    background-color:red;
+}
+.grey {
+    background-color:grey;
+}
+</style>
+<table cellpadding="4" cellspacing="4">
+{% for header in headers %}
+<tr>
+    {% for index,cell in header.cells %}
+    <th {% if columnWidths[index] %}width="{{ columnWidths[index] }}"{% endif %}><b>{{ cell.value | raw }}</b></th>
+    {% endfor %}
+</tr>
+{% endfor %}
+{% for row in rows %}
+<tr style="background-color:{{ cycle([oddBgColor, evenBgColor], loop.index0) }};color:{{ cycle([oddFontColor, evenFontColor], loop.index0) }}">
+    {% for index,cell in row.cells %}
+    <td {% if columnWidths[index] %}width="{{ columnWidths[index] }}"{% endif %} {% if cell.classAddon %}class="{{ cell.classAddon }}"{% endif %}>{{ cell.value | raw }}</td>
+    {% endfor %}
+</tr>
+{% endfor %}
+</table>

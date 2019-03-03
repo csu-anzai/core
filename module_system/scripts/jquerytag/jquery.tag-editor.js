@@ -4,6 +4,8 @@
     GitHub: https://github.com/Pixabay/jQuery-tagEditor
 	License: http://www.opensource.org/licenses/mit-license.php
 */
+define("jquerytageditor", ["jquery", "jquerycaret"], function(jq, caret){
+
 
 (function($){
     // auto grow input (stackoverflow.com/questions/931207)
@@ -54,7 +56,7 @@
         if (window.getSelection) $(document).off('keydown.tag-editor').on('keydown.tag-editor', function(e){
             if (e.which == 8 || e.which == 46 || e.ctrlKey && e.which == 88) {
                 try {
-                    var sel = getSelection(), el = document.activeElement.tagName == 'BODY' ? $(sel.getRangeAt(0).startContainer.parentNode).closest('.tag-editor') : 0;
+                    var sel = getSelection(), el = document.activeElement.tagName != 'INPUT' ? $(sel.getRangeAt(0).startContainer.parentNode).closest('.tag-editor') : 0;
                 } catch(e){ el = 0; }
                 if (sel.rangeCount > 0 && el && el.length) {
                     var tags = [], splits = sel.toString().split(el.prev().data('options').dregex);
@@ -172,7 +174,7 @@
                     // guess cursor position in text input
                     var left_percent = Math.abs(($(this).offset().left - e.pageX)/$(this).width()), caret_pos = parseInt(tag.length*left_percent),
                         input = $(this).html('<input type="text" maxlength="'+o.maxLength+'" value="'+escape(tag)+'">').addClass('active').find('input');
-                        input.data('old_tag', tag).tagEditorInput().focus().caret(caret_pos);
+                    input.data('old_tag', tag).tagEditorInput().focus().caret(caret_pos);
                     if (o.autocomplete) {
                         var aco = $.extend({}, o.autocomplete);
                         // extend user provided autocomplete select method
@@ -292,7 +294,7 @@
                             return;
                         }
                         return false;
-                    // tab
+                        // tab
                     } else {
                         var next_tag = $t.closest('li').next('li').find('.tag-editor-tag');
                         if (next_tag.length) next_tag.click().find('input').caret(0);
@@ -367,4 +369,6 @@
         beforeTagSave: function(){},
         beforeTagDelete: function(){}
     };
-}(jQuery));
+}(jq));
+
+});

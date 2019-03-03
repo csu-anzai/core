@@ -1,8 +1,16 @@
 
 <div class="form-group core-component-formentry-inputtext">
-    <label for="{{ name|e('html_attr') }}" class="col-sm-3 control-label">{{ title }}</label>
+    <label for="{{ name|e('html_attr') }}" class="col-sm-3 control-label">{{ title|raw }}</label>
     <div class="col-sm-6 {{ class|e('html_attr') }}">
-        <input type="{{ type|e('html_attr') }}" id="{{ name|e('html_attr') }}" name="{{ name|e('html_attr') }}" value="{{ value|e('html_attr') }}" class="form-control" {% if readOnly %}readonly{% endif %} {% for key, value in data %}data-{{ key }}="{{ value|e('html_attr') }}"{% endfor %}>
+        {% if prepend or append %}
+        <div class="input-group">
+            {% if prepend %}<div class="input-group-addon">{{ prepend|raw }}</div>{% endif %}
+            <input type="{{ type|e('html_attr') }}" id="{{ name|e('html_attr') }}" name="{{ name|e('html_attr') }}" value="{{ value|e('html_attr') }}" class="form-control " {% if readOnly %}readonly{% endif %} {% for key, value in data %}data-{{ key }}="{{ value|e('html_attr') }}"{% endfor %}>
+            {% if append %}<div class="input-group-addon">{{ append|raw }}</div>{% endif %}
+        </div>
+        {% else %}
+        <input type="{{ type|e('html_attr') }}" id="{{ name|e('html_attr') }}" name="{{ name|e('html_attr') }}" value="{{ value|e('html_attr') }}" class="form-control " {% if readOnly %}readonly{% endif %} {% for key, value in data %}data-{{ key }}="{{ value|e('html_attr') }}"{% endfor %}>
+        {% endif %}
     </div>
     {% if opener %}
     <div class="col-sm-2 form-opener">
