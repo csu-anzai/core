@@ -108,20 +108,23 @@ class Lang
      * @param string $strText
      * @param string $strModule the module does not contain the module_ prefix
      * @param array $arrParameters an array of variables which are embedded into the string
-     *
+     * @param string $language optional the needed language otherwise we fallback to the global user language
      * @return string
      */
-    public function getLang($strText, $strModule, $arrParameters = [])
+    public function getLang($strText, $strModule, $arrParameters = [], $language = null)
     {
+        if ($language === null) {
+            $language = $this->strLanguage;
+        }
 
         //Did we already load this text?
-        if (!isset($this->arrTexts[$this->strLanguage][$strModule])) {
+        if (!isset($this->arrTexts[$language][$strModule])) {
             $this->loadText($strModule);
         }
 
         //Searching for the text
-        if (isset($this->arrTexts[$this->strLanguage][$strModule][$strText])) {
-            $strReturn = $this->arrTexts[$this->strLanguage][$strModule][$strText];
+        if (isset($this->arrTexts[$language][$strModule][$strText])) {
+            $strReturn = $this->arrTexts[$language][$strModule][$strText];
         } else {
             $strReturn = "!".$strText."!";
         }
