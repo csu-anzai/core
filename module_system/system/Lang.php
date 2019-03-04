@@ -119,7 +119,7 @@ class Lang
 
         //Did we already load this text?
         if (!isset($this->arrTexts[$language][$strModule])) {
-            $this->loadText($strModule);
+            $this->loadText($strModule, $language);
         }
 
         //Searching for the text
