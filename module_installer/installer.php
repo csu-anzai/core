@@ -221,6 +221,10 @@ class Installer
             elseif($step=="triggerInstallerApi"){
                  $arrayData=$this->triggerModuleInstallerApi($payload ?? []);
             }
+            else if($step=="triggerSampleApi")
+            {
+                $arrayData=$this->triggerSampleContentApi($payload??[]);
+            }
             else {
                 throw new \Exception("no matching step found");
             }
@@ -879,7 +883,23 @@ class Installer
         return json_encode("");
 
     }
+    private function triggerSampleContentApi(array $payload){
+        $objManager = new PackagemanagerManager();
+        $arrPackageMetadata = $objManager->getAvailablePackages();
+        foreach ($arrPackageMetadata as $objOneMetadata) {
+            if ($objOneMetadata->getStrTitle() == $payload["module"]) {
 
+                $objSamplecontent = SamplecontentInstallerHelper::getSamplecontentInstallerForPackage($objOneMetadata);
+
+                if ($objSamplecontent != null && !$objSamplecontent->isInstalled()) {
+                    $strReturn = SamplecontentInstallerHelper::install($objSamplecontent);
+                    return array("module" => $payload["module"], "status" => "success", "log" => $strReturn);
+                }
+            }
+        }
+
+       return array("module" => $_POST["module"], "status" => "error");
+    }
     private function triggerNextAutoSamplecontent()
     {
         $objManager = new PackagemanagerManager();
@@ -926,7 +946,7 @@ class Installer
         $objManager = new PackagemanagerManager();
         $arrPackageMetadata = $objManager->getAvailablePackages();
 
-        Session::getInstance()->sessionClose();
+       //Session::getInstance()->sessionClose();
 
         foreach ($arrPackageMetadata as $objOneMetadata) {
             if ($objOneMetadata->getStrTitle() == $payload["module"]) {
@@ -934,12 +954,12 @@ class Installer
 
                 if ($objHandler->isInstallable()) {
                     $strReturn = $objHandler->installOrUpdate();
-                    return json_encode(array("module" => $payload["module"], "status" => "success", "log" => $strReturn));
+                    return (array("module" => $payload["module"], "status" => "success", "log" => $strReturn));
                 }
             }
         }
 
-        return json_encode(array("module" => $payload["module"], "status" => "error"));
+        return (array("module" => $payload["module"], "status" => "error"));
     }
 
 
@@ -1101,6 +1121,8 @@ class Installer
 //Creating the Installer-Object
 $objInstaller = new Installer();
 if (Carrier::getInstance()->getParam("channel") == "api") {
+    error_reporting(0);
+
     $objInstaller->action_api();
 } else {
     $objInstaller->action();
