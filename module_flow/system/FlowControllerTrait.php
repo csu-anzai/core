@@ -75,6 +75,8 @@ trait FlowControllerTrait
             $this->objToolkit->listButton($strIcon),
             Link::getLinkAdminXml($objListEntry->getArrModule('module'), "showStatusMenu", ["systemid" => $objListEntry->getSystemid()])
         );
+        $menu->setClass("flow-status-icon");
+        $menu->setSystemId($objListEntry->getSystemid());
 
         $strReturn = $menu->renderComponent();
         return $strReturn;
