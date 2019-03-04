@@ -233,38 +233,42 @@ class Lang
      * Loading texts from textfiles
      *
      * @param string $strModule
-     *
+     * @param string $language
      * @return void
      */
-    private function loadText($strModule)
+    private function loadText($strModule, $language = null)
     {
+        if ($language === null) {
+            $language = $this->strLanguage;
+        }
+
         $arrCommons = Resourceloader::getInstance()->getLanguageFiles("module_".$this->strCommonsName);
         $arrModuleFiles = Resourceloader::getInstance()->getLanguageFiles("module_".$strModule);
 
         //following steps:
         // 1. commons fallback language
         foreach (array_keys($arrCommons, "lang_".$this->strCommonsName."_".$this->strFallbackLanguage.".php") as $strPath) {
-            $this->loadAndMergeTextfile($strModule, $strPath, $this->strLanguage, $this->arrTexts);
+            $this->loadAndMergeTextfile($strModule, $strPath, $language, $this->arrTexts);
         }
 
         // 2. entries fallback language
         foreach ($arrModuleFiles as $strPath => $strFilename) {
             $arrFilename = explode("_", StringUtil::substring($strFilename, 0, -4));
             if (end($arrFilename) == $this->strFallbackLanguage) {
-                $this->loadAndMergeTextfile($strModule, $strPath, $this->strLanguage, $this->arrTexts);
+                $this->loadAndMergeTextfile($strModule, $strPath, $language, $this->arrTexts);
             }
         }
 
         // 3. commons current language
-        foreach (array_keys($arrCommons, "lang_".$this->strCommonsName."_".$this->strLanguage.".php") as $strPath) {
-            $this->loadAndMergeTextfile($strModule, $strPath, $this->strLanguage, $this->arrTexts);
+        foreach (array_keys($arrCommons, "lang_".$this->strCommonsName."_".$language.".php") as $strPath) {
+            $this->loadAndMergeTextfile($strModule, $strPath, $language, $this->arrTexts);
         }
 
         // 4. entries current language
         foreach ($arrModuleFiles as $strPath => $strFilename) {
             $arrFilename = explode("_", StringUtil::substring($strFilename, 0, -4));
-            if (end($arrFilename) == $this->strLanguage) {
-                $this->loadAndMergeTextfile($strModule, $strPath, $this->strLanguage, $this->arrTexts);
+            if (end($arrFilename) == $language) {
+                $this->loadAndMergeTextfile($strModule, $strPath, $language, $this->arrTexts);
             }
         }
     }
