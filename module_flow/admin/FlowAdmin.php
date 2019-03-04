@@ -602,6 +602,8 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
     }
 
     /**
+     * Returns the current status icon for the provided systemid
+     *
      * @responseType json
      * @permissions view
      */
@@ -618,7 +620,7 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
             return [];
         }
 
-        $strIcon = AdminskinHelper::getAdminImage($status->getStrIcon(), $status->getStrDisplayName());
+        $icon = AdminskinHelper::getAdminImage($status->getStrIcon(), $status->getStrDisplayName());
 
         if (!$object->rightView()) {
             return [];
@@ -627,7 +629,7 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
         return [
             "status" => $status->getIntRecordStatus(),
             "icon" => $status->getStrIcon(),
-            "html" => $this->objToolkit->listButton($strIcon),
+            "html" => $this->objToolkit->listButton($icon),
         ];
     }
 
