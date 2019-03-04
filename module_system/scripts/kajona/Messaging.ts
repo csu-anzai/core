@@ -180,6 +180,8 @@ class Messaging {
             };
 
             toastr.info($objAlert.title, $objAlert.body, options);
+
+            Messaging.updateExistingStatusIcons();
         } else {
             if (!Messaging.dialog || (Messaging.dialog && !Messaging.dialog.isVisible())) {
                 Messaging.dialog = DialogHelper.showConfirmationDialog($objAlert.title, $objAlert.body, $objAlert.confirmLabel, Messaging.getActionCallback($objAlert.onAccept));
@@ -221,6 +223,18 @@ class Messaging {
         return function() { };
     };
 
+    /**
+     * Tries to find and update all existing status icons on a page
+     */
+    private static updateExistingStatusIcons() {
+        $(".flow-status-icon").each(function(){
+            let el = $(this).find(".navbar-link");
+            Ajax.genericAjaxCall("flow", "apiGetStatusIcon", $(this).data("systemid"), function(resp : any){
+                let data = JSON.parse(resp);
+                el.html(data.html);
+            });
+        });
+    }
 }
 
 export = Messaging;
