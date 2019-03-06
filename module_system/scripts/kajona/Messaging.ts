@@ -243,13 +243,15 @@ class Messaging {
         } else if ($onAccept && $onAccept.type === 'update_status') {
             let data = <UpdateStatusAction>$onAccept;
 
-            // search for the specific status flag and update
-            $(".flow-status-icon").each(function(){
-                let el = $(this).find(".navbar-link");
-                if ($(this).data("systemid") == data.systemid) {
-                    el.html(data.icon);
-                }
-            });
+            return function(){
+                // search for the specific status flag and update
+                $(".flow-status-icon").each(function(){
+                    let el = $(this).find(".navbar-link");
+                    if ($(this).data("systemid") == data.systemid) {
+                        el.html(data.icon);
+                    }
+                });
+            };
         }
 
         return function() { };
