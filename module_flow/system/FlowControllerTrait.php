@@ -298,7 +298,7 @@ trait FlowControllerTrait
     /**
      * Ajax endpoint to trigger a status transition
      *
-     * @return string
+     * @return array
      * @permissions view
      * @responseType json
      * @xml
@@ -307,6 +307,7 @@ trait FlowControllerTrait
     {
         $objObject = $this->objFactory->getObject($this->getSystemid());
         $objAlert = null;
+        $success = false;
 
         if ($objObject instanceof Model) {
             // check right
@@ -317,7 +318,10 @@ trait FlowControllerTrait
             }
 
             if (!$bitHasRight) {
-                return json_encode(["success" => false, "message" => $this->getLang("commons_error_permissions", "commons")]);
+                return [
+                    "success" => false,
+                    "message" => $this->getLang("commons_error_permissions", "commons")
+                ];
             }
 
             $strTransitionId = $this->getParam("transition_id");
@@ -369,7 +373,7 @@ trait FlowControllerTrait
                             }
                         } else {
                             // execute status transition
-                            $objFlow->getHandler()->handleStatusTransition($objObject, $objTransition);
+                            $success = $objFlow->getHandler()->handleStatusTransition($objObject, $objTransition);
 
                             $objAlert = new MessagingNotification();
                             $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
@@ -401,13 +405,22 @@ trait FlowControllerTrait
         if ($objAlert instanceof MessagingAlert) {
             $objAlert->setIntPriority(9);
             $this->objMessageHandler->sendAlertToUser($objAlert, $this->objSession->getUser());
-
-            // we also send an alert to update the status icon on the page
-            $objAlert = new MessagingExecution();
-            $objAlert->setObjAlertAction(new MessagingAlertActionUpdateStatus());
-            $this->objMessageHandler->sendAlertToUser($objAlert, $this->objSession->getUser());
         }
 
-        return json_encode(["success" => true]);
+        if ($success) {
+            $status = $this->objFlowManager->getCurrentStepForModel($objObject);
+            $icon = $this->objToolkit->listButton(AdminskinHelper::getAdminImage($status->getStrIcon(), $status->getStrDisplayName()));
+
+            return [
+                "success" => true,
+                "actions" => [
+                    new MessagingAlertActionUpdateStatus($objObject->getSystemid(), $icon)
+                ]
+            ];
+        } else {
+            return [
+                "success" => false,
+            ];
+        }
     }
 }
