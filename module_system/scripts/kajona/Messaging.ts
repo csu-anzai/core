@@ -184,16 +184,13 @@ class Messaging {
     private static renderAlert($objAlert : Alert) {
         if ($objAlert.type === "Kajona\\System\\System\\MessagingNotification") {
             var options = {
-                onclick: function () {
+                onclick: function(){
                     let callback = Messaging.getActionCallback($objAlert.onAccept);
                     callback();
                 }
             };
 
             toastr.info($objAlert.title, $objAlert.body, options);
-        } else if ($objAlert.type === "Kajona\\System\\System\\MessagingExecution") {
-            let callback = Messaging.getActionCallback($objAlert.onAccept);
-            callback();
         } else {
             if (!Messaging.dialog || (Messaging.dialog && !Messaging.dialog.isVisible())) {
                 Messaging.dialog = DialogHelper.showConfirmationDialog($objAlert.title, $objAlert.body, $objAlert.confirmLabel, Messaging.getActionCallback($objAlert.onAccept));
