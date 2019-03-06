@@ -78,12 +78,8 @@ class Messaging {
                 var $objResult = $.parseJSON(data);
                 objCallback($objResult.count);
 
-                if ($objResult.alert) {
+                if($objResult.alert) {
                     Messaging.renderAlert($objResult.alert);
-                } else if ($objResult.alerts) {
-                    $objResult.alerts.forEach(function(alert : Alert){
-                        Messaging.renderAlert(alert);
-                    });
                 }
             } else {
                 // in case the API returns a 401 the user has logged out so reload the page to show the login page
