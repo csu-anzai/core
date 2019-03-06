@@ -67,8 +67,12 @@ class Messaging {
                 var $objResult = $.parseJSON(data);
                 objCallback($objResult.count);
 
-                if($objResult.alert) {
+                if ($objResult.alert) {
                     Messaging.renderAlert($objResult.alert);
+                } else if ($objResult.alerts) {
+                    $objResult.alerts.forEach(function(alert : Alert){
+                        Messaging.renderAlert(alert);
+                    });
                 }
             } else {
                 // in case the API returns a 401 the user has logged out so reload the page to show the login page
@@ -173,15 +177,16 @@ class Messaging {
     private static renderAlert($objAlert : Alert) {
         if ($objAlert.type === "Kajona\\System\\System\\MessagingNotification") {
             var options = {
-                onclick: function(){
+                onclick: function () {
                     let callback = Messaging.getActionCallback($objAlert.onAccept);
                     callback();
                 }
             };
 
             toastr.info($objAlert.title, $objAlert.body, options);
-
-            Messaging.updateExistingStatusIcons();
+        } else if ($objAlert.type === "Kajona\\System\\System\\MessagingExecution") {
+            let callback = Messaging.getActionCallback($objAlert.onAccept);
+            callback();
         } else {
             if (!Messaging.dialog || (Messaging.dialog && !Messaging.dialog.isVisible())) {
                 Messaging.dialog = DialogHelper.showConfirmationDialog($objAlert.title, $objAlert.body, $objAlert.confirmLabel, Messaging.getActionCallback($objAlert.onAccept));
@@ -218,6 +223,8 @@ class Messaging {
                     Messaging.pollMessages();
                 });
             };
+        } else if ($onAccept && $onAccept.type === 'update_status') {
+            Messaging.updateExistingStatusIcons();
         }
 
         return function() { };
