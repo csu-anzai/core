@@ -125,12 +125,12 @@ class MessagingAlert extends Model implements ModelInterface, AdminListableInter
      * @param string $strUserid
      * @return MessagingAlert|null
      */
-    public static function getAllAlertsForUser($strUserid)
+    public static function getNextAlertForUser($strUserid)
     {
         $objOrm = new OrmObjectlist();
         $objOrm->addWhereRestriction(new OrmPropertyCondition("strUser", OrmComparatorEnum::Equal(), $strUserid));
         $objOrm->addOrderBy(new OrmObjectlistOrderby("alert_priority DESC"));
-        return $objOrm->getObjectList(MessagingAlert::class);
+        return $objOrm->getSingleObject(MessagingAlert::class);
     }
 
     /**

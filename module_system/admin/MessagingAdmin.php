@@ -611,7 +611,7 @@ JS;
 
         return json_encode([
             "count" => MessagingMessage::getNumberOfMessagesForUser($this->objSession->getUserID(), true),
-            "alerts" => MessagingAlert::getAllAlertsForUser($this->objSession->getUserID())
+            "alert" => MessagingAlert::getNextAlertForUser($this->objSession->getUserID())
         ]);
     }
 
