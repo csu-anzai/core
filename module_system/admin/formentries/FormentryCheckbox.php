@@ -11,6 +11,7 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\Validators\DummyValidator;
+use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
 
 
 /**
@@ -22,6 +23,7 @@ class FormentryCheckbox extends FormentryBase implements FormentryPrintableInter
 {
 
     private $strOpener = "";
+    private $dataAttributes = [];
 
     public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
     {
@@ -45,7 +47,11 @@ class FormentryCheckbox extends FormentryBase implements FormentryPrintableInter
             $strReturn .= $objToolkit->formTextRow($this->getStrHint());
         }
 
-        $strReturn .= $objToolkit->formInputCheckbox($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue() == true, "", $this->getBitReadonly());
+        $inputCheckbox = new Inputcheckbox($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue() == true);
+        $inputCheckbox->setReadOnly($this->getBitReadonly());
+        $inputCheckbox->setData($this->dataAttributes);
+        $strReturn .= $inputCheckbox->renderComponent();
+
         $strReturn .= $objToolkit->formInputHidden($this->getPresCheckKey(), "1");
 
         return $strReturn;
@@ -129,6 +135,23 @@ class FormentryCheckbox extends FormentryBase implements FormentryPrintableInter
         }
         return parent::setValueToObject();
     }
+
+    /**
+     * @return array
+     */
+    public function getDataAttributes(): array
+    {
+        return $this->dataAttributes;
+    }
+
+    /**
+     * @param array $dataAttributes
+     */
+    public function setDataAttributes(array $dataAttributes): void
+    {
+        $this->dataAttributes = $dataAttributes;
+    }
+
 
 
 }
