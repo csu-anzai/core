@@ -160,7 +160,7 @@ class GraphChartjs implements GraphInterfaceFronted
             "borderColor" => $this->arrColors[$intColorNumber],
             "borderWidth" => 1,
             "yAxisID" => empty($yAxisID) ? "defaultYID" : $yAxisID,
-            "datalabels" => $bitWriteValues ? ["display" => true] : ["display" => false],
+            "datalabels" => $bitWriteValues ? ["display" => 'auto'] : ["display" => false],
             "lineTension" => $lineTension
         ];
         $this->intXLabelsCount = count($arrValues);
@@ -259,7 +259,8 @@ class GraphChartjs implements GraphInterfaceFronted
             "dataPoints" => $this->dataPointObjArrayToArray($arrDataPointObjects),
             "data" => GraphCommons::getDataPointFloatValues($arrDataPointObjects),
             "backgroundColor" => $arrBackgroundColors,
-            "borderColor" => $arrBorderColors
+            "borderColor" => $arrBorderColors,
+            "datalabels" => ['display' => 'auto']
         ];
         $this->intXLabelsCount = count($arrValues);
         $this->arrChartData['data']['labels'] = $arrLegends;
