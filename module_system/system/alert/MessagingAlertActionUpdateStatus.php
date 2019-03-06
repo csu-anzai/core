@@ -17,10 +17,34 @@ namespace Kajona\System\System\Alert;
 class MessagingAlertActionUpdateStatus implements MessagingAlertActionInterface
 {
     /**
+     * @var string
+     */
+    private $systemId;
+
+    /**
+     * @var string
+     */
+    private $icon;
+
+    /**
+     * @param string $systemId
+     * @param string $icon
+     */
+    public function __construct(string $systemId, string $icon)
+    {
+        $this->systemId = $systemId;
+        $this->icon = $icon;
+    }
+
+    /**
      * @inheritDoc
      */
     public function getAsActionArray(): array
     {
-        return ["type" => "update_status"];
+        return [
+            "type" => "update_status",
+            "systemid" => $this->systemId,
+            "icon" => $this->icon,
+        ];
     }
 }
