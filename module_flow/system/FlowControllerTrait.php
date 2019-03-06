@@ -307,7 +307,6 @@ trait FlowControllerTrait
     {
         $objObject = $this->objFactory->getObject($this->getSystemid());
         $objAlert = null;
-        $success = false;
 
         if ($objObject instanceof Model) {
             // check right
@@ -373,7 +372,7 @@ trait FlowControllerTrait
                             }
                         } else {
                             // execute status transition
-                            $success = $objFlow->getHandler()->handleStatusTransition($objObject, $objTransition);
+                            $objFlow->getHandler()->handleStatusTransition($objObject, $objTransition);
 
                             $objAlert = new MessagingNotification();
                             $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));
@@ -407,20 +406,14 @@ trait FlowControllerTrait
             $this->objMessageHandler->sendAlertToUser($objAlert, $this->objSession->getUser());
         }
 
-        if ($success) {
-            $status = $this->objFlowManager->getCurrentStepForModel($objObject);
-            $icon = $this->objToolkit->listButton(AdminskinHelper::getAdminImage($status->getStrIcon(), $status->getStrDisplayName()));
+        $status = $this->objFlowManager->getCurrentStepForModel($objObject);
+        $icon = $this->objToolkit->listButton(AdminskinHelper::getAdminImage($status->getStrIcon(), $status->getStrDisplayName()));
 
-            return [
-                "success" => true,
-                "actions" => [
-                    new MessagingAlertActionUpdateStatus($objObject->getSystemid(), $icon)
-                ]
-            ];
-        } else {
-            return [
-                "success" => false,
-            ];
-        }
+        return [
+            "success" => true,
+            "actions" => [
+                (new MessagingAlertActionUpdateStatus($objObject->getSystemid(), $icon))->getAsActionArray()
+            ]
+        ];
     }
 }
