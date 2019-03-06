@@ -601,38 +601,6 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
         return parent::actionSave();
     }
 
-    /**
-     * Returns the current status icon for the provided systemid
-     *
-     * @responseType json
-     * @permissions view
-     */
-    public function actionApiGetStatusIcon()
-    {
-        $object = $this->objFactory->getObject($this->getSystemid());
-
-        if ($object->getIntRecordDeleted() == 1) {
-            return [];
-        }
-
-        $status = $this->objFlowManager->getCurrentStepForModel($object);
-        if ($status === null) {
-            return [];
-        }
-
-        $icon = AdminskinHelper::getAdminImage($status->getStrIcon(), $status->getStrDisplayName());
-
-        if (!$object->rightView()) {
-            return [];
-        }
-
-        return [
-            "status" => $status->getIntRecordStatus(),
-            "icon" => $status->getStrIcon(),
-            "html" => $this->objToolkit->listButton($icon),
-        ];
-    }
-
     protected function getActionNameForClass($strAction, $objInstance)
     {
         if ($objInstance instanceof FlowActionAbstract) {
