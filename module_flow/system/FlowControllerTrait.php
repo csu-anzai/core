@@ -11,10 +11,12 @@ use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\Formentries\FormentryHeadline;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\Alert\MessagingAlertActionRedirect;
+use Kajona\System\System\Alert\MessagingAlertActionUpdateStatus;
 use Kajona\System\System\Alert\MessagingAlertActionVoid;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Link;
 use Kajona\System\System\MessagingAlert;
+use Kajona\System\System\MessagingExecution;
 use Kajona\System\System\MessagingMessagehandler;
 use Kajona\System\System\MessagingNotification;
 use Kajona\System\System\Model;
@@ -398,6 +400,11 @@ trait FlowControllerTrait
 
         if ($objAlert instanceof MessagingAlert) {
             $objAlert->setIntPriority(9);
+            $this->objMessageHandler->sendAlertToUser($objAlert, $this->objSession->getUser());
+
+            // we also send an alert to update the status icon on the page
+            $objAlert = new MessagingExecution();
+            $objAlert->setObjAlertAction(new MessagingAlertActionUpdateStatus());
             $this->objMessageHandler->sendAlertToUser($objAlert, $this->objSession->getUser());
         }
 
