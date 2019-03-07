@@ -108,6 +108,16 @@ abstract class FormentryComponentAbstract extends AbstractComponent
     }
 
     /**
+     * Method to set additional data attributes on an element
+     *
+     * @param $data
+     */
+    public function setDataArray($data)
+    {
+        $this->data = $data;
+    }
+
+    /**
      * @param string $opener
      */
     public function setOpener(string $opener)
