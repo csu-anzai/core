@@ -44,7 +44,7 @@ class FormentryCheckbox extends FormentryBase implements FormentryPrintableInter
         $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
         $strReturn = "";
         if ($this->getStrHint() != null) {
-            $strReturn .= $objToolkit->formTextRow($this->getStrHint());
+            $strReturn .= $objToolkit->formTextHint($this->getStrHint(), $this->getBitHideLongHints());
         }
 
         $inputCheckbox = new Inputcheckbox($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue() == true);

@@ -53,6 +53,16 @@ class FormentryCheckboxarray extends FormentryBase implements FormentryPrintable
         return $this;
     }
 
+    /**
+     * @return int
+     */
+    public function getIntType(): int
+    {
+        return $this->intType;
+    }
+
+
+
     public function setBitInline($bitInline)
     {
         $this->bitInline = $bitInline;
