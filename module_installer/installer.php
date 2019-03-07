@@ -224,6 +224,8 @@ class Installer
             else if($step=="triggerSampleApi")
             {
                 $arrayData=$this->triggerSampleContentApi($payload??[]);
+            }else if($step=='checkDefaultValues'){
+               $arrayData=array(checkDefaultValues=>$this->checkDefaultValues());
             }
             else {
                 throw new \Exception("no matching step found");
@@ -436,8 +438,8 @@ class Installer
         $strReturn = "";
 
        if ($this->checkDefaultValues()) {
-        //    ResponseObject::getInstance()->setStrRedirectUrl(_webpath_."/installer.php?step=loginData");
-        //    return;
+            ResponseObject::getInstance()->setStrRedirectUrl(_webpath_."/installer.php?step=loginData");
+            return;
        }
 
         $bitCxCheck = true;
@@ -890,8 +892,8 @@ class Installer
             if ($objOneMetadata->getStrTitle() == $payload["module"]) {
 
                 $objSamplecontent = SamplecontentInstallerHelper::getSamplecontentInstallerForPackage($objOneMetadata);
-
-                if ($objSamplecontent != null && !$objSamplecontent->isInstalled()) {
+//                && !$objSamplecontent->isInstalled()
+                if ($objSamplecontent != null ) {
                     $strReturn = SamplecontentInstallerHelper::install($objSamplecontent);
                     return array("module" => $payload["module"], "status" => "success", "log" => $strReturn);
                 }
