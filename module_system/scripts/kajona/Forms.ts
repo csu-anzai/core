@@ -301,7 +301,7 @@ class Forms {
             Messaging.setPollingEnabled(true);
         });
 
-        Router.loadUrl(objForm.action);
+        Router.defaultRoutieCallback(objForm.action);
 
         return false;
     }
