@@ -42,7 +42,6 @@ class SamplecontentInstallerHelper
                 }
             }
             else {
-                self::initInstaller($objInstance);
                 $strFilename = $objInstance;
             }
         });
@@ -66,12 +65,6 @@ class SamplecontentInstallerHelper
     }
 
 
-    private static function initInstaller(SamplecontentInstallerInterface $objInstaller)
-    {
-        $objInstaller->setObjDb(Carrier::getInstance()->getObjDB());
-        $objInstaller->setStrContentlanguage(Carrier::getInstance()->getObjSession()->getAdminLanguage(true, true));
-    }
-
     /**
      * @param PackagemanagerMetadata $objPackage
      *
@@ -84,9 +77,8 @@ class SamplecontentInstallerHelper
             if(StringUtil::indexOf($strPath, $objPackage->getStrPath()) !== false) {
 
                 /** @var SamplecontentInstallerInterface $objInstance */
-                $objInstance = Classloader::getInstance()->getInstanceFromFilename($strPath, null, "Kajona\\System\\System\\SamplecontentInstallerInterface", null, true);
+                $objInstance = Classloader::getInstance()->getInstanceFromFilename($strPath, null, SamplecontentInstallerInterface::class, null, true);
                 if($objInstance != null) {
-                    self::initInstaller($objInstance);
                     return $objInstance;
                 }
             }

@@ -182,11 +182,6 @@ class PackagemanagerMetadata implements AdminListableInterface, \JsonSerializabl
                 /** @var SamplecontentInstallerInterface $objInstance */
                 $objInstance = Classloader::getInstance()->getInstanceFromFilename($strPath, null, SamplecontentInstallerInterface::class, null, true);
                 if($objInstance != null) {
-
-                    if (SystemModule::getModuleByName("system") !== null) {
-                        $objInstance->setObjDb(Carrier::getInstance()->getObjDB());
-                        $objInstance->setStrContentlanguage(Carrier::getInstance()->getObjSession()->getAdminLanguage(true, true));
-                    }
                     return $objInstance;
                 }
             }

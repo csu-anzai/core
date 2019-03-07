@@ -46,7 +46,7 @@ use Kajona\System\System\UserUser;
  */
 class InstallerSystem extends InstallerBase implements InstallerInterface {
 
-    private $strContentLanguage;
+    private $strContentLanguage = "de";
 
     /**
      * @var Session
@@ -56,9 +56,6 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
     public function __construct() {
         parent::__construct();
-
-        //set the correct language
-        $this->strContentLanguage = $this->objSession->getAdminLanguage(true, true);
     }
 
     public function install() {
