@@ -8,7 +8,7 @@ const tsPaths = glob.sync('../../{core,core_agp}/module_*/scripts', {
 module.exports = {
   entry: {
     // DbBrowser: './components/DbBrowser/DbBrowser.ts'
-    agp: glob.sync('../../{core,core_agp}/module_*/scripts/*/*.ts')
+    // agp: glob.sync('../../{core,core_agp}/module_*/scripts/*/*.ts')
     agp: glob.sync('../../core/module_*/scripts/*/*.ts')
 
     // agp: glob.sync('../../core/module_*/scripts/*.ts')
