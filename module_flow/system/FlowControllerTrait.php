@@ -11,10 +11,12 @@ use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\Formentries\FormentryHeadline;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\Alert\MessagingAlertActionRedirect;
+use Kajona\System\System\Alert\MessagingAlertActionUpdateStatus;
 use Kajona\System\System\Alert\MessagingAlertActionVoid;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Link;
 use Kajona\System\System\MessagingAlert;
+use Kajona\System\System\MessagingExecution;
 use Kajona\System\System\MessagingMessagehandler;
 use Kajona\System\System\MessagingNotification;
 use Kajona\System\System\Model;
@@ -75,6 +77,8 @@ trait FlowControllerTrait
             $this->objToolkit->listButton($strIcon),
             Link::getLinkAdminXml($objListEntry->getArrModule('module'), "showStatusMenu", ["systemid" => $objListEntry->getSystemid()])
         );
+        $menu->setClass("flow-status-icon");
+        $menu->setSystemId($objListEntry->getSystemid());
 
         $strReturn = $menu->renderComponent();
         return $strReturn;
@@ -294,7 +298,7 @@ trait FlowControllerTrait
     /**
      * Ajax endpoint to trigger a status transition
      *
-     * @return string
+     * @return array
      * @permissions view
      * @responseType json
      * @xml
@@ -313,7 +317,10 @@ trait FlowControllerTrait
             }
 
             if (!$bitHasRight) {
-                return json_encode(["success" => false, "message" => $this->getLang("commons_error_permissions", "commons")]);
+                return [
+                    "success" => false,
+                    "message" => $this->getLang("commons_error_permissions", "commons")
+                ];
             }
 
             $strTransitionId = $this->getParam("transition_id");
@@ -399,6 +406,14 @@ trait FlowControllerTrait
             $this->objMessageHandler->sendAlertToUser($objAlert, $this->objSession->getUser());
         }
 
-        return json_encode(["success" => true]);
+        $status = $this->objFlowManager->getCurrentStepForModel($objObject);
+        $icon = $this->objToolkit->listButton(AdminskinHelper::getAdminImage($status->getStrIcon(), $status->getStrDisplayName()));
+
+        return [
+            "success" => true,
+            "actions" => [
+                (new MessagingAlertActionUpdateStatus($objObject->getSystemid(), $icon))->getAsActionArray()
+            ]
+        ];
     }
 }
