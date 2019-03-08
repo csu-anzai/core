@@ -47,6 +47,7 @@ use Kajona\System\View\Components\Formentry\Radiogroup\Radiogroup;
 use Kajona\System\View\Components\Formentry\Checkboxarray\Checkboxarray;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Formentry\Submit\Submit;
+use Kajona\System\View\Components\Headline\Headline;
 use Kajona\System\View\Components\Listbody\Listbody;
 use Kajona\System\View\Components\Popover\Popover;
 use Kajona\System\View\Components\Tabbedcontent\Tabbedcontent;
@@ -1218,14 +1219,12 @@ HTML;
      *
      * @param string $strLevel
      * @return string
+     * @deprecated
      */
     public function formHeadline($strText, $strClass = "", $strLevel = "h2")
     {
-        $arrTemplate = array();
-        $arrTemplate["text"] = $strText;
-        $arrTemplate["class"] = $strClass;
-        $arrTemplate["level"] = $strLevel;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "headline_form", true);
+        $cmp = new Headline($strText, $strClass, $strLevel);
+        return $cmp->renderComponent();
     }
 
     /**

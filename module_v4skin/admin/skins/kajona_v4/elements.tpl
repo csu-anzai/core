@@ -1092,10 +1092,6 @@ Used to print plaintext in a form
     </div>
 </text_row_form>
 
-Used to print headline in a form
-<headline_form>
-    <%%level%% class="%%class%%">%%text%%</%%level%%>
-</headline_form>
 
 ---------------------------------------------------------------------------------------------------------
 -- RIGHTS MANAGEMENT ------------------------------------------------------------------------------------
