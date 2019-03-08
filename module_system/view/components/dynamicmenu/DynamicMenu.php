@@ -19,10 +19,30 @@ use Kajona\System\View\Components\AbstractComponent;
  */
 class DynamicMenu extends AbstractComponent
 {
-
+    /**
+     * @var string
+     */
     private $button;
+
+    /**
+     * @var string
+     */
     private $endpoint;
+
+    /**
+     * @var int
+     */
     private $width;
+
+    /**
+     * @var string
+     */
+    private $class;
+
+    /**
+     * @var string
+     */
+    private $systemId;
 
     /**
      * DynamicMenu constructor.
@@ -32,6 +52,7 @@ class DynamicMenu extends AbstractComponent
     public function __construct(string $button, string $endpoint)
     {
         parent::__construct();
+
         $this->button = $button;
         $this->endpoint = $endpoint;
     }
@@ -45,6 +66,22 @@ class DynamicMenu extends AbstractComponent
     }
 
     /**
+     * @param string $class
+     */
+    public function setClass(string $class)
+    {
+        $this->class = $class;
+    }
+
+    /**
+     * @param string $systemId
+     */
+    public function setSystemId(string $systemId)
+    {
+        $this->systemId = $systemId;
+    }
+
+    /**
      * @inheritdoc
      */
     public function renderComponent(): string
@@ -53,7 +90,9 @@ class DynamicMenu extends AbstractComponent
             "button" => $this->button,
             "endpoint" => $this->endpoint,
             "menuid" => generateSystemid(),
-            "width" => $this->width
+            "width" => $this->width,
+            "class" => $this->class,
+            "systemId" => $this->systemId,
         ];
 
         return $this->renderTemplate($data);
