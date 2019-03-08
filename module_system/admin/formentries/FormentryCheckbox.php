@@ -44,12 +44,12 @@ class FormentryCheckbox extends FormentryBase implements FormentryPrintableInter
         $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
         $strReturn = "";
         if ($this->getStrHint() != null) {
-            $strReturn .= $objToolkit->formTextRow($this->getStrHint());
+            $strReturn .= $objToolkit->formTextHint($this->getStrHint(), $this->getBitHideLongHints());
         }
 
         $inputCheckbox = new Inputcheckbox($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue() == true);
         $inputCheckbox->setReadOnly($this->getBitReadonly());
-        $inputCheckbox->setData($this->dataAttributes);
+        $inputCheckbox->setDataArray($this->dataAttributes);
         $strReturn .= $inputCheckbox->renderComponent();
 
         $strReturn .= $objToolkit->formInputHidden($this->getPresCheckKey(), "1");
@@ -146,10 +146,12 @@ class FormentryCheckbox extends FormentryBase implements FormentryPrintableInter
 
     /**
      * @param array $dataAttributes
+     * @return FormentryCheckbox
      */
-    public function setDataAttributes(array $dataAttributes): void
+    public function setDataAttributes(array $dataAttributes): FormentryCheckbox
     {
         $this->dataAttributes = $dataAttributes;
+        return $this;
     }
 
 
