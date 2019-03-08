@@ -2,14 +2,21 @@ const path = require('path')
 const webpack = require('webpack')
 const Dotenv = require('dotenv-webpack')
 const glob = require('glob')
-
+const tsPaths = glob.sync('../../{core,core_agp}/module_*/scripts', {
+  realpath: true
+})
 module.exports = {
   entry: {
     // DbBrowser: './components/DbBrowser/DbBrowser.ts'
+    agp: glob.sync('../../{core,core_agp}/module_*/scripts/*/*.ts')
+    agp: glob.sync('../../core/module_*/scripts/*/*.ts')
+
+    // agp: glob.sync('../../core/module_*/scripts/*.ts')
+    // agp: glob.sync('../../core/_a/*.ts')
   },
   output: {
-    // filename: './components/[name]/[name]-bundle.js',
-    // path: path.resolve(__dirname, './')
+    // filename: './components/[name]/[name].min.js',
+    filename: './[name].min.js',
     path: path.resolve(__dirname, './')
   },
 
@@ -17,6 +24,7 @@ module.exports = {
     rules: [
       {
         test: /\.vue$/,
+
         loader: 'vue-loader',
         options: {
           loaders: {
@@ -27,6 +35,7 @@ module.exports = {
       },
       {
         test: /\.tsx?$/,
+        // include: tsPaths,
         loader: 'ts-loader',
         exclude: /node_modules/,
         options: {
