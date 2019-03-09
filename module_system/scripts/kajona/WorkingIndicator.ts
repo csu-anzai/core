@@ -4,28 +4,26 @@
 import * as $ from "jquery";
 
 class WorkingIndicator {
+  private static intWorkingCount = 0;
 
-    private static intWorkingCount = 0;
-
-    public static start() {
-        if(this.intWorkingCount == 0) {
-            $('#status-indicator').addClass("active");
-        }
-        this.intWorkingCount++;
+  public static start() {
+    if (this.intWorkingCount == 0) {
+      $("#status-indicator").addClass("active");
     }
+    this.intWorkingCount++;
+  }
 
-    public static stop() {
-        this.intWorkingCount--;
+  public static stop() {
+    this.intWorkingCount--;
 
-        if(this.intWorkingCount == 0) {
-            $('#status-indicator').removeClass("active");
-        }
+    if (this.intWorkingCount == 0) {
+      $("#status-indicator").removeClass("active");
     }
+  }
 
-    public static getInstance() {
-        return WorkingIndicator;
-    }
-
+  public static getInstance() {
+    return WorkingIndicator;
+  }
 }
 
-export = WorkingIndicator
+export default WorkingIndicator;

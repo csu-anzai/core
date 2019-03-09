@@ -52,7 +52,7 @@ class DbbrowserController extends AdminEvensimpler
     protected function actionList()
     {
         $component = "<div id='dbBrowser'></div>";
-        $component .= "<script>" . file_get_contents(__DIR__ . '/../../../frontend-components/components/DbBrowser/DbBrowser-bundle.js') . "</script>";
+        $component .= "<script>" . file_get_contents(__DIR__ . '/../../../frontend-components/module_vueComponents/components/DbBrowser/DbBrowser-bundle.js') . "</script>";
         return $component;
     }
 

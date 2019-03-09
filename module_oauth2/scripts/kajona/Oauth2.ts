@@ -2,12 +2,12 @@
 ///<amd-module name="oauth2"/>
 
 class Oauth2 {
-    /**
-     * @param {string} url
-     */
-    public static redirect(url: string) {
-        location.href = url;
-    }
+  /**
+   * @param {string} url
+   */
+  public static redirect(url: string) {
+    location.href = url;
+  }
 }
 
-export = Oauth2;
+export default Oauth2;

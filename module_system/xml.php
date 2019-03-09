@@ -1,11 +1,11 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2004-2006 by MulchProductions, www.mulchprod.de                                                 *
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-*-------------------------------------------------------------------------------------------------------*
-*	$Id$                                                      *
-********************************************************************************************************/
+ *   (c) 2004-2006 by MulchProductions, www.mulchprod.de                                                 *
+ *   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
+ *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
+ *-------------------------------------------------------------------------------------------------------*
+ *    $Id$                                                      *
+ ********************************************************************************************************/
 namespace Kajona\System;
 
 //Determine the area to load
@@ -21,7 +21,6 @@ use Kajona\System\System\ServiceProvider;
 use Kajona\System\System\SystemEventidentifier;
 
 define("_autotesting_", false);
-
 
 /**
  * Class handling all requests to be served with xml
@@ -62,8 +61,8 @@ class Xml
         $origin = Config::getInstance()->getConfig("header_cors_origin");
         if (!empty($origin)) {
             $this->objResponse->addHeader("Access-Control-Allow-Origin: " . $origin);
-            $this->objResponse->addHeader("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
-            $this->objResponse->addHeader("Access-Control-Allow-Headers: Authorization");
+            $this->objResponse->addHeader("Access-Control-Allow-Methods: GET, POST, PUT, DELETE , OPTIONS");
+            $this->objResponse->addHeader("Access-Control-Allow-Headers: Authorization , Content-Type");
         }
 
         if ($_SERVER["REQUEST_METHOD"] == "OPTIONS") {
@@ -93,7 +92,7 @@ class Xml
         }
 
         if ($this->objResponse->getStrResponseType() == HttpResponsetypes::STR_TYPE_XML && self::$bitRenderXmlHeader) {
-            $this->objResponse->setStrContent("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n".$this->objResponse->getStrContent());
+            $this->objResponse->setStrContent("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" . $this->objResponse->getStrContent());
         }
     }
 
@@ -108,7 +107,6 @@ class Xml
     {
         self::$bitRenderXmlHeader = !$bitSuppressXmlHeader;
     }
-
 
 }
 

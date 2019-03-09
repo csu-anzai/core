@@ -14,29 +14,33 @@ import Ajax = require("./Ajax");
  * @param $objSourceElement
  */
 class SaveIndicator {
+  private objDiv: JQuery;
+  private objSourceElement: JQuery<any>;
 
-    private objDiv : JQuery;
-    private objSourceElement : JQuery<any>;
+  constructor(objSourceElement: JQuery<any>) {
+    this.objSourceElement = objSourceElement;
+  }
 
-    constructor(objSourceElement : JQuery<any>) {
-        this.objSourceElement = objSourceElement;
-    }
+  public showProgress() {
+    this.objDiv = $("<div>").addClass("peProgressIndicator peSaving");
+    $("body").append(this.objDiv);
+    this.objDiv
+      .css(
+        "left",
+        this.objSourceElement.offset().left + this.objSourceElement.width() + 10
+      )
+      .css("top", this.objSourceElement.offset().top);
+  }
 
-    public showProgress() {
-        this.objDiv = $('<div>').addClass('peProgressIndicator peSaving');
-        $('body').append(this.objDiv);
-        this.objDiv.css('left', this.objSourceElement.offset().left+this.objSourceElement.width()+10).css('top', this.objSourceElement.offset().top);
-    };
+  public addClass(strClass: string) {
+    this.objDiv.addClass(strClass);
+  }
 
-    public addClass(strClass: string) {
-        this.objDiv.addClass(strClass);
-    };
-
-    public hide() {
-        this.objSourceElement.removeClass('peFailed');
-        this.objDiv.remove();
-        this.objDiv = null;
-    };
+  public hide() {
+    this.objSourceElement.removeClass("peFailed");
+    this.objDiv.remove();
+    this.objDiv = null;
+  }
 }
 
 /**
@@ -48,47 +52,61 @@ class SaveIndicator {
  * $('#id').on('kajona.instantsave.updated', function(){console.log('update registered')});
  */
 class InstantSave {
+  private static saveChangeHandler() {
+    var $objChanged = $(this);
+    var keySplitted = $objChanged.data("kajona-instantsave").split("#");
 
-    private static saveChangeHandler() {
+    $objChanged.addClass("peSaving");
+    var objStatusIndicator = new SaveIndicator($objChanged);
 
-        var $objChanged = $(this);
-        var keySplitted = $objChanged.data('kajona-instantsave').split('#');
+    objStatusIndicator.showProgress();
+    Ajax.genericAjaxCall(
+      "system",
+      "updateObjectProperty",
+      keySplitted[0] +
+        "&property=" +
+        keySplitted[1] +
+        "&value=" +
+        $objChanged.val(),
+      null,
+      function() {
+        objStatusIndicator.addClass("peSaved");
+        window.setTimeout(function() {
+          objStatusIndicator.hide();
+        }, 5000);
+        $objChanged.trigger("kajona.instantsave.updated", [
+          "success",
+          keySplitted[0]
+        ]);
+      },
+      function() {
+        objStatusIndicator.addClass("peFailed");
+        window.setTimeout(function() {
+          objStatusIndicator.hide();
+        }, 5000);
+        $objChanged.trigger("kajona.instantsave.updated", [
+          "error",
+          keySplitted[0]
+        ]);
+      }
+    );
+  }
 
-        $objChanged.addClass('peSaving');
-        var objStatusIndicator = new SaveIndicator($objChanged);
+  private static scanElements() {
+    $('[data-kajona-instantsave][data-kajona-instantsave != ""]').each(function(
+      key,
+      value
+    ) {
+      if (!$(this)[0].hasAttribute("data-kajona-instantsave-init")) {
+        $(this).on("change", InstantSave.saveChangeHandler);
+        $(this).attr("data-kajona-instantsave-init", "true");
+      }
+    });
+  }
 
-        objStatusIndicator.showProgress();
-        Ajax.genericAjaxCall("system", "updateObjectProperty", keySplitted[0]+"&property="+keySplitted[1]+"&value="+$objChanged.val(), null,
-            function() {
-                objStatusIndicator.addClass('peSaved');
-                window.setTimeout(function () {
-                    objStatusIndicator.hide();
-                }, 5000);
-                $objChanged.trigger('kajona.instantsave.updated', ['success', keySplitted[0]]);
-            },
-            function() {
-                objStatusIndicator.addClass('peFailed');
-                window.setTimeout(function () {
-                    objStatusIndicator.hide();
-                }, 5000);
-                $objChanged.trigger('kajona.instantsave.updated', ['error', keySplitted[0]]);
-            }
-        );
-
-    };
-
-    private static scanElements() {
-        $('[data-kajona-instantsave][data-kajona-instantsave != ""]').each(function(key, value) {
-            if (!$(this)[0].hasAttribute('data-kajona-instantsave-init')) {
-                $(this).on('change', InstantSave.saveChangeHandler);
-                $(this).attr('data-kajona-instantsave-init', 'true');
-            }
-        });
-    };
-
-    public static init() {
-        this.scanElements();
-    }
+  public static init() {
+    this.scanElements();
+  }
 }
 
-export = InstantSave;
+export default InstantSave;
