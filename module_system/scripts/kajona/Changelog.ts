@@ -1,5 +1,6 @@
 import * as $ from "jquery";
-import * as d3 from "../../../_buildfilesNew/node_modules/d3";
+// import * as d3 from "../../../_buildfilesNew/node_modules/d3";
+import * as d3 from "../d3/d3.min";
 import Ajax from "./Ajax";
 import * as moment from "../../../_buildfilesNew/node_modules/moment";
 import * as calendarHeatMap from "../d3/calendar-heatmap-new";
