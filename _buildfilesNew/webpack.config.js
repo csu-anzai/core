@@ -10,7 +10,7 @@ module.exports = {
     // DbBrowser: './components/DbBrowser/DbBrowser.ts'
     // agp: glob.sync('../../{core,core_agp}/module_*/scripts/*/*.ts')
     // agp: glob.sync('../../core/module_*/scripts/*/*.ts')
-    agp: glob.sync('../../core/module_chartjs/scripts/*/*.ts')
+    agp: glob.sync('../../core/module_dashboard/scripts/*/*.ts')
 
     // agp: glob.sync('../../core/module_*/scripts/*.ts')
     // agp: glob.sync('../../core/_a/*.ts')
