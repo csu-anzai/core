@@ -1,11 +1,9 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="router"/>
-
-import * as $ from "jquery";
-import Quickhelp = require("./Quickhelp");
-import Tooltip = require("./Tooltip");
-import Ajax = require("./Ajax");
-import Util = require("./Util");
+import $ from "../../../_buildfilesNew/node_modules/jquery";
+import Quickhelp from "./Quickhelp";
+import Tooltip from "./Tooltip";
+import Ajax from "./Ajax";
+import Util from "./Util";
+import Forms from "./Forms";
 
 declare global {
   interface Window {
@@ -18,10 +16,10 @@ interface Callbacks {
 }
 
 interface MarkedElements {
-  forms: Forms;
+  forms: FormsInterface;
 }
 
-interface Forms {
+interface FormsInterface {
   monitoredEl: JQuery<HTMLElement>;
   submittedEl: HTMLFormElement;
 }
@@ -44,9 +42,10 @@ class Router {
    */
   private static arrFormCallbacks: Callbacks = {};
 
+  Interface;
   /**
    * Global markers to reference on leave / save monitored elements
-   * @type {{forms: {monitoredEl: null, submittedEl: null}}}
+   * @type {{Interface: {monitoredEl: null, submittedEl: null}}}
    */
   public static markedElements: MarkedElements = {
     forms: {
@@ -97,10 +96,8 @@ class Router {
         );
       } else {
         if (Router.markedElements.forms.monitoredEl != null) {
-          if (
-            require("forms").hasChanged(Router.markedElements.forms.monitoredEl)
-          ) {
-            var doLeave = confirm(require("forms").leaveUnsaved);
+          if (Forms.hasChanged(Router.markedElements.forms.monitoredEl)) {
+            var doLeave = confirm(Forms.leaveUnsaved);
             if (!doLeave) {
               return;
             }

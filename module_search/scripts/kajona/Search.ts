@@ -1,11 +1,8 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="search"/>
-
-import * as $ from "jquery";
-import Router = require("../../../module_system/scripts/kajona/Router");
-import Ajax = require("../../../module_system/scripts/kajona/Ajax");
-import Tooltip = require("../../../module_system/scripts/kajona/Tooltip");
-import StatusDisplay = require("../../../module_system/scripts/kajona/StatusDisplay");
+import $ from "../../../_buildfilesNew/node_modules/jquery";
+import Router from "../../../module_system/scripts/kajona/Router";
+import Ajax from "../../../module_system/scripts/kajona/Ajax";
+import Tooltip from "../../../module_system/scripts/kajona/Tooltip";
+import StatusDisplay from "../../../module_system/scripts/kajona/StatusDisplay";
 
 class Search {
   public static triggerFullSearch() {

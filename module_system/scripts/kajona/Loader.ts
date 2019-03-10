@@ -1,8 +1,5 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="loader"/>
-
 import * as $ from "jquery";
-import Util = require("./Util");
+import Util from "./Util";
 
 interface Callback {
   requiredModules: Array<string>;

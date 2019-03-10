@@ -1,8 +1,5 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="moduleNavigation"/>
-
-import * as $ from "jquery";
-import Ajax = require("./Ajax");
+import $ from "../../../_buildfilesNew/node_modules/jquery";
+import Ajax from "./Ajax";
 
 class ModuleNavigation {
   public static combinedActive() {

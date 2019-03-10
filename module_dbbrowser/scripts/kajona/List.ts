@@ -1,8 +1,5 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="dbbrowser-list"/>
-
 import * as Vue from "vue";
-import Ajax = require("../../../module_system/scripts/kajona/Ajax");
+import Ajax from "../../../module_system/scripts/kajona/Ajax";
 
 Vue.component("dbbrowser-list", {
   data: function() {

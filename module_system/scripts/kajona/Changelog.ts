@@ -1,12 +1,9 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="changelog"/>
-
 import * as $ from "jquery";
-import * as moment from "moment";
-import * as calHeatmap from "calendarheatmap";
-import "d3";
-import Ajax = require("./Ajax");
-
+import * as d3 from "../../../_buildfilesNew/node_modules/d3";
+import Ajax from "./Ajax";
+import * as moment from "../../../_buildfilesNew/node_modules/moment";
+import * as calendarHeatMap from "../d3/calendar-heatmap-new";
+// import "../d3/calendar-heatmap";
 declare global {
   // the d3 type definition does not contains the time API
   interface d3 {
@@ -213,7 +210,7 @@ class Changelog {
             };
           });
 
-        var heatmap = calHeatmap
+        var heatmap = calendarHeatMap
           .data(chartData)
           .selector("#changelogTimeline")
           .months(Changelog.lang.months)

@@ -1,8 +1,5 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="downloadIndicator"/>
-
-import dh = require("./../../../module_v4skin/scripts/kajona/DialogHelper");
-import wi = require("./WorkingIndicator");
+import DialogHelper from "../../../module_v4skin/scripts/kajona/DialogHelper";
+import WorkingIndicator from "./WorkingIndicator";
 
 /**
  * The downloadIndicator may be used when starting a complex backend operation the browser needs to wait for.
@@ -42,8 +39,8 @@ class DownloadIndicator {
    * Starts the "in progress" animation
    */
   public setWorking(): void {
-    dh.showLoadingModal();
-    wi.getInstance().start();
+    DialogHelper.showLoadingModal();
+    WorkingIndicator.getInstance().start();
 
     let outer = this;
     this.intervalHandle = window.setInterval(function() {
@@ -72,8 +69,8 @@ class DownloadIndicator {
   private stopWorking(): void {
     window.clearInterval(this.intervalHandle);
     this.expireCookie();
-    dh.hideLoadingModal();
-    wi.getInstance().stop();
+    DialogHelper.hideLoadingModal();
+    WorkingIndicator.getInstance().stop();
   }
 
   /**

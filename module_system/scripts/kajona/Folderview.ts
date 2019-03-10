@@ -1,7 +1,4 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="folderview"/>
-
-import * as $ from "jquery";
+import $ from "../../../_buildfilesNew/node_modules/jquery";
 // import Dialog = require("../../../module_v4skin/scripts/kajona/Dialog");
 // import Util = require("./Util");
 // import Lists = require("./Lists");

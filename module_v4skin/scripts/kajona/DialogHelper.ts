@@ -1,8 +1,5 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="dialogHelper"/>
-
-import Dialog = require("./Dialog");
-import Folderview = require("../../../module_system/scripts/kajona/Folderview");
+import Dialog from "./Dialog";
+import Folderview from "../../../module_system/scripts/kajona/Folderview";
 
 class DialogHelper {
   private static loadingModal: Dialog = null;

@@ -1,8 +1,5 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="lang"/>
-
-import * as $ from "jquery";
-import CacheManager = require("./CacheManager");
+import $ from "../../../_buildfilesNew/node_modules/jquery";
+import CacheManager from "./CacheManager";
 
 interface QueueEntry {
   text: string;

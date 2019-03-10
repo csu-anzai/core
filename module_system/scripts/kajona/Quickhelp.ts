@@ -1,8 +1,5 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="quickhelp"/>
-
-import * as $ from "jquery";
-import "bootstrap";
+import $ from "../../../_buildfilesNew/node_modules/jquery";
+import "../../../module_v4skin/scripts/bootstrap/bootstrap.min";
 
 /**
  * Module to handle the general quickhelp entry

@@ -9,7 +9,8 @@ module.exports = {
   entry: {
     // DbBrowser: './components/DbBrowser/DbBrowser.ts'
     // agp: glob.sync('../../{core,core_agp}/module_*/scripts/*/*.ts')
-    agp: glob.sync('../../core/module_*/scripts/*/*.ts')
+    // agp: glob.sync('../../core/module_*/scripts/*/*.ts')
+    agp: glob.sync('../../core/module_system/scripts/*/*.ts')
 
     // agp: glob.sync('../../core/module_*/scripts/*.ts')
     // agp: glob.sync('../../core/_a/*.ts')
@@ -49,6 +50,7 @@ module.exports = {
     ]
   },
   resolve: {
+    modules: [path.resolve(__dirname, './node_modules')],
     extensions: ['.ts', '.js', '.vue', '.json'],
     alias: {
       vue$: 'vue/dist/vue.esm.js'

@@ -1,8 +1,5 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="tagEditor"/>
-
-import * as $ from "jquery";
-import "jquerytageditor";
+import $ from "../../../_buildfilesNew/node_modules/jquery";
+import "../../../module_system/scripts/jquerytag/jquery.tag-editor";
 // import V4skin = require("./V4skin");
 import V4skin from "./V4skin";
 // import WorkingIndicator = require("../../../module_system/scripts/kajona/WorkingIndicator");
@@ -208,4 +205,4 @@ class TagEditor {
   }
 }
 
-export = TagEditor;
+export default TagEditor;

@@ -1,9 +1,7 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="lists"/>
-
 import * as $ from "jquery";
-import Lang = require("./Lang");
-import Util = require("./Util");
+import Lang from "./Lang";
+import Util from "./Util";
+import Router from "./Router";
 
 class Lists {
   private static arrSystemids: Array<string> = [];
@@ -157,14 +155,14 @@ class Lists {
       $(".progress > .progress-bar").html("100%");
 
       if (!this.bitRenderInfo) {
-        require("router").reload();
+        Router.reload();
         jsDialog_1.hide();
       } else {
         $("#jsDialog_1_cancelButton").css("display", "none");
         $("#jsDialog_1_confirmButton")
           .remove("click")
           .on("click", function() {
-            require("router").reload();
+            Router.reload();
             jsDialog_1.hide();
           })
           .html(

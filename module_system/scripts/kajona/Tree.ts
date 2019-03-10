@@ -1,11 +1,8 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="tree"/>
-
-import * as $ from "jquery";
-import "jstree";
-import Ajax = require("./Ajax");
-import Lang = require("./Lang");
-import CacheManager = require("./CacheManager");
+import $ from "../../../_buildfilesNew/node_modules/jquery";
+import "../jstree3/dist/jstree.min";
+import Ajax from "./Ajax";
+import Lang from "./Lang";
+import CacheManager from "./CacheManager";
 
 class Helper {
   /**

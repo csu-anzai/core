@@ -1,12 +1,9 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="ajax"/>
-
-import * as $ from "jquery";
-import * as JQuery from "jquery";
-import WorkingIndicator = require("./WorkingIndicator");
-import Util = require("./Util");
-import Tooltip = require("./Tooltip");
-import StatusDisplay = require("./StatusDisplay");
+import $ from "../../../_buildfilesNew/node_modules/jquery";
+import * as JQuery from "../../../_buildfilesNew/node_modules/jquery";
+import WorkingIndicator from "./WorkingIndicator";
+import Util from "./Util";
+import Tooltip from "./Tooltip";
+import StatusDisplay from "./StatusDisplay";
 
 interface SystemStatusMessages {
   strInActiveIcon: string;

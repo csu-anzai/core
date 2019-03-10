@@ -1,10 +1,9 @@
-// import Router = require("./Router");
 import Router from "./Router";
-import $ from "../../../_buildfilesNew/node_modules/jquery";
+import * as $ from "jquery";
 import "jquery-ui";
-import "jquery-touchPunch";
-import "bootstrap";
-import * as toastr from "../../../_buildfilesNew/node_modules/toastr";
+import "jquery-ui-touch-punch/jquery.ui.touch-punch.min";
+import "../../../module_v4skin/scripts/bootstrap/bootstrap.min";
+import * as toastr from "toastr";
 // import V4skin = require("../../../module_v4skin/scripts/kajona/V4skin");
 import V4skin from "../../../module_v4skin/scripts/kajona/V4skin";
 // import Loader = require("./Loader");

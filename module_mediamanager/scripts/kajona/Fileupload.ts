@@ -1,20 +1,19 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="fileupload"/>
-
-import * as $ from "jquery";
-import "blueimp-tmpl";
+import $ from "../../../_buildfilesNew/node_modules/jquery";
+require("../../../_buildfilesNew/node_modules/blueimp-file-upload/js/jquery.fileupload");
+// import "blueimp-tmpl";
+import "../jquery-fileupload/js/tmpl.min";
 // import "../jquery-fileupload/js/"
 // import "jquery-ui/ui/widget";
-import "../../../_buildfilesNew/node_modules/jquery-ui/ui/widget";
-import "../jquery-fileupload/js/jquery.fileupload";
-// import "jquery.iframe-transport";
-import "../jquery-fileupload/js/jquery.iframe-transport";
-// import "../../../_buildfilesNew/node_modules/jquery/external/"
-// import "jquery.fileupload";
-// import "jquery.fileupload-process";
-import "../jquery-fileupload/js/jquery.fileupload-process";
-// import "jquery.fileupload-ui";
-import "../jquery-fileupload/js/jquery.fileupload-ui";
+// import "../../../_buildfilesNew/node_modules/jquery-ui/ui/widget";
+// import "../jquery-fileupload/js/jquery.fileupload";
+// // import "jquery.iframe-transport";
+// import "../jquery-fileupload/js/jquery.iframe-transport";
+// // import "../../../_buildfilesNew/node_modules/jquery/external/"
+// // import "jquery.fileupload";
+// // import "jquery.fileupload-process";
+// import "../jquery-fileupload/js/jquery.fileupload-process";
+// // import "jquery.fileupload-ui";
+// import "../jquery-fileupload/js/jquery.fileupload-ui";
 // import "../../../_buildfilesNew/node_modules/@types/jquery.fileupload";
 // import Lang = require("../../../module_system/scripts/kajona/Lang");
 import Lang from "../../../module_system/scripts/kajona/Lang";

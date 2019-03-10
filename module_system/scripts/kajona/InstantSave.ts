@@ -1,8 +1,5 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="instantSave"/>
-
-import * as $ from "jquery";
-import Ajax = require("./Ajax");
+import $ from "../../../_buildfilesNew/node_modules/jquery";
+import Ajax from "./Ajax";
 
 /**
  * The saveIndicator is used to show a working-indicator associated with a ui element.

@@ -1,8 +1,5 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="messaging"/>
-
-import * as $ from "jquery";
-import * as toastr from "toastr";
+import $ from "../../../_buildfilesNew/node_modules/jquery";
+import * as toastr from "../../../_buildfilesNew/node_modules/toastr";
 // import Ajax = require("./Ajax");
 
 import Ajax from "./Ajax";

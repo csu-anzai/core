@@ -1,9 +1,6 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="v4skin"/>
-
-import * as $ from "jquery";
-import "bootstrap";
-import "jquery-ui";
+import $ from "../../../_buildfilesNew/node_modules/jquery";
+import "../bootstrap/bootstrap.min.js";
+import "../../../_buildfilesNew/node_modules/jquery-ui";
 // import Messaging = require("../../../module_system/scripts/kajona/Messaging");
 import Messaging from "./../../../module_system/scripts/kajona/Messaging";
 // import Ajax = require("../../../module_system/scripts/kajona/Ajax");

@@ -1,8 +1,5 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="util"/>
-
-import * as $ from "jquery";
-import * as jQuery from "jquery";
+import $ from "../../../_buildfilesNew/node_modules/jquery";
+import * as jQuery from "../../../_buildfilesNew/node_modules/jquery";
 
 declare global {
   interface Window {

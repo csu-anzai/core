@@ -1,8 +1,5 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="contentToolbar"/>
-
-import * as $ from "jquery";
-import Util = require("./Util");
+import $ from "../../../_buildfilesNew/node_modules/jquery";
+import Util from "./Util";
 
 /**
  * The object representing a single toolbar entry

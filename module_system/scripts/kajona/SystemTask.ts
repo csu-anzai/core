@@ -1,10 +1,7 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="systemTask"/>
-
-import * as $ from "jquery";
-import Ajax = require("./Ajax");
-import StatusDisplay = require("./StatusDisplay");
-import Dialog = require("../../../module_v4skin/scripts/kajona/Dialog");
+import $ from "../../../_buildfilesNew/node_modules/jquery";
+import Ajax from "./Ajax";
+import StatusDisplay from "./StatusDisplay";
+import Dialog from "../../../module_v4skin/scripts/kajona/Dialog";
 
 declare var KAJONA_SYSTEMTASK_TITLE: string;
 declare var KAJONA_SYSTEMTASK_TITLE_DONE: string;

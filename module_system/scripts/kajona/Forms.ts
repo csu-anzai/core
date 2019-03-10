@@ -1,7 +1,4 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="forms"/>
-
-import * as $ from "jquery";
+import $ from "../../../_buildfilesNew/node_modules/jquery";
 // import Util = require("./Util");
 // import Router = require("./Router");
 import Util from "./Util";
