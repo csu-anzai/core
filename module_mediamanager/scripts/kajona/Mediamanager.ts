@@ -1,4 +1,4 @@
-import $ from "../../../_buildfilesNew/node_modules/jquery";
+import * as $ from "jquery";
 import Ajax from "../../../module_system/scripts/kajona/Ajax";
 import StatusDisplay from "../../../module_system/scripts/kajona/StatusDisplay";
 

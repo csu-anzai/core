@@ -1,5 +1,6 @@
-import $ from "../../../_buildfilesNew/node_modules/jquery";
-require("../../../_buildfilesNew/node_modules/blueimp-file-upload/js/jquery.fileupload");
+import * as $ from "jquery";
+// require("../../../_buildfilesNew/node_modules/blueimp-file-upload/js/jquery.fileupload");
+import "blueimp-file-upload/js/jquery.fileupload";
 // import "blueimp-tmpl";
 import "../jquery-fileupload/js/tmpl.min";
 // import "../jquery-fileupload/js/"
