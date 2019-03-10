@@ -1,6 +1,3 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="oauth2"/>
-
 class Oauth2 {
   /**
    * @param {string} url

@@ -1,4 +1,4 @@
-import $ from "../../../_buildfilesNew/node_modules/jquery";
+import * as $ from "jquery";
 import "../../../module_system/scripts/jquerytag/jquery.tag-editor";
 // import V4skin = require("./V4skin");
 import V4skin from "./V4skin";

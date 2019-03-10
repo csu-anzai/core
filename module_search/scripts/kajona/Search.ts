@@ -1,4 +1,4 @@
-import $ from "../../../_buildfilesNew/node_modules/jquery";
+import * as $ from "jquery";
 import Router from "../../../module_system/scripts/kajona/Router";
 import Ajax from "../../../module_system/scripts/kajona/Ajax";
 import Tooltip from "../../../module_system/scripts/kajona/Tooltip";
