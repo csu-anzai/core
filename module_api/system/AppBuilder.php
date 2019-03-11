@@ -14,8 +14,9 @@ use PSX\Http\Exception\UnauthorizedException;
 use PSX\Http\Request;
 use PSX\Uri\Uri;
 use Slim\App;
-use Slim\Http\Request as HttpRequest;
-use Slim\Http\Response as HttpResponse;
+use Slim\Container as SlimContainer;
+use Slim\Http\Request as SlimRequest;
+use Slim\Http\Response as SlimResponse;
 
 /**
  * AppBuilder
@@ -59,7 +60,7 @@ class AppBuilder
         $routes = $this->endpointScanner->getEndpoints();
 
         foreach ($routes as $route) {
-            $app->map($route["httpMethod"], $route["path"], function(HttpRequest $request, HttpResponse $response, array $args) use ($route, $container){
+            $app->map($route["httpMethod"], $route["path"], function(SlimRequest $request, SlimResponse $response, array $args) use ($route, $container){
                 /** @var ObjectBuilder $objectBuilder */
                 $objectBuilder = $container->offsetGet(\Kajona\System\System\ServiceProvider::STR_OBJECT_BUILDER);
                 $instance = $objectBuilder->factory($route["class"]);
@@ -114,9 +115,9 @@ class AppBuilder
      */
     private function newApp()
     {
-        $container = new \Slim\Container();
+        $container = new SlimContainer();
         $container['notFoundHandler'] = function ($c) {
-            return function (HttpRequest $request, HttpResponse $response) use ($c) {
+            return function (SlimRequest $request, SlimResponse $response) use ($c) {
                 $data = [
                     "error" => "Endpoint not found"
                 ];
@@ -128,7 +129,7 @@ class AppBuilder
         };
 
         $container['notAllowedHandler'] = function ($c) {
-            return function ($request, $response, $methods) use ($c) {
+            return function (SlimRequest $request, SlimResponse $response, $methods) use ($c) {
                 $data = [
                     "error" => "Method not allowed"
                 ];
