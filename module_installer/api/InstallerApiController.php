@@ -1,8 +1,8 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2015-2016 by Kajona, www.kajona.de                                                         *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-********************************************************************************************************/
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
 
 namespace Kajona\Installer\Api;
 
@@ -20,6 +20,7 @@ class InstallerApiController implements ApiControllerInterface
      * @api
      * @method GET
      * @path /installer/systeminfo
+     * @authorization filetoken
      */
     public function getSystemInfo()
     {
