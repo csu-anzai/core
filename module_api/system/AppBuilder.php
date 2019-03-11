@@ -6,11 +6,7 @@
 
 namespace Kajona\Api\System;
 
-use Kajona\System\System\CacheManager;
-use Kajona\System\System\Classloader;
 use Kajona\System\System\ObjectBuilder;
-use Kajona\System\System\Reflection;
-use Kajona\System\System\Resourceloader;
 use Pimple\Container;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -28,9 +24,9 @@ use Slim\App;
 class AppBuilder
 {
     /**
-     * @var CacheManager
+     * @var EndpointScanner
      */
-    private $cacheManager;
+    private $endpointScanner;
 
     /**
      * @var Container
@@ -38,25 +34,27 @@ class AppBuilder
     private $container;
 
     /**
-     * @param CacheManager $cacheManager
+     * @param EndpointScanner $endpointScanner
      * @param Container $container
      */
-    public function __construct(CacheManager $cacheManager, Container $container)
+    public function __construct(EndpointScanner $endpointScanner, Container $container)
     {
-        $this->cacheManager = $cacheManager;
+        $this->endpointScanner = $endpointScanner;
         $this->container = $container;
     }
 
     /**
      * Attaches all available routes to the slim app
      *
-     * @param App $app
+     * @return App
      * @throws \Kajona\System\System\Exception
      */
-    public function build(App $app)
+    public function build()
     {
+        $app = $this->newApp();
         $container = $this->container;
-        $routes = $this->fetchRoutes();
+        $routes = $this->endpointScanner->getEndpoints();
+
         foreach ($routes as $route) {
             $app->map($route["httpMethod"], $route["path"], function(ServerRequestInterface $request, ResponseInterface $response, array $args) use ($route, $container){
                 /** @var ObjectBuilder $objectBuilder */
@@ -80,65 +78,28 @@ class AppBuilder
                 return $response;
             });
         }
+
+        return $app;
     }
 
     /**
-     * Parses all API controller classes for specific annotations and builds an array containing all available routes
-     *
-     * @return array
-     * @throws \Kajona\System\System\Exception
+     * @return App
      */
-    private function fetchRoutes()
+    private function newApp()
     {
-        $routes = $this->cacheManager->getValue("api_routes");
-        if (!empty($routes)) {
-            return $routes;
-        }
-
-        $routes = [];
-        $classes = $this->getAllApiController();
-        foreach ($classes as $class) {
-            $reflection = new Reflection($class);
-            $methods = $reflection->getMethodsWithAnnotation("@api");
-
-            foreach ($methods as $methodName => $values) {
-                $method = array_map("trim", explode(",", $reflection->getMethodAnnotationValue($methodName, "@method")));
-                $path = $reflection->getMethodAnnotationValue($methodName, "@path");
-
-                $routes[] = [
-                    "httpMethod" => $method,
-                    "path" => $path,
-                    "class" => $class,
-                    "methodName" => $methodName,
+        $container = new \Slim\Container();
+        $container['notFoundHandler'] = function ($c) {
+            return function ($request, $response) use ($c) {
+                $data = [
+                    "error" => "Endpoint not found"
                 ];
-            }
-        }
 
-        $this->cacheManager->addValue("api_routes", $routes);
-
-        return $routes;
-    }
-
-    /**
-     * Returns all available API controller classes
-     *
-     * @return array
-     */
-    private function getAllApiController()
-    {
-        $filter = function (&$strOneFile, $strPath) {
-            $instance = Classloader::getInstance()->getInstanceFromFilename($strPath, ApiControllerInterface::class);
-            if ($instance instanceof ApiControllerInterface) {
-                $strOneFile = get_class($instance);
-            } else {
-                $strOneFile = null;
-            }
+                return $response->withStatus(404)
+                    ->withHeader('Content-Type', 'application/json')
+                    ->write(json_encode($data, JSON_PRETTY_PRINT));
+            };
         };
 
-        $classes = Resourceloader::getInstance()->getFolderContent("/api", array(".php"), false, null, $filter);
-        $classes = array_filter($classes);
-        $classes = array_values($classes);
-
-        return $classes;
+        return new App($container);
     }
 }

@@ -9,10 +9,8 @@
 
 $container = \Kajona\System\System\Carrier::getInstance()->getContainer();
 
-$app = new \Slim\App();
-
 /** @var \Kajona\Api\System\AppBuilder $builder */
 $builder = $container[\Kajona\Api\System\ServiceProvider::STR_APP_BUILDER];
-$builder->build($app);
+$app = $builder->build();
 
 $app->run();

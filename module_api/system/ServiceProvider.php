@@ -13,14 +13,28 @@ use Pimple\ServiceProviderInterface;
  */
 class ServiceProvider implements ServiceProviderInterface
 {
+    /**
+     * @see AppBuilder
+     */
     const STR_APP_BUILDER = "api_app_builder";
+
+    /**
+     * @see EndpointScanner
+     */
+    const STR_ENDPOINT_SCANNER = "api_endpoint_scanner";
 
     public function register(Container $objContainer)
     {
         $objContainer[self::STR_APP_BUILDER] = function ($c) {
             return new AppBuilder(
-                $c[\Kajona\System\System\ServiceProvider::STR_CACHE_MANAGER],
+                $c[self::STR_ENDPOINT_SCANNER],
                 $c
+            );
+        };
+
+        $objContainer[self::STR_ENDPOINT_SCANNER] = function ($c) {
+            return new EndpointScanner(
+                $c[\Kajona\System\System\ServiceProvider::STR_CACHE_MANAGER]
             );
         };
     }
