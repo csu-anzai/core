@@ -1,8 +1,8 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2015-2016 by Kajona, www.kajona.de                                                         *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-********************************************************************************************************/
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
 
 namespace Kajona\Api\System;
 
@@ -56,6 +56,7 @@ class EndpointScanner
             foreach ($methods as $methodName => $values) {
                 $method = array_map("trim", explode(",", $reflection->getMethodAnnotationValue($methodName, "@method")));
                 $path = $reflection->getMethodAnnotationValue($methodName, "@path");
+                $authorization = $reflection->getMethodAnnotationValue($methodName, "@authorization");
 
                 if (empty($path)) {
                     throw new \RuntimeException("Provided an empty path at {$class}::{$methodName}");
@@ -66,6 +67,7 @@ class EndpointScanner
                     "path" => $path,
                     "class" => $class,
                     "methodName" => $methodName,
+                    "authorization" => $authorization,
                 ];
             }
         }
