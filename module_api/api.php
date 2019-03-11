@@ -11,6 +11,4 @@ $container = \Kajona\System\System\Carrier::getInstance()->getContainer();
 
 /** @var \Kajona\Api\System\AppBuilder $builder */
 $builder = $container[\Kajona\Api\System\ServiceProvider::STR_APP_BUILDER];
-$app = $builder->build();
-
-$app->run();
+$builder->run();

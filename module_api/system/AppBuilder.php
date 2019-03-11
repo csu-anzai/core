@@ -44,12 +44,13 @@ class AppBuilder
     }
 
     /**
-     * Create a new slim app and attaches all available routes
+     * Creates a new app, attaches all available routes and executes the app
      *
-     * @return App
      * @throws \Kajona\System\System\Exception
+     * @throws \Slim\Exception\MethodNotAllowedException
+     * @throws \Slim\Exception\NotFoundException
      */
-    public function build()
+    public function run()
     {
         $app = $this->newApp();
         $container = $this->container;
@@ -79,7 +80,7 @@ class AppBuilder
             });
         }
 
-        return $app;
+        $app->run();
     }
 
     /**
