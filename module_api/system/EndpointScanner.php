@@ -57,6 +57,10 @@ class EndpointScanner
                 $method = array_map("trim", explode(",", $reflection->getMethodAnnotationValue($methodName, "@method")));
                 $path = $reflection->getMethodAnnotationValue($methodName, "@path");
 
+                if (empty($path)) {
+                    throw new \RuntimeException("Provided an empty path at {$class}::{$methodName}");
+                }
+
                 $routes[] = [
                     "httpMethod" => $method,
                     "path" => $path,
