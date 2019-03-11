@@ -2,8 +2,8 @@
 # Integration
 
 To add a new endpoint to the API you need to create a controller class in your module
-which declares an API endpoint by using specific annotations. The controller must
-implement the `ApiControllerInterface` interface. Every method can contains specific
+at the `api/` folder which contains a class using specific annotations. The controller
+must implement the `ApiControllerInterface` interface. Every method can contains specific
 annotations to describe whether it can be called through an HTTP request.
 
 ```
