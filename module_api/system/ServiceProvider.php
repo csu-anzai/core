@@ -1,7 +1,12 @@
 <?php
+/*"******************************************************************************************************
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
 
 namespace Kajona\Api\System;
 
+use Kajona\Api\System\Authorization\FileToken;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
@@ -23,6 +28,11 @@ class ServiceProvider implements ServiceProviderInterface
      */
     const STR_ENDPOINT_SCANNER = "api_endpoint_scanner";
 
+    /**
+     * @see FileToken
+     */
+    const STR_AUTHORIZATION_FILETOKEN = "api_authorization_filetoken";
+
     public function register(Container $objContainer)
     {
         $objContainer[self::STR_APP_BUILDER] = function ($c) {
@@ -36,6 +46,10 @@ class ServiceProvider implements ServiceProviderInterface
             return new EndpointScanner(
                 $c[\Kajona\System\System\ServiceProvider::STR_CACHE_MANAGER]
             );
+        };
+
+        $objContainer[self::STR_AUTHORIZATION_FILETOKEN] = function ($c) {
+            return new FileToken();
         };
     }
 }
