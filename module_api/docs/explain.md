@@ -2,8 +2,9 @@
 # Integration
 
 To add a new endpoint to the API you need to create a controller class in your module
-which declares an API endpoint by using specific annotations. The name of the method
-is not important, it must be only public so that it can be called from the outside.
+which declares an API endpoint by using specific annotations. The controller must
+implement the `ApiControllerInterface` interface. Every method can contains specific
+annotations to describe whether it can be called through an HTTP request.
 
 ```
 <?php
