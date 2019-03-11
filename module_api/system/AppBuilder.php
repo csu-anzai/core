@@ -66,7 +66,11 @@ class AppBuilder
                     $body = $request->getParsedBody();
                     $httpContext = new HttpContext(new Request(new Uri($request->getUri()->__toString()), $request->getMethod(), $request->getHeaders()), $args);
 
-                    $data = call_user_func_array([$instance, $route["methodName"]], [$httpContext, $body]);
+                    if (in_array($request->getMethod(), ["GET", "HEAD"])) {
+                        $data = call_user_func_array([$instance, $route["methodName"]], [$httpContext]);
+                    } else {
+                        $data = call_user_func_array([$instance, $route["methodName"]], [$body, $httpContext]);
+                    }
 
                     $response = $response->withHeader("Content-Type", "application/json")
                         ->write(json_encode($data, JSON_PRETTY_PRINT));
@@ -75,6 +79,12 @@ class AppBuilder
                         ->withHeader("Content-Type", "application/json")
                         ->write(json_encode(["error" => $e->getMessage()]));
                 }
+
+                // add CORS header
+                $response = $response
+                    ->withHeader('Access-Control-Allow-Origin', '*')
+                    ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+                    ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
 
                 return $response;
             });
