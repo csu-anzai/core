@@ -8,12 +8,12 @@ namespace Kajona\Api\System;
 
 use Kajona\System\System\ObjectBuilder;
 use Pimple\Container;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use PSX\Http\Environment\HttpContext;
 use PSX\Http\Request;
 use PSX\Uri\Uri;
 use Slim\App;
+use Slim\Http\Request as HttpRequest;
+use Slim\Http\Response as HttpResponse;
 
 /**
  * AppBuilder
@@ -57,7 +57,7 @@ class AppBuilder
         $routes = $this->endpointScanner->getEndpoints();
 
         foreach ($routes as $route) {
-            $app->map($route["httpMethod"], $route["path"], function(ServerRequestInterface $request, ResponseInterface $response, array $args) use ($route, $container){
+            $app->map($route["httpMethod"], $route["path"], function(HttpRequest $request, HttpResponse $response, array $args) use ($route, $container){
                 /** @var ObjectBuilder $objectBuilder */
                 $objectBuilder = $container->offsetGet(\Kajona\System\System\ServiceProvider::STR_OBJECT_BUILDER);
                 $instance = $objectBuilder->factory($route["class"]);
@@ -90,7 +90,7 @@ class AppBuilder
     {
         $container = new \Slim\Container();
         $container['notFoundHandler'] = function ($c) {
-            return function ($request, $response) use ($c) {
+            return function (HttpRequest $request, HttpResponse $response) use ($c) {
                 $data = [
                     "error" => "Endpoint not found"
                 ];
