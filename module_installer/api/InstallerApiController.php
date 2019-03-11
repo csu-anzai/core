@@ -9,7 +9,7 @@ namespace Kajona\Installer\Api;
 use Kajona\Api\System\ApiControllerInterface;
 
 /**
- * ApiControllerInterface
+ * InstallerApiController
  *
  * @author christoph.kappestein@gmail.com
  * @since 7.1
