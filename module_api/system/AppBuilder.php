@@ -1,14 +1,16 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2015-2016 by Kajona, www.kajona.de                                                         *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-********************************************************************************************************/
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
 
 namespace Kajona\Api\System;
 
 use Kajona\System\System\ObjectBuilder;
 use Pimple\Container;
 use PSX\Http\Environment\HttpContext;
+use PSX\Http\Exception\StatusCodeException;
+use PSX\Http\Exception\UnauthorizedException;
 use PSX\Http\Request;
 use PSX\Uri\Uri;
 use Slim\App;
@@ -63,6 +65,16 @@ class AppBuilder
                 $instance = $objectBuilder->factory($route["class"]);
 
                 try {
+                    $auth = $route["authorization"] ?? null;
+                    if (!empty($auth)) {
+                        /** @var AuthorizationInterface $authorization */
+                        $authorization = $container->offsetGet("api_authorization_" . $auth);
+
+                        if (!$authorization->authorize($request->getHeaderLine("Authorization"))) {
+                            throw new UnauthorizedException("Request not authorized", "Bearer");
+                        }
+                    }
+
                     $body = $request->getParsedBody();
                     $httpContext = new HttpContext(new Request(new Uri($request->getUri()->__toString()), $request->getMethod(), $request->getHeaders()), $args);
 
@@ -74,8 +86,12 @@ class AppBuilder
 
                     $response = $response->withHeader("Content-Type", "application/json")
                         ->write(json_encode($data, JSON_PRETTY_PRINT));
+                } catch (StatusCodeException $e) {
+                    $response = $response->withStatus($e->getStatusCode())
+                        ->withHeader("Content-Type", "application/json")
+                        ->write(json_encode(["error" => $e->getMessage()]));
                 } catch (\Throwable $e) {
-                    $response = $response->withStatus(404)
+                    $response = $response->withStatus(500)
                         ->withHeader("Content-Type", "application/json")
                         ->write(json_encode(["error" => $e->getMessage()]));
                 }
@@ -107,6 +123,19 @@ class AppBuilder
 
                 return $response->withStatus(404)
                     ->withHeader('Content-Type', 'application/json')
+                    ->write(json_encode($data, JSON_PRETTY_PRINT));
+            };
+        };
+
+        $container['notAllowedHandler'] = function ($c) {
+            return function ($request, $response, $methods) use ($c) {
+                $data = [
+                    "error" => "Method not allowed"
+                ];
+
+                return $response->withStatus(405)
+                    ->withHeader('Allow', implode(', ', $methods))
+                    ->withHeader('Content-type', 'text/html')
                     ->write(json_encode($data, JSON_PRETTY_PRINT));
             };
         };
