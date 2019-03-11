@@ -68,12 +68,12 @@ class AppBuilder
 
                     $data = call_user_func_array([$instance, $route["methodName"]], [$httpContext, $body]);
 
-                    $response = $response->withHeader("Content-Type", "application/json");
-                    $response->getBody()->write(json_encode($data, JSON_PRETTY_PRINT));
+                    $response = $response->withHeader("Content-Type", "application/json")
+                        ->write(json_encode($data, JSON_PRETTY_PRINT));
                 } catch (\Throwable $e) {
-                    $response = $response->withStatus(404);
-                    $response = $response->withHeader("Content-Type", "application/json");
-                    $response->getBody()->write(json_encode(["error" => $e->getMessage()]));
+                    $response = $response->withStatus(404)
+                        ->withHeader("Content-Type", "application/json")
+                        ->write(json_encode(["error" => $e->getMessage()]));
                 }
 
                 return $response;
