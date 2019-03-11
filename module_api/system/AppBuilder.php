@@ -44,7 +44,7 @@ class AppBuilder
     }
 
     /**
-     * Attaches all available routes to the slim app
+     * Create a new slim app and attaches all available routes
      *
      * @return App
      * @throws \Kajona\System\System\Exception
