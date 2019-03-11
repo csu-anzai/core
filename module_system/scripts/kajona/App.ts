@@ -1,7 +1,11 @@
 import Router from "./Router";
 import * as $ from "jquery";
-import "jquery-ui";
-import "jquery-ui-touch-punch/jquery.ui.touch-punch.min";
+import "../jqueryui/jquery-ui.custom.min";
+// import "jquery-ui-touch-punch/jquery.ui.touch-punch.min";
+import "../../../module_v4skin/scripts/jquery/jquery.ui.touch-punch.min";
+// import "bootstrap/dist/js/bootstrap.min";
+// import "jquery/src/jquery";
+// import "bootstrap";
 import "../../../module_v4skin/scripts/bootstrap/bootstrap.min";
 import * as toastr from "toastr";
 // import V4skin = require("../../../module_v4skin/scripts/kajona/V4skin");
@@ -81,4 +85,5 @@ class App {
   }
 }
 
+(<any>window).App = App;
 export default App;

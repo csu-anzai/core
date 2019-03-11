@@ -13,10 +13,11 @@
     <link rel="stylesheet" href="_webpath_{{ "module_v4skin"|webpath }}/admin/skins/kajona_v4/less/styles.min.css?_system_browser_cachebuster_" type="text/css" />
 
     {{ head|raw }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="_webpath_{{ "module_system"|webpath }}/scripts/agp.min.js?_system_browser_cachebuster_"></script>
-    <script type="text/javascript">
-        require(['app'], function(app) { app.init(); });
-    </script>
+    {# <script type="text/javascript">
+        App.init();
+    </script> #}
 
     <link rel="shortcut icon" href="_webpath_/{{ "module_v4skin"|webpath }}/admin/skins/kajona_v4/img/favicon.png">
 </head>
@@ -59,11 +60,11 @@
             <div class="sidebar-nav" id="moduleNavigation">
             </div>
             <script type="text/javascript">
-                require(['util', 'moduleNavigation'], function(util, mNavi) {
+                {# require(['util', 'moduleNavigation'], function(util, mNavi) {
                     if (!util.isStackedDialog()) {
                         mNavi.loadNavigation();
                     }
-                });
+                }); #}
             </script>
 
         </div>
@@ -196,6 +197,8 @@
 </div>
 
 <div id="jsStatusBox" class="" style="display: none; position: absolute;"><div class="jsStatusBoxHeader">Status-Info</div><div id="jsStatusBoxContent" class="jsStatusBoxContent"></div></div>
-
+   <script type="text/javascript">
+        App.init();
+    </script>
 </body>
 </html>

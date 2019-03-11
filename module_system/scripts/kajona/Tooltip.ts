@@ -1,10 +1,6 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="tooltip"/>
-
 import * as $ from "jquery";
 import Tags from "../../../module_tags/scripts/kajona/Tags";
-// import "qtip";
-import "../../../_buildfilesNew/node_modules/qtip/qtip";
+import "../qtip2/jquery.qtip.min";
 
 /**
  * Common tooltips

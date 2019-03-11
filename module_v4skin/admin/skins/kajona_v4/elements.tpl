@@ -1043,7 +1043,7 @@ Part to display the login status, user is logged in
     </ul>
 </div>
 <script type="text/javascript">
-    require(['jquery', 'v4skin', 'messaging'], function($, v4skin, messaging){
+ /*   require(['jquery', 'v4skin', 'messaging'], function($, v4skin, messaging){
         if(%%renderMessages%%) {
             $(function() {
                 v4skin.messaging.properties = {
@@ -1078,7 +1078,7 @@ Part to display the login status, user is logged in
         else {
             $('#tagsSubemenu').closest("li").hide();
         }
-    });
+    });*/
 </script>
 </logout_form>
 

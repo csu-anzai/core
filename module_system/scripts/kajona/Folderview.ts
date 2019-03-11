@@ -1,4 +1,4 @@
-import $ from "../../../_buildfilesNew/node_modules/jquery";
+import * as $ from "jquery";
 // import Dialog = require("../../../module_v4skin/scripts/kajona/Dialog");
 // import Util = require("./Util");
 // import Lists = require("./Lists");

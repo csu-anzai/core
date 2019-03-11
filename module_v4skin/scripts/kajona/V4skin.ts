@@ -1,5 +1,6 @@
-import $ from "../../../_buildfilesNew/node_modules/jquery";
+import * as $ from "jquery";
 import "../bootstrap/bootstrap.min.js";
+// import "bootstrap";
 import "../../../_buildfilesNew/node_modules/jquery-ui";
 // import Messaging = require("../../../module_system/scripts/kajona/Messaging");
 import Messaging from "./../../../module_system/scripts/kajona/Messaging";

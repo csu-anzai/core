@@ -5,20 +5,22 @@ const glob = require('glob')
 const tsPaths = glob.sync('../../{core,core_agp}/module_*/scripts', {
   realpath: true
 })
+
 module.exports = {
   entry: {
     // DbBrowser: './components/DbBrowser/DbBrowser.ts'
     // agp: glob.sync('../../{core,core_agp}/module_*/scripts/*/*.ts')
     // agp: glob.sync('../../core/module_*/scripts/*/*.ts')
-    agp: glob.sync('../../core/module_*/scripts/*/*.ts')
+    // agp: glob.sync('../../core/module_*/scripts/*/*.ts')
 
-    // agp: glob.sync('../../core/module_*/scripts/*.ts')
+    agp: glob.sync('../../core/module_*/scripts/*/App.ts')
     // agp: glob.sync('../../core/_a/*.ts')
   },
   output: {
     // filename: './components/[name]/[name].min.js',
     filename: './[name].min.js',
-    path: path.resolve(__dirname, './')
+    path: path.resolve(__dirname, '../module_system/scripts/')
+    // path: path.resolve(__dirname, './')
   },
 
   module: {
@@ -59,6 +61,11 @@ module.exports = {
   plugins: [
     new Dotenv({
       path: path.resolve(__dirname, '.env.dev')
+    }),
+    new webpack.ProvidePlugin({
+      jQuery: 'jquery',
+      $: 'jquery',
+      jquery: 'jquery'
     })
   ]
 }

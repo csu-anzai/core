@@ -1,6 +1,8 @@
-import $ from "../../../_buildfilesNew/node_modules/jquery";
-import * as chartjs from "../chartjs/Chart.bundle.min";
-import "../chartjs/chartjs-plugin-datalabels";
+import * as $ from "jquery";
+// import * as chartjs from "../chartjs/Chart.bundle.min";
+// import "../chartjs/chartjs-plugin-datalabels";
+import Chart from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels.js";
 import Folderview from "../../../module_system/scripts/kajona/Folderview";
 
 declare var Chart: any;
@@ -160,7 +162,7 @@ class ChartjsHelper {
       }
     };
 
-    var myChart = new chartjs.Chart(ctx, {
+    var myChart = new Chart.Chart(ctx, {
       type: chartData["type"],
       data: chartData["data"],
       options: chartData["options"]

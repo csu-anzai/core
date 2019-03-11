@@ -4,7 +4,7 @@ import Tooltip from "./Tooltip";
 import Ajax from "./Ajax";
 import Util from "./Util";
 import Forms from "./Forms";
-
+import routie from "../routie/routie.min";
 declare global {
   interface Window {
     routie: any;

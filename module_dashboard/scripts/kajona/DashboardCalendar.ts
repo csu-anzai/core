@@ -1,5 +1,6 @@
-import $ from "../../../_buildfilesNew/node_modules/jquery";
-import "../fullcalendar/locale-all";
+import * as $ from "jquery";
+import "fullcalendar";
+// import "../fullcalendar/locale-all";
 import WorkingIndicator from "../../../module_system/scripts/kajona/WorkingIndicator";
 import Tooltip from "../../../module_system/scripts/kajona/Tooltip";
 import Loader from "../../../module_system/scripts/kajona/Loader";
