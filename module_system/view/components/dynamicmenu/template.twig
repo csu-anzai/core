@@ -22,13 +22,10 @@
                 $('#{{ menuid }}-filter').focus();
             };
             var filter = function(){
-                var value = $("#{{ menuid }}-filter").val();
-                if (value && value.length >= 2) {
-                    if (timeout) {
-                        clearTimeout(timeout);
-                    }
-                    timeout = setTimeout(send, 300);
+                if (timeout) {
+                    clearTimeout(timeout);
                 }
+                timeout = setTimeout(send, 300);
             };
 
             $('#{{ menuid }}-filter').on('keypress', filter);
