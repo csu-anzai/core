@@ -11,6 +11,7 @@
     <script type="text/javascript">
         require(["jquery", "ajax"], function($, ajax) {
             $("#{{ menuid }}").on("show.bs.dropdown", function () {
+                {% if filter %}$("#{{ menuid }}-filter").val("");{% endif %}
                 ajax.loadUrlToElement("#{{ menuid }}-menu", "{{ endpoint|raw }}");
             });
 
