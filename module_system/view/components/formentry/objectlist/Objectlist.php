@@ -60,6 +60,11 @@ class Objectlist extends FormentryComponentAbstract
     protected $showEditButton = false;
 
     /**
+     * @var \Closure
+     */
+    protected $showDetailButton;
+
+    /**
      * @param string $name
      * @param string $title
      * @param array $items
@@ -123,6 +128,14 @@ class Objectlist extends FormentryComponentAbstract
                     $editLink = Link::getLinkAdminDialog($item->getArrModule("modul"), "edit", ["systemid" => $item->getSystemid(), "form_element" => $this->name], $editLinkText, $editLinkText, "icon_edit", $item->getStrDisplayName());
                 }
 
+                $detailLink = "";
+                if ($this->showDetailButton instanceof \Closure) {
+                    $link = call_user_func_array($this->showDetailButton, [$item]);
+                    if (!empty($link)) {
+                        $detailLink = $link;
+                    }
+                }
+
                 $icon = is_array($item->getStrIcon()) ? $item->getStrIcon()[0] : $item->getStrIcon();
 
                 $rows[] = [
@@ -131,7 +144,8 @@ class Objectlist extends FormentryComponentAbstract
                     'path'        => $this->getPathName($item),
                     'icon'        => AdminskinHelper::getAdminImage($icon),
                     'removeLink'  => $removeLink,
-                    'editLink'    => $editLink
+                    'editLink'    => $editLink,
+                    'detailLink'  => $detailLink,
                 ];
                 $ids[] = $item->getSystemid();
             }
@@ -276,5 +290,11 @@ class Objectlist extends FormentryComponentAbstract
         $this->showEditButton = $showEditButton;
     }
 
-
+    /**
+     * @param \Closure|null $showDetailButton
+     */
+    public function setShowDetailButton(?\Closure $showDetailButton)
+    {
+        $this->showDetailButton = $showDetailButton;
+    }
 }
