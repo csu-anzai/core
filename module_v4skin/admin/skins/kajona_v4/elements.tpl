@@ -607,6 +607,7 @@ Upload-Field for multiple files with progress bar
             </span>
             %%helpButton%%
             %%moveButton%%
+            %%archiveButton%%
         </div>
     </div>
 
@@ -671,8 +672,16 @@ Upload-Field for multiple files with progress bar
                 uploader.getUploader().fileupload('option', 'done').call(uploader.getUploader(), $.Event('done'), {result: data});
             }, null, null, "post", "json");
 
-            if ($('#version_%%name%%')) {
-                $('#version_%%name%%').on('click', function() {   uploader.fileVersioning() });
+            if ($('#version_%%name%%').length > 0) {
+                $('#version_%%name%%').on('click', function() {
+                    uploader.fileVersioning();
+                });
+            }
+
+            if ($('#archive_%%name%%').length > 0) {
+                $('#archive_%%name%%').on('click', function() {
+                    uploader.fileArchiving("%%targetSystemId%%", "%%archiveTitle%%", "%%archiveBody%%", "%%archiveTitle%%");
+                });
             }
 
             uploader.renderArchiveList();
