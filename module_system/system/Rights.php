@@ -129,18 +129,45 @@ class Rights
         $strQuery = "UPDATE agp_system
             SET right_inherit=?, right_view=?, right_edit=?, right_delete=?, right_right=?, right_right1=?, right_right2=?, right_right3=?, right_right4=?, right_right5=?, right_changelog=? WHERE system_id=?";
 
-        if (SystemModule::getModuleByName("system") !== null && version_compare(SystemModule::getModuleByName("system")->getStrVersion(), "6.2.3", "<")) {
-            $strQuery = "UPDATE agp_system_right
-            SET right_inherit=?, right_view=?, right_edit=?, right_delete=?, right_right=?, right_right1=?, right_right2=?, right_right3=?, right_right4=?, right_right5=?, right_changelog=? WHERE right_id=?";
-
-        }
-
 
         if ($this->objDb->_pQuery($strQuery, $arrParams)) {
             //Flush the cache so later lookups will match the new rights
             $this->objDb->flushQueryCache();
             //unset in cache
             unset(self::$arrPermissionMap[$strSystemid]);
+
+            //update view map
+            $this->objDb->_pQuery("DELETE FROM agp_permissions_view WHERE view_id = ?", [$strSystemid]);
+            $this->objDb->_pQuery("DELETE FROM agp_permissions_right2 WHERE view_id = ?", [$strSystemid]);
+
+            $groups = explode(",", trim($arrRights[self::$STR_RIGHT_VIEW], ','));
+            foreach ($groups as $shortid) {
+                if (is_numeric($shortid) && $shortid !== "") {
+                    $longId = UserGroup::getGroupIdForShortId((int)$shortid);
+                    if (validateSystemid($longId)) {
+                        $insert[] = [$strSystemid, $longId, $shortid];
+                    }
+                }
+            }
+
+            if (!empty($insert)) {
+                \Kajona\System\System\Database::getInstance()->multiInsert("agp_permissions_view", ["view_id", "view_group", "view_shortgroup"], $insert);
+            }
+
+
+            $groups = explode(",", trim($arrRights[self::$STR_RIGHT_RIGHT2], ','));
+            foreach ($groups as $shortid) {
+                if (is_numeric($shortid) && $shortid !== "") {
+                    $longId = UserGroup::getGroupIdForShortId((int)$shortid);
+                    if (validateSystemid($longId)) {
+                        $insert[] = [$strSystemid, $longId, $shortid];
+                    }
+                }
+            }
+
+            if (!empty($insert)) {
+                \Kajona\System\System\Database::getInstance()->multiInsert("agp_permissions_right2", ["vright2_id", "right2_group", "right2_shortgroup"], $insert);
+            }
 
             return true;
         } else {
