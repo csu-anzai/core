@@ -7,6 +7,8 @@
 namespace Kajona\Installer\Api;
 
 use Kajona\Api\System\ApiControllerInterface;
+use Kajona\System\System\Database;
+use Kajona\System\System\DbConnectionParams;
 
 /**
  * InstallerApiController
@@ -16,6 +18,12 @@ use Kajona\Api\System\ApiControllerInterface;
  */
 class InstallerApiController implements ApiControllerInterface
 {
+    /**
+     * @inject system_db
+     * @var Database
+     */
+    protected $connection;
+
     /**
      * @api
      * @method GET
@@ -29,6 +37,98 @@ class InstallerApiController implements ApiControllerInterface
             "extensions" => $this->getPHPExtensions(),
             "folders" => $this->getFolders(),
         ];
+    }
+
+    /**
+     * @api
+     * @method GET
+     * @path /installer/connection
+     * @authorization filetoken
+     */
+    public function getConnection()
+    {
+        $extensions = [
+            "mysqli",
+            "pgsql",
+            "sqlsrv",
+            "sqlite3",
+            "oci8",
+        ];
+
+        $result = [];
+        foreach ($extensions as $extension) {
+            $result[$extension] = in_array($extension, get_loaded_extensions());
+        }
+
+        return $result;
+    }
+
+    /**
+     * @api
+     * @method POST
+     * @path /installer/connection
+     * @authorization filetoken
+     */
+    public function validateConnection($body)
+    {
+        return [
+            "check" => $this->checkConnection(
+                $body["driver"] ?? null,
+                $body["hostname"] ?? null,
+                $body["username"] ?? null,
+                $body["password"] ?? null,
+                $body["dbname"] ?? null,
+                $body["port"] ?? null
+            ),
+        ];
+    }
+
+    /**
+     * @api
+     * @method POST
+     * @path /installer/config
+     * @authorization filetoken
+     */
+    public function writeConfig($body)
+    {
+        $available = $this->checkConnection(
+            $body["driver"] ?? null,
+            $body["hostname"] ?? null,
+            $body["username"] ?? null,
+            $body["password"] ?? null,
+            $body["dbname"] ?? null,
+            $body["port"] ?? null
+        );
+
+        if ($available) {
+            $content = "<?php\n";
+            $content.= "/*\n Kajona V7 config-file.\n If you want to overwrite additional settings, copy them from /core/module_system/system/config/config.php into this file.\n*/";
+            $content.= "\n\n\n";
+            $content.= "  \$config['dbhost']               = '".$body["hostname"]."';                   //Server name \n";
+            $content.= "  \$config['dbusername']           = '".$body["username"]."';                   //Username \n";
+            $content.= "  \$config['dbpassword']           = '".$body["password"]."';                   //Password \n";
+            $content.= "  \$config['dbname']               = '".$body["dbname"]."';                     //Database name \n";
+            $content.= "  \$config['dbdriver']             = '".$body["driver"]."';                     //DB-Driver \n";
+            $content.= "  \$config['dbport']               = '".$body["port"]."';                       //Database port \n";
+            $content.= "\n";
+
+            $configFile = _realpath_."project/module_system/system/config/config.php";
+            $result = file_put_contents($configFile, $content);
+        } else {
+            $result = false;
+        }
+
+        return [
+            "written" => $result,
+        ];
+    }
+
+    private function checkConnection($driver, $hostname, $username, $password, $dbname, $port)
+    {
+        return $this->connection->validateDbCxData(
+            $driver,
+            new DbConnectionParams($hostname, $username, $password, $dbname, $port)
+        );
     }
 
     private function getPHPVersion()
