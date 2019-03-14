@@ -122,9 +122,11 @@ class Folderview {
                 html+= '<tr data-kajona-systemid="' + arrItems[i].strSystemId + '">';
                 html+= '    <td class="listimage">' + arrItems[i].strIcon + '</td>';
                 html+= '    <td class="title"><div class="smaller">'+strEscapedPath+'</div>' + strEscapedTitle + ' <input type="hidden" name="' + strElementName + '[]" value="' + arrItems[i].strSystemId + '" data-kajona-initval="" /></td>';
-                html+= '    <td class="icon-cell">';
-                html+= '        <a href="#" class="removeLink" onclick="require(\'v4skin\').removeObjectListItem(this);return false">' + strDeleteButton + '</a>';
-                html+= '    </td>';
+                if (strDeleteButton) {
+                    html += '    <td class="icon-cell">';
+                    html += '        <a href="#" class="removeLink" onclick="require(\'v4skin\').removeObjectListItem(this);return false">' + strDeleteButton + '</a>';
+                    html += '    </td>';
+                }
 
                 if(arrItems[i].strEditLink) {
                     html+= '    <td class="icon-cell">'+arrItems[i].strEditLink+'</td>';

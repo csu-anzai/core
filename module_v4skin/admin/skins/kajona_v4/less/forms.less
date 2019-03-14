@@ -392,7 +392,7 @@ input[type="checkbox"] {
 }
 // Feedback icon (requires .glyphicon classes)
 .form-control-feedback {
-  position: absolute;
+  float: right;
   top: 0;
   right: 0;
   z-index: 2; // Ensure icon is above input groups
@@ -402,6 +402,7 @@ input[type="checkbox"] {
   line-height: @input-height-base;
   text-align: center;
   pointer-events: none;
+  margin-top: -33px;
 }
 .input-lg + .form-control-feedback,
 .input-group-lg + .form-control-feedback,
