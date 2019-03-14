@@ -143,30 +143,28 @@ class Rights
             $groups = explode(",", trim($arrRights[self::$STR_RIGHT_VIEW], ','));
             foreach ($groups as $shortid) {
                 if (is_numeric($shortid) && $shortid !== "") {
-                    $longId = UserGroup::getGroupIdForShortId((int)$shortid);
-                    if (validateSystemid($longId)) {
-                        $insert[] = [$strSystemid, $longId, $shortid];
+                    if (validateSystemid(UserGroup::getGroupIdForShortId((int)$shortid))) {
+                        $insert[] = [$strSystemid, $shortid];
                     }
                 }
             }
 
             if (!empty($insert)) {
-                \Kajona\System\System\Database::getInstance()->multiInsert("agp_permissions_view", ["view_id", "view_group", "view_shortgroup"], $insert);
+                $this->objDb->multiInsert("agp_permissions_view", ["view_id", "view_shortgroup"], $insert);
             }
 
 
             $groups = explode(",", trim($arrRights[self::$STR_RIGHT_RIGHT2], ','));
             foreach ($groups as $shortid) {
                 if (is_numeric($shortid) && $shortid !== "") {
-                    $longId = UserGroup::getGroupIdForShortId((int)$shortid);
-                    if (validateSystemid($longId)) {
-                        $insert[] = [$strSystemid, $longId, $shortid];
+                    if (validateSystemid(UserGroup::getGroupIdForShortId((int)$shortid))) {
+                        $insert[] = [$strSystemid, $shortid];
                     }
                 }
             }
 
             if (!empty($insert)) {
-                \Kajona\System\System\Database::getInstance()->multiInsert("agp_permissions_right2", ["vright2_id", "right2_group", "right2_shortgroup"], $insert);
+                $this->objDb->multiInsert("agp_permissions_right2", ["right2_id", "right2_shortgroup"], $insert);
             }
 
             return true;

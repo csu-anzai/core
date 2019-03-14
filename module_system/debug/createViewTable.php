@@ -18,11 +18,10 @@ echo "Creating agp_permissions_view permissions table".PHP_EOL;
     "agp_permissions_view",
     [
         "view_id" => [DbDatatypes::STR_TYPE_CHAR20, false],
-        "view_group" => [DbDatatypes::STR_TYPE_CHAR20, false],
         "view_shortgroup" => [DbDatatypes::STR_TYPE_LONG, false],
     ],
-    ["view_id", "view_group", "view_shortgroup"],
-    [["view_id", "view_shortgroup"], ["view_id", "view_group"], "view_id", "view_group", "view_shortgroup"]
+    ["view_id", "view_shortgroup"],
+    ["view_id", "view_shortgroup"]
 );
 
 \Kajona\System\System\Database::getInstance()->_pQuery("TRUNCATE agp_permissions_view", []);
@@ -64,11 +63,10 @@ echo "Creating agp_permissions_right2 permissions table".PHP_EOL;
     "agp_permissions_right2",
     [
         "right2_id" => [DbDatatypes::STR_TYPE_CHAR20, false],
-        "right2_group" => [DbDatatypes::STR_TYPE_CHAR20, false],
         "right2_shortgroup" => [DbDatatypes::STR_TYPE_LONG, false],
     ],
-    ["right2_id", "right2_group", "right2_shortgroup"],
-    [["right2_id", "right2_shortgroup"], ["right2_id", "right2_group"], "right2_id", "right2_group", "right2_shortgroup"]
+    ["right2_id", "right2_shortgroup"],
+    ["right2_id", "right2_shortgroup"]
 );
 
 \Kajona\System\System\Database::getInstance()->_pQuery("TRUNCATE agp_permissions_right2", []);

@@ -105,22 +105,20 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             "agp_permissions_view",
             [
                 "view_id" => [DbDatatypes::STR_TYPE_CHAR20, false],
-                "view_group" => [DbDatatypes::STR_TYPE_CHAR20, false],
                 "view_shortgroup" => [DbDatatypes::STR_TYPE_LONG, false],
             ],
-            ["view_id", "view_group", "view_shortgroup"],
-            [["view_id", "view_shortgroup"], "view_id", "view_group", "view_shortgroup"]
+            ["view_id", "view_shortgroup"],
+            ["view_id", "view_shortgroup"]
         );
 
         $this->objDB->createTable(
             "agp_permissions_right2",
             [
                 "right2_id" => [DbDatatypes::STR_TYPE_CHAR20, false],
-                "right2_group" => [DbDatatypes::STR_TYPE_CHAR20, false],
                 "right2_shortgroup" => [DbDatatypes::STR_TYPE_LONG, false],
             ],
-            ["right2_id", "right2_group", "right2_shortgroup"],
-            [["right2_id", "right2_shortgroup"], ["right2_id", "right2_group"], "right2_id", "right2_group", "right2_shortgroup"]
+            ["right2_id", "right2_shortgroup"],
+            ["right2_id", "right2_shortgroup"]
         );
 
         // Modul table ----------------------------------------------------------------------------------
@@ -705,22 +703,20 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             "agp_permissions_view",
             [
                 "view_id" => [DbDatatypes::STR_TYPE_CHAR20, false],
-                "view_group" => [DbDatatypes::STR_TYPE_CHAR20, false],
                 "view_shortgroup" => [DbDatatypes::STR_TYPE_LONG, false],
             ],
-            ["view_id", "view_group", "view_shortgroup"],
-            [["view_id", "view_shortgroup"], "view_id", "view_group", "view_shortgroup"]
+            ["view_id", "view_shortgroup"],
+            ["view_id", "view_shortgroup"]
         );
 
         \Kajona\System\System\Database::getInstance()->createTable(
             "agp_permissions_right2",
             [
                 "right2_id" => [DbDatatypes::STR_TYPE_CHAR20, false],
-                "right2_group" => [DbDatatypes::STR_TYPE_CHAR20, false],
                 "right2_shortgroup" => [DbDatatypes::STR_TYPE_LONG, false],
             ],
-            ["right2_id", "right2_group", "right2_shortgroup"],
-            [["right2_id", "right2_shortgroup"], ["right2_id", "right2_group"], "right2_id", "right2_group", "right2_shortgroup"]
+            ["right2_id", "right2_shortgroup"],
+            ["right2_id", "right2_shortgroup"]
         );
 
         $strReturn .= "Creating group map".PHP_EOL;
@@ -735,13 +731,13 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             $groups = explode(",", trim($row["right_view"], ','));
             foreach ($groups as $shortid) {
                 if (is_numeric($shortid) && array_key_exists($shortid, $groupMap)) {
-                    $insert[] = [$row['system_id'], $groupMap[$shortid], $shortid];
+                    $insert[] = [$row['system_id'], $shortid];
                 }
             }
 
             if ($i % 100 == 0) {
                 if (!empty($insert)) {
-                    \Kajona\System\System\Database::getInstance()->multiInsert("agp_permissions_view", ["view_id", "view_group", "view_shortgroup"], $insert);
+                    \Kajona\System\System\Database::getInstance()->multiInsert("agp_permissions_view", ["view_id", "view_shortgroup"], $insert);
                     $insert = [];
                 }
                 $strReturn .= "Migrated {$i} records ".PHP_EOL;
@@ -750,7 +746,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         }
 
         if (!empty($insert)) {
-            \Kajona\System\System\Database::getInstance()->multiInsert("agp_permissions_view", ["view_id", "view_group", "view_shortgroup"], $insert);
+            \Kajona\System\System\Database::getInstance()->multiInsert("agp_permissions_view", ["view_id", "view_shortgroup"], $insert);
         }
         $strReturn .= "Migrated {$i} records ".PHP_EOL;
 
@@ -760,13 +756,13 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             $groups = explode(",", trim($row["right_right2"], ','));
             foreach ($groups as $shortid) {
                 if (is_numeric($shortid) && array_key_exists($shortid, $groupMap)) {
-                    $insert[] = [$row['system_id'], $groupMap[$shortid], $shortid];
+                    $insert[] = [$row['system_id'], $shortid];
                 }
             }
 
             if ($i % 100 == 0) {
                 if (!empty($insert)) {
-                    \Kajona\System\System\Database::getInstance()->multiInsert("agp_permissions_right2", ["right2_id", "right2_group", "right2_shortgroup"], $insert);
+                    \Kajona\System\System\Database::getInstance()->multiInsert("agp_permissions_right2", ["right2_id", "right2_shortgroup"], $insert);
                     $insert = [];
                 }
                 $strReturn .= "Migrated {$i} records ".PHP_EOL;
@@ -774,7 +770,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         }
 
         if (!empty($insert)) {
-            \Kajona\System\System\Database::getInstance()->multiInsert("agp_permissions_right2", ["right2_id", "right2_group", "right2_shortgroup"], $insert);
+            \Kajona\System\System\Database::getInstance()->multiInsert("agp_permissions_right2", ["right2_id", "right2_shortgroup"], $insert);
         }
         $strReturn .= "Migrated {$i} records ".PHP_EOL;
 
