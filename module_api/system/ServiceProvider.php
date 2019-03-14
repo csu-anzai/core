@@ -38,6 +38,7 @@ class ServiceProvider implements ServiceProviderInterface
         $objContainer[self::STR_APP_BUILDER] = function ($c) {
             return new AppBuilder(
                 $c[self::STR_ENDPOINT_SCANNER],
+                $c[\Kajona\System\System\ServiceProvider::STR_OBJECT_BUILDER],
                 $c
             );
         };

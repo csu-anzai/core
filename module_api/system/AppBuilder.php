@@ -32,17 +32,24 @@ class AppBuilder
     private $endpointScanner;
 
     /**
+     * @var ObjectBuilder
+     */
+    private $objectBuilder;
+
+    /**
      * @var Container
      */
     private $container;
 
     /**
      * @param EndpointScanner $endpointScanner
+     * @param ObjectBuilder $objectBuilder
      * @param Container $container
      */
-    public function __construct(EndpointScanner $endpointScanner, Container $container)
+    public function __construct(EndpointScanner $endpointScanner, ObjectBuilder $objectBuilder, Container $container)
     {
         $this->endpointScanner = $endpointScanner;
+        $this->objectBuilder = $objectBuilder;
         $this->container = $container;
     }
 
@@ -56,13 +63,12 @@ class AppBuilder
     public function run()
     {
         $app = $this->newApp();
+        $objectBuilder = $this->objectBuilder;
         $container = $this->container;
         $routes = $this->endpointScanner->getEndpoints();
 
         foreach ($routes as $route) {
-            $app->map($route["httpMethod"], $route["path"], function(SlimRequest $request, SlimResponse $response, array $args) use ($route, $container){
-                /** @var ObjectBuilder $objectBuilder */
-                $objectBuilder = $container->offsetGet(\Kajona\System\System\ServiceProvider::STR_OBJECT_BUILDER);
+            $app->map($route["httpMethod"], $route["path"], function(SlimRequest $request, SlimResponse $response, array $args) use ($route, $objectBuilder, $container){
                 $instance = $objectBuilder->factory($route["class"]);
 
                 try {
