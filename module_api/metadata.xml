@@ -12,4 +12,7 @@
     <requiredModules>
         <module name="system" version="7.1" />
     </requiredModules>
+    <constants>
+        <constant name="_api_module_id_" value="1420146491" />
+    </constants>
 </package>
