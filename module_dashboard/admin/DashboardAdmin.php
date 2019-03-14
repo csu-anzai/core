@@ -536,6 +536,29 @@ JS;
     }
 
     /**
+     * Updates and renders the additional name content of a single widget.
+     *
+     * @return string
+     * @throws Exception
+     * @permissions view
+     * @responseType json
+     */
+    protected function actionUpdateWidgetAdditionalContent()
+    {
+        $strReturn = "";
+        //load the aspect and close the session afterwards
+        SystemAspect::getCurrentAspect();
+        $strSystemId = $this->getParam('systemid');
+        $objWidgetModel = new DashboardWidget($strSystemId);
+        if ($objWidgetModel->rightView()) {
+            $objConcreteWidget = $objWidgetModel->getConcreteAdminwidget();
+            $strReturn = json_encode($objConcreteWidget->getWidgetNameAdditionalContent());
+        }
+
+        return $strReturn;
+    }
+
+    /**
      * Updates and renders the content of a single widget.
      *
      * @return string
