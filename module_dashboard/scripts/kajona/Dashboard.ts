@@ -111,13 +111,13 @@ class Dashboard {
                 null,
                 null,
                 function () {
-                    Dashboard.updateWidgetAdditinalContent(strSystemid)
+                    Dashboard.updateWidgetAdditionalContent(strSystemid)
                 }
             );
         }
     }
 
-    public static updateWidgetAdditinalContent(strSystemid: string) {
+    public static updateWidgetAdditionalContent(strSystemid: string) {
         Ajax.loadUrlToElement("div.core-component-widget[data-systemid='"+strSystemid+"'] .additionalNameContent", "/xml.php?admin=1&module=dashboard&action=updateWidgetAdditionalContent&systemid="+strSystemid);
     }
 
