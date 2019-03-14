@@ -33,14 +33,14 @@ foreach (\Kajona\System\System\Database::getInstance()->getPArray("SELECT system
 
     foreach ($groups as $shortid) {
         if (is_numeric($shortid) && array_key_exists($shortid, $groupMap)) {
-            $insert[] = [$row['system_id'], $groupMap[$shortid], $shortid];
+            $insert[] = [$row['system_id'], $shortid];
         }
     }
 
 
     if ($i % 100 == 0) {
         if (!empty($insert)) {
-            \Kajona\System\System\Database::getInstance()->multiInsert("agp_permissions_view", ["view_id", "view_group", "view_shortgroup"], $insert);
+            \Kajona\System\System\Database::getInstance()->multiInsert("agp_permissions_view", ["view_id", "view_shortgroup"], $insert);
             $insert = [];
         }
         echo "Migrated {$i} records ".PHP_EOL;
@@ -50,7 +50,7 @@ foreach (\Kajona\System\System\Database::getInstance()->getPArray("SELECT system
 }
 
 if (!empty($insert)) {
-    \Kajona\System\System\Database::getInstance()->multiInsert("agp_permissions_view", ["view_id", "view_group", "view_shortgroup"], $insert);
+    \Kajona\System\System\Database::getInstance()->multiInsert("agp_permissions_view", ["view_id", "view_shortgroup"], $insert);
     $insert = [];
 }
 echo "Migrated {$i} records ".PHP_EOL;
@@ -78,14 +78,14 @@ foreach (\Kajona\System\System\Database::getInstance()->getPArray("SELECT system
 
     foreach ($groups as $shortid) {
         if (is_numeric($shortid) && array_key_exists($shortid, $groupMap)) {
-            $insert[] = [$row['system_id'], $groupMap[$shortid], $shortid];
+            $insert[] = [$row['system_id'], $shortid];
         }
     }
 
 
     if ($i % 100 == 0) {
         if (!empty($insert)) {
-            \Kajona\System\System\Database::getInstance()->multiInsert("agp_permissions_right2", ["right2_id", "right2_group", "right2_shortgroup"], $insert);
+            \Kajona\System\System\Database::getInstance()->multiInsert("agp_permissions_right2", ["right2_id", "right2_shortgroup"], $insert);
             $insert = [];
         }
         echo "Migrated {$i} records ".PHP_EOL;
@@ -95,7 +95,7 @@ foreach (\Kajona\System\System\Database::getInstance()->getPArray("SELECT system
 }
 
 if (!empty($insert)) {
-    \Kajona\System\System\Database::getInstance()->multiInsert("agp_permissions_right2", ["right2_id", "right2_group", "right2_shortgroup"], $insert);
+    \Kajona\System\System\Database::getInstance()->multiInsert("agp_permissions_right2", ["right2_id", "right2_shortgroup"], $insert);
     $insert = [];
 }
 echo "Migrated {$i} records ".PHP_EOL;

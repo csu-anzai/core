@@ -20,6 +20,11 @@ class OrmViewPermissionCondition extends OrmCondition
     private $strColumn = null;
 
     /**
+     * @var OrmPermissionCondition
+     */
+    private $fallback;
+
+    /**
      * OrmPermissionCondition constructor.
      *
      * @param string $column the column to query against
@@ -28,7 +33,14 @@ class OrmViewPermissionCondition extends OrmCondition
     {
         parent::__construct("", array());
         $this->strColumn = $column;
+
+        if (count(Session::getInstance()->getShortGroupIdsAsArray()) < 100) {
+            //fall back to the simple like logic for small amount of data
+            $this->fallback = new OrmPermissionCondition("view", null, StringUtil::replace("system_id", "right_view", $column));
+        }
     }
+
+
 
 
     /**
@@ -36,6 +48,9 @@ class OrmViewPermissionCondition extends OrmCondition
      */
     public function getStrWhere()
     {
+        if ($this->fallback !== null) {
+            return $this->fallback->getStrWhere();
+        }
         return <<<SQL
         {$this->strColumn} IN (
           SELECT view_id
@@ -51,6 +66,9 @@ SQL;
      */
     public function getArrParams()
     {
+        if ($this->fallback !== null) {
+            return $this->fallback->getArrParams();
+        }
         return [Session::getInstance()->getUserID()];
     }
 
