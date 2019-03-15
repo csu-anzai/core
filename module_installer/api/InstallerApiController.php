@@ -137,8 +137,8 @@ class InstallerApiController implements ApiControllerInterface
         $manager = new PackagemanagerManager();
         $modules = $manager->getAvailablePackages();
         $result = [];
-        foreach ($modules as $objOneModule) {
-            $result[] = $objOneModule;
+        foreach ($modules as $module) {
+            $result[] = $module;
         }
 
         $result = $manager->sortPackages($result, true);
