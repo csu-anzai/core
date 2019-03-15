@@ -141,6 +141,8 @@ class InstallerApiController implements ApiControllerInterface
             $result[] = $objOneModule;
         }
 
+        $result = $manager->sortPackages($result, true);
+
         return [
             "modules" => $result,
         ];
