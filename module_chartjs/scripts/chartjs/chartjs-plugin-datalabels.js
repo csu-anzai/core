@@ -2,77 +2,39 @@
  * @license
  * chartjs-plugin-datalabels
  * http://chartjs.org/
- * Version: 0.4.0
+ * Version: 0.5.0
  *
  * Copyright 2018 Chart.js Contributors
  * Released under the MIT license
  * https://github.com/chartjs/chartjs-plugin-datalabels/blob/master/LICENSE.md
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('chartjs')) :
-	typeof define === 'function' && define.amd ? define("chartjs-plugin-datalabels", ['chartjs'], factory) :
-	(factory(global.Chart));
+typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('chart.js')) :
+typeof define === 'function' && define.amd ? define("chartjs-plugin-datalabels",['chartjs'], factory) :
+(global.ChartDataLabels = factory(global.Chart));
 }(this, (function (Chart) { 'use strict';
 
 Chart = Chart && Chart.hasOwnProperty('default') ? Chart['default'] : Chart;
 
-'use strict';
+var helpers = Chart.helpers;
 
-var helpers$2 = Chart.helpers;
-
-var HitBox = function() {
-	this._rect = null;
-	this._rotation = 0;
-};
-
-helpers$2.extend(HitBox.prototype, {
-	update: function(center, rect, rotation) {
-		var margin = 1;
-		var cx = center.x;
-		var cy = center.y;
-		var x = cx + rect.x;
-		var y = cy + rect.y;
-
-		this._rotation = rotation;
-		this._rect = {
-			x0: x - margin,
-			y0: y - margin,
-			x1: x + rect.w + margin * 2,
-			y1: y + rect.h + margin * 2,
-			cx: cx,
-			cy: cy,
-		};
-	},
-
-	contains: function(x, y) {
-		var me = this;
-		var rect = me._rect;
-		var cx, cy, r, rx, ry;
-
-		if (!rect) {
-			return false;
+var devicePixelRatio = (function() {
+	if (typeof window !== 'undefined') {
+		if (window.devicePixelRatio) {
+			return window.devicePixelRatio;
 		}
 
-		cx = rect.cx;
-		cy = rect.cy;
-		r = me._rotation;
-		rx = cx + (x - cx) * Math.cos(r) + (y - cy) * Math.sin(r);
-		ry = cy - (x - cx) * Math.sin(r) + (y - cy) * Math.cos(r);
-
-		return !(rx < rect.x0
-			|| ry < rect.y0
-			|| rx > rect.x1
-			|| ry > rect.y1);
+		// devicePixelRatio is undefined on IE10
+		// https://stackoverflow.com/a/20204180/8837887
+		// https://github.com/chartjs/chartjs-plugin-datalabels/issues/85
+		var screen = window.screen;
+		if (screen) {
+			return (screen.deviceXDPI || 1) / (screen.logicalXDPI || 1);
+		}
 	}
-});
 
-'use strict';
-
-var helpers$3 = Chart.helpers;
-
-var devicePixelRatio = typeof window !== 'undefined'
-	? window.devicePixelRatio
-	: 1;
+	return 1;
+}());
 
 var utils = {
 	// @todo move this in Chart.helpers.toTextLines
@@ -87,7 +49,7 @@ var utils = {
 				lines.unshift.apply(lines, input.split('\n'));
 			} else if (Array.isArray(input)) {
 				inputs.push.apply(inputs, input);
-			} else if (!helpers$3.isNullOrUndef(inputs)) {
+			} else if (!helpers.isNullOrUndef(inputs)) {
 				lines.unshift('' + input);
 			}
 		}
@@ -98,7 +60,7 @@ var utils = {
 	// @todo move this method in Chart.helpers.canvas.toFont (deprecates helpers.fontString)
 	// @see https://developer.mozilla.org/en-US/docs/Web/CSS/font
 	toFontString: function(font) {
-		if (!font || helpers$3.isNullOrUndef(font.size) || helpers$3.isNullOrUndef(font.family)) {
+		if (!font || helpers.isNullOrUndef(font.size) || helpers.isNullOrUndef(font.family)) {
 			return null;
 		}
 
@@ -134,13 +96,13 @@ var utils = {
 	// @todo move this method in Chart.helpers.options.toFont
 	parseFont: function(value) {
 		var global = Chart.defaults.global;
-		var size = helpers$3.valueOrDefault(value.size, global.defaultFontSize);
+		var size = helpers.valueOrDefault(value.size, global.defaultFontSize);
 		var font = {
-			family: helpers$3.valueOrDefault(value.family, global.defaultFontFamily),
-			lineHeight: helpers$3.options.toLineHeight(value.lineHeight, size),
+			family: helpers.valueOrDefault(value.family, global.defaultFontFamily),
+			lineHeight: helpers.options.toLineHeight(value.lineHeight, size),
 			size: size,
-			style: helpers$3.valueOrDefault(value.style, global.defaultFontStyle),
-			weight: helpers$3.valueOrDefault(value.weight, null),
+			style: helpers.valueOrDefault(value.style, global.defaultFontStyle),
+			weight: helpers.valueOrDefault(value.weight, null),
 			string: ''
 		};
 
@@ -193,8 +155,6 @@ var utils = {
 	}
 };
 
-'use strict';
-
 function orient(point, origin) {
 	var x0 = origin.x;
 	var y0 = origin.y;
@@ -209,6 +169,7 @@ function orient(point, origin) {
 	var dx = point.x - x0;
 	var dy = point.y - y0;
 	var ln = Math.sqrt(dx * dx + dy * dy);
+
 	return {
 		x: ln ? dx / ln : 0,
 		y: ln ? dy / ln : -1
@@ -241,7 +202,7 @@ function aligned(x, y, vx, vy, align) {
 		vy = -vy;
 		break;
 	case 'end':
-		// keep the natural orientation
+		// keep natural orientation
 		break;
 	default:
 		// clockwise rotation (in degree)
@@ -259,105 +220,196 @@ function aligned(x, y, vx, vy, align) {
 	};
 }
 
+// Line clipping (Cohen–Sutherland algorithm)
+// https://en.wikipedia.org/wiki/Cohen–Sutherland_algorithm
+
+var R_INSIDE = 0;
+var R_LEFT = 1;
+var R_RIGHT = 2;
+var R_BOTTOM = 4;
+var R_TOP = 8;
+
+function region(x, y, rect) {
+	var res = R_INSIDE;
+
+	if (x < rect.left) {
+		res |= R_LEFT;
+	} else if (x > rect.right) {
+		res |= R_RIGHT;
+	}
+	if (y < rect.top) {
+		res |= R_TOP;
+	} else if (y > rect.bottom) {
+		res |= R_BOTTOM;
+	}
+
+	return res;
+}
+
+function clipped(segment, area) {
+	var x0 = segment.x0;
+	var y0 = segment.y0;
+	var x1 = segment.x1;
+	var y1 = segment.y1;
+	var r0 = region(x0, y0, area);
+	var r1 = region(x1, y1, area);
+	var r, x, y;
+
+	// eslint-disable-next-line no-constant-condition
+	while (true) {
+		if (!(r0 | r1) || (r0 & r1)) {
+			// both points inside or on the same side: no clipping
+			break;
+		}
+
+		// at least one point is outside
+		r = r0 || r1;
+
+		if (r & R_TOP) {
+			x = x0 + (x1 - x0) * (area.top - y0) / (y1 - y0);
+			y = area.top;
+		} else if (r & R_BOTTOM) {
+			x = x0 + (x1 - x0) * (area.bottom - y0) / (y1 - y0);
+			y = area.bottom;
+		} else if (r & R_RIGHT) {
+			y = y0 + (y1 - y0) * (area.right - x0) / (x1 - x0);
+			x = area.right;
+		} else if (r & R_LEFT) {
+			y = y0 + (y1 - y0) * (area.left - x0) / (x1 - x0);
+			x = area.left;
+		}
+
+		if (r === r0) {
+			x0 = x;
+			y0 = y;
+			r0 = region(x0, y0, area);
+		} else {
+			x1 = x;
+			y1 = y;
+			r1 = region(x1, y1, area);
+		}
+	}
+
+	return {
+		x0: x0,
+		x1: x1,
+		y0: y0,
+		y1: y1
+	};
+}
+
+function compute(range, config) {
+	var anchor = config.anchor;
+	var segment = range;
+	var x, y;
+
+	if (config.clamp) {
+		segment = clipped(segment, config.area);
+	}
+
+	if (anchor === 'start') {
+		x = segment.x0;
+		y = segment.y0;
+	} else if (anchor === 'end') {
+		x = segment.x1;
+		y = segment.y1;
+	} else {
+		x = (segment.x0 + segment.x1) / 2;
+		y = (segment.y0 + segment.y1) / 2;
+	}
+
+	return aligned(x, y, range.vx, range.vy, config.align);
+}
+
 var positioners = {
-	arc: function(vm, anchor, align) {
+	arc: function(vm, config) {
 		var angle = (vm.startAngle + vm.endAngle) / 2;
 		var vx = Math.cos(angle);
 		var vy = Math.sin(angle);
 		var r0 = vm.innerRadius;
 		var r1 = vm.outerRadius;
-		var d;
 
-		if (anchor === 'start') {
-			d = r0;
-		} else if (anchor === 'end') {
-			d = r1;
+		return compute({
+			x0: vm.x + vx * r0,
+			y0: vm.y + vy * r0,
+			x1: vm.x + vx * r1,
+			y1: vm.y + vy * r1,
+			vx: vx,
+			vy: vy
+		}, config);
+	},
+
+	point: function(vm, config) {
+		var v = orient(vm, config.origin);
+		var rx = v.x * vm.radius;
+		var ry = v.y * vm.radius;
+
+		return compute({
+			x0: vm.x - rx,
+			y0: vm.y - ry,
+			x1: vm.x + rx,
+			y1: vm.y + ry,
+			vx: v.x,
+			vy: v.y
+		}, config);
+	},
+
+	rect: function(vm, config) {
+		var v = orient(vm, config.origin);
+		var x = vm.x;
+		var y = vm.y;
+		var sx = 0;
+		var sy = 0;
+
+		if (vm.horizontal) {
+			x = Math.min(vm.x, vm.base);
+			sx = Math.abs(vm.base - vm.x);
 		} else {
-			d = (r0 + r1) / 2;
+			y = Math.min(vm.y, vm.base);
+			sy = Math.abs(vm.base - vm.y);
 		}
 
-		return aligned(
-			vm.x + vx * d,
-			vm.y + vy * d,
-			vx,
-			vy,
-			align);
+		return compute({
+			x0: x,
+			y0: y + sy,
+			x1: x + sx,
+			y1: y,
+			vx: v.x,
+			vy: v.y
+		}, config);
 	},
 
-	point: function(vm, anchor, align, origin) {
-		var v = orient(vm, origin);
-		var r = vm.radius;
-		var d = 0;
+	fallback: function(vm, config) {
+		var v = orient(vm, config.origin);
 
-		if (anchor === 'start') {
-			d = -r;
-		} else if (anchor === 'end') {
-			d = r;
-		}
-
-		return aligned(
-			vm.x + v.x * d,
-			vm.y + v.y * d,
-			v.x,
-			v.y,
-			align);
-	},
-
-	rect: function(vm, anchor, align, origin) {
-		var horizontal = vm.horizontal;
-		var size = Math.abs(vm.base - (horizontal ? vm.x : vm.y));
-		var x = horizontal ? Math.min(vm.x, vm.base) : vm.x;
-		var y = horizontal ? vm.y : Math.min(vm.y, vm.base);
-		var v = orient(vm, origin);
-
-		if (anchor === 'center') {
-			if (horizontal) {
-				x += size / 2;
-			} else {
-				y += size / 2;
-			}
-		} else if (anchor === 'start' && !horizontal) {
-			y += size;
-		} else if (anchor === 'end' && horizontal) {
-			x += size;
-		}
-
-		return aligned(
-			x,
-			y,
-			v.x,
-			v.y,
-			align);
-	},
-
-	fallback: function(vm, anchor, align, origin) {
-		var v = orient(vm, origin);
-		return aligned(
-			vm.x,
-			vm.y,
-			v.x,
-			v.y,
-			align);
+		return compute({
+			x0: vm.x,
+			y0: vm.y,
+			x1: vm.x,
+			y1: vm.y,
+			vx: v.x,
+			vy: v.y
+		}, config);
 	}
 };
-
-'use strict';
 
 var helpers$1 = Chart.helpers;
 var rasterize = utils.rasterize;
 
-function boundingRects(size, padding) {
-	var th = size.height;
-	var tw = size.width;
+function boundingRects(model) {
+	var borderWidth = model.borderWidth || 0;
+	var padding = model.padding;
+	var th = model.size.height;
+	var tw = model.size.width;
 	var tx = -tw / 2;
 	var ty = -th / 2;
 
 	return {
 		frame: {
-			x: tx - padding.left,
-			y: ty - padding.top,
-			w: tw + padding.width,
-			h: th + padding.height,
+			x: tx - padding.left - borderWidth,
+			y: ty - padding.top - borderWidth,
+			w: tw + padding.width + borderWidth * 2,
+			h: th + padding.height + borderWidth * 2
 		},
 		text: {
 			x: tx,
@@ -399,42 +451,6 @@ function getPositioner(el) {
 	return positioners.fallback;
 }
 
-function coordinates(el, model, rect) {
-	var point = model.positioner(el._view, model.anchor, model.align, model.origin);
-	var vx = point.vx;
-	var vy = point.vy;
-
-	if (!vx && !vy) {
-		// if aligned center, we don't want to offset the center point
-		return {x: point.x, y: point.y};
-	}
-
-	// include borders to the bounding rect
-	var borderWidth = model.borderWidth || 0;
-	var w = (rect.w + borderWidth * 2);
-	var h = (rect.h + borderWidth * 2);
-
-	// take in account the label rotation
-	var rotation = model.rotation;
-	var dx = Math.abs(w / 2 * Math.cos(rotation)) + Math.abs(h / 2 * Math.sin(rotation));
-	var dy = Math.abs(w / 2 * Math.sin(rotation)) + Math.abs(h / 2 * Math.cos(rotation));
-
-	// scale the unit vector (vx, vy) to get at least dx or dy equal to w or h respectively
-	// (else we would calculate the distance to the ellipse inscribed in the bounding rect)
-	var vs = 1 / Math.max(Math.abs(vx), Math.abs(vy));
-	dx *= vx * vs;
-	dy *= vy * vs;
-
-	// finally, include the explicit offset
-	dx += model.offset * vx;
-	dy += model.offset * vy;
-
-	return {
-		x: point.x + dx,
-		y: point.y + dy
-	};
-}
-
 function drawFrame(ctx, rect, model) {
 	var bgColor = model.backgroundColor;
 	var borderColor = model.borderColor;
@@ -448,10 +464,10 @@ function drawFrame(ctx, rect, model) {
 
 	helpers$1.canvas.roundedRect(
 		ctx,
-		rasterize(rect.x) - borderWidth / 2,
-		rasterize(rect.y) - borderWidth / 2,
-		rasterize(rect.w) + borderWidth,
-		rasterize(rect.h) + borderWidth,
+		rasterize(rect.x) + borderWidth / 2,
+		rasterize(rect.y) + borderWidth / 2,
+		rasterize(rect.w) - borderWidth,
+		rasterize(rect.h) - borderWidth,
 		model.borderRadius);
 
 	ctx.closePath();
@@ -469,50 +485,103 @@ function drawFrame(ctx, rect, model) {
 	}
 }
 
+function textGeometry(rect, align, font) {
+	var h = font.lineHeight;
+	var w = rect.w;
+	var x = rect.x;
+	var y = rect.y + h / 2;
+
+	if (align === 'center') {
+		x += w / 2;
+	} else if (align === 'end' || align === 'right') {
+		x += w;
+	}
+
+	return {
+		h: h,
+		w: w,
+		x: x,
+		y: y
+	};
+}
+
+function drawTextLine(ctx, text, cfg) {
+	var shadow = ctx.shadowBlur;
+	var stroked = cfg.stroked;
+	var x = rasterize(cfg.x);
+	var y = rasterize(cfg.y);
+	var w = rasterize(cfg.w);
+
+	if (stroked) {
+		ctx.strokeText(text, x, y, w);
+	}
+
+	if (cfg.filled) {
+		if (shadow && stroked) {
+			// Prevent drawing shadow on both the text stroke and fill, so
+			// if the text is stroked, remove the shadow for the text fill.
+			ctx.shadowBlur = 0;
+		}
+
+		ctx.fillText(text, x, y, w);
+
+		if (shadow && stroked) {
+			ctx.shadowBlur = shadow;
+		}
+	}
+}
+
 function drawText(ctx, lines, rect, model) {
 	var align = model.textAlign;
-	var font = model.font;
-	var lh = font.lineHeight;
 	var color = model.color;
+	var filled = !!color;
+	var font = model.font;
 	var ilen = lines.length;
-	var x, y, i;
+	var strokeColor = model.textStrokeColor;
+	var strokeWidth = model.textStrokeWidth;
+	var stroked = strokeColor && strokeWidth;
+	var i;
 
-	if (!ilen || !color) {
+	if (!ilen || (!filled && !stroked)) {
 		return;
 	}
 
-	x = rect.x;
-	y = rect.y + lh / 2;
+	// Adjust coordinates based on text alignment and line height
+	rect = textGeometry(rect, align, font);
 
-	if (align === 'center') {
-		x += rect.w / 2;
-	} else if (align === 'end' || align === 'right') {
-		x += rect.w;
-	}
-
-	ctx.font = model.font.string;
-	ctx.fillStyle = color;
+	ctx.font = font.string;
 	ctx.textAlign = align;
 	ctx.textBaseline = 'middle';
+	ctx.shadowBlur = model.textShadowBlur;
+	ctx.shadowColor = model.textShadowColor;
 
-	for (i = 0; i < ilen; ++i) {
-		ctx.fillText(
-			lines[i],
-			rasterize(x),
-			rasterize(y),
-			rasterize(rect.w));
+	if (filled) {
+		ctx.fillStyle = color;
+	}
+	if (stroked) {
+		ctx.lineJoin = 'round';
+		ctx.lineWidth = strokeWidth;
+		ctx.strokeStyle = strokeColor;
+	}
 
-		y += lh;
+	for (i = 0, ilen = lines.length; i < ilen; ++i) {
+		drawTextLine(ctx, lines[i], {
+			stroked: stroked,
+			filled: filled,
+			w: rect.w,
+			x: rect.x,
+			y: rect.y + rect.h * i
+		});
 	}
 }
 
 var Label = function(config, ctx, el, index) {
 	var me = this;
 
-	me._hitbox = new HitBox();
 	me._config = config;
 	me._index = index;
 	me._model = null;
+	me._rects = null;
 	me._ctx = ctx;
 	me._el = el;
 };
@@ -521,21 +590,25 @@ helpers$1.extend(Label.prototype, {
 	/**
 	 * @private
 	 */
-	_modelize: function(lines, config, context) {
+	_modelize: function(display, lines, config, context) {
 		var me = this;
 		var index = me._index;
 		var resolve = helpers$1.options.resolve;
 		var font = utils.parseFont(resolve([config.font, {}], context, index));
+		var color = resolve([config.color, Chart.defaults.global.defaultFontColor], context, index);
 
 		return {
 			align: resolve([config.align, 'center'], context, index),
 			anchor: resolve([config.anchor, 'center'], context, index),
+			area: context.chart.chartArea,
 			backgroundColor: resolve([config.backgroundColor, null], context, index),
 			borderColor: resolve([config.borderColor, null], context, index),
 			borderRadius: resolve([config.borderRadius, 0], context, index),
 			borderWidth: resolve([config.borderWidth, 0], context, index),
+			clamp: resolve([config.clamp, false], context, index),
 			clip: resolve([config.clip, false], context, index),
-			color: resolve([config.color, Chart.defaults.global.defaultFontColor], context, index),
+			color: color,
+			display: display,
 			font: font,
 			lines: lines,
 			offset: resolve([config.offset, 0], context, index),
@@ -545,45 +618,72 @@ helpers$1.extend(Label.prototype, {
 			positioner: getPositioner(me._el),
 			rotation: resolve([config.rotation, 0], context, index) * (Math.PI / 180),
 			size: utils.textSize(me._ctx, lines, font),
-			textAlign: resolve([config.textAlign, 'start'], context, index)
+			textAlign: resolve([config.textAlign, 'start'], context, index),
+			textShadowBlur: resolve([config.textShadowBlur, 0], context, index),
+			textShadowColor: resolve([config.textShadowColor, color], context, index),
+			textStrokeColor: resolve([config.textStrokeColor, color], context, index),
+			textStrokeWidth: resolve([config.textStrokeWidth, 0], context, index)
 		};
 	},
 
 	update: function(context) {
 		var me = this;
 		var model = null;
+		var rects = null;
 		var index = me._index;
 		var config = me._config;
 		var value, label, lines;
 
-		if (helpers$1.options.resolve([config.display, true], context, index)) {
+		// We first resolve the display option (separately) to avoid computing
+		// other options in case the label is hidden (i.e. display: false).
+		var display = helpers$1.options.resolve([config.display, true], context, index);
+
+		if (display) {
 			value = context.dataset.data[index];
 			label = helpers$1.valueOrDefault(helpers$1.callback(config.formatter, [value, context]), value);
 			lines = helpers$1.isNullOrUndef(label) ? [] : utils.toTextLines(label);
-			model = lines.length ? me._modelize(lines, config, context) : null;
+
+			if (lines.length) {
+				model = me._modelize(display, lines, config, context);
+				rects = boundingRects(model);
+			}
 		}
 
 		me._model = model;
+		me._rects = rects;
 	},
 
-	draw: function(chart) {
+	geometry: function() {
+		return this._rects ? this._rects.frame : {};
+	},
+
+	rotation: function() {
+		return this._model ? this._model.rotation : 0;
+	},
+
+	visible: function() {
+		return this._model && this._model.opacity;
+	},
+
+	model: function() {
+		return this._model;
+	},
+
+	draw: function(chart, center) {
 		var me = this;
 		var ctx = chart.ctx;
 		var model = me._model;
-		var rects, center, area;
+		var rects = me._rects;
+		var area;
 
-		if (!model || !model.opacity) {
+		if (!this.visible()) {
 			return;
 		}
-
-		rects = boundingRects(model.size, model.padding);
-		center = coordinates(me._el, model, rects.frame);
-		me._hitbox.update(center, rects.frame, model.rotation);
 
 		ctx.save();
 
 		if (model.clip) {
-			area = chart.chartArea;
+			area = model.area;
 			ctx.beginPath();
 			ctx.rect(
 				area.left,
@@ -601,20 +701,333 @@ helpers$1.extend(Label.prototype, {
 		drawText(ctx, model.lines, rects.text, model);
 
 		ctx.restore();
-	},
-
-	contains: function(x, y) {
-		return this._hitbox.contains(x, y);
 	}
 });
+
+var helpers$2 = Chart.helpers;
+
+var MIN_INTEGER = Number.MIN_SAFE_INTEGER || -9007199254740991;
+var MAX_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
+
+function rotated(point, center, angle) {
+	var cos = Math.cos(angle);
+	var sin = Math.sin(angle);
+	var cx = center.x;
+	var cy = center.y;
+
+	return {
+		x: cx + cos * (point.x - cx) - sin * (point.y - cy),
+		y: cy + sin * (point.x - cx) + cos * (point.y - cy)
+	};
+}
+
+function projected(points, axis) {
+	var min = MAX_INTEGER;
+	var max = MIN_INTEGER;
+	var origin = axis.origin;
+	var i, pt, vx, vy, dp;
+
+	for (i = 0; i < points.length; ++i) {
+		pt = points[i];
+		vx = pt.x - origin.x;
+		vy = pt.y - origin.y;
+		dp = axis.vx * vx + axis.vy * vy;
+		min = Math.min(min, dp);
+		max = Math.max(max, dp);
+	}
+
+	return {
+		min: min,
+		max: max
+	};
+}
+
+function toAxis(p0, p1) {
+	var vx = p1.x - p0.x;
+	var vy = p1.y - p0.y;
+	var ln = Math.sqrt(vx * vx + vy * vy);
+
+	return {
+		vx: (p1.x - p0.x) / ln,
+		vy: (p1.y - p0.y) / ln,
+		origin: p0,
+		ln: ln
+	};
+}
+
+var HitBox = function() {
+	this._rotation = 0;
+	this._rect = {
+		x: 0,
+		y: 0,
+		w: 0,
+		h: 0
+	};
+};
+
+helpers$2.extend(HitBox.prototype, {
+	center: function() {
+		var r = this._rect;
+		return {
+			x: r.x + r.w / 2,
+			y: r.y + r.h / 2
+		};
+	},
+
+	update: function(center, rect, rotation) {
+		this._rotation = rotation;
+		this._rect = {
+			x: rect.x + center.x,
+			y: rect.y + center.y,
+			w: rect.w,
+			h: rect.h
+		};
+	},
+
+	contains: function(point) {
+		var me = this;
+		var margin = 1;
+		var rect = me._rect;
+
+		point = rotated(point, me.center(), -me._rotation);
+
+		return !(point.x < rect.x - margin
+			|| point.y < rect.y - margin
+			|| point.x > rect.x + rect.w + margin * 2
+			|| point.y > rect.y + rect.h + margin * 2);
+	},
+
+	// Separating Axis Theorem
+	// https://gamedevelopment.tutsplus.com/tutorials/collision-detection-using-the-separating-axis-theorem--gamedev-169
+	intersects: function(other) {
+		var r0 = this._points();
+		var r1 = other._points();
+		var axes = [
+			toAxis(r0[0], r0[1]),
+			toAxis(r0[0], r0[3])
+		];
+		var i, pr0, pr1;
+
+		if (this._rotation !== other._rotation) {
+			// Only separate with r1 axis if the rotation is different,
+			// else it's enough to separate r0 and r1 with r0 axis only!
+			axes.push(
+				toAxis(r1[0], r1[1]),
+				toAxis(r1[0], r1[3])
+			);
+		}
+
+		for (i = 0; i < axes.length; ++i) {
+			pr0 = projected(r0, axes[i]);
+			pr1 = projected(r1, axes[i]);
+
+			if (pr0.max < pr1.min || pr1.max < pr0.min) {
+				return false;
+			}
+		}
+
+		return true;
+	},
+
+	/**
+	 * @private
+	 */
+	_points: function() {
+		var me = this;
+		var rect = me._rect;
+		var angle = me._rotation;
+		var center = me.center();
+
+		return [
+			rotated({x: rect.x, y: rect.y}, center, angle),
+			rotated({x: rect.x + rect.w, y: rect.y}, center, angle),
+			rotated({x: rect.x + rect.w, y: rect.y + rect.h}, center, angle),
+			rotated({x: rect.x, y: rect.y + rect.h}, center, angle)
+		];
+	}
+});
+
+function coordinates(view, model, geometry) {
+	var point = model.positioner(view, model);
+	var vx = point.vx;
+	var vy = point.vy;
+
+	if (!vx && !vy) {
+		// if aligned center, we don't want to offset the center point
+		return {x: point.x, y: point.y};
+	}
+
+	var w = geometry.w;
+	var h = geometry.h;
+
+	// take in account the label rotation
+	var rotation = model.rotation;
+	var dx = Math.abs(w / 2 * Math.cos(rotation)) + Math.abs(h / 2 * Math.sin(rotation));
+	var dy = Math.abs(w / 2 * Math.sin(rotation)) + Math.abs(h / 2 * Math.cos(rotation));
+
+	// scale the unit vector (vx, vy) to get at least dx or dy equal to
+	// w or h respectively (else we would calculate the distance to the
+	// ellipse inscribed in the bounding rect)
+	var vs = 1 / Math.max(Math.abs(vx), Math.abs(vy));
+	dx *= vx * vs;
+	dy *= vy * vs;
+
+	// finally, include the explicit offset
+	dx += model.offset * vx;
+	dy += model.offset * vy;
+
+	return {
+		x: point.x + dx,
+		y: point.y + dy
+	};
+}
+
+function collide(labels, collider) {
+	var i, j, s0, s1;
+
+	// IMPORTANT Iterate in the reverse order since items at the end of the
+	// list have an higher weight/priority and thus should be less impacted
+	// by the overlapping strategy.
+
+	for (i = labels.length - 1; i >= 0; --i) {
+		s0 = labels[i].$layout;
+
+		for (j = i - 1; j >= 0 && s0._visible; --j) {
+			s1 = labels[j].$layout;
+
+			if (s1._visible && s0._box.intersects(s1._box)) {
+				collider(s0, s1);
+			}
+		}
+	}
+
+	return labels;
+}
+
+function compute$1(labels) {
+	var i, ilen, label, state, geometry, center;
+
+	// Initialize labels for overlap detection
+	for (i = 0, ilen = labels.length; i < ilen; ++i) {
+		label = labels[i];
+		state = label.$layout;
+
+		if (state._visible) {
+			geometry = label.geometry();
+			center = coordinates(label._el._model, label.model(), geometry);
+			state._box.update(center, geometry, label.rotation());
+		}
+	}
+
+	// Auto hide overlapping labels
+	return collide(labels, function(s0, s1) {
+		var h0 = s0._hidable;
+		var h1 = s1._hidable;
+
+		if ((h0 && h1) || h1) {
+			s1._visible = false;
+		} else if (h0) {
+			s0._visible = false;
+		}
+	});
+}
+
+var layout = {
+	prepare: function(datasets) {
+		var labels = [];
+		var i, j, ilen, jlen, label;
+
+		for (i = 0, ilen = datasets.length; i < ilen; ++i) {
+			for (j = 0, jlen = datasets[i].length; j < jlen; ++j) {
+				label = datasets[i][j];
+				labels.push(label);
+				label.$layout = {
+					_box: new HitBox(),
+					_hidable: false,
+					_visible: true,
+					_set: i,
+					_idx: j
+				};
+			}
+		}
+
+		// TODO New `z` option: labels with a higher z-index are drawn
+		// of top of the ones with a lower index. Lowest z-index labels
+		// are also discarded first when hiding overlapping labels.
+		labels.sort(function(a, b) {
+			var sa = a.$layout;
+			var sb = b.$layout;
+
+			return sa._idx === sb._idx
+				? sa._set - sb._set
+				: sb._idx - sa._idx;
+		});
+
+		this.update(labels);
+
+		return labels;
+	},
+
+	update: function(labels) {
+		var dirty = false;
+		var i, ilen, label, model, state;
+
+		for (i = 0, ilen = labels.length; i < ilen; ++i) {
+			label = labels[i];
+			model = label.model();
+			state = label.$layout;
+			state._hidable = model && model.display === 'auto';
+			state._visible = label.visible();
+			dirty |= state._hidable;
+		}
+
+		if (dirty) {
+			compute$1(labels);
+		}
+	},
+
+	lookup: function(labels, point) {
+		var i, state;
+
+		// IMPORTANT Iterate in the reverse order since items at the end of
+		// the list have an higher z-index, thus should be picked first.
+
+		for (i = labels.length - 1; i >= 0; --i) {
+			state = labels[i].$layout;
+
+			if (state && state._visible && state._box.contains(point)) {
+				return {
+					dataset: state._set,
+					label: labels[i]
+				};
+			}
+		}
+
+		return null;
+	},
+
+	draw: function(chart, labels) {
+		var i, ilen, label, state, geometry, center;
+
+		for (i = 0, ilen = labels.length; i < ilen; ++i) {
+			label = labels[i];
+			state = label.$layout;
+
+			if (state._visible) {
+				geometry = label.geometry();
+				center = coordinates(label._el._view, label.model(), geometry);
+				state._box.update(center, geometry, label.rotation());
+				label.draw(chart, center);
+			}
+		}
+	}
+};
 
 /**
  * @module Options
  */
 
-'use strict';
-
-var helpers$4 = Chart.helpers;
+var helpers$3 = Chart.helpers;
 
 var defaults = {
 	/**
@@ -668,6 +1081,15 @@ var defaults = {
 	borderWidth: 0,
 
 	/**
+	 * When `true`, the anchor position is calculated based on the visible
+	 * geometry of the associated element (i.e. part inside the chart area).
+	 * @see https://github.com/chartjs/chartjs-plugin-datalabels/issues/98
+	 * @member {Boolean|Array|Function}
+	 * @default false
+	 */
+	clamp: false,
+
+	/**
 	 * Clip the label drawing to the chart area.
 	 * @member {Boolean|Array|Function}
 	 * @default false (no clipping)
@@ -682,8 +1104,10 @@ var defaults = {
 	color: undefined,
 
 	/**
-	 * Whether to display labels global (boolean) or per data (function)
-	 * @member {Boolean|Array|Function}
+	 * When `false`, the label is hidden and associated options are not
+	 * calculated, else if `true`, the label is drawn. If `auto`, the
+	 * label is automatically hidden if it appears under another label.
+	 * @member {Boolean|String|Array|Function}
 	 * @default true
 	 */
 	display: true,
@@ -705,6 +1129,57 @@ var defaults = {
 		style: undefined,
 		weight: null
 	},
+
+	/**
+	 * Allows to customize the label text by transforming input data.
+	 * @member {Function|null}
+	 * @prop {*} value - The data value
+	 * @prop {Object} context - The function unique argument:
+	 * @prop {Chart} context.chart - The current chart
+	 * @prop {Number} context.dataIndex - Index of the current data
+	 * @prop {Object} context.dataset - The current dataset
+	 * @prop {Number} context.datasetIndex - Index of the current dataset
+	 * @default data[index]
+	 */
+	formatter: function(value) {
+		if (helpers$3.isNullOrUndef(value)) {
+			return null;
+		}
+
+		var label = value;
+		var keys, klen, k;
+		if (helpers$3.isObject(value)) {
+			if (!helpers$3.isNullOrUndef(value.label)) {
+				label = value.label;
+			} else if (!helpers$3.isNullOrUndef(value.r)) {
+				label = value.r;
+			} else {
+				label = '';
+				keys = Object.keys(value);
+				for (k = 0, klen = keys.length; k < klen; ++k) {
+					label += (k !== 0 ? ', ' : '') + keys[k] + ': ' + value[keys[k]];
+				}
+			}
+		}
+		return '' + label;
+	},
+
+	/**
+	 * Event listeners, where the property is the type of the event to listen and the value
+	 * a callback with a unique `context` argument containing the same information as for
+	 * scriptable options. If a callback explicitly returns `true`, the label is updated
+	 * with the current context and the chart re-rendered. This allows to implement visual
+	 * interactions with labels such as highlight, selection, etc.
+	 *
+	 * Event currently supported are:
+	 * - 'click': a mouse click is detected within a label
+	 * - 'enter': the mouse enters a label
+	 * - 'leave': the mouse leaves a label
+	 *
+	 * @member {Object}
+	 * @default {}
+	 */
+	listeners: {},
 
 	/**
 	 * The distance (in pixels) to pull the label away from the anchor point, the direction
@@ -754,64 +1229,40 @@ var defaults = {
 	textAlign: 'start',
 
 	/**
-	 * Allows to customize the label text by transforming input data.
-	 * @member {Function|null}
-	 * @prop {*} value - The data value
-	 * @prop {Object} context - The function unique argument:
-	 * @prop {Chart} context.chart - The current chart
-	 * @prop {Number} context.dataIndex - Index of the current data
-	 * @prop {Object} context.dataset - The current dataset
-	 * @prop {Number} context.datasetIndex - Index of the current dataset
-	 * @default data[index]
+	 * The stroke color used to draw the label text. If this options is
+	 * not set (default), the value of the `color` option will be used.
+	 * @member {String|Array|Function|null}
+	 * @default color
 	 */
-	formatter: function(value) {
-		if (helpers$4.isNullOrUndef(value)) {
-			return null;
-		}
-
-		var label = value;
-		var keys, klen, k;
-		if (helpers$4.isObject(value)) {
-			if (!helpers$4.isNullOrUndef(value.label)) {
-				label = value.label;
-			} else if (!helpers$4.isNullOrUndef(value.r)) {
-				label = value.r;
-			} else {
-				label = '';
-				keys = Object.keys(value);
-				for (k = 0, klen = keys.length; k < klen; ++k) {
-					label += (k !== 0 ? ', ' : '') + keys[k] + ': ' + value[keys[k]];
-				}
-			}
-		}
-		return '' + label;
-	},
+	textStrokeColor: undefined,
 
 	/**
-	 * Event listeners, where the property is the type of the event to listen and the value
-	 * a callback with a unique `context` argument containing the same information as for
-	 * scriptable options. If a callback explicitly returns `true`, the label is updated
-	 * with the current context and the chart re-rendered. This allows to implement visual
-	 * interactions with labels such as highlight, selection, etc.
-	 *
-	 * Event currently supported are:
-	 * - 'click': a mouse click is detected within a label
-	 * - 'enter': the mouse enters a label
-	 * -' leave': the mouse leaves a label
-	 *
-	 * @member {Object}
-	 * @default {}
+	 * The width of the stroke for the label text.
+	 * @member {Number|Array|Function}
+	 * @default 0 (no stroke)
 	 */
-	listeners: {}
+	textStrokeWidth: 0,
+
+	/**
+	 * The amount of blur applied to shadow under the label text.
+	 * @member {Number|Array|Function}
+	 * @default 0 (no shadow)
+	 */
+	textShadowBlur: 0,
+
+	/**
+	 * The color of the shadow under the label text.
+	 * @member {String|Array|Function|null}
+	 * @default `color`
+	 */
+	textShadowColor: undefined,
 };
 
 /**
  * @see https://github.com/chartjs/Chart.js/issues/4176
  */
 
-'use strict';
-
-var helpers = Chart.helpers;
+var helpers$4 = Chart.helpers;
 var EXPANDO_KEY = '$datalabels';
 
 Chart.defaults.global.plugins.datalabels = defaults;
@@ -827,40 +1278,7 @@ function configure(dataset, options) {
 		override = {};
 	}
 
-	return helpers.merge(config, [options, override]);
-}
-
-function drawLabels(chart, datasetIndex) {
-	var meta = chart.getDatasetMeta(datasetIndex);
-	var elements = meta.data || [];
-	var ilen = elements.length;
-	var i, el, label;
-
-	for (i = 0; i < ilen; ++i) {
-		el = elements[i];
-		label = el[EXPANDO_KEY];
-		if (label) {
-			label.draw(chart);
-		}
-	}
-}
-
-function labelAtXY(chart, x, y) {
-	var items = chart[EXPANDO_KEY].labels;
-	var i, j, labels, label;
-
-	// Until we support z-index, let's hit test in the drawing reverse order
-	for (i = items.length - 1; i >= 0; --i) {
-		labels = items[i] || [];
-		for (j = labels.length - 1; j >= 0; --j) {
-			label = labels[j];
-			if (label.contains(x, y)) {
-				return {dataset: i, label: label};
-			}
-		}
-	}
-
-	return null;
+	return helpers$4.merge(config, [options, override]);
 }
 
 function dispatchEvent(chart, listeners, target) {
@@ -872,12 +1290,12 @@ function dispatchEvent(chart, listeners, target) {
 	var label = target.label;
 	var context = label.$context;
 
-	if (helpers.callback(callback, [context]) === true) {
+	if (helpers$4.callback(callback, [context]) === true) {
 		// Users are allowed to tweak the given context by injecting values that can be
 		// used in scriptable options to display labels differently based on the current
 		// event (e.g. highlight an hovered label). That's why we update the label with
 		// the output context and schedule a new chart render by setting it dirty.
-		chart[EXPANDO_KEY].dirty = true;
+		chart[EXPANDO_KEY]._dirty = true;
 		label.update(context);
 	}
 }
@@ -907,7 +1325,7 @@ function dispatchMoveEvents(chart, listeners, previous, target) {
 
 function handleMoveEvents(chart, event) {
 	var expando = chart[EXPANDO_KEY];
-	var listeners = expando.listeners;
+	var listeners = expando._listeners;
 	var previous, target;
 
 	if (!listeners.enter && !listeners.leave) {
@@ -915,19 +1333,20 @@ function handleMoveEvents(chart, event) {
 	}
 
 	if (event.type === 'mousemove') {
-		target = labelAtXY(chart, event.x, event.y);
+		target = layout.lookup(expando._labels, event);
 	} else if (event.type !== 'mouseout') {
 		return;
 	}
 
-	previous = expando.hovered;
-	expando.hovered = target;
+	previous = expando._hovered;
+	expando._hovered = target;
 	dispatchMoveEvents(chart, listeners, previous, target);
 }
 
 function handleClickEvents(chart, event) {
-	var handlers = chart[EXPANDO_KEY].listeners.click;
-	var target = handlers && labelAtXY(chart, event.x, event.y);
+	var expando = chart[EXPANDO_KEY];
+	var handlers = expando._listeners.click;
+	var target = handlers && layout.lookup(expando._labels, event);
 	if (target) {
 		dispatchEvent(chart, handlers, target);
 	}
@@ -935,26 +1354,27 @@ function handleClickEvents(chart, event) {
 
 Chart.defaults.global.plugins.datalabels = defaults;
 
-Chart.plugins.register({
+var plugin = {
 	id: 'datalabels',
 
 	beforeInit: function(chart) {
 		chart[EXPANDO_KEY] = {
-			actives: []
+			_actives: []
 		};
 	},
 
 	beforeUpdate: function(chart) {
 		var expando = chart[EXPANDO_KEY];
-		expando.listened = false;
-		expando.listeners = {};    // {event-type: {dataset-index: function}}
-		expando.labels = [];       // [dataset-index: [labels]]
+		expando._listened = false;
+		expando._listeners = {};     // {event-type: {dataset-index: function}}
+		expando._datasets = [];      // per dataset labels: [[Label]]
+		expando._labels = [];        // layouted labels: [Label]
 	},
 
 	afterDatasetUpdate: function(chart, args, options) {
 		var datasetIndex = args.index;
 		var expando = chart[EXPANDO_KEY];
-		var labels = expando.labels[datasetIndex] = [];
+		var labels = expando._datasets[datasetIndex] = [];
 		var visible = chart.isDatasetVisible(datasetIndex);
 		var dataset = chart.data.datasets[datasetIndex];
 		var config = configure(dataset, options);
@@ -988,29 +1408,33 @@ Chart.plugins.register({
 
 		// Store listeners at the chart level and per event type to optimize
 		// cases where no listeners are registered for a specific event
-		helpers.merge(expando.listeners, config.listeners || {}, {
+		helpers$4.merge(expando._listeners, config.listeners || {}, {
 			merger: function(key, target, source) {
 				target[key] = target[key] || {};
 				target[key][args.index] = source[key];
-				expando.listened = true;
+				expando._listened = true;
 			}
 		});
+	},
+
+	afterUpdate: function(chart, options) {
+		chart[EXPANDO_KEY]._labels = layout.prepare(
+			chart[EXPANDO_KEY]._datasets,
+			options);
 	},
 
 	// Draw labels on top of all dataset elements
 	// https://github.com/chartjs/chartjs-plugin-datalabels/issues/29
 	// https://github.com/chartjs/chartjs-plugin-datalabels/issues/32
 	afterDatasetsDraw: function(chart) {
-		for (var i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
-			drawLabels(chart, i);
-		}
+		layout.draw(chart, chart[EXPANDO_KEY]._labels);
 	},
 
 	beforeEvent: function(chart, event) {
 		// If there is no listener registered for this chart, `listened` will be false,
 		// meaning we can immediately ignore the incoming event and avoid useless extra
 		// computation for users who don't implement label interactions.
-		if (chart[EXPANDO_KEY].listened) {
+		if (chart[EXPANDO_KEY]._listened) {
 			switch (event.type) {
 			case 'mousemove':
 			case 'mouseout':
@@ -1026,8 +1450,8 @@ Chart.plugins.register({
 
 	afterEvent: function(chart) {
 		var expando = chart[EXPANDO_KEY];
-		var previous = expando.actives;
-		var actives = expando.actives = chart.lastActive || [];  // public API?!
+		var previous = expando._actives;
+		var actives = expando._actives = chart.lastActive || [];  // public API?!
 		var updates = utils.arrayDiff(previous, actives);
 		var i, ilen, update, label;
 
@@ -1042,12 +1466,21 @@ Chart.plugins.register({
 			}
 		}
 
-		if ((expando.dirty || updates.length) && !chart.animating) {
-			chart.render();
+		if (expando._dirty || updates.length) {
+			layout.update(expando._labels);
+			if (!chart.animating) {
+				chart.render();
+			}
 		}
 
-		delete expando.dirty;
+		delete expando._dirty;
 	}
-});
+};
+
+// TODO Remove at version 1, we shouldn't automatically register plugins.
+// https://github.com/chartjs/chartjs-plugin-datalabels/issues/42
+Chart.plugins.register(plugin);
+
+return plugin;
 
 })));

@@ -160,7 +160,7 @@ class GraphChartjs implements GraphInterfaceFronted
             "borderColor" => $this->arrColors[$intColorNumber],
             "borderWidth" => 1,
             "yAxisID" => empty($yAxisID) ? "defaultYID" : $yAxisID,
-            "datalabels" => $bitWriteValues ? ["display" => true] : ["display" => false],
+            "datalabels" => $bitWriteValues ? ["display" => 'auto'] : ["display" => false],
             "lineTension" => $lineTension
         ];
         $this->intXLabelsCount = count($arrValues);
@@ -259,7 +259,8 @@ class GraphChartjs implements GraphInterfaceFronted
             "dataPoints" => $this->dataPointObjArrayToArray($arrDataPointObjects),
             "data" => GraphCommons::getDataPointFloatValues($arrDataPointObjects),
             "backgroundColor" => $arrBackgroundColors,
-            "borderColor" => $arrBorderColors
+            "borderColor" => $arrBorderColors,
+            "datalabels" => ['display' => 'auto']
         ];
         $this->intXLabelsCount = count($arrValues);
         $this->arrChartData['data']['labels'] = $arrLegends;
@@ -330,9 +331,7 @@ class GraphChartjs implements GraphInterfaceFronted
     }
 
     /**
-     * @param string $strTitle
-     *
-     * @see GraphInterface::setStrY2AxisTitle()
+     * @inheritdoc
      */
     public function setStrY2AxisTitle($strTitle)
     {
@@ -490,14 +489,6 @@ class GraphChartjs implements GraphInterfaceFronted
     }
 
     /**
-     * @return bool
-     * @deprecated
-     */
-    public function isBitIsResponsive(): bool
-    {
-    }
-
-    /**
      * @param bool $bitHorizontal
      */
     public function setBarHorizontal(bool $bitHorizontal)
@@ -508,7 +499,7 @@ class GraphChartjs implements GraphInterfaceFronted
     /**
      * @param bool $bitPie
      */
-    public function setPieChart(bool $bitPie)
+    private function setPieChart(bool $bitPie)
     {
         if ($bitPie) {
             $this->arrChartData['type'] = "pie";
@@ -518,7 +509,7 @@ class GraphChartjs implements GraphInterfaceFronted
     /**
      * @return mixed
      */
-    public function getChartType()
+    private function getChartType()
     {
         return $this->arrChartData['type'];
     }
@@ -556,7 +547,15 @@ class GraphChartjs implements GraphInterfaceFronted
     }
 
     /**
-     * @param int $bitHideY2Axis
+     * @param bool $addSeparator
+     */
+    public function setShowThousandSeparatorAxis(bool $addSeparator = true)
+    {
+        $this->arrChartOptions['addThousandSeparator'] = $addSeparator;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function setTickStepY2Axis(int $intStep)
     {
@@ -580,20 +579,12 @@ class GraphChartjs implements GraphInterfaceFronted
     }
 
     /**
-     * @param int $maxXAxesTicksLimit
+     * @inheritdoc
      */
     public function setMaxXAxesTicksLimit(int $maxXAxesTicksLimit)
     {
         $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['autoSkip'] = true;
         $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['maxTicksLimit'] = $maxXAxesTicksLimit;
-    }
-
-    /**
-     * @param bool $beginAtZero
-     */
-    public function setBeginAtZero(bool $beginAtZero = true)
-    {
-        $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['beginAtZero'] = $beginAtZero;
     }
 
     /**
@@ -617,7 +608,7 @@ class GraphChartjs implements GraphInterfaceFronted
      *
      * @param bool $bitSetPercentageValues
      */
-    public function setValueTypePercentage(bool $bitSetPercentageValues = true)
+    private function setValueTypePercentage(bool $bitSetPercentageValues = true)
     {
         $this->arrChartOptions['percentageValues'] = $bitSetPercentageValues;
     }
@@ -627,20 +618,9 @@ class GraphChartjs implements GraphInterfaceFronted
      *
      * @param bool $bitNotShowNullValues
      */
-    public function setNotShowNullValues(bool $bitNotShowNullValues = true)
+    private function setNotShowNullValues(bool $bitNotShowNullValues = true)
     {
         $this->arrChartOptions['notShowNullValues'] = $bitNotShowNullValues;
-    }
-
-    /**
-     * Switch on default tooltip.
-     * By default chartjs render used customized tooltip.
-     *
-     * @param bool $bitSetDefaultTooltip
-     */
-    public function setDefaultTooltip(bool $bitSetDefaultTooltip = true)
-    {
-        $this->arrChartOptions['setDefaultTooltip'] = $bitSetDefaultTooltip;
     }
 
     /**
@@ -759,10 +739,6 @@ class GraphChartjs implements GraphInterfaceFronted
         $strResizeableId = "resize_".$strSystemId;
         $strChartId = "chart_".$strSystemId;
         $strLinkExportId = $strChartId."_exportlink";
-
-//        $strWidth = $this->isBitIsResponsive() ? "100%" : $this->intWidth."px";
-//        $strHeight = $this->isBitIsResponsive() ? "100%" : $this->intHeight."px";
-//        $strReturn = "<div onmouseover='$(\"#$strLinkExportId\").show();' onmouseout='$(\"#$strLinkExportId\").hide();' id=\"$strResizeableId\" style=\"width:{$strWidth}; height:{$strHeight};\">";
 
         $style = "";
         if ($this->intWidth !== null) {

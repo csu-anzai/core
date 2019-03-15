@@ -351,3 +351,6 @@ $lang["object_browser_reset"] = "Remove object";
 
 $lang["copy_to_clipboard"] = "Copy to clipboard";
 $lang["copy_page_url"] = "Page URL";
+$lang["link_was_copied"] = "Link was copied";
+
+$lang["error_model_not_found"] = "Error handling request, the object to be loaded is unknown. Please restart your action.";
