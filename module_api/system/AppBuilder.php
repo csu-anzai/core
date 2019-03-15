@@ -67,6 +67,21 @@ class AppBuilder
         $container = $this->container;
         $routes = $this->endpointScanner->getEndpoints();
 
+        // add CORS middleware
+        $app->add(function(SlimRequest $request, SlimResponse $response, callable $next){
+            $response = $response
+                ->withHeader('Access-Control-Allow-Origin', '*')
+                ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+                ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
+
+            if ($request->getMethod() === 'OPTIONS') {
+                // for options requests we always return a 200 to handle preflight requests properly
+                return $response->withStatus(200);
+            } else {
+                return $next($request, $response);
+            }
+        });
+
         foreach ($routes as $route) {
             $app->map($route["httpMethod"], $route["path"], function(SlimRequest $request, SlimResponse $response, array $args) use ($route, $objectBuilder, $container){
                 $instance = $objectBuilder->factory($route["class"]);
@@ -102,12 +117,6 @@ class AppBuilder
                         ->withHeader("Content-Type", "application/json")
                         ->write(json_encode(["error" => $e->getMessage()]));
                 }
-
-                // add CORS header
-                $response = $response
-                    ->withHeader('Access-Control-Allow-Origin', '*')
-                    ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
-                    ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
 
                 return $response;
             });
