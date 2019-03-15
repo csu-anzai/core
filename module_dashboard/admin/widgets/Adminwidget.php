@@ -313,8 +313,12 @@ abstract class Adminwidget
         // create the form
         $objFormgenerator = new AdminFormgenerator("edit".$this->getWidgetName(), null);
 
-
-        $objFormgenerator->setStrOnSubmit("require('dashboard').updateWidget(this, '{$this->getSystemid()}');return false");
+        $strAdditionalContent = $this->getWidgetNameAdditionalContent();
+        if (!empty($strAdditionalContent)) {
+            $objFormgenerator->setStrOnSubmit("require('dashboard').updateWidget(this, '{$this->getSystemid()}', true);return false");
+        } else {
+            $objFormgenerator->setStrOnSubmit("require('dashboard').updateWidget(this, '{$this->getSystemid()}');return false");
+        }
 
         $this->getEditFormContent($objFormgenerator);
 

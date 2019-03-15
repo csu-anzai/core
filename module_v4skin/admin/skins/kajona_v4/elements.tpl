@@ -397,19 +397,6 @@ Color Picker
     </div>
 </input_colorpicker>
 
-Textarea
-<input_textarea>
-    <div class="form-group">
-        <label for="%%name%%" class="col-sm-3 control-label">%%title%%</label>
-        <div class="col-sm-6 %%class%%">
-            <textarea name="%%name%%" id="%%name%%" class="form-control" rows="%%numberOfRows%%" %%readonly%% placeholder="%%placeholder%%">%%value%%</textarea>
-        </div>
-        <div class="col-sm-2 form-opener">
-            %%opener%%
-        </div>
-    </div>
-</input_textarea>
-
 Regular Password-Field
 <input_password>
     <div class="form-group">
@@ -1105,10 +1092,6 @@ Used to print plaintext in a form
     </div>
 </text_row_form>
 
-Used to print headline in a form
-<headline_form>
-    <%%level%% class="%%class%%">%%text%%</%%level%%>
-</headline_form>
 
 ---------------------------------------------------------------------------------------------------------
 -- RIGHTS MANAGEMENT ------------------------------------------------------------------------------------
