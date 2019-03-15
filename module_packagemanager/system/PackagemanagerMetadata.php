@@ -135,7 +135,7 @@ class PackagemanagerMetadata implements AdminListableInterface, \JsonSerializabl
             "description" => $this->strDescription,
             "versionAvailable" => $this->strVersion,
             "author" => $this->strAuthor,
-            "requires" => $this->arrRequiredModules,
+            "requires" => (object) $this->arrRequiredModules,
             "path" => $this->strPath,
             "providesInstaller" => $this->bitProvidesInstaller,
             "versionInstalled" => $handler->getVersionInstalled(),
