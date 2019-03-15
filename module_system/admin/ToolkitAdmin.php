@@ -36,6 +36,8 @@ use Kajona\System\System\SystemSetting;
 use Kajona\System\System\Toolkit;
 use Kajona\System\View\Components\Buttonwrapper\Buttonwrapper;
 use Kajona\System\View\Components\Datatable\Datatable;
+use Kajona\System\View\Components\Formentry\Datesingle\Datesingle;
+use Kajona\System\View\Components\Formentry\Datetime\Datetime;
 use Kajona\System\View\Components\Formentry\Dropdown\Dropdown;
 use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
 use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
@@ -87,43 +89,20 @@ class ToolkitAdmin extends Toolkit
      * @throws Exception
      * @return string
      * @since 3.2.0.9
+     * @deprecated
      */
     public function formDateSingle($strName, $strTitle, $objDateToShow, $strClass = "", $bitWithTime = false, $bitReadOnly = false)
     {
-        //check passed param
-        if ($objDateToShow != null && !$objDateToShow instanceof Date) {
-            throw new Exception("param passed to ToolkitAdmin::formDateSingle is not an instance of Date", Exception::$level_ERROR);
+        if ($bitWithTime) {
+            $date = new Datetime($strName, $strTitle, $objDateToShow);
+        } else {
+            $date = new Datesingle($strName, $strTitle, $objDateToShow);
         }
 
-        $arrTemplate = array();
-        $arrTemplate["class"] = $strClass;
-        $arrTemplate["titleDay"] = $strName."_day";
-        $arrTemplate["titleMonth"] = $strName."_month";
-        $arrTemplate["titleYear"] = $strName."_year";
-        $arrTemplate["titleHour"] = $strName."_hour";
-        $arrTemplate["titleMin"] = $strName."_minute";
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["valueDay"] = $objDateToShow != null ? $objDateToShow->getIntDay() : "";
-        $arrTemplate["valueMonth"] = $objDateToShow != null ? $objDateToShow->getIntMonth() : "";
-        $arrTemplate["valueYear"] = $objDateToShow != null ? $objDateToShow->getIntYear() : "";
-        $arrTemplate["valueHour"] = $objDateToShow != null ? $objDateToShow->getIntHour() : "";
-        $arrTemplate["valueMin"] = $objDateToShow != null ? $objDateToShow->getIntMin() : "";
-        $arrTemplate["valuePlain"] = dateToString($objDateToShow, false);
-        $arrTemplate["dateFormat"] = Carrier::getInstance()->getObjLang()->getLang("dateStyleShort", "system");
-        $arrTemplate["calendarLang"] = empty(Carrier::getInstance()->getObjSession()->getAdminLanguage()) ? 'en' : Carrier::getInstance()->getObjSession()->getAdminLanguage();
+        $date->setReadOnly($bitReadOnly);
+        $date->setClass($strClass);
 
-        $arrTemplate["titleTime"] = Carrier::getInstance()->getObjLang()->getLang("titleTime", "system");
-
-        //set up the container div
-        $arrTemplate["calendarId"] = $strName;
-        $strContainerId = $strName."_calendarContainer";
-        $arrTemplate["calendarContainerId"] = $strContainerId;
-        $arrTemplate["calendarLang_weekday"] = " [".Carrier::getInstance()->getObjLang()->getLang("toolsetCalendarWeekday", "system")."]\n";
-        $arrTemplate["calendarLang_month"] = " [".Carrier::getInstance()->getObjLang()->getLang("toolsetCalendarMonth", "system")."]\n";
-
-        $arrTemplate["readonly"] = ($bitReadOnly ? "disabled=\"disabled\"" : "");
-
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", $bitWithTime ? "input_datetime_simple" : "input_date_simple");
+        return $date->renderComponent();
     }
 
 
