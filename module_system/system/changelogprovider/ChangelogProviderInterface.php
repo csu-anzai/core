@@ -4,7 +4,7 @@
 *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
 ********************************************************************************************************/
 
-namespace Kajona\System\System;
+namespace Kajona\System\System\Changelogprovider;
 
 /**
  * A changelog provider creates a mapping of objects to target-tables

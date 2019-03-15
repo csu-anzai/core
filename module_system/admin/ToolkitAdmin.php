@@ -44,10 +44,12 @@ use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
 use Kajona\System\View\Components\Formentry\Buttonbar\Buttonbar;
 use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
+use Kajona\System\View\Components\Formentry\Inputtextarea\Inputtextarea;
 use Kajona\System\View\Components\Formentry\Radiogroup\Radiogroup;
 use Kajona\System\View\Components\Formentry\Checkboxarray\Checkboxarray;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Formentry\Submit\Submit;
+use Kajona\System\View\Components\Headline\Headline;
 use Kajona\System\View\Components\Listbody\Listbody;
 use Kajona\System\View\Components\Popover\Popover;
 use Kajona\System\View\Components\Tabbedcontent\Tabbedcontent;
@@ -209,7 +211,7 @@ class ToolkitAdmin extends Toolkit
      */
     public function formInputText($strName, $strTitle = "", $strValue = "", $strClass = "", $strOpener = "", $bitReadonly = false, $strInstantEditor = "")
     {
-        $inputCheckbox = new Inputtext($strName, (string) $strTitle, $strValue);
+        $inputCheckbox = new Inputtext($strName, (string) $strTitle, html_entity_decode((string) $strValue));
         $inputCheckbox->setClass($strClass);
         $inputCheckbox->setReadOnly($bitReadonly);
         $inputCheckbox->setOpener($strOpener);
@@ -534,19 +536,19 @@ class ToolkitAdmin extends Toolkit
      *
      * @return string
      */
-    public function formInputTextArea($strName, $strTitle = "", $strValue = "", $strClass = "", $bitReadonly = false, $numberOfRows = 4, $strOpener = "", $strPlaceholder = null)
+    public function formInputTextArea($strName, $strTitle = "", $strValue = "", $strClass = "", $bitReadonly = false, $numberOfRows = 4, $strOpener = "", $strPlaceholder = "")
     {
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["value"] = htmlspecialchars($strValue, ENT_QUOTES, "UTF-8", false);
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["class"] = $strClass;
-        $arrTemplate["readonly"] = ($bitReadonly ? " readonly=\"readonly\" " : "");
-        $arrTemplate["numberOfRows"] = $numberOfRows;
-        $arrTemplate["opener"] = $strOpener;
-        $arrTemplate["placeholder"] = !empty($strPlaceholder) ? htmlspecialchars($strPlaceholder) : "";
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_textarea");
-    }
+
+        $cmp = new Inputtextarea($strName, $strTitle);
+        $cmp->setValue($strValue);
+        $cmp->setClass($strClass);
+        $cmp->setReadOnly($bitReadonly);
+        $cmp->setNumberOfRows($numberOfRows);
+        $cmp->setOpener($strOpener);
+        $cmp->setPlaceholder($strPlaceholder);
+
+        return $cmp->renderComponent();
+  }
 
     /**
      * Returns a password text-input field
@@ -1196,14 +1198,12 @@ HTML;
      *
      * @param string $strLevel
      * @return string
+     * @deprecated
      */
     public function formHeadline($strText, $strClass = "", $strLevel = "h2")
     {
-        $arrTemplate = array();
-        $arrTemplate["text"] = $strText;
-        $arrTemplate["class"] = $strClass;
-        $arrTemplate["level"] = $strLevel;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "headline_form", true);
+        $cmp = new Headline($strText, $strClass, $strLevel);
+        return $cmp->renderComponent();
     }
 
     /**
@@ -1502,8 +1502,7 @@ HTML;
     public function listDeleteButton($strElementName, $strQuestion, $strLinkHref)
     {
         $strElementName = StringUtil::replace(array('\''), array('\\\''), $strElementName);
-        $strQuestion = StringUtil::replace("%%element_name%%", htmlToString($strElementName, true), $strQuestion);
-
+        $strQuestion = StringUtil::replace("%%element_name%%", StringUtil::jsSafeString($strElementName), $strQuestion);
 
         return $this->listConfirmationButton($strQuestion, $strLinkHref, "icon_delete", Carrier::getInstance()->getObjLang()->getLang("commons_delete", "system"), Carrier::getInstance()->getObjLang()->getLang("dialog_deleteHeader", "system"), Carrier::getInstance()->getObjLang()->getLang("dialog_deleteButton", "system"));
     }
@@ -1524,6 +1523,8 @@ HTML;
      */
     public function listConfirmationButton($strDialogContent, $strConfirmationLinkHref, $strButton, $strButtonTooltip, $strHeader = "", $strConfirmationButtonLabel = "")
     {
+        $strDialogContent = StringUtil::jsSafeString($strDialogContent);
+
         //get the reload-url
         if (StringUtil::indexOf($strConfirmationLinkHref, "javascript:") === false) {
             $strParam = (StringUtil::indexOf($strConfirmationLinkHref, "?") ? "&" : "?") ."reloadUrl='+encodeURIComponent(document.location.hash.substr(1))+'";

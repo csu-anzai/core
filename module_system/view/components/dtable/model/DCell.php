@@ -26,15 +26,31 @@ class DCell
     private $colspan = 0;
 
     /**
+     * @var int
+     */
+    private $rowspan = 0;
+
+    /**
      * @var string
      */
     private $classAddon = '';
 
     /**
+     * @var string
+     */
+    private $styleAddon = '';
+
+    /**
+     * @var string
+     */
+    private $tooltip = '';
+
+    /**
      * DCell constructor.
      * @param string $value
      */
-    public function __construct($value) {
+    public function __construct($value)
+    {
         $this->setValue($value);
     }
 
@@ -79,6 +95,26 @@ class DCell
     }
 
     /**
+     * @return int
+     */
+    public function getRowspan(): int
+    {
+        return $this->rowspan;
+    }
+
+    /**
+     * @param int $rowspan
+     *
+     * @return DCell
+     */
+    public function setRowspan(int $rowspan)
+    {
+        $this->rowspan = $rowspan;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getClassAddon(): string
@@ -97,5 +133,46 @@ class DCell
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getTooltip(): string
+    {
+        return $this->tooltip;
+    }
+
+    /**
+     * @param string $tooltip
+     *
+     * @return DCell
+     */
+    public function setTooltip(string $tooltip)
+    {
+        $this->tooltip = $tooltip;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStyleAddon(): string
+    {
+        return $this->styleAddon;
+    }
+
+    /**
+     * @param string $styleAddon
+     *
+     * @return DCell
+     */
+    public function setStyleAddon(string $styleAddon)
+    {
+        $this->styleAddon = $styleAddon;
+
+        return $this;
+    }
+
 
 }

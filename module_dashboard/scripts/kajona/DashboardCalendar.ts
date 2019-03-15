@@ -20,13 +20,13 @@ class DashboardCalendar {
             },
             editable: false,
             //theme: false,
-            //lang: KAJONA_LANGUAGE,
+            locale: KAJONA_LANGUAGE,
             eventLimit: true,
             events: KAJONA_WEBPATH + '/xml.php?admin=1&module=dashboard&action=getCalendarEvents',
             eventRender: function (event, el) {
                 Tooltip.addTooltip(el, event.tooltip);
                 if (event.icon) {
-                    el.find("span.fc-title").prepend(event.icon);
+                    el.find("span.fc-title").prepend(event.icon+ " ");
                 }
             },
             loading: function (isLoading) {

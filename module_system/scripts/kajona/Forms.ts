@@ -77,7 +77,7 @@ class Forms {
     public static setFieldReadOnly(objField : string|JQuery) {
         objField = Util.getElement(objField);
 
-        if ($('#'+objField.attr('id')+'_upl') && $('#'+objField.attr('id')+'_upl').fileupload) {
+        if ($('#'+objField.attr('id')+'_upl').length > 0 && $('#'+objField.attr('id')+'_upl').fileupload) {
             $('#'+objField.attr('id')+'_upl').fileupload('disable');
         }
         else if (objField.is('input:checkbox') || objField.is('select') || objField.data('datepicker') !== null) {
@@ -98,7 +98,7 @@ class Forms {
         objField = Util.getElement(objField);
 
 
-        if($('#'+objField.attr('id')+'_upl') && $('#'+objField.attr('id')+'_upl').fileupload) {
+        if($('#'+objField.attr('id')+'_upl').length > 0 && $('#'+objField.attr('id')+'_upl').fileupload) {
             $('#'+objField.attr('id')+'_upl').fileupload('enable');
         }
         else if (objField.is('input:checkbox') || objField.is('select') || objField.data('datepicker') !== null) {
@@ -301,7 +301,7 @@ class Forms {
             Messaging.setPollingEnabled(true);
         });
 
-        Router.loadUrl(objForm.action);
+        Router.defaultRoutieCallback(objForm.action);
 
         return false;
     }
