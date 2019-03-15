@@ -212,7 +212,7 @@ class InstallerApiController implements ApiControllerInterface
 
                 $names[] = substr($class, strrpos($class, "\\") + 1);
                 $result[] = [
-                    "name" => $module->getStrTitle(),
+                    "title" => $module->getStrTitle(),
                     "class" => $class,
                     "isInstallable" => $installable,
                     "isInstalled" => $installed,
