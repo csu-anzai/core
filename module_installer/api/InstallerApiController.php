@@ -7,8 +7,11 @@
 namespace Kajona\Installer\Api;
 
 use Kajona\Api\System\ApiControllerInterface;
+use Kajona\Installer\System\SamplecontentInstallerHelper;
+use Kajona\Packagemanager\System\PackagemanagerManager;
 use Kajona\System\System\Database;
 use Kajona\System\System\DbConnectionParams;
+use Kajona\System\System\SystemModule;
 
 /**
  * InstallerApiController
@@ -120,6 +123,141 @@ class InstallerApiController implements ApiControllerInterface
 
         return [
             "written" => $result,
+        ];
+    }
+
+    /**
+     * @api
+     * @method GET
+     * @path /installer/module
+     * @authorization filetoken
+     */
+    public function getModules()
+    {
+        $manager = new PackagemanagerManager();
+        $modules = $manager->getAvailablePackages();
+        $result = [];
+        foreach ($modules as $objOneModule) {
+            $result[] = $objOneModule;
+        }
+
+        return [
+            "modules" => $result,
+        ];
+    }
+
+    /**
+     * @api
+     * @method POST
+     * @path /installer/module
+     * @authorization filetoken
+     */
+    public function moduleInstall($body)
+    {
+        if (!isset($body["module"])) {
+            throw new \RuntimeException("No module provided");
+        }
+
+        $manager = new PackagemanagerManager();
+        $modules = $manager->getAvailablePackages();
+
+        foreach ($modules as $module) {
+            if ($module->getStrTitle() == $body["module"]) {
+                $handler = $manager->getPackageManagerForPath($module->getStrPath());
+
+                if ($handler->isInstallable()) {
+                    $return = $handler->installOrUpdate();
+
+                    return [
+                        "status" => "success",
+                        "module" => $body["module"],
+                        "log" => $return
+                    ];
+                }
+            }
+        }
+
+        return [
+            "status" => "error",
+            "module" => $body["module"],
+        ];
+    }
+
+    /**
+     * @api
+     * @method GET
+     * @path /installer/sample
+     * @authorization filetoken
+     */
+    public function getSample()
+    {
+        $manager = new PackagemanagerManager();
+        $modules = $manager->getAvailablePackages();
+        $result = [];
+        $names = [];
+
+        foreach ($modules as $module) {
+            $sampleInstaller = SamplecontentInstallerHelper::getSamplecontentInstallerForPackage($module);
+            if ($sampleInstaller !== null) {
+                $installable = false;
+                $installed = false;
+                if (SystemModule::getModuleByName($module->getStrTitle()) != null) {
+                    $installable = true;
+                    $installed = $sampleInstaller->isInstalled();
+                }
+
+                $class = get_class($sampleInstaller);
+
+                $names[] = substr($class, strrpos($class, "\\") + 1);
+                $result[] = [
+                    "name" => $module->getStrTitle(),
+                    "class" => $class,
+                    "isInstallable" => $installable,
+                    "isInstalled" => $installed,
+                ];
+            }
+        }
+
+        array_multisort($names, SORT_ASC, $result);
+
+        return [
+            "samples" => $result,
+        ];
+    }
+
+    /**
+     * @api
+     * @method POST
+     * @path /installer/sample
+     * @authorization filetoken
+     */
+    public function sampleInstall($body)
+    {
+        if (!isset($body["module"])) {
+            throw new \RuntimeException("No module provided");
+        }
+
+        $manager = new PackagemanagerManager();
+        $modules = $manager->getAvailablePackages();
+
+        foreach ($modules as $module) {
+            if ($module->getStrTitle() == $body["module"]) {
+                $sampleContent = SamplecontentInstallerHelper::getSamplecontentInstallerForPackage($module);
+                if ($sampleContent != null ) {
+                    $return = SamplecontentInstallerHelper::install($sampleContent);
+
+                    return [
+                        "status" => "success",
+                        "module" => $body["module"],
+                        "log" => $return,
+                    ];
+                }
+            }
+        }
+
+        return [
+            "status" => "error",
+            "module" => $body["module"],
         ];
     }
 
