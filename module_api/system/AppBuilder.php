@@ -151,7 +151,7 @@ class AppBuilder
 
                 return $response->withStatus(405)
                     ->withHeader('Allow', implode(', ', $methods))
-                    ->withHeader('Content-type', 'text/html')
+                    ->withHeader('Content-type', 'application/json')
                     ->write(json_encode($data, JSON_PRETTY_PRINT));
             };
         };
