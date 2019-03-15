@@ -32,7 +32,7 @@ class FlowGraphWriter
     {
         //ugly hack to fetch old IE versions. used to inject some special options and css definitions
         $strUA = htmlentities($_SERVER['HTTP_USER_AGENT'], ENT_QUOTES, 'UTF-8');
-        if (preg_match('~MSIE|Internet Explorer~i', $strUA) || (strpos($strUA, 'Trident/7.0; rv:11.0') !== false)) {
+        if (stripos($strUA, 'MSIE') !== false || (stripos($strUA, 'Trident/7.0') !== false) || stripos($strUA, 'WOW64') !== false || stripos($strUA, 'Internet Explorer') !== false) {
             self::$bitIsIe = true;
         }
         //return self::writeCytoscape($objFlow, $objHighlite);

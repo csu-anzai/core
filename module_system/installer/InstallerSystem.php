@@ -506,6 +506,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         if($arrModule["module_version"] == "7.1.1") {
             $strReturn .= $this->update_711_712();
         }
+
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
         if($arrModule["module_version"] == "7.1.2") {
             $strReturn .= $this->update_712_713();
@@ -657,12 +658,14 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
     private function update_712_713()
     {
         $strReturn = "Updating to 7.1.3...".PHP_EOL;
-        $strReturn .= "Updating messaging table".PHP_EOL;
+        $strReturn .= "Update messaging entity".PHP_EOL;
+
         $schema = new OrmSchemamanager();
         $schema->updateTable(MessagingMessage::class);
+
+        $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.3");
 
         return $strReturn;
     }
-
 }

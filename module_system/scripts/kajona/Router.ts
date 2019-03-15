@@ -62,50 +62,51 @@ class Router {
     public static markerElements : MarkedElements = Router.markedElements;
 
     public static init() {
-        routie('*', function(url: string) {
-            // in case we receive an absolute url with no hash redirect the user to this url
-            // since we cant resolve this url to a hash route
-            if (url.indexOf(KAJONA_WEBPATH) === 0 && url.indexOf("/#") === -1) {
-                location.href = url;
-                return;
-            }
+        routie('*', Router.defaultRoutieCallback);
+    }
 
-            var objUrl = Router.generateUrl(url);
 
-            if(!objUrl) {
-                return;
-            }
+    public static defaultRoutieCallback(url: string) {
+        // in case we receive an absolute url with no hash redirect the user to this url
+        // since we cant resolve this url to a hash route
+        if (url.indexOf(KAJONA_WEBPATH) === 0 && url.indexOf("/#") === -1) {
+            location.href = url;
+            return;
+        }
 
-            Router.cleanPage();
-            //moduleNavigation.setModuleActive(objUrl.module);
+        var objUrl = Router.generateUrl(url);
 
-            Router.applyLoadCallbacks();
+        if(!objUrl) {
+            return;
+        }
 
-            //split between post and get
-            if (Router.markedElements.forms.submittedEl != null) {
-                var data = $(Router.markedElements.forms.submittedEl).serialize();
-                Router.markedElements.forms.submittedEl = null;
-                Router.markedElements.forms.monitoredEl = null;
-                Ajax.loadUrlToElement('#moduleOutput', objUrl.url, data, false, 'POST', function(){
-                    Router.applyFormCallbacks();
-                });
-            } else {
+        Router.cleanPage();
+        //moduleNavigation.setModuleActive(objUrl.module);
 
-                if (Router.markedElements.forms.monitoredEl != null) {
-                    if (require('forms').hasChanged(Router.markedElements.forms.monitoredEl)) {
-                        var doLeave = confirm(require('forms').leaveUnsaved);
-                        if (!doLeave) {
-                            return;
-                        }
-                        Router.markedElements.forms.monitoredEl = null;
+        Router.applyLoadCallbacks();
+
+        //split between post and get
+        if (Router.markedElements.forms.submittedEl != null) {
+            var data = $(Router.markedElements.forms.submittedEl).serialize();
+            Router.markedElements.forms.submittedEl = null;
+            Router.markedElements.forms.monitoredEl = null;
+            Ajax.loadUrlToElement('#moduleOutput', objUrl.url, data, false, 'POST', function(){
+                Router.applyFormCallbacks();
+            });
+        } else {
+
+            if (Router.markedElements.forms.monitoredEl != null) {
+                if (require('forms').hasChanged(Router.markedElements.forms.monitoredEl)) {
+                    var doLeave = confirm(require('forms').leaveUnsaved);
+                    if (!doLeave) {
+                        return;
                     }
+                    Router.markedElements.forms.monitoredEl = null;
                 }
-
-                Ajax.loadUrlToElement('#moduleOutput', objUrl.url, null, true);
             }
 
-
-        });
+            Ajax.loadUrlToElement('#moduleOutput', objUrl.url, null, true);
+        }
     }
 
     public static generateUrl(url: string) {

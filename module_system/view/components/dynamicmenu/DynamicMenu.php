@@ -19,10 +19,40 @@ use Kajona\System\View\Components\AbstractComponent;
  */
 class DynamicMenu extends AbstractComponent
 {
-
+    /**
+     * @var string
+     */
     private $button;
+
+    /**
+     * @var string
+     */
     private $endpoint;
+
+    /**
+     * @var int
+     */
     private $width;
+
+    /**
+     * @var string
+     */
+    private $class;
+
+    /**
+     * @var string
+     */
+    private $systemId;
+
+    /**
+     * @var bool
+     */
+    private $filter;
+
+    /**
+     * @var string
+     */
+    private $filterPlaceholder;
 
     /**
      * DynamicMenu constructor.
@@ -32,6 +62,7 @@ class DynamicMenu extends AbstractComponent
     public function __construct(string $button, string $endpoint)
     {
         parent::__construct();
+
         $this->button = $button;
         $this->endpoint = $endpoint;
     }
@@ -45,6 +76,38 @@ class DynamicMenu extends AbstractComponent
     }
 
     /**
+     * @param string $class
+     */
+    public function setClass(string $class)
+    {
+        $this->class = $class;
+    }
+
+    /**
+     * @param string $systemId
+     */
+    public function setSystemId(string $systemId)
+    {
+        $this->systemId = $systemId;
+    }
+
+    /**
+     * @param bool $filter
+     */
+    public function setFilter(bool $filter)
+    {
+        $this->filter = $filter;
+    }
+
+    /**
+     * @param string $filterPlaceholder
+     */
+    public function setFilterPlaceholder(string $filterPlaceholder)
+    {
+        $this->filterPlaceholder = $filterPlaceholder;
+    }
+
+    /**
      * @inheritdoc
      */
     public function renderComponent(): string
@@ -53,7 +116,11 @@ class DynamicMenu extends AbstractComponent
             "button" => $this->button,
             "endpoint" => $this->endpoint,
             "menuid" => generateSystemid(),
-            "width" => $this->width
+            "width" => $this->width,
+            "class" => $this->class,
+            "systemId" => $this->systemId,
+            "filter" => $this->filter,
+            "filterPlaceholder" => $this->filterPlaceholder,
         ];
 
         return $this->renderTemplate($data);
