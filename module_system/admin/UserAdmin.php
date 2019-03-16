@@ -97,11 +97,18 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
     public function getOutputModuleNavi()
     {
         $arrReturn = [];
-        $arrReturn[] = ["view", Link::getLinkAdmin($this->getArrModule("modul"), "list", "", $this->getLang("user_liste"), "", "", true, "adminnavi")];
+        $arrReturn[] = ["view", Link::getLinkAdmin($this->getArrModule("modul"), "list", "", $this->getLang("user_liste"))];
         $arrReturn[] = ["", ""];
-        $arrReturn[] = ["edit", Link::getLinkAdmin($this->getArrModule("modul"), "groupList", "", $this->getLang("gruppen_liste"), "", "", true, "adminnavi")];
+        $arrReturn[] = ["edit", Link::getLinkAdmin($this->getArrModule("modul"), "groupList", "", $this->getLang("gruppen_liste"))];
         $arrReturn[] = ["", ""];
-        $arrReturn[] = ["right1", Link::getLinkAdmin($this->getArrModule("modul"), "loginLog", "", $this->getLang("loginlog"), "", "", true, "adminnavi")];
+        $arrReturn[] = ["right1", Link::getLinkAdmin($this->getArrModule("modul"), "loginLog", "", $this->getLang("loginlog"))];
+
+        if (SystemModule::getModuleByName("auswertung") !== null) {
+            $arrReturn[] = ["", ""];
+            $arrReturn[] = ["right1", $this->getLang("action_show_report")];
+            $arrReturn[] = ["right1", Link::getLinkAdmin("auswertung", "show", ["report" => "userrights"], $this->getLang("report_userrights"))];
+        }
+
         return $arrReturn;
     }
 

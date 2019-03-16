@@ -390,10 +390,8 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
      * @param bool $shortCircuit
      * @return bool
      */
-    public function validateForm(/*$shortCircuit = false*/)
+    public function validateForm($shortCircuit = false)
     {
-        $shortCircuit = func_get_arg(0); // @TODO currently as workaround to not change the signature
-
         $arrErrors = $this->getValidationErrorObjects($shortCircuit);
 
         foreach ($arrErrors as $objError) {
