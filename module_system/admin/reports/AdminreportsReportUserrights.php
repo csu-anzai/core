@@ -57,15 +57,6 @@ class AdminreportsReportUserrights extends AuswertungReportBase implements Auswe
     }
 
     /**
-     * @return array
-     */
-    public function getParamsForReport()
-    {
-        return array("getCsv");
-    }
-
-
-    /**
      * @return string
      * @throws \Kajona\System\System\Exception
      */
