@@ -392,6 +392,7 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
      */
     public function validateForm($shortCircuit = false)
     {
+
         $arrErrors = $this->getValidationErrorObjects($shortCircuit);
 
         foreach ($arrErrors as $objError) {
