@@ -271,12 +271,17 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
     }
 
     /**
+     * @param bool $shortCircuit
      * @return ValidationError[]
      */
-    public function getValidationErrorObjects()
+    public function getValidationErrorObjects($shortCircuit = false)
     {
         //1. Validate fields
-        $arrErrors = $this->validateFields($this);
+        $arrErrors = $this->validateFields($this, $shortCircuit);
+
+        if ($shortCircuit && count($arrErrors) > 0) {
+            return $arrErrors;
+        }
 
         //2. Validate complete object
         if ($this->getObjSourceobject() != null) {
@@ -329,9 +334,10 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
 
     /**
      * @param AdminFormgeneratorContainerInterface $container
+     * @param bool $shortCircuit
      * @return ValidationError[]
      */
-    private function validateFields(AdminFormgeneratorContainerInterface $container)
+    private function validateFields(AdminFormgeneratorContainerInterface $container, $shortCircuit = false)
     {
         $errors = [];
         $fields = $container->getFields();
@@ -363,9 +369,14 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
                 }
             }
 
+            // if short circuit return if an error occurs
+            if ($shortCircuit && count($errors) > 0) {
+                return $errors;
+            }
+
             // validate container fields
             if ($field instanceof AdminFormgeneratorContainerInterface) {
-                $errors = array_merge($errors, $this->validateFields($field));
+                $errors = array_merge($errors, $this->validateFields($field, $shortCircuit));
             }
         }
 
@@ -376,11 +387,13 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
      * Validates the current form.
      *
      * @throws Exception
+     * @param bool $shortCircuit
      * @return bool
      */
-    public function validateForm()
+    public function validateForm($shortCircuit = false)
     {
-        $arrErrors = $this->getValidationErrorObjects();
+
+        $arrErrors = $this->getValidationErrorObjects($shortCircuit);
 
         foreach ($arrErrors as $objError) {
             $this->addValidationError($objError->getStrFieldName(), $objError->getStrErrorMessage());
