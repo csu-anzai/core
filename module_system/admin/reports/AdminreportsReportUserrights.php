@@ -1,16 +1,13 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2010-2016 ARTEMEON                                                                              *
-*-------------------------------------------------------------------------------------------------------*
-*	$Id$            *
-********************************************************************************************************/
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
 
 namespace Kajona\System\Admin\Reports;
 
-use AGP\Agp_Commons\System\ArtemeonCommon;
 use AGP\Auswertung\Admin\Reports\AuswertungReportBase;
 use AGP\Auswertung\Admin\Reports\AuswertungReportInterface;
-use Kajona\Packagemanager\System\PackagemanagerManager;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\ArraySectionIterator;
 use Kajona\System\System\Csv;
@@ -22,7 +19,7 @@ use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserUser;
 
 /**
- * @package module_adminreports
+ * Generates an overview of assigned groups per user
  */
 class AdminreportsReportUserrights extends AuswertungReportBase implements AuswertungReportInterface
 {
@@ -108,7 +105,6 @@ class AdminreportsReportUserrights extends AuswertungReportBase implements Auswe
                 $objIterator = $this->getSectionIterator();
                 $arrUserRows = $this->getUserData($objIterator);
 
-                // tabelle
                 $arrHeader = array();
                 $arrHeader[] = $this->getLang("form_user_name", "user");
                 $arrHeader[] = $this->getLang("form_user_forename", "user");
@@ -131,9 +127,11 @@ class AdminreportsReportUserrights extends AuswertungReportBase implements Auswe
     }
 
     /**
+     * Fetches the data per user
+     * @param array $arrResult
      * @return array
      */
-    private function getUserData($arrResult)
+    private function getUserData(array $arrResult): array
     {
         $arrUserRows = array();
         $intI = 0;
