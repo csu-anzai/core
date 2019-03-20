@@ -290,5 +290,5 @@ class Ajax {
     this.genericAjaxCall("system", "setStatus", strSystemIdToSet, objCallback);
   }
 }
-
+(<any>window).Ajax = Ajax;
 export default Ajax;

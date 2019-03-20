@@ -1,10 +1,10 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-*-------------------------------------------------------------------------------------------------------*
-*	$Id$                                   *
-********************************************************************************************************/
+ *   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
+ *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
+ *-------------------------------------------------------------------------------------------------------*
+ *    $Id$                                   *
+ ********************************************************************************************************/
 
 namespace Kajona\System\Admin;
 
@@ -166,7 +166,7 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
      *
      * @var null
      */
-    private $strOnSaveRedirectUrl = null;//
+    private $strOnSaveRedirectUrl = null; //
 
     /**
      * A list of buttons to attach to the end of the form.
@@ -206,7 +206,7 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
         $this->strFormname = $strFormname;
         $this->objSourceobject = $objSourceobject;
 
-        $this->strOnSubmit = "require('forms').defaultOnSubmit(this);return false;";
+        $this->strOnSubmit = "Forms.defaultOnSubmit(this);return false;";
         $this->objLang = Lang::getInstance();
         $this->objToolkit = Carrier::getInstance()->getObjToolkit("admin");
     }
@@ -357,7 +357,7 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
                     $errorMessages = $field->getValidationErrorMsg();
                     foreach ($errorMessages as $errorMessage) {
                         $fieldName = $errorMessage->getStrFieldName() === null ? $field->getStrEntryName() : $errorMessage->getStrFieldName();
-                        $message = $field->getStrLabel() . ": " .$errorMessage->getStrErrorMessage();
+                        $message = $field->getStrLabel() . ": " . $errorMessage->getStrErrorMessage();
                         $errors[] = new ValidationError($message, $fieldName);
                     }
                 }
@@ -408,7 +408,7 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
             $this->addField($objField);
         }
 
-         $this->addField(new FormentryHidden("", static::getStrFormSentParamForObject($this->objSourceobject).$this->strFormSentAddon))->setStrValue("1");
+        $this->addField(new FormentryHidden("", static::getStrFormSentParamForObject($this->objSourceobject) . $this->strFormSentAddon))->setStrValue("1");
 
         /*add reload URL param*/
         if ($this->strOnSaveRedirectUrl != "") {
@@ -474,7 +474,7 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
      */
     public function getFormIsSent()
     {
-        return Carrier::getInstance()->issetParam(static::getStrFormSentParamForObject($this->getObjSourceobject()).$this->strFormSentAddon);
+        return Carrier::getInstance()->issetParam(static::getStrFormSentParamForObject($this->getObjSourceobject()) . $this->strFormSentAddon);
     }
 
     /**
@@ -486,9 +486,8 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
      */
     final public static function getStrFormSentParamForObject($objModel = null)
     {
-        return "formsent_".($objModel !== null ? StringUtil::toLowerCase(get_class($objModel)) : "");
+        return "formsent_" . ($objModel !== null ? StringUtil::toLowerCase(get_class($objModel)) : "");
     }
-
 
     /**
      * @return int
@@ -610,12 +609,11 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
             $this->objSourceobject->getLockManager()->lockRecord();
 
             //register a new unlock-handler
-            $strReturn .= "<script type='text/javascript'>require(['forms'], function(forms) {forms.registerUnlockId('{$this->objSourceobject->getSystemid()}')});</script>";
+            $strReturn .= "<script type='text/javascript'>Forms.registerUnlockId('{$this->objSourceobject->getSystemid()}')</script>";
         }
 
         return $strReturn;
     }
-
 
     /**
      * Renders the fields grouped in a specific style
@@ -834,7 +832,6 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
             $strType = FormentryText::class;
         }
 
-
         $strPropertyName = Lang::getInstance()->propertyWithoutPrefix($strPropertyName);
 
         $objField = $this->getFormEntryInstance($strType, $strPropertyName);
@@ -855,7 +852,6 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
         }
 
         $objField->setBitReadonly($bitReadonly);
-
 
         if ($strValidator !== null) {
             $objField->setObjValidator($this->getValidatorInstance($strValidator));
@@ -905,7 +901,6 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
                 $objField = null;
             }
 
-
             $arrNewOrder[$strKey] = $objValue;
 
             $intI++;
@@ -915,10 +910,8 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
             $arrNewOrder[$strField] = $objField;
         }
 
-
         $this->arrFields = $arrNewOrder;
     }
-
 
     /**
      * Loads the field-entry identified by the passed name.
@@ -954,7 +947,7 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
         if ($strClassname !== null) {
             return new $strClassname($this->strFormname, $strPropertyname, $this->objSourceobject);
         } else {
-            throw new Exception("failed to load form-entry of type " . $strName. "/".  $strClassname, Exception::$level_ERROR);
+            throw new Exception("failed to load form-entry of type " . $strName . "/" . $strClassname, Exception::$level_ERROR);
         }
 
     }
@@ -1093,7 +1086,6 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
         }
     }
 
-
     /**
      * Orders the fields by the given array.
      * The array must contain as values the keys of the form fields
@@ -1126,8 +1118,8 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
     public function removeField($strName)
     {
         unset($this->arrFields[$strName]);
-        if (in_array($this->strFormname."_".$strName, $this->arrHiddenElements)) {
-            unset($this->arrHiddenElements[array_flip($this->arrHiddenElements)[$this->strFormname."_".$strName]]);
+        if (in_array($this->strFormname . "_" . $strName, $this->arrHiddenElements)) {
+            unset($this->arrHiddenElements[array_flip($this->arrHiddenElements)[$this->strFormname . "_" . $strName]]);
         }
 
         return $this;
@@ -1257,7 +1249,7 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
             $strTitle = $this->getGroupTitleByKey($strKey);
 
             $arrFields = $this->getFieldsByGroup($strKey);
-            $arrFields = array_map(function($strField){
+            $arrFields = array_map(function ($strField) {
                 if (substr($strField, 0, StringUtil::length($this->getStrFormname())) == $this->getStrFormname()) {
                     $strField = substr($strField, StringUtil::length($this->getStrFormname()) + 1);
                 }
@@ -1478,8 +1470,6 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
         $this->bitOnLeaveChangeDetection = $bitOnLeaveChangeDetection;
     }
 
-
-
     /**
      * Returns percent of completeness.
      *
@@ -1514,7 +1504,7 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
             return 100;
         }
 
-        return round($countCompletedFields/$countFieldsShouldBeCompleted*100, 2);
+        return round($countCompletedFields / $countFieldsShouldBeCompleted * 100, 2);
     }
 
     /**
@@ -1524,6 +1514,5 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
     {
         $this->strFormSentAddon = $strFormSentAddon;
     }
-
 
 }

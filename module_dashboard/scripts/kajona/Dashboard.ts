@@ -129,5 +129,5 @@ class Dashboard {
     );
   }
 }
-
+(<any>window).Dashboard = Dashboard;
 export default Dashboard;

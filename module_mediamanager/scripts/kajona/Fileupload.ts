@@ -232,5 +232,5 @@ class Fileupload {
     Fileupload.dropoverInitialized = true;
   };
 }
-
+(<any>window).Fileupload = Fileupload;
 export default Fileupload;

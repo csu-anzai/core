@@ -1,4 +1,4 @@
-import $ from "../../../_buildfilesNew/node_modules/jquery";
+import * as $ from "jquery";
 import Ajax from "./Ajax";
 
 class ModuleNavigation {
@@ -66,5 +66,5 @@ class ModuleNavigation {
     ).removeClass("hidden");
   }
 }
-
+(<any>window).ModuleNavigation = ModuleNavigation;
 export default ModuleNavigation;

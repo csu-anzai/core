@@ -97,5 +97,5 @@ class DialogHelper {
     }
   }
 }
-
+(<any>window).DialogHelper = DialogHelper;
 export default DialogHelper;

@@ -406,5 +406,5 @@ class Util {
     return strText;
   }
 }
-
+(<any>window).Util = Util;
 export default Util;

@@ -1,22 +1,16 @@
 import * as $ from "jquery";
 import "../bootstrap/bootstrap.min.js";
-// import "bootstrap";
+import "../bootstrap/datepicker/bootstrap-datepicker";
+import "../bootstrap/datepicker/locales/bootstrap-datepicker.de.js";
 import "../../../_buildfilesNew/node_modules/jquery-ui";
-// import Messaging = require("../../../module_system/scripts/kajona/Messaging");
+import "../jquery/jquery.floatThead.min";
 import Messaging from "./../../../module_system/scripts/kajona/Messaging";
-// import Ajax = require("../../../module_system/scripts/kajona/Ajax");
 import Ajax from "../../../module_system/scripts/kajona/Ajax";
-// import Lang = require("../../../module_system/scripts/kajona/Lang");
 import Lang from "../../../module_system/scripts/kajona/Lang";
-// import Tooltip = require("../../../module_system/scripts/kajona/Tooltip");
 import Tooltip from "../../../module_system/scripts/kajona/Tooltip";
-// import Util = require("../../../module_system/scripts/kajona/Util");
 import Util from "../../../module_system/scripts/kajona/Util";
-// import Folderview = require("../../../module_system/scripts/kajona/Folderview");
 import Folderview from "../../../module_system/scripts/kajona/Folderview";
-// import WorkingIndicator = require("../../../module_system/scripts/kajona/WorkingIndicator");
 import WorkingIndicator from "../../../module_system/scripts/kajona/WorkingIndicator";
-// import Breadcrumb = require("../../../module_system/scripts/kajona/Breadcrumb");
 import Breadcrumb from "../../../module_system/scripts/kajona/Breadcrumb";
 
 class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
@@ -497,5 +491,5 @@ class V4skin {
     }
   }
 }
-
+(<any>window).V4skin = V4skin;
 export default V4skin;

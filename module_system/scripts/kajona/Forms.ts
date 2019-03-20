@@ -423,5 +423,5 @@ class Forms {
     );
   }
 }
-
+(<any>window).Forms = Forms;
 export default Forms;

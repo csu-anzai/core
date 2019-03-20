@@ -35,7 +35,7 @@
                     {{ login|raw }}
                 </div>
                 <div class="col-md-8 col-sm-9 hidden-xs" style="text-align: right;">
-                    <form class="navbar-search pull-left" action="_webpath_/#/search/search" onsubmit="require('forms').defaultOnSubmit(this);return false;">
+                    <form class="navbar-search pull-left" action="_webpath_/#/search/search" onsubmit="Forms.defaultOnSubmit(this);return false;">
 
                         <div class="input-group">
                             <input type="text" name="search_query" class="form-control search-query" placeholder="{{ "globalSearchPlaceholder"|lang("dashboard") }}" id="globalSearchInput">
@@ -60,11 +60,9 @@
             <div class="sidebar-nav" id="moduleNavigation">
             </div>
             <script type="text/javascript">
-                {# require(['util', 'moduleNavigation'], function(util, mNavi) {
-                    if (!util.isStackedDialog()) {
-                        mNavi.loadNavigation();
+                 if (!Util.isStackedDialog()) {
+                        ModuleNavigation.loadNavigation();
                     }
-                }); #}
             </script>
 
         </div>

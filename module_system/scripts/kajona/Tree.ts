@@ -1,4 +1,4 @@
-import $ from "../../../_buildfilesNew/node_modules/jquery";
+import * as $ from "jquery";
 import "../jstree3/dist/jstree.min";
 import Ajax from "./Ajax";
 import Lang from "./Lang";
@@ -662,5 +662,5 @@ class Tree {
     return false;
   }
 }
-
+(<any>window).Tree = Tree;
 export default Tree;

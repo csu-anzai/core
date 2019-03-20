@@ -1,9 +1,10 @@
 import * as $ from "jquery";
 // import * as chartjs from "../chartjs/Chart.bundle.min";
 // import "../chartjs/chartjs-plugin-datalabels";
-import Chart from "chart.js";
+// import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels.js";
 import Folderview from "../../../module_system/scripts/kajona/Folderview";
+var Chart = require("chart.js");
 
 declare var Chart: any;
 
@@ -174,5 +175,5 @@ class ChartjsHelper {
     }
   }
 }
-
+(<any>window).ChartjsHelper = ChartjsHelper;
 export default ChartjsHelper;

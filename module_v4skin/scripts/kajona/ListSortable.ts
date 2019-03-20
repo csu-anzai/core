@@ -1,5 +1,5 @@
 import * as $ from "jquery";
-import "../../../_buildfilesNew/node_modules/jquery-ui";
+import "jquery-ui";
 import Ajax from "../../../module_system/scripts/kajona/Ajax";
 import StatusDisplay from "../../../module_system/scripts/kajona/StatusDisplay";
 import Lang from "../../../module_system/scripts/kajona/Lang";
@@ -217,5 +217,5 @@ class ListSortable {
     });
   }
 }
-
+(<any>window).ListSortable = ListSortable;
 export default ListSortable;

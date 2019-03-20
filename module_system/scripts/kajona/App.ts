@@ -86,4 +86,5 @@ class App {
 }
 
 (<any>window).App = App;
+(<any>window).$ = (<any>window).jQuery = require("jquery");
 export default App;

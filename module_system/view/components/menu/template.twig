@@ -14,11 +14,9 @@
 {% if rendercontainer %}
     </div>
     <script type="text/javascript">
-        require(['jquery'], function($) {
-            $('.dropdown-menu .dropdown-submenu a').click(function (e) {
+        $('.dropdown-menu .dropdown-submenu a').click(function (e) {
                 e.stopPropagation();
             });
-        });
     </script>
 </div>
 {% endif %}

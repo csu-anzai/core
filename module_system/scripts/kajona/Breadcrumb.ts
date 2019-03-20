@@ -1,6 +1,3 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="breadcrumb"/>
-
 import * as $ from "jquery";
 
 class Breadcrumb {
@@ -55,5 +52,5 @@ class Breadcrumb {
     return intTotalUnused;
   }
 }
-
+(<any>window).Breadcrumb = Breadcrumb;
 export default Breadcrumb;

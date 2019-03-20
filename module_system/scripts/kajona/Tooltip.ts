@@ -95,5 +95,5 @@ class Tooltip {
     $(objElement).qtip("destroy");
   }
 }
-
+(<any>window).Tooltip = Tooltip;
 export default Tooltip;

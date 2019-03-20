@@ -41,5 +41,5 @@ class Mediamanager {
     );
   }
 }
-
+(<any>window).Mediamanager = Mediamanager;
 export default Mediamanager;

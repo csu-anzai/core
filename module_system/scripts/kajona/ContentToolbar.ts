@@ -1,4 +1,4 @@
-import $ from "../../../_buildfilesNew/node_modules/jquery";
+import * as $ from "jquery";
 import Util from "./Util";
 
 /**
@@ -116,5 +116,5 @@ class ContentToolbar {
     this.$objToolbarContainer.removeClass("hidden");
   }
 }
-
+(<any>window).ContentToolbar = ContentToolbar;
 export default ContentToolbar;

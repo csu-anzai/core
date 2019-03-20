@@ -265,5 +265,5 @@ class Lists {
     });
   }
 }
-
+(<any>window).Lists = Lists;
 export default Lists;

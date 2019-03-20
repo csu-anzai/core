@@ -1,16 +1,10 @@
-import $ from "../../../_buildfilesNew/node_modules/jquery";
-import * as toastr from "../../../_buildfilesNew/node_modules/toastr";
-// import Ajax = require("./Ajax");
-
+import * as $ from "jquery";
 import Ajax from "./Ajax";
-// import Util = require("./Util");
 import Util from "./Util";
-// import DialogHelper = require("../../../module_v4skin/scripts/kajona/DialogHelper");
 import DialogHelper from "../../../module_v4skin/scripts/kajona/DialogHelper";
-// import Router = require("./Router");
 import Router from "./Router";
-// import Dialog = require("../../../module_v4skin/scripts/kajona/Dialog");
 import Dialog from "../../../module_v4skin/scripts/kajona/Dialog";
+const toastr = require("toastr");
 interface Accept {
   type: string;
   module: string;
@@ -244,5 +238,5 @@ class Messaging {
     return function() {};
   }
 }
-
+(<any>window).Messaging = Messaging;
 export default Messaging;

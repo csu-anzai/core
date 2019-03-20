@@ -169,5 +169,5 @@ class Loader {
       });
   }
 }
-
+(<any>window).Loader = Loader;
 export default Loader;

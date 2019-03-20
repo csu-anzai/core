@@ -577,7 +577,7 @@ abstract class AdminSimple extends AdminController
 
             //the tag list is more complex and wrapped by a js-logic to load the tags by ajax afterwards
             // @codingStandardsIgnoreStart
-            $strOnClick = "require('folderview').dialog.setContentIFrame('" . Link::getLinkAdminHref("tags", "genericTagForm", "&systemid=" . $objListEntry->getSystemid()) . "'); require('folderview').dialog.setTitle('" . $strDialogTitle . "'); require('folderview').dialog.init(); return false;";
+            $strOnClick = "Folderview.dialog.setContentIFrame('" . Link::getLinkAdminHref("tags", "genericTagForm", "&systemid=" . $objListEntry->getSystemid()) . "'); Folderview.dialog.setTitle('" . $strDialogTitle . "'); Folderview.dialog.init(); return false;";
             $strLink = "<a href=\"#\" onclick=\"" . $strOnClick . "\" title=\"" . $this->getLang("commons_edit_tags") . "\" rel=\"tagtooltip\" data-systemid=\"" . $objListEntry->getSystemid() . "\">" . AdminskinHelper::getAdminImage("icon_tag", $this->getLang("commons_edit_tags"), true) . "</a>";
             // @codingStandardsIgnoreEnd
             return $this->objToolkit->listButton($strLink);

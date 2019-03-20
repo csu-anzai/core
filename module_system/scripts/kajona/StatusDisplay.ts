@@ -1,4 +1,4 @@
-import * as toastr from "../../../_buildfilesNew/node_modules/toastr";
+const toastr = require("toastr");
 
 /**
  * General way to display a status message using toastr
@@ -64,5 +64,5 @@ class StatusDisplay {
     toastr.error(strMessage);
   }
 }
-
+(<any>window).StatusDisplay = StatusDisplay;
 export default StatusDisplay;

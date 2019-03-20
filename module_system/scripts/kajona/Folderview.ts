@@ -1,7 +1,4 @@
 import * as $ from "jquery";
-// import Dialog = require("../../../module_v4skin/scripts/kajona/Dialog");
-// import Util = require("./Util");
-// import Lists = require("./Lists");
 import Dialog from "../../../module_v4skin/scripts/kajona/Dialog";
 import Util from "./Util";
 import Lists from "./Lists";
@@ -54,13 +51,13 @@ class Folderview {
     objCallback: Function
   ) {
     if (window.opener) {
-      window.opener.require("folderview").fillFormFields(arrTargetsValues);
+      window.opener.Folderview.fillFormFields(arrTargetsValues);
     } else if (parent) {
       if (parent.KAJONA.util.folderviewHandler) {
         parent.KAJONA.util.folderviewHandler.fillFormFields(arrTargetsValues);
         parent.KAJONA.util.folderviewHandler = null;
       } else {
-        parent.require("folderview").fillFormFields(arrTargetsValues);
+        (<any>parent).Folderview.fillFormFields(arrTargetsValues);
       }
     }
 
@@ -255,7 +252,7 @@ class Folderview {
     if (window.opener) {
       window.close();
     } else if (parent) {
-      var context = parent.require("folderview");
+      var context = (<any>parent).Folderview;
       // in case we call setCheckboxArrayObjectListItems without dialog
       if (context.dialog) {
         context.dialog.hide();
@@ -272,5 +269,5 @@ class Folderview {
     return Lists.initRowClick();
   }
 }
-
+(<any>window).Folderview = Folderview;
 export default Folderview;

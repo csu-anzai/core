@@ -1,4 +1,4 @@
-import $ from "../../../_buildfilesNew/node_modules/jquery";
+import * as $ from "jquery";
 import Quickhelp from "./Quickhelp";
 import Tooltip from "./Tooltip";
 import Ajax from "./Ajax";
@@ -267,5 +267,5 @@ class Router {
     delete this.arrFormCallbacks[strName];
   }
 }
-
+(<any>window).Router = Router;
 export default Router;

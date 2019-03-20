@@ -1,4 +1,4 @@
-import $ from "../../../_buildfilesNew/node_modules/jquery";
+import * as $ from "jquery";
 import "../../../module_v4skin/scripts/bootstrap/bootstrap.min";
 
 /**
@@ -27,5 +27,5 @@ class Quickhelp {
       .popover("destroy");
   }
 }
-
+(<any>window).Quickhelp = Quickhelp;
 export default Quickhelp;

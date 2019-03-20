@@ -1,4 +1,4 @@
-import $ from "../../../_buildfilesNew/node_modules/jquery";
+import * as $ from "jquery";
 import Ajax from "./Ajax";
 
 interface Response {
@@ -88,7 +88,7 @@ class Permissions {
     var row = "";
     row += "<tr data-groupid='" + groupId + "'>";
     row +=
-      "<td><a href=\"#\" onclick=\"require('permissions').removeGroup('" +
+      '<td><a href="#" onclick="Permissions.removeGroup(\'' +
       groupId +
       '\',this);return false;"><i class="kj-icon fa fa-trash-o" ></i></a></td>';
     row += "<td>" + groupName + "</td>";
@@ -153,5 +153,5 @@ class Permissions {
     );
   }
 }
-
+(<any>window).Permissions = Permissions;
 export default Permissions;

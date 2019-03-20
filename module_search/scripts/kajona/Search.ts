@@ -58,5 +58,5 @@ class Search {
     );
   }
 }
-
+(<any>window).Search = Search;
 export default Search;
