@@ -28,6 +28,22 @@ class InstallerApiController implements ApiControllerInterface
     protected $connection;
 
     /**
+     * Endpoint which can be called to verify that we are actually talking to a valid AGP API
+     *
+     * @api
+     * @method GET
+     * @path /agp
+     * @authorization filetoken
+     */
+    public function getAgpInfo()
+    {
+        return [
+            "success" => true,
+            "base_url" => substr($_SERVER["REQUEST_URI"], 0, -3),
+        ];
+    }
+
+    /**
      * @api
      * @method GET
      * @path /installer/systeminfo
