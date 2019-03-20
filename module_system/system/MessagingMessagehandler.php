@@ -256,7 +256,7 @@ class MessagingMessagehandler
     {
         $arrReturn = array();
 
-        if (!is_array($arrRecipients)) {
+        if (!is_iterable($arrRecipients)) {
             return [];
         }
 
