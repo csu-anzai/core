@@ -72,7 +72,7 @@ class AppBuilder
             $response = $response
                 ->withHeader('Access-Control-Allow-Origin', '*')
                 ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
-                ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
+                ->withHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, DELETE, PATCH');
 
             if ($request->getMethod() === 'OPTIONS') {
                 // for options requests we always return a 200 to handle preflight requests properly
