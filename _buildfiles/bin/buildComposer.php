@@ -102,10 +102,3 @@ if ($intReturn !== 0) {
 echo "Composer install finished for " . $vendorComposer . ": \n";
 
 echo "   " . implode("\n   ", $arrOutput);
-
-
-// generate also token file for the installer api
-echo "\n\nGenerate token key\n\n";
-
-$tokenFile = $vendorDir . "/token.key";
-file_put_contents($tokenFile, bin2hex(random_bytes(16)));
