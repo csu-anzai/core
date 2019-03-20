@@ -30,7 +30,7 @@ class FileToken implements AuthorizationInterface
 
     private function getAccessToken()
     {
-        $tokenFile = _realpath_ . "/token.key";
+        $tokenFile = _realpath_ . "/project/token.key";
 
         if (!is_file($tokenFile)) {
             throw new \RuntimeException("Token file not available");
