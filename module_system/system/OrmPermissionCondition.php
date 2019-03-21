@@ -14,6 +14,8 @@ namespace Kajona\System\System;
  * @package Kajona\System\System
  * @author stefan.meyer1@yahoo.de
  * @since 6.0
+ *
+ * @deprecated move to the OrmViewPermissionCondition
  */
 class OrmPermissionCondition extends OrmCondition
 {
