@@ -20,14 +20,25 @@ class OrmRight2PermissionCondition extends OrmCondition
     private $strColumn = null;
 
     /**
+     * @var OrmPermissionCondition
+     */
+    private $fallback;
+
+    /**
      * OrmPermissionCondition constructor.
      *
      * @param string $column the column to query against
+     * @throws Exception
      */
     public function __construct($column = "agp_system.system_id")
     {
         parent::__construct("", array());
         $this->strColumn = $column;
+
+        if (count(Session::getInstance()->getShortGroupIdsAsArray()) < SystemSetting::getConfigValue("_system_permission_assignment_threshold_")) {
+            //fall back to the simple like logic for small amount of data
+            $this->fallback = new OrmPermissionCondition(Rights::$STR_RIGHT_RIGHT2, null, StringUtil::replace("system_id", "right_right2", $column));
+        }
     }
 
 
@@ -36,6 +47,10 @@ class OrmRight2PermissionCondition extends OrmCondition
      */
     public function getStrWhere()
     {
+        if ($this->fallback !== null) {
+            return $this->fallback->getStrWhere();
+        }
+
         return <<<SQL
         {$this->strColumn} IN (
           SELECT right2_id
@@ -43,7 +58,6 @@ class OrmRight2PermissionCondition extends OrmCondition
           WHERE right2_shortgroup = group_short_id AND group_id = group_member_group_kajona_id AND group_member_user_kajona_id = ? AND right2_id = {$this->strColumn}
         )
 SQL;
-
     }
 
     /**
@@ -51,6 +65,11 @@ SQL;
      */
     public function getArrParams()
     {
+
+        if ($this->fallback !== null) {
+            return $this->fallback->getArrParams();
+        }
+
         return [Session::getInstance()->getUserID()];
     }
 

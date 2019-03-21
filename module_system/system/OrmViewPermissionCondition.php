@@ -28,15 +28,16 @@ class OrmViewPermissionCondition extends OrmCondition
      * OrmPermissionCondition constructor.
      *
      * @param string $column the column to query against
+     * @throws Exception
      */
     public function __construct($column = "agp_system.system_id")
     {
         parent::__construct("", array());
         $this->strColumn = $column;
 
-        if (count(Session::getInstance()->getShortGroupIdsAsArray()) < 100) {
+        if (count(Session::getInstance()->getShortGroupIdsAsArray()) < SystemSetting::getConfigValue("_system_permission_assignment_threshold_")) {
             //fall back to the simple like logic for small amount of data
-            $this->fallback = new OrmPermissionCondition("view", null, StringUtil::replace("system_id", "right_view", $column));
+            $this->fallback = new OrmPermissionCondition(Rights::$STR_RIGHT_VIEW, null, StringUtil::replace("system_id", "right_view", $column));
         }
     }
 
@@ -58,7 +59,6 @@ class OrmViewPermissionCondition extends OrmCondition
           WHERE view_shortgroup = group_short_id AND  group_id = group_member_group_kajona_id AND group_member_user_kajona_id = ? AND view_id = {$this->strColumn}
         )
 SQL;
-
     }
 
     /**
