@@ -390,7 +390,7 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
      * @param bool $shortCircuit
      * @return bool
      */
-    public function validateForm($shortCircuit = false)
+    public function validateForm(bool $shortCircuit = false): bool
     {
 
         $arrErrors = $this->getValidationErrorObjects($shortCircuit);
