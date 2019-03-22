@@ -128,10 +128,10 @@ class AdminreportsReportUserrights extends AuswertungReportBase implements Auswe
 
     /**
      * Fetches the data per user
-     * @param array $arrResult
+     * @param Iterable $arrResult
      * @return array
      */
-    private function getUserData(array $arrResult): array
+    private function getUserData(Iterable $arrResult): array
     {
         $arrUserRows = array();
         $intI = 0;
