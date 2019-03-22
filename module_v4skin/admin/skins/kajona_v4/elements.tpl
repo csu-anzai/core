@@ -108,7 +108,7 @@ It is responsible for rendering the different admin-lists.
 Currently, there are two modes: with and without a description.
 
 <generallist_checkbox>
-    <input type="checkbox" name="kj_cb_%%systemid%%" id="kj_cb_%%systemid%%" onchange="require('lists').updateToolbar();">
+    <input type="checkbox" name="kj_cb_%%systemid%%" id="kj_cb_%%systemid%%" onchange="Lists.updateToolbar();">
 </generallist_checkbox>
 
 <generallist>
@@ -1354,7 +1354,7 @@ pe_iconbar, pe_disable
 
         <script type='text/javascript'>
             $('#%%treeId%%_toggle').on('click', function(e) {
-                require('tree').toggleTreeView('%%treeId%%');
+                Tree.toggleTreeView('%%treeId%%');
                 e.preventDefault();
             })
         </script>
@@ -1368,27 +1368,21 @@ otherwise the JavaScript will fail!
     <div id="tagsLoading_%%targetSystemid%%" class="loadingContainer"></div>
     <div id="tagsWrapper_%%targetSystemid%%"></div>
     <script type="text/javascript">
-        require(["tags"], function(tags) {
-            tags.reloadTagList('%%targetSystemid%%', '%%attribute%%');
-        });
+            Tags.reloadTagList('%%targetSystemid%%', '%%attribute%%');
     </script>
 </tags_wrapper>
 
 <tags_tag>
     <span class="label label-default">%%tagname%%</span>
     <script type="text/javascript">
-        require(["tooltip"], function(tooltip) {
-            tooltip.addTooltip('#icon_%%strTagId%%');
-        });
+            Tooltip.addTooltip('#icon_%%strTagId%%');
     </script>
 </tags_tag>
 
 <tags_tag_delete>
-    <span class="label label-default taglabel">%%tagname%% <a href="javascript:require('tags').removeTag('%%strTagId%%', '%%strTargetSystemid%%', '%%strAttribute%%');"> %%strDelete%%</a> %%strFavorite%%</span>
+    <span class="label label-default taglabel">%%tagname%% <a href="javascript:Tags.removeTag('%%strTagId%%', '%%strTargetSystemid%%', '%%strAttribute%%');"> %%strDelete%%</a> %%strFavorite%%</span>
     <script type="text/javascript">
-        require(["tooltip"], function(tooltip) {
-            tooltip.addTooltip($(".taglabel [rel='tooltip']"));
-        });
+            Tooltip.addTooltip($(".taglabel [rel='tooltip']"));
     </script>
 </tags_tag_delete>
 
@@ -1536,26 +1530,24 @@ place ajaxScript before the closing input_tagselector-tag.
 </sitemap_divider_entry>
 
 <changelog_heatmap>
-    <div class="chart-navigation pull-left"><a href="#" onclick="require('changelog').loadPrevYear();return false;"><i class="kj-icon fa fa-arrow-left"></i></a></div>
-    <div class="chart-navigation pull-right"><a href="#" onclick="require('changelog').loadNextYear();return false;"><i class="kj-icon fa fa-arrow-right"></i></a></div>
+    <div class="chart-navigation pull-left"><a href="#" onclick="Changelog.loadPrevYear();return false;"><i class="kj-icon fa fa-arrow-left"></i></a></div>
+    <div class="chart-navigation pull-right"><a href="#" onclick="Changelog.loadNextYear();return false;"><i class="kj-icon fa fa-arrow-right"></i></a></div>
     <div id='changelogTimeline' style='text-align:center;'></div>
 
     <script type="text/javascript">
-        require(['changelog', 'moment', 'loader', 'util'], function(changelog, moment, loader, util){
-            loader.loadFile(['/core/module_system/scripts/d3/calendar-heatmap.css']);
+             Loader.loadFile(['/core/module_system/scripts/d3/calendar-heatmap.css']);
 
-            changelog.lang = %%strLang%%;
-            changelog.systemId = "%%strSystemId%%";
-            changelog.format = util.transformDateFormat('%%strDateFormat%%', "momentjs");
-            changelog.now = moment().endOf('day').toDate();
-            changelog.yearAgo = moment().startOf('day').subtract(1, 'year').toDate();
-            changelog.selectColumn("right");
-            changelog.loadChartData();
+            Changelog.lang = %%strLang%%;
+            Changelog.systemId = "%%strSystemId%%";
+            Changelog.format = Util.transformDateFormat('%%strDateFormat%%', "momentjs");
+            Changelog.now = moment().endOf('day').toDate();
+            Changelog.yearAgo = moment().startOf('day').subtract(1, 'year').toDate();
+            Changelog.selectColumn("right");
+            Changelog.loadChartData();
 
-            changelog.loadDate("%%strSystemId%%", "%%strLeftDate%%", "left", function(){
-                changelog.loadDate("%%strSystemId%%", "%%strRightDate%%", "right", changelog.compareTable);
+            Changelog.loadDate("%%strSystemId%%", "%%strLeftDate%%", "left", function(){
+                Changelog.loadDate("%%strSystemId%%", "%%strRightDate%%", "right", Changelog.compareTable);
             });
-        });
     </script>
 </changelog_heatmap>
 

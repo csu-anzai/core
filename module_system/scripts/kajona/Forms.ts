@@ -393,7 +393,7 @@ class Forms {
             data.url +
             '">' +
             '<span class="input-group-btn">' +
-            '<button class="btn btn-default copy-btn" type="button" title="" onclick="require(\'util\').copyTextToClipboard(\'' +
+            '<button class="btn btn-default copy-btn" type="button" title="" onclick="Util.copyTextToClipboard(\'' +
             data.url +
             "')\">" +
             "<i class='kj-icon fa fa-clipboard'>" +

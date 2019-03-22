@@ -126,5 +126,5 @@ class Tags {
     );
   }
 }
-
+(<any>window).Tags = Tags;
 export default Tags;

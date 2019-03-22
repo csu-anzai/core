@@ -143,7 +143,7 @@ class Folderview {
           '" data-kajona-initval="" /></td>';
         html += '    <td class="icon-cell">';
         html +=
-          '        <a href="#" class="removeLink" onclick="require(\'v4skin\').removeObjectListItem(this);return false">' +
+          '        <a href="#" class="removeLink" onclick="V4skin.removeObjectListItem(this);return false">' +
           strDeleteButton +
           "</a>";
         html += "    </td>";

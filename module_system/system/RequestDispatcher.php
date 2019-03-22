@@ -216,7 +216,7 @@ class RequestDispatcher
                                 $strJs = "messaging.pollMessages();";
                             }
 
-                            $strReturn = "<script type='text/javascript'
+                            $strReturn = "<script type='text/javascript'>
                             Router.loadUrl('{$strRoutieRedirect}');
                             {$strJs}
                                 </script>";
