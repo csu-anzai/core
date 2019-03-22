@@ -1,28 +1,22 @@
 import * as $ from "jquery";
-// require("../../../_buildfilesNew/node_modules/blueimp-file-upload/js/jquery.fileupload");
-import "blueimp-file-upload/js/jquery.fileupload";
-// import "blueimp-tmpl";
-import "../jquery-fileupload/js/tmpl.min";
-// import "../jquery-fileupload/js/"
-// import "jquery-ui/ui/widget";
-// import "../../../_buildfilesNew/node_modules/jquery-ui/ui/widget";
-// import "../jquery-fileupload/js/jquery.fileupload";
-// // import "jquery.iframe-transport";
-// import "../jquery-fileupload/js/jquery.iframe-transport";
-// // import "../../../_buildfilesNew/node_modules/jquery/external/"
-// // import "jquery.fileupload";
-// // import "jquery.fileupload-process";
-// import "../jquery-fileupload/js/jquery.fileupload-process";
-// // import "jquery.fileupload-ui";
-// import "../jquery-fileupload/js/jquery.fileupload-ui";
-// import "../../../_buildfilesNew/node_modules/@types/jquery.fileupload";
-// import Lang = require("../../../module_system/scripts/kajona/Lang");
 import Lang from "../../../module_system/scripts/kajona/Lang";
-// import Forms = require("../../../module_system/scripts/kajona/Forms");
 import Forms from "../../../module_system/scripts/kajona/Forms";
-// import Ajax = require("../../../module_system/scripts/kajona/Ajax");
 import Ajax from "../../../module_system/scripts/kajona/Ajax";
-
+import "blueimp-tmpl";
+import "blueimp-file-upload";
+import "../jquery-fileupload/js/jquery.fileupload-ui";
+// require("blueimp-file-upload/js/vendor/jquery.ui.widget.js");
+// require("blueimp-tmpl/js/tmpl.js");
+// require("blueimp-load-image/js/load-image.all.min.js");
+// require("blueimp-canvas-to-blob/js/canvas-to-blob.js");
+// require("blueimp-file-upload/js/jquery.iframe-transport.js");
+// require("blueimp-file-upload/js/jquery.fileupload.js");
+// require("blueimp-file-upload/js/jquery.fileupload-process.js");
+// require("blueimp-file-upload/js/jquery.fileupload-image.js");
+// require("blueimp-file-upload/js/jquery.fileupload-audio.js");
+// require("blueimp-file-upload/js/jquery.fileupload-video.js");
+// require("blueimp-file-upload/js/jquery.fileupload-validate.js");
+// require("blueimp-file-upload/js/jquery.fileupload-ui.js");
 declare global {
   interface Window {
     dropZoneTimeout: number;

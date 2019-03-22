@@ -55,7 +55,13 @@ module.exports = {
     modules: [path.resolve(__dirname, './node_modules')],
     extensions: ['.ts', '.js', '.vue', '.json'],
     alias: {
-      vue$: 'vue/dist/vue.esm.js'
+      vue$: 'vue/dist/vue.esm.js',
+      'load-image': 'blueimp-load-image/js/load-image.js',
+      'load-image-meta': 'blueimp-load-image/js/load-image-meta.js',
+      'load-image-exif': 'blueimp-load-image/js/load-image-exif.js',
+      'load-image-scale': 'blueimp-load-image/js/load-image-scale.js',
+      'canvas-to-blob': 'blueimp-canvas-to-blob/js/canvas-to-blob.js',
+      'jquery-ui/ui/widget': 'blueimp-file-upload/js/vendor/jquery.ui.widget.js'
     }
   },
   plugins: [
