@@ -804,6 +804,10 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
             <input type="text" id="%%name%%" data-name="%%name%%" class="form-control" autocomplete="off" data-kajona-block-initval="true"/>
             <div id="%%name%%-list">%%data%%</div>
         </div>
+
+        <div class="col-sm-2 form-opener">
+            %%opener%%
+        </div>
     </div>
     <script type="text/javascript">
         require(["tagEditor"], function(tagEditor) {

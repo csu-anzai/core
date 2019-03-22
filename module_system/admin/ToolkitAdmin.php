@@ -926,11 +926,12 @@ HTML;
      * @param string $strTitle
      * @param $strSource
      * @param array $arrValues
-     * @param null $strOnChange
+     * @param string|null $strOnChange
+     * @param string|null $opener
      * @return string
      * @throws Exception
      */
-    public function formInputObjectTags($strName, $strTitle, $strSource, array $arrValues = array(), $strOnChange = null)
+    public function formInputObjectTags($strName, $strTitle, $strSource, array $arrValues = array(), $strOnChange = null, $opener = null)
     {
         $strData = "";
         $arrResult = array();
@@ -950,6 +951,7 @@ HTML;
         $arrTemplate["onChange"] = empty($strOnChange) ? "function(){}" : (string)$strOnChange;
         $arrTemplate["source"] = $strSource;
         $arrTemplate["data"] = $strData;
+        $arrTemplate["opener"] = $opener;
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_objecttags", true);
     }
