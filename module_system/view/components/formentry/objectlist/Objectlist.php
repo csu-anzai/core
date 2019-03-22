@@ -1,10 +1,10 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2018 ARTEMEON                                                                                   *
-*       Published under the GNU LGPL v2.1                                                               *
-********************************************************************************************************/
+ *   (c) 2018 ARTEMEON                                                                                   *
+ *       Published under the GNU LGPL v2.1                                                               *
+ ********************************************************************************************************/
 
-declare(strict_types=1);
+declare (strict_types = 1);
 
 namespace Kajona\System\View\Components\Formentry\Objectlist;
 
@@ -111,9 +111,9 @@ class Objectlist extends FormentryComponentAbstract
             if ($item instanceof ModelInterface) {
                 $deleteAlt = Carrier::getInstance()->getObjLang()->getLang("commons_remove_assignment", "system");
                 $attributes = [
-                    "href"    => "#",
-                    "class"   => "removeLink",
-                    "onclick" => "require('v4skin').removeObjectListItem(this);return false;"
+                    "href" => "#",
+                    "class" => "removeLink",
+                    "onclick" => "V4skin.removeObjectListItem(this);return false;",
                 ];
                 $removeLink = Link::getLinkAdminManual($attributes, $deleteAlt, $deleteAlt, "icon_delete");
 
@@ -126,12 +126,12 @@ class Objectlist extends FormentryComponentAbstract
                 $icon = is_array($item->getStrIcon()) ? $item->getStrIcon()[0] : $item->getStrIcon();
 
                 $rows[] = [
-                    'systemid'    => $item->getSystemid(),
+                    'systemid' => $item->getSystemid(),
                     'displayName' => html_entity_decode($this->getDisplayName($item)),
-                    'path'        => $this->getPathName($item),
-                    'icon'        => AdminskinHelper::getAdminImage($icon),
-                    'removeLink'  => $removeLink,
-                    'editLink'    => $editLink
+                    'path' => $this->getPathName($item),
+                    'icon' => AdminskinHelper::getAdminImage($icon),
+                    'removeLink' => $removeLink,
+                    'editLink' => $editLink,
                 ];
                 $ids[] = $item->getSystemid();
             }
@@ -140,8 +140,8 @@ class Objectlist extends FormentryComponentAbstract
         $deleteIcon = getImageAdmin("icon_delete", "", true);
         $removeAllAlt = Carrier::getInstance()->getObjLang()->getLang("commons_remove_all_assignment", "system");
         $attributes = [
-            "href"    => "#",
-            "onclick" => "require('v4skin').removeAllObjectListItems('".$this->name."'); return false;"
+            "href" => "#",
+            "onclick" => "V4skin.removeAllObjectListItems('" . $this->name . "'); return false;",
         ];
         $toolkit = Carrier::getInstance()->getObjToolkit("admin");
         $removeAllLink = $toolkit->listButton(Link::getLinkAdminManual($attributes, $deleteIcon, $removeAllAlt));
@@ -177,7 +177,7 @@ class Objectlist extends FormentryComponentAbstract
         $name = "";
 
         if ($model instanceof VersionableInterface) {
-            $name .= "[".$model->getVersionRecordName()."] ";
+            $name .= "[" . $model->getVersionRecordName() . "] ";
         }
 
         $name .= strip_tags($model->getStrDisplayName());
@@ -206,7 +206,6 @@ class Objectlist extends FormentryComponentAbstract
 
         //remove current element
         array_pop($arrParents);
-
 
         //Only return three levels
         $arrPath = array();
@@ -275,6 +274,5 @@ class Objectlist extends FormentryComponentAbstract
     {
         $this->showEditButton = $showEditButton;
     }
-
 
 }

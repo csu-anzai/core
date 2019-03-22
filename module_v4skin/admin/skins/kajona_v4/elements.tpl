@@ -771,10 +771,9 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         </div>
     </div>
     <script type="text/javascript">
-        require(["jquery", "jquerytageditor", "tagEditor"], function($, jqTag, tagEditor){
-            var onChange = %%onChange%%;
+         var onChange = %%onChange%%;
             var $objInput = $("#%%name%%");
-            $objInput.tagEditor({
+            $objInput.TagEditor({
                 initialTags: %%values%%,
                 forceLowercase: false,
                 delimiter: %%delimiter%%,
@@ -782,11 +781,10 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
                 onChange: onChange
             });
             $objInput.on('kajona.forms.mandatoryAdded', function() {
-                tagEditor.updateMandatoryRendering($(this));
+                TagEditor.updateMandatoryRendering($(this));
             });
-            tagEditor.updateMandatoryRendering($objInput);
-            onChange("#%%name%%", $objInput.tagEditor('getTags')[0].editor, %%values%%);
-        });
+            TagEditor.updateMandatoryRendering($objInput);
+            onChange("#%%name%%", $objInput.TagEditor('getTags')[0].editor, %%values%%);
     </script>
 </input_tageditor>
 
@@ -800,9 +798,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         </div>
     </div>
     <script type="text/javascript">
-        require(["tagEditor"], function(tagEditor) {
-            tagEditor.init('%%name%%', '%%source%%', %%values%%, %%onChange%%);
-        });
+        TagEditor.init('%%name%%', '%%source%%', %%values%%, %%onChange%%);
     </script>
 </input_objecttags>
 
@@ -888,12 +884,10 @@ A list of checkbox for object elements
     </div>
 
     <script type='text/javascript'>
-        require(["jquery"], function($) {
-            $("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
+          $("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
                 var checkBoxes = $("input:checkbox[name^='%%name%%']").not("[disabled]");
                 checkBoxes.prop('checked', $("input:checkbox[name='checkAll_%%name%%']").prop('checked')).trigger('change');
             });
-        });
     </script>
 </input_checkboxarrayobjectlist>
 
@@ -939,8 +933,7 @@ A fieldset to structure logical sections
     <iframe src="%%iframesrc%%" id="%%iframeid%%" class="seamless" width="100%" height="100%" frameborder="0" seamless ></iframe>
 
     <script type='text/javascript'>
-        require(["jquery"], function($) {
-            $(document).ready(function(){
+           $(document).ready(function(){
                 var frame = $('iframe#%%iframeid%%');
                 frame.load(function() {
                     $('.tab-content.fullHeight iframe').each(function() {
@@ -958,7 +951,6 @@ A fieldset to structure logical sections
                 });
 
             });
-        });
     </script>
 </iframe_container>
 

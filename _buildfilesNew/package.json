@@ -18,6 +18,7 @@
     "dotenv-webpack": "^1.7.0",
     "fullcalendar": "^3.10.0",
     "jquery": "^3.3.1",
+    "jquery-tageditor": "^1.0.1",
     "jquery-ui": "^1.12.1",
     "jquery-ui-touch-punch": "^0.2.3",
     "jquery.caret": "^0.3.1",

@@ -1,11 +1,10 @@
 import * as $ from "jquery";
-import "../../../module_system/scripts/jquerytag/jquery.tag-editor";
-// import V4skin = require("./V4skin");
+import "jquery-tageditor/jquery.caret.min";
+import "jquery-tageditor/jquery.tag-editor.min";
 import V4skin from "./V4skin";
-// import WorkingIndicator = require("../../../module_system/scripts/kajona/WorkingIndicator");
 import WorkingIndicator from "../../../module_system/scripts/kajona/WorkingIndicator";
-// import Util = require("../../../module_system/scripts/kajona/Util");
 import Util from "../../../module_system/scripts/kajona/Util";
+
 class TagEditor {
   public static updateMandatoryRendering($objInput: JQuery) {
     var $tagInput = $objInput.closest(".form-group").find(".tag-editor");
@@ -204,5 +203,5 @@ class TagEditor {
     });
   }
 }
-
+(<any>window).TagEditor = TagEditor;
 export default TagEditor;
