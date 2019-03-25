@@ -45,6 +45,16 @@ class DynamicMenu extends AbstractComponent
     private $systemId;
 
     /**
+     * @var bool
+     */
+    private $filter;
+
+    /**
+     * @var string
+     */
+    private $filterPlaceholder;
+
+    /**
      * DynamicMenu constructor.
      * @param string $button
      * @param string $endpoint
@@ -82,6 +92,22 @@ class DynamicMenu extends AbstractComponent
     }
 
     /**
+     * @param bool $filter
+     */
+    public function setFilter(bool $filter)
+    {
+        $this->filter = $filter;
+    }
+
+    /**
+     * @param string $filterPlaceholder
+     */
+    public function setFilterPlaceholder(string $filterPlaceholder)
+    {
+        $this->filterPlaceholder = $filterPlaceholder;
+    }
+
+    /**
      * @inheritdoc
      */
     public function renderComponent(): string
@@ -93,6 +119,8 @@ class DynamicMenu extends AbstractComponent
             "width" => $this->width,
             "class" => $this->class,
             "systemId" => $this->systemId,
+            "filter" => $this->filter,
+            "filterPlaceholder" => $this->filterPlaceholder,
         ];
 
         return $this->renderTemplate($data);

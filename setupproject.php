@@ -107,6 +107,7 @@ class class_project_setup
         self::createDenyHtaccess("/project/.htaccess");
         self::createDenyHtaccess("/files/.htaccess");
 
+        self::createTokenKey();
         self::loadNpmDependencies();
         self::scanComposer();
         self::buildSkinStyles();
@@ -167,6 +168,15 @@ TEXT;
                 self::copyFolder($strSourceFolder . "/" . $strOneEntry, $strTargetFolder . "/" . $strOneEntry, $arrExcludeSuffix);
             }
         }
+    }
+
+    private static function createTokenKey()
+    {
+        // generate also token file for the installer api
+        echo "Generate token key\n";
+
+        $tokenFile = self::$strRealPath . "project/token.key";
+        file_put_contents($tokenFile, bin2hex(random_bytes(16)));
     }
 
     private static function createDenyHtaccess($strPath)

@@ -100,10 +100,27 @@ class Dashboard {
         Ajax.loadUrlToElement("div.core-component-widget[data-systemid='"+strSystemid+"'] .content", "/xml.php?admin=1&module=dashboard&action=switchOnEditMode&systemid="+strSystemid);
     }
 
-    public static updateWidget (form: string, strSystemid: string) {
+    public static updateWidget(form: string, strSystemid: string, updateAdditionalContent: boolean) {
         let data = $(form).serialize();
-        Ajax.loadUrlToElement("div.core-component-widget[data-systemid='"+strSystemid+"'] .content", "/xml.php?admin=1&module=dashboard&action=updateWidgetContent&systemid="+strSystemid+"&"+data);
+        if (!updateAdditionalContent) {
+            Ajax.loadUrlToElement("div.core-component-widget[data-systemid='" + strSystemid + "'] .content", "/xml.php?admin=1&module=dashboard&action=updateWidgetContent&systemid=" + strSystemid + "&" + data);
+        } else {
+            Ajax.loadUrlToElement("div.core-component-widget[data-systemid='" + strSystemid + "'] .content",
+                "/xml.php?admin=1&module=dashboard&action=updateWidgetContent&systemid=" + strSystemid + "&" + data,
+                null,
+                null,
+                null,
+                function () {
+                    Dashboard.updateWidgetAdditionalContent(strSystemid)
+                }
+            );
+        }
     }
+
+    public static updateWidgetAdditionalContent(strSystemid: string) {
+        Ajax.loadUrlToElement("div.core-component-widget[data-systemid='"+strSystemid+"'] .additionalNameContent", "/xml.php?admin=1&module=dashboard&action=updateWidgetAdditionalContent&systemid="+strSystemid);
+    }
+
 }
 
 export = Dashboard;

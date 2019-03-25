@@ -537,6 +537,10 @@ abstract class Root
         $strQuery = "DELETE FROM agp_system WHERE system_id = ?";
         $bitReturn = $bitReturn && $this->objDB->_pQuery($strQuery, array($this->getSystemid()));
 
+        $this->objDB->_pQuery("DELETE FROM agp_permissions_view WHERE view_id = ?", [$this->getSystemid()]);
+        $this->objDB->_pQuery("DELETE FROM agp_permissions_right2 WHERE right2_id = ?", [$this->getSystemid()]);
+        $bitReturn = $bitReturn && $this->objDB->_pQuery($strQuery, array($this->getSystemid()));
+
         Objectfactory::getInstance()->removeFromCache($this->getSystemid());
         OrmRowcache::removeSingleRow($this->getSystemid());
 
