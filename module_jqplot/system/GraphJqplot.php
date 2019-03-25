@@ -483,82 +483,82 @@ class GraphJqplot implements GraphInterfaceFronted
      * @throws Exception
      * @return mixed
      */
-    // public function renderGraph()
-    // {
-    //     if (count($this->arrSeriesData) == 0) {
-    //         throw new Exception("Chart not initialized yet", Exception::$level_ERROR);
-    //     }
+    public function renderGraph()
+    {
+        //     if (count($this->arrSeriesData) == 0) {
+        //         throw new Exception("Chart not initialized yet", Exception::$level_ERROR);
+        //     }
 
-    //     $this->preGraphGeneration();
+        //     $this->preGraphGeneration();
 
-    //     //1. create id's
-    //     $strSystemId = generateSystemid();
-    //     $strResizeableId = "resize_".$strSystemId;
-    //     $strChartId = "chart_".$strSystemId;
-    //     $strTooltipId = "tooltip_".$strSystemId;
-    //     $strImageExportId = $strChartId."_exportpng";
+        //     //1. create id's
+        //     $strSystemId = generateSystemid();
+        //     $strResizeableId = "resize_".$strSystemId;
+        //     $strChartId = "chart_".$strSystemId;
+        //     $strTooltipId = "tooltip_".$strSystemId;
+        //     $strImageExportId = $strChartId."_exportpng";
 
-    //     $strWidth = $this->bitIsResponsive ? "100%" : $this->intWidth."px";
-    //     //create div where the chart is being put
-    //     $strReturn = "<div onmouseover='$(\"#\"+\"{$strImageExportId}\").show();' onmouseout='$(\"#\"+\"{$strImageExportId}\").hide();' id=\"$strResizeableId\" style=\"width:{$strWidth}; height:".$this->intHeight."px;\">";
+        //     $strWidth = $this->bitIsResponsive ? "100%" : $this->intWidth."px";
+        //     //create div where the chart is being put
+        //     $strReturn = "<div onmouseover='$(\"#\"+\"{$strImageExportId}\").show();' onmouseout='$(\"#\"+\"{$strImageExportId}\").hide();' id=\"$strResizeableId\" style=\"width:{$strWidth}; height:".$this->intHeight."px;\">";
 
-    //     //chart div
-    //     $strReturn .= "<div id=\"$strChartId\" style=\"width:95%; height:100%; float: left;\"></div>";
+        //     //chart div
+        //     $strReturn .= "<div id=\"$strChartId\" style=\"width:95%; height:100%; float: left;\"></div>";
 
-    //     //image export div
-    //     $strReturn .= "<div style=\"width:5%; height:100%; float: left;\">";
+        //     //image export div
+        //     $strReturn .= "<div style=\"width:5%; height:100%; float: left;\">";
 
-    //     if ($this->isBitDownloadLink()) {
-    //         $strImage = AdminskinHelper::getAdminImage("icon_downloads", Lang::getInstance()->getLang("commons_save_as_image", "system"));
+        //     if ($this->isBitDownloadLink()) {
+        //         $strImage = AdminskinHelper::getAdminImage("icon_downloads", Lang::getInstance()->getLang("commons_save_as_image", "system"));
 
-    //         $strReturn .= "<a style=\"display:none; cursor: pointer; \" id=\"{$strImageExportId}\" onclick=\"require('jqlot.custom_helper').exportAsImage('{$strChartId}')\"'>
-    //                                {$strImage}
-    //                            </a>";
-    //     }
+        //         $strReturn .= "<a style=\"display:none; cursor: pointer; \" id=\"{$strImageExportId}\" onclick=\"require('jqlot.custom_helper').exportAsImage('{$strChartId}')\"'>
+        //                                {$strImage}
+        //                            </a>";
+        //     }
 
-    //     $strReturn .= "</div>";
+        //     $strReturn .= "</div>";
 
-    //     $strReturn .= "</div>";
+        //     $strReturn .= "</div>";
 
-    //     //2. Sort charts by type
-    //     $this->sortBySeriesType();
+        //     //2. Sort charts by type
+        //     $this->sortBySeriesType();
 
-    //     //3. create the data array and options object for the jqPlot method
-    //     $strChartOptions = $this->strCreateJSOptions();
-    //     $strChartData = $this->strCreateJSDataArray();
-    //     $strDataPointObjects = $this->strCreateDataPointObjects();
-    //     $arrPostPlotOptions = [
-    //         "intNrOfWrittenLabelsXAxis" => $this->intNrOfWrittenLabelsXAxis,
-    //         "intNrOfWrittenLabelsYAxis" => $this->intNrOfWrittenLabelsYAxis,
-    //     ];
-    //     $strPostPlotOptions = json_encode($arrPostPlotOptions);
+        //     //3. create the data array and options object for the jqPlot method
+        //     $strChartOptions = $this->strCreateJSOptions();
+        //     $strChartData = $this->strCreateJSDataArray();
+        //     $strDataPointObjects = $this->strCreateDataPointObjects();
+        //     $arrPostPlotOptions = [
+        //         "intNrOfWrittenLabelsXAxis" => $this->intNrOfWrittenLabelsXAxis,
+        //         "intNrOfWrittenLabelsYAxis" => $this->intNrOfWrittenLabelsYAxis,
+        //     ];
+        //     $strPostPlotOptions = json_encode($arrPostPlotOptions);
 
-    //     //4. Get decimal styles
-    //     $strDecChar = Carrier::getInstance()->getObjLang()->getLang("numberStyleDecimal", "system");
-    //     $strThousandsChar = Carrier::getInstance()->getObjLang()->getLang("numberStyleThousands", "system");
+        //     //4. Get decimal styles
+        //     $strDecChar = Carrier::getInstance()->getObjLang()->getLang("numberStyleDecimal", "system");
+        //     $strThousandsChar = Carrier::getInstance()->getObjLang()->getLang("numberStyleThousands", "system");
 
-    //     //5. Init Chart
-    //     $strCoreDirectory = Resourceloader::getInstance()->getWebPathForModule("module_jqplot");
-    //     $strReturn .= "<script type='text/javascript'>
-    //         require(['jqplot', 'loader'], function(jqplot, loader) {
+        //     //5. Init Chart
+        //     $strCoreDirectory = Resourceloader::getInstance()->getWebPathForModule("module_jqplot");
+        //     $strReturn .= "<script type='text/javascript'>
+        //         require(['jqplot', 'loader'], function(jqplot, loader) {
 
-    //             loader.loadFile([
-    //                 '{$strCoreDirectory}/scripts/jqplot/jquery.jqplot.css',
-    //                 '{$strCoreDirectory}/scripts/kajona/jquery.jqplot.custom.css'
-    //             ], function() {});
+        //             loader.loadFile([
+        //                 '{$strCoreDirectory}/scripts/jqplot/jquery.jqplot.css',
+        //                 '{$strCoreDirectory}/scripts/kajona/jquery.jqplot.custom.css'
+        //             ], function() {});
 
-    //             require(['jqlot.custom_helper'], function(jqplotHelper) {
-    //                     $.jqplot.sprintf.thousandsSeparator = '$strThousandsChar';
-    //                     $.jqplot.sprintf.decimalMark = '$strDecChar';
+        //             require(['jqlot.custom_helper'], function(jqplotHelper) {
+        //                     $.jqplot.sprintf.thousandsSeparator = '$strThousandsChar';
+        //                     $.jqplot.sprintf.decimalMark = '$strDecChar';
 
-    //                     var objChart_$strChartId = new jqplotHelper.jqPlotChart('$strChartId', '$strTooltipId', '$strResizeableId', '$this->bitIsResizeable', $strChartData, $strChartOptions, $strPostPlotOptions, $strDataPointObjects, '$this->bitIsResponsive');
-    //                     objChart_$strChartId.render();
-    //             });
-    //         });
-    //     </script>";
+        //                     var objChart_$strChartId = new jqplotHelper.jqPlotChart('$strChartId', '$strTooltipId', '$strResizeableId', '$this->bitIsResizeable', $strChartData, $strChartOptions, $strPostPlotOptions, $strDataPointObjects, '$this->bitIsResponsive');
+        //                     objChart_$strChartId.render();
+        //             });
+        //         });
+        //     </script>";
 
-    //     return $strReturn;
-    // }
+        //     return $strReturn;
+    }
 
     private function preGraphGeneration()
     {

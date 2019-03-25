@@ -1010,22 +1010,21 @@ Part to display the login status, user is logged in
     </ul>
 </div>
 <script type="text/javascript">
- /*   require(['jquery', 'v4skin', 'messaging'], function($, v4skin, messaging){
-        if(%%renderMessages%%) {
+      if(%%renderMessages%%) {
             $(function() {
-                v4skin.messaging.properties = {
+                V4skin.messaging.properties = {
                     notification_title : '[lang,messaging_notification_title,messaging]',
                     notification_body : '[lang,messaging_notification_body,messaging]',
                     show_all : '[lang,action_show_all,messaging]'
                 };
 
                 $('#messagingShortlist').parent().on('mouseover', function(e) {
-                    v4skin.messaging.pollMessages();
+                    V4skin.messaging.pollMessages();
                     $('#messagingShortlist').parent().unbind('mouseover');
 
                 });
 
-                window.setTimeout(function() { messaging.setPollingEnabled(true); }, 1000);
+                window.setTimeout(function() { Messaging.setPollingEnabled(true); }, 1000);
             });
         }
         else {
@@ -1034,10 +1033,10 @@ Part to display the login status, user is logged in
 
         if(%%renderTags%%) {
             $(function() {
-                v4skin.properties.tags.show_all = '[lang,action_show_all,tags]';
+                V4skin.properties.tags.show_all = '[lang,action_show_all,tags]';
 
                 $('#tagsSubemenu').parent().on('mouseover', function(e) {
-                    v4skin.initTagMenu();
+                    V4skin.initTagMenu();
                     $('#tagsSubemenu').parent().unbind('mouseover');
                 });
             });
@@ -1045,7 +1044,6 @@ Part to display the login status, user is logged in
         else {
             $('#tagsSubemenu').closest("li").hide();
         }
-    });*/
 </script>
 </logout_form>
 

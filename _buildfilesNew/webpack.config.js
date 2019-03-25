@@ -2,9 +2,16 @@ const path = require('path')
 const webpack = require('webpack')
 const Dotenv = require('dotenv-webpack')
 const glob = require('glob')
+var LiveReloadPlugin = require('webpack-livereload-plugin')
 const tsPaths = glob.sync('../../{core,core_agp}/module_*/scripts', {
   realpath: true
 })
+
+const liveReloadOptions = {
+  hostname: 'localhost',
+  protocol: 'http'
+  // port: 80
+}
 
 module.exports = {
   entry: {
@@ -72,6 +79,7 @@ module.exports = {
       jQuery: 'jquery',
       $: 'jquery',
       jquery: 'jquery'
-    })
+    }),
+    new LiveReloadPlugin(liveReloadOptions)
   ]
 }
