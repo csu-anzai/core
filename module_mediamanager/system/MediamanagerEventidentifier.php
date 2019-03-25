@@ -24,5 +24,5 @@ interface MediamanagerEventidentifier
      * @return bool
      * @since 7.1
      */
-    const EVENT_MEDIAMANAGER_FILES_ARCHIVED = "mediamanager.files.archived";
+    const EVENT_MEDIAMANAGER_FILES_ARCHIVED = "core.mediamanager.files.archived";
 }
