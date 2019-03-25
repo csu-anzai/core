@@ -5,6 +5,6 @@ $scanner = \Kajona\System\System\Carrier::getInstance()->getContainer()->offsetG
 $endpoints = $scanner->getEndpoints();
 
 foreach ($endpoints as $endpoint) {
-    echo sprintf("%s %s => %s@%s\n", implode("|", $endpoint["httpMethod"]), $endpoint["path"], $endpoint["class"], $endpoint["methodName"]);
+    echo sprintf("%s %s => %s@%s\n", str_pad(implode("|", $endpoint["httpMethod"]), 6), str_pad($endpoint["path"], 64), $endpoint["class"], $endpoint["methodName"]);
 }
 
