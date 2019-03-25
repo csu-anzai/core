@@ -7,7 +7,7 @@
     <description>Visualizes the current database structure</description>
     <version>7.1</version>
     <author>Kajona Team</author>
-    <providesInstaller>TRUE</providesInstaller>
+    <providesInstaller>FALSE</providesInstaller>
     <requiredModules>
         <module name="system" version="7.1" />
     </requiredModules>
