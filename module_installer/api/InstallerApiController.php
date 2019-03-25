@@ -9,6 +9,7 @@ namespace Kajona\Installer\Api;
 use Kajona\Api\System\ApiControllerInterface;
 use Kajona\Installer\System\SamplecontentInstallerHelper;
 use Kajona\Packagemanager\System\PackagemanagerManager;
+use Kajona\System\System\Config;
 use Kajona\System\System\Database;
 use Kajona\System\System\DbConnectionParams;
 use Kajona\System\System\SystemModule;
@@ -66,20 +67,29 @@ class InstallerApiController implements ApiControllerInterface
      */
     public function getConnection()
     {
-        $extensions = [
-            "mysqli",
-            "pgsql",
-            "sqlsrv",
-            "sqlite3",
-            "oci8",
-        ];
-
-        $result = [];
-        foreach ($extensions as $extension) {
-            $result[$extension] = in_array($extension, get_loaded_extensions());
+        $allExtensions = ["mysqli", "pgsql", "sqlsrv", "sqlite3", "oci8"];
+        $extensions = [];
+        foreach ($allExtensions as $extension) {
+            $extensions[$extension] = in_array($extension, get_loaded_extensions());
         }
 
-        return $result;
+        $config = Config::getInstance("module_system", "config.php");
+        $configured = $config->getConfig("dbhost") !== "%%defaulthost%%";
+        if ($configured) {
+            $conf = [
+                "host" => $config->getConfig("dbhost"),
+                "username" => $config->getConfig("dbusername"),
+                "database" => $config->getConfig("dbname"),
+                "port" => $config->getConfig("dbport"),
+            ];
+        } else {
+            $conf = false;
+        }
+
+        return [
+            "config" => $conf,
+            "extensions" => $extensions,
+        ];
     }
 
     /**
