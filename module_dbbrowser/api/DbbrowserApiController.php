@@ -8,7 +8,6 @@ namespace Kajona\Dbbrowser\Api;
 
 use Kajona\Api\System\ApiControllerInterface;
 use Kajona\System\System\Database;
-use Kajona\System\System\Lang;
 use PSX\Http\Environment\HttpContext;
 use PSX\Http\Environment\HttpResponse;
 
