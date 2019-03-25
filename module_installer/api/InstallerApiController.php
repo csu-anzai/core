@@ -12,6 +12,7 @@ use Kajona\Packagemanager\System\PackagemanagerManager;
 use Kajona\System\System\Config;
 use Kajona\System\System\Database;
 use Kajona\System\System\DbConnectionParams;
+use Kajona\System\System\Filesystem;
 use Kajona\System\System\SystemModule;
 
 /**
@@ -287,6 +288,32 @@ class InstallerApiController implements ApiControllerInterface
             "status" => "error",
             "module" => $body["module"],
         ];
+    }
+
+    /**
+     * @api
+     * @method GET
+     * @path /installer/log
+     * @authorization filetoken
+     */
+    public function getLogs()
+    {
+        $fileSystem = new Filesystem();
+        $files = $fileSystem->getFilelist(_projectpath_."/log", array(".log"));
+        $return = [];
+
+        foreach ($files as $fileName) {
+            $fileSystem->openFilePointer(_projectpath_."/log/".$fileName, "r");
+            $log = $fileSystem->readLastLinesFromFile(16);
+            $fileSystem->closeFilePointer();
+
+            $log = str_replace(["\r\n", "\n", "\r"], "\n", $log);
+            $log = str_replace(array("INFO", "ERROR"), array("INFO   ", "ERROR  "), $log);
+
+            $return[$fileName] = array_filter(array_map("trim", explode("\n", $log)));
+        }
+
+        return $return;
     }
 
     private function checkConnection($driver, $hostname, $username, $password, $dbname, $port)
