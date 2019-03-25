@@ -10,24 +10,17 @@ const tsPaths = glob.sync('../../{core,core_agp}/module_*/scripts', {
 const liveReloadOptions = {
   hostname: 'localhost',
   protocol: 'http'
-  // port: 80
+  // ignore: '*.less'
 }
+const devMode = process.env.NODE_ENV !== 'production'
 
 module.exports = {
   entry: {
-    // DbBrowser: './components/DbBrowser/DbBrowser.ts'
     agp: glob.sync('../../{core,core_agp}/module_*/scripts/*/*.ts')
-    // agp: glob.sync('../../core/module_*/scripts/*/*.ts')
-    // agp: glob.sync('../../core/module_*/scripts/*/*.ts')
-
-    // agp: glob.sync('../../core/module_*/scripts/*/*.ts')
-    // agp: glob.sync('../../core/_a/*.ts')
   },
   output: {
-    // filename: './components/[name]/[name].min.js',
     filename: './[name].min.js',
     path: path.resolve(__dirname, '../module_system/scripts/')
-    // path: path.resolve(__dirname, './')
   },
 
   module: {
@@ -55,6 +48,21 @@ module.exports = {
       {
         test: /\.scss$/,
         use: ['style-loader', 'css-loader', 'sass-loader']
+      },
+      {
+        test: /\.less$/,
+        use: [
+          // devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+          {
+            loader: 'style-loader' // creates style nodes from JS strings
+          },
+          {
+            loader: 'css-loader' // translates CSS into CommonJS
+          },
+          {
+            loader: 'less-loader' // compiles Less to CSS
+          }
+        ]
       }
     ]
   },

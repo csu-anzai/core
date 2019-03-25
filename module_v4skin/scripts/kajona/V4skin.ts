@@ -14,6 +14,7 @@ import Util from "../../../module_system/scripts/kajona/Util";
 import Folderview from "../../../module_system/scripts/kajona/Folderview";
 import WorkingIndicator from "../../../module_system/scripts/kajona/WorkingIndicator";
 import Breadcrumb from "../../../module_system/scripts/kajona/Breadcrumb";
+import "./style.less";
 
 class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
   public minLength: number = 0;

@@ -4,7 +4,8 @@
   "author": "",
   "scripts": {
     "build": "webpack --mode production",
-    "dev": "webpack --watch --mode development"
+    "dev": "webpack --watch --mode development && watch-css",
+    "watch-css": "node-less-chokidar --watch"
   },
   "dependencies": {
     "@types/jquery.fileupload": "^9.22.0",
@@ -32,15 +33,18 @@
   },
   "devDependencies": {
     "@babel/core": "^7.3.3",
-    "@types/node": "^11.9.4",
+    "@types/node": "^11.11.6",
     "@vue/cli-plugin-eslint": "^3.4.0",
     "@vue/eslint-config-standard": "^4.0.0",
     "@vue/eslint-config-typescript": "^4.0.0",
     "babel-eslint": "^10.0.1",
-    "css-loader": "^2.1.0",
+    "css-loader": "^2.1.1",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0",
     "glob": "^7.1.3",
+    "less": "^3.9.0",
+    "less-loader": "^4.1.0",
+    "node-less-chokidar": "^0.4.1",
     "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
