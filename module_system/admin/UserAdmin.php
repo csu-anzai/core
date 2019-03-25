@@ -7,6 +7,8 @@
 
 namespace Kajona\System\Admin;
 
+use AGP\Auswertung\System\AuswertungAccessConfig;
+use AGP\Auswertung\System\AuswertungConfig;
 use Kajona\System\Admin\Formentries\FormentryCheckbox;
 use Kajona\System\Admin\Formentries\FormentryDropdown;
 use Kajona\System\Admin\Formentries\FormentryHeadline;
@@ -14,6 +16,7 @@ use Kajona\System\Admin\Formentries\FormentryHidden;
 use Kajona\System\Admin\Formentries\FormentryPlaintext;
 use Kajona\System\Admin\Formentries\FormentryText;
 use Kajona\System\Admin\Formentries\FormentryUser;
+use Kajona\System\Admin\Reports\AdminreportsReportUserrights;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\ArraySectionIterator;
 use Kajona\System\System\Carrier;
@@ -97,11 +100,18 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
     public function getOutputModuleNavi()
     {
         $arrReturn = [];
-        $arrReturn[] = ["view", Link::getLinkAdmin($this->getArrModule("modul"), "list", "", $this->getLang("user_liste"), "", "", true, "adminnavi")];
+        $arrReturn[] = ["view", Link::getLinkAdmin($this->getArrModule("modul"), "list", "", $this->getLang("user_liste"))];
         $arrReturn[] = ["", ""];
-        $arrReturn[] = ["edit", Link::getLinkAdmin($this->getArrModule("modul"), "groupList", "", $this->getLang("gruppen_liste"), "", "", true, "adminnavi")];
+        $arrReturn[] = ["edit", Link::getLinkAdmin($this->getArrModule("modul"), "groupList", "", $this->getLang("gruppen_liste"))];
         $arrReturn[] = ["", ""];
-        $arrReturn[] = ["right1", Link::getLinkAdmin($this->getArrModule("modul"), "loginLog", "", $this->getLang("loginlog"), "", "", true, "adminnavi")];
+        $arrReturn[] = ["right1", Link::getLinkAdmin($this->getArrModule("modul"), "loginLog", "", $this->getLang("loginlog"))];
+
+        if (SystemModule::getModuleByName("auswertung") !== null && AuswertungAccessConfig::hasRightView(AdminreportsReportUserrights::class)) {
+            $arrReturn[] = ["", ""];
+            $arrReturn[] = ["right1", $this->getLang("action_show_report")];
+            $arrReturn[] = ["right1", Link::getLinkAdmin("auswertung", "show", ["report" => "userrights"], $this->getLang("report_userrights"))];
+        }
+
         return $arrReturn;
     }
 

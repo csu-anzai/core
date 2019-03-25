@@ -59,6 +59,7 @@ class UserGroup extends Model implements ModelInterface, AdminListableInterface,
      * @var int
      * @tableColumn agp_user_group.group_short_id
      * @tableColumnDatatype int
+     * @tableColumnIndex
      */
     private $intShortId = 0;
 
@@ -66,6 +67,7 @@ class UserGroup extends Model implements ModelInterface, AdminListableInterface,
      * @var int
      * @tableColumn agp_user_group.group_system_group
      * @tableColumnDatatype int
+     * @tableColumnIndex
      */
     private $intSystemGroup = 0;
 

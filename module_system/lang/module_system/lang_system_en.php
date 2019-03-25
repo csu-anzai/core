@@ -55,6 +55,8 @@ $lang["_system_session_ipfixation_"]     = "Bind session to ip";
 $lang["_system_session_ipfixation_hint"] = "Normally, sessions are bound to the clients source ip. When using procy servers, this could lead to problems (logouts).";
 $lang["_system_lists_clickable_"]        = "Clickable default lists";
 $lang["_system_lists_clickable_hint"]    = "If enabled, a click on a list row triggers the first action (icon) automatically";
+$lang["_system_permission_assignment_threshold_"]    = "Permissions threshold";
+$lang["_system_permission_assignment_threshold_hint"]    = "Nr of user to group assignments required to switch from or based permission queries to table based one";
 $lang["about_part1"]                     = "<h2>Kajona V6 - Open Source Content Management System</h2>Kajona V 6.2<br /><br /><a href=\"http://www.kajona.de\" target=\"_blank\">www.kajona.de</a><br /><a href=\"mailto:info@kajona.de\" target=\"_blank\">info@kajona.de</a><br /><br />For further information, support or proposals, please visit our website.<br />Additional support is provided using our <a href=\"http://board.kajona.de/\" target=\"_blank\">board</a>.";
 $lang["about_part2"]                     = "<ul><li><a href=\"https://www.xing.com/profile/Stefan_Idler\" target=\"_blank\">Stefan Idler</a>, <a href=\"mailto:sidler@kajona.de\">sidler@kajona.de</a> (project management, technical administration, development)</li></ul>";
 $lang["about_part2_header"]              = "<h2>Head developers</h2>";

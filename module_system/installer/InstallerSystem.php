@@ -14,6 +14,7 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\Config;
 use Kajona\System\System\Database;
 use Kajona\System\System\Date;
+use Kajona\System\System\Db\Schema\TableIndex;
 use Kajona\System\System\DbDatatypes;
 use Kajona\System\System\IdGenerator;
 use Kajona\System\System\InstallerBase;
@@ -95,10 +96,29 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["right_right5"] = array("text", true);
         $arrFields["right_changelog"] = array("text", true);
 
-        //TODO: remove system deleted index
         if(!$this->objDB->createTable("agp_system", $arrFields, array("system_id"), array("system_prev_id", "system_module_nr", "system_sort", "system_owner", "system_create_date", "system_status", "system_lm_time", "system_lock_time", "system_class")))
             $strReturn .= "An error occurred! ...\n";
 
+
+        $this->objDB->createTable(
+            "agp_permissions_view",
+            [
+                "view_id" => [DbDatatypes::STR_TYPE_CHAR20, false],
+                "view_shortgroup" => [DbDatatypes::STR_TYPE_LONG, false],
+            ],
+            ["view_id", "view_shortgroup"],
+            ["view_id", "view_shortgroup"]
+        );
+
+        $this->objDB->createTable(
+            "agp_permissions_right2",
+            [
+                "right2_id" => [DbDatatypes::STR_TYPE_CHAR20, false],
+                "right2_shortgroup" => [DbDatatypes::STR_TYPE_LONG, false],
+            ],
+            ["right2_id", "right2_shortgroup"],
+            ["right2_id", "right2_shortgroup"]
+        );
 
         // Modul table ----------------------------------------------------------------------------------
         $strReturn .= "Installing table system_module...\n";
@@ -295,6 +315,8 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $this->registerConstant("_system_timezone_", "", SystemSetting::$int_TYPE_STRING, _system_modul_id_);
         $this->registerConstant("_system_session_ipfixation_", "true", SystemSetting::$int_TYPE_BOOL, _system_modul_id_);
+
+        $this->registerConstant("_system_permission_assignment_threshold_", 500, SystemSetting::$int_TYPE_INT, _system_modul_id_);
 
 
         //Creating the admin GROUP
@@ -511,6 +533,10 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         if($arrModule["module_version"] == "7.1.2") {
             $strReturn .= $this->update_712_713();
         }
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.1.3") {
+            $strReturn .= $this->update_713_714();
+        }
 
         return $strReturn."\n\n";
     }
@@ -668,4 +694,98 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         return $strReturn;
     }
+
+    private function update_713_714()
+    {
+        $strReturn = "Updating to 7.1.4...".PHP_EOL;
+        $strReturn .= "Adding system settings".PHP_EOL;
+        $this->registerConstant("_system_permission_assignment_threshold_", 500, SystemSetting::$int_TYPE_INT, _system_modul_id_);
+
+        $strReturn .= "Updating user-goup table".PHP_EOL;
+        $this->objDB->createIndex("agp_user_group", "ix_group_short_id", ["group_short_id"]);
+        $this->objDB->createIndex("agp_user_group", "ix_group_system_group", ["group_system_group"]);
+
+
+        $strReturn .= "Creating view-permissions table".PHP_EOL;
+        $this->objDB->createTable(
+            "agp_permissions_view",
+            [
+                "view_id" => [DbDatatypes::STR_TYPE_CHAR20, false],
+                "view_shortgroup" => [DbDatatypes::STR_TYPE_LONG, false],
+            ],
+            ["view_id", "view_shortgroup"],
+            ["view_id", "view_shortgroup"]
+        );
+
+        $this->objDB->createTable(
+            "agp_permissions_right2",
+            [
+                "right2_id" => [DbDatatypes::STR_TYPE_CHAR20, false],
+                "right2_shortgroup" => [DbDatatypes::STR_TYPE_LONG, false],
+            ],
+            ["right2_id", "right2_shortgroup"],
+            ["right2_id", "right2_shortgroup"]
+        );
+
+        $this->objDB->_pQuery("DELETE FROM agp_permissions_view WHERE 1=1", []);
+        $this->objDB->_pQuery("DELETE FROM agp_permissions_right2 WHERE 1=1", []);
+
+        $strReturn .= "Creating group map".PHP_EOL;
+        $groupMap = [];
+        foreach ($this->objDB->getPArray("SELECT group_id, group_short_id FROM agp_user_group", []) as $row) {
+            $groupMap[$row["group_short_id"]] = $row["group_id"];
+        }
+
+        $strReturn .= "View permissions".PHP_EOL;
+        $systemRecords = $this->objDB->getPArray("SELECT system_id, right_view, right_right2 FROM agp_system", []);
+
+        $insertView = [];
+        $insertRight2 = [];
+        foreach ($systemRecords as $i => $row) {
+            $groups = explode(",", trim($row["right_view"], ','));
+            foreach ($groups as $shortid) {
+                if (is_numeric($shortid) && array_key_exists($shortid, $groupMap)) {
+                    $insertView[] = [$row['system_id'], $shortid];
+                }
+            }
+
+            $groups = explode(",", trim($row["right_right2"], ','));
+            foreach ($groups as $shortid) {
+                if (is_numeric($shortid) && array_key_exists($shortid, $groupMap)) {
+                    $insertRight2[] = [$row['system_id'], $shortid];
+                }
+            }
+
+            if ($i % 500 == 0) {
+                if (!empty($insertView)) {
+                    $this->objDB->multiInsert("agp_permissions_view", ["view_id", "view_shortgroup"], $insertView);
+                    $insertView = [];
+                }
+
+                if (!empty($insertRight2)) {
+                    $this->objDB->multiInsert("agp_permissions_right2", ["right2_id", "right2_shortgroup"], $insertRight2);
+                    $insertRight2 = [];
+                }
+
+                $strReturn .= "Migrated {$i} records ".PHP_EOL;
+            }
+
+        }
+
+        if (!empty($insertView)) {
+            $this->objDB->multiInsert("agp_permissions_view", ["view_id", "view_shortgroup"], $insertView);
+        }
+        if (!empty($insertRight2)) {
+            $this->objDB->multiInsert("agp_permissions_right2", ["right2_id", "right2_shortgroup"], $insertRight2);
+        }
+        $strReturn .= "Migrated {$i} records ".PHP_EOL;
+
+
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.4");
+
+        return $strReturn;
+    }
+
+
+
 }
