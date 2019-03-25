@@ -36,9 +36,8 @@
 
     {% if not readOnly %}
     <script type="text/javascript">
-        require(['jquery', 'util', 'jquery-ui'], function($, util) {
-            $("#{{ name }}-add").click(function(){
-                var id = util.generateSystemId();
+                   $("#{{ name }}-add").click(function(){
+                var id = Util.generateSystemId();
                 var html = "<div class=\"item\">";
                 html+= "<div class=\"input-group\">";
                 html+= "    <input type=\"text\" name=\"{{ name }}[" + id + "]\" value=\"\" class=\"form-control\">";
@@ -60,7 +59,6 @@
                 handle: 'span.fa-arrows',
                 cursor: 'move'
             });
-        });
     </script>
     {% endif %}
 </div>

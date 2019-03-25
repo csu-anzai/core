@@ -1163,7 +1163,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
         /** @var UserUser $objUser */
         $objUser = Objectfactory::getInstance()->getObject($this->getParam("userid"));
         if ($objUser != null && $objGroup->getObjSourceGroup()->addMember($objUser->getObjSourceUser())) {
-            $strAction = $this->objToolkit->listDeleteButton($objGroup->getStrName(), $this->getLang('mitglied_loeschen_frage'), "javascript:require(\'user\').removeGroupFromUser(\'" . $objGroup->getSystemid() . "\', \'" . $objUser->getSystemid() . "\');");
+            $strAction = $this->objToolkit->listDeleteButton($objGroup->getStrName(), $this->getLang('mitglied_loeschen_frage'), "javascript:User.removeGroupFromUser(\'" . $objGroup->getSystemid() . "\', \'" . $objUser->getSystemid() . "\');");
             $strReturn = $this->objToolkit->genericAdminList($objGroup->getSystemid(), $objGroup->getStrName(), AdminskinHelper::getAdminImage($objGroup->getStrIcon()), $strAction);
 
             return json_encode(["state" => "ok", "row" => $strReturn, "message" => $this->getLang("mitglied_speichern_erfolg")]);
@@ -1232,7 +1232,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
 
             if (in_array($strSingleGroup, $arrUserGroups)) {
                 $intCheckedGroups++;
-                $strAction = $this->objToolkit->listDeleteButton($objSingleGroup->getStrName(), $this->getLang('mitglied_loeschen_frage'), "javascript:require(\'user\').removeGroupFromUser(\'" . $objSingleGroup->getSystemid() . "\', \'" . $objUser->getSystemid() . "\');");
+                $strAction = $this->objToolkit->listDeleteButton($objSingleGroup->getStrName(), $this->getLang('mitglied_loeschen_frage'), "javascript:User.removeGroupFromUser(\'" . $objSingleGroup->getSystemid() . "\', \'" . $objUser->getSystemid() . "\');");
                 $strReturn .= $this->objToolkit->genericAdminList($objSingleGroup->getSystemid(), $objSingleGroup->getStrName(), AdminskinHelper::getAdminImage($objSingleGroup->getStrIcon()), $strAction);
             }
         }
@@ -1244,24 +1244,22 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
         }
 
         $strReturn .= "<script type=\"text/javascript\">
-                require(['jquery', 'user'], function($, user) {
-                    // add new group
-                    $('#group_add_id').on('change', function(){
-                        if ($('#group_add_id').val() != '') {
-                            user.addGroupToUser($('#group_add_id').val(), '" . $objUser->getSystemid() . "');
-                        }
-                    });
+        // add new group
+        $('#group_add_id').on('change', function(){
+            if ($('#group_add_id').val() != '') {
+                User.addGroupToUser($('#group_add_id').val(), '" . $objUser->getSystemid() . "');
+            }
+        });
 
-                    // ignore enter key press
-                    $(document).ready(function() {
-                        $(window).keydown(function(event){
-                            if (event.keyCode == 13) {
-                                event.preventDefault();
-                                return false;
-                            }
-                        });
-                    });
-                });
+        // ignore enter key press
+        $(document).ready(function() {
+            $(window).keydown(function(event){
+                if (event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+        });
                 </script>";
 
         return $strReturn;

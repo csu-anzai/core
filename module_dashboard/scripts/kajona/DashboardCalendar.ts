@@ -46,5 +46,5 @@ class DashboardCalendar {
       .addClass("btn btn-default");
   }
 }
-
+(<any>window).DashboardCalendar = DashboardCalendar;
 export default DashboardCalendar;

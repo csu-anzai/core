@@ -89,7 +89,7 @@ class Lists {
     jsDialog_1.setContent(
       curConfirm,
       this.strDialogStart,
-      "javascript:require('lists').executeActions();",
+      "javascript:Lists.executeActions();",
       true
     );
     jsDialog_1.init();

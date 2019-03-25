@@ -1,4 +1,4 @@
-import $ from "../../../_buildfilesNew/node_modules/jquery";
+import * as $ from "jquery";
 import Ajax from "./Ajax";
 import StatusDisplay from "./StatusDisplay";
 
@@ -55,5 +55,5 @@ class User {
     );
   }
 }
-
+(<any>window).User = User;
 export default User;

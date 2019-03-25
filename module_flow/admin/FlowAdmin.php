@@ -350,7 +350,7 @@ class FlowAdmin extends AdminEvensimpler implements AdminInterface
         $strList .= $this->objToolkit->formInputText("set[" . $objFlow->getSystemid() . "]", $this->getLang("form_flow_name"), $objFlow->getStrName(), "", "", false, $objFlow->getSystemid() . "#strName");
         $strList .= $this->objToolkit->formClose();
         $strList .= $this->renderList($objArraySectionIterator, true, "list" . $this->getStrCurObjectTypeName());
-        $strList .= "<script type='text/javascript'>require(['instantSave'], function(is) {is.init()});</script>";
+        $strList .= "<script type='text/javascript'>InstantSave.init()</script>";
 
         $strGraph = FlowGraphWriter::write($objFlow);
 

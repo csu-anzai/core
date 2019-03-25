@@ -125,7 +125,7 @@ class Changelog {
         let data = JSON.parse(body);
         let props = data.properties;
         $("#date_" + strType).html(
-          "<a href='#' onclick='require(\"changelog\").selectColumn(\"" +
+          "<a href='#' onclick='Changelog.selectColumn(\"" +
             strType +
             "\");return false;' style='display:block;'>" +
             data.date +

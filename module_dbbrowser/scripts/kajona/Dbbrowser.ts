@@ -82,5 +82,5 @@ class Dbbrowser {
     );
   }
 }
-
+(<any>window).Dbbrowser = Dbbrowser;
 export default Dbbrowser;

@@ -1,9 +1,9 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2004-2006 by MulchProductions, www.mulchprod.de                                                 *
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-********************************************************************************************************/
+ *   (c) 2004-2006 by MulchProductions, www.mulchprod.de                                                 *
+ *   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
+ *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
+ ********************************************************************************************************/
 
 namespace Kajona\Flow\System;
 
@@ -217,16 +217,16 @@ trait FlowControllerTrait
                     $arrErrors = $objResult->getErrors();
                     if (!empty($arrErrors)) {
                         $strTooltip = "<div class='alert alert-danger'>";
-                        $strTooltip.= "<ul>";
+                        $strTooltip .= "<ul>";
                         foreach ($arrErrors as $strError) {
                             if (!empty($strError)) {
                                 $strError = htmlspecialchars($strError);
-                                $strTooltip.= "<li>{$strError}</li>";
+                                $strTooltip .= "<li>{$strError}</li>";
                             }
                         }
-                        $strTooltip.= "</ul>";
-                        $strTooltip.= "</div>";
-                        $strValidation.= '<span class="' . $strClass . '" data-validation-errors="' . $strTooltip . '"></span>';
+                        $strTooltip .= "</ul>";
+                        $strTooltip .= "</div>";
+                        $strValidation .= '<span class="' . $strClass . '" data-validation-errors="' . $strTooltip . '"></span>';
                     } else {
                         // in case the result is not valid and we have no error message we skip the menu entry
                         continue;
@@ -280,14 +280,12 @@ trait FlowControllerTrait
         $strTitle = json_encode($objObject->getStrDisplayName());
         $strJs = <<<HTML
 <script type='text/javascript'>
-    require(['jquery', 'dialogHelper'], function($, dialogHelper){
-        $('.{$strClass}').parent().on('click', function(){
+       $('.{$strClass}').parent().on('click', function(){
             var errors = $(this).find('.{$strClass}').data('validation-errors');
-            dialogHelper.showConfirmationDialog({$strTitle}, errors, "OK", function(){
+            DialogHelper.showConfirmationDialog({$strTitle}, errors, "OK", function(){
                 $('#jsDialog_1').modal('hide');
             });
         });
-    });
 </script>
 HTML;
 
@@ -356,10 +354,10 @@ HTML;
                                 foreach ($arrErrors as $strError) {
                                     if (!empty($strError)) {
                                         $strError = htmlspecialchars($strError);
-                                        $strTooltip.= "<li>{$strError}</li>";
+                                        $strTooltip .= "<li>{$strError}</li>";
                                     }
                                 }
-                                $strTooltip.= "</ul>";
+                                $strTooltip .= "</ul>";
 
                                 $objAlert = new MessagingAlert();
                                 $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));

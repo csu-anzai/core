@@ -1,11 +1,11 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2004-2006 by MulchProductions, www.mulchprod.de                                                 *
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-*-------------------------------------------------------------------------------------------------------*
-*	$Id$	                            *
-********************************************************************************************************/
+ *   (c) 2004-2006 by MulchProductions, www.mulchprod.de                                                 *
+ *   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
+ *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
+ *-------------------------------------------------------------------------------------------------------*
+ *    $Id$                                *
+ ********************************************************************************************************/
 
 namespace Kajona\Dashboard\Admin;
 
@@ -16,12 +16,12 @@ use Kajona\Dashboard\System\DashboardUserRoot;
 use Kajona\Dashboard\System\DashboardWidget;
 use Kajona\Dashboard\System\EventEntry;
 use Kajona\Dashboard\System\EventRepository;
+use Kajona\Dashboard\System\Lifecycle\ConfigLifecycle;
 use Kajona\Dashboard\System\TodoJstreeNodeLoader;
 use Kajona\Dashboard\System\TodoRepository;
 use Kajona\Dashboard\View\Components\Dashboard\Dashboard;
-use Kajona\Dashboard\View\Components\Widget\Widget;
 use Kajona\Dashboard\View\Components\WidgetList\WidgetList;
-use Kajona\Dashboard\System\Lifecycle\ConfigLifecycle;
+use Kajona\Dashboard\View\Components\Widget\Widget;
 use Kajona\System\Admin\AdminEvensimpler;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminInterface;
@@ -41,7 +41,6 @@ use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemChangelog;
 use Kajona\System\System\SystemJSTreeBuilder;
 use Kajona\System\System\SystemJSTreeConfig;
-use Kajona\System\System\SystemModule;
 use Kajona\System\View\Components\Datatable\Datatable;
 use Kajona\System\View\Components\Dynamicmenu\DynamicMenu;
 use Kajona\System\View\Components\Menu\Item\Separator;
@@ -107,7 +106,6 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
         return "";
     }
 
-
     /**
      * Generates the dashboard itself.
      * Loads all widgets placed on the dashboard
@@ -127,7 +125,6 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
             return parent::actionList();
         }
 
-
         /** @var ConfigLifecycle $lc */
         $lc = $this->objLifeCycleFactory->factory(DashboardConfig::class);
 
@@ -140,7 +137,6 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
         foreach ($this->arrColumnsOnDashboard as $strColumnName) {
             $widgets[$strColumnName] = [];
         }
-
 
         $root = DashboardUserRoot::getOrCreateForUser(Carrier::getInstance()->getObjSession()->getUserID());
         $cfg = $lc->getActiveConfig($root);
@@ -161,7 +157,6 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
         //add a toolbar
         $return .= $this->objToolkit->addToContentToolbar(Link::getLinkAdminDialog("dashboard", "listWidgets", [], $this->getLang("action_add_widget_to_dashboard"), $this->getLang("action_add_widget_to_dashboard"), "icon_new"));
 
-
         $menu = new DynamicMenu(
             "{$cfg->getStrDisplayName()}<i class='fa fa-caret-down'></i>",
             Link::getLinkAdminXml("dashboard", "apiGetDashboardMenu", [])
@@ -171,7 +166,6 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
         $return .= $this->objToolkit->addToContentToolbar($menu);
         return $return;
     }
-
 
     /**
      * Renders the status menu
@@ -193,13 +187,13 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
         foreach (DashboardConfig::getObjectListFiltered(null, $root->getSystemid()) as $singleCfg) {
             $dd[$singleCfg->getSystemid()] = $singleCfg->getStrDisplayName();
 
-            $text = new Text(Link::getLinkAdmin("dashboard", "list", ["configid" => $singleCfg->getSystemid()], $this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_dashboard"))." ".$singleCfg->getStrDisplayName(), "", "", false));
+            $text = new Text(Link::getLinkAdmin("dashboard", "list", ["configid" => $singleCfg->getSystemid()], $this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_dashboard")) . " " . $singleCfg->getStrDisplayName(), "", "", false));
             $items[] = $text;
         }
 
         if ($this->getObjModule()->rightEdit()) {
             $items[] = new Separator();
-            $items[] = new Text(Link::getLinkAdmin("dashboard", "listConfig", [], $this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_edit"))." ".$this->getLang("commons_list_edit"), "", "", false));
+            $items[] = new Text(Link::getLinkAdmin("dashboard", "listConfig", [], $this->objToolkit->listButton(AdminskinHelper::getAdminImage("icon_edit")) . " " . $this->getLang("commons_list_edit"), "", "", false));
         }
 
         //create a switch-menu
@@ -222,7 +216,7 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
         $arrWidgetsAvailable = DashboardWidget::getListOfWidgetsAvailable();
         /** @var $objWidget AdminwidgetInterface|Adminwidget */
         foreach ($arrWidgetsAvailable as $objWidget) {
-            $img = "<img src='"._webpath_."/image.php?image=".urlencode($objWidget->getWidgetImg())."&amp;maxWidth=100&amp;maxHeight=60' />";
+            $img = "<img src='" . _webpath_ . "/image.php?image=" . urlencode($objWidget->getWidgetImg()) . "&amp;maxWidth=100&amp;maxHeight=60' />";
             $module = $this->getLang("modul_titel", StringUtil::replace("module_", "", $objWidget->getModuleName()));
             $arrWidget[] = ['name' => $objWidget->getWidgetName(), 'info' => $objWidget->getWidgetDescription(), 'img' => $img, 'class' => get_class($objWidget), "module" => $module];
         }
@@ -248,15 +242,15 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
             $strWidgetClass = $objDashboardWidget->getStrClass();
             if ($strWidgetClass::isEditable()) {
                 $arrActions[] =
-                    Link::getLinkAdminManual(
-                        "href=\"#\" onclick=\"require(['dashboard'], function(dashboard) { dashboard.editWidget('{$objDashboardWidget->getSystemid()}'); } ); return false;\"",
-                        (AdminskinHelper::getAdminImage("icon_edit"))." ".$this->getLang("editWidget"),
-                        "",
-                        "",
-                        "",
-                        "",
-                        false
-                    );
+                Link::getLinkAdminManual(
+                    "href=\"#\" onclick=\"Dashboard.editWidget('{$objDashboardWidget->getSystemid()}'); return false;\"",
+                    (AdminskinHelper::getAdminImage("icon_edit")) . " " . $this->getLang("editWidget"),
+                    "",
+                    "",
+                    "",
+                    "",
+                    false
+                );
             }
         }
         if ($objDashboardWidget->rightDelete()) {
@@ -264,13 +258,13 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
 
             $strHeader = Carrier::getInstance()->getObjLang()->getLang("dialog_deleteHeader", "system");
             $strConfirmationButtonLabel = Carrier::getInstance()->getObjLang()->getLang("dialog_deleteButton", "system");
-            $strConfirmationLinkHref = "javascript:require(\'dashboard\').removeWidget(\'".$objDashboardWidget->getSystemid()."\');";
+            $strConfirmationLinkHref = "javascript:Dashboard.removeWidget(\'" . $objDashboardWidget->getSystemid() . "\');";
 
             $arrActions[] =
-                Link::getLinkAdminManual(
-                    "href=\"#\" onclick=\"require(['dialogHelper'], function(dialog) { dialog.showConfirmationDialog('{$strHeader}', '{$strQuestion}', '{$strConfirmationButtonLabel}', '{$strConfirmationLinkHref}'); } ); return false;\"",
-                    (AdminskinHelper::getAdminImage("icon_delete"))." ".Carrier::getInstance()->getObjLang()->getLang("commons_delete", "system"), "", "", "", "", false
-                );
+            Link::getLinkAdminManual(
+                "href=\"#\" onclick=\"DialogHelper.showConfirmationDialog('{$strHeader}', '{$strQuestion}', '{$strConfirmationButtonLabel}', '{$strConfirmationLinkHref}'); return false;\"",
+                (AdminskinHelper::getAdminImage("icon_delete")) . " " . Carrier::getInstance()->getObjLang()->getLang("commons_delete", "system"), "", "", "", "", false
+            );
         }
 
         $widget = new Widget();
@@ -298,9 +292,8 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
         $strReturn .= "<div id='dashboard-calendar' class='calendar'></div>";
         $strReturn .= "<script type=\"text/javascript\">";
         $strReturn .= <<<JS
-        require(["dashboard-calendar"], function(calendar){
-            calendar.init();
-        });
+
+        DashboardCalendar.init();
 JS;
         $strReturn .= "</script>";
 
@@ -324,9 +317,7 @@ JS;
         $strContent .= "<div id='todo-table'></div>";
         $strContent .= "<script type=\"text/javascript\">";
         $strContent .= <<<JS
-            require(["dashboard"], function(dashboard){
-                dashboard.todo.loadCategory('{$strCategory}', '');
-            });
+             Dashboard.todo.loadCategory('{$strCategory}', '');
 JS;
 
         $strContent .= "</script>";
@@ -334,12 +325,11 @@ JS;
         return $this->objToolkit->getTreeview($objConfig, $strContent);
     }
 
-
     protected function getListTodoFilter()
     {
         // create the form
         $objFormgenerator = new AdminFormgenerator("listfilter", null);
-        $objFormgenerator->setStrOnSubmit("require('dashboard').todo.formSearch();return false");
+        $objFormgenerator->setStrOnSubmit("Dashboard.todo.formSearch();return false");
 
         $objFormgenerator->addField(new FormentryText("listfilter", "search"))
             ->setStrLabel($this->getLang("filter_search"));
@@ -349,7 +339,6 @@ JS;
 
         return $strReturn;
     }
-
 
     /**
      * @return string
@@ -452,7 +441,7 @@ JS;
         $objConcreteWidget = $objWidget->getConcreteAdminwidget();
         $strWidgetName = $objConcreteWidget->getWidgetName();
         $objWidget->deleteObject();
-        return "<message>".$this->getLang("deleteWidgetSuccess", array(StringUtil::jsSafeString($strWidgetName)))."</message>";
+        return "<message>" . $this->getLang("deleteWidgetSuccess", array(StringUtil::jsSafeString($strWidgetName))) . "</message>";
     }
 
     /**
@@ -479,8 +468,7 @@ JS;
             $objWidget->setAbsolutePosition($intNewPos);
         }
 
-
-        $strReturn .= "<message>".$objWidget->getStrDisplayName()." - ".$this->getLang("setDashboardPosition")."</message>";
+        $strReturn .= "<message>" . $objWidget->getStrDisplayName() . " - " . $this->getLang("setDashboardPosition") . "</message>";
 
         return $strReturn;
     }
@@ -513,7 +501,7 @@ JS;
             $strReturn = json_encode($objConcreteWidget->generateWidgetOutput());
         } else {
             ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
-            $strReturn = "<message><error>".xmlSafeString($this->getLang("commons_error_permissions"))."</error></message>";
+            $strReturn = "<message><error>" . xmlSafeString($this->getLang("commons_error_permissions")) . "</error></message>";
         }
 
         return $strReturn;
@@ -560,7 +548,7 @@ JS;
             }
         } else {
             ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
-            $strReturn = "<message><error>".xmlSafeString($this->getLang("commons_error_permissions"))."</error></message>";
+            $strReturn = "<message><error>" . xmlSafeString($this->getLang("commons_error_permissions")) . "</error></message>";
         }
 
         return $strReturn;
@@ -673,7 +661,7 @@ JS;
                     $objTodo->getStrDisplayName(),
                     $strCategory,
                     $strValidDate,
-                    "4 align-right actions" => $strActions
+                    "4 align-right actions" => $strActions,
                 );
             }
         }
@@ -693,7 +681,6 @@ JS;
         $objJsTreeLoader = new SystemJSTreeBuilder(
             new TodoJstreeNodeLoader()
         );
-
 
         $arrSystemIdPath = $this->getParam(SystemJSTreeBuilder::STR_PARAM_INITIALTOGGLING);
         $bitInitialLoading = is_array($arrSystemIdPath);

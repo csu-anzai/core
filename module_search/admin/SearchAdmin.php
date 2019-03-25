@@ -184,7 +184,7 @@ class SearchAdmin extends AdminSimple implements AdminInterface
         // Search Form
         $objForm = $this->getSearchAdminForm($objSearch);
 
-        $objForm->setStrOnSubmit('require(\'search\').triggerFullSearch(); return false;');
+        $objForm->setStrOnSubmit('Search.triggerFullSearch(); return false;');
         $strReturn .= $objForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "search"), AdminFormgenerator::BIT_BUTTON_SUBMIT);
 
         $strCore = Resourceloader::getInstance()->getCorePathForModule("module_search");

@@ -365,12 +365,12 @@ HTML;
         $strDialog = $this->objToolkit->formInputText("folderName", $this->getLang("commons_name"));
 
         $strReturn .= "<script type=\"text/javascript\">
-                        require(['mediamanager']);
+
                         function init_fm_newfolder_dialog() {
                             jsDialog_1.setTitle('" . $this->getLang("folder_new_dialogHeader") . "');
                             jsDialog_1.setContent('" . StringUtil::replace(array("\r\n", "\n"), "", addslashes($strDialog)) . "',
                                                   '" . $this->getLang("commons_create_folder") . "',
-                                                  'javascript:require(\'mediamanager\').createFolder(\'folderName\', \'" . $this->getSystemid() . "\'); jsDialog_1.hide();');
+                                                  'javascript:Mediamanager.createFolder(\'folderName\', \'" . $this->getSystemid() . "\'); jsDialog_1.hide();');
                                     jsDialog_1.init(); }
                       ";
 
@@ -490,27 +490,27 @@ HTML;
 
             $arrActions = array();
             $arrActions[] = $this->objToolkit->listButton(
-                Link::getLinkAdminManual("href=\"#\" onclick=\"require('imageeditor').showRealSize(); return false;\"", "", $this->getLang("showRealsize"), "icon_zoom_in")
+                Link::getLinkAdminManual("href=\"#\" onclick=\"Imageeditor.showRealSize(); return false;\"", "", $this->getLang("showRealsize"), "icon_zoom_in")
             );
             $arrActions[] = $this->objToolkit->listButton(
                 Link::getLinkAdminManual(
-                    "href=\"#\" onclick=\"require('imageeditor').showPreview(); return false;\"",
+                    "href=\"#\" onclick=\"Imageeditor.showPreview(); return false;\"",
                     "",
                     $this->getLang("showPreview"),
                     "icon_zoom_out"
                 )
             ) . " ";
             $arrActions[] = $this->objToolkit->listButton(
-                Link::getLinkAdminManual("href=\"#\" onclick=\"require('imageeditor').rotate(90); return false;\"", "", $this->getLang("rotateImageLeft"), "icon_rotate_left")
+                Link::getLinkAdminManual("href=\"#\" onclick=\"Imageeditor.rotate(90); return false;\"", "", $this->getLang("rotateImageLeft"), "icon_rotate_left")
             );
             $arrActions[] = $this->objToolkit->listButton(
-                Link::getLinkAdminManual("href=\"#\" onclick=\"require('imageeditor').rotate(270); return false;\"", "", $this->getLang("rotateImageRight"), "icon_rotate_right")
+                Link::getLinkAdminManual("href=\"#\" onclick=\"Imageeditor.rotate(270); return false;\"", "", $this->getLang("rotateImageRight"), "icon_rotate_right")
             ) . " ";
             $arrActions[] = $this->objToolkit->listButton(
-                Link::getLinkAdminManual("href=\"#\" onclick=\"require('imageeditor').showCropping(); return false;\"", "", $this->getLang("cropImage"), "icon_crop")
+                Link::getLinkAdminManual("href=\"#\" onclick=\"Imageeditor.showCropping(); return false;\"", "", $this->getLang("cropImage"), "icon_crop")
             );
             $arrActions[] = $this->objToolkit->listButton(
-                Link::getLinkAdminManual("href=\"#\" id=\"accept_icon\"  onclick=\"require('imageeditor').saveCropping(); return false;\"", "", $this->getLang("cropImageAccept"), "icon_crop_acceptDisabled")
+                Link::getLinkAdminManual("href=\"#\" id=\"accept_icon\"  onclick=\"Imageeditor.saveCropping(); return false;\"", "", $this->getLang("cropImageAccept"), "icon_crop_acceptDisabled")
             ) . " ";
 
             $strReturn .= $this->objToolkit->getContentToolbar($arrActions);
@@ -518,27 +518,23 @@ HTML;
             $strReturn .= "<div class=\"imageContainer\"><div class=\"image\">" . $strImage . "</div></div>";
 
             $strJs = "<script type=\"text/javascript\">
-                require(['imageeditor', 'loader'], function (imageeditor, loader) {
-                    loader.loadFile([
-                        '" . Resourceloader::getInstance()->getCorePathForModule("module_mediamanager") . "/module_mediamanager/scripts/jcrop/css/jquery.Jcrop.min.css'
-                    ]);
+            Loader.loadFile([
+                '" . Resourceloader::getInstance()->getCorePathForModule("module_mediamanager") . "/module_mediamanager/scripts/jcrop/css/jquery.Jcrop.min.css'
+            ]);
 
-                    imageeditor.strCropEnabled= '" . addslashes(AdminskinHelper::getAdminImage("icon_crop_accept", $this->getLang("cropImageAccept"))) . "';
-                    imageeditor.strCropDisabled = '" . addslashes(AdminskinHelper::getAdminImage("icon_crop_acceptDisabled", $this->getLang("cropImageAccept"))) . "';
+            Imageeditor.strCropEnabled= '" . addslashes(AdminskinHelper::getAdminImage("icon_crop_accept", $this->getLang("cropImageAccept"))) . "';
+            Imageeditor.strCropDisabled = '" . addslashes(AdminskinHelper::getAdminImage("icon_crop_acceptDisabled", $this->getLang("cropImageAccept"))) . "';
 
-                    imageeditor.fm_image_rawurl = '" . _webpath_ . "/image.php?image=" . urlencode($strFile) . "&quality=80';
-                    imageeditor.fm_image_scaledurl = '" . _webpath_ . "/image.php?image=" . urlencode($strFile) . "&maxWidth=__width__&maxHeight=__height__';
-                    imageeditor.fm_image_scaledMaxWidth = $intWidth;
-                    imageeditor.fm_image_scaledMaxHeight = $intHeight;
-                    imageeditor.fm_image_isScaled = true;
-                    imageeditor.fm_file = '" . $strFile . "' ;
+            Imageeditor.fm_image_rawurl = '" . _webpath_ . "/image.php?image=" . urlencode($strFile) . "&quality=80';
+            Imageeditor.fm_image_scaledurl = '" . _webpath_ . "/image.php?image=" . urlencode($strFile) . "&maxWidth=__width__&maxHeight=__height__';
+            Imageeditor.fm_image_scaledMaxWidth = $intWidth;
+            Imageeditor.fm_image_scaledMaxHeight = $intHeight;
+            Imageeditor.fm_image_isScaled = true;
+            Imageeditor.fm_file = '" . $strFile . "' ;
 
-                    imageeditor.init_fm_crop_save_warning_dialog = function () { jsDialog_1.setTitle('" . $this->getLang("cropWarningDialogHeader") . "'); jsDialog_1.setContent('" . $this->getLang("cropWarningSaving") . "', '" . $this->getLang("cropWarningCrop") . "', 'javascript:require(\'imageeditor\').saveCroppingToBackend()'); jsDialog_1.init(); };
-                    imageeditor.init_fm_screenlock_dialog = function () { jsDialog_3.init(); };
-                    imageeditor.hide_fm_screenlock_dialog = function () { jsDialog_3.hide(); }
-
-                });
-
+            Imageeditor.init_fm_crop_save_warning_dialog = function () { jsDialog_1.setTitle('" . $this->getLang("cropWarningDialogHeader") . "'); jsDialog_1.setContent('" . $this->getLang("cropWarningSaving") . "', '" . $this->getLang("cropWarningCrop") . "', 'javascript:Imageeditor.saveCroppingToBackend()'); jsDialog_1.init(); };
+            Imageeditor.init_fm_screenlock_dialog = function () { jsDialog_3.init(); };
+            Imageeditor.hide_fm_screenlock_dialog = function () { jsDialog_3.hide(); }
                 </script>";
 
             $strJs .= "<input type=\"hidden\" name=\"fm_int_realwidth\" id=\"fm_int_realwidth\" value=\"" . $arrSize[0] . "\" />";
@@ -596,7 +592,7 @@ HTML;
      */
     protected function actionFolderContentFolderviewMode()
     {
-        $strReturn = "<script type='text/javascript'>require(['mediamanager']);</script>";
+        $strReturn = "";
 
         //if set, save CKEditors CKEditorFuncNum parameter to read it again in require('folderview').selectCallback()
         //so we don't have to pass through the param with all requests
@@ -1029,7 +1025,7 @@ HTML;
 
         $strDeleteButton = "";
         if ($objFile->rightDelete()) {
-            $strLink = "javascript:require(\'fileupload\').deleteFile(\'{$objFile->getSystemid()}\')";
+            $strLink = "javascript:Fileupload.deleteFile(\'{$objFile->getSystemid()}\')";
             $strDeleteButton = $this->objToolkit->listDeleteButton($objFile->getStrDisplayName(), $this->getLang("delete_file_question"), $strLink);
         }
         return [

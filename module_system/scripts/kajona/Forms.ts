@@ -1,18 +1,10 @@
-import $ from "../../../_buildfilesNew/node_modules/jquery";
-// import Util = require("./Util");
-// import Router = require("./Router");
+import * as $ from "jquery";
 import Util from "./Util";
 import Router from "./Router";
-// import Tooltip = require("./Tooltip");
 import Tooltip from "./Tooltip";
-// import Ajax = require("./Ajax");
 import Ajax from "./Ajax";
-// import Messaging = require("./Messaging");
 import Messaging from "./Messaging";
-// import DialogHelper = require("../../../module_v4skin/scripts/kajona/DialogHelper");
 import DialogHelper from "../../../module_v4skin/scripts/kajona/DialogHelper";
-
-// import Lang = require("./Lang");
 import Lang from "./Lang";
 
 /**

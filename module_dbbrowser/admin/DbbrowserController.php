@@ -92,7 +92,7 @@ class DbbrowserController extends AdminEvensimpler
                     $column->getInternalType(),
                     $column->getDatabaseType(),
                     $column->isNullable() === true ? "null" : "not null",
-                    (new DCell($this->objToolkit->listConfirmationButton($this->getLang("create_index_question", [$column->getName()]), "javascript:require(\'dbbrowser\').addIndex(\'{$tableName}\', \'{$column->getName()}\');", "icon_index", $this->getLang("action_index_create"), $this->getLang("action_index_create"))))->setClassAddon("align-right"),
+                    (new DCell($this->objToolkit->listConfirmationButton($this->getLang("create_index_question", [$column->getName()]), "javascript:Dbbrowser.addIndex(\'{$tableName}\', \'{$column->getName()}\');", "icon_index", $this->getLang("action_index_create"), $this->getLang("action_index_create"))))->setClassAddon("align-right"),
                 ])
             );
         }
@@ -125,8 +125,8 @@ class DbbrowserController extends AdminEvensimpler
                     $index->getName(),
                     $index->getDescription(),
                     (new DCell(
-                        $this->objToolkit->listDeleteButton($index->getName(), $this->getLang("index_delete_question"), "javascript:require(\'dbbrowser\').deleteIndex(\'{$tableName}\', \'{$index->getName()}\');") .
-                        $this->objToolkit->listConfirmationButton($this->getLang("recreate_index_question", [$index->getName()]), "javascript:require(\'dbbrowser\').recreateIndex(\'{$tableName}\', \'{$index->getName()}\');", "icon_sync", $this->getLang("action_index_recreate"), $this->getLang("action_index_recreate")))
+                        $this->objToolkit->listDeleteButton($index->getName(), $this->getLang("index_delete_question"), "javascript:Dbbrowser.deleteIndex(\'{$tableName}\', \'{$index->getName()}\');") .
+                        $this->objToolkit->listConfirmationButton($this->getLang("recreate_index_question", [$index->getName()]), "javascript:Dbbrowser.recreateIndex(\'{$tableName}\', \'{$index->getName()}\');", "icon_sync", $this->getLang("action_index_recreate"), $this->getLang("action_index_recreate")))
                     )->setClassAddon("align-right"),
                 ])
             );

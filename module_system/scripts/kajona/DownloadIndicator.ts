@@ -125,5 +125,5 @@ class DownloadIndicatorPublic {
     document.location.href = downloadUrl;
   }
 }
-
+(<any>window).DownloadIndicator = DownloadIndicator;
 export default DownloadIndicatorPublic;

@@ -221,5 +221,5 @@ class Imageeditor {
     this.saveImageRotating(intAngle, this.fm_file, callback);
   }
 }
-
+(<any>window).Imageeditor = Imageeditor;
 export default Imageeditor;

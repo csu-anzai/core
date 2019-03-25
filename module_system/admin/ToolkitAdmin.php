@@ -894,22 +894,20 @@ class ToolkitAdmin extends Toolkit
         }
 
         $strJs = <<<HTML
-            function(field, editor, tags){
-                require(["jquery"], function($){
-                    var fieldName = $(field).data('name');
+        function(field, editor, tags){
+        var fieldName = $(field).data('name');
 
-                   //remove all existing hidden fields
-                   $('[id="' + fieldName + '-list"]').remove();
+        //remove all existing hidden fields
+        $('[id="' + fieldName + '-list"]').remove();
 
-                   //add all existin hidden fields
-                    var html = '<div id="' + fieldName + '-list">';
-                    for (var i = 0; i < tags.length; i++) {
-                        html += '<input type="hidden" name="' + fieldName + '[]" value="' + tags[i] + '" />';
-                    }
-                    html += '</div>';
-                    $(field).parent().append(html);
-                });
-            }
+        //add all existin hidden fields
+        var html = '<div id="' + fieldName + '-list">';
+        for (var i = 0; i < tags.length; i++) {
+         html += '<input type="hidden" name="' + fieldName + '[]" value="' + tags[i] + '" />';
+        }
+        html += '</div>';
+        $(field).parent().append(html);
+        }
 HTML;
 
         // html decode comma value
@@ -1192,8 +1190,11 @@ HTML;
     {
         if ($hideLongText) {
             $id = generateSystemid();
-            return $this->formTextRow('<div class="form-hint-container" id="' . $id . '" onclick="$(this).toggleClass(\'form-hint-container\')">' . $hint . '</div><script type="text/javascript">require([\'util\', \'jquery\'], function(u, $) {
-                var $el = $("#' . $id . '"); if (!u.isEllipsisActive($el[0])) { $el.toggleClass(\'form-hint-container\'); } })</script>');
+            return $this->formTextRow('<div class="form-hint-container" id="' . $id . '" onclick="$(this).toggleClass(\'form-hint-container\')">' . $hint .
+                '</div>
+            <script type="text/javascript">
+            var $el = $("#' . $id . '"); if (!Util.isEllipsisActive($el[0])) { $el.toggleClass(\'form-hint-container\'); }
+                </script>');
         } else {
             return $this->formTextRow($hint);
         }
@@ -2304,17 +2305,16 @@ JS;
         $strFavorite = "";
         if ($objTag->rightRight1()) {
             $strJs = "<script type='text/javascript'>
-            require(['tags'], function(tags){
-                tags.createFavoriteEnabledIcon = '" . addslashes(AdminskinHelper::getAdminImage("icon_favorite", Carrier::getInstance()->getObjLang()->getLang("tag_favorite_remove", "tags"))) . "';
-                tags.createFavoriteDisabledIcon = '" . addslashes(AdminskinHelper::getAdminImage("icon_favoriteDisabled", Carrier::getInstance()->getObjLang()->getLang("tag_favorite_add", "tags"))) . "';
-            });
+            Tags.createFavoriteEnabledIcon = '" . addslashes(AdminskinHelper::getAdminImage("icon_favorite", Carrier::getInstance()->getObjLang()->getLang("tag_favorite_remove", "tags"))) . "';
+            Tags.createFavoriteDisabledIcon = '" . addslashes(AdminskinHelper::getAdminImage("icon_favoriteDisabled", Carrier::getInstance()->getObjLang()->getLang("tag_favorite_add", "tags"))) . "';
+
             </script>";
 
             $strImage = TagsFavorite::getAllFavoritesForUserAndTag(Carrier::getInstance()->getObjSession()->getUserID(), $objTag->getSystemid()) != null ?
             AdminskinHelper::getAdminImage("icon_favorite", Carrier::getInstance()->getObjLang()->getLang("tag_favorite_remove", "tags")) :
             AdminskinHelper::getAdminImage("icon_favoriteDisabled", Carrier::getInstance()->getObjLang()->getLang("tag_favorite_add", "tags"));
 
-            $strFavorite = $strJs . "<a href=\"#\" onclick=\"require('tags').createFavorite('" . $objTag->getSystemid() . "', this); return false;\">" . $strImage . "</a>";
+            $strFavorite = $strJs . "<a href=\"#\" onclick=\"Tags.createFavorite('" . $objTag->getSystemid() . "', this); return false;\">" . $strImage . "</a>";
         }
 
         $arrTemplate = array();

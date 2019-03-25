@@ -105,5 +105,5 @@ class InstantSave {
     this.scanElements();
   }
 }
-
+(<any>window).InstantSave = InstantSave;
 export default InstantSave;

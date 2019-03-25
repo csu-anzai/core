@@ -6,5 +6,5 @@ class Oauth2 {
     location.href = url;
   }
 }
-
+(<any>window).Oauth2 = Oauth2;
 export default Oauth2;

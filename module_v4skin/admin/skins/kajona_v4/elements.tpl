@@ -329,8 +329,7 @@ Checkbox
 Toggle_On_Off (using bootstrap-switch.org)
 <input_on_off_switch>
     <script type="text/javascript">
-        require(["bootstrap-switch"], function(){
-            window.setTimeout(function() {
+             window.setTimeout(function() {
                 var divId = '%%name%%';
                 divId = '#' + divId.replace( /(:|\.|\[|\])/g, "\\$1" );
                 $(divId).bootstrapSwitch();
@@ -339,7 +338,6 @@ Toggle_On_Off (using bootstrap-switch.org)
                 });
 
             }, 200);
-        });
     </script>
 
     <div class="form-group">
@@ -381,14 +379,12 @@ Color Picker
             </div>
         </div>
         <script type="text/javascript">
-        require(["bootstrap-colorpicker"], function(colorpicker) {
-            $('#c_%%name%%').colorpicker({component: '*'});
+     $('#c_%%name%%').colorpicker({component: '*'});
 
 //            if($('#%%name%%').is(':focus')) {
 //                $('#%%name%%').blur();
 //                $('#%%name%%').focus();
 //            }
-        });
         </script>
     </div>
 </input_colorpicker>
