@@ -28,12 +28,6 @@ class DbbrowserApiController implements ApiControllerInterface
     protected $connection;
 
     /**
-     * @inject system_lang
-     * @var Lang
-     */
-    protected $lang;
-
-    /**
      * Returns a list of all tables
      *
      * @api
@@ -44,7 +38,6 @@ class DbbrowserApiController implements ApiControllerInterface
     public function listTables()
     {
         return [
-            "headline" => $this->lang->getLang("schema_tables", "dbbrowser"),
             "tables" => $this->connection->getTables(),
         ];
     }
