@@ -137,7 +137,8 @@ class Rights
             unset(self::$arrPermissionMap[$strSystemid]);
 
 
-            if (version_compare(SystemModule::getModuleByName("system")->getStrVersion(), "7.1.4", "ge")) {
+            $systemModule = SystemModule::getModuleByName("system");
+            if ($systemModule != null && version_compare($systemModule->getStrVersion(), "7.1.4", "ge")) {
                 //update permission assignment tables
                 foreach ([
                              self::$STR_RIGHT_VIEW => ["agp_permissions_view", "view_id", "view_shortgroup"],
