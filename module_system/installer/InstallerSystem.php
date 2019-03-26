@@ -738,23 +738,23 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $strReturn .= "View permissions".PHP_EOL;
 
+        $i = 0;
         foreach ($this->objDB->getGenerator("SELECT system_id, right_view, right_right2 FROM agp_system ORDER BY system_id DESC", []) as $systemRecords) {
-
-
                 $insertView = [];
                 $insertRight2 = [];
-                foreach ($systemRecords as $i => $row) {
+                foreach ($systemRecords as  $row) {
+                    $i++;
                     $groups = explode(",", trim($row["right_view"], ','));
                     foreach ($groups as $shortid) {
                         if (is_numeric($shortid) && array_key_exists($shortid, $groupMap)) {
-                            $insertView[] = [$row['system_id'], $shortid];
+                            $insertView[$row['system_id'].$shortid] = [$row['system_id'], $shortid];
                         }
                     }
 
                     $groups = explode(",", trim($row["right_right2"], ','));
                     foreach ($groups as $shortid) {
                         if (is_numeric($shortid) && array_key_exists($shortid, $groupMap)) {
-                            $insertRight2[] = [$row['system_id'], $shortid];
+                            $insertRight2[$row['system_id'].$shortid] = [$row['system_id'], $shortid];
                         }
                     }
 

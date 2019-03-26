@@ -151,7 +151,7 @@ class Rights
                     foreach ($groups as $shortid) {
                         if (is_numeric($shortid) && $shortid !== "") {
                             if (validateSystemid(UserGroup::getGroupIdForShortId((int)$shortid))) {
-                                $insert[] = [$strSystemid, $shortid];
+                                $insert[$strSystemid.$shortid] = [$strSystemid, $shortid];
                             }
                         }
                     }
