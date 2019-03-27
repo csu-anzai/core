@@ -38,6 +38,7 @@ class Dialog {
     //register event to reset the dialog with default settings (only if the dialog has template dialog)
     if ($("#template_" + this.containerId).length > 0) {
       $("#" + this.containerId).on("hidden", function(e) {
+        // @ts-ignore
         this.resetDialog.call(this);
       });
     }
@@ -290,6 +291,7 @@ class Dialog {
 
     //set hidden event again (needed as when replacing the events are not set anymore)
     $("#" + this.containerId).on("hidden", function(e) {
+      // @ts-ignore
       this.resetDialog.call(this);
     });
   }

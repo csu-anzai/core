@@ -46,13 +46,12 @@ module.exports = {
         }
       },
       {
-        test: /\.scss$/,
-        use: ['style-loader', 'css-loader', 'sass-loader']
+        test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)|\.png($|\?)/,
+        loader: 'url-loader'
       },
       {
         test: /\.less$/,
         use: [
-          // devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
           {
             loader: 'style-loader' // creates style nodes from JS strings
           },
@@ -89,5 +88,6 @@ module.exports = {
       jquery: 'jquery'
     }),
     new LiveReloadPlugin(liveReloadOptions)
-  ]
+  ],
+  watch: true
 }
