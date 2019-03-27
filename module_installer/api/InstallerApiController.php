@@ -14,6 +14,8 @@ use Kajona\System\System\Database;
 use Kajona\System\System\DbConnectionParams;
 use Kajona\System\System\Filesystem;
 use Kajona\System\System\SystemModule;
+use PSX\Http\Environment\HttpContext;
+use PSX\Http\Exception\BadRequestException;
 
 /**
  * InstallerApiController
@@ -304,16 +306,40 @@ class InstallerApiController implements ApiControllerInterface
 
         foreach ($files as $fileName) {
             $fileSystem->openFilePointer(_projectpath_."/log/".$fileName, "r");
-            $log = $fileSystem->readLastLinesFromFile(16);
+            $log = $fileSystem->readLastLinesFromFile(200);
             $fileSystem->closeFilePointer();
 
             $log = str_replace(["\r\n", "\n", "\r"], "\n", $log);
             $log = str_replace(array("INFO", "ERROR"), array("INFO   ", "ERROR  "), $log);
 
-            $return[$fileName] = array_filter(array_map("trim", explode("\n", $log)));
+            $return[$fileName] = array_values(array_filter(array_map("trim", explode("\n", $log))));
         }
 
         return $return;
+    }
+
+    /**
+     * @api
+     * @method GET
+     * @path /installer/log/{log}
+     * @authorization filetoken
+     */
+    public function getLogDetail(HttpContext $context)
+    {
+        $fileSystem = new Filesystem();
+        $files = $fileSystem->getFilelist(_projectpath_."/log", [".log"]);
+        $file = $context->getUriFragment("log") . ".log";
+
+        if (in_array($file, $files)) {
+            $path = _realpath_._projectpath_."/log/".$file;
+
+            return [
+                "size" => filesize($path),
+                "lines" => file($path, FILE_IGNORE_NEW_LINES),
+            ];
+        } else {
+            throw new BadRequestException("Invalid log");
+        }
     }
 
     private function checkConnection($driver, $hostname, $username, $password, $dbname, $port)
