@@ -66,6 +66,13 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
     protected $showEditButton = false;
 
     /**
+     * A closure which generates the fitting link button for the entry
+     *
+     * @var \Closure
+     */
+    protected $showDetailButton;
+
+    /**
      * @param string $strAddLink
      */
     public function setStrAddLink($strAddLink)
@@ -151,6 +158,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         $objectList->setShowAddButton($this->isShowAddButton());
         $objectList->setShowDeleteAllButton($this->isShowDeleteAllButton());
         $objectList->setShowEditButton($this->isShowEditButton());
+        $objectList->setShowDetailButton($this->showDetailButton);
         $strReturn .= $objectList->renderComponent();
 
         return $strReturn;
@@ -436,5 +444,13 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         return $this;
     }
 
-
+    /**
+     * @param \Closure $showDetailButton
+     * @return FormentryObjectlist
+     */
+    public function setShowDetailButton(\Closure $showDetailButton): FormentryObjectlist
+    {
+        $this->showDetailButton = $showDetailButton;
+        return $this;
+    }
 }

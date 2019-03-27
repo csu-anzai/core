@@ -607,6 +607,7 @@ Upload-Field for multiple files with progress bar
             </span>
             %%helpButton%%
             %%moveButton%%
+            %%archiveButton%%
         </div>
     </div>
 
@@ -671,8 +672,16 @@ Upload-Field for multiple files with progress bar
                 uploader.getUploader().fileupload('option', 'done').call(uploader.getUploader(), $.Event('done'), {result: data});
             }, null, null, "post", "json");
 
-            if ($('#version_%%name%%')) {
-                $('#version_%%name%%').on('click', function() {   uploader.fileVersioning() });
+            if ($('#version_%%name%%').length > 0) {
+                $('#version_%%name%%').on('click', function() {
+                    uploader.fileVersioning();
+                });
+            }
+
+            if ($('#archive_%%name%%').length > 0) {
+                $('#archive_%%name%%').on('click', function() {
+                    uploader.fileArchiving("%%targetSystemId%%", "%%archiveTitle%%", "%%archiveBody%%", "%%archiveTitle%%");
+                });
             }
 
             uploader.renderArchiveList();
@@ -803,6 +812,10 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         <div class="col-sm-6 inputText inputTagEditor" id="tageditor_%%name%%">
             <input type="text" id="%%name%%" data-name="%%name%%" class="form-control" autocomplete="off" data-kajona-block-initval="true"/>
             <div id="%%name%%-list">%%data%%</div>
+        </div>
+
+        <div class="col-sm-2 form-opener">
+            %%opener%%
         </div>
     </div>
     <script type="text/javascript">

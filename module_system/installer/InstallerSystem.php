@@ -698,7 +698,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
     private function update_713_714()
     {
         $strReturn = "Updating to 7.1.4...".PHP_EOL;
-        $strReturn .= "Adding system settings".PHP_EOL;
+        $strReturn .= "Adding system setting".PHP_EOL;
         $this->registerConstant("_system_permission_assignment_threshold_", 500, SystemSetting::$int_TYPE_INT, _system_modul_id_);
 
         $strReturn .= "Updating user-goup table".PHP_EOL;
@@ -737,49 +737,52 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         }
 
         $strReturn .= "View permissions".PHP_EOL;
-        $systemRecords = $this->objDB->getPArray("SELECT system_id, right_view, right_right2 FROM agp_system", []);
 
-        $insertView = [];
-        $insertRight2 = [];
-        foreach ($systemRecords as $i => $row) {
-            $groups = explode(",", trim($row["right_view"], ','));
-            foreach ($groups as $shortid) {
-                if (is_numeric($shortid) && array_key_exists($shortid, $groupMap)) {
-                    $insertView[] = [$row['system_id'], $shortid];
+        $i = 0;
+        foreach ($this->objDB->getGenerator("SELECT system_id, right_view, right_right2 FROM agp_system ORDER BY system_id DESC", []) as $systemRecords) {
+                $insertView = [];
+                $insertRight2 = [];
+                foreach ($systemRecords as  $row) {
+                    $i++;
+                    $groups = explode(",", trim($row["right_view"], ','));
+                    foreach ($groups as $shortid) {
+                        if (is_numeric($shortid) && array_key_exists($shortid, $groupMap)) {
+                            $insertView[$row['system_id'].$shortid] = [$row['system_id'], $shortid];
+                        }
+                    }
+
+                    $groups = explode(",", trim($row["right_right2"], ','));
+                    foreach ($groups as $shortid) {
+                        if (is_numeric($shortid) && array_key_exists($shortid, $groupMap)) {
+                            $insertRight2[$row['system_id'].$shortid] = [$row['system_id'], $shortid];
+                        }
+                    }
+
+                    if ($i % 500 == 0) {
+                        if (!empty($insertView)) {
+                            $this->objDB->multiInsert("agp_permissions_view", ["view_id", "view_shortgroup"], $insertView);
+                            $insertView = [];
+                        }
+
+                        if (!empty($insertRight2)) {
+                            $this->objDB->multiInsert("agp_permissions_right2", ["right2_id", "right2_shortgroup"], $insertRight2);
+                            $insertRight2 = [];
+                        }
+
+                        $strReturn .= "Migrated {$i} records ".PHP_EOL;
+                    }
+
                 }
-            }
 
-            $groups = explode(",", trim($row["right_right2"], ','));
-            foreach ($groups as $shortid) {
-                if (is_numeric($shortid) && array_key_exists($shortid, $groupMap)) {
-                    $insertRight2[] = [$row['system_id'], $shortid];
-                }
-            }
-
-            if ($i % 500 == 0) {
                 if (!empty($insertView)) {
                     $this->objDB->multiInsert("agp_permissions_view", ["view_id", "view_shortgroup"], $insertView);
-                    $insertView = [];
                 }
-
                 if (!empty($insertRight2)) {
                     $this->objDB->multiInsert("agp_permissions_right2", ["right2_id", "right2_shortgroup"], $insertRight2);
-                    $insertRight2 = [];
                 }
-
                 $strReturn .= "Migrated {$i} records ".PHP_EOL;
-            }
 
         }
-
-        if (!empty($insertView)) {
-            $this->objDB->multiInsert("agp_permissions_view", ["view_id", "view_shortgroup"], $insertView);
-        }
-        if (!empty($insertRight2)) {
-            $this->objDB->multiInsert("agp_permissions_right2", ["right2_id", "right2_shortgroup"], $insertRight2);
-        }
-        $strReturn .= "Migrated {$i} records ".PHP_EOL;
-
 
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.4");
 

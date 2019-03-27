@@ -687,7 +687,7 @@ class ToolkitAdmin extends Toolkit
      * @return string
      * @see FormentryMultiUpload
      */
-    public function formInputUploadInline($strName, $strTitle, MediamanagerRepo $objRepo, $strTargetDir, $bitReadonly = false, $bitVersioning = true, $bitMultiUpload = true)
+    public function formInputUploadInline($strName, $strTitle, MediamanagerRepo $objRepo, $strTargetDir, $bitReadonly = false, $bitVersioning = true, $bitMultiUpload = true, $showArchive = false, $targetSystemId = null)
     {
 
         if (SystemModule::getModuleByName("mediamanager") === null) {
@@ -706,6 +706,10 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["multiUpload"] = $bitMultiUpload ? 'true' : 'false';
         $arrTemplate["addButton"] = $bitReadonly ? "" : $this->listButton("<i class='kj-icon fa fa-plus-circle'></i>");//AdminskinHelper::getAdminImage("icon_new", $objText->getLang("mediamanager_upload", "mediamanager"));
         $arrTemplate["moveButton"] = $bitReadonly || !$bitVersioning ? "" : "<a id='version_{$strName}'>".$this->listButton(AdminskinHelper::getAdminImage("icon_archive", $objText->getLang("version_files", "mediamanager")))."</a>";
+        $arrTemplate["archiveButton"] = $bitReadonly || !$showArchive ? "" : "<a id='archive_{$strName}'>".$this->listButton(AdminskinHelper::getAdminImage("icon_phar", $objText->getLang("archive_files", "mediamanager")))."</a>";
+        $arrTemplate["archiveTitle"] = $objText->getLang("archive_files", "mediamanager");
+        $arrTemplate["archiveBody"] = $objText->getLang("archive_files_notice", "mediamanager");
+        $arrTemplate["targetSystemId"] = $targetSystemId;
 
         $strAllowedFileRegex = StringUtil::replace(array(".", ","), array("", "|"), $objRepo->getStrUploadFilter());
         $strAllowedFileTypes = StringUtil::replace(array(".", ","), array("", "', '"), $objRepo->getStrUploadFilter());
@@ -926,11 +930,12 @@ HTML;
      * @param string $strTitle
      * @param $strSource
      * @param array $arrValues
-     * @param null $strOnChange
+     * @param string|null $strOnChange
+     * @param string|null $opener
      * @return string
      * @throws Exception
      */
-    public function formInputObjectTags($strName, $strTitle, $strSource, array $arrValues = array(), $strOnChange = null)
+    public function formInputObjectTags($strName, $strTitle, $strSource, array $arrValues = array(), $strOnChange = null, $opener = null)
     {
         $strData = "";
         $arrResult = array();
@@ -950,6 +955,7 @@ HTML;
         $arrTemplate["onChange"] = empty($strOnChange) ? "function(){}" : (string)$strOnChange;
         $arrTemplate["source"] = $strSource;
         $arrTemplate["data"] = $strData;
+        $arrTemplate["opener"] = $opener;
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_objecttags", true);
     }

@@ -9,6 +9,7 @@
                     <col width="*" />
                     {% if not readOnly %}<col width="20" />{% endif %}
                     {% if not readOnly and row.editLink %}<col width="20" />{% endif %}
+                    {% if row.detailLink %}<col width="20" />{% endif %}
                 </colgroup>
                 <tbody>
                 {% for row in rows %}
@@ -17,6 +18,7 @@
                     <td class="title">{% if row.path %}<div class="smaller">{{ row.path }}</div>{% endif %} {{ row.displayName }} <input type="hidden" name="{{ name }}[]" value="{{ row.systemid }}" /></td>
                     {% if not readOnly %}<td class="icon-cell">{{ row.removeLink|raw }}</td>{% endif %}
                     {% if not readOnly and row.editLink %}<td class="icon-cell">{{ row.editLink|raw }}</td>{% endif %}
+                    {% if row.detailLink %}<td class="icon-cell">{{ row.detailLink|raw }}</td>{% endif %}
                 </tr>
                 {% endfor %}
                 </tbody>
