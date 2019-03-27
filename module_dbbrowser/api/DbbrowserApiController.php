@@ -9,7 +9,7 @@ namespace Kajona\Dbbrowser\Api;
 use Kajona\Api\System\ApiControllerInterface;
 use Kajona\System\System\Database;
 use PSX\Http\Environment\HttpContext;
-use PSX\Http\Environment\HttpResponse;
+use PSX\Http\Exception\BadRequestException;
 
 /**
  * DbbrowserApiController
@@ -134,6 +134,6 @@ class DbbrowserApiController implements ApiControllerInterface
             }
         }
 
-        return new HttpResponse(400, [], ["status" => "index not found"]);
+        throw new BadRequestException("Index not found");
     }
 }
