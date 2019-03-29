@@ -12,7 +12,7 @@ const devMode = process.env.NODE_ENV !== "production";
 
 module.exports = {
   entry: {
-    agp: glob.sync("../../{core,core_agp}/module_*/scripts/*/*.ts")
+    agp: glob.sync("../../{core,core_agp}/module_*/scripts/**/*.ts")
   },
   output: {
     filename: "./[name].min.js",
