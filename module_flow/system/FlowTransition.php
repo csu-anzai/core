@@ -144,6 +144,19 @@ class FlowTransition extends Model implements ModelInterface, AdminListableInter
     }
 
     /**
+     * @param string $key
+     * @param mixed $value
+     */
+    public function setParam($key, $value)
+    {
+        if (isset($this->arrParams[$key])) {
+            throw new \RuntimeException("Key '{$key}' already exists");
+        }
+
+        $this->arrParams[$key] = $value;
+    }
+
+    /**
      * @return FlowStatus
      */
     public function getParentStatus()
