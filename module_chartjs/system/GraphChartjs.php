@@ -254,12 +254,14 @@ class GraphChartjs implements GraphInterfaceFronted
         foreach ($this->arrColors as $arrColor) {
             $arrBackgroundColors[] = $arrColor;
             $arrBorderColors[] = $nrOfNonNullValues <= 1 ? $arrColor : '#FFFFFF';
+            $bitBorderWith = $nrOfNonNullValues <= 1 ? 0 : 1;
         }
         $this->arrChartData['data']['datasets'][] = [
             "dataPoints" => $this->dataPointObjArrayToArray($arrDataPointObjects),
             "data" => GraphCommons::getDataPointFloatValues($arrDataPointObjects),
             "backgroundColor" => $arrBackgroundColors,
             "borderColor" => $arrBorderColors,
+            "borderWidth" => $bitBorderWith,
             "datalabels" => ['display' => 'auto']
         ];
         $this->intXLabelsCount = count($arrValues);
@@ -271,7 +273,7 @@ class GraphChartjs implements GraphInterfaceFronted
         $this->arrChartData['options']['scales']['yAxes'][0]['display'] = false;
         $this->setHideXAxis(true);
         $this->setHideYAxis(true);
-        $this->setValueTypePercentage(false);
+        $this->setValueTypePercentage(true);
     }
 
     /**

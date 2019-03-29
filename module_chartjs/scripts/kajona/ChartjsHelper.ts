@@ -60,7 +60,7 @@ class ChartjsHelper {
             sum += data;
         });
         var percentage = (value * 100 / sum).toFixed(2);
-        return percentage != "0" ? percentage + "%" : '';
+        return percentage != "0.00" ? percentage + "%" : '';
     }
 
     /**
@@ -111,13 +111,13 @@ class ChartjsHelper {
         // set chart area backgroundColor
         ctx.style.backgroundColor = chartOptions['backgroundColor'];
 
-        if (typeof (chartOptions['createImageLink']) !== 'undefined' || chartOptions['createImageLink']) {
+        if (typeof (chartOptions['createImageLink']) !== 'undefined' && chartOptions['createImageLink']) {
             chartData['options']['animation'] = {
                 onComplete: createExportLink
             }
         }
 
-        if (typeof (chartOptions['notShowNullValues']) !== 'undefined' || chartOptions['notShowNullValues']) {
+        if (typeof (chartOptions['notShowNullValues']) !== 'undefined' && chartOptions['notShowNullValues']) {
             chartData['options']['plugins']['datalabels'] = {
                 formatter: function (value: number) {
                     return ChartjsHelper.dataNotShowNullValues(value);
@@ -125,7 +125,7 @@ class ChartjsHelper {
             }
         }
 
-        if (typeof (chartOptions['percentageValues']) !== 'undefined' || chartOptions['percentageValues']) {
+        if (typeof (chartOptions['percentageValues']) !== 'undefined' && chartOptions['percentageValues']) {
             chartData['options']['plugins']['datalabels'] = {
                 formatter: function (value: number, ctx: any) {
                     return ChartjsHelper.dataShowPercentage(value, ctx);
@@ -133,7 +133,7 @@ class ChartjsHelper {
             }
         }
 
-        if (typeof (chartOptions['addThousandSeparator']) !== 'undefined' || chartOptions['addThousandSeparator']) {
+        if (typeof (chartOptions['addThousandSeparator']) !== 'undefined' && chartOptions['addThousandSeparator']) {
             chartData['options']['scales']['xAxes'][0]['ticks'] = {
                 userCallback: function (value: number, ctx: any) {
                     return ChartjsHelper.addThousandSeparator(value, ctx);
