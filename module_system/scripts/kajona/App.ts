@@ -11,6 +11,7 @@ import Folderview from "./Folderview";
 import Lists from "./Lists";
 import DialogHelper from "../../../module_v4skin/scripts/kajona/DialogHelper";
 import Ajax from "./Ajax";
+const mermaid = require("mermaid");
 const moment = require("moment");
 declare global {
   interface Window {
@@ -78,4 +79,5 @@ class App {
 (<any>window).App = App;
 (<any>window).$ = (<any>window).jQuery = require("jquery");
 (<any>window).moment = moment;
+(<any>window).mermaid = mermaid;
 export default App;

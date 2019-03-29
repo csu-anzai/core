@@ -290,8 +290,7 @@ class FlowGraphWriter
         }
     };
 
-    require(['mermaid', 'loader', 'jquery'], function(mermaid, loader, $){
-        loader.loadFile(["/core/module_flow/scripts/mermaid/mermaid.forest.css"], function(){
+    Loader.loadFile(["/core/module_flow/scripts/mermaid/mermaid.forest.css"], function(){
             mermaid.initialize({$strInit});
             mermaid.init(undefined, $("#flow-graph"));
 
@@ -327,7 +326,6 @@ class FlowGraphWriter
 
             $('.node div').css('cursor', 'pointer');
         });
-    });
 </script>
 <style type="text/css">
 .mermaid .label {

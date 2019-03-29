@@ -1,10 +1,10 @@
 import * as $ from "jquery";
 import "../bootstrap/bootstrap.min.js";
-import "../bootstrap/datepicker/bootstrap-datepicker";
-import "../bootstrap/datepicker/locales/bootstrap-datepicker.de.js";
-import "../bootstrap/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js";
+import "bootstrap-datepicker/dist/js/bootstrap-datepicker.min";
+import "bootstrap-datepicker/dist/locales/bootstrap-datepicker.de.min.js";
+import "bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min";
 import "bootstrap-switch";
-import "../../../_buildfilesNew/node_modules/jquery-ui";
+import "jquery-ui";
 import "../jquery/jquery.floatThead.min.js";
 import Messaging from "./../../../module_system/scripts/kajona/Messaging";
 import Ajax from "../../../module_system/scripts/kajona/Ajax";
