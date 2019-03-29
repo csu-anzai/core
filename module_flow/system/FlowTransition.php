@@ -137,7 +137,7 @@ class FlowTransition extends Model implements ModelInterface, AdminListableInter
 
     /**
      * @param array $arrParams
-     * @internal - please use setParam since this methods overwrites all params from previous actions
+     * @deprecated - please use setParameter since this methods overwrites all params from previous actions
      */
     public function setArrParams(array $arrParams)
     {
@@ -148,13 +148,18 @@ class FlowTransition extends Model implements ModelInterface, AdminListableInter
      * @param string $key
      * @param mixed $value
      */
-    public function setParam($key, $value)
+    public function setParameter($key, $value)
     {
-        if (isset($this->arrParams[$key])) {
-            throw new \RuntimeException("Param '{$key}' already exists");
-        }
-
         $this->arrParams[$key] = $value;
+    }
+
+    /**
+     * @param string $key
+     * @return mixed|null
+     */
+    public function getParameter($key)
+    {
+        return $this->arrParams[$key] ?? null;
     }
 
     /**
