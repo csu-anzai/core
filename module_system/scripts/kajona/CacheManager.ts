@@ -1,6 +1,3 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="cacheManager"/>
-
 class CacheManager {
   private static container: any;
 

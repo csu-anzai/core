@@ -1,10 +1,12 @@
 import * as $ from "jquery";
 // import * as chartjs from "../chartjs/Chart.bundle.min";
 // import "../chartjs/chartjs-plugin-datalabels";
-// import Chart from "chart.js";
-var Chart = require("chart.js");
-import ChartDataLabels from "chartjs-plugin-datalabels";
+
 import Folderview from "../../../module_system/scripts/kajona/Folderview";
+var Chart = require("chart.js");
+// import Chart from "chart.js";
+// import ChartDataLabels from "chartjs-plugin-datalabels";
+const ChartDataLabels = require("chartjs-plugin-datalabels");
 
 declare var Chart: any;
 

@@ -2,20 +2,20 @@
   "compilerOptions": {
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "strict": false,
-    "noImplicitReturns": true,
+    "noImplicitReturns": false,
     "module": "es2015",
     "moduleResolution": "node",
     "target": "es5",
-    "lib": ["es2015", "DOM"]
+    "lib": ["es2015", "dom"],
+    // "outDir": "./temp",
+    "skipLibCheck": true,
+    "typeRoots": ["./node_modules/@types"],
+    "types": ["node"]
   },
-  "include": [
-    // "../../core/module_*/scripts",
-    // "../../core_*/module_*/scripts",
-    // "../",
-    // "../_a/*.ts"
-  ]
-  // "exclude": ["node_modules", "**/*.spec.ts"]
-  // files : []
+
+  "include": ["../../core/module_*/scripts/", "../../core_*/module_*/scripts/"],
+  "exclude": ["node_modules", "../_buildfiles", "./"],
+  "compileOnSave": true
 }

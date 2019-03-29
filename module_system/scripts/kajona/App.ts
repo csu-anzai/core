@@ -12,7 +12,6 @@ import Lists from "./Lists";
 import DialogHelper from "../../../module_v4skin/scripts/kajona/DialogHelper";
 import Ajax from "./Ajax";
 const moment = require("moment");
-
 declare global {
   interface Window {
     KAJONA: Kajona;
