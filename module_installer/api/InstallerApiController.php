@@ -9,9 +9,13 @@ namespace Kajona\Installer\Api;
 use Kajona\Api\System\ApiControllerInterface;
 use Kajona\Installer\System\SamplecontentInstallerHelper;
 use Kajona\Packagemanager\System\PackagemanagerManager;
+use Kajona\System\System\Config;
 use Kajona\System\System\Database;
 use Kajona\System\System\DbConnectionParams;
+use Kajona\System\System\Filesystem;
 use Kajona\System\System\SystemModule;
+use PSX\Http\Environment\HttpContext;
+use PSX\Http\Exception\BadRequestException;
 
 /**
  * InstallerApiController
@@ -66,20 +70,29 @@ class InstallerApiController implements ApiControllerInterface
      */
     public function getConnection()
     {
-        $extensions = [
-            "mysqli",
-            "pgsql",
-            "sqlsrv",
-            "sqlite3",
-            "oci8",
-        ];
-
-        $result = [];
-        foreach ($extensions as $extension) {
-            $result[$extension] = in_array($extension, get_loaded_extensions());
+        $allExtensions = ["mysqli", "pgsql", "sqlsrv", "sqlite3", "oci8"];
+        $extensions = [];
+        foreach ($allExtensions as $extension) {
+            $extensions[$extension] = in_array($extension, get_loaded_extensions());
         }
 
-        return $result;
+        $config = Config::getInstance("module_system", "config.php");
+        $configured = $config->getConfig("dbhost") !== "%%defaulthost%%";
+        if ($configured) {
+            $conf = [
+                "host" => $config->getConfig("dbhost"),
+                "username" => $config->getConfig("dbusername"),
+                "database" => $config->getConfig("dbname"),
+                "port" => $config->getConfig("dbport"),
+            ];
+        } else {
+            $conf = false;
+        }
+
+        return [
+            "config" => $conf,
+            "extensions" => $extensions,
+        ];
     }
 
     /**
@@ -277,6 +290,56 @@ class InstallerApiController implements ApiControllerInterface
             "status" => "error",
             "module" => $body["module"],
         ];
+    }
+
+    /**
+     * @api
+     * @method GET
+     * @path /installer/log
+     * @authorization filetoken
+     */
+    public function getLogs()
+    {
+        $fileSystem = new Filesystem();
+        $files = $fileSystem->getFilelist(_projectpath_."/log", array(".log"));
+        $return = [];
+
+        foreach ($files as $fileName) {
+            $fileSystem->openFilePointer(_projectpath_."/log/".$fileName, "r");
+            $log = $fileSystem->readLastLinesFromFile(200);
+            $fileSystem->closeFilePointer();
+
+            $log = str_replace(["\r\n", "\n", "\r"], "\n", $log);
+            $log = str_replace(array("INFO", "ERROR"), array("INFO   ", "ERROR  "), $log);
+
+            $return[$fileName] = array_values(array_filter(array_map("trim", explode("\n", $log))));
+        }
+
+        return $return;
+    }
+
+    /**
+     * @api
+     * @method GET
+     * @path /installer/log/{log}
+     * @authorization filetoken
+     */
+    public function getLogDetail(HttpContext $context)
+    {
+        $fileSystem = new Filesystem();
+        $files = $fileSystem->getFilelist(_projectpath_."/log", [".log"]);
+        $file = $context->getUriFragment("log") . ".log";
+
+        if (in_array($file, $files)) {
+            $path = _realpath_._projectpath_."/log/".$file;
+
+            return [
+                "size" => filesize($path),
+                "lines" => file($path, FILE_IGNORE_NEW_LINES),
+            ];
+        } else {
+            throw new BadRequestException("Invalid log");
+        }
     }
 
     private function checkConnection($driver, $hostname, $username, $password, $dbname, $port)
