@@ -85,7 +85,8 @@ module.exports = {
     new webpack.ProvidePlugin({
       jQuery: "jquery",
       $: "jquery",
-      jquery: "jquery"
+      jquery: "jquery",
+      mermaid: "mermaid"
     }),
     new LiveReloadPlugin(liveReloadOptions)
   ],
