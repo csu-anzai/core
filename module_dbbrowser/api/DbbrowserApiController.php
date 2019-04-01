@@ -90,8 +90,16 @@ class DbbrowserApiController implements ApiControllerInterface
      */
     public function addIndex($body)
     {
-        $table = $body["table"] ?? null;
-        $column = $body["column"] ?? null;
+        if (!isset($body["table"])) {
+            throw new BadRequestException("Table not defined");
+        }
+
+        if (!isset($body["column"])) {
+            throw new BadRequestException("Column not defined");
+        }
+
+        $table = $body["table"];
+        $column = $body["column"];
 
         return ["status" => $this->connection->createIndex($table, "ix_".generateSystemid(), [$column])];
     }
@@ -104,10 +112,18 @@ class DbbrowserApiController implements ApiControllerInterface
      * @path /dbbrowser/index
      * @authorization filetoken
      */
-    public function deleteIndex()
+    public function deleteIndex($body)
     {
-        $table = $body["table"] ?? null;
-        $index = $body["index"] ?? null;
+        if (!isset($body["table"])) {
+            throw new BadRequestException("Table not defined");
+        }
+
+        if (!isset($body["index"])) {
+            throw new BadRequestException("Index not defined");
+        }
+
+        $table = $body["table"];
+        $index = $body["index"];
 
         return ["status" => $this->connection->deleteIndex($table, $index)];
     }
@@ -120,10 +136,18 @@ class DbbrowserApiController implements ApiControllerInterface
      * @path /dbbrowser/index
      * @authorization filetoken
      */
-    public function recreateIndex()
+    public function recreateIndex($body)
     {
-        $table = $body["table"] ?? null;
-        $index = $body["index"] ?? null;
+        if (!isset($body["table"])) {
+            throw new BadRequestException("Table not defined");
+        }
+
+        if (!isset($body["index"])) {
+            throw new BadRequestException("Index not defined");
+        }
+
+        $table = $body["table"];
+        $index = $body["index"];
 
         //fetch the relevant metadata
         $tableDef = $this->connection->getTableInformation($table);
