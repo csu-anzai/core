@@ -105,8 +105,15 @@ class Dashboard {
         if (!updateAdditionalContent) {
             Ajax.loadUrlToElement("div.core-component-widget[data-systemid='" + strSystemid + "'] .content", "/xml.php?admin=1&module=dashboard&action=updateWidgetContent&systemid=" + strSystemid + "&" + data);
         } else {
+            // add all current query parameters to the reload request
+            let params = Util.getQueryParameters();
+            let query = "";
+            for (let name in params) {
+                query+= "&" + name + "=" + encodeURIComponent(params[name]);
+            }
+
             Ajax.loadUrlToElement("div.core-component-widget[data-systemid='" + strSystemid + "'] .content",
-                "/xml.php?admin=1&module=dashboard&action=updateWidgetContent&systemid=" + strSystemid + "&" + data,
+                "/xml.php?admin=1&module=dashboard&action=updateWidgetContent&systemid=" + strSystemid + "&" + data + query,
                 null,
                 null,
                 null,
