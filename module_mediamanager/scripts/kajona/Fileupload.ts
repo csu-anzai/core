@@ -217,7 +217,7 @@ class Fileupload {
       } else {
         dropZone.removeClass("hover");
       }
-      window.dropZoneTimeout = setTimeout(function() {
+      (<any>window.dropZoneTimeout) = setTimeout(function() {
         window.dropZoneTimeout = null;
         dropZone.removeClass("active-dropzone hover");
       }, 100);

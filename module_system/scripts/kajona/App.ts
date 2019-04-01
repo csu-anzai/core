@@ -11,8 +11,10 @@ import Folderview from "./Folderview";
 import Lists from "./Lists";
 import DialogHelper from "../../../module_v4skin/scripts/kajona/DialogHelper";
 import Ajax from "./Ajax";
+import * as moment from "moment";
 const mermaid = require("mermaid");
-const moment = require("moment");
+// import mermaid from 'mermaid'
+
 declare global {
   interface Window {
     KAJONA: Kajona;
