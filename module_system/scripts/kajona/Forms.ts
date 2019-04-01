@@ -47,8 +47,6 @@ class Forms {
                     $(this).prop("checked", false);
                 }
             });
-
-            objField.val('');
         }
     }
 
