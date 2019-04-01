@@ -19,7 +19,7 @@ use Kajona\System\System\SystemSetting;
  *
  * @package module_system
  */
-class SystemtaskFlushcache extends SystemtaskBase implements AdminSystemtaskInterface
+class SystemtaskFlushcache extends SystemtaskBase implements AdminSystemtaskInterface, ApiSystemTaskInterface
 {
     /**
      * @inheritdoc
@@ -69,6 +69,14 @@ class SystemtaskFlushcache extends SystemtaskBase implements AdminSystemtaskInte
         }
 
         return $this->objToolkit->getTextRow($this->getLang("systemtask_flushcache_error"));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function execute($body)
+    {
+        return $this->executeTask();
     }
 
     /**

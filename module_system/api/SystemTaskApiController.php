@@ -7,8 +7,7 @@
 namespace Kajona\System\Api;
 
 use Kajona\Api\System\ApiControllerInterface;
-use Kajona\System\Admin\AdminFormgenerator;
-use Kajona\System\Admin\Systemtasks\AdminSystemtaskInterface;
+use Kajona\System\Admin\Systemtasks\ApiSystemTaskInterface;
 use Kajona\System\Admin\Systemtasks\SystemtaskBase;
 use PSX\Http\Environment\HttpContext;
 use PSX\Http\Exception\NotFoundException;
@@ -35,13 +34,15 @@ class SystemTaskApiController implements ApiControllerInterface
         $return = [];
 
         foreach ($systemTasks as $systemTask) {
-            $group = $systemTask->getGroupIdentifier() ?: "default";
+            if ($systemTask instanceof ApiSystemTaskInterface) {
+                $group = $systemTask->getGroupIdentifier() ?: "default";
 
-            if (!isset($return[$group])) {
-                $return[$group] = [];
+                if (!isset($return[$group])) {
+                    $return[$group] = [];
+                }
+
+                $return[$group][$systemTask->getStrInternalTaskName()] = $systemTask->getStrTaskName();
             }
-
-            $return[$group][$systemTask->getStrInternalTaskName()] = $systemTask->getStrTaskName();
         }
 
         ksort($return);
@@ -49,33 +50,6 @@ class SystemTaskApiController implements ApiControllerInterface
         return [
             "systemtasks" => $return
         ];
-    }
-
-    /**
-     * Returns the systemtask form
-     *
-     * @api
-     * @method GET
-     * @path /systemtask/{systemtask}
-     * @authorization filetoken
-     */
-    public function getSystemTask(HttpContext $context)
-    {
-        $systemTask = $this->getSystemTaskByName($context->getUriFragment("systemtask"));
-        if ($systemTask instanceof AdminSystemtaskInterface) {
-            $form = $systemTask->getAdminForm();
-            if ($form instanceof AdminFormgenerator) {
-                $fields = $form->getArrFields();
-            } else {
-                $fields = null;
-            }
-
-            return [
-                "form" => $fields,
-            ];
-        } else {
-            throw new NotFoundException("System task not found");
-        }
     }
 
     /**
@@ -89,12 +63,9 @@ class SystemTaskApiController implements ApiControllerInterface
     public function executeSystemTask($body, HttpContext $context)
     {
         $systemTask = $this->getSystemTaskByName($context->getUriFragment("systemtask"));
-        if ($systemTask instanceof AdminSystemtaskInterface) {
-            // set request data
-            $systemTask->setRequestData((array) $body);
-
+        if ($systemTask instanceof ApiSystemTaskInterface) {
             // execute the system task
-            $return = $systemTask->executeTask();
+            $return = $systemTask->execute((array) $body);
 
             return [
                 "success" => true,
@@ -107,13 +78,13 @@ class SystemTaskApiController implements ApiControllerInterface
 
     /**
      * @param string $name
-     * @return AdminSystemtaskInterface|null
+     * @return ApiSystemTaskInterface|null
      */
     private function getSystemTaskByName(string $name)
     {
         $systemTasks = SystemtaskBase::getAllSystemtasks();
         foreach ($systemTasks as $systemTask) {
-            if ($name == $systemTask->getStrInternalTaskName()) {
+            if ($systemTask instanceof ApiSystemTaskInterface && $name == $systemTask->getStrInternalTaskName()) {
                 return $systemTask;
             }
         }
