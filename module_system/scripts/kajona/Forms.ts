@@ -41,7 +41,7 @@ class Forms {
 
         //reset value
         if (isResetValue) {
-            objFormGroup.find('input, textarea').each(function() {
+            objFormGroup.find('input, textarea, select').each(function() {
                 $(this).val('');
                 if ($(this).is(':checkbox')) {
                     $(this).prop("checked", false);
