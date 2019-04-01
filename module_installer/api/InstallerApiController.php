@@ -349,7 +349,6 @@ class InstallerApiController implements ApiControllerInterface
             }
 
             $result = str_replace(["\r\n", "\n", "\r"], "\n", $result);
-            $result = str_replace(array("INFO", "ERROR"), array("INFO   ", "ERROR  "), $result);
             $result = array_values(explode("\n", $result));
 
             return [
