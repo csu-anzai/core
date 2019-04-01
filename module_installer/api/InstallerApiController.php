@@ -323,8 +323,7 @@ class InstallerApiController implements ApiControllerInterface
     {
         $lines = (int) $context->getParameter("lines");
         if (!empty($lines)) {
-            $lines = $lines < 1 ? 1 : $lines;
-            $lines = $lines > 200 ? 200 : $lines;
+            $lines = min(200, max(1, $lines));
         } else {
             $lines = null;
         }
