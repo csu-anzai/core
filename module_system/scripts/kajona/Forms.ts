@@ -40,12 +40,13 @@ class Forms {
         }
 
         //reset value
-        if (isResetValue && objField.attr('id')) {
-            (objField.find('input[type=checkbox]').each(function() {
-                $(this).prop("checked", false);
-            }));
-
-            objField.val('');
+        if (isResetValue) {
+            objFormGroup.find('input, textarea, select').each(function() {
+                $(this).val('');
+                if ($(this).is(':checkbox')) {
+                    $(this).prop("checked", false);
+                }
+            });
         }
     }
 
