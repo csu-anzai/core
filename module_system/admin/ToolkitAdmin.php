@@ -1,15 +1,16 @@
 <?php
 /*"******************************************************************************************************
- *   (c) 2004-2006 by MulchProductions, www.mulchprod.de                                                 *
- *   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
- *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
- *-------------------------------------------------------------------------------------------------------*
- *   $Id$                                 *
- ********************************************************************************************************/
+*   (c) 2004-2006 by MulchProductions, www.mulchprod.de                                                 *
+*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
+*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
+*-------------------------------------------------------------------------------------------------------*
+*   $Id$                                 *
+********************************************************************************************************/
 
 namespace Kajona\System\Admin;
 
 use Kajona\Mediamanager\System\MediamanagerRepo;
+use Kajona\System\Admin\Formentries\FormentryCheckboxarray;
 use Kajona\System\Admin\Formentries\FormentryTageditor;
 use Kajona\System\System\AdminGridableInterface;
 use Kajona\System\System\AdminListableInterface;
@@ -35,18 +36,18 @@ use Kajona\System\System\SystemSetting;
 use Kajona\System\System\Toolkit;
 use Kajona\System\View\Components\Buttonwrapper\Buttonwrapper;
 use Kajona\System\View\Components\Datatable\Datatable;
-use Kajona\System\View\Components\Formentry\Buttonbar\Buttonbar;
-use Kajona\System\View\Components\Formentry\Checkboxarray\Checkboxarray;
 use Kajona\System\View\Components\Formentry\Datesingle\Datesingle;
 use Kajona\System\View\Components\Formentry\Datetime\Datetime;
 use Kajona\System\View\Components\Formentry\Dropdown\Dropdown;
 use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
 use Kajona\System\View\Components\Formentry\Inputcolorpicker\Inputcolorpicker;
 use Kajona\System\View\Components\Formentry\Inputonoff\Inputonoff;
-use Kajona\System\View\Components\Formentry\Inputtextarea\Inputtextarea;
+use Kajona\System\View\Components\Formentry\Buttonbar\Buttonbar;
 use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
-use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
+use Kajona\System\View\Components\Formentry\Inputtextarea\Inputtextarea;
 use Kajona\System\View\Components\Formentry\Radiogroup\Radiogroup;
+use Kajona\System\View\Components\Formentry\Checkboxarray\Checkboxarray;
+use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Formentry\Submit\Submit;
 use Kajona\System\View\Components\Headline\Headline;
 use Kajona\System\View\Components\Listbody\Listbody;
@@ -104,6 +105,7 @@ class ToolkitAdmin extends Toolkit
         return $date->renderComponent();
     }
 
+
     /**
      * Returns a divider to split up a page in logical sections
      *
@@ -117,6 +119,7 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["class"] = $strClass;
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "divider");
     }
+
 
     /**
      * Creates a percent-beam to illustrate proportions
@@ -220,6 +223,7 @@ class ToolkitAdmin extends Toolkit
         return $inputCheckbox->renderComponent();
     }
 
+
     /**
      * Returns a field to enter hex-color values using a color picker
      *
@@ -270,7 +274,7 @@ class ToolkitAdmin extends Toolkit
             $arrTemplate["opener"] .= getLinkAdminDialog(
                 "pages",
                 "pagesFolderBrowser",
-                "&pages=1&form_element=" . StringUtil::replace(array("[", "]"), array("\\\[", "\\\]"), $strName) . (!$bitElements ? "&elements=false" : ""),
+                "&pages=1&form_element=".StringUtil::replace(array("[", "]"), array("\\\[", "\\\]"), $strName).(!$bitElements ? "&elements=false" : ""),
                 Carrier::getInstance()->getObjLang()->getLang("select_page", "pages"),
                 Carrier::getInstance()->getObjLang()->getLang("select_page", "pages"),
                 "icon_externalBrowser",
@@ -287,7 +291,7 @@ class ToolkitAdmin extends Toolkit
                         var objConfig = new v4skin.defaultAutoComplete();
                         objConfig.source = function(request, response) {
                             $.ajax({
-                                url: '" . getLinkAdminXml("pages", "getPagesByFilter") . "',
+                                url: '".getLinkAdminXml("pages", "getPagesByFilter")."',
                                 type: 'POST',
                                 dataType: 'json',
                                 data: {
@@ -297,7 +301,7 @@ class ToolkitAdmin extends Toolkit
                             });
                         };
 
-                        $('#" . StringUtil::replace(array("[", "]"), array("\\\[", "\\\]"), $strName) . "').autocomplete(objConfig);
+                        $('#".StringUtil::replace(array("[", "]"), array("\\\[", "\\\]"), $strName)."').autocomplete(objConfig);
                     });
 	            });
 	        </script>
@@ -305,6 +309,7 @@ class ToolkitAdmin extends Toolkit
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_pageselector");
     }
+
 
     /**
      * Returns a regular text-input field.
@@ -373,7 +378,7 @@ class ToolkitAdmin extends Toolkit
         ));
 
         $strResetIcon = $this->listButton(Link::getLinkAdminManual(
-            "href=\"#\" onclick=\"document.getElementById('" . $strName . "').value='';document.getElementById('" . $strName . "_id').value='';return false;\"",
+            "href=\"#\" onclick=\"document.getElementById('".$strName."').value='';document.getElementById('".$strName."_id').value='';return false;\"",
             "",
             Carrier::getInstance()->getObjLang()->getLang("user_browser_reset", "user"),
             "icon_delete"
@@ -389,36 +394,32 @@ class ToolkitAdmin extends Toolkit
                         var objConfig = new v4skin.defaultAutoComplete();
                         objConfig.source = function(request, response) {
                             $.ajax({
-                                url: '" . getLinkAdminXml("user", "getUserByFilter") . "',
+                                url: '".getLinkAdminXml("user", "getUserByFilter")."',
                                 type: 'POST',
                                 dataType: 'json',
                                 data: {
                                     filter: request.term,
-                                    user: " . ($bitUser ? "'true'" : "'false'") . ",
-                                    group: " . ($bitGroups ? "'true'" : "'false'") . ",
-                                    block: " . ($bitBlockCurrentUser ? "'current'" : "''") . ",
-                                    checkid: '" . $strCheckIds . "',
-                                    groupid: '" . (validateSystemid($strSelectedGroupId) ? $strSelectedGroupId : "") . "'
+                                    user: ".($bitUser ? "'true'" : "'false'").",
+                                    group: ".($bitGroups ? "'true'" : "'false'").",
+                                    block: ".($bitBlockCurrentUser ? "'current'" : "''").",
+                                    checkid: '".$strCheckIds."',
+                                    groupid: '".(validateSystemid($strSelectedGroupId) ? $strSelectedGroupId : "")."'
                                 },
                                 success: response
                             });
                         };
-
-                        $('#" . $strName . "').autocomplete(objConfig).data( 'ui-autocomplete' )._renderItem = function( ul, item ) {
+                            objConfig.setKeepUi(true);
+                            objConfig.setFocusOutListener($strName) ;
+                        $('#".$strName."').autocomplete(objConfig).data( 'ui-autocomplete' )._renderItem = function( ul, item ) {
                             return $( '<li></li>' )
                                 .data('ui-autocomplete-item', item)
                                 .append( '<div class=\'ui-autocomplete-item\' >'+item.icon+item.title+'</div>' )
                                 .appendTo( ul );
                         } ;
-
-                        $('#" . $strName . "').on( 'autocompleteclose', function( event, ui ) {
-                            $('ul.ui-autocomplete').show();
-                        } );
                     });
                 });
-            </script>
+	        </script>
         ";
-
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_userselector", true);
     }
 
@@ -464,7 +465,7 @@ class ToolkitAdmin extends Toolkit
         $strOpener = getLinkAdminDialog(
             "mediamanager",
             "folderContentFolderviewMode",
-            "&form_element=" . $strName . "&systemid=" . $strRepositoryId . ($bitLinkAsDownload ? "&download=1" : ""),
+            "&form_element=".$strName."&systemid=".$strRepositoryId.($bitLinkAsDownload ? "&download=1" : ""),
             Carrier::getInstance()->getObjLang()->getLang("filebrowser", "system"),
             Carrier::getInstance()->getObjLang()->getLang("filebrowser", "system"),
             "icon_externalBrowser",
@@ -473,6 +474,7 @@ class ToolkitAdmin extends Toolkit
 
         return $this->formInputText($strName, $strTitle, $strValue, $strClass, $strOpener);
     }
+
 
     /**
      * Returns a regular text-input field with a file browser button.
@@ -492,7 +494,7 @@ class ToolkitAdmin extends Toolkit
         $strOpener = getLinkAdminDialog(
             "mediamanager",
             "folderContentFolderviewMode",
-            "&form_element=" . $strName . "&systemid=" . SystemSetting::getConfigValue("_mediamanager_default_imagesrepoid_"),
+            "&form_element=".$strName."&systemid=".SystemSetting::getConfigValue("_mediamanager_default_imagesrepoid_"),
             Carrier::getInstance()->getObjLang()->getLang("filebrowser", "system"),
             Carrier::getInstance()->getObjLang()->getLang("filebrowser", "system"),
             "icon_externalBrowser",
@@ -503,10 +505,10 @@ class ToolkitAdmin extends Toolkit
             "mediamanager",
             "imageDetails",
             "file='+document.getElementById('" . $strName . "').value+'",
-            Carrier::getInstance()->getObjLang()->getLang("action_edit_image", "mediamanager"),
-            Carrier::getInstance()->getObjLang()->getLang("action_edit_image", "mediamanager"),
+            Carrier ::getInstance() -> getObjLang() -> getLang("action_edit_image", "mediamanager"),
+            Carrier ::getInstance() -> getObjLang() -> getLang("action_edit_image", "mediamanager"),
             "icon_crop",
-            Carrier::getInstance()->getObjLang()->getLang("action_edit_image", "mediamanager"),
+            Carrier ::getInstance() -> getObjLang() -> getLang("action_edit_image", "mediamanager"),
             true,
             false,
             " (function() {
@@ -545,7 +547,7 @@ class ToolkitAdmin extends Toolkit
         $cmp->setPlaceholder($strPlaceholder);
 
         return $cmp->renderComponent();
-    }
+  }
 
     /**
      * Returns a password text-input field
@@ -626,7 +628,7 @@ class ToolkitAdmin extends Toolkit
 
         if ($bitEnabled) {
             $objText = Carrier::getInstance()->getObjLang();
-            $arrTemplate["maxSize"] = $objText->getLang("max_size", "mediamanager") . " " . bytesToString(Config::getInstance()->getPhpMaxUploadSize());
+            $arrTemplate["maxSize"] = $objText->getLang("max_size", "mediamanager")." ".bytesToString(Config::getInstance()->getPhpMaxUploadSize());
             return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_upload");
         } else {
             return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_upload_disabled");
@@ -660,11 +662,11 @@ class ToolkitAdmin extends Toolkit
         $strAllowedFileRegex = StringUtil::replace(array(".", ","), array("", "|"), $strAllowedFileTypes);
         $strAllowedFileTypes = StringUtil::replace(array(".", ","), array("", "', '"), $strAllowedFileTypes);
 
-        $arrTemplate["allowedExtensions"] = $strAllowedFileTypes != "" ? $objText->getLang("upload_allowed_extensions", "mediamanager") . ": '" . $strAllowedFileTypes . "'" : $strAllowedFileTypes;
+        $arrTemplate["allowedExtensions"] = $strAllowedFileTypes != "" ? $objText->getLang("upload_allowed_extensions", "mediamanager").": '".$strAllowedFileTypes."'" : $strAllowedFileTypes;
         $arrTemplate["maxFileSize"] = $objConfig->getPhpMaxUploadSize();
-        $arrTemplate["acceptFileTypes"] = $strAllowedFileRegex != "" ? "/(\.|\/)(" . $strAllowedFileRegex . ")$/i" : "''";
+        $arrTemplate["acceptFileTypes"] = $strAllowedFileRegex != "" ? "/(\.|\/)(".$strAllowedFileRegex.")$/i" : "''";
 
-        $arrTemplate["upload_multiple_errorFilesize"] = $objText->getLang("upload_multiple_errorFilesize", "mediamanager") . " " . bytesToString($objConfig->getPhpMaxUploadSize());
+        $arrTemplate["upload_multiple_errorFilesize"] = $objText->getLang("upload_multiple_errorFilesize", "mediamanager")." ".bytesToString($objConfig->getPhpMaxUploadSize());
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_upload_multiple");
     }
@@ -701,9 +703,9 @@ class ToolkitAdmin extends Toolkit
         $arrTemplate["folder"] = $strTargetDir;
         $arrTemplate["readOnly"] = $bitReadonly ? 'true' : 'false';
         $arrTemplate["multiUpload"] = $bitMultiUpload ? 'true' : 'false';
-        $arrTemplate["addButton"] = $bitReadonly ? "" : $this->listButton("<i class='kj-icon fa fa-plus-circle'></i>"); //AdminskinHelper::getAdminImage("icon_new", $objText->getLang("mediamanager_upload", "mediamanager"));
-        $arrTemplate["moveButton"] = $bitReadonly || !$bitVersioning ? "" : "<a id='version_{$strName}'>" . $this->listButton(AdminskinHelper::getAdminImage("icon_archive", $objText->getLang("version_files", "mediamanager"))) . "</a>";
-        $arrTemplate["archiveButton"] = $bitReadonly || !$showArchive ? "" : "<a id='archive_{$strName}'>" . $this->listButton(AdminskinHelper::getAdminImage("icon_phar", $objText->getLang("archive_files", "mediamanager"))) . "</a>";
+        $arrTemplate["addButton"] = $bitReadonly ? "" : $this->listButton("<i class='kj-icon fa fa-plus-circle'></i>");//AdminskinHelper::getAdminImage("icon_new", $objText->getLang("mediamanager_upload", "mediamanager"));
+        $arrTemplate["moveButton"] = $bitReadonly || !$bitVersioning ? "" : "<a id='version_{$strName}'>".$this->listButton(AdminskinHelper::getAdminImage("icon_archive", $objText->getLang("version_files", "mediamanager")))."</a>";
+        $arrTemplate["archiveButton"] = $bitReadonly || !$showArchive ? "" : "<a id='archive_{$strName}'>".$this->listButton(AdminskinHelper::getAdminImage("icon_phar", $objText->getLang("archive_files", "mediamanager")))."</a>";
         $arrTemplate["archiveTitle"] = $objText->getLang("archive_files", "mediamanager");
         $arrTemplate["archiveBody"] = $objText->getLang("archive_files_notice", "mediamanager");
         $arrTemplate["targetSystemId"] = $targetSystemId;
@@ -711,17 +713,17 @@ class ToolkitAdmin extends Toolkit
         $strAllowedFileRegex = StringUtil::replace(array(".", ","), array("", "|"), $objRepo->getStrUploadFilter());
         $strAllowedFileTypes = StringUtil::replace(array(".", ","), array("", "', '"), $objRepo->getStrUploadFilter());
 
-        $arrTemplate["allowedExtensions"] = $strAllowedFileTypes != "" ? $objText->getLang("upload_allowed_extensions", "mediamanager") . ": '" . $strAllowedFileTypes . "'" : $strAllowedFileTypes;
+        $arrTemplate["allowedExtensions"] = $strAllowedFileTypes != "" ? $objText->getLang("upload_allowed_extensions", "mediamanager").": '".$strAllowedFileTypes."'" : $strAllowedFileTypes;
         $arrTemplate["maxFileSize"] = $objConfig->getPhpMaxUploadSize();
-        $arrTemplate["acceptFileTypes"] = $strAllowedFileRegex != "" ? "/(\.|\/)(" . $strAllowedFileRegex . ")$/i" : "''";
-        $arrTemplate["upload_multiple_errorFilesize"] = $objText->getLang("upload_multiple_errorFilesize", "mediamanager") . " " . bytesToString($objConfig->getPhpMaxUploadSize());
+        $arrTemplate["acceptFileTypes"] = $strAllowedFileRegex != "" ? "/(\.|\/)(".$strAllowedFileRegex.")$/i" : "''";
+        $arrTemplate["upload_multiple_errorFilesize"] = $objText->getLang("upload_multiple_errorFilesize", "mediamanager")." ".bytesToString($objConfig->getPhpMaxUploadSize());
 
         $arrTemplate["helpButton"] = $bitReadonly ? "" : $this->listButton(
-            "<a>" . $this->getPopoverText(
+            "<a>".$this->getPopoverText(
                 AdminskinHelper::getAdminImage("icon_question", "", true),
                 $objText->getLang("mediamanager_upload", "mediamanager"),
                 $objText->getLang("upload_dropArea_extended", "mediamanager", [$strAllowedFileTypes, bytesToString($objConfig->getPhpMaxUploadSize())])
-            ) . "</a>"
+            )."</a>"
         );
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_upload_inline");
@@ -811,7 +813,7 @@ class ToolkitAdmin extends Toolkit
             $arrTemplate = array();
             $arrTemplate["key"] = $strKey;
             $arrTemplate["value"] = $strVal;
-            if ((string) $strKey == (string) $strKeySelected) {
+            if ((string)$strKey == (string)$strKeySelected) {
                 $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_dropdown_row_selected");
             } else {
                 $strOptions .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_dropdown_row");
@@ -889,24 +891,24 @@ class ToolkitAdmin extends Toolkit
             function(field, editor, tags){
                 require(["jquery"], function($){
                     var fieldName = $(field).data('name');
-
+            
                    //remove all existing hidden fields
                    $('[id="' + fieldName + '-list"]').remove();
-
+                   
                    //add all existin hidden fields
                     var html = '<div id="' + fieldName + '-list">';
                     for (var i = 0; i < tags.length; i++) {
                         html += '<input type="hidden" name="' + fieldName + '[]" value="' + tags[i] + '" />';
                     }
                     html += '</div>';
-                    $(field).parent().append(html);
+                    $(field).parent().append(html); 
                 });
             }
 HTML;
 
         // html decode comma value
         $values = array_values($arrValues);
-        $values = array_map(function ($value) {
+        $values = array_map(function($value){
             return FormentryTageditor::decodeValue($value);
         }, $values);
 
@@ -915,7 +917,7 @@ HTML;
         $arrTemplate["title"] = $strTitle;
         $arrTemplate["values"] = json_encode($values);
         $arrTemplate["delimiter"] = json_encode($strDelimiter);
-        $arrTemplate["onChange"] = empty($strOnChange) ? $strJs : (string) $strOnChange;
+        $arrTemplate["onChange"] = empty($strOnChange) ? $strJs : (string)$strOnChange;
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_tageditor", true);
     }
@@ -939,7 +941,7 @@ HTML;
         if (!empty($arrValues)) {
             foreach ($arrValues as $objValue) {
                 if ($objValue instanceof ModelInterface) {
-                    $strData .= '<input type="hidden" name="' . $strName . '_id[]" value="' . $objValue->getStrSystemid() . '" data-title="' . htmlspecialchars($objValue->getStrDisplayName()) . '" />';
+                    $strData.= '<input type="hidden" name="' . $strName . '_id[]" value="' . $objValue->getStrSystemid() . '" data-title="' . htmlspecialchars($objValue->getStrDisplayName()) . '" />';
                     $arrResult[] = strip_tags($objValue->getStrDisplayName());
                 }
             }
@@ -949,7 +951,7 @@ HTML;
         $arrTemplate["name"] = $strName;
         $arrTemplate["title"] = $strTitle;
         $arrTemplate["values"] = json_encode(array_values($arrResult));
-        $arrTemplate["onChange"] = empty($strOnChange) ? "function(){}" : (string) $strOnChange;
+        $arrTemplate["onChange"] = empty($strOnChange) ? "function(){}" : (string)$strOnChange;
         $arrTemplate["source"] = $strSource;
         $arrTemplate["data"] = $strData;
         $arrTemplate["opener"] = $opener;
@@ -1049,7 +1051,7 @@ HTML;
         $cmp->setReadOnly($bitReadonly);
 
         return $cmp->renderComponent();
-    }
+     }
 
     /**
      * Creates a list of checkboxes based on an object array
@@ -1132,7 +1134,7 @@ HTML;
         $strOnSubmit = $strOnSubmit ?? "require('forms').defaultOnSubmit(this);return false;";
 
         $arrTemplate = array();
-        $arrTemplate["name"] = ($strName != "" ? $strName : "form" . generateSystemid());
+        $arrTemplate["name"] = ($strName != "" ? $strName : "form".generateSystemid());
         $arrTemplate["action"] = $strAction;
         $arrTemplate["method"] = in_array($strMethod, array("GET", "POST")) ? $strMethod : "POST";
         $arrTemplate["enctype"] = $strEncoding;
@@ -1186,8 +1188,8 @@ HTML;
     {
         if ($hideLongText) {
             $id = generateSystemid();
-            return $this->formTextRow('<div class="form-hint-container" id="' . $id . '" onclick="require(\'jquery\')(this).toggleClass(\'form-hint-container\')">' . $hint . '</div><script type="text/javascript">require([\'util\', \'jquery\'], function(u, $) {
-                var $el = $("#' . $id . '"); if (!u.isEllipsisActive($el[0])) { $el.toggleClass(\'form-hint-container\'); } })</script>');
+            return $this->formTextRow('<div class="form-hint-container" id="'.$id.'" onclick="require(\'jquery\')(this).toggleClass(\'form-hint-container\')">' . $hint . '</div><script type="text/javascript">require([\'util\', \'jquery\'], function(u, $) { 
+                var $el = $("#'.$id.'"); if (!u.isEllipsisActive($el[0])) { $el.toggleClass(\'form-hint-container\'); } })</script>');
         } else {
             return $this->formTextRow($hint);
         }
@@ -1236,7 +1238,7 @@ HTML;
                 $strPeFields .= $this->formInputHidden("pv", $arrParams["pv"]);
             }
         }
-        return $strPeFields . $this->objTemplate->fillTemplateFile(array(), "/admin/skins/kajona_v4/elements.tpl", "form_close");
+        return $strPeFields.$this->objTemplate->fillTemplateFile(array(), "/admin/skins/kajona_v4/elements.tpl", "form_close");
     }
 
     // --- GRID-Elements ------------------------------------------------------------------------------------
@@ -1277,14 +1279,14 @@ HTML;
         }
 
         $arrTemplate = array(
-            "title" => $objEntry->getStrDisplayName(),
-            "image" => $objEntry->getStrGridIcon(),
-            "actions" => $strActions,
-            "systemid" => $objEntry->getSystemid(),
-            "subtitle" => $objEntry->getStrLongDescription(),
-            "info" => $objEntry->getStrAdditionalInfo(),
-            "cssaddon" => $strCSSAddon,
-            "clickaction" => $strClickAction,
+            "title"       => $objEntry->getStrDisplayName(),
+            "image"       => $objEntry->getStrGridIcon(),
+            "actions"     => $strActions,
+            "systemid"    => $objEntry->getSystemid(),
+            "subtitle"    => $objEntry->getStrLongDescription(),
+            "info"        => $objEntry->getStrAdditionalInfo(),
+            "cssaddon"    => $strCSSAddon,
+            "clickaction" => $strClickAction
         );
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "grid_entry");
@@ -1301,6 +1303,7 @@ HTML;
     }
 
     /*"*****************************************************************************************************/
+
 
     // --- LIST-Elements ------------------------------------------------------------------------------------
 
@@ -1330,16 +1333,17 @@ HTML;
     {
         return $this->objTemplate->fillTemplateFile(
             array(
-                "listid" => $strListId,
-                "sameTable" => $bitOnlySameTable ? "true" : "false",
-                "bitMoveToTree" => ($bitAllowDropOnTree ? "true" : "false"),
+                "listid"          => $strListId,
+                "sameTable"       => $bitOnlySameTable ? "true" : "false",
+                "bitMoveToTree"   => ($bitAllowDropOnTree ? "true" : "false"),
                 "elementsPerPage" => $intElementsPerPage,
-                "curPage" => $intCurPage,
+                "curPage"         => $intCurPage
             ),
             "/admin/skins/kajona_v4/elements.tpl",
             "dragable_list_header"
         );
     }
+
 
     /**
      * Returns the code to finish the opened list
@@ -1434,11 +1438,11 @@ HTML;
         foreach ($arrActions as $objOneAction) {
             $strEntries .= $this->listButton($this->objTemplate->fillTemplateFile(
                 array(
-                    "title" => $objOneAction->getStrTitle(),
-                    "icon" => $objOneAction->getStrIcon(),
-                    "targeturl" => $objOneAction->getStrTargetUrl(),
+                    "title"      => $objOneAction->getStrTitle(),
+                    "icon"       => $objOneAction->getStrIcon(),
+                    "targeturl"  => $objOneAction->getStrTargetUrl(),
                     "renderinfo" => $objOneAction->getBitRenderInfo() ? "1" : "0",
-                    "onclick" => $objOneAction->getStrOnClickHandler(),
+                    "onclick"    => $objOneAction->getStrOnClickHandler()
                 ),
                 "/admin/skins/kajona_v4/elements.tpl",
                 "batchactions_entry"
@@ -1447,6 +1451,7 @@ HTML;
 
         return $this->objTemplate->fillTemplateFile(array("entries" => $strEntries), "/admin/skins/kajona_v4/elements.tpl", "batchactions_wrapper");
     }
+
 
     /**
      * Returns a table filled with infos.
@@ -1487,6 +1492,7 @@ HTML;
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "list_button");
     }
 
+
     /**
      * Generates a delete-button. The passed element name and question is shown as a modal dialog
      * when the icon was clicked. So set the link-href-param for the final deletion, otherwise the
@@ -1526,9 +1532,9 @@ HTML;
 
         //get the reload-url
         if (StringUtil::indexOf($strConfirmationLinkHref, "javascript:") === false) {
-            $strParam = (StringUtil::indexOf($strConfirmationLinkHref, "?") ? "&" : "?") . "reloadUrl='+encodeURIComponent(document.location.hash.substr(1))+'";
+            $strParam = (StringUtil::indexOf($strConfirmationLinkHref, "?") ? "&" : "?") ."reloadUrl='+encodeURIComponent(document.location.hash.substr(1))+'";
 
-            $strConfirmationLink = "'" . $strConfirmationLinkHref . $strParam . "'";
+            $strConfirmationLink = "'".$strConfirmationLinkHref.$strParam."'";
         } elseif (StringUtil::indexOf($strConfirmationLinkHref, "javascript:") === 0) {
             // if starts with javascript: we use a closure because on some browser the user gets redirected to a blank
             // page which displays the output of the javascript expression. But in our case we want that the user stays
@@ -1539,7 +1545,7 @@ HTML;
 
             $strConfirmationLink = "function() { {$strConfirmationLinkHref}; return false; }";
         } else {
-            $strConfirmationLink = "'" . $strConfirmationLinkHref . "'";
+            $strConfirmationLink = "'".$strConfirmationLinkHref."'";
         }
 
         if ($strConfirmationButtonLabel == "") {
@@ -1556,6 +1562,7 @@ HTML;
 
         return $this->listButton($strButton);
     }
+
 
     /**
      * Renders a button triggering a confirmation dialog. Useful if the loading of the linked pages
@@ -1585,11 +1592,11 @@ HTML;
 
         //create the list-button and the js code to show the dialog
         return Link::getLinkAdminManual(
-            "href=\"#\" onclick=\"javascript:jsDialog_1.setTitle('{$strHeader}'); jsDialog_1.setContent('{$strDialogContent}', '{$strConfirmationButtonLabel}',  '" . $strConfirmationLinkHref . $strParam . "'); jsDialog_1.init(); return false;\"",
+            "href=\"#\" onclick=\"javascript:jsDialog_1.setTitle('{$strHeader}'); jsDialog_1.setContent('{$strDialogContent}', '{$strConfirmationButtonLabel}',  '".$strConfirmationLinkHref.$strParam."'); jsDialog_1.init(); return false;\"",
             $strLinkText
         );
     }
-
+    
     /**
      * Generates a button allowing to change the status of the record passed.
      * Therefore an ajax-method is called.
@@ -1612,7 +1619,7 @@ HTML;
         } elseif (validateSystemid($objInstance) && Objectfactory::getInstance()->getObject($objInstance) !== null) {
             $objRecord = Objectfactory::getInstance()->getObject($objInstance);
         } else {
-            throw new Exception("failed loading instance for " . (is_object($objInstance) ? " @ " . get_class($objInstance) : $objInstance), Exception::$level_ERROR);
+            throw new Exception("failed loading instance for ".(is_object($objInstance) ? " @ ".get_class($objInstance) : $objInstance), Exception::$level_ERROR);
         }
 
         if ($objRecord->getIntRecordStatus() == 1) {
@@ -1627,24 +1634,24 @@ HTML;
         if (Carrier::getInstance()->getObjSession()->getSession("statusButton", Session::$intScopeRequest) === false) {
             $strJavascript .= "<script type=\"text/javascript\">
 require(['ajax'], function(ajax){
-    ajax.setSystemStatusMessages.strActiveIcon = '" . addslashes(AdminskinHelper::getAdminImage("icon_enabled", $strAltActive)) . "';
-    ajax.setSystemStatusMessages.strInActiveIcon = '" . addslashes(AdminskinHelper::getAdminImage("icon_disabled", $strAltInactive)) . "';
+    ajax.setSystemStatusMessages.strActiveIcon = '".addslashes(AdminskinHelper::getAdminImage("icon_enabled", $strAltActive))."';
+    ajax.setSystemStatusMessages.strInActiveIcon = '".addslashes(AdminskinHelper::getAdminImage("icon_disabled", $strAltInactive))."';
 });
 </script>";
             Carrier::getInstance()->getObjSession()->setSession("statusButton", "true", Session::$intScopeRequest);
         }
 
         $strButton = getLinkAdminManual(
-            "href=\"javascript:require('ajax').setSystemStatus('" . $objRecord->getSystemid() . "', " . ($bitReload ? "true" : "false") . ");\"",
+            "href=\"javascript:require('ajax').setSystemStatus('".$objRecord->getSystemid()."', ".($bitReload ? "true" : "false").");\"",
             $strLinkContent,
             "",
             "",
             "",
-            "statusLink_" . $objRecord->getSystemid(),
+            "statusLink_".$objRecord->getSystemid(),
             false
         );
 
-        return $this->listButton($strButton) . $strJavascript;
+        return $this->listButton($strButton).$strJavascript;
     }
 
     // --- Misc-Elements ------------------------------------------------------------------------------------
@@ -1677,6 +1684,7 @@ require(['ajax'], function(ajax){
         return $cmp->renderComponent();
     }
 
+
     /**
      * Creates the mechanism to fold parts of the site / make them visible or invisible
      *
@@ -1698,7 +1706,7 @@ require(['ajax'], function(ajax){
         $arrTemplate["content"] = $strContent;
         $arrTemplate["display"] = ($bitVisible ? "folderVisible" : "folderHidden");
         $arrReturn[0] = $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "layout_folder");
-        $arrReturn[1] = "<a href=\"javascript:require('util').fold('" . $strID . "', " . ($strCallbackVisible != "" ? $strCallbackVisible : "null") . ", " . ($strCallbackInvisible != "" ? $strCallbackInvisible : "null") . ");\">" . $strLinkText . "</a>";
+        $arrReturn[1] = "<a href=\"javascript:require('util').fold('".$strID."', ".($strCallbackVisible != "" ? $strCallbackVisible : "null").", ".($strCallbackInvisible != "" ? $strCallbackInvisible : "null").");\">".$strLinkText."</a>";
         return $arrReturn;
     }
 
@@ -1722,7 +1730,7 @@ require(['ajax'], function(ajax){
         $strImageInvisible = AdminskinHelper::getAdminImage($strImageInvisible);
 
         $strID = generateSystemid();
-        $strLinkText = "<span id='{$strID}'>" . ($bitVisible ? $strImageVisible : $strImageInvisible) . "</span> " . $strLinkText;
+        $strLinkText = "<span id='{$strID}'>".($bitVisible ? $strImageVisible : $strImageInvisible)."</span> ".$strLinkText;
 
         $strImageVisible = addslashes(htmlentities($strImageVisible));
         $strImageInvisible = addslashes(htmlentities($strImageInvisible));
@@ -1737,6 +1745,7 @@ JS;
 
         return $this->getLayoutFolder($strContent, $strLinkText, $bitVisible, trim($strVisibleCallback), trim($strInvisibleCallback));
     }
+
 
     /**
      * Creates a fieldset to structure elements
@@ -1861,15 +1870,17 @@ JS;
                 }
             }
 
+
             $strCombinedHeader = "";
             $strCombinedBody = "";
 
             $arrCombined = [
                 "messaging" => "fa-envelope",
                 "dashboard" => "fa-home",
-                "tags" => "fa-tags",
-                "search" => "fa-search",
+                "tags"      => "fa-tags",
+                "search"    => "fa-search"
             ];
+
 
             $strModules = "";
             foreach ($arrNaviInstances as $objOneInstance) {
@@ -1879,7 +1890,7 @@ JS;
                 foreach ($arrActions as $strOneAction) {
                     if (trim($strOneAction) != "") {
                         $arrActionEntries = [
-                            "action" => $strOneAction,
+                            "action" => $strOneAction
                         ];
                         $strActions .= $this->objTemplate->fillTemplateFile($arrActionEntries, "/admin/skins/kajona_v4/elements.tpl", "sitemap_action_entry");
                     } else {
@@ -1888,14 +1899,15 @@ JS;
                 }
 
                 $arrModuleLevel = [
-                    "module" => Link::getLinkAdmin($objOneInstance->getStrName(), "", "", Carrier::getInstance()->getObjLang()->getLang("modul_titel", $objOneInstance->getStrName())),
-                    "actions" => $strActions,
-                    "systemid" => $objOneInstance->getSystemid(),
+                    "module"      => Link::getLinkAdmin($objOneInstance->getStrName(), "", "", Carrier::getInstance()->getObjLang()->getLang("modul_titel", $objOneInstance->getStrName())),
+                    "actions"     => $strActions,
+                    "systemid"    => $objOneInstance->getSystemid(),
                     "moduleTitle" => $objOneInstance->getStrName(),
-                    "moduleName" => Carrier::getInstance()->getObjLang()->getLang("modul_titel", $objOneInstance->getStrName()),
-                    "moduleHref" => Link::getLinkAdminHref($objOneInstance->getStrName(), ""),
-                    "aspectId" => $objOneAspect->getSystemid(),
+                    "moduleName"  => Carrier::getInstance()->getObjLang()->getLang("modul_titel", $objOneInstance->getStrName()),
+                    "moduleHref"  => Link::getLinkAdminHref($objOneInstance->getStrName(), ""),
+                    "aspectId"    => $objOneAspect->getSystemid()
                 ];
+
 
                 if (array_key_exists($objOneInstance->getStrName(), $arrCombined)) {
                     $arrModuleLevel["faicon"] = $arrCombined[$objOneInstance->getStrName()];
@@ -1906,13 +1918,15 @@ JS;
                 }
             }
 
+
             if ($strCombinedHeader != "") {
                 $strModules = $this->objTemplate->fillTemplateFile(
                     ["combined_header" => $strCombinedHeader, "combined_body" => $strCombinedBody],
                     "/admin/skins/kajona_v4/elements.tpl",
                     "sitemap_combined_entry_wrapper"
-                ) . $strModules;
+                ).$strModules;
             }
+
 
             $strAllModules .= $this->objTemplate->fillTemplateFile(
                 array("aspectContent" => $strModules, "aspectId" => $objOneAspect->getSystemid(), "class" => ($strAllModules == "" ? "" : "hidden")),
@@ -1920,15 +1934,17 @@ JS;
                 "sitemap_aspect_wrapper"
             );
 
+
         }
 
         $strToggleDD = "";
         if (!empty($arrToggleEntries)) {
             $strToggle = $this->registerMenu("mainNav", $arrToggleEntries);
             $strToggleDD =
-            "<span class='dropdown pull-left'><a href='#' data-toggle='dropdown' role='button'>" . AdminskinHelper::getAdminImage("icon_submenu") . "</a>{$strToggle}</span>"
+                "<span class='dropdown pull-left'><a href='#' data-toggle='dropdown' role='button'>".AdminskinHelper::getAdminImage("icon_submenu")."</a>{$strToggle}</span>"
             ;
         }
+
 
         return $this->objTemplate->fillTemplateFile(array("level" => $strAllModules, "aspectToggle" => $strToggleDD), "/admin/skins/kajona_v4/elements.tpl", "sitemap_wrapper");
     }
@@ -1971,6 +1987,7 @@ JS;
         return $strRows;
     }
 
+
     /**
      * Adds a new entry to the current toolbar
      *
@@ -1998,6 +2015,7 @@ JS;
         }
         return $this->objTemplate->fillTemplateFile(array("content" => $strContent), "/admin/skins/kajona_v4/elements.tpl", "contentActionToolbar_wrapper");
     }
+
 
     // --- Validation Errors --------------------------------------------------------------------------------
 
@@ -2054,7 +2072,7 @@ JS;
                 if ($strOneError != "") {
                     $strRows .= $this->objTemplate->fillTemplateFile(array("field_errortext" => $strOneError), "/admin/skins/kajona_v4/elements.tpl", "error_row");
                 }
-                $strRendercode .= "[ '" . $strKey . "' ], ";
+                $strRendercode .= "[ '".$strKey."' ], ";
             }
         }
         $strRendercode .= " [] ]); }); });</script>";
@@ -2062,10 +2080,11 @@ JS;
         $arrTemplate["errorrows"] = $strRows;
         $arrTemplate["errorintro"] = Lang::getInstance()->getLang("errorintro", "system");
         $arrTemplate["errorclass"] = $bitErrorsAsWarning ? "alert-warning" : "alert-danger";
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "error_container") . $strRendercode;
+        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "error_container").$strRendercode;
     }
 
     // --- Pre-formatted ------------------------------------------------------------------------------------
+
 
     /**
      * Returns a simple <pre>-Element to display pre-formatted text such as logfiles
@@ -2091,17 +2110,22 @@ JS;
                 array(
                     "<span style=\"color: green\">INFO</span>",
                     "<span style=\"color: red\">ERROR</span>",
-                    "<span style=\"color: orange\">WARNING</span>",
+                    "<span style=\"color: orange\">WARNING</span>"
                 ),
                 $strOneLine
             );
             $strRows .= $strOneLine;
         }
 
+
         return $this->objTemplate->fillTemplateFile(array("pretext" => $strRows), "/admin/skins/kajona_v4/elements.tpl", "preformatted");
     }
 
+
+
+
     // --- Pageview mechanism ------------------------------------------------------------------------------
+
 
     /**
      * Creates a pageview
@@ -2164,7 +2188,7 @@ JS;
             $arrTemplate["linkForward"] = $this->objTemplate->fillTemplateFile(
                 array(
                     "linkText" => Carrier::getInstance()->getObjLang()->getLang("pageview_forward", "system"),
-                    "href" => Link::getLinkAdminHref($strModule, $strAction, $strLinkAdd + ["pv" => ($intCurrentpage + 1)], true, true),
+                    "href"     => Link::getLinkAdminHref($strModule, $strAction, $strLinkAdd + ["pv" => ($intCurrentpage + 1)], true, true)
                 ),
                 "/admin/skins/kajona_v4/elements.tpl",
                 "pageview_link_forward"
@@ -2174,7 +2198,7 @@ JS;
             $arrTemplate["linkBackward"] = $this->objTemplate->fillTemplateFile(
                 array(
                     "linkText" => Carrier::getInstance()->getObjLang()->getLang("commons_back", "commons"),
-                    "href" => Link::getLinkAdminHref($strModule, $strAction, $strLinkAdd + ["pv" => ($intCurrentpage - 1)], true, true),
+                    "href"     => Link::getLinkAdminHref($strModule, $strAction, $strLinkAdd + ["pv" => ($intCurrentpage - 1)], true, true)
                 ),
                 "/admin/skins/kajona_v4/elements.tpl",
                 "pageview_link_backward"
@@ -2183,6 +2207,7 @@ JS;
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "pageview_body");
     }
+
 
     //--- misc ----------------------------------------------------------------------------------------------
 
@@ -2198,7 +2223,7 @@ JS;
         $strReturn = "
             <script type=\"text/javascript\">
                 require([\"util\"], function(util){
-                    util.setBrowserFocus(\"" . $strElementId . "\");
+                    util.setBrowserFocus(\"".$strElementId."\");
                 });
             </script>";
         return $strReturn;
@@ -2220,7 +2245,7 @@ JS;
         $arrTemplate = array();
         $arrTemplate["sideContent"] = $strSideContent;
         $arrTemplate["treeContent"] = $this->getTree($objTreeConfig);
-        $arrTemplate["treeId"] = "tree_" . $objTreeConfig->getStrRootNodeId();
+        $arrTemplate["treeId"] = "tree_".$objTreeConfig->getStrRootNodeId();
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "treeview");
     }
 
@@ -2239,12 +2264,12 @@ JS;
         $arrTemplate = array();
         $arrTemplate["rootNodeSystemid"] = $objTreeConfig->getStrRootNodeId();
         $arrTemplate["loadNodeDataUrl"] = $objTreeConfig->getStrNodeEndpoint();
-        $arrTemplate["treeId"] = "tree_" . $objTreeConfig->getStrRootNodeId();
+        $arrTemplate["treeId"] = "tree_".$objTreeConfig->getStrRootNodeId();
         $arrTemplate["treeConfig"] = $objTreeConfig->toJson();
         $arrTemplate["treeviewExpanders"] = is_array($objTreeConfig->getArrNodesToExpand()) ?
-        json_encode(array_values($objTreeConfig->getArrNodesToExpand())) : "[]"; //using array_values just in case an associative array is being returned
+            json_encode(array_values($objTreeConfig->getArrNodesToExpand())) : "[]" ;//using array_values just in case an associative array is being returned
         $arrTemplate["initiallySelectedNodes"] = is_array($objTreeConfig->getArrInitiallySelectedNodes()) ?
-        json_encode(array_values($objTreeConfig->getArrInitiallySelectedNodes())) : "[]"; //using array_values just in case an associative array is being returned
+            json_encode(array_values($objTreeConfig->getArrInitiallySelectedNodes())) : "[]" ;//using array_values just in case an associative array is being returned
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "tree");
     }
@@ -2305,16 +2330,16 @@ JS;
         if ($objTag->rightRight1()) {
             $strJs = "<script type='text/javascript'>
             require(['tags'], function(tags){
-                tags.createFavoriteEnabledIcon = '" . addslashes(AdminskinHelper::getAdminImage("icon_favorite", Carrier::getInstance()->getObjLang()->getLang("tag_favorite_remove", "tags"))) . "';
-                tags.createFavoriteDisabledIcon = '" . addslashes(AdminskinHelper::getAdminImage("icon_favoriteDisabled", Carrier::getInstance()->getObjLang()->getLang("tag_favorite_add", "tags"))) . "';
+                tags.createFavoriteEnabledIcon = '".addslashes(AdminskinHelper::getAdminImage("icon_favorite", Carrier::getInstance()->getObjLang()->getLang("tag_favorite_remove", "tags")))."';
+                tags.createFavoriteDisabledIcon = '".addslashes(AdminskinHelper::getAdminImage("icon_favoriteDisabled", Carrier::getInstance()->getObjLang()->getLang("tag_favorite_add", "tags")))."';
             });
             </script>";
 
             $strImage = TagsFavorite::getAllFavoritesForUserAndTag(Carrier::getInstance()->getObjSession()->getUserID(), $objTag->getSystemid()) != null ?
-            AdminskinHelper::getAdminImage("icon_favorite", Carrier::getInstance()->getObjLang()->getLang("tag_favorite_remove", "tags")) :
-            AdminskinHelper::getAdminImage("icon_favoriteDisabled", Carrier::getInstance()->getObjLang()->getLang("tag_favorite_add", "tags"));
+                AdminskinHelper::getAdminImage("icon_favorite", Carrier::getInstance()->getObjLang()->getLang("tag_favorite_remove", "tags")) :
+                AdminskinHelper::getAdminImage("icon_favoriteDisabled", Carrier::getInstance()->getObjLang()->getLang("tag_favorite_add", "tags"));
 
-            $strFavorite = $strJs . "<a href=\"#\" onclick=\"require('tags').createFavorite('" . $objTag->getSystemid() . "', this); return false;\">" . $strImage . "</a>";
+            $strFavorite = $strJs."<a href=\"#\" onclick=\"require('tags').createFavorite('".$objTag->getSystemid()."', this); return false;\">".$strImage."</a>";
         }
 
         $arrTemplate = array();
@@ -2326,6 +2351,7 @@ JS;
         $arrTemplate["strDelete"] = AdminskinHelper::getAdminImage("icon_delete", Carrier::getInstance()->getObjLang()->getLang("commons_delete", "tags"));
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", Carrier::getInstance()->getParam("delete") != "false" ? "tags_tag_delete" : "tags_tag");
     }
+
 
     /**
      * Returns a regular text-input field
@@ -2358,7 +2384,7 @@ JS;
                     var objConfig = new v4skin.defaultAutoComplete();
                     objConfig.source = function(request, response) {
                         $.ajax({
-                            url: '" . getLinkAdminXml("tags", "getTagsByFilter") . "',
+                            url: '".getLinkAdminXml("tags", "getTagsByFilter")."',
                             type: 'POST',
                             dataType: 'json',
                             data: {
@@ -2377,9 +2403,9 @@ JS;
                         return false;
                     };
 
-                    $('#" . StringUtil::replace(array("[", "]"), array("\\\[", "\\\]"), $strName) . "').autocomplete(objConfig);
+                    $('#".StringUtil::replace(array("[", "]"), array("\\\[", "\\\]"), $strName)."').autocomplete(objConfig);
                 });
-
+            
             });
 
 	        </script>
@@ -2387,6 +2413,7 @@ JS;
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_tagselector", true);
     }
+
 
     /**
      * Creates a tooltip shown on hovering the passed text.
@@ -2424,6 +2451,8 @@ JS;
         return $popover->renderComponent();
     }
 
+
+
     /**
      * Renders a button with onClick callback.
      *
@@ -2433,11 +2462,10 @@ JS;
      * @return string
      * @since 7.1
      */
-    public function getJsActionButton($icon, $label, $callback)
-    {
+    public  function getJsActionButton($icon, $label, $callback){
         $icon = AdminskinHelper::getAdminImage($icon);
 
-        return $this->objTemplate->fillTemplateFile(["icon" => $icon, "label" => $label, "callback" => $callback], "/admin/skins/kajona_v4/elements.tpl", "js_action_button");
+        return $this->objTemplate->fillTemplateFile(["icon"=>$icon, "label"=>$label, "callback"=>$callback], "/admin/skins/kajona_v4/elements.tpl", "js_action_button");
 
     }
 
@@ -2477,18 +2505,20 @@ JS;
             }
 
             $arrTemplate = array(
-                "elementName" => $arrOneEntry["name"],
-                "elementAction" => $arrOneEntry["onclick"],
-                "elementLink" => $arrOneEntry["link"],
+                "elementName"          => $arrOneEntry["name"],
+                "elementAction"        => $arrOneEntry["onclick"],
+                "elementLink"          => $arrOneEntry["link"],
                 "elementActionEscaped" => StringUtil::replace("'", "\'", $arrOneEntry["onclick"]),
-                "elementFullEntry" => $arrOneEntry["fullentry"],
+                "elementFullEntry"     => $arrOneEntry["fullentry"]
             );
 
             if ($arrTemplate["elementFullEntry"] != "") {
                 $strCurTemplate = "contextmenu_entry_full";
-            } else {
+            }
+            else {
                 $strCurTemplate = "contextmenu_entry";
             }
+
 
             if (isset($arrOneEntry["submenu"]) && count($arrOneEntry["submenu"]) > 0) {
                 $strSubmenu = "";
@@ -2511,13 +2541,14 @@ JS;
                     if ($arrOneSubmenu["name"] == "") {
                         $arrSubTemplate = array();
                         $strCurSubTemplate = "contextmenu_divider_entry";
-                    } else {
+                    }
+                    else {
                         $arrSubTemplate = array(
-                            "elementName" => $arrOneSubmenu["name"],
-                            "elementAction" => $arrOneSubmenu["onclick"],
-                            "elementLink" => $arrOneSubmenu["link"],
+                            "elementName"          => $arrOneSubmenu["name"],
+                            "elementAction"        => $arrOneSubmenu["onclick"],
+                            "elementLink"          => $arrOneSubmenu["link"],
                             "elementActionEscaped" => StringUtil::replace("'", "\'", $arrOneSubmenu["onclick"]),
-                            "elementFullEntry" => $arrOneEntry["fullentry"],
+                            "elementFullEntry"     => $arrOneEntry["fullentry"]
                         );
 
                         if ($arrSubTemplate["elementFullEntry"] != "") {
@@ -2530,12 +2561,15 @@ JS;
                 }
                 $arrTemplate["entries"] = $strSubmenu;
 
+
                 if ($arrTemplate["elementFullEntry"] != "") {
                     $strCurTemplate = "contextmenu_submenucontainer_entry_full";
-                } else {
+                }
+                else {
                     $strCurTemplate = "contextmenu_submenucontainer_entry";
                 }
             }
+
 
             $strEntries .= $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", $strCurTemplate);
         }
