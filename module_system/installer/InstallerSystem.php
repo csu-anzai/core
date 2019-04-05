@@ -101,7 +101,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             $strReturn .= "An error occurred! ...\n";
 
         $this->objDB->createTable(
-            "agp_permissions_view",
+            "permissions_view",
             [
                 "view_id" => [DbDatatypes::STR_TYPE_CHAR20, false],
                 "view_shortgroup" => [DbDatatypes::STR_TYPE_LONG, false],
@@ -111,7 +111,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         );
 
         $this->objDB->createTable(
-            "agp_permissions_right2",
+            "permissions_right2",
             [
                 "right2_id" => [DbDatatypes::STR_TYPE_CHAR20, false],
                 "right2_shortgroup" => [DbDatatypes::STR_TYPE_LONG, false],
