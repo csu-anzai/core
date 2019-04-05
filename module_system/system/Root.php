@@ -566,6 +566,11 @@ abstract class Root
         }
         $bitReturn = $bitReturn && $this->deleteSystemRecord($this->getSystemid());
 
+        if (version_compare(SystemModule::getModuleByName("system")->getStrVersion(), "7.1.4", "ge") || version_compare(SystemModule::getModuleByName("system")->getStrVersion(), "7.0.4", "e")) {
+            $this->objDB->_pQuery("DELETE FROM "._dbprefix_."permissions_view WHERE view_id = ?", [$this->getSystemid()]);
+            $this->objDB->_pQuery("DELETE FROM "._dbprefix_."permissions_right2 WHERE right2_id = ?", [$this->getSystemid()]);
+        }
+
         Objectfactory::getInstance()->removeFromCache($this->getSystemid());
         OrmRowcache::removeSingleRow($this->getSystemid());
 

@@ -100,6 +100,26 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         if(!$this->objDB->createTable("system", $arrFields, array("system_id"), array("system_prev_id", "system_module_nr", "system_sort", "system_owner", "system_create_date", "system_status", "system_lm_time", "system_lock_time", "system_class")))
             $strReturn .= "An error occurred! ...\n";
 
+        $this->objDB->createTable(
+            "agp_permissions_view",
+            [
+                "view_id" => [DbDatatypes::STR_TYPE_CHAR20, false],
+                "view_shortgroup" => [DbDatatypes::STR_TYPE_LONG, false],
+            ],
+            ["view_id", "view_shortgroup"],
+            ["view_id", "view_shortgroup"]
+        );
+
+        $this->objDB->createTable(
+            "agp_permissions_right2",
+            [
+                "right2_id" => [DbDatatypes::STR_TYPE_CHAR20, false],
+                "right2_shortgroup" => [DbDatatypes::STR_TYPE_LONG, false],
+            ],
+            ["right2_id", "right2_shortgroup"],
+            ["right2_id", "right2_shortgroup"]
+        );
+
 
         // Modul table ----------------------------------------------------------------------------------
         $strReturn .= "Installing table system_module...\n";
@@ -583,6 +603,11 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             $strReturn .= $this->update_702_703();
         }
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.0.3") {
+            $strReturn .= $this->update_703_704();
+        }
+
         return $strReturn."\n\n";
     }
 
@@ -892,6 +917,96 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
     }
 
 
+    private function update_703_704()
+    {
+        $strReturn = "Updating to 7.0.4...".PHP_EOL;
+        $strReturn .= "Adding system setting".PHP_EOL;
+        $this->registerConstant("_system_permission_assignment_threshold_", 500, SystemSetting::$int_TYPE_INT, _system_modul_id_);
+
+        $strReturn .= "Updating user-goup table".PHP_EOL;
+        $this->objDB->createIndex("user_group", "ix_group_short_id", ["group_short_id"]);
+        $this->objDB->createIndex("user_group", "ix_group_system_group", ["group_system_group"]);
+
+
+        $strReturn .= "Creating view-permissions table".PHP_EOL;
+        $this->objDB->createTable(
+            "permissions_view",
+            [
+                "view_id" => [DbDatatypes::STR_TYPE_CHAR20, false],
+                "view_shortgroup" => [DbDatatypes::STR_TYPE_LONG, false],
+            ],
+            ["view_id", "view_shortgroup"],
+            ["view_id", "view_shortgroup"]
+        );
+
+        $this->objDB->createTable(
+            "permissions_right2",
+            [
+                "right2_id" => [DbDatatypes::STR_TYPE_CHAR20, false],
+                "right2_shortgroup" => [DbDatatypes::STR_TYPE_LONG, false],
+            ],
+            ["right2_id", "right2_shortgroup"],
+            ["right2_id", "right2_shortgroup"]
+        );
+
+        $strReturn .= "Creating group map".PHP_EOL;
+        $groupMap = [];
+        foreach ($this->objDB->getPArray("SELECT group_id, group_short_id FROM "._dbprefix_."user_group", []) as $row) {
+            $groupMap[$row["group_short_id"]] = $row["group_id"];
+        }
+
+        $strReturn .= "View permissions".PHP_EOL;
+
+        $i = 0;
+        foreach ($this->objDB->getGenerator("SELECT system_id, right_view, right_right2 FROM "._dbprefix_."system ORDER BY system_id DESC", []) as $systemRecords) {
+            $insertView = [];
+            $insertRight2 = [];
+            foreach ($systemRecords as  $row) {
+                $i++;
+                $groups = explode(",", trim($row["right_view"], ','));
+                foreach ($groups as $shortid) {
+                    if (is_numeric($shortid) && array_key_exists($shortid, $groupMap)) {
+                        $insertView[$row['system_id'].$shortid] = [$row['system_id'], $shortid];
+                    }
+                }
+
+                $groups = explode(",", trim($row["right_right2"], ','));
+                foreach ($groups as $shortid) {
+                    if (is_numeric($shortid) && array_key_exists($shortid, $groupMap)) {
+                        $insertRight2[$row['system_id'].$shortid] = [$row['system_id'], $shortid];
+                    }
+                }
+
+                if ($i % 500 == 0) {
+                    if (!empty($insertView)) {
+                        $this->objDB->multiInsert("permissions_view", ["view_id", "view_shortgroup"], $insertView);
+                        $insertView = [];
+                    }
+
+                    if (!empty($insertRight2)) {
+                        $this->objDB->multiInsert("permissions_right2", ["right2_id", "right2_shortgroup"], $insertRight2);
+                        $insertRight2 = [];
+                    }
+
+                    $strReturn .= "Migrated {$i} records ".PHP_EOL;
+                }
+
+            }
+
+            if (!empty($insertView)) {
+                $this->objDB->multiInsert("permissions_view", ["view_id", "view_shortgroup"], $insertView);
+            }
+            if (!empty($insertRight2)) {
+                $this->objDB->multiInsert("permissions_right2", ["right2_id", "right2_shortgroup"], $insertRight2);
+            }
+            $strReturn .= "Migrated {$i} records ".PHP_EOL;
+
+        }
+
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.4");
+
+        return $strReturn;
+    }
 
     /**
      * Helper to migrate the system-id based permission table to an int based one
