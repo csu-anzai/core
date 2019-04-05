@@ -1,20 +1,14 @@
 import Router from "./Router";
-import * as $ from "jquery";
 import "../jqueryui/jquery-ui.custom.min";
 import "../../../module_v4skin/scripts/jquery/jquery.ui.touch-punch.min";
 import "../../../module_v4skin/scripts/bootstrap/bootstrap.min";
 import * as toastr from "toastr";
 import V4skin from "../../../module_v4skin/scripts/kajona/V4skin";
-import Loader from "./Loader";
 import Dialog from "../../../module_v4skin/scripts/kajona/Dialog";
 import Folderview from "./Folderview";
-import Lists from "./Lists";
 import DialogHelper from "../../../module_v4skin/scripts/kajona/DialogHelper";
-import Ajax from "./Ajax";
-import * as moment from "moment";
-const mermaid = require("mermaid");
-// import mermaid from 'mermaid'
-
+import moment from "moment";
+import mermaid from "mermaid";
 declare global {
   interface Window {
     KAJONA: Kajona;
