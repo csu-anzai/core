@@ -36,6 +36,7 @@ class User {
      * @param userid
      */
     public static removeGroupFromUser(groupid: string, userid: string) {
+
         Ajax.genericAjaxCall("user", "apiGroupMemberDelete", "&userid="+userid+"&groupid="+groupid, function(data: any, status: string) {
             if (status == 'success') {
                 $('tr[data-systemid='+groupid+']').closest('tbody').remove();

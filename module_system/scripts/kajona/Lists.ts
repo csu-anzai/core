@@ -15,6 +15,7 @@ class Lists {
     private static strDialogStart : string = '';
     private static intTotal : number = 0;
     private static bitRenderInfo : boolean;
+    private static reloadOnFinish:boolean;
 
     /**
      * Toggles all fields
@@ -57,11 +58,12 @@ class Lists {
         }
     };
 
-    public static triggerAction(strTitle: string, strUrl: string, bitRenderInfo: boolean) {
+    public static triggerAction(strTitle: string, strUrl: string, bitRenderInfo: boolean, reloadOnFinish: boolean) {
         this.arrSystemids = [];
         this.strCurrentUrl = strUrl;
         this.strCurrentTitle = strTitle;
         this.bitRenderInfo = bitRenderInfo;
+        this.reloadOnFinish=reloadOnFinish;
 
         //get the selected elements
         this.arrSystemids = this.getSelectedElements();
@@ -73,7 +75,7 @@ class Lists {
         curConfirm = curConfirm.replace('%title%', strTitle);
 
         jsDialog_1.setTitle(this.strDialogTitle);
-        jsDialog_1.setContent(curConfirm, this.strDialogStart, 'javascript:require(\'lists\').executeActions();', true);
+        jsDialog_1.setContent(curConfirm, this.strDialogStart, 'javascript:require(\'lists\').executeActions('+reloadOnFinish+');', true);
         jsDialog_1.init();
 
         //reset pending list on hide
@@ -90,7 +92,7 @@ class Lists {
         return false;
     };
 
-    public static executeActions() {
+    public static executeActions(reloadOnFinish:boolean) {
         this.intTotal = this.arrSystemids.length;
 
         $('.batchActionsProgress > .progresstitle').text(this.strCurrentTitle);
@@ -98,9 +100,12 @@ class Lists {
         jsDialog_1.setContentRaw($('.batchActionsProgress').html());
 
         this.triggerSingleAction();
+        if(reloadOnFinish )
+            window.location.reload();
     };
 
     public static triggerSingleAction() {
+
         if(this.arrSystemids.length > 0 && this.intTotal > 0) {
             $('.batch_progressed').text((this.intTotal - this.arrSystemids.length +1));
             var intPercentage = ( (this.intTotal - this.arrSystemids.length) / this.intTotal * 100);
@@ -122,6 +127,7 @@ class Lists {
                             $('.batchaction_messages_list').append("<li>" + data.message + "</li>");
                         }
                     }
+
                 },
                 dataType: 'text'
             });
