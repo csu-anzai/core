@@ -97,7 +97,10 @@ module.exports = env => {
         'load-image-scale': 'blueimp-load-image/js/load-image-scale.js',
         'canvas-to-blob': 'blueimp-canvas-to-blob/js/canvas-to-blob.js',
         'jquery-ui/ui/widget':
-          'blueimp-file-upload/js/vendor/jquery.ui.widget.js'
+          'blueimp-file-upload/js/vendor/jquery.ui.widget.js',
+        '@': path.resolve(__dirname, '../../'),
+        core: path.resolve(__dirname, '../'),
+        core_agp: path.resolve(__dirname, '../../core_agp')
       }
     },
     plugins: devMode
@@ -129,7 +132,7 @@ module.exports = env => {
           jquery: 'jquery'
         }),
         new BundleAnalyzerPlugin(),
-        new CompressionPlugin(),
+        // new CompressionPlugin(),
         // new MiniCssExtractPlugin({
         //   filename: "styles.min.css",
         //   chunkFilename: "styles.min.chunk.css"
@@ -166,11 +169,11 @@ module.exports = env => {
             cache: true
           })
         ]
-        : []
-      // splitChunks: {
-      //   chunks: "all",
-      //   name: false
-      // }
+        : [],
+      splitChunks: {
+        chunks: 'all',
+        name: 'vendors.chunks'
+      }
     }
   }
 }

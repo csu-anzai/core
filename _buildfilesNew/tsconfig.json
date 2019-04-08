@@ -12,7 +12,13 @@
     "lib": ["dom", "es2015", "es2016", "es2017"],
     "skipLibCheck": true,
     "typeRoots": ["./node_modules/@types/"],
-    "baseUrl": "node_modules"
+    "baseUrl": "node_modules",
+    // "baseUrl": ".",
+    "paths": {
+      "@/*": ["../../../*"],
+      "core/*": ["../../*"],
+      "core_agp/*": ["../../../core_agp/*"]
+    }
   },
 
   "include": ["../../core/module_*/**/*", "../../core_*/module_*/**/*"],

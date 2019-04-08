@@ -13,6 +13,7 @@ import VueMain from "./VueMainComponent/VueMain.vue";
 import Vue from "vue";
 import store from "./VueMainComponent/Store";
 import VueRouter from "./VueMainComponent/VueRouter";
+
 declare global {
   interface Window {
     KAJONA: Kajona;
