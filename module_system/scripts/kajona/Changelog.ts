@@ -1,9 +1,9 @@
-import * as $ from "jquery";
-import * as d3 from "../d3/d3.min";
+import $ from "jquery";
 import Ajax from "./Ajax";
-import * as moment from "../../../_buildfilesNew/node_modules/moment";
-import * as calendarHeatMap from "../d3/calendar-heatmap-new";
-
+import moment from "moment";
+// import calendarHeatMap from "../d3/calendar-heatmap-new";
+import calendarHeatMap from "calendar-heatmap-mini";
+// const d3 = require("d3");
 declare global {
   // the d3 type definition does not contains the time API
   interface d3 {

@@ -1,6 +1,6 @@
 import Router from "./Router";
-import "../jqueryui/jquery-ui.custom.min";
-import "../../../module_v4skin/scripts/jquery/jquery.ui.touch-punch.min";
+import "jquery-ui-bundle";
+import "jquery-ui-touch-punch";
 import "../../../module_v4skin/scripts/bootstrap/bootstrap.min";
 import * as toastr from "toastr";
 import V4skin from "../../../module_v4skin/scripts/kajona/V4skin";

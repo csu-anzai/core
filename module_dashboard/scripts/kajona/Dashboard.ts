@@ -1,5 +1,5 @@
 import * as $ from "jquery";
-import "jquery-ui";
+import "jquery-ui-bundle";
 import Ajax from "../../../module_system/scripts/kajona/Ajax";
 import Tooltip from "../../../module_system/scripts/kajona/Tooltip";
 import StatusDisplay from "../../../module_system/scripts/kajona/StatusDisplay";
