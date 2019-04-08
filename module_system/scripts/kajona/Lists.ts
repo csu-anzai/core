@@ -15,7 +15,6 @@ class Lists {
     private static strDialogStart : string = '';
     private static intTotal : number = 0;
     private static bitRenderInfo : boolean;
-    private static reloadOnFinish:boolean;
 
     /**
      * Toggles all fields
@@ -63,7 +62,7 @@ class Lists {
         this.strCurrentUrl = strUrl;
         this.strCurrentTitle = strTitle;
         this.bitRenderInfo = bitRenderInfo;
-        this.reloadOnFinish=reloadOnFinish;
+
 
         //get the selected elements
         this.arrSystemids = this.getSelectedElements();
@@ -93,19 +92,22 @@ class Lists {
     };
 
     public static executeActions(reloadOnFinish:boolean) {
+
         this.intTotal = this.arrSystemids.length;
 
         $('.batchActionsProgress > .progresstitle').text(this.strCurrentTitle);
         $('.batchActionsProgress > .total').text(this.intTotal);
         jsDialog_1.setContentRaw($('.batchActionsProgress').html());
 
-        this.triggerSingleAction();
-        if(reloadOnFinish )
-            window.location.reload();
+
+        this.triggerSingleAction(reloadOnFinish);
+
     };
 
-    public static triggerSingleAction() {
-
+    public static triggerSingleAction(reloadOnFinish:boolean) {
+        console.log(reloadOnFinish,this.arrSystemids.length)
+        if(this.arrSystemids.length<1 && reloadOnFinish)
+            window.location.reload();
         if(this.arrSystemids.length > 0 && this.intTotal > 0) {
             $('.batch_progressed').text((this.intTotal - this.arrSystemids.length +1));
             var intPercentage = ( (this.intTotal - this.arrSystemids.length) / this.intTotal * 100);
@@ -120,7 +122,7 @@ class Lists {
                 type: 'POST',
                 url: strUrl,
                 success: function(resp) {
-                    me.triggerSingleAction();
+                    me.triggerSingleAction(reloadOnFinish);
                     if (me.bitRenderInfo) {
                         var data = JSON.parse(resp);
                         if (data && data.message) {

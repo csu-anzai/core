@@ -20,7 +20,8 @@ class User {
 
         Ajax.genericAjaxCall("user", "apiGroupMemberAdd", "&userid="+userid+"&groupid="+groupid, function(data: any, status: string) {
             if (status == 'success') {
-                $('.admintable').append(data.row);
+                // $('.admintable').append(data.row);
+                $('.admintable tbody').last().before(data.row);
                 $('#group_add_id').val("");
                 $('#group_add').val("");
                 StatusDisplay.messageOK(data.message);
