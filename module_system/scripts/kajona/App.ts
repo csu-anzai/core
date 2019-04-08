@@ -9,6 +9,10 @@ import Folderview from "./Folderview";
 import DialogHelper from "../../../module_v4skin/scripts/kajona/DialogHelper";
 import moment from "moment";
 import mermaid from "mermaid";
+import VueMain from "./VueMainComponent/VueMain.vue";
+import Vue from "vue";
+import store from "./VueMainComponent/Store";
+import VueRouter from "./VueMainComponent/VueRouter";
 declare global {
   interface Window {
     KAJONA: Kajona;
@@ -68,6 +72,20 @@ class App {
 
     // configure toastr global
     toastr.options.positionClass = "toast-bottom-right";
+  }
+  public static initVue(): void {
+    Vue.config.productionTip = false;
+    if (process.env.NODE_ENV === "development") {
+      Vue.config.devtools = true;
+    }
+    new Vue({
+      el: "#vueContainer",
+      // @ts-ignore
+      router: VueRouter,
+      // @ts-ignore
+      store: store,
+      render: h => h(VueMain)
+    });
   }
 }
 
