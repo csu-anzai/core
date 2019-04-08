@@ -1274,7 +1274,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
 
         $strBatchActions = $this->objToolkit->renderBatchActionHandlers(
             [
-                new AdminBatchaction(AdminskinHelper::getAdminImage("icon_delete"),Link::getLinkAdminXml("user", "apiGroupMemberDelete", "&userid={$objUser->getSystemid()}&systemid=%systemid%"),"","", true)
+                new AdminBatchaction(AdminskinHelper::getAdminImage("icon_delete"), Link::getLinkAdminXml("user", "apiGroupMemberDelete", "&userid={$objUser->getSystemid()}&systemid=%systemid%"), "", "", true)
 
             ]
         );

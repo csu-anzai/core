@@ -105,7 +105,6 @@ class Lists {
     };
 
     public static triggerSingleAction(reloadOnFinish:boolean) {
-        console.log(reloadOnFinish,this.arrSystemids.length)
         if(this.arrSystemids.length<1 && reloadOnFinish)
             window.location.reload();
         if(this.arrSystemids.length > 0 && this.intTotal > 0) {
