@@ -104,6 +104,7 @@ class Folderview {
         var table = Util.getElementFromOpener(strElementName);
 
         var tbody = table.find('tbody');
+        let maxAmount = table.data('max-values') > 0 ? table.data('max-values') : 500;
         if(tbody.length > 0) {
             // remove only elements which are in the arrAvailableIds array
             tbody.children().each(function(){
@@ -115,6 +116,11 @@ class Folderview {
 
             // add new elements
             for(var i = 0; i < arrItems.length; i++) {
+
+                if (table.find('tr').length > maxAmount) {
+                    break;
+                }
+
                 var strEscapedTitle = $('<div></div>').text(arrItems[i].strDisplayName).html();
                 var strEscapedPath = $('<div></div>').text(arrItems[i].strPath).html();
 
