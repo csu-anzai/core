@@ -59,8 +59,8 @@ class ChartjsHelper {
         dataArr.map(function (data: number) {
             sum += data;
         });
-        var percentage = (value * 100 / sum).toFixed(2);
-        return percentage != "0.00" ? percentage + "%" : '';
+        var percentage = (value * 100 / sum).toFixed(0);
+        return percentage != "0" ? percentage + "%" : '';
     }
 
     /**
