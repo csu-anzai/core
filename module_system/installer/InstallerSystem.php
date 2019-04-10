@@ -59,7 +59,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         parent::__construct();
 
         //set the correct language
-        $this->strContentLanguage = $this->objSession->getAdminLanguage(true, true);
+        $this->strContentLanguage = "de";
     }
 
     public function install() {
@@ -372,11 +372,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         //create a default language
         $strReturn .= "Creating new default-language\n";
         $objLanguage = new LanguagesLanguage();
-
-        if($this->strContentLanguage == "de")
-            $objLanguage->setStrName("de");
-        else
-            $objLanguage->setStrName("en");
+        $objLanguage->setStrName("de");
 
         $objLanguage->setBitDefault(true);
         ServiceLifeCycleFactory::getLifeCycle(get_class($objLanguage))->update($objLanguage);
