@@ -4,19 +4,8 @@ import Forms from "../../../module_system/scripts/kajona/Forms";
 import Ajax from "../../../module_system/scripts/kajona/Ajax";
 import "blueimp-tmpl";
 import "blueimp-file-upload";
-import "../jquery-fileupload/js/jquery.fileupload-ui";
-// require("blueimp-file-upload/js/vendor/jquery.ui.widget.js");
-// require("blueimp-tmpl/js/tmpl.js");
-// require("blueimp-load-image/js/load-image.all.min.js");
-// require("blueimp-canvas-to-blob/js/canvas-to-blob.js");
-// require("blueimp-file-upload/js/jquery.iframe-transport.js");
-// require("blueimp-file-upload/js/jquery.fileupload.js");
-// require("blueimp-file-upload/js/jquery.fileupload-process.js");
-// require("blueimp-file-upload/js/jquery.fileupload-image.js");
-// require("blueimp-file-upload/js/jquery.fileupload-audio.js");
-// require("blueimp-file-upload/js/jquery.fileupload-video.js");
-// require("blueimp-file-upload/js/jquery.fileupload-validate.js");
-// require("blueimp-file-upload/js/jquery.fileupload-ui.js");
+import "blueimp-file-upload/js/jquery.fileupload-ui.js";
+
 declare global {
   interface Window {
     dropZoneTimeout: number;
