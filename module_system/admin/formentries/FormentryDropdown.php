@@ -149,7 +149,7 @@ class FormentryDropdown extends FormentryBase implements FormentryPrintableInter
      */
     private function checkIfModuleExists(array $arrModuleInfo)
     {
-        $strModuleName = substr($arrModuleInfo['module'], strlen("module_"), strlen($arrModuleInfo['module']));
+        $strModuleName = StringUtil::substring($arrModuleInfo['module'], strlen("module_"), strlen($arrModuleInfo['module']));
         $objPackageManager = new PackagemanagerManager();
         $objPackage = $objPackageManager->getPackage($strModuleName);
 
