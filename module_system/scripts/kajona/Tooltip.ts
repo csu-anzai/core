@@ -1,7 +1,7 @@
 import * as $ from "jquery";
 import Tags from "../../../module_tags/scripts/kajona/Tags";
 import "qtip2";
-import "qtip2/dist/jquery.qtip.min.css";
+// import "qtip2/dist/jquery.qtip.min.css";
 /**
  * Common tooltips
  */

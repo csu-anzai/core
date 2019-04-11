@@ -24,7 +24,7 @@
     "fullcalendar": "^3.10.0",
     "jquery": "^3.3.1",
     "jquery-tageditor": "^1.0.1",
-    "jquery-ui-bundle": "^1.12.1-migrate",
+    "jquery-ui.custom": "github:artemeon/jquery-ui.custom",
     "jquery-ui-touch-punch": "^0.2.3",
     "jquery.caret": "^0.3.1",
     "jstree": "^3.3.7",

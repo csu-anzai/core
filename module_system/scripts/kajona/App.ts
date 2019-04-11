@@ -1,5 +1,5 @@
 import Router from "./Router";
-import "jquery-ui-bundle";
+import "jquery-ui.custom";
 import "jquery-ui-touch-punch";
 import "../../../module_v4skin/scripts/bootstrap/bootstrap.min";
 import * as toastr from "toastr";
