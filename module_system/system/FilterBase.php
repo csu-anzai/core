@@ -66,6 +66,13 @@ abstract class FilterBase
      */
     private $arrAdditionalConditions = array();
 
+    // default filter properties which work on the system table
+    /**
+     * @var boolean
+     * @tableColumn agp_system.system_id
+     */
+    private $bitViewRight = false;
+
     /**
      * FilterBase constructor.
      *
@@ -338,9 +345,19 @@ abstract class FilterBase
      */
     protected function getSingleOrmCondition($strAttributeName, $strValue, $strTableColumn, OrmComparatorEnum $enumFilterCompareOperator = null)
     {
+        switch ($strAttributeName) {
+            case "bitViewRight":
+                if ($this->bitViewRight === false) {
+                    // by default we dont filter view rights
+                    return null;
+                } else {
+                    return new OrmViewPermissionCondition($strTableColumn);
+                }
+                break;
+        }
+
         return OrmCondition::getORMConditionForValue($strValue, $strTableColumn, $enumFilterCompareOperator);
     }
-
 
     /**
      * Adds all ORM restrictions to the given $objORM
@@ -518,5 +535,21 @@ abstract class FilterBase
     public function setArrAdditionalConditions($arrAdditionalConditions)
     {
         $this->arrAdditionalConditions = $arrAdditionalConditions;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getBitViewRight()
+    {
+        return $this->bitViewRight;
+    }
+
+    /**
+     * @param bool $bitViewRight
+     */
+    public function setBitViewRight($bitViewRight)
+    {
+        $this->bitViewRight = $bitViewRight;
     }
 }
