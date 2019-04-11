@@ -1529,8 +1529,6 @@ place ajaxScript before the closing input_tagselector-tag.
     <div id='changelogTimeline' style='text-align:center;'></div>
 
     <script type="text/javascript">
-             Loader.loadFile(['/core/module_system/scripts/d3/calendar-heatmap.css']);
-
             Changelog.lang = %%strLang%%;
             Changelog.systemId = "%%strSystemId%%";
             Changelog.format = Util.transformDateFormat('%%strDateFormat%%', "momentjs");

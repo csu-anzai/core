@@ -37,6 +37,9 @@ class ContentToolbar {
    */
   public static registerContentToolbarEntry(objEntry: Entry) {
     if (objEntry.strContent != "") {
+      this.$objToolbarContainer = $(".contentToolbar");
+      this.$objToolbarList = $(".contentToolbar ul:first");
+      // console.log("container : ", this.$objToolbarContainer.hasClass("hidden"));
       if (this.$objToolbarContainer.hasClass("hidden")) {
         this.$objToolbarContainer.removeClass("hidden");
       }
@@ -77,6 +80,7 @@ class ContentToolbar {
    * @param $objContainer
    */
   public static registerRecordActions($objContainer: JQuery) {
+    this.$objActionToolbarContainer = $(".contentToolbar .navbar-inner");
     if (!Util.isStackedDialog()) {
       let $objNode = $("<div>")
         .attr("class", "actionToolbar pull-right")
@@ -91,6 +95,7 @@ class ContentToolbar {
    * @param strIdentifier
    */
   public static removeEntry(strIdentifier: string) {
+    this.$objToolbarList = $(".contentToolbar ul:first");
     if ($("#" + strIdentifier)) {
       $("#" + strIdentifier).remove();
     }

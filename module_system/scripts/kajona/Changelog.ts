@@ -1,16 +1,15 @@
 import $ from "jquery";
 import Ajax from "./Ajax";
 import moment from "moment";
-// import calendarHeatMap from "../d3/calendar-heatmap-new";
-import calendarHeatMap from "calendar-heatmap-mini";
-// const d3 = require("d3");
+import calendarHeatMap from "calendar-heatmap";
+import "calendar-heatmap/dist/calendar-heatmap.css";
+const d3 = require("d3");
 declare global {
   // the d3 type definition does not contains the time API
   interface d3 {
     time: any;
   }
 }
-
 interface Lang {
   months?: Array<string>;
   days?: Array<string>;

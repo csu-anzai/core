@@ -10,16 +10,20 @@ class Breadcrumb {
   }
 
   public static appendLinkToPathNavigation(linkContent: string) {
+    this.breadcrumbEl = $("div.pathNaviContainer ul.breadcrumb");
+
     let link = $("<li class='pathentry'></li>").append(linkContent + "&nbsp;");
     this.breadcrumbEl.append(link);
     this.updatePathNavigationEllipsis();
   }
 
   public static resetBar() {
+    this.breadcrumbEl = $("div.pathNaviContainer ul.breadcrumb");
     this.breadcrumbEl.find("li.pathentry:not(.home)").remove();
   }
 
   private static updatePathNavigationEllipsis() {
+    this.breadcrumbEl = $("div.pathNaviContainer ul.breadcrumb");
     let $arrPathLIs = $(".pathNaviContainer  .breadcrumb  li.pathentry");
 
     //first run: get the number of entries and a first styling
