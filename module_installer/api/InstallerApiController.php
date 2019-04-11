@@ -301,25 +301,23 @@ class InstallerApiController implements ApiControllerInterface
             throw new \RuntimeException("No module provided");
         }
 
-        $manager = new PackagemanagerManager();
-        $modules = $manager->getAvailablePackages();
-
-        foreach ($modules as $module) {
-            if ($module->getStrTitle() == $body["module"]) {
-                $sampleContent = SamplecontentInstallerHelper::getSamplecontentInstallerForPackage($module);
-                if ($sampleContent != null ) {
-                    $return = SamplecontentInstallerHelper::install($sampleContent);
-
-                    return [
-                        "status" => "success",
-                        "module" => $body["module"],
-                        "log" => $return,
-                    ];
-                }
-            }
+        $module = $this->getModuleByTitle($body["module"]);
+        if (!$module instanceof PackagemanagerMetadata) {
+            throw new NotFoundException("Module not found");
         }
 
-        throw new InternalServerErrorException("Could not install samplecontent for module " . $body["module"]);
+        $sampleContent = SamplecontentInstallerHelper::getSamplecontentInstallerForPackage($module);
+        if ($sampleContent != null ) {
+            $return = SamplecontentInstallerHelper::install($sampleContent);
+
+            return [
+                "status" => "success",
+                "module" => $body["module"],
+                "log" => $return,
+            ];
+        } else {
+            throw new InternalServerErrorException("No sample content available for " . $body["module"]);
+        }
     }
 
     /**
