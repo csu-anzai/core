@@ -5,6 +5,7 @@ import * as $ from "jquery";
 import * as chartjs from "chartjs";
 import "chartjs-plugin-datalabels";
 import Folderview = require("../../../module_system/scripts/kajona/Folderview");
+import Lang = require("../../../module_system/scripts/kajona/Lang");
 
 declare var Chart: any;
 
@@ -72,7 +73,11 @@ class ChartjsHelper {
      */
     public static addThousandSeparator(value: number, ctx: any) {
         let strValue = value.toString();
-        strValue = strValue.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        let strThousandSeparator = ".";
+        Lang.fetchSingleProperty("system", "numberStyleThousands", function(strText : string) {
+            strThousandSeparator = strText;
+        });
+        strValue = strValue.replace(/\B(?=(\d{3})+(?!\d))/g, strThousandSeparator);
         return strValue;
     }
 
@@ -134,15 +139,11 @@ class ChartjsHelper {
         }
 
         if (typeof (chartOptions['addThousandSeparator']) !== 'undefined' && chartOptions['addThousandSeparator']) {
-            chartData['options']['scales']['xAxes'][0]['ticks'] = {
-                userCallback: function (value: number, ctx: any) {
-                    return ChartjsHelper.addThousandSeparator(value, ctx);
-                }
+            chartData['options']['scales']['xAxes'][0]['ticks']['userCallback'] = function (value: number, ctx: any) {
+                return ChartjsHelper.addThousandSeparator(value, ctx);
             }
-            chartData['options']['scales']['yAxes'][0]['ticks'] = {
-                userCallback: function (value: number, ctx: any) {
-                    return ChartjsHelper.addThousandSeparator(value, ctx);
-                }
+            chartData['options']['scales']['yAxes'][0]['ticks']['userCallback'] = function (value: number, ctx: any) {
+                return ChartjsHelper.addThousandSeparator(value, ctx);
             }
         }
 
