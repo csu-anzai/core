@@ -30,7 +30,7 @@
     "jstree": "^3.3.7",
     "mermaid": "^8.0.0",
     "moment": "^2.24.0",
-    "qtip": "0.0.4",
+    "qtip2": "^3.0.3",
     "toastr": "^2.1.4",
     "vue": "^2.6.6",
     "vue-property-decorator": "^7.3.0",
