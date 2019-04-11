@@ -200,7 +200,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $arrFields["user_log_userid"] = array("char254", true);
         $arrFields["user_log_date"] = array("long", true);
         $arrFields["user_log_status"] = array("int", true);
-        $arrFields["user_log_ip"] = array("char20", true);
+        $arrFields["user_log_ip"] = array("char254", true);
         $arrFields["user_log_sessid"]  = array("char20", true);
         $arrFields["user_log_enddate"] = array("long", true);
 
@@ -533,6 +533,10 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         if($arrModule["module_version"] == "7.1.3") {
             $strReturn .= $this->update_713_714();
         }
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.1.4") {
+            $strReturn .= $this->update_714_715();
+        }
 
         return $strReturn."\n\n";
     }
@@ -781,6 +785,15 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         }
 
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.4");
+
+        return $strReturn;
+    }
+
+    private function update_714_715()
+    {
+        $strReturn = "Updating to 7.1.5...".PHP_EOL;
+        $this->objDB->changeColumn("agp_user_log", "user_log_ip", "user_log_ip", DbDatatypes::STR_TYPE_CHAR254);
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.5");
 
         return $strReturn;
     }
