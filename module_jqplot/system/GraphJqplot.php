@@ -1065,7 +1065,7 @@ class GraphJqplot implements GraphInterfaceFronted
      * Enables general repsonsiveness of the chart. This includes that the chart takes up 100% width of the parent container.
      * @param bool $bitIsResponsive
      */
-    public function setBitIsResponsive($bitIsResponsive)
+    public function setBitIsResponsive(bool $bitIsResponsive)
     {
         $this->bitIsResponsive = $bitIsResponsive;
     }

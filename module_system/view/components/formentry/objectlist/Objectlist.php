@@ -30,6 +30,7 @@ use Kajona\System\View\Components\Formentry\FormentryComponentAbstract;
  */
 class Objectlist extends FormentryComponentAbstract
 {
+    const MAX_VALUES = 500;
     /**
      * @var array
      */
@@ -111,9 +112,13 @@ class Objectlist extends FormentryComponentAbstract
 
         $rows = [];
         $ids = [];
+        $count = 0;
         foreach ($this->items as $item) {
             /** @var $item Model */
             if ($item instanceof ModelInterface) {
+                if (++$count > self::MAX_VALUES) {
+                    continue;
+                }
                 $deleteAlt = Carrier::getInstance()->getObjLang()->getLang("commons_remove_assignment", "system");
                 $attributes = [
                     "href"    => "#",
@@ -146,6 +151,7 @@ class Objectlist extends FormentryComponentAbstract
                     'removeLink'  => $removeLink,
                     'editLink'    => $editLink,
                     'detailLink'  => $detailLink,
+
                 ];
                 $ids[] = $item->getSystemid();
             }
@@ -173,6 +179,7 @@ class Objectlist extends FormentryComponentAbstract
         $context["objectTypes"] = json_encode(implode(",", $this->objectTypes ?: []));
         $context["searchInputPlaceholder"] = $searchInputPlaceholder;
         $context["initval"] = implode(",", $ids);
+        $context["maxValues"] = self::MAX_VALUES;
 
         return $context;
     }

@@ -305,17 +305,12 @@ class InstallerApiController implements ApiControllerInterface
         $return = [];
 
         foreach ($files as $fileName) {
-            $fileSystem->openFilePointer(_projectpath_."/log/".$fileName, "r");
-            $log = $fileSystem->readLastLinesFromFile(200);
-            $fileSystem->closeFilePointer();
-
-            $log = str_replace(["\r\n", "\n", "\r"], "\n", $log);
-            $log = str_replace(array("INFO", "ERROR"), array("INFO   ", "ERROR  "), $log);
-
-            $return[$fileName] = array_values(array_filter(array_map("trim", explode("\n", $log))));
+            $return[] = substr($fileName, 0, -4);
         }
 
-        return $return;
+        return [
+            "logs" => $return
+        ];
     }
 
     /**
@@ -326,16 +321,39 @@ class InstallerApiController implements ApiControllerInterface
      */
     public function getLogDetail(HttpContext $context)
     {
+        $lines = (int) $context->getParameter("lines");
+        if (!empty($lines)) {
+            $lines = min(200, max(1, $lines));
+        } else {
+            $lines = null;
+        }
+
         $fileSystem = new Filesystem();
         $files = $fileSystem->getFilelist(_projectpath_."/log", [".log"]);
         $file = $context->getUriFragment("log") . ".log";
 
+        // it can happen that the log file is really large so we max return this amount of bytes
+        $maxSize = 1024 * 50;
+
         if (in_array($file, $files)) {
             $path = _realpath_._projectpath_."/log/".$file;
+            $size = filesize($path);
+
+            if ($lines !== null) {
+                $fileSystem->openFilePointer(_projectpath_."/log/".$file, "r");
+                $result = $fileSystem->readLastLinesFromFile($lines);
+                $fileSystem->closeFilePointer();
+            } else {
+                $result = file_get_contents($path, false, null, 0, $maxSize);
+            }
+
+            $result = str_replace(["\r\n", "\n", "\r"], "\n", $result);
+            $result = array_values(explode("\n", $result));
 
             return [
-                "size" => filesize($path),
-                "lines" => file($path, FILE_IGNORE_NEW_LINES),
+                "size" => $size,
+                "file" => $file,
+                "lines" => $result,
             ];
         } else {
             throw new BadRequestException("Invalid log");
