@@ -17,7 +17,6 @@ class LockmanagerTest extends Testbase
     public function testLocking()
     {
 
-        return true;
         $objAspect = new SystemAspect();
         $objAspect->setStrName("test");
         ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
@@ -30,6 +29,11 @@ class LockmanagerTest extends Testbase
         $objUser = new UserUser();
         $objUser->setStrUsername(generateSystemid());
         ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
+
+        $group = new UserGroup();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($group))->update($group);
+        $group->getObjSourceGroup()->addMember($objUser->getObjSourceUser());
+
 
         $this->assertTrue(Carrier::getInstance()->getObjSession()->loginUser($objUser));
 
@@ -53,12 +57,12 @@ class LockmanagerTest extends Testbase
         $objAspect = new SystemAspect($strAspectId);
         $objAspect->deleteObjectFromDatabase();
         $objUser->deleteObjectFromDatabase();
+        $group->deleteObjectFromDatabase();
     }
 
 
     public function testLockBetweenUsers()
     {
-        return true;
         $objAspect = new SystemAspect();
         $objAspect->setStrName("test");
         ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
@@ -72,6 +76,10 @@ class LockmanagerTest extends Testbase
         $objUser1->setStrUsername(generateSystemid());
         ServiceLifeCycleFactory::getLifeCycle(get_class($objUser1))->update($objUser1);
 
+        $group = new UserGroup();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($group))->update($group);
+        $group->getObjSourceGroup()->addMember($objUser1->getObjSourceUser());
+
         $this->assertTrue(Carrier::getInstance()->getObjSession()->loginUser($objUser1));
         $objAspect->getLockManager()->lockRecord();
 
@@ -84,6 +92,10 @@ class LockmanagerTest extends Testbase
         $objUser2 = new UserUser();
         $objUser2->setStrUsername(generateSystemid());
         ServiceLifeCycleFactory::getLifeCycle(get_class($objUser2))->update($objUser2);
+
+        $group2 = new UserGroup();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($group2))->update($group2);
+        $group2->getObjSourceGroup()->addMember($objUser2->getObjSourceUser());
 
 
         $this->assertTrue(Carrier::getInstance()->getObjSession()->loginUser($objUser2));
@@ -145,12 +157,13 @@ class LockmanagerTest extends Testbase
         $objAspect->deleteObjectFromDatabase();
         $objUser1->deleteObjectFromDatabase();
         $objUser2->deleteObjectFromDatabase();
+        $group->deleteObjectFromDatabase();
+        $group2->deleteObjectFromDatabase();
     }
 
 
     public function testLockExceptionOnSort()
     {
-        return true;
         $objAspect = new SystemAspect();
         $objAspect->setStrName("test");
         ServiceLifeCycleFactory::getLifeCycle(get_class($objAspect))->update($objAspect);
@@ -160,6 +173,10 @@ class LockmanagerTest extends Testbase
         $objUser1->setStrUsername(generateSystemid());
         ServiceLifeCycleFactory::getLifeCycle(get_class($objUser1))->update($objUser1);
 
+        $group = new UserGroup();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($group))->update($group);
+        $group->getObjSourceGroup()->addMember($objUser1->getObjSourceUser());
+
         $this->assertTrue(Carrier::getInstance()->getObjSession()->loginUser($objUser1));
 
         $objAspect->getLockManager()->lockRecord();
@@ -168,6 +185,10 @@ class LockmanagerTest extends Testbase
         $objUser2 = new UserUser();
         $objUser2->setStrUsername(generateSystemid());
         ServiceLifeCycleFactory::getLifeCycle(get_class($objUser2))->update($objUser2);
+
+        $group1 = new UserGroup();
+        ServiceLifeCycleFactory::getLifeCycle(get_class($group1))->update($group1);
+        $group1->getObjSourceGroup()->addMember($objUser2->getObjSourceUser());
 
         $this->assertTrue(Carrier::getInstance()->getObjSession()->loginUser($objUser2));
         $this->assertTrue(!$objAspect->getLockManager()->isLockedByCurrentUser());
@@ -188,6 +209,8 @@ class LockmanagerTest extends Testbase
         $objAspect->deleteObjectFromDatabase();
         $objUser1->deleteObjectFromDatabase();
         $objUser2->deleteObjectFromDatabase();
+        $group->deleteObjectFromDatabase();
+        $group1->deleteObjectFromDatabase();
     }
 
 
