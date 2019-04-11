@@ -39,7 +39,6 @@ class ContentToolbar {
     if (objEntry.strContent != "") {
       this.$objToolbarContainer = $(".contentToolbar");
       this.$objToolbarList = $(".contentToolbar ul:first");
-      // console.log("container : ", this.$objToolbarContainer.hasClass("hidden"));
       if (this.$objToolbarContainer.hasClass("hidden")) {
         this.$objToolbarContainer.removeClass("hidden");
       }

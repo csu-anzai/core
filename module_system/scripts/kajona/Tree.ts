@@ -1,5 +1,5 @@
 import * as $ from "jquery";
-import "../jstree3/dist/jstree.min";
+import "jstree";
 import Ajax from "./Ajax";
 import Lang from "./Lang";
 import CacheManager from "./CacheManager";
