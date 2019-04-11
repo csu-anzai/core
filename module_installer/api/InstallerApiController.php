@@ -16,6 +16,7 @@ use Kajona\System\System\Filesystem;
 use Kajona\System\System\SystemModule;
 use PSX\Http\Environment\HttpContext;
 use PSX\Http\Exception\BadRequestException;
+use PSX\Http\Exception\InternalServerErrorException;
 
 /**
  * InstallerApiController
@@ -208,10 +209,7 @@ class InstallerApiController implements ApiControllerInterface
             }
         }
 
-        return [
-            "status" => "error",
-            "module" => $body["module"],
-        ];
+        throw new InternalServerErrorException("Could not install module " . $body["module"]);
     }
 
     /**
@@ -286,10 +284,7 @@ class InstallerApiController implements ApiControllerInterface
             }
         }
 
-        return [
-            "status" => "error",
-            "module" => $body["module"],
-        ];
+        throw new InternalServerErrorException("Could not install samplecontent for module " . $body["module"]);
     }
 
     /**
