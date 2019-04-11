@@ -9,6 +9,8 @@ namespace Kajona\Installer\Api;
 use Kajona\Api\System\ApiControllerInterface;
 use Kajona\Installer\System\SamplecontentInstallerHelper;
 use Kajona\Packagemanager\System\PackagemanagerManager;
+use Kajona\Packagemanager\System\PackagemanagerMetadata;
+use Kajona\System\System\CacheManager;
 use Kajona\System\System\Config;
 use Kajona\System\System\Database;
 use Kajona\System\System\DbConnectionParams;
@@ -17,6 +19,7 @@ use Kajona\System\System\SystemModule;
 use PSX\Http\Environment\HttpContext;
 use PSX\Http\Exception\BadRequestException;
 use PSX\Http\Exception\InternalServerErrorException;
+use PSX\Http\Exception\NotFoundException;
 
 /**
  * InstallerApiController
@@ -26,11 +29,20 @@ use PSX\Http\Exception\InternalServerErrorException;
  */
 class InstallerApiController implements ApiControllerInterface
 {
+    const INSTALL_STATE_PENDING = 1;
+    const INSTALL_STATE_COMPLETED = 2;
+
     /**
      * @inject system_db
      * @var Database
      */
     protected $connection;
+
+    /**
+     * @inject system_cache_manager
+     * @var CacheManager
+     */
+    protected $cacheManager;
 
     /**
      * Endpoint which can be called to verify that we are actually talking to a valid AGP API
@@ -190,26 +202,49 @@ class InstallerApiController implements ApiControllerInterface
             throw new \RuntimeException("No module provided");
         }
 
-        $manager = new PackagemanagerManager();
-        $modules = $manager->getAvailablePackages();
-
-        foreach ($modules as $module) {
-            if ($module->getStrTitle() == $body["module"]) {
-                $handler = $manager->getPackageManagerForPath($module->getStrPath());
-
-                if ($handler->isInstallable()) {
-                    $return = $handler->installOrUpdate();
-
-                    return [
-                        "status" => "success",
-                        "module" => $body["module"],
-                        "log" => $return
-                    ];
-                }
-            }
+        $module = $this->getModuleByTitle($body["module"]);
+        if (!$module instanceof PackagemanagerMetadata) {
+            throw new NotFoundException("Module not found");
         }
 
-        throw new InternalServerErrorException("Could not install module " . $body["module"]);
+        $manager = new PackagemanagerManager();
+        $handler = $manager->getPackageManagerForPath($module->getStrPath());
+
+        if ($handler->isInstallable()) {
+            $key = "install_" . $module->getStrTitle();
+            $state = $this->cacheManager->getValue($key);
+
+            if ($state === self::INSTALL_STATE_PENDING) {
+                return [
+                    "status" => "pending",
+                    "module" => $module->getStrTitle(),
+                ];
+            } elseif ($state === self::INSTALL_STATE_COMPLETED) {
+                return [
+                    "status" => "success",
+                    "module" => $module->getStrTitle(),
+                ];
+            }
+
+            $this->cacheManager->addValue($key, self::INSTALL_STATE_PENDING);
+
+            $return = $handler->installOrUpdate();
+
+            $this->cacheManager->addValue($key, self::INSTALL_STATE_COMPLETED);
+
+            return [
+                "status" => "success",
+                "module" => $module->getStrTitle(),
+                "log" => $return
+            ];
+        } else {
+            // is not installable either since the module has no installer or the requirements are not met, we still
+            // return a 200 since it could be possible to install the module later on
+            return [
+                "status" => "not_installable",
+                "module" => "The module " . $module->getStrTitle() . " is currently not installable",
+            ];
+        }
     }
 
     /**
@@ -438,5 +473,23 @@ class InstallerApiController implements ApiControllerInterface
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $title
+     * @return PackagemanagerMetadata|null
+     */
+    private function getModuleByTitle($title)
+    {
+        $manager = new PackagemanagerManager();
+        $modules = $manager->getAvailablePackages();
+
+        foreach ($modules as $module) {
+            if ($module->getStrTitle() == $title) {
+                return $module;
+            }
+        }
+
+        return null;
     }
 }
