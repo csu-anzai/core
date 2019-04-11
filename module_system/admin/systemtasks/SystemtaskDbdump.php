@@ -57,11 +57,6 @@ class SystemtaskDbdump extends SystemtaskBase implements AdminSystemtaskInterfac
      */
     public function executeTask()
     {
-
-        if (!SystemModule::getModuleByName("system")->rightRight2()) {
-            return $this->getLang("commons_error_permissions");
-        }
-
         if ($this->getParam("filenametodownload") != "" && Carrier::getInstance()->getObjSession()->isSuperAdmin()) {
             $objFilesytem = new Filesystem();
             $objFilesytem->streamFile("/project/dbdumps/".$this->getParam("filenametodownload"));
