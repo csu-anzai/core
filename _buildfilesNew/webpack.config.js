@@ -21,7 +21,7 @@ module.exports = env => {
   console.log('Build Type : ', env.NODE_ENV)
   return {
     entry: {
-      agp: glob.sync('../../{core,core_agp}/module_*/scripts/**/*.ts')
+      agp: glob.sync('../../{core,core_agp,core_customer}/module_*/scripts/**/*.ts')
     },
     output: {
       filename: './[name].min.js',
