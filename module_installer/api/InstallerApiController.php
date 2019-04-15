@@ -15,6 +15,8 @@ use Kajona\System\System\Config;
 use Kajona\System\System\Database;
 use Kajona\System\System\DbConnectionParams;
 use Kajona\System\System\Filesystem;
+use Kajona\System\System\RequestEntrypointEnum;
+use Kajona\System\System\ResponseObject;
 use Kajona\System\System\SystemModule;
 use PSX\Http\Environment\HttpContext;
 use PSX\Http\Exception\BadRequestException;
@@ -207,6 +209,8 @@ class InstallerApiController implements ApiControllerInterface
             throw new NotFoundException("Module not found");
         }
 
+        ResponseObject::getInstance()->setObjEntrypoint(RequestEntrypointEnum::INSTALLER());
+
         $manager = new PackagemanagerManager();
         $handler = $manager->getPackageManagerForPath($module->getStrPath());
 
@@ -305,6 +309,8 @@ class InstallerApiController implements ApiControllerInterface
         if (!$module instanceof PackagemanagerMetadata) {
             throw new NotFoundException("Module not found");
         }
+
+        ResponseObject::getInstance()->setObjEntrypoint(RequestEntrypointEnum::INSTALLER());
 
         $sampleContent = SamplecontentInstallerHelper::getSamplecontentInstallerForPackage($module);
         if ($sampleContent != null ) {
