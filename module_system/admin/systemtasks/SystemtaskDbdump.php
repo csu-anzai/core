@@ -88,8 +88,8 @@ class SystemtaskDbdump extends SystemtaskBase implements AdminSystemtaskInterfac
      */
     public function execute($body)
     {
-        if (isset($body["excludedtables"])) {
-            $excludeTables = explode(",", $body["excludedtables"]);
+        if (isset($body["excludedtables"]) && is_array($body["excludedtables"])) {
+            $excludeTables = $body["excludedtables"];
         } else {
             $excludeTables = [];
         }
