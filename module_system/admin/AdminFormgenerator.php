@@ -938,7 +938,7 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
     public function jsonSerialize()
     {
         return [
-            "fields" => $this->arrFields,
+            "fields" => array_values($this->arrFields),
         ];
     }
 
