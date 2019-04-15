@@ -1157,7 +1157,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      */
     protected function actionApiGroupMemberDelete()
     {
-        $objGroup = Objectfactory::getInstance()->getObject($this->getParam("groupid"));
+        $objGroup = Objectfactory::getInstance()->getObject($this->getParam("groupid")) ?? Objectfactory::getInstance()->getObject($this->getParam("systemid"));
         //validate possible blocked groups
         if ($objGroup == null || !$this->isGroupEditable($objGroup)) {
             throw new Exception($this->getLang("commons_error_permissions"), Exception::$level_ERROR);
@@ -1192,7 +1192,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
         $objUser = Objectfactory::getInstance()->getObject($this->getParam("userid"));
         if ($objUser != null && $objGroup->getObjSourceGroup()->addMember($objUser->getObjSourceUser())) {
             $strAction = $this->objToolkit->listDeleteButton($objGroup->getStrName(), $this->getLang('mitglied_loeschen_frage'), "javascript:require(\'user\').removeGroupFromUser(\'".$objGroup->getSystemid()."\', \'".$objUser->getSystemid()."\');");
-            $strReturn = $this->objToolkit->genericAdminList($objGroup->getSystemid(), $objGroup->getStrName(), AdminskinHelper::getAdminImage($objGroup->getStrIcon()), $strAction);
+           $strReturn = $this->objToolkit->genericAdminList($objGroup->getSystemid(), $objGroup->getStrName(), AdminskinHelper::getAdminImage($objGroup->getStrIcon()), $strAction,"","",true);
 
 
             return json_encode(["state" => "ok", "row" => $strReturn, "message" => $this->getLang("mitglied_speichern_erfolg")]);
@@ -1226,6 +1226,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
         }
     }
 
+
     /**
      * Shows a list to manage memberships of a user in groups
      *
@@ -1237,6 +1238,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
     protected function actionEditMemberships()
     {
         /** @var UserUser $objUser */
+
         $objUser = Objectfactory::getInstance()->getObject($this->getSystemid());
         //Collect groups from the same source
         $objUsersources = new UserSourcefactory();
@@ -1248,10 +1250,12 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
         $strReturn = "";
         $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "editMemberships"), "userForm", "", "return false;");
         $strReturn .= $this->objToolkit->formInputUserSelector("group_add", $this->getLang("group_name"), "", "", false, true);
+
         $strReturn .= $this->objToolkit->formClose();
         $strReturn .= $this->objToolkit->listHeader();
 
         $intCheckedGroups = 0;
+
         foreach ($arrGroups as $strSingleGroup) {
             //to avoid privilege escalation, the admin-group and other special groups need to be treated in a special manner
             $objSingleGroup = new UserGroup($strSingleGroup);
@@ -1261,11 +1265,20 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
 
             if (in_array($strSingleGroup, $arrUserGroups)) {
                 $intCheckedGroups++;
-                $strAction = $this->objToolkit->listDeleteButton($objSingleGroup->getStrName(), $this->getLang('mitglied_loeschen_frage'), "javascript:require(\'user\').removeGroupFromUser(\'".$objSingleGroup->getSystemid()."\', \'".$objUser->getSystemid()."\');");
-                $strReturn .= $this->objToolkit->genericAdminList($objSingleGroup->getSystemid(), $objSingleGroup->getStrName(), AdminskinHelper::getAdminImage($objSingleGroup->getStrIcon()), $strAction);
+
+              $strAction = $this->objToolkit->listDeleteButton($objSingleGroup->getStrName(), $this->getLang('mitglied_loeschen_frage'), "javascript:require(\'user\').removeGroupFromUser(\'".$objSingleGroup->getSystemid()."\', \'".$objUser->getSystemid()."\');");
+             $strReturn .= $this->objToolkit->genericAdminList($objSingleGroup->getSystemid(), $objSingleGroup->getStrName(), AdminskinHelper::getAdminImage($objSingleGroup->getStrIcon()), $strAction,'','',true);
+
             }
         }
 
+        $strBatchActions = $this->objToolkit->renderBatchActionHandlers(
+            [
+                new AdminBatchaction(AdminskinHelper::getAdminImage("icon_delete"), Link::getLinkAdminXml("user", "apiGroupMemberDelete", "&userid={$objUser->getSystemid()}&systemid=%systemid%"), "", "", true)
+
+            ]
+        );
+        $strReturn .= $this->objToolkit->genericAdminList("batchActionSwitch", $strBatchActions, "", "", "", "", true);
         $strReturn .= $this->objToolkit->listFooter();
 
         if ($intCheckedGroups == 0) {

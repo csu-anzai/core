@@ -15,6 +15,7 @@ use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Reflection;
+use Kajona\System\System\Root;
 use Kajona\System\System\SystemModule;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use ReflectionClass;
@@ -145,7 +146,10 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
             $arrObjects = $this->arrKeyValues;
         } else {
             $arrObjects = array_values(array_filter($this->arrKeyValues, function ($objObject) {
-                return $objObject->rightView();
+                if ($objObject instanceof Root) {
+                    return $objObject->rightView();
+                }
+                return false;
             }));
         }
 
@@ -212,7 +216,9 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         // filter double object ids
         $arrObjects = array();
         foreach ($arrNewObjects as $objObject) {
-            $arrObjects[$objObject->getStrSystemid()] = $objObject;
+            if ($objObject instanceof Root) {
+                $arrObjects[$objObject->getStrSystemid()] = $objObject;
+            }
         }
         $arrObjects = array_values($arrObjects);
 
