@@ -1,7 +1,6 @@
-import $ from "../../../_buildfilesNew/node_modules/jquery";
-import * as jQuery from "../../../_buildfilesNew/node_modules/jquery";
+import $ from "jquery";
 import * as toastr from "toastr";
-import Lang = require("../../../module_system/scripts/kajona/Lang");
+import Lang from "../../../module_system/scripts/kajona/Lang";
 
 declare global {
   interface Window {
@@ -379,9 +378,11 @@ class Util {
     textArea.select();
     try {
       document.execCommand("copy");
-            Lang.fetchSingleProperty("system", "link_was_copied", function (value:string) {
-                toastr.success(value);
-            });
+      Lang.fetchSingleProperty("system", "link_was_copied", function(
+        value: string
+      ) {
+        toastr.success(value);
+      });
     } catch (err) {}
     document.body.removeChild(textArea);
   }

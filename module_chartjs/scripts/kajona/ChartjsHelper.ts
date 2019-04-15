@@ -1,7 +1,8 @@
-import * as $ from "jquery";
+import $ from "jquery";
+import Lang from "../../../module_system/scripts/kajona/Lang";
 import Folderview from "../../../module_system/scripts/kajona/Folderview";
-var Chart = require("chart.js");
 const ChartDataLabels = require("chartjs-plugin-datalabels");
+var Chart = require("chart.js");
 declare var Chart: any;
 
 /**
@@ -66,22 +67,24 @@ class ChartjsHelper {
     return percentage != "0.00" ? percentage + "%" : "";
   }
 
-    /**
-     * Add thousand separator in big numeric values
-     *
-     * @param value
-     * @param ctx
-     * @returns {string}
-     */
-    public static addThousandSeparator(value: number, ctx: any) {
-        let strValue = value.toString();
-        let strThousandSeparator = ".";
-        Lang.fetchSingleProperty("system", "numberStyleThousands", function(strText : string) {
-            strThousandSeparator = strText;
-        });
-        strValue = strValue.replace(/\B(?=(\d{3})+(?!\d))/g, strThousandSeparator);
-        return strValue;
-    }
+  /**
+   * Add thousand separator in big numeric values
+   *
+   * @param value
+   * @param ctx
+   * @returns {string}
+   */
+  public static addThousandSeparator(value: number, ctx: any) {
+    let strValue = value.toString();
+    let strThousandSeparator = ".";
+    Lang.fetchSingleProperty("system", "numberStyleThousands", function(
+      strText: string
+    ) {
+      strThousandSeparator = strText;
+    });
+    strValue = strValue.replace(/\B(?=(\d{3})+(?!\d))/g, strThousandSeparator);
+    return strValue;
+  }
 
   /**
    * Changes "0" values to empty string
@@ -118,38 +121,54 @@ class ChartjsHelper {
     // set chart area backgroundColor
     ctx.style.backgroundColor = chartOptions["backgroundColor"];
 
-        if (typeof (chartOptions['createImageLink']) !== 'undefined' && chartOptions['createImageLink']) {
-            chartData['options']['animation'] = {
-                onComplete: createExportLink
-            }
-        }
+    if (
+      typeof chartOptions["createImageLink"] !== "undefined" &&
+      chartOptions["createImageLink"]
+    ) {
+      chartData["options"]["animation"] = {
+        onComplete: createExportLink
+      };
+    }
 
-        if (typeof (chartOptions['notShowNullValues']) !== 'undefined' && chartOptions['notShowNullValues']) {
-            chartData['options']['plugins']['datalabels'] = {
-                formatter: function (value: number) {
-                    return ChartjsHelper.dataNotShowNullValues(value);
-                }
-            }
+    if (
+      typeof chartOptions["notShowNullValues"] !== "undefined" &&
+      chartOptions["notShowNullValues"]
+    ) {
+      chartData["options"]["plugins"]["datalabels"] = {
+        formatter: function(value: number) {
+          return ChartjsHelper.dataNotShowNullValues(value);
         }
+      };
+    }
 
-        if (typeof (chartOptions['percentageValues']) !== 'undefined' && chartOptions['percentageValues']) {
-            chartData['options']['plugins']['datalabels'] = {
-                formatter: function (value: number, ctx: any) {
-                    return ChartjsHelper.dataShowPercentage(value, ctx);
-                }
-            }
+    if (
+      typeof chartOptions["percentageValues"] !== "undefined" &&
+      chartOptions["percentageValues"]
+    ) {
+      chartData["options"]["plugins"]["datalabels"] = {
+        formatter: function(value: number, ctx: any) {
+          return ChartjsHelper.dataShowPercentage(value, ctx);
         }
+      };
+    }
 
-    if (typeof (chartOptions['addThousandSeparator']) !== 'undefined' && chartOptions['addThousandSeparator']) {
-            chartData['options']['scales']['xAxes'][0]['ticks']['userCallback'] = function (value: number, ctx: any) {
-                return ChartjsHelper.addThousandSeparator(value, ctx);
-            }
-            chartData['options']['scales']['yAxes'][0]['ticks']['userCallback'] = function (value: number, ctx: any) {
-                return ChartjsHelper.addThousandSeparator(value, ctx);
-            }
-        }
+    if (
+      typeof chartOptions["addThousandSeparator"] !== "undefined" &&
+      chartOptions["addThousandSeparator"]
+    ) {
+      chartData["options"]["scales"]["xAxes"][0]["ticks"][
+        "userCallback"
+      ] = function(value: number, ctx: any) {
+        return ChartjsHelper.addThousandSeparator(value, ctx);
+      };
+      chartData["options"]["scales"]["yAxes"][0]["ticks"][
+        "userCallback"
+      ] = function(value: number, ctx: any) {
+        return ChartjsHelper.addThousandSeparator(value, ctx);
+      };
+    }
 
-        chartData["options"]["onClick"] = function(evt: any) {
+    chartData["options"]["onClick"] = function(evt: any) {
       var item = this.getElementAtEvent(evt)[0];
       if (typeof item !== "undefined") {
         var datasetIndex = item._datasetIndex;

@@ -1,12 +1,12 @@
-import * as $ from "jquery";
+import $ from "jquery";
 import Lang from "../../../module_system/scripts/kajona/Lang";
 import Forms from "../../../module_system/scripts/kajona/Forms";
 import Ajax from "../../../module_system/scripts/kajona/Ajax";
 import "blueimp-tmpl";
 import "blueimp-file-upload";
 import "blueimp-file-upload/js/jquery.fileupload-ui.js";
-import DialogHelper = require("../../../module_v4skin/scripts/kajona/DialogHelper");
-import Messaging = require("../../../module_system/scripts/kajona/Messaging");
+import DialogHelper from "../../../module_v4skin/scripts/kajona/DialogHelper";
+import Messaging from "../../../module_system/scripts/kajona/Messaging";
 
 declare global {
   interface Window {
@@ -141,25 +141,49 @@ class UploadManager {
     );
   }
 
-    /**
-     * Query the backend to send all files to the archive
-     */
-    public fileArchiving(targetSystemId: string, alertTitle: string, alertBody: string, alertButton: string) {
-        let settings = this.settings;
-        let me = this;
-        DialogHelper.showConfirmationDialog(alertTitle, alertBody, alertButton, function(){
-            Ajax.genericAjaxCall("mediamanager", "documentArchiving", "&systemid="+settings.formData[0].value+"&folder="+settings.formData[2].value+"&target="+targetSystemId, function(e: any) {
-                if (e.status && e.status === "ok") {
-                    //in case of success, flush the list
-                    me.settings.baseElement.find('.files').empty();
-                    me.renderArchiveList();
+  /**
+   * Query the backend to send all files to the archive
+   */
+  public fileArchiving(
+    targetSystemId: string,
+    alertTitle: string,
+    alertBody: string,
+    alertButton: string
+  ) {
+    let settings = this.settings;
+    let me = this;
+    DialogHelper.showConfirmationDialog(
+      alertTitle,
+      alertBody,
+      alertButton,
+      function() {
+        Ajax.genericAjaxCall(
+          "mediamanager",
+          "documentArchiving",
+          "&systemid=" +
+            settings.formData[0].value +
+            "&folder=" +
+            settings.formData[2].value +
+            "&target=" +
+            targetSystemId,
+          function(e: any) {
+            if (e.status && e.status === "ok") {
+              //in case of success, flush the list
+              me.settings.baseElement.find(".files").empty();
+              me.renderArchiveList();
 
-                    // update messages
-                    Messaging.pollMessages();
-                }
-            }, null, null, "post", "json");
-        });
-    }
+              // update messages
+              Messaging.pollMessages();
+            }
+          },
+          null,
+          null,
+          "post",
+          "json"
+        );
+      }
+    );
+  }
 
   public renderArchiveList() {
     Ajax.loadUrlToElement(
