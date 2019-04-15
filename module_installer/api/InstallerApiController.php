@@ -10,7 +10,6 @@ use Kajona\Api\System\ApiControllerInterface;
 use Kajona\Installer\System\SamplecontentInstallerHelper;
 use Kajona\Packagemanager\System\PackagemanagerManager;
 use Kajona\Packagemanager\System\PackagemanagerMetadata;
-use Kajona\System\System\CacheManager;
 use Kajona\System\System\Config;
 use Kajona\System\System\Database;
 use Kajona\System\System\DbConnectionParams;
@@ -22,6 +21,8 @@ use PSX\Http\Environment\HttpContext;
 use PSX\Http\Exception\BadRequestException;
 use PSX\Http\Exception\InternalServerErrorException;
 use PSX\Http\Exception\NotFoundException;
+use Symfony\Component\Lock\Factory;
+use Symfony\Component\Lock\Store\FlockStore;
 
 /**
  * InstallerApiController
@@ -39,12 +40,6 @@ class InstallerApiController implements ApiControllerInterface
      * @var Database
      */
     protected $connection;
-
-    /**
-     * @inject system_cache_manager
-     * @var CacheManager
-     */
-    protected $cacheManager;
 
     /**
      * Endpoint which can be called to verify that we are actually talking to a valid AGP API
@@ -215,29 +210,22 @@ class InstallerApiController implements ApiControllerInterface
         $handler = $manager->getPackageManagerForPath($module->getStrPath());
 
         if ($handler->isInstallable()) {
-            $key = "install_" . $module->getStrTitle();
-            $state = $this->cacheManager->getValue($key);
+            $store = new FlockStore(_realpath_."project/temp/cache");
+            $factory = new Factory($store);
+            $lock = $factory->createLock("install-" . $module->getStrTitle());
 
-            if ($state === self::INSTALL_STATE_PENDING) {
-                return [
-                    "status" => "pending",
-                    "module" => $module->getStrTitle(),
-                ];
-            } elseif ($state === self::INSTALL_STATE_COMPLETED) {
-                return [
-                    "status" => "success",
-                    "module" => $module->getStrTitle(),
-                ];
+            $return = "";
+            $status = "locked";
+
+            if ($lock->acquire()) {
+                $return = $handler->installOrUpdate();
+                $status = "success";
+
+                $lock->release();
             }
 
-            $this->cacheManager->addValue($key, self::INSTALL_STATE_PENDING);
-
-            $return = $handler->installOrUpdate();
-
-            $this->cacheManager->addValue($key, self::INSTALL_STATE_COMPLETED);
-
             return [
-                "status" => "success",
+                "status" => $status,
                 "module" => $module->getStrTitle(),
                 "log" => $return
             ];
