@@ -6,6 +6,7 @@
 
 namespace Kajona\System\Admin\Formentries;
 
+use Kajona\Packagemanager\System\PackagemanagerManager;
 use Kajona\System\Admin\FormentryPrintableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\DropdownLoaderInterface;
@@ -14,6 +15,7 @@ use Kajona\System\System\Reflection;
 use Kajona\System\System\ServiceProvider;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\Validators\TextValidator;
+use Kajona\System\View\Components\Formentry\Dropdown\Dropdown;
 
 
 /**
@@ -40,6 +42,8 @@ class FormentryDropdown extends FormentryBase implements FormentryPrintableInter
     private $strAddons = "";
     private $strDataPlaceholder = "";
     private $bitRenderReset = false;
+
+    private $dataAttributes = [];
 
     public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
     {
@@ -73,7 +77,20 @@ class FormentryDropdown extends FormentryBase implements FormentryPrintableInter
                 );
         }
 
-        $strReturn .= $objToolkit->formInputDropdown($this->getStrEntryName(), $this->arrKeyValues, $this->getStrLabel(), $this->getStrValue(), "", !$this->getBitReadonly(), $this->getStrAddons(), $this->getStrDataPlaceholder(), $strOpener);
+
+        $dropdown = new Dropdown($this->getStrEntryName(), $this->getStrLabel(), $this->arrKeyValues, $this->getStrValue());
+        $dropdown->setReadOnly($this->getBitReadonly());
+        $dropdown->setOpener($strOpener);
+        $dropdown->setAddons($this->getStrAddons());
+
+        if (!empty($this->getStrDataPlaceholder())) {
+            $dropdown->setData('placeholder', $this->getStrDataPlaceholder());
+        }
+        foreach ($this->dataAttributes as $key => $val) {
+            $dropdown->setData($key, $val);
+        }
+
+        $strReturn .= $dropdown->renderComponent();
         return $strReturn;
     }
 
@@ -106,7 +123,9 @@ class FormentryDropdown extends FormentryBase implements FormentryPrintableInter
                 $loader = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_DROPDOWN_LOADER);
 
                 $arrParams = $this->getAnnotationParamsForCurrentProperty(self::STR_DDPROVIDER_ANNOTATION);
-                $arrDDValues = $loader->fetchValues($strDDProvider, is_array($arrParams) ? $arrParams : []);
+                if (($this->checkIfModuleExists($arrParams))) {
+                    $arrDDValues = $loader->fetchValues($strDDProvider, is_array($arrParams) ? $arrParams : []);
+                }
             } else {
                 // load values from the annotations
                 $strDDValues = $objReflection->getAnnotationValueForProperty($strSourceProperty, self::STR_DDVALUES_ANNOTATION);
@@ -122,6 +141,19 @@ class FormentryDropdown extends FormentryBase implements FormentryPrintableInter
                 $this->setArrKeyValues($arrDDValues);
             }
         }
+    }
+
+    /**
+     * @param array $arrModulInfo
+     * @return bool
+     */
+    private function checkIfModuleExists(array $arrModuleInfo)
+    {
+        $strModuleName = StringUtil::substring($arrModuleInfo['module'], strlen("module_"), strlen($arrModuleInfo['module']));
+        $objPackageManager = new PackagemanagerManager();
+        $objPackage = $objPackageManager->getPackage($strModuleName);
+
+        return !empty($objPackage);
     }
 
     /**
@@ -239,6 +271,25 @@ class FormentryDropdown extends FormentryBase implements FormentryPrintableInter
     {
         $this->bitRenderReset = $bitRenderReset;
     }
+
+    /**
+     * @return array
+     */
+    public function getDataAttributes(): array
+    {
+        return $this->dataAttributes;
+    }
+
+    /**
+     * @param array $dataAttributes
+     * @return FormentryDropdown
+     */
+    public function setDataAttributes(array $dataAttributes): FormentryDropdown
+    {
+        $this->dataAttributes = $dataAttributes;
+        return $this;
+    }
+
 
 
 }

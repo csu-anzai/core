@@ -7,10 +7,21 @@ import Dialog from "../../../module_v4skin/scripts/kajona/Dialog";
 const toastr = require("toastr");
 interface Accept {
   type: string;
-  module: string;
+}
+
+interface RedirectAction extends Accept {
+    target: string
+}
+
+interface AjaxAction extends Accept {
+    module: string;
   action: string;
   systemid: string;
-  target: string;
+  }
+
+interface UpdateStatusAction extends Accept {
+    systemid: string
+    icon: string;
 }
 
 interface Alert {
@@ -209,7 +220,7 @@ class Messaging {
    */
   private static getActionCallback($onAccept: Accept): Function {
     if ($onAccept && $onAccept.type === "redirect") {
-      return function() {
+      let data = <RedirectAction>$onAccept;return function() {
         Router.registerLoadCallback("alert_redirect", function() {
           $(".modal-backdrop.fade.in").remove();
           Messaging.pollMessages();
@@ -218,18 +229,37 @@ class Messaging {
         if (Messaging.dialog) {
           Messaging.dialog.hide();
         }
-        Router.loadUrl($onAccept.target);
+        Router.loadUrl(data.target);
       };
     } else if ($onAccept && $onAccept.type === "ajax") {
-      return function() {
+      let data = <AjaxAction>$onAccept;return function() {
         Ajax.genericAjaxCall(
-          $onAccept.module,
-          $onAccept.action,
-          $onAccept.systemid,
-          function() {
+          data.module,
+          data.action,
+          data.systemid,
+          function(resp : any) {
             // on ok we trigger the getUnreadCount again since the ajax call could have created
             // other alert messages
-            Messaging.pollMessages();
+            Messaging.pollMessages();// check whether the ajax call returns actions which we should execute
+                    let data = JSON.parse(resp);
+                    if (data.actions) {
+                        data.actions.forEach(function(action: Accept){
+                            let callback = Messaging.getActionCallback(action);
+                            callback();
+                        });
+                    }
+                });
+            };
+        } else if ($onAccept && $onAccept.type === 'update_status') {
+            let data = <UpdateStatusAction>$onAccept;
+
+            return function(){
+                // search for the specific status flag and update
+                $(".flow-status-icon").each(function(){
+                    let el = $(this).find(".navbar-link");
+                    if ($(this).data("systemid") == data.systemid) {
+                        el.html(data.icon);
+                    }
           }
         );
       };

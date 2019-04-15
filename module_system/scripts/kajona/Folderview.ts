@@ -107,7 +107,7 @@ class Folderview {
     var table = Util.getElementFromOpener(strElementName);
 
     var tbody = table.find("tbody");
-    if (tbody.length > 0) {
+    let maxAmount = table.data('max-values') > 0 ? table.data('max-values') : 500;if (tbody.length > 0) {
       // remove only elements which are in the arrAvailableIds array
       tbody.children().each(function() {
         var strId = $(this)
@@ -121,7 +121,11 @@ class Folderview {
 
       // add new elements
       for (var i = 0; i < arrItems.length; i++) {
-        var strEscapedTitle = $("<div></div>")
+if (table.find('tr').length > maxAmount) {
+                    break;
+                }
+
+                var strEscapedTitle = $("<div></div>")
           .text(arrItems[i].strDisplayName)
           .html();
         var strEscapedPath = $("<div></div>")
@@ -141,12 +145,13 @@ class Folderview {
           '[]" value="' +
           arrItems[i].strSystemId +
           '" data-kajona-initval="" /></td>';
-        html += '    <td class="icon-cell">';
+        if (strDeleteButton) {html += '    <td class="icon-cell">';
         html +=
           '        <a href="#" class="removeLink" onclick="V4skin.removeObjectListItem(this);return false">' +
           strDeleteButton +
           "</a>";
         html += "    </td>";
+                }
 
         if (arrItems[i].strEditLink) {
           html +=

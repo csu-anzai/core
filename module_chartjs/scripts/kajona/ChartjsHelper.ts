@@ -63,8 +63,25 @@ class ChartjsHelper {
       sum += data;
     });
     var percentage = ((value * 100) / sum).toFixed(2);
-    return percentage != "0" ? percentage + "%" : "";
+    return percentage != "0.00" ? percentage + "%" : "";
   }
+
+    /**
+     * Add thousand separator in big numeric values
+     *
+     * @param value
+     * @param ctx
+     * @returns {string}
+     */
+    public static addThousandSeparator(value: number, ctx: any) {
+        let strValue = value.toString();
+        let strThousandSeparator = ".";
+        Lang.fetchSingleProperty("system", "numberStyleThousands", function(strText : string) {
+            strThousandSeparator = strText;
+        });
+        strValue = strValue.replace(/\B(?=(\d{3})+(?!\d))/g, strThousandSeparator);
+        return strValue;
+    }
 
   /**
    * Changes "0" values to empty string
@@ -101,51 +118,38 @@ class ChartjsHelper {
     // set chart area backgroundColor
     ctx.style.backgroundColor = chartOptions["backgroundColor"];
 
-    // if (typeof (chartOptions['setDefaultTooltip']) == 'undefined' || !chartOptions['setDefaultTooltip']) {
-    //     chartData['options']['tooltips'] = {
-    //         enabled: true,
-    //         mode: 'single',
-    //
-    //         callbacks: {
-    //             label: function (tooltipItems, data) {
-    //                 return data.datasets[tooltipItems.datasetIndex].label + ' : ' + data.datasets[tooltipItems.datasetIndex].data[tooltipItems.index];
-    //             }
-    //         },
-    //     };
-    // }
-
-    if (
-      typeof chartOptions["createImageLink"] !== "undefined" ||
-      chartOptions["createImageLink"]
-    ) {
-      chartData["options"]["animation"] = {
-        onComplete: createExportLink
-      };
-    }
-
-    if (
-      typeof chartOptions["notShowNullValues"] !== "undefined" ||
-      chartOptions["notShowNullValues"]
-    ) {
-      chartData["options"]["plugins"]["datalabels"] = {
-        formatter: function(value: number) {
-          return ChartjsHelper.dataNotShowNullValues(value);
+        if (typeof (chartOptions['createImageLink']) !== 'undefined' && chartOptions['createImageLink']) {
+            chartData['options']['animation'] = {
+                onComplete: createExportLink
+            }
         }
-      };
-    }
 
-    if (
-      typeof chartOptions["percentageValues"] !== "undefined" ||
-      chartOptions["percentageValues"]
-    ) {
-      chartData["options"]["plugins"]["datalabels"] = {
-        formatter: function(value: number, ctx: any) {
-          return ChartjsHelper.dataShowPercentage(value, ctx);
+        if (typeof (chartOptions['notShowNullValues']) !== 'undefined' && chartOptions['notShowNullValues']) {
+            chartData['options']['plugins']['datalabels'] = {
+                formatter: function (value: number) {
+                    return ChartjsHelper.dataNotShowNullValues(value);
+                }
+            }
         }
-      };
-    }
 
-    chartData["options"]["onClick"] = function(evt: any) {
+        if (typeof (chartOptions['percentageValues']) !== 'undefined' && chartOptions['percentageValues']) {
+            chartData['options']['plugins']['datalabels'] = {
+                formatter: function (value: number, ctx: any) {
+                    return ChartjsHelper.dataShowPercentage(value, ctx);
+                }
+            }
+        }
+
+    if (typeof (chartOptions['addThousandSeparator']) !== 'undefined' && chartOptions['addThousandSeparator']) {
+            chartData['options']['scales']['xAxes'][0]['ticks']['userCallback'] = function (value: number, ctx: any) {
+                return ChartjsHelper.addThousandSeparator(value, ctx);
+            }
+            chartData['options']['scales']['yAxes'][0]['ticks']['userCallback'] = function (value: number, ctx: any) {
+                return ChartjsHelper.addThousandSeparator(value, ctx);
+            }
+        }
+
+        chartData["options"]["onClick"] = function(evt: any) {
       var item = this.getElementAtEvent(evt)[0];
       if (typeof item !== "undefined") {
         var datasetIndex = item._datasetIndex;

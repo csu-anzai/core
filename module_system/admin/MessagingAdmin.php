@@ -14,6 +14,7 @@ use Kajona\System\System\ArraySectionIterator;
 use Kajona\System\System\AuthenticationException;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
+use Kajona\System\System\Filesystem;
 use Kajona\System\System\Link;
 use Kajona\System\System\Messageproviders\MessageproviderExtendedInterface;
 use Kajona\System\System\Messageproviders\MessageproviderPersonalmessage;
@@ -112,6 +113,10 @@ JS;
 
             $bitAlwaysEnabled = $objOneProvider instanceof MessageproviderExtendedInterface && $objOneProvider->isAlwaysActive();
             $bitAlwaysMail = $objOneProvider instanceof MessageproviderExtendedInterface && $objOneProvider->isAlwaysByMail();
+
+            if ($bitAlwaysEnabled && $bitAlwaysMail) {
+                continue;
+            }
 
             $strClassname = StringUtil::replace("\\", "-", get_class($objOneProvider));
 
@@ -529,8 +534,24 @@ JS;
                 array($this->getLang("message_date"), dateToString($objMessage->getObjDate())),
                 array($this->getLang("message_type"), $objMessage->getObjMessageProvider()->getStrName()),
                 array($this->getLang("message_sender"), $objSender != null ? $objSender->getStrDisplayName() : ""),
-                array($this->getLang("message_reference"), $strReference),
             );
+
+            if (!empty($strReference)) {
+                $arrMetaData[] = [
+                    $this->getLang("message_reference"),
+                    $strReference
+                ];
+            }
+
+            $attachment = $objMessage->getStrAttachment();
+            if (!empty($attachment)) {
+                $fileName = pathinfo($attachment, PATHINFO_BASENAME);
+
+                $arrMetaData[] = [
+                    $this->getLang("message_attachment"),
+                    Link::getLinkAdmin("messaging", "downloadAttachment", ["systemid" => $objMessage->getSystemid()], $fileName),
+                ];
+            }
 
             $strReturn .= $this->objToolkit->dataTable(array(), $arrMetaData);
 
@@ -541,6 +562,26 @@ JS;
             return $strReturn;
         } else {
             return $this->getLang("commons_error_permissions");
+        }
+    }
+
+    /**
+     * @permissions view
+     */
+    protected function actionDownloadAttachment()
+    {
+        $message = $this->objFactory->getObject($this->getSystemid());
+        if ($message instanceof MessagingMessage) {
+            $attachment = $message->getStrAttachment();
+
+            if (!empty($attachment)) {
+                (new Filesystem())->streamFile($attachment);
+                exit;
+            } else {
+                throw new \RuntimeException("Attachment not available");
+            }
+        } else {
+            throw new \RuntimeException("Invalid systemid");
         }
     }
 

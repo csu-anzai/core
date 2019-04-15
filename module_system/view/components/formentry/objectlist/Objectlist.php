@@ -30,6 +30,7 @@ use Kajona\System\View\Components\Formentry\FormentryComponentAbstract;
  */
 class Objectlist extends FormentryComponentAbstract
 {
+    const MAX_VALUES = 500;
     /**
      * @var array
      */
@@ -58,6 +59,11 @@ class Objectlist extends FormentryComponentAbstract
 
     /** @var bool  */
     protected $showEditButton = false;
+
+    /**
+     * @var \Closure
+     */
+    protected $showDetailButton;
 
     /**
      * @param string $name
@@ -106,9 +112,13 @@ class Objectlist extends FormentryComponentAbstract
 
         $rows = [];
         $ids = [];
+        $count = 0;
         foreach ($this->items as $item) {
             /** @var $item Model */
             if ($item instanceof ModelInterface) {
+                if (++$count > self::MAX_VALUES) {
+                    continue;
+                }
                 $deleteAlt = Carrier::getInstance()->getObjLang()->getLang("commons_remove_assignment", "system");
                 $attributes = [
                     "href" => "#",
@@ -123,15 +133,25 @@ class Objectlist extends FormentryComponentAbstract
                     $editLink = Link::getLinkAdminDialog($item->getArrModule("modul"), "edit", ["systemid" => $item->getSystemid(), "form_element" => $this->name], $editLinkText, $editLinkText, "icon_edit", $item->getStrDisplayName());
                 }
 
+                $detailLink = "";
+                if ($this->showDetailButton instanceof \Closure) {
+                    $link = call_user_func_array($this->showDetailButton, [$item]);
+                    if (!empty($link)) {
+                        $detailLink = $link;
+                    }
+                }
+
                 $icon = is_array($item->getStrIcon()) ? $item->getStrIcon()[0] : $item->getStrIcon();
 
                 $rows[] = [
                     'systemid' => $item->getSystemid(),
                     'displayName' => html_entity_decode($this->getDisplayName($item)),
-                    'path' => $this->getPathName($item),
-                    'icon' => AdminskinHelper::getAdminImage($icon),
-                    'removeLink' => $removeLink,
-                    'editLink' => $editLink,
+                    'path'        => $this->getPathName($item),
+                    'icon'        => AdminskinHelper::getAdminImage($icon),
+                    'removeLink'  => $removeLink,
+                    'editLink'    => $editLink,
+                    'detailLink'  => $detailLink,
+
                 ];
                 $ids[] = $item->getSystemid();
             }
@@ -159,6 +179,7 @@ class Objectlist extends FormentryComponentAbstract
         $context["objectTypes"] = json_encode(implode(",", $this->objectTypes ?: []));
         $context["searchInputPlaceholder"] = $searchInputPlaceholder;
         $context["initval"] = implode(",", $ids);
+        $context["maxValues"] = self::MAX_VALUES;
 
         return $context;
     }
@@ -275,4 +296,11 @@ class Objectlist extends FormentryComponentAbstract
         $this->showEditButton = $showEditButton;
     }
 
+    /**
+     * @param \Closure|null $showDetailButton
+     */
+    public function setShowDetailButton(?\Closure $showDetailButton)
+    {
+        $this->showDetailButton = $showDetailButton;
+    }
 }

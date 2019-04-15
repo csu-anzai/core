@@ -234,6 +234,7 @@ class Mail
             $objMail->Host = $cfg->getConfig('smtp_host');
             $objMail->Port = $cfg->getConfig('smtp_port');
             $objMail->SMTPSecure = $cfg->getConfig('smtp_encryption');
+            $objMail->SMTPAutoTLS = $cfg->getConfig('smtp_auto_tls');
 
             if ($cfg->getConfig('smtp_auth_enabled') === true) {
                 $objMail->SMTPAuth = true;

@@ -11,6 +11,7 @@ namespace Kajona\Mediamanager\Admin;
 use Artemeon\Image\Image;
 use Artemeon\Image\Plugins\ImageCrop;
 use Artemeon\Image\Plugins\ImageRotate;
+use Kajona\Mediamanager\System\MediamanagerEventidentifier;
 use Kajona\Mediamanager\System\MediamanagerFile;
 use Kajona\Mediamanager\System\MediamanagerFileFilter;
 use Kajona\Mediamanager\System\MediamanagerLogbook;
@@ -21,6 +22,7 @@ use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\ArraySectionIterator;
 use Kajona\System\System\Carrier;
+use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Filesystem;
@@ -33,6 +35,7 @@ use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Rights;
+use Kajona\System\System\Root;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\UserUser;
 
@@ -1151,6 +1154,73 @@ HTML;
         }
 
         return json_encode(["status" => "ok", "target" => $strTarget, "moved" => $arrSynced]);
+    }
+
+    /**
+     * Copies all files to the archive folder and triggers an event which can be used by an archive system
+     *
+     * @return array
+     * @responseType json
+     * @throws Exception
+     * @permissions right1
+     */
+    protected function actionDocumentArchiving()
+    {
+        $object = $this->objFactory->getObject($this->getParam("target"));
+        if (!$object instanceof Root) {
+            return ["status" => "error", "error" => "Invalid target provided"];
+        }
+
+        $repo = Objectfactory::getInstance()->getObject($this->getSystemid());
+        if (!$repo instanceof MediamanagerRepo) {
+            return ["status" => "error", "error" => "Invalid repoid provided"];
+        }
+
+        $folder = MediamanagerFile::getFileForPath($this->getSystemid(), $repo->getStrPath()."/".$this->getParam("folder"));
+        if ($folder == null || !$folder->rightView()) {
+            return ["status" => "error", "error" => "Provided folder does not exist"];
+        }
+
+        $filter = new MediamanagerFileFilter();
+        $filter->setIntFileType(MediamanagerFile::$INT_TYPE_FILE);
+        $files = MediamanagerFile::getObjectListFiltered($filter, $folder->getSystemid());
+        if (count($files) == 0) {
+            return ["status" => "error", "error" => "No files available"];
+        }
+
+        // create a new target folder
+        $fileSystem = new Filesystem();
+        $targetDir = "files/archive/" . $object->getSystemid();
+
+        if (!is_dir($targetDir)) {
+            $fileSystem->folderCreate($targetDir, true);
+        }
+
+        $archived = [];
+        /** @var MediamanagerFile $currentFile */
+        foreach ($files as $currentFile) {
+            $fileName = basename($currentFile->getStrFilename());
+            $fileSystem->fileRename($currentFile->getStrFilename(), $targetDir."/".$fileName);
+            $archived[] = $fileName;
+        }
+
+        //and sync
+        MediamanagerFile::syncRecursive($folder->getSystemid(), $folder->getStrFilename());
+        //reset permissions to read only
+        $newRoot = MediamanagerFile::getFileForPath($this->getSystemid(), $targetDir);
+        if ($newRoot !== null) {
+            foreach ([Rights::$STR_RIGHT_EDIT, Rights::$STR_RIGHT_DELETE, Rights::$STR_RIGHT_RIGHT1] as $right) {
+                $groups = $this->objRights->getArrayRights($newRoot->getSystemid(), $right);
+                foreach ($groups[$right] as $group) {
+                    $this->objRights->removeGroupFromRight($group, $newRoot->getSystemid(), $right);
+                }
+            }
+        }
+
+        // send event
+        CoreEventdispatcher::getInstance()->notifyGenericListeners(MediamanagerEventidentifier::EVENT_MEDIAMANAGER_FILES_ARCHIVED, [$object, $targetDir]);
+
+        return ["status" => "ok", "target" => $targetDir, "archived" => $archived];
     }
 
     /**

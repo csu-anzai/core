@@ -38,15 +38,16 @@ class Forms {
       objHintFormGroup.slideUp(0);
     }
 
-    //reset value
-    if (isResetValue && objField.attr("id")) {
-      objField.find("input[type=checkbox]").each(function() {
-        $(this).prop("checked", false);
-      });
-
-      objField.val("");
+        //reset value
+        if (isResetValue) {
+            objFormGroup.find('input, textarea, select').each(function() {
+                $(this).val('');
+                if ($(this).is(':checkbox')) {
+                    $(this).prop("checked", false);
+                }
+            });
+        }
     }
-  }
 
   /**
    * Shows a field in the form
@@ -80,7 +81,7 @@ class Forms {
     objField = Util.getElement(objField);
 
     if (
-      $("#" + objField.attr("id") + "_upl") &&
+      $("#" + objField.attr("id") + "_upl").length > 0 &&
       $("#" + objField.attr("id") + "_upl").fileupload
     ) {
       $("#" + objField.attr("id") + "_upl").fileupload("disable");
@@ -104,7 +105,7 @@ class Forms {
     objField = Util.getElement(objField);
 
     if (
-      $("#" + objField.attr("id") + "_upl") &&
+      $("#" + objField.attr("id") + "_upl").length > 0 &&
       $("#" + objField.attr("id") + "_upl").fileupload
     ) {
       $("#" + objField.attr("id") + "_upl").fileupload("enable");
@@ -352,7 +353,7 @@ class Forms {
       Messaging.setPollingEnabled(true);
     });
 
-    Router.loadUrl(objForm.action);
+    Router.defaultRoutieCallback(objForm.action);
 
     return false;
   }
