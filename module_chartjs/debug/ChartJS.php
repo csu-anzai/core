@@ -19,6 +19,7 @@ class ChartJS
         echo "\tcreating a few charts...\n";
 
         //JS-Imports for minimal system setup
+        echo "<script type=\"text/javascript\">KAJONA_LANGUAGE = 'de'</script>\n";
         echo "<script type=\"text/javascript\">KAJONA_WEBPATH = '" . _webpath_ . "'; KAJONA_BROWSER_CACHEBUSTER = '" . SystemSetting::getConfigValue("_system_browser_cachebuster_") . "';</script>\n";
         echo "<script type=\"text/javascript\">KAJONA_PHARMAP = " . json_encode(array_values(\Kajona\System\System\Classloader::getInstance()->getArrPharModules())) . ";</script>";
         echo "<script language=\"javascript\" type=\"text/javascript\" src=\"" . _webpath_ . Resourceloader::getInstance()->getCorePathForModule("module_system") . "/module_system/scripts/agp.min.js\"></script>";
@@ -293,6 +294,18 @@ class ChartJS
         $objGraph->setAsHorizontalInLineStackedChart(true);
         echo $objGraph->renderGraph();
         // ==== JQPLOT VS CHARTJS == END
+
+        /** @var GraphChartjs $objGraph */
+        $objGraph = GraphFactory::getGraphInstance(GraphFactory::$STR_TYPE_CHARTJS);
+        $objGraph->addLinePlot(array(8112, 12000, 22000, 4000), "");
+        $objGraph->addLinePlot(array(11500, 2500, 330, 4780), "");
+        $objGraph->addLinePlot(array(45880, 7100, 1000, 20000), "");
+        $objGraph->setBitRenderLegend(true);
+        $objGraph->setStrBackgroundColor("#F0F0F0");
+        $objGraph->setStrGraphTitle("19. Test thousand Separator");
+        $objGraph->setArrXAxisTickLabels(array("5000", "6000", "7000", "8000"));
+        $objGraph->setShowThousandSeparatorAxis();
+        echo '<div style="width: 600px; height: 600px">' . $objGraph->renderGraph() . '</div>';
 
     }
 }

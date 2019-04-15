@@ -13,6 +13,13 @@
 
     There may be configured multiple ldap sources, each identified by the numerical array key.
     Do not change the key as soon as the provider os being used, otherwise mapped users and groups may be wrong.
+
+    The ip or server name of the ldap server. this may either be plain, or by passing a connection string.
+    In case you need ldaps, make sure to prepend ldaps:// and append the :port, pass null as the explicit ldap port
+    Examples:
+           $config[0]["ldap_server"] = "ldaps://192.168.60.200:636"; (port must be null)
+           $config[0]["ldap_server"] = "ldap://192.168.60.200";      (port may be null)
+           $config[0]["ldap_server"] = "192.168.60.200";             (port may be null)
 */
 
 
@@ -21,7 +28,9 @@ $config = array();
 $config[0] = array();
 //a readable name to identify the server within the GUI
 $config[0]["ldap_alias"]                           = "Server 1";
+//the ip or server name of the ldap server. this may either be plain, or by passing a connection string.
 $config[0]["ldap_server"]                          = "192.168.60.206";
+//port, must be null if the port is added to the connection string
 $config[0]["ldap_port"]                            = 389;
 
 //access configuration for the kernel in order to access the directory.

@@ -119,8 +119,10 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
              */
             foreach ($this->getArrValidationFormErrors() as $key => $error) {
                 $fieldKey = StringUtil::replace($this->getStrFormname() . "_", "", $key);
-                $errorField2Value[$fieldKey] = $this->getField($fieldKey)->getStrValue();
-                $this->getField($fieldKey)->setStrValue("");
+                if ($this->getField($fieldKey) !== null) {
+                    $errorField2Value[$fieldKey] = $this->getField($fieldKey)->getStrValue();
+                    $this->getField($fieldKey)->setStrValue("");
+                }
             }
             $this->updateSourceObject();
 

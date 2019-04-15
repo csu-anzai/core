@@ -27,20 +27,23 @@ class AdminBatchaction
     private $strTargetUrl;
     private $bitRenderInfo;
     private $strOnClickHandler = "";
+    private $reloadOnFinish = "";
 
-    public function __construct($strIcon, $strTargetUrl, $strTitle, $bitRenderInfo = false)
+    public function __construct($strIcon, $strTargetUrl, $strTitle, $bitRenderInfo = false, $reloadOnFinish = false)
     {
         $this->strIcon = $strIcon;
         $this->strTargetUrl = $strTargetUrl;
         $this->strTitle = $strTitle;
         $this->bitRenderInfo = $bitRenderInfo;
+        $this->reloadOnFinish = $reloadOnFinish;
         $this->updateOnClick();
     }
 
     private function updateOnClick()
     {
-        $this->strOnClickHandler = "Lists.triggerAction('{$this->strTitle}', '{$this->strTargetUrl}', " . ($this->getBitRenderInfo() ? "1" : "0") . ");";
+        $this->strOnClickHandler = "Lists.triggerAction('{$this->strTitle}', '{$this->strTargetUrl}', " . ($this->getBitRenderInfo() ? "1" : "0") . ", ".($this->reloadOnFinish ? 'true' : 'false').");";
     }
+
 
     public function setStrIcon($strIcon)
     {

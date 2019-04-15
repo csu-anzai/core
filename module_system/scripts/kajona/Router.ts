@@ -60,7 +60,11 @@ class Router {
   public static markerElements: MarkedElements = Router.markedElements;
 
   public static init() {
-    routie("*", function(url: string) {
+    routie("*", Router.defaultRoutieCallback);
+    }
+
+
+    public static defaultRoutieCallback(url: string) {
       // in case we receive an absolute url with no hash redirect the user to this url
       // since we cant resolve this url to a hash route
       if (url.indexOf(KAJONA_WEBPATH) === 0 && url.indexOf("/#") === -1) {
@@ -107,7 +111,7 @@ class Router {
 
         Ajax.loadUrlToElement("#moduleOutput", objUrl.url, null, true);
       }
-    });
+
   }
 
   public static generateUrl(url: string) {
@@ -173,7 +177,7 @@ class Router {
       strUrlToLoad += "&systemid=" + arrSections[2];
     }
 
-    strUrlToLoad += "&" + strParams;
+    if (strParams != '') {strUrlToLoad += "&" + strParams;}
     strUrlToLoad += "&contentFill=1";
 
     return { url: strUrlToLoad, module: arrSections[0] };

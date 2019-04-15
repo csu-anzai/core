@@ -39,6 +39,15 @@ class FormentryMultiUpload extends FormentryBase implements FormentryPrintableIn
     private $showVersioning = true;
     private $multiUpload = true;
 
+    /**
+     * @var bool
+     */
+    private $showArchive = false;
+
+    /**
+     * @var string
+     */
+    private $targetSystemId;
 
     /**
      * @inheritDoc
@@ -107,7 +116,7 @@ class FormentryMultiUpload extends FormentryBase implements FormentryPrintableIn
         }
 
         //and render the multiupload fields
-        $strReturn .= $objToolkit->formInputUploadInline($this->getStrEntryName(), $this->getStrLabel(), $objRepo, $this->getStrValue(), $this->getBitReadonly(), $this->getShowVersioning(), $this->isMultiUpload());
+        $strReturn .= $objToolkit->formInputUploadInline($this->getStrEntryName(), $this->getStrLabel(), $objRepo, $this->getStrValue(), $this->getBitReadonly(), $this->getShowVersioning(), $this->isMultiUpload(), $this->isShowArchive(), $this->getTargetSystemId());
 
         return $strReturn;
     }
@@ -237,6 +246,35 @@ class FormentryMultiUpload extends FormentryBase implements FormentryPrintableIn
         return $this;
     }
 
-    
+    /**
+     * @return bool
+     */
+    public function isShowArchive(): bool
+    {
+        return $this->showArchive;
+    }
 
+    /**
+     * @param bool $showArchive
+     */
+    public function setShowArchive(bool $showArchive)
+    {
+        $this->showArchive = $showArchive;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTargetSystemId()
+    {
+        return $this->targetSystemId;
+    }
+
+    /**
+     * @param string $targetSystemId
+     */
+    public function setTargetSystemId(string $targetSystemId)
+    {
+        $this->targetSystemId = $targetSystemId;
+    }
 }

@@ -55,6 +55,8 @@ use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\Validators\EmailValidator;
 use Kajona\System\System\VersionableInterface;
+use Kajona\System\View\Components\Formentry\Datesingle\Datesingle;
+use Kajona\System\View\Components\Formentry\Datetime\Datetime;
 use Kajona\System\View\Components\Formentry\Buttonbar\Buttonbar;
 use Kajona\System\View\Components\Formentry\Dropdown\Dropdown;
 use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
@@ -1601,6 +1603,20 @@ JS;
         $radioGroup = new Radiogroup("radiogroup_disabled", "Radiogroup (disabled)", range(0, 10), 5);
         $radioGroup->setReadOnly(true);
         $result[] = $radioGroup;
+
+        $dateSingle = new Datesingle("datesingle", "Datesingle", new Date());
+        $result[] = $dateSingle;
+
+        $dateSingle = new Datesingle("datesingle_readonly", "Datesingle (readonly)", new Date());
+        $dateSingle->setReadOnly(true);
+        $result[] = $dateSingle;
+
+        $dateTime = new Datetime("datetime", "Datetime", new Date());
+        $result[] = $dateTime;
+
+        $dateTime = new Datetime("datetime_readonly", "Datetime (readonly)", new Date());
+        $dateTime->setReadOnly(true);
+        $result[] = $dateTime;
 
         $inputDropdown = new Dropdown("input_dropdown", "Dropdown", range(0, 10), 5);
         $result[] = $inputDropdown;

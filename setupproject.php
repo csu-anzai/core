@@ -15,7 +15,7 @@ class class_project_setup
 
         self::$strRealPath = __DIR__ . "/../";
 
-        echo "<b>Kajona V7 project setup.</b>\nCreates the folder-structure required to build a new project.\n\n";
+        echo "<b>ARTEMEON core V7 project setup.</b>\nCreates the folder-structure required to build a new project.\n\n";
 
         $strCurFolder = __DIR__;
 
@@ -107,6 +107,8 @@ class class_project_setup
         self::createDenyHtaccess("/project/.htaccess");
         self::createDenyHtaccess("/files/.htaccess");
 
+        self::createTokenKey();
+        self::creaeRootGitIgnore();
         self::loadNpmDependencies();
         self::scanComposer();
         self::buildSkinStyles();
@@ -115,6 +117,22 @@ class class_project_setup
         echo "\n<b>Done.</b>\nIf everything went well, <a href=\"../installer.php\">open the installer</a>\n";
     }
 
+
+    private static function creaeRootGitIgnore()
+    {
+        if (is_file(self::$strRealPath . "/.gitignore")) {
+            return;
+        }
+        $content = <<<TEXT
+project/temp
+project/vendor
+project/log
+project/dbdumps
+files/cache
+TEXT;
+        file_put_contents(self::$strRealPath . "/.gitignore", $content);
+
+    }
 
     private static function createBinReadme()
     {
@@ -167,6 +185,15 @@ TEXT;
                 self::copyFolder($strSourceFolder . "/" . $strOneEntry, $strTargetFolder . "/" . $strOneEntry, $arrExcludeSuffix);
             }
         }
+    }
+
+    private static function createTokenKey()
+    {
+        // generate also token file for the installer api
+        echo "Generate token key\n";
+
+        $tokenFile = self::$strRealPath . "project/token.key";
+        file_put_contents($tokenFile, bin2hex(random_bytes(16)));
     }
 
     private static function createDenyHtaccess($strPath)
