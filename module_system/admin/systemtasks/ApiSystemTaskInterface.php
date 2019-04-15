@@ -43,7 +43,8 @@ interface ApiSystemTaskInterface
     public function getGroupIdentifier();
 
     /**
-     * Returns the form generator for this system task
+     * Returns the form generator for this system task. The execute method expects a JSON object which was described
+     * by this form
      *
      * @return AdminFormgenerator|null
      */
