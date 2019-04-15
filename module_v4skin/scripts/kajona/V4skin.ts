@@ -5,7 +5,7 @@ import "bootstrap-datepicker/dist/js/bootstrap-datepicker.min";
 import "bootstrap-datepicker/dist/locales/bootstrap-datepicker.de.min.js";
 import "bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min";
 import "bootstrap-switch";
-import "../jquery/jquery.floatThead.min.js";
+import "floatthead";
 import Messaging from "./../../../module_system/scripts/kajona/Messaging";
 import Ajax from "../../../module_system/scripts/kajona/Ajax";
 import Lang from "../../../module_system/scripts/kajona/Lang";
