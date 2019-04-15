@@ -133,6 +133,12 @@ class InstallerApiController implements ApiControllerInterface
      */
     public function writeConfig($body)
     {
+        $configFile = _realpath_."project/module_system/system/config/config.php";
+
+        if (is_file($configFile)) {
+            throw new InternalServerErrorException("Config is already written");
+        }
+
         $available = $this->checkConnection(
             $body["driver"] ?? null,
             $body["hostname"] ?? null,
@@ -154,7 +160,6 @@ class InstallerApiController implements ApiControllerInterface
             $content.= "  \$config['dbport']               = '".$body["port"]."';                       //Database port \n";
             $content.= "\n";
 
-            $configFile = _realpath_."project/module_system/system/config/config.php";
             $result = file_put_contents($configFile, $content);
         } else {
             $result = false;
