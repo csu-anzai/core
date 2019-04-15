@@ -1,5 +1,4 @@
-import * as $ from "jquery";
-import "../../../module_v4skin/scripts/bootstrap/bootstrap.min";
+import $ from "jquery";
 
 /**
  * Module to handle the general quickhelp entry

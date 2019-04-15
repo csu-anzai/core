@@ -1,6 +1,6 @@
 import * as $ from "jquery";
 import "jquery-ui.custom";
-import "../bootstrap/bootstrap.min.js";
+import "bootstrap/dist/js/bootstrap.min.js";
 import "bootstrap-datepicker/dist/js/bootstrap-datepicker.min";
 import "bootstrap-datepicker/dist/locales/bootstrap-datepicker.de.min.js";
 import "bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min";

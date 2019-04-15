@@ -1,6 +1,4 @@
-import * as $ from "jquery";
-import "../bootstrap/bootstrap.min";
-// import "bootstrap";
+import $ from "jquery";
 import Router from "../../../module_system/scripts/kajona/Router";
 import Util from "../../../module_system/scripts/kajona/Util";
 import Folderview from "../../../module_system/scripts/kajona/Folderview";
