@@ -50,6 +50,11 @@ class SystemtaskFlushcache extends SystemtaskBase implements AdminSystemtaskInte
      */
     public function executeTask()
     {
+
+        if (!SystemModule::getModuleByName("system")->rightRight2()) {
+            return $this->getLang("commons_error_permissions");
+        }
+
         //increase the cachebuster, so browsers are forced to reload JS and CSS files
         $objCachebuster = SystemSetting::getConfigByName("_system_browser_cachebuster_");
         $objCachebuster->setStrValue((int)$objCachebuster->getStrValue() + 1);
@@ -71,7 +76,12 @@ class SystemtaskFlushcache extends SystemtaskBase implements AdminSystemtaskInte
      */
     public function execute($body)
     {
-        return $this->executeTask();
+        $type = isset($body["type"]) ? intval($body["type"]) : null;
+        $namespace = isset($body["namespace"]) ? intval($body["namespace"]) : CacheManager::NS_BOOTSTRAP;
+
+        CacheManager::getInstance()->flushCache($type, $namespace);
+
+        return $this->objToolkit->getTextRow($this->getLang("systemtask_flushcache_success"));
     }
 
     /**

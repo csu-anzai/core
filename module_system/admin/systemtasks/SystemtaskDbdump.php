@@ -57,6 +57,11 @@ class SystemtaskDbdump extends SystemtaskBase implements AdminSystemtaskInterfac
      */
     public function executeTask()
     {
+
+        if (!SystemModule::getModuleByName("system")->rightRight2()) {
+            return $this->getLang("commons_error_permissions");
+        }
+
         if ($this->getParam("filenametodownload") != "" && Carrier::getInstance()->getObjSession()->isSuperAdmin()) {
             $objFilesytem = new Filesystem();
             $objFilesytem->streamFile("/project/dbdumps/".$this->getParam("filenametodownload"));
@@ -83,7 +88,16 @@ class SystemtaskDbdump extends SystemtaskBase implements AdminSystemtaskInterfac
      */
     public function execute($body)
     {
-        return $this->executeTask();
+        if (isset($body["excludedtables"])) {
+            $excludeTables = explode(",", $body["excludedtables"]);
+        } else {
+            $excludeTables = [];
+        }
+
+        $connection = Carrier::getInstance()->getObjDB();
+        $connection->dumpDb($excludeTables);
+
+        return $this->getLang("systemtask_dbexport_success");
     }
 
     /**
