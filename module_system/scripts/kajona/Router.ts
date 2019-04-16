@@ -1,10 +1,10 @@
-import * as $ from "jquery";
+import $ from "jquery";
 import Quickhelp from "./Quickhelp";
 import Tooltip from "./Tooltip";
 import Ajax from "./Ajax";
 import Util from "./Util";
 import Forms from "./Forms";
-import routie from "../routie/routie.min";
+import routie from "routie";
 declare global {
   interface Window {
     routie: any;
@@ -61,57 +61,55 @@ class Router {
 
   public static init() {
     routie("*", Router.defaultRoutieCallback);
+  }
+
+  public static defaultRoutieCallback(url: string) {
+    // in case we receive an absolute url with no hash redirect the user to this url
+    // since we cant resolve this url to a hash route
+    if (url.indexOf(KAJONA_WEBPATH) === 0 && url.indexOf("/#") === -1) {
+      location.href = url;
+      return;
     }
 
+    var objUrl = Router.generateUrl(url);
 
-    public static defaultRoutieCallback(url: string) {
-      // in case we receive an absolute url with no hash redirect the user to this url
-      // since we cant resolve this url to a hash route
-      if (url.indexOf(KAJONA_WEBPATH) === 0 && url.indexOf("/#") === -1) {
-        location.href = url;
-        return;
-      }
+    if (!objUrl) {
+      return;
+    }
 
-      var objUrl = Router.generateUrl(url);
+    Router.cleanPage();
+    //moduleNavigation.setModuleActive(objUrl.module);
 
-      if (!objUrl) {
-        return;
-      }
+    Router.applyLoadCallbacks();
 
-      Router.cleanPage();
-      //moduleNavigation.setModuleActive(objUrl.module);
-
-      Router.applyLoadCallbacks();
-
-      //split between post and get
-      if (Router.markedElements.forms.submittedEl != null) {
-        var data = $(Router.markedElements.forms.submittedEl).serialize();
-        Router.markedElements.forms.submittedEl = null;
-        Router.markedElements.forms.monitoredEl = null;
-        Ajax.loadUrlToElement(
-          "#moduleOutput",
-          objUrl.url,
-          data,
-          false,
-          "POST",
-          function() {
-            Router.applyFormCallbacks();
-          }
-        );
-      } else {
-        if (Router.markedElements.forms.monitoredEl != null) {
-          if (Forms.hasChanged(Router.markedElements.forms.monitoredEl)) {
-            var doLeave = confirm(Forms.leaveUnsaved);
-            if (!doLeave) {
-              return;
-            }
-            Router.markedElements.forms.monitoredEl = null;
-          }
+    //split between post and get
+    if (Router.markedElements.forms.submittedEl != null) {
+      var data = $(Router.markedElements.forms.submittedEl).serialize();
+      Router.markedElements.forms.submittedEl = null;
+      Router.markedElements.forms.monitoredEl = null;
+      Ajax.loadUrlToElement(
+        "#moduleOutput",
+        objUrl.url,
+        data,
+        false,
+        "POST",
+        function() {
+          Router.applyFormCallbacks();
         }
-
-        Ajax.loadUrlToElement("#moduleOutput", objUrl.url, null, true);
+      );
+    } else {
+      if (Router.markedElements.forms.monitoredEl != null) {
+        if (Forms.hasChanged(Router.markedElements.forms.monitoredEl)) {
+          var doLeave = confirm(Forms.leaveUnsaved);
+          if (!doLeave) {
+            return;
+          }
+          Router.markedElements.forms.monitoredEl = null;
+        }
       }
 
+      Ajax.loadUrlToElement("#moduleOutput", objUrl.url, null, true);
+    }
   }
 
   public static generateUrl(url: string) {
@@ -177,7 +175,9 @@ class Router {
       strUrlToLoad += "&systemid=" + arrSections[2];
     }
 
-    if (strParams != '') {strUrlToLoad += "&" + strParams;}
+    if (strParams != "") {
+      strUrlToLoad += "&" + strParams;
+    }
     strUrlToLoad += "&contentFill=1";
 
     return { url: strUrlToLoad, module: arrSections[0] };
