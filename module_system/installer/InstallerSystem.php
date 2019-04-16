@@ -607,6 +607,10 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         if($arrModule["module_version"] == "7.0.3") {
             $strReturn .= $this->update_703_704();
         }
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.0.4") {
+            $strReturn .= $this->update_704_705();
+        }
 
         return $strReturn."\n\n";
     }
@@ -1004,6 +1008,19 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         }
 
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.4");
+
+        return $strReturn;
+    }
+
+
+    private function update_704_705()
+    {
+        $strReturn = "Updating to 7.0.5...\n";
+
+        $strReturn .= "Updating messages schema".PHP_EOL;
+        $this->objDB->changeColumn("messages", "message_title", "message_title", DbDatatypes::STR_TYPE_CHAR500);
+
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.5");
 
         return $strReturn;
     }

@@ -41,7 +41,7 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
     /**
      * @var string
      * @tableColumn messages.message_title
-     * @tableColumnDatatype char254
+     * @tableColumnDatatype char500
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      * @fieldLabel message_subject
      * @fieldMandatory
@@ -420,7 +420,7 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
      */
     public function setStrTitle($strTitle)
     {
-        $this->strTitle = strip_tags($strTitle);
+        $this->strTitle = StringUtil::truncate(strip_tags($strTitle), 490);
     }
 
     /**
