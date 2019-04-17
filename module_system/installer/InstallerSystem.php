@@ -511,7 +511,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         }
 
         $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
-        if($arrModule["module_version"] == "7.0.3" || $arrModule["module_version"] == "7.0.4") {
+        if($arrModule["module_version"] == "7.0.3" || $arrModule["module_version"] == "7.0.4"  || $arrModule["module_version"] == "7.0.5") {
             $strReturn .= $this->update_703_71();
         }
 
@@ -794,6 +794,10 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $strReturn = "Updating to 7.1.5...".PHP_EOL;
         $this->objDB->changeColumn("agp_user_log", "user_log_ip", "user_log_ip", DbDatatypes::STR_TYPE_CHAR254);
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.5");
+
+        $strReturn .= "Updating messages schema".PHP_EOL;
+        $this->objDB->changeColumn("agp_messages", "message_title", "message_title", DbDatatypes::STR_TYPE_CHAR500);
+
 
         return $strReturn;
     }
