@@ -63,7 +63,7 @@ class SystemtaskFlushcache extends SystemtaskBase implements AdminSystemtaskInte
         $intType = (int) $this->getParam("cache_source");
         $strNamespace = (int) $this->getParam("cache_namespace");
         if ($intType > 0) {
-            CacheManager::getInstance()->flushCache($intType, $strNamespace);
+            CacheManager::getInstance()->flushCache($intType, $strNamespace, true);
 
             return $this->objToolkit->getTextRow($this->getLang("systemtask_flushcache_success"));
         }
