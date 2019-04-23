@@ -14,6 +14,7 @@ import WorkingIndicator = require("../../../module_system/scripts/kajona/Working
 import Breadcrumb = require("../../../module_system/scripts/kajona/Breadcrumb");
 
 class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
+    private keepUi: boolean = false;
     public minLength: number = 0;
 
     public delay: number = 500;
@@ -26,7 +27,14 @@ class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
         noResults: '',
         results: function() {return ''}
     };
-
+    public setKeepUi = (val: boolean) => {
+     this.keepUi = val;
+    };
+    public setFocusOutListener = (input: HTMLElement) => {
+     input.addEventListener("blur", () => {
+       $("ul.ui-autocomplete").hide();
+     });
+    };
     public search: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
         //If input field changes -> reset hidden id field
         var $objCur = $(this);
@@ -51,9 +59,13 @@ class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
     };
 
     public focus: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
-        return false;
+        return true;
     };
-
+    public close: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
+    if (this.keepUi) {
+      $("ul.ui-autocomplete").show();
+    }
+    }.bind(this);
     public select: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
         if(ui.item) {
             var $objCur = $(this);
