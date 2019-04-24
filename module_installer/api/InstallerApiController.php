@@ -204,14 +204,14 @@ class InstallerApiController implements ApiControllerInterface
             throw new \RuntimeException("No module provided");
         }
 
-        ResponseObject::getInstance()->setObjEntrypoint(RequestEntrypointEnum::INSTALLER());
-
         $manager = new PackagemanagerManager();
 
         $module = $manager->getPackage($body["module"]);
         if (!$module instanceof PackagemanagerMetadata) {
             throw new NotFoundException("Module not found");
         }
+
+        ResponseObject::getInstance()->setObjEntrypoint(RequestEntrypointEnum::INSTALLER());
 
         $handler = $manager->getPackageManagerForPath($module->getStrPath());
 
