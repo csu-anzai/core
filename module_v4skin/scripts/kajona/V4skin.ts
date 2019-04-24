@@ -15,6 +15,7 @@ import Breadcrumb = require("../../../module_system/scripts/kajona/Breadcrumb");
 
 class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
     private keepUi: boolean = false;
+    private autoCompleteListeContainer : string ="";
     public minLength: number = 0;
 
     public delay: number = 500;
@@ -27,13 +28,30 @@ class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
         noResults: '',
         results: function() {return ''}
     };
-    public setKeepUi = (val: boolean) => {
-     this.keepUi = val;
+    /**
+     * Disables autoclose after selecting an element from the autocompelte list
+     *
+     * @param input
+     * @param autoCompleteListeContainer
+     */
+    public enableKeepUi = (input: HTMLElement , autoCompleteListeContainer : string)=>{
+     this.keepUi = true ;
+     this.autoCompleteListeContainer = autoCompleteListeContainer ;
+     input.addEventListener("blur", this.inputOnBlur);
     };
-    public setFocusOutListener = (input: HTMLElement) => {
-     input.addEventListener("blur", () => {
-       $("ul.ui-autocomplete").hide();
-     });
+    /**
+     * Enables autoclose after selecting an element from the autocompelte list (default behavior)
+     *
+     * @param input
+     * @param autoCompleteListeContainer
+     */
+    public disableKeepUi = (input: HTMLElement )=>{
+      this.keepUi = false ;
+      this.autoCompleteListeContainer ="";
+      input.removeEventListener("blur" , this.inputOnBlur) ;
+    };
+    private inputOnBlur = ()=>{
+        $("#"+this.autoCompleteListeContainer).hide();
     };
     public search: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
         //If input field changes -> reset hidden id field
@@ -62,8 +80,8 @@ class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
         return true;
     };
     public close: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
-    if (this.keepUi) {
-      $("ul.ui-autocomplete").show();
+    if (this.keepUi && this.autoCompleteListeContainer!=="") {
+      $("#"+this.autoCompleteListeContainer).show();
     }
     }.bind(this);
     public select: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {

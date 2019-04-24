@@ -408,14 +408,14 @@ class ToolkitAdmin extends Toolkit
                                 success: response
                             });
                         };
-                            objConfig.setKeepUi(true);
-                            objConfig.setFocusOutListener($strName) ;
+                 
                         $('#".$strName."').autocomplete(objConfig).data( 'ui-autocomplete' )._renderItem = function( ul, item ) {
                             return $( '<li></li>' )
                                 .data('ui-autocomplete-item', item)
                                 .append( '<div class=\'ui-autocomplete-item\' >'+item.icon+item.title+'</div>' )
                                 .appendTo( ul );
                         } ;
+                        objConfig.enableKeepUi($strName , $('#".$strName."').autocomplete('widget').attr('id')) ;
                     });
                 });
 	        </script>
