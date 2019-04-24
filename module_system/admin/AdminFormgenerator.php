@@ -46,7 +46,7 @@ use Kajona\System\View\Components\Tabbedcontent\Tabbedcontent;
  * @since  4.0
  * @module module_formgenerator
  */
-class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Countable
+class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Countable, \JsonSerializable
 {
     const STR_METHOD_POST = "POST";
     const STR_METHOD_GET = "GET";
@@ -932,6 +932,15 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
         $this->arrFields = $arrNewOrder;
     }
 
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            "fields" => array_values($this->arrFields),
+        ];
+    }
 
     /**
      * Loads the field-entry identified by the passed name.

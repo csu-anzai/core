@@ -6,6 +6,8 @@
 
 namespace Kajona\System\Admin\Systemtasks;
 
+use Kajona\System\Admin\AdminFormgenerator;
+
 /**
  * Interface which allows the execution of a system task through the API
  *
@@ -39,5 +41,13 @@ interface ApiSystemTaskInterface
      * @return string or "" for default group
      */
     public function getGroupIdentifier();
+
+    /**
+     * Returns the form generator for this system task. The execute method expects a JSON object which was described
+     * by this form
+     *
+     * @return AdminFormgenerator|null
+     */
+    public function getAdminForm();
 }
 

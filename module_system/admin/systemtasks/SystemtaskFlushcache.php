@@ -76,7 +76,12 @@ class SystemtaskFlushcache extends SystemtaskBase implements AdminSystemtaskInte
      */
     public function execute($body)
     {
-        return $this->executeTask();
+        $type = isset($body["type"]) ? intval($body["type"]) : null;
+        $namespace = isset($body["namespace"]) ? intval($body["namespace"]) : CacheManager::NS_BOOTSTRAP;
+
+        CacheManager::getInstance()->flushCache($type, $namespace);
+
+        return $this->objToolkit->getTextRow($this->getLang("systemtask_flushcache_success"));
     }
 
     /**
