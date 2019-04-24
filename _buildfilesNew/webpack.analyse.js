@@ -5,9 +5,9 @@ const Dotenv = require('dotenv-webpack')
 const pathsFinder = require('./pathsFinder')
 const LiveReloadPlugin = require('webpack-livereload-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
-const CompressionPlugin = require('compression-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
 const packageConfig = require("./packageConfig")
 const liveReloadOptions = {
@@ -17,11 +17,11 @@ const liveReloadOptions = {
 
 module.exports = async env => {
   const devMode = env.NODE_ENV !== 'production'
-  console.log('Build Type : ', env.NODE_ENV)
-  var modulesPaths = await pathsFinder.getPaths() 
+  console.log('Build Type : Analyse Bundle')
+
   return {
     entry: {
-      agp: devMode ? glob.sync('../../{core,core_agp,core_customer}/module_*/scripts/**/*.ts') : modulesPaths
+      agp:  glob.sync('../../{core,core_agp,core_customer}/module_*/scripts/**/*.ts')
     },
     output: {
       filename: './[name].min.js',
@@ -43,6 +43,7 @@ module.exports = async env => {
         },
         {
           test: /\.tsx?$/,
+          // test: /\.ts$/,
           use: [
             { loader: 'babel-loader' },
             {
@@ -134,15 +135,10 @@ module.exports = async env => {
           $: 'jquery',
           jquery: 'jquery'
         }),
-        // new CompressionPlugin(),
-        // new MiniCssExtractPlugin({
-        //   filename: "styles.min.css",
-        //   chunkFilename: "styles.min.chunk.css"
-        // })
+        new BundleAnalyzerPlugin(),
         new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
         new VueLoaderPlugin()
       ],
-    // watch: true
     optimization: {
       minimize: !devMode,
       minimizer: !devMode
