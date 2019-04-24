@@ -204,14 +204,15 @@ class InstallerApiController implements ApiControllerInterface
             throw new \RuntimeException("No module provided");
         }
 
-        $module = $this->getModuleByTitle($body["module"]);
+        ResponseObject::getInstance()->setObjEntrypoint(RequestEntrypointEnum::INSTALLER());
+
+        $manager = new PackagemanagerManager();
+
+        $module = $manager->getPackage($body["module"]);
         if (!$module instanceof PackagemanagerMetadata) {
             throw new NotFoundException("Module not found");
         }
 
-        ResponseObject::getInstance()->setObjEntrypoint(RequestEntrypointEnum::INSTALLER());
-
-        $manager = new PackagemanagerManager();
         $handler = $manager->getPackageManagerForPath($module->getStrPath());
 
         if ($handler->isInstallable()) {
@@ -298,7 +299,9 @@ class InstallerApiController implements ApiControllerInterface
             throw new \RuntimeException("No module provided");
         }
 
-        $module = $this->getModuleByTitle($body["module"]);
+        $manager = new PackagemanagerManager();
+
+        $module = $manager->getPackage($body["module"]);
         if (!$module instanceof PackagemanagerMetadata) {
             throw new NotFoundException("Module not found");
         }
@@ -470,23 +473,5 @@ class InstallerApiController implements ApiControllerInterface
         }
 
         return $result;
-    }
-
-    /**
-     * @param string $title
-     * @return PackagemanagerMetadata|null
-     */
-    private function getModuleByTitle($title)
-    {
-        $manager = new PackagemanagerManager();
-        $modules = $manager->getAvailablePackages();
-
-        foreach ($modules as $module) {
-            if ($module->getStrTitle() == $title) {
-                return $module;
-            }
-        }
-
-        return null;
     }
 }
