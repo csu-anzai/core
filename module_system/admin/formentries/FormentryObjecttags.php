@@ -213,11 +213,6 @@ class FormentryObjecttags extends FormentryTageditor
      */
     public function getValueAsText()
     {
-        $objSourceObject = $this->getObjSourceObject();
-        if ($objSourceObject == null) {
-            return "";
-        }
-
 
         if (!empty($this->arrKeyValues)) {
             $strHtml = "";
