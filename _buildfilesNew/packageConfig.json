@@ -1,0 +1,7 @@
+{
+    "whiteList" : {
+        "core" : ["module_system"  , "module_v4skin"] , 
+        "core_agp" : [] ,
+        "core_customer" : ["module_helabaskin"]
+    }
+}

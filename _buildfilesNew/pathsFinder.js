@@ -1,5 +1,5 @@
 const globby = require("globby");
-const packageConfig = require("./packageConfig");
+const packageConfig = require("./packageConfig.json");
 
 module.exports = {
   getPaths: async () => {
