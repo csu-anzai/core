@@ -328,9 +328,10 @@ class ToolkitAdmin extends Toolkit
      * @param bool $bitBlockCurrentUser
      * @param array|string $arrValidateSystemid If you want to check the view-permissions for a given systemid, pass the id here
      * @param string $strSelectedGroupId
+     * @param bool $bitKeepOpen
      * @return string
      */
-    public function formInputUserSelector($strName, $strTitle = "", $strValue = "", $strClass = "", $bitUser = true, $bitGroups = false, $bitBlockCurrentUser = false, array $arrValidateSystemid = null, $strSelectedGroupId = null)
+    public function formInputUserSelector($strName, $strTitle = "", $strValue = "", $strClass = "", $bitUser = true, $bitGroups = false, $bitBlockCurrentUser = false, array $arrValidateSystemid = null, $strSelectedGroupId = null, $bitKeepOpen = false)
     {
         $strUserName = "";
         $strUserId = "";
@@ -408,6 +409,7 @@ class ToolkitAdmin extends Toolkit
                                 success: response
                             });
                         };
+                        ".($bitKeepOpen ? " objConfig.keepUi = true;" : "")."
                  
                         $('#".$strName."').autocomplete(objConfig).data( 'ui-autocomplete' )._renderItem = function( ul, item ) {
                             return $( '<li></li>' )
@@ -415,7 +417,6 @@ class ToolkitAdmin extends Toolkit
                                 .append( '<div class=\'ui-autocomplete-item\' >'+item.icon+item.title+'</div>' )
                                 .appendTo( ul );
                         } ;
-                        objConfig.enableKeepUi($strName , $('#".$strName."').autocomplete('widget').attr('id')) ;
                     });
                 });
 	        </script>
