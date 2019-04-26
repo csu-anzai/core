@@ -16,6 +16,7 @@ import WorkingIndicator from "../../../module_system/scripts/kajona/WorkingIndic
 import Breadcrumb from "../../../module_system/scripts/kajona/Breadcrumb";
 //import all the kajona styles
 import "../../admin/skins/kajona_v4/less/bootstrap.less";
+
 class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
   public minLength: number = 0;
 

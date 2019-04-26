@@ -18,6 +18,7 @@ module.exports = {
       .concat(coreCustomerModules);
     try {
       modulesPaths = await globby(modules);
+      console.log("included modules : ", modulesPaths);
       return modulesPaths;
     } catch (e) {
       console.log(e);

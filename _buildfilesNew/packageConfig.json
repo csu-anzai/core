@@ -1,7 +1,53 @@
 {
-    "whiteList" : {
-        "core" : ["module_system"  , "module_v4skin"] , 
-        "core_agp" : [] ,
-        "core_customer" : ["module_helabaskin"]
-    }
+  "whiteList": {
+    "core": [
+      "module_chartjs",
+      "module_dashboard",
+      "module_dbbrowser",
+      "module_flow",
+      "module_installer",
+      "module_mediamanager",
+      "module_packagemanager",
+      "module_pdf",
+      "module_qrcode",
+      "module_samplecontent",
+      "module_search",
+      "module_system",
+      "module_tags",
+      "module_tinyurl",
+      "module_v4skin",
+      "module_wizard",
+      "module_workflows"
+    ],
+    "core_agp": [
+      "module_adminreports",
+      "module_agp_commons",
+      "module_agpskin",
+      "module_aufgaben",
+      "module_auswertung",
+      "module_confirmation",
+      "module_contracts",
+      "module_calculations",
+      "module_calculations_vector",
+      "module_calculations_frequency",
+      "module_einstellungen",
+      "module_leistungsscheine",
+      "module_marisk",
+      "module_nestedset",
+      "module_objectdesigner",
+      "module_objectppt",
+      "module_objecttransfer",
+      "module_phpexcel",
+      "module_prozessverwaltung",
+      "module_reportconfigurator",
+      "module_riskanalysis",
+      "module_slareporting",
+      "module_summary"
+    ],
+    "core_customer": [
+      "module_cobaskin",
+      "module_hsbccontracts",
+      "module_hsbcriskanalysis"
+    ]
+  }
 }
