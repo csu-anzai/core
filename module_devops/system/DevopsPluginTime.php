@@ -4,8 +4,12 @@
 *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
 ********************************************************************************************************/
 
-namespace Kajona\System\System;
+namespace Kajona\Devops\System;
 
+
+use Kajona\System\System\Carrier;
+use Kajona\System\System\SysteminfoInterface;
+use Kajona\System\System\SystemSetting;
 
 /**
  * General information regarding the current timezone environment
@@ -14,7 +18,7 @@ namespace Kajona\System\System;
  * @author sidler@mulchprod.de
  * @since 4.5
  */
-class SysteminfoTime implements SysteminfoInterface
+class DevopsPluginTime implements SysteminfoInterface
 {
     /**
      * Returns the title of the info-block
@@ -23,7 +27,7 @@ class SysteminfoTime implements SysteminfoInterface
      */
     public function getStrTitle()
     {
-        return Carrier::getInstance()->getObjLang()->getLang("timeinfo", "system");
+        return Carrier::getInstance()->getObjLang()->getLang("timeinfo", "devops");
     }
 
     /**
@@ -36,12 +40,12 @@ class SysteminfoTime implements SysteminfoInterface
         $strOldTimezone = date_default_timezone_get();
         $objLang = Carrier::getInstance()->getObjLang();
         $arrReturn = array();
-        $arrReturn[] = array($objLang->getLang("time_phptimestamp", "system"), time());
-        $arrReturn[] = array($objLang->getLang("time_systemtimezone", "system"), date_default_timezone_get());
-        $arrReturn[] = array($objLang->getLang("time_localsystemtime", "system"), timeToString(time()));
+        $arrReturn[] = array($objLang->getLang("time_phptimestamp", "devops"), time());
+        $arrReturn[] = array($objLang->getLang("time_systemtimezone", "devops"), date_default_timezone_get());
+        $arrReturn[] = array($objLang->getLang("time_localsystemtime", "devops"), timeToString(time()));
         date_default_timezone_set("UTC");
-        $arrReturn[] = array($objLang->getLang("time_systemtime_UTC", "system"), date('Y-m-d H:i:s'));
-        $arrReturn[] = array($objLang->getLang("time_systemzone_manual_setting", "system"), SystemSetting::getConfigValue("_system_timezone_"));
+        $arrReturn[] = array($objLang->getLang("time_systemtime_UTC", "devops"), date('Y-m-d H:i:s'));
+        $arrReturn[] = array($objLang->getLang("time_systemzone_manual_setting", "devops"), SystemSetting::getConfigValue("_system_timezone_"));
 
         date_default_timezone_set($strOldTimezone);
         return $arrReturn;

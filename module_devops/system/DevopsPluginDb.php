@@ -4,8 +4,12 @@
 *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
 ********************************************************************************************************/
 
-namespace Kajona\System\System;
+namespace Kajona\Devops\System;
 
+
+use Kajona\System\System\Carrier;
+use Kajona\System\System\Config;
+use Kajona\System\System\SysteminfoInterface;
 
 /**
  * General information regarding the current database environment
@@ -13,7 +17,7 @@ namespace Kajona\System\System;
  * @author sidler@mulchprod.de
  * @since 4.5
  */
-class SysteminfoDb implements SysteminfoInterface
+class DevopsPluginDb implements SysteminfoInterface
 {
     /**
      * Returns the title of the info-block
@@ -22,7 +26,7 @@ class SysteminfoDb implements SysteminfoInterface
      */
     public function getStrTitle()
     {
-        return Carrier::getInstance()->getObjLang()->getLang("db", "system");
+        return Carrier::getInstance()->getObjLang()->getLang("db", "devops");
     }
 
     /**
@@ -36,10 +40,10 @@ class SysteminfoDb implements SysteminfoInterface
         $arrReturn = array();
 
         $arrTables = Carrier::getInstance()->getObjDB()->getTables();
-        $arrReturn[] = array($objLang->getLang("datenbanktreiber", "system"), Config::getInstance()->getConfig("dbdriver"));
-        $arrReturn[] = array($objLang->getLang("datenbankserver", "system"),  Config::getInstance()->getConfig("dbhost"));
-        $arrReturn[] = array($objLang->getLang("db", "system"),  Config::getInstance()->getConfig("dbname"));
-        $arrReturn[] = array($objLang->getLang("anzahltabellen", "system"), count($arrTables));
+        $arrReturn[] = array($objLang->getLang("datenbanktreiber", "devops"), Config::getInstance()->getConfig("dbdriver"));
+        $arrReturn[] = array($objLang->getLang("datenbankserver", "devops"),  Config::getInstance()->getConfig("dbhost"));
+        $arrReturn[] = array($objLang->getLang("db", "devops"),  Config::getInstance()->getConfig("dbname"));
+        $arrReturn[] = array($objLang->getLang("anzahltabellen", "devops"), count($arrTables));
 
         $arrInfo = Carrier::getInstance()->getObjDB()->getDbInfo();
         foreach($arrInfo as $strKey => $strValue) {

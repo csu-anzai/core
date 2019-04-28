@@ -4,9 +4,13 @@
 *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
 ********************************************************************************************************/
 
-namespace Kajona\System\System;
+namespace Kajona\Devops\System;
 
 use Doctrine\Common\Cache\Cache as DoctrineCache;
+use Kajona\System\System\CacheManager;
+use Kajona\System\System\Carrier;
+use Kajona\System\System\Date;
+use Kajona\System\System\SysteminfoInterface;
 
 
 /**
@@ -16,7 +20,7 @@ use Doctrine\Common\Cache\Cache as DoctrineCache;
  * @author sidler@mulchprod.de
  * @since 4.5
  */
-class SysteminfoCache implements SysteminfoInterface
+class DevopsPluginCache implements SysteminfoInterface
 {
     /**
      * Returns the title of the info-block
@@ -25,7 +29,7 @@ class SysteminfoCache implements SysteminfoInterface
      */
     public function getStrTitle()
     {
-        return Carrier::getInstance()->getObjLang()->getLang("cache", "system");
+        return Carrier::getInstance()->getObjLang()->getLang("cache", "devops");
     }
 
     /**
@@ -39,16 +43,16 @@ class SysteminfoCache implements SysteminfoInterface
         $arrReturn = array();
 
         $arrTypes = array(
-            CacheManager::TYPE_APC => $objLang->getLang("cache_apc", "system"),
-            CacheManager::TYPE_FILESYSTEM => $objLang->getLang("cache_filesystem", "system"),
+            CacheManager::TYPE_APC => $objLang->getLang("cache_apc", "devops"),
+            CacheManager::TYPE_FILESYSTEM => $objLang->getLang("cache_filesystem", "devops"),
         );
 
         $arrKeys = array(
-            DoctrineCache::STATS_HITS => $objLang->getLang("cache_hits", "system"),
-            DoctrineCache::STATS_MISSES => $objLang->getLang("cache_misses", "system"),
-            DoctrineCache::STATS_UPTIME => $objLang->getLang("cache_uptime", "system"),
-            DoctrineCache::STATS_MEMORY_USAGE => $objLang->getLang("cache_usage", "system"),
-            DoctrineCache::STATS_MEMORY_AVAILABLE => $objLang->getLang("cache_available", "system"),
+            DoctrineCache::STATS_HITS => $objLang->getLang("cache_hits", "devops"),
+            DoctrineCache::STATS_MISSES => $objLang->getLang("cache_misses", "devops"),
+            DoctrineCache::STATS_UPTIME => $objLang->getLang("cache_uptime", "devops"),
+            DoctrineCache::STATS_MEMORY_USAGE => $objLang->getLang("cache_usage", "devops"),
+            DoctrineCache::STATS_MEMORY_AVAILABLE => $objLang->getLang("cache_available", "devops"),
         );
 
         foreach ($arrTypes as $intType => $strType) {
