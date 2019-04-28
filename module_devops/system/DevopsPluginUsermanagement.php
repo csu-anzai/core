@@ -1,18 +1,17 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2016 ARTEMEON                                                                              *
-********************************************************************************************************/
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
 
 namespace Kajona\Devops\System;
 
-use Artemeon\Pdf\Pdf;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Config;
 use Kajona\System\System\Date;
 use Kajona\System\System\DateHelper;
 use Kajona\System\System\DatePeriodEnum;
 use Kajona\System\System\DateRange;
-use Kajona\System\System\GenericPluginInterface;
 use Kajona\System\System\GraphFactory;
 use Kajona\System\System\SysteminfoInterface;
 use Kajona\System\System\UserGroup;
@@ -52,7 +51,6 @@ class DevopsPluginUsermanagement implements SysteminfoInterface
         $return[] = ["Active loginproviders", Config::getInstance()->getConfig("loginproviders")];
 
 
-
         //generate a login count chart for the last 14 days
         $objDateHelper = new DateHelper();
         $objEndDate = new Date();
@@ -76,6 +74,5 @@ class DevopsPluginUsermanagement implements SysteminfoInterface
 
         $return[] = ["Logins", $chart];
         return $return;
-
     }
 }

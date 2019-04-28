@@ -1,8 +1,8 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-********************************************************************************************************/
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
 
 namespace Kajona\Devops\System;
 
@@ -47,8 +47,7 @@ class DevopsPluginGd implements SysteminfoInterface
             $arrReturn[] = array($objLang->getLang("gifwrite", "devops"), (isset($arrGd["GIF Create Support"]) && $arrGd["GIF Create Support"] ? Carrier::getInstance()->getObjLang()->getLang("commons_yes", "devops") : Carrier::getInstance()->getObjLang()->getLang("commons_no", "devops")));
             $arrReturn[] = array($objLang->getLang("jpg", "devops"), (((isset($arrGd["JPG Support"]) && $arrGd["JPG Support"]) || (isset($arrGd["JPEG Support"]) && $arrGd["JPEG Support"])) ? Carrier::getInstance()->getObjLang()->getLang("commons_yes", "devops") : Carrier::getInstance()->getObjLang()->getLang("commons_no", "devops")));
             $arrReturn[] = array($objLang->getLang("png", "devops"), (isset($arrGd["PNG Support"]) && $arrGd["PNG Support"] ? Carrier::getInstance()->getObjLang()->getLang("commons_yes", "devops") : Carrier::getInstance()->getObjLang()->getLang("commons_no", "devops")));
-        }
-        else {
+        } else {
             $arrReturn[] = array("", Carrier::getInstance()->getObjLang()->getLang("keinegd", "devops"));
         }
 

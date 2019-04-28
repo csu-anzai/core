@@ -1,8 +1,7 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-********************************************************************************************************/
+ *   (c) ARTEMEON Management Partner GmbH
+ ********************************************************************************************************/
 
 namespace Kajona\Devops\System;
 
@@ -58,7 +57,7 @@ class DevopsPluginCache implements SysteminfoInterface
         foreach ($arrTypes as $intType => $strType) {
             $arrStats = CacheManager::getInstance()->getStats($intType);
             if (!empty($arrStats)) {
-                $arrReturn[] = array("<b>" . $strType . "</b>", "");
+                $arrReturn[] = array("<b>".$strType."</b>", "");
                 foreach ($arrKeys as $intKey => $strDescription) {
                     if (isset($arrStats[$intKey])) {
                         if ($intKey == DoctrineCache::STATS_MEMORY_USAGE || $intKey == DoctrineCache::STATS_MEMORY_AVAILABLE) {

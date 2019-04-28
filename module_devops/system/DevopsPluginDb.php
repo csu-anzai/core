@@ -1,8 +1,8 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-********************************************************************************************************/
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
 
 namespace Kajona\Devops\System;
 
@@ -41,12 +41,12 @@ class DevopsPluginDb implements SysteminfoInterface
 
         $arrTables = Carrier::getInstance()->getObjDB()->getTables();
         $arrReturn[] = array($objLang->getLang("datenbanktreiber", "devops"), Config::getInstance()->getConfig("dbdriver"));
-        $arrReturn[] = array($objLang->getLang("datenbankserver", "devops"),  Config::getInstance()->getConfig("dbhost"));
-        $arrReturn[] = array($objLang->getLang("db", "devops"),  Config::getInstance()->getConfig("dbname"));
+        $arrReturn[] = array($objLang->getLang("datenbankserver", "devops"), Config::getInstance()->getConfig("dbhost"));
+        $arrReturn[] = array($objLang->getLang("db", "devops"), Config::getInstance()->getConfig("dbname"));
         $arrReturn[] = array($objLang->getLang("anzahltabellen", "devops"), count($arrTables));
 
         $arrInfo = Carrier::getInstance()->getObjDB()->getDbInfo();
-        foreach($arrInfo as $strKey => $strValue) {
+        foreach ($arrInfo as $strKey => $strValue) {
             $arrReturn[] = array($strKey, $strValue);
         }
 

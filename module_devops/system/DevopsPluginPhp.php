@@ -1,8 +1,8 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-********************************************************************************************************/
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
 
 namespace Kajona\Devops\System;
 
@@ -57,7 +57,6 @@ class DevopsPluginPhp implements SysteminfoInterface
         $arrReturn[] = array($objLang->getLang("datekajona", "devops"), dateToString(new Date()));
 
         return $arrReturn;
-
     }
 
     /**

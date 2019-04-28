@@ -1,14 +1,13 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2016 ARTEMEON                                                                              *
-********************************************************************************************************/
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
 
 namespace Kajona\Devops\System;
 
-use Artemeon\Pdf\Pdf;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Filesystem;
-use Kajona\System\System\GenericPluginInterface;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\SysteminfoInterface;
 
@@ -54,7 +53,6 @@ class DevopsPluginDbdumps implements SysteminfoInterface
                 } else {
                     $strTimestamp = "";
                 }
-
             }
 
             $arrRows[] = [

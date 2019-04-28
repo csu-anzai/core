@@ -1,8 +1,8 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-********************************************************************************************************/
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
 
 namespace Kajona\Devops\System;
 
@@ -60,7 +60,6 @@ class DevopsPluginMail implements SysteminfoInterface
         );
         $arrReturn[] = array($objLang->getLang("smtp_auth_username", "devops"), $cfg->getConfig('smtp_auth_username'));
         return $arrReturn;
-
     }
 
     /**
