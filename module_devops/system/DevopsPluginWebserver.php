@@ -31,11 +31,9 @@ class DevopsPluginWebserver implements SysteminfoInterface
     }
 
     /**
-     * Returns the contents of the info-block
-     *
-     * @return mixed
+     * @inheritDoc
      */
-    public function getArrContent()
+    public function getArrContent($mediaType = self::TYPE_HTML)
     {
         $objLang = Carrier::getInstance()->getObjLang();
 
@@ -48,9 +46,16 @@ class DevopsPluginWebserver implements SysteminfoInterface
         }
         if (@disk_total_space(_realpath_)) {
             $val = bytesToString(@disk_free_space(_realpath_))."/".bytesToString(@disk_total_space(_realpath_)).$objLang->getLang("diskspace_free", "devops");
+            $arrReturn[] = array($objLang->getLang("speicherplatz", "devops"), $val);
 
-            $bar = new StackedDataBar("", [bytesToString(@disk_total_space(_realpath_), false, false), bytesToString(@disk_free_space(_realpath_), false, false)], ["red", "green"]);
-            $val .= "<br />".$bar->renderComponent();
+            if ($mediaType === self::TYPE_HTML) {
+                $bar = new StackedDataBar("", [bytesToString(@disk_total_space(_realpath_), false, false), bytesToString(@disk_free_space(_realpath_), false, false)], ["red", "green"]);
+                $val = $bar->renderComponent();
+            } elseif ($mediaType === self::TYPE_JSON) {
+                $val = null;
+            } else {
+                $val = null;
+            }
 
             $arrReturn[] = array($objLang->getLang("speicherplatz", "devops"), $val);
         }

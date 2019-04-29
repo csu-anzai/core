@@ -31,11 +31,9 @@ class DevopsPluginGd implements SysteminfoInterface
     }
 
     /**
-     * Returns the contents of the info-block
-     *
-     * @return mixed
+     * @inheritDoc
      */
-    public function getArrContent()
+    public function getArrContent($mediaType = self::TYPE_HTML)
     {
         $objLang = Carrier::getInstance()->getObjLang();
         $arrReturn = array();

@@ -32,11 +32,9 @@ class DevopsPluginCache implements SysteminfoInterface
     }
 
     /**
-     * Returns the contents of the info-block
-     *
-     * @return mixed
+     * @inheritDoc
      */
-    public function getArrContent()
+    public function getArrContent($mediaType = self::TYPE_HTML)
     {
         $objLang = Carrier::getInstance()->getObjLang();
         $arrReturn = array();
@@ -57,7 +55,7 @@ class DevopsPluginCache implements SysteminfoInterface
         foreach ($arrTypes as $intType => $strType) {
             $arrStats = CacheManager::getInstance()->getStats($intType);
             if (!empty($arrStats)) {
-                $arrReturn[] = array("<b>".$strType."</b>", "");
+                $arrReturn[] = array($strType, "");
                 foreach ($arrKeys as $intKey => $strDescription) {
                     if (isset($arrStats[$intKey])) {
                         if ($intKey == DoctrineCache::STATS_MEMORY_USAGE || $intKey == DoctrineCache::STATS_MEMORY_AVAILABLE) {

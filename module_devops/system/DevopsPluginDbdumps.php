@@ -33,8 +33,10 @@ class DevopsPluginDbdumps implements SysteminfoInterface
         return Carrier::getInstance()->getObjLang()->getLang("plugin_dbdumps_title", "devops");
     }
 
-
-    public function getArrContent()
+    /**
+     * @inheritDoc
+     */
+    public function getArrContent($mediaType = self::TYPE_HTML)
     {
         $objFilesystem = new Filesystem();
 

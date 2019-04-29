@@ -43,7 +43,7 @@ class DevopsPluginUsermanagement implements SysteminfoInterface
     /**
      * @inheritDoc
      */
-    public function getArrContent()
+    public function getArrContent($mediaType = self::TYPE_HTML)
     {
         $return = [];
         $return[] = ["Number of users", UserUser::getObjectCountFiltered()];
@@ -70,7 +70,14 @@ class DevopsPluginUsermanagement implements SysteminfoInterface
         $objChart->setArrXAxisTickLabels(array_keys($arrChartData));
         $objChart->addBarChartSet(array_values($arrChartData), "Logins / Day");
         $objChart->setIntHeight(300);
-        $chart = $objChart->renderGraph();
+
+        if ($mediaType === self::TYPE_HTML) {
+            $chart = $objChart->renderGraph();
+        } elseif ($mediaType === self::TYPE_JSON) {
+            $chart = $objChart;
+        } else {
+            $chart = null;
+        }
 
         $return[] = ["Logins", $chart];
         return $return;

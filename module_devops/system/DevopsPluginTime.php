@@ -31,11 +31,9 @@ class DevopsPluginTime implements SysteminfoInterface
     }
 
     /**
-     * Returns the contents of the info-block
-     *
-     * @return mixed
+     * @inheritDoc
      */
-    public function getArrContent()
+    public function getArrContent($mediaType = self::TYPE_HTML)
     {
         $strOldTimezone = date_default_timezone_get();
         $objLang = Carrier::getInstance()->getObjLang();
