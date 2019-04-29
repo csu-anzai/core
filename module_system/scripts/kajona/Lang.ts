@@ -1,4 +1,4 @@
-import $ from "../../../_buildfilesNew/node_modules/jquery";
+import $ from "jquery";
 import CacheManager from "./CacheManager";
 
 interface QueueEntry {
@@ -191,5 +191,5 @@ class Lang {
     return strText;
   }
 }
-
+(<any>window).Lang = Lang;
 export default Lang;

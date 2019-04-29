@@ -294,5 +294,5 @@ class Dialog {
     });
   }
 }
-
+(<any>window).Dialog = Dialog;
 export default Dialog;

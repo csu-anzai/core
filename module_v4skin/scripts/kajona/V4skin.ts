@@ -1,4 +1,4 @@
-import * as $ from "jquery";
+import $ from "jquery";
 import "jquery-ui.custom";
 import "bootstrap/dist/js/bootstrap.min.js";
 import "bootstrap-datepicker/dist/js/bootstrap-datepicker.min";

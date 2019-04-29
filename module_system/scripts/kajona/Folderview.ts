@@ -1,4 +1,4 @@
-import * as $ from "jquery";
+import $ from "jquery";
 import Dialog from "../../../module_v4skin/scripts/kajona/Dialog";
 import Util from "./Util";
 import Lists from "./Lists";
@@ -107,7 +107,9 @@ class Folderview {
     var table = Util.getElementFromOpener(strElementName);
 
     var tbody = table.find("tbody");
-    let maxAmount = table.data('max-values') > 0 ? table.data('max-values') : 500;if (tbody.length > 0) {
+    let maxAmount =
+      table.data("max-values") > 0 ? table.data("max-values") : 500;
+    if (tbody.length > 0) {
       // remove only elements which are in the arrAvailableIds array
       tbody.children().each(function() {
         var strId = $(this)
@@ -121,11 +123,11 @@ class Folderview {
 
       // add new elements
       for (var i = 0; i < arrItems.length; i++) {
-if (table.find('tr').length > maxAmount) {
-                    break;
-                }
+        if (table.find("tr").length > maxAmount) {
+          break;
+        }
 
-                var strEscapedTitle = $("<div></div>")
+        var strEscapedTitle = $("<div></div>")
           .text(arrItems[i].strDisplayName)
           .html();
         var strEscapedPath = $("<div></div>")
@@ -145,13 +147,14 @@ if (table.find('tr').length > maxAmount) {
           '[]" value="' +
           arrItems[i].strSystemId +
           '" data-kajona-initval="" /></td>';
-        if (strDeleteButton) {html += '    <td class="icon-cell">';
-        html +=
-          '        <a href="#" class="removeLink" onclick="V4skin.removeObjectListItem(this);return false">' +
-          strDeleteButton +
-          "</a>";
-        html += "    </td>";
-                }
+        if (strDeleteButton) {
+          html += '    <td class="icon-cell">';
+          html +=
+            '        <a href="#" class="removeLink" onclick="V4skin.removeObjectListItem(this);return false">' +
+            strDeleteButton +
+            "</a>";
+          html += "    </td>";
+        }
 
         if (arrItems[i].strEditLink) {
           html +=

@@ -1,4 +1,4 @@
-import * as $ from "jquery";
+import $ from "jquery";
 
 class Breadcrumb {
   private static breadcrumbEl: JQuery<HTMLElement> = $(

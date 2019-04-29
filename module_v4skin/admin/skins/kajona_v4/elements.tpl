@@ -1314,7 +1314,6 @@ pe_iconbar, pe_disable
 <tree>
     <div id="%%treeId%%" class="treeDiv"></div>
     <script type="text/javascript">
-      Loader.loadFile(["/core/module_system/scripts/jstree3/dist/themes/default/style.min.css"]);
 
             Tree.toggleInitial('%%treeId%%');
 

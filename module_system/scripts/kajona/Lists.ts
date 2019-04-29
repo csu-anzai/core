@@ -1,4 +1,4 @@
-import * as $ from "jquery";
+import $ from "jquery";
 import Lang from "./Lang";
 import Util from "./Util";
 import Router from "./Router";
@@ -67,8 +67,9 @@ class Lists {
   public static triggerAction(
     strTitle: string,
     strUrl: string,
-    bitRenderInfo: boolean
-  , reloadOnFinish: boolean) {
+    bitRenderInfo: boolean,
+    reloadOnFinish: boolean
+  ) {
     this.arrSystemids = [];
     this.strCurrentUrl = strUrl;
     this.strCurrentTitle = strTitle;
@@ -108,8 +109,7 @@ class Lists {
     return false;
   }
 
-  public static executeActions(reloadOnFinish:boolean) {
-
+  public static executeActions(reloadOnFinish: boolean) {
     this.intTotal = this.arrSystemids.length;
 
     $(".batchActionsProgress > .progresstitle").text(this.strCurrentTitle);
@@ -119,9 +119,9 @@ class Lists {
     this.triggerSingleAction(reloadOnFinish);
   }
 
-  public static triggerSingleAction(reloadOnFinish:boolean) {
-        if(this.arrSystemids.length<1 && reloadOnFinish)
-            window.location.reload();
+  public static triggerSingleAction(reloadOnFinish: boolean) {
+    if (this.arrSystemids.length < 1 && reloadOnFinish)
+      window.location.reload();
     if (this.arrSystemids.length > 0 && this.intTotal > 0) {
       $(".batch_progressed").text(this.intTotal - this.arrSystemids.length + 1);
       var intPercentage =
@@ -135,27 +135,27 @@ class Lists {
       );
       this.arrSystemids.shift();
 
-            var me = this;
-            $.ajax({
-                type: 'POST',
-                url: strUrl,
-                success: function(resp) {
-                    me.triggerSingleAction(reloadOnFinish);
-                    if (me.bitRenderInfo) {
-                        var data = JSON.parse(resp);
-                        if (data && data.message) {
-                            $('.batchaction_messages_list').append("<li>" + data.message + "</li>");
-                        }
-                    }
-
-                },
-                dataType: 'text'
-            });
-        }
-        else {
-            $('.batch_progressed').text((this.intTotal));
-            $('.progress > .progress-bar').css('width', 100+'%');
-            $('.progress > .progress-bar').html('100%');
+      var me = this;
+      $.ajax({
+        type: "POST",
+        url: strUrl,
+        success: function(resp) {
+          me.triggerSingleAction(reloadOnFinish);
+          if (me.bitRenderInfo) {
+            var data = JSON.parse(resp);
+            if (data && data.message) {
+              $(".batchaction_messages_list").append(
+                "<li>" + data.message + "</li>"
+              );
+            }
+          }
+        },
+        dataType: "text"
+      });
+    } else {
+      $(".batch_progressed").text(this.intTotal);
+      $(".progress > .progress-bar").css("width", 100 + "%");
+      $(".progress > .progress-bar").html("100%");
 
       if (!this.bitRenderInfo) {
         Router.reload();

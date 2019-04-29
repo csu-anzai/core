@@ -1,4 +1,4 @@
-import * as $ from "jquery";
+import $ from "jquery";
 import "jquery-ui.custom";
 import Ajax from "../../../module_system/scripts/kajona/Ajax";
 import StatusDisplay from "../../../module_system/scripts/kajona/StatusDisplay";

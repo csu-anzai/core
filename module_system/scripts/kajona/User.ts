@@ -1,4 +1,4 @@
-import * as $ from "jquery";
+import $ from "jquery";
 import Ajax from "./Ajax";
 import StatusDisplay from "./StatusDisplay";
 
@@ -14,18 +14,29 @@ class User {
       return true;
     }
 
-        Ajax.genericAjaxCall("user", "apiGroupMemberAdd", "&userid="+userid+"&groupid="+groupid, function(data: any, status: string) {
-            if (status == 'success') {
-                // $('.admintable').append(data.row);
-                $('.admintable tbody').last().before(data.row);
-                $('#group_add_id').val("");
-                $('#group_add').val("");
-                StatusDisplay.messageOK(data.message);
-            } else {
-                StatusDisplay.messageError(data);
-            }
-        }, null, null, 'post', 'json');
-    };
+    Ajax.genericAjaxCall(
+      "user",
+      "apiGroupMemberAdd",
+      "&userid=" + userid + "&groupid=" + groupid,
+      function(data: any, status: string) {
+        if (status == "success") {
+          // $('.admintable').append(data.row);
+          $(".admintable tbody")
+            .last()
+            .before(data.row);
+          $("#group_add_id").val("");
+          $("#group_add").val("");
+          StatusDisplay.messageOK(data.message);
+        } else {
+          StatusDisplay.messageError(data);
+        }
+      },
+      null,
+      null,
+      "post",
+      "json"
+    );
+  }
 
   /**
    * Removes a user from a given group

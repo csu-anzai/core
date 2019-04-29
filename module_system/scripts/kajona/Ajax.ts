@@ -1,5 +1,4 @@
-import * as $ from "jquery";
-import * as JQuery from "../../../_buildfilesNew/node_modules/jquery";
+import $ from "jquery";
 import WorkingIndicator from "./WorkingIndicator";
 import Util from "./Util";
 import Tooltip from "./Tooltip";

@@ -1,4 +1,4 @@
-import * as $ from "jquery";
+import $ from "jquery";
 
 class WorkingIndicator {
   private static intWorkingCount = 0;
@@ -22,5 +22,5 @@ class WorkingIndicator {
     return WorkingIndicator;
   }
 }
-
+(<any>window).WorkingIndicator = WorkingIndicator;
 export default WorkingIndicator;

@@ -1,4 +1,4 @@
-import * as $ from "jquery";
+import $ from "jquery";
 import "jquery-tageditor/jquery.caret.min";
 import "jquery-tageditor/jquery.tag-editor.min";
 import V4skin from "./V4skin";

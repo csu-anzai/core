@@ -1,4 +1,4 @@
-import $ from "../../../_buildfilesNew/node_modules/jquery";
+import $ from "jquery";
 import Ajax from "./Ajax";
 
 /**

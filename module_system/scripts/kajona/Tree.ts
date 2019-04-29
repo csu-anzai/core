@@ -1,5 +1,6 @@
-import * as $ from "jquery";
+import $ from "jquery";
 import "jstree";
+import "jstree/dist/themes/default/style.min.css";
 import Ajax from "./Ajax";
 import Lang from "./Lang";
 import CacheManager from "./CacheManager";

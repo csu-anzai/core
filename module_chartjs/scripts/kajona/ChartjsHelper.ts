@@ -3,6 +3,7 @@ import Lang from "../../../module_system/scripts/kajona/Lang";
 import Folderview from "../../../module_system/scripts/kajona/Folderview";
 const ChartDataLabels = require("chartjs-plugin-datalabels");
 var Chart = require("chart.js");
+import "../../less/chart-js.less";
 declare var Chart: any;
 
 /**

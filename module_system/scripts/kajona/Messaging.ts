@@ -1,4 +1,4 @@
-import * as $ from "jquery";
+import $ from "jquery";
 import Ajax from "./Ajax";
 import Util from "./Util";
 import DialogHelper from "../../../module_v4skin/scripts/kajona/DialogHelper";
@@ -10,18 +10,18 @@ interface Accept {
 }
 
 interface RedirectAction extends Accept {
-    target: string
+  target: string;
 }
 
 interface AjaxAction extends Accept {
-    module: string;
+  module: string;
   action: string;
   systemid: string;
-  }
+}
 
 interface UpdateStatusAction extends Accept {
-    systemid: string
-    icon: string;
+  systemid: string;
+  icon: string;
 }
 
 interface Alert {
@@ -220,7 +220,8 @@ class Messaging {
    */
   private static getActionCallback($onAccept: Accept): Function {
     if ($onAccept && $onAccept.type === "redirect") {
-      let data = <RedirectAction>$onAccept;return function() {
+      let data = <RedirectAction>$onAccept;
+      return function() {
         Router.registerLoadCallback("alert_redirect", function() {
           $(".modal-backdrop.fade.in").remove();
           Messaging.pollMessages();
@@ -232,36 +233,34 @@ class Messaging {
         Router.loadUrl(data.target);
       };
     } else if ($onAccept && $onAccept.type === "ajax") {
-      let data = <AjaxAction>$onAccept;return function() {
-        Ajax.genericAjaxCall(
-          data.module,
-          data.action,
-          data.systemid,
-          function(resp : any) {
-            // on ok we trigger the getUnreadCount again since the ajax call could have created
-            // other alert messages
-            Messaging.pollMessages();// check whether the ajax call returns actions which we should execute
-                    let data = JSON.parse(resp);
-                    if (data.actions) {
-                        data.actions.forEach(function(action: Accept){
-                            let callback = Messaging.getActionCallback(action);
-                            callback();
-                        });
-                    }
-                });
-            };
-        } else if ($onAccept && $onAccept.type === 'update_status') {
-            let data = <UpdateStatusAction>$onAccept;
-
-            return function(){
-                // search for the specific status flag and update
-                $(".flow-status-icon").each(function(){
-                    let el = $(this).find(".navbar-link");
-                    if ($(this).data("systemid") == data.systemid) {
-                        el.html(data.icon);
-                    }
+      let data = <AjaxAction>$onAccept;
+      return function() {
+        Ajax.genericAjaxCall(data.module, data.action, data.systemid, function(
+          resp: any
+        ) {
+          // on ok we trigger the getUnreadCount again since the ajax call could have created
+          // other alert messages
+          Messaging.pollMessages(); // check whether the ajax call returns actions which we should execute
+          let data = JSON.parse(resp);
+          if (data.actions) {
+            data.actions.forEach(function(action: Accept) {
+              let callback = Messaging.getActionCallback(action);
+              callback();
+            });
           }
-        );
+        });
+      };
+    } else if ($onAccept && $onAccept.type === "update_status") {
+      let data = <UpdateStatusAction>$onAccept;
+
+      return function() {
+        // search for the specific status flag and update
+        $(".flow-status-icon").each(function() {
+          let el = $(this).find(".navbar-link");
+          if ($(this).data("systemid") == data.systemid) {
+            el.html(data.icon);
+          }
+        });
       };
     }
 

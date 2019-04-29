@@ -1,6 +1,5 @@
 import * as $ from "jquery";
 import "fullcalendar";
-// import "../fullcalendar/locale-all";
 import WorkingIndicator from "../../../module_system/scripts/kajona/WorkingIndicator";
 import Tooltip from "../../../module_system/scripts/kajona/Tooltip";
 import Loader from "../../../module_system/scripts/kajona/Loader";
@@ -27,7 +26,7 @@ class DashboardCalendar {
       eventRender: function(event, el) {
         Tooltip.addTooltip(el, event.tooltip);
         if (event.icon) {
-          el.find("span.fc-title").prepend(event.icon+ " ");
+          el.find("span.fc-title").prepend(event.icon + " ");
         }
       },
       loading: function(isLoading) {

@@ -1,9 +1,12 @@
-import * as $ from "jquery";
+import $ from "jquery";
 import "jquery-ui.custom";
 import Ajax from "../../../module_system/scripts/kajona/Ajax";
 import Tooltip from "../../../module_system/scripts/kajona/Tooltip";
 import StatusDisplay from "../../../module_system/scripts/kajona/StatusDisplay";
 import Util from "../../../module_system/scripts/kajona/Util";
+import "../../view/components/dashboard/less/dashboard.less";
+import "../../view/components/widget/less/widget.less";
+import "../../view/components/widgetlist/less/widgetlist.less";
 
 class Todo {
   public static selectedCategory: string = "";
@@ -118,34 +121,58 @@ class Dashboard {
     );
   }
 
-    public static updateWidget(form: string, strSystemid: string, updateAdditionalContent: boolean) {
-        let data = $(form).serialize();
-        if (!updateAdditionalContent) {
-            Ajax.loadUrlToElement("div.core-component-widget[data-systemid='" + strSystemid + "'] .content", "/xml.php?admin=1&module=dashboard&action=updateWidgetContent&systemid=" + strSystemid + "&" + data);
-        } else {
-            // add all current query parameters to the reload request
-            let params = Util.getQueryParameters();
-            let query = "";
-            for (let name in params) {
-                query+= "&" + name + "=" + encodeURIComponent(params[name]);
-            }
+  public static updateWidget(
+    form: string,
+    strSystemid: string,
+    updateAdditionalContent: boolean
+  ) {
+    let data = $(form).serialize();
+    if (!updateAdditionalContent) {
+      Ajax.loadUrlToElement(
+        "div.core-component-widget[data-systemid='" +
+          strSystemid +
+          "'] .content",
+        "/xml.php?admin=1&module=dashboard&action=updateWidgetContent&systemid=" +
+          strSystemid +
+          "&" +
+          data
+      );
+    } else {
+      // add all current query parameters to the reload request
+      let params = Util.getQueryParameters();
+      let query = "";
+      for (let name in params) {
+        query += "&" + name + "=" + encodeURIComponent(params[name]);
+      }
 
-            Ajax.loadUrlToElement("div.core-component-widget[data-systemid='" + strSystemid + "'] .content",
-                "/xml.php?admin=1&module=dashboard&action=updateWidgetContent&systemid=" + strSystemid + "&" + data + query,
-                null,
-                null,
-                null,
-                function () {
-                    Dashboard.updateWidgetAdditionalContent(strSystemid)
-                }
-            );
+      Ajax.loadUrlToElement(
+        "div.core-component-widget[data-systemid='" +
+          strSystemid +
+          "'] .content",
+        "/xml.php?admin=1&module=dashboard&action=updateWidgetContent&systemid=" +
+          strSystemid +
+          "&" +
+          data +
+          query,
+        null,
+        null,
+        null,
+        function() {
+          Dashboard.updateWidgetAdditionalContent(strSystemid);
         }
+      );
     }
+  }
 
-    public static updateWidgetAdditionalContent(strSystemid: string) {
-        Ajax.loadUrlToElement("div.core-component-widget[data-systemid='"+strSystemid+"'] .additionalNameContent", "/xml.php?admin=1&module=dashboard&action=updateWidgetAdditionalContent&systemid="+strSystemid);
-    }
-
+  public static updateWidgetAdditionalContent(strSystemid: string) {
+    Ajax.loadUrlToElement(
+      "div.core-component-widget[data-systemid='" +
+        strSystemid +
+        "'] .additionalNameContent",
+      "/xml.php?admin=1&module=dashboard&action=updateWidgetAdditionalContent&systemid=" +
+        strSystemid
+    );
+  }
 }
 (<any>window).Dashboard = Dashboard;
 export default Dashboard;

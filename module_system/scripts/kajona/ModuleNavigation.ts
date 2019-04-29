@@ -1,4 +1,4 @@
-import * as $ from "jquery";
+import $ from "jquery";
 import Ajax from "./Ajax";
 
 class ModuleNavigation {

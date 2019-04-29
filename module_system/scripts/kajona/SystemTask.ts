@@ -1,4 +1,4 @@
-import * as $ from "jquery";
+import $ from "jquery";
 import Ajax from "./Ajax";
 import StatusDisplay from "./StatusDisplay";
 import Dialog from "../../../module_v4skin/scripts/kajona/Dialog";

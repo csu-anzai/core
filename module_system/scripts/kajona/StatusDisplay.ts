@@ -1,4 +1,4 @@
-const toastr = require("toastr");
+import * as toastr from "toastr";
 
 /**
  * General way to display a status message using toastr

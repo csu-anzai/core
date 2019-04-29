@@ -1,6 +1,3 @@
-///<reference path="../../../_buildfiles/jstests/definitions/kajona.d.ts" />
-///<amd-module name="desktopNotification"/>
-
 /**
  * Wrapper for desktop notifications.
  *
@@ -60,5 +57,5 @@ class DesktopNotification {
     return typeof Notification !== "undefined";
   }
 }
-
+(<any>window).DesktopNotification = DesktopNotification;
 export default DesktopNotification;
