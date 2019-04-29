@@ -23,7 +23,7 @@ class DevopsApiController implements ApiControllerInterface
      *
      * @api
      * @method GET
-     * @path /devops
+     * @path /systeminfo
      * @authorization filetoken
      */
     public function listPlugins()
