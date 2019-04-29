@@ -24,7 +24,7 @@ use Kajona\System\System\GraphInterfaceFronted;
  * @author andrii.konoval@artemeon.de
  * @author stefan.idler@artemeon.de
  */
-class GraphChartjs implements GraphInterfaceFronted
+class GraphChartjs implements GraphInterfaceFronted, \JsonSerializable
 {
 
     /**
@@ -772,5 +772,20 @@ class GraphChartjs implements GraphInterfaceFronted
         </script>";
 
         return $strReturn;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            "type" => get_class($this),
+            "data" => $this->arrChartData,
+            "options" => $this->arrChartOptions,
+            "colors" => $this->arrColors,
+            "width" => $this->intWidth,
+            "height" => $this->intHeight,
+        ];
     }
 }
