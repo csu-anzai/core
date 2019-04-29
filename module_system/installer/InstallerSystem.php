@@ -820,7 +820,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             $wf->deleteObjectFromDatabase();
         }
 
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.5");
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.6");
         return $strReturn;
     }
 
