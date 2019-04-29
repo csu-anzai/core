@@ -36,7 +36,7 @@ class DevopsApiController implements ApiControllerInterface
         foreach ($plugins as $plugin) {
             $return[] = [
                 "title" => $plugin->getStrTitle(),
-                "fields" => $plugin->getArrContent(),
+                "fields" => $plugin->getArrContent(SysteminfoInterface::TYPE_JSON),
             ];
         }
 
