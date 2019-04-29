@@ -1,5 +1,5 @@
 import Ajax from "../../../module_system/scripts/kajona/Ajax";
-
+import Vue from "vue";
 /**
  * Fronend controller for the dbbrowser module
  */
@@ -9,6 +9,9 @@ class Dbbrowser {
    * @param tableName
    * @param column
    */
+  public static initDbBrowser(element: any) {
+    new Vue({ el: "#" + element });
+  }
   public static addIndex(tableName: string, column: string) {
     Ajax.genericAjaxCall(
       "dbbrowser",

@@ -4,7 +4,8 @@
  *       Published under the GNU LGPL v2.1
  ********************************************************************************************************/
 
-declare (strict_types = 1);
+
+declare(strict_types = 1);
 
 namespace Kajona\Dbbrowser\Admin;
 
@@ -20,6 +21,8 @@ use Kajona\System\View\Components\Dtable\DTableComponent;
 use Kajona\System\View\Components\Dtable\Model\DCell;
 use Kajona\System\View\Components\Dtable\Model\DRow;
 use Kajona\System\View\Components\Dtable\Model\DTable;
+use Kajona\System\View\Components\Grid\Grid;
+
 
 /**
  *
@@ -41,6 +44,7 @@ class DbbrowserController extends AdminEvensimpler
         return $arrReturn;
     }
 
+
     /**
      * Creates the main view of the dbbrowser
      *
@@ -51,9 +55,31 @@ class DbbrowserController extends AdminEvensimpler
      */
     protected function actionList()
     {
-        $component = "<div id='dbBrowser'></div>";
-        $component .= "<script>" . file_get_contents(__DIR__ . '/../../../frontend-components/module_vueComponents/components/DbBrowser/DbBrowser-bundle.js') . "</script>";
-        return $component;
+        /*
+        $return = $this->objToolkit->formHeadline($this->getLang("schema_tables"));
+        $return .= $this->objToolkit->listHeader();
+        foreach (Carrier::getInstance()->getObjDB()->getTables() as $tableName) {
+            $details = Link::getLinkAdminXml($this->getArrModule("module"), "apiSystemSchema", ["table" => $tableName]);
+            $link = Link::getLinkAdminManual("href=\"#\" onclick=\"require('ajax').loadUrlToElement('.schemaDetails', '{$details}'); return false;\"", $tableName);
+            $return .= $this->objToolkit->genericAdminList("", $link, AdminskinHelper::getAdminImage("icon_table"), "");
+        }
+        $return .= $this->objToolkit->listFooter();
+        */
+
+        $listId = generateSystemid();
+        $list = "<div id='list{$listId}'>";
+        $list.= "<dbbrowser-list></dbbrowser-list>";
+        $list.= "</div>";
+        $list.= "<script>Dbbrowser.initDbBrowser('list{$listId}')</script>";
+
+        $detailUrl = Link::getLinkAdminXml($this->getArrModule("module"), "apiSystemSchema", ["table" => Carrier::getInstance()->getObjDB()->getTables()[0]]);
+        $detail = "<div class='schemaDetails'></div><script>Ajax.loadUrlToElement('.schemaDetails', '{$detailUrl}')</script>";
+
+        $grid = new Grid([3, 9]);
+        $grid->setBitLimitHeight(true);
+        $grid->addRow([$list, $detail]);
+        return $grid->renderComponent();
+
     }
 
     /**
@@ -69,6 +95,7 @@ class DbbrowserController extends AdminEvensimpler
         $tableName = $this->getParam("table");
         $details = Carrier::getInstance()->getObjDB()->getTableInformation($tableName);
 
+
         $arrIndexPlain = array_map(function (TableKey $key) {
             return $key->getName();
         }, $details->getPrimaryKeys());
@@ -81,7 +108,7 @@ class DbbrowserController extends AdminEvensimpler
             $this->getLang("schema_header_type_int"),
             $this->getLang("schema_header_type_db"),
             $this->getLang("schema_header_type_null"),
-            "",
+            ""
         ]));
         foreach ($details->getColumns() as $column) {
             $tableColumns->addRow(
@@ -92,7 +119,7 @@ class DbbrowserController extends AdminEvensimpler
                     $column->getInternalType(),
                     $column->getDatabaseType(),
                     $column->isNullable() === true ? "null" : "not null",
-                    (new DCell($this->objToolkit->listConfirmationButton($this->getLang("create_index_question", [$column->getName()]), "javascript:Dbbrowser.addIndex(\'{$tableName}\', \'{$column->getName()}\');", "icon_index", $this->getLang("action_index_create"), $this->getLang("action_index_create"))))->setClassAddon("align-right"),
+                    (new DCell($this->objToolkit->listConfirmationButton($this->getLang("create_index_question", [$column->getName()]), "javascript:require(\'dbbrowser\').addIndex(\'{$tableName}\', \'{$column->getName()}\');", "icon_index", $this->getLang("action_index_create"), $this->getLang("action_index_create"))))->setClassAddon("align-right")
                 ])
             );
         }
@@ -106,7 +133,7 @@ class DbbrowserController extends AdminEvensimpler
             $tableKeys->addRow(
                 new DRow([
                     (new DCell(AdminskinHelper::getAdminImage("icon_key")))->setClassAddon("width-20-px"),
-                    $key->getName(),
+                    $key->getName()
                 ])
             );
         }
@@ -116,7 +143,7 @@ class DbbrowserController extends AdminEvensimpler
             "",
             $this->getLang("schema_header_name"),
             $this->getLang("schema_header_type_def"),
-            "",
+            ""
         ]));
         foreach ($details->getIndexes() as $index) {
             $tableIndex->addRow(
@@ -125,9 +152,9 @@ class DbbrowserController extends AdminEvensimpler
                     $index->getName(),
                     $index->getDescription(),
                     (new DCell(
-                        $this->objToolkit->listDeleteButton($index->getName(), $this->getLang("index_delete_question"), "javascript:Dbbrowser.deleteIndex(\'{$tableName}\', \'{$index->getName()}\');") .
-                        $this->objToolkit->listConfirmationButton($this->getLang("recreate_index_question", [$index->getName()]), "javascript:Dbbrowser.recreateIndex(\'{$tableName}\', \'{$index->getName()}\');", "icon_sync", $this->getLang("action_index_recreate"), $this->getLang("action_index_recreate")))
-                    )->setClassAddon("align-right"),
+                        $this->objToolkit->listDeleteButton($index->getName(), $this->getLang("index_delete_question"), "javascript:require(\'dbbrowser\').deleteIndex(\'{$tableName}\', \'{$index->getName()}\');").
+                        $this->objToolkit->listConfirmationButton($this->getLang("recreate_index_question", [$index->getName()]), "javascript:require(\'dbbrowser\').recreateIndex(\'{$tableName}\', \'{$index->getName()}\');", "icon_sync", $this->getLang("action_index_recreate"), $this->getLang("action_index_recreate")))
+                    )->setClassAddon("align-right")
                 ])
             );
         }
@@ -141,42 +168,6 @@ class DbbrowserController extends AdminEvensimpler
         return $return;
     }
 
-    /**
-     * The backend call to retrun table in json
-     *
-     * @return string "" in case of success
-     * @permissions view
-     * @throws Exception
-     * @responseType json
-     */
-    protected function actionApiSystemSchemaJson()
-    {
-        $tableName = $this->getParam("table");
-        $details = Carrier::getInstance()->getObjDB()->getTableInformation($tableName);
-
-        $result = [];
-        $result["columns"] = [];
-        $result["indexes"] = [];
-        $result["keys"] = [];
-        foreach ($details->getColumns() as $column) {
-            $result["columns"][] = [
-                "name" => $column->getName(),
-                "type" => $column->getInternalType(),
-                "dbtype" => $column->getDatabaseType(),
-                "nullable" => $column->isNullable() === true ? "null" : "not null",
-            ];
-        }
-        foreach ($details->getPrimaryKeys() as $key) {
-            $result["keys"][] = $key->getName();
-        }
-        foreach ($details->getIndexes() as $index) {
-            $result["indexes"][] = [
-                "name" => $index->getName(),
-                "description" => $index->getDescription(),
-            ];
-        }
-        return $result;
-    }
 
     /**
      * Adds a new index for a given column
@@ -188,7 +179,7 @@ class DbbrowserController extends AdminEvensimpler
         $table = $this->getParam("table");
         $column = $this->getParam("column");
 
-        return ["status" => Carrier::getInstance()->getObjDB()->createIndex($table, "ix_" . generateSystemid(), [$column])];
+        return ["status" => Carrier::getInstance()->getObjDB()->createIndex($table, "ix_".generateSystemid(), [$column])];
     }
 
     /**
