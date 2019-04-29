@@ -9,7 +9,6 @@ const CompressionPlugin = require("compression-webpack-plugin");
 const WatchMissingNodeModulesPlugin = require("react-dev-utils/WatchMissingNodeModulesPlugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { VueLoaderPlugin } = require("vue-loader");
-const packageConfig = require("./packageConfig");
 const liveReloadOptions = {
   hostname: "localhost",
   protocol: "http"
