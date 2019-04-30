@@ -5,21 +5,19 @@ const packageConfig = require("../../project/packageconfig.json");
 module.exports = {
   getPaths: async () => {
     var modulesPaths = null;
-    var coreModules = packageConfig.core.map(el => {
-      return "../../core/".concat(el).concat("/scripts/**/*.ts");
-    });
-    var coreAgpModules = packageConfig.core_agp.map(el => {
-      return "../../core_agp/".concat(el).concat("/scripts/**/*.ts");
-    });
-    var coreCustomerModules = packageConfig.core_customer.map(el => {
-      return "../../core_customer/".concat(el).concat("/scripts/**/*.ts");
-    });
-    var modules = coreModules
-      .concat(coreAgpModules)
-      .concat(coreCustomerModules);
+
     try {
-      modulesPaths = await globby(modules);
-      console.log("included modules : ", modulesPaths);
+        var moduleMap = [];
+        for (var core in packageConfig) {
+            for (var i = 0; i < packageConfig[core].length; i++) {
+                moduleMap.push(
+                    "../../"+core+"/"+packageConfig[core][i]+"/scripts/**/*.ts"
+                )
+            }
+        }
+      console.log("map", moduleMap);
+      modulesPaths = await globby(moduleMap);
+      console.log("included ts files : ", modulesPaths);
       return modulesPaths;
     } catch (e) {
       console.log(e);
