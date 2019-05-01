@@ -4,9 +4,6 @@ import Ajax from "../../../module_system/scripts/kajona/Ajax";
 import Tooltip from "../../../module_system/scripts/kajona/Tooltip";
 import StatusDisplay from "../../../module_system/scripts/kajona/StatusDisplay";
 import Util from "../../../module_system/scripts/kajona/Util";
-import "../../view/components/dashboard/less/dashboard.less";
-import "../../view/components/widget/less/widget.less";
-import "../../view/components/widgetlist/less/widgetlist.less";
 
 class Todo {
   public static selectedCategory: string = "";
