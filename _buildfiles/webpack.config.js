@@ -11,20 +11,18 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { VueLoaderPlugin } = require("vue-loader");
 const liveReloadOptions = {
   hostname: "localhost",
-  protocol: "http"
+  protocol: "https"
 };
 
 module.exports = async env => {
   const devMode = env.NODE_ENV !== "production";
   console.log("Build Type : ", env.NODE_ENV);
-  var modulesPaths = await pathsFinder.getPaths();
+  let tsPaths = await pathsFinder.getTsPaths();
+  let lessPaths = await pathsFinder.getLessPaths(); //TODO: @dha we need to talk
+
   return {
     entry: {
-      agp: devMode
-        ? glob.sync(
-            "../../{core,core_agp,core_customer}/module_*/scripts/**/*.ts"
-          )
-        : modulesPaths
+      agp: devMode ? glob.sync("../../core*/module_*/scripts/**/*.ts") : tsPaths
     },
     output: {
       filename: "./[name].min.js",
@@ -94,7 +92,7 @@ module.exports = async env => {
     },
     resolve: {
       modules: [path.resolve(__dirname, "./node_modules")],
-      extensions: [".ts", ".js", ".vue", ".json"],
+      extensions: [".ts", ".js", ".vue", ".json", ".less"],
       alias: {
         vue$: "vue/dist/vue.esm.js",
         "load-image": "blueimp-load-image/js/load-image.js",
@@ -102,8 +100,7 @@ module.exports = async env => {
         "load-image-exif": "blueimp-load-image/js/load-image-exif.js",
         "load-image-scale": "blueimp-load-image/js/load-image-scale.js",
         "canvas-to-blob": "blueimp-canvas-to-blob/js/canvas-to-blob.js",
-        "jquery-ui/ui/widget":
-          "blueimp-file-upload/js/vendor/jquery.ui.widget.js",
+        "jquery-ui/ui/widget": "blueimp-file-upload/js/vendor/jquery.ui.widget.js",
         "@": path.resolve(__dirname, "../../"),
         core: path.resolve(__dirname, "../"),
         core_agp: path.resolve(__dirname, "../../core_agp")
