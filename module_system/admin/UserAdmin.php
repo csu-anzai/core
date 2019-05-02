@@ -1521,7 +1521,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
                     "allowUser" => $this->getParam("allowUser"),
                     "allowGroup" => $this->getParam("allowGroup"),
                     "checkid" => $this->getParam("checkid"),
-                    "selectedGroup" => $this->getParam("selectedGroup")
+                    "selectedGroup" => $this->getSystemid(),
                 ]),
                 function() {return true; }
             );
@@ -1551,7 +1551,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
                     "allowUser" => $this->getParam("allowUser"),
                     "allowGroup" => $this->getParam("allowGroup"),
                     "checkid" => $this->getParam("checkid"),
-                    "selectedGroup" => $this->getParam("selectedGroup")
+                    "selectedGroup" => $this->getSystemid(),
                 ]),
                 function() {return true; }
             );
