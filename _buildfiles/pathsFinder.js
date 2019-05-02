@@ -31,10 +31,10 @@ module.exports = {
 
     getLessPaths: async () => {
         let lessPaths = null;
-        let packageConfig = require("./../../project/packageconfig.json");
         if (!fs.existsSync("./../../project/packageconfig.json")) {
             return [];
         }
+        let packageConfig = require("./../../project/packageconfig.json");
 
         try {
             let moduleMap = [];
