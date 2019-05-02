@@ -1,4 +1,5 @@
 const globby = require("globby");
+const glob = require("glob");
 const fs = require("fs");
 // const packageConfig = require("./packageConfig.json");
 
@@ -8,7 +9,7 @@ module.exports = {
     getTsPaths: async () => {
         let modulesPaths = null;
         if (!fs.existsSync("./../../project/packageconfig.json")) {
-            return [];
+            return glob.sync("../../core*/module_*/scripts/**/*.ts");
         }
         let packageConfig = require("./../../project/packageconfig.json");
 
