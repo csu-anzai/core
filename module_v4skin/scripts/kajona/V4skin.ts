@@ -19,7 +19,9 @@ import Breadcrumb from "../../../module_system/scripts/kajona/Breadcrumb";
 import "../../admin/skins/kajona_v4/less/styles.less";
 
 class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
-  public minLength: number = 0;
+public keepUi: boolean = false;
+
+    public minLength: number = 0;
 
   public delay: number = 500;
 
@@ -66,8 +68,15 @@ class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
   };
 
   public focus: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
-    return false;
-  };
+    return true;
+    };
+
+    public close: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
+  if (this.keepUi) {
+            $(event.currentTarget).show();
+        }
+
+    }.bind(this);
 
   public select: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
     if (ui.item) {

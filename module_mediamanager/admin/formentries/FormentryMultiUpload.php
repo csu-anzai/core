@@ -170,6 +170,27 @@ class FormentryMultiUpload extends FormentryBase implements FormentryPrintableIn
     }
 
     /**
+     * Returns whether the configured repo has files
+     *
+     * @return bool
+     */
+    public function hasFiles()
+    {
+        /** @var MediamanagerRepo $repository */
+        $repository = Objectfactory::getInstance()->getObject($this->strRepoId);
+        $file = MediamanagerFile::getFileForPath($this->strRepoId, $repository->getStrPath()."/".$this->getStrValue());
+
+        if ($file instanceof MediamanagerFile) {
+            $filter = new MediamanagerFileFilter();
+            $filter->setIntFileType(MediamanagerFile::$INT_TYPE_FILE);
+
+            return MediamanagerFile::getObjectCountFiltered($filter, $file->getSystemid()) > 0;
+        }
+
+        return false;
+    }
+
+    /**
      * Renders Meidamanager folders as text
      *
      * @param MediamanagerFile $objFile

@@ -203,6 +203,16 @@ class FormentryDropdown extends FormentryBase implements FormentryPrintableInter
     }
 
     /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return array_merge(parent::jsonSerialize(), [
+            "values" => $this->arrKeyValues
+        ]);
+    }
+
+    /**
      * @param $arrKeyValues
      *
      * @return FormentryDropdown

@@ -45,8 +45,11 @@ class Forms {
         if ($(this).is(":checkbox")) {
           $(this).prop("checked", false);
         }
-      });
-    }
+
+    if ($(this).is(':radio')) {
+                    $(this).prop("checked", false);
+                }
+            });}
   }
 
   /**

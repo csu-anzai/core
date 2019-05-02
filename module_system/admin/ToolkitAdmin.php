@@ -320,9 +320,10 @@ class ToolkitAdmin extends Toolkit
      * @param bool $bitBlockCurrentUser
      * @param array|string $arrValidateSystemid If you want to check the view-permissions for a given systemid, pass the id here
      * @param string $strSelectedGroupId
+     * @param bool $bitKeepOpen
      * @return string
      */
-    public function formInputUserSelector($strName, $strTitle = "", $strValue = "", $strClass = "", $bitUser = true, $bitGroups = false, $bitBlockCurrentUser = false, array $arrValidateSystemid = null, $strSelectedGroupId = null)
+    public function formInputUserSelector($strName, $strTitle = "", $strValue = "", $strClass = "", $bitUser = true, $bitGroups = false, $bitBlockCurrentUser = false, array $arrValidateSystemid = null, $strSelectedGroupId = null, $bitKeepOpen = false)
     {
         $strUserName = "";
         $strUserId = "";
@@ -399,8 +400,8 @@ class ToolkitAdmin extends Toolkit
                         success: response
                     });
                 };
-
-
+                        ".($bitKeepOpen ? " objConfig.keepUi = true;" : "")."
+                 
                 $('#" . $strName . "').autocomplete(objConfig).data( 'ui-autocomplete' )._renderItem = function( ul, item ) {
                     return $( '<li></li>' )
                         .data('ui-autocomplete-item', item)
@@ -410,7 +411,6 @@ class ToolkitAdmin extends Toolkit
             });
 	        </script>
         ";
-
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_userselector", true);
     }
 
