@@ -17,6 +17,21 @@ use Kajona\Api\System\ApiControllerInterface;
 class SystemLockApiController implements ApiControllerInterface
 {
     /**
+     * Returns whether the system is locked or not
+     *
+     * @api
+     * @method GET
+     * @path /systemlock
+     * @authorization filetoken
+     */
+    public function getLocked()
+    {
+        return [
+            "locked" => is_file($this->getLockFile()),
+        ];
+    }
+
+    /**
      * Call which creates the lock file
      *
      * @api
