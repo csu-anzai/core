@@ -33,12 +33,14 @@ class CleanCoreHelper
             foreach ($arrCores as $strCoreFolder) {
                 foreach (scandir(__DIR__."/".$this->strProjectPath."/".$strCoreFolder) as $strOneModule) {
                     if (preg_match("/^(module|_)+.*/i", $strOneModule)) {
+
                         //skip module if not marked as to be included
-                        if (count($arrIncludedModules) > 0 && (isset($arrIncludedModules[$strCoreFolder]) && !in_array($strOneModule, $arrIncludedModules[$strCoreFolder]))) {
-                            echo " Deleting ".__DIR__."/".$this->strProjectPath."/".$strCoreFolder."/".$strOneModule."\n";
-                            $this->rrmdir(__DIR__."/".$this->strProjectPath."/".$strCoreFolder."/".$strOneModule);
+                        if (count($arrIncludedModules) > 0 && (isset($arrIncludedModules[$strCoreFolder]) && in_array($strOneModule, $arrIncludedModules[$strCoreFolder]))) {
                             continue;
                         }
+
+                        echo " Deleting ".__DIR__."/".$this->strProjectPath."/".$strCoreFolder."/".$strOneModule."\n";
+                        $this->rrmdir(__DIR__."/".$this->strProjectPath."/".$strCoreFolder."/".$strOneModule);
                     }
                 }
             }
