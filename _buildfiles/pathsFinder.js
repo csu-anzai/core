@@ -7,6 +7,9 @@ module.exports = {
 
     getTsPaths: async () => {
         let modulesPaths = null;
+        if (!fs.existsSync("./../../project/packageconfig.json")) {
+            return [];
+        }
         let packageConfig = require("./../../project/packageconfig.json");
 
         try {
@@ -29,6 +32,9 @@ module.exports = {
     getLessPaths: async () => {
         let lessPaths = null;
         let packageConfig = require("./../../project/packageconfig.json");
+        if (!fs.existsSync("./../../project/packageconfig.json")) {
+            return [];
+        }
 
         try {
             let moduleMap = [];
