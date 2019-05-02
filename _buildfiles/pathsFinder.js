@@ -1,7 +1,7 @@
 const globby = require("globby");
 const fs = require("fs");
 // const packageConfig = require("./packageConfig.json");
-const packageConfig = require("../../project/packageconfig.json");
+const packageConfig = require("./../../project/packageconfig.json");
 
 module.exports = {
 
