@@ -11,7 +11,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { VueLoaderPlugin } = require("vue-loader");
 const liveReloadOptions = {
   hostname: "localhost",
-  protocol: "https"
+  protocol: "http"
 };
 
 module.exports = async env => {

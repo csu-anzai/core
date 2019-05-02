@@ -51,7 +51,6 @@ module.exports = {
             moduleMap.push("../../project/**/less/*.less");
 
             lessPaths = await globby(moduleMap);
-            //console.log("included less files : ", lessPaths);
 
             let file = ' /* auto generated, do not change */\n';
             for (let i = 0; i < lessPaths.length; i++) {
@@ -59,9 +58,10 @@ module.exports = {
             }
 
             await fs.writeFile(__dirname+'/../module_v4skin/admin/skins/kajona_v4/less/styles.less', file, function(er) {
-                console.log(er);
+                if (er !== null) {
+                    console.log(er);
+                }
             });
-
 
             return lessPaths;
         } catch (e) {

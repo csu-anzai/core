@@ -27,9 +27,9 @@ class class_project_setup
         }
 
 
-        $arrExcludedModules = array();
-        if (is_file(self::$strRealPath . "project/packageconfig.php")) {
-            include self::$strRealPath . "project/packageconfig.php";
+        $arrIncludedModules = null;
+        if (is_file(self::$strRealPath . "project/packageconfig.json")) {
+            $arrIncludedModules = json_decode(file_get_contents(self::$strRealPath."project/packageconfig.json"), true);
         }
 
         //Module-Constants
@@ -44,7 +44,7 @@ class class_project_setup
             }
 
             foreach (scandir(self::$strRealPath . "/" . $strRootFolder) as $strOneModule) {
-                if (preg_match("/^(module|element|_)+.*/i", $strOneModule) && !in_array($strOneModule, $arrExcludedModules[$strRootFolder])) {
+                if (preg_match("/^(module|_)+.*/i", $strOneModule) && (!is_array($arrIncludedModules) || (isset($arrIncludedModules[$strRootFolder]) && in_array($strOneModule, $arrIncludedModules[$strRootFolder])))) {
                     $arrModules[] = $strRootFolder . "/" . $strOneModule;
                 }
             }
@@ -70,12 +70,10 @@ class class_project_setup
             $arrContent = scandir(self::$strRealPath . "/" . $strSingleModule);
             foreach ($arrContent as $strSingleEntry) {
                 if (substr($strSingleEntry, -5) == ".root" && !is_file(self::$strRealPath . "/" . substr($strSingleEntry, 0, -5))) {
-                    //echo "copy ".$strSingleEntry." to ".self::$strRealPath."/".substr($strSingleEntry, 0, -5)."\n";
                     copy(self::$strRealPath . "/" . $strSingleModule . "/" . $strSingleEntry, self::$strRealPath . "/" . substr($strSingleEntry, 0, -5));
                 }
 
                 if (substr($strSingleEntry, -8) == ".project" && !is_file(self::$strRealPath . "/project/" . substr($strSingleEntry, 0, -8))) {
-                    //echo "copy ".$strSingleEntry." to ".self::$strRealPath."/".substr($strSingleEntry, 0, -5)."\n";
                     copy(self::$strRealPath . "/" . $strSingleModule . "/" . $strSingleEntry, self::$strRealPath . "/project/" . substr($strSingleEntry, 0, -8));
                 }
             }
@@ -141,15 +139,13 @@ JSON;
             return;
         }
 
-        $cfg = new class { public $core = []; };
+        $cfg = new class {
+            public $core = [];
+        };
         foreach (scandir(self::$strRealPath."/core") as $strOneEntry) {
             if ($strOneEntry == "." || $strOneEntry == "..") {
                 continue;
             }
-
-//            if (is_file(self::$strRealPath."/core" . "/" . $strOneEntry)) {
-//                continue;
-//            }
 
             if (is_dir(self::$strRealPath."/core" . "/" . $strOneEntry)) {
                 $cfg->core[] = $strOneEntry;
