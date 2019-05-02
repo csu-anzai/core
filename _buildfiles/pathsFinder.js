@@ -1,12 +1,13 @@
 const globby = require("globby");
 const fs = require("fs");
 // const packageConfig = require("./packageConfig.json");
-const packageConfig = require("./../../project/packageconfig.json");
+
 
 module.exports = {
 
     getTsPaths: async () => {
         let modulesPaths = null;
+        let packageConfig = require("./../../project/packageconfig.json");
 
         try {
             let moduleMap = [];
@@ -27,6 +28,7 @@ module.exports = {
 
     getLessPaths: async () => {
         let lessPaths = null;
+        let packageConfig = require("./../../project/packageconfig.json");
 
         try {
             let moduleMap = [];
