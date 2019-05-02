@@ -1,7 +1,6 @@
 const globby = require("globby");
 const glob = require("glob");
 const fs = require("fs");
-// const packageConfig = require("./packageConfig.json");
 
 
 module.exports = {
@@ -9,6 +8,7 @@ module.exports = {
     getTsPaths: async () => {
         let modulesPaths = null;
         if (!fs.existsSync("./../../project/packageconfig.json")) {
+            //fallback: the complete ts file list
             return glob.sync("../../core*/module_*/scripts/**/*.ts");
         }
         let packageConfig = require("./../../project/packageconfig.json");
@@ -33,6 +33,12 @@ module.exports = {
     getLessPaths: async () => {
         let lessPaths = null;
         if (!fs.existsSync("./../../project/packageconfig.json")) {
+            //fallback: an empty file to avoid compiler errors
+            await fs.writeFile(__dirname+'/../module_v4skin/admin/skins/kajona_v4/less/styles.less', '', function(er) {
+                if (er !== null) {
+                    console.log(er);
+                }
+            });
             return [];
         }
         let packageConfig = require("./../../project/packageconfig.json");
