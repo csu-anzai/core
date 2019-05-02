@@ -14,6 +14,9 @@ import WorkingIndicator = require("../../../module_system/scripts/kajona/Working
 import Breadcrumb = require("../../../module_system/scripts/kajona/Breadcrumb");
 
 class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
+
+    public keepUi: boolean = false;
+
     public minLength: number = 0;
 
     public delay: number = 500;
@@ -51,8 +54,15 @@ class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
     };
 
     public focus: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
-        return false;
+        return true;
     };
+
+    public close: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
+        if (this.keepUi) {
+            $(event.currentTarget).show();
+        }
+
+    }.bind(this);
 
     public select: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
         if(ui.item) {
