@@ -144,12 +144,12 @@ class Rights
 
 
             $systemModule = SystemModule::getModuleByName("system");
-            if ($systemModule != null  && (version_compare($systemModule->getStrVersion(), "7.1.4", "ge") || version_compare(SystemModule::getModuleByName("system")->getStrVersion(), "7.0.4", "e"))) {
+            if ($systemModule != null && in_array(_dbprefix_."permissions_view", $this->objDb->getTables())) {
                 //update permission assignment tables
                 foreach ([
-                             self::$STR_RIGHT_VIEW => ["permissions_view", "view_id", "view_shortgroup"],
-                             self::$STR_RIGHT_RIGHT2 => ["permissions_right2", "right2_id", "right2_shortgroup"]
-                         ] as $permission => $permSet) {
+                     self::$STR_RIGHT_VIEW => ["permissions_view", "view_id", "view_shortgroup"],
+                     self::$STR_RIGHT_RIGHT2 => ["permissions_right2", "right2_id", "right2_shortgroup"]
+                ] as $permission => $permSet) {
                     //remove entries from current map
                     $this->objDb->_pQuery("DELETE FROM "._dbprefix_.$permSet[0]." WHERE {$permSet[1]} = ?", [$strSystemid]);
                     $insert = [];
