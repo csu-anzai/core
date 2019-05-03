@@ -18,7 +18,7 @@ module.exports = async env => {
   const devMode = env.NODE_ENV !== "production";
   console.log("Build Type : ", env.NODE_ENV);
   let tsPaths = await pathsFinder.getTsPaths();
-  let lessPaths = await pathsFinder.getLessPaths(); //TODO: @dha we need to talk
+  let lessPaths = await pathsFinder.getLessPaths();
 
   return {
     entry: {

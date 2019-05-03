@@ -4,6 +4,8 @@ import Vue from "vue";
  * Fronend controller for the dbbrowser module
  */
 class Dbbrowser {
+
+
   /**
    * creates a new index for the column
    * @param tableName
