@@ -1,4 +1,4 @@
-///<reference path="../../../../core/_buildfiles/jstests/definitions/kajona.d.ts" />
+///<reference path="../../../_buildfiles/definitions/kajona.d.ts" />
 import Router from "./Router";
 import "jquery-ui.custom";
 import "jquery-ui-touch-punch";
