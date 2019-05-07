@@ -29,3 +29,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo $table . "\n";
     }
 }
+
+echo "<form method='POST'><input type='submit' value='Migrate'></form>";
