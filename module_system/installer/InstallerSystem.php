@@ -38,6 +38,8 @@ use Kajona\System\System\SystemPwHistory;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserUser;
+use Kajona\Workflows\System\WorkflowsHandler;
+use Kajona\Workflows\System\WorkflowsWorkflow;
 
 /**
  * Installer for the system-module
@@ -537,6 +539,10 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         if($arrModule["module_version"] == "7.1.4") {
             $strReturn .= $this->update_714_715();
         }
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.1.5") {
+            $strReturn .= $this->update_715_716();
+        }
 
         return $strReturn."\n\n";
     }
@@ -735,12 +741,28 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
     {
         $strReturn = "Updating to 7.1.5...".PHP_EOL;
         $this->objDB->changeColumn("agp_user_log", "user_log_ip", "user_log_ip", DbDatatypes::STR_TYPE_CHAR254);
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.5");
 
         $strReturn .= "Updating messages schema".PHP_EOL;
         $this->objDB->changeColumn("agp_messages", "message_title", "message_title", DbDatatypes::STR_TYPE_CHAR500);
 
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.5");
 
+        return $strReturn;
+    }
+
+    private function update_715_716()
+    {
+        $strReturn = "Updating to 7.1.6...".PHP_EOL;
+        $strReturn .= "Removing deprecated workflow".PHP_EOL;
+
+        $wf = WorkflowsHandler::getHandlerByClass('AGP\Devops\System\Workflows\WorkflowDevopsSender');
+        $wf->deleteObjectFromDatabase();
+
+        foreach(WorkflowsWorkflow::getWorkflowsForClass('AGP\Devops\System\Workflows\WorkflowDevopsSender') as $wf) {
+            $wf->deleteObjectFromDatabase();
+        }
+
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.6");
         return $strReturn;
     }
 

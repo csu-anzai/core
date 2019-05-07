@@ -62,6 +62,8 @@ class AppBuilder
      */
     public function run()
     {
+        define("_autotesting_", false);
+
         $app = $this->newApp();
         $objectBuilder = $this->objectBuilder;
         $container = $this->container;

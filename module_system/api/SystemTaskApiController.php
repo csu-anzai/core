@@ -7,6 +7,7 @@
 namespace Kajona\System\Api;
 
 use Kajona\Api\System\ApiControllerInterface;
+use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\Systemtasks\ApiSystemTaskInterface;
 use Kajona\System\Admin\Systemtasks\SystemtaskBase;
 use PSX\Http\Environment\HttpContext;
@@ -50,6 +51,29 @@ class SystemTaskApiController implements ApiControllerInterface
         return [
             "systemtasks" => $return
         ];
+    }
+
+    /**
+     * Shows the input form for a specific systemtask
+     *
+     * @api
+     * @method GET
+     * @path /systemtask/{systemtask}
+     * @authorization filetoken
+     */
+    public function showSystemTasksForm(HttpContext $context)
+    {
+        $systemTask = $this->getSystemTaskByName($context->getUriFragment("systemtask"));
+        if ($systemTask instanceof ApiSystemTaskInterface) {
+            $form = $systemTask->getAdminForm();
+            if ($form instanceof AdminFormgenerator) {
+                return $form;
+            } else {
+                throw new NotFoundException("No system task form available");
+            }
+        } else {
+            throw new NotFoundException("System task not found");
+        }
     }
 
     /**

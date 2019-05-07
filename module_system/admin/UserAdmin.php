@@ -1249,8 +1249,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
 
         $strReturn = "";
         $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "editMemberships"), "userForm", "", "return false;");
-        $strReturn .= $this->objToolkit->formInputUserSelector("group_add", $this->getLang("group_name"), "", "", false, true);
-
+        $strReturn .= $this->objToolkit->formInputUserSelector("group_add", $this->getLang("group_name"), "", "", false, true, false, null, null, true);
         $strReturn .= $this->objToolkit->formClose();
         $strReturn .= $this->objToolkit->listHeader();
 
@@ -1522,7 +1521,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
                     "allowUser" => $this->getParam("allowUser"),
                     "allowGroup" => $this->getParam("allowGroup"),
                     "checkid" => $this->getParam("checkid"),
-                    "selectedGroup" => $this->getParam("selectedGroup")
+                    "selectedGroup" => $this->getSystemid(),
                 ]),
                 function() {return true; }
             );
@@ -1552,7 +1551,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
                     "allowUser" => $this->getParam("allowUser"),
                     "allowGroup" => $this->getParam("allowGroup"),
                     "checkid" => $this->getParam("checkid"),
-                    "selectedGroup" => $this->getParam("selectedGroup")
+                    "selectedGroup" => $this->getSystemid(),
                 ]),
                 function() {return true; }
             );
