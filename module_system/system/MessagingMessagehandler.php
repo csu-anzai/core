@@ -50,9 +50,14 @@ class MessagingMessagehandler
             }
         );
 
-        return array_filter($arrHandler, function ($objInstance) {
-            return $objInstance != null;
-        });
+        $map = [];
+        foreach ($arrHandler as $instance) {
+            if ($instance !== null) {
+                //keep entries from the project dir
+                $map[get_class($instance)] = $instance;
+            }
+        }
+        return $map;
     }
 
 
