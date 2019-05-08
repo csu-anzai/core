@@ -3,11 +3,18 @@
 
 import * as $ from "jquery";
 import Ajax = require("./Ajax");
+import * as Toastr from "toastr";
 
 interface Response {
     bitInherited: boolean
     arrConfigs: Array<string>
 }
+
+//interface dataInterface {
+//    type: string,
+//    message: string,
+//    [key: string]: any
+//}
 
 /**
  * Little helper function for the system permissions matrix
@@ -24,9 +31,9 @@ class Permissions {
             objResponse.arrConfigs.push($(this).attr('id'));
         });
 
+        var submitBtn = $(".savechanges");
         // disable submit button
-        $(".savechanges").addClass("processing");
-        $(".savechanges").prop("disabled", true);
+        submitBtn.addClass("processing").prop("disabled", true);
 
         $.ajax({
             url: KAJONA_WEBPATH + '/xml.php?admin=1&module=right&action=saveRights&systemid='+ $('#systemid').val(),
@@ -36,11 +43,27 @@ class Permissions {
             dataType: 'json'
         }).done(function(data) {
             // enable submit button
-            $(".savechanges").removeClass("processing");
-            $(".savechanges").prop("disabled", false);
+            submitBtn.removeClass("processing").prop("disabled", false);
 
             // load rights
             Permissions.loadRights();
+            switch (data.type) {
+                case 'success' :
+                    Toastr.success(data.message);
+                    break;
+                case 'info' :
+                    Toastr.info(data.message);
+                    break;
+                case 'error' :
+                    Toastr.error(data.message);
+                    break;
+                case 'warning' :
+                    Toastr.warning(data.message);
+                    break;
+                default :
+                    break;
+            }
+
         });
 
         return false;
