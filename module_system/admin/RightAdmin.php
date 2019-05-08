@@ -38,13 +38,14 @@ class RightAdmin extends AdminController implements AdminInterface
 
     /**
      * Constructor
+     * @throws Exception
      */
     public function __construct()
     {
         parent::__construct();
         $this->setStrLangBase("system");
 
-        if ($this->getAction() == "list") {
+        if ($this->getAction() === "list") {
             $this->setAction("change");
         }
     }
@@ -117,7 +118,7 @@ class RightAdmin extends AdminController implements AdminInterface
                     // ignore enter key press
                     $(document).ready(function() {
                         $(window).keydown(function(event){
-                            if (event.keyCode == 13) {
+                            if (event.keyCode === 13) {
                                 event.preventDefault();
                                 return false;
                             }
@@ -159,7 +160,7 @@ class RightAdmin extends AdminController implements AdminInterface
      * Saves the rights passed by form
      *
      * @throws Exception
-     * @return string "" in case of success
+     * @return array
      * @permissions right
      * @responseType json
      */
@@ -182,7 +183,7 @@ class RightAdmin extends AdminController implements AdminInterface
 
         //Special case: The root-record.
         if (!$objTarget->rightRight()) {
-            return $this->objToolkit->warningBox($this->getLang("commons_error_permissions"), "alert-danger");
+            return ["message" => $this->getLang("commons_error_permissions"), "type" => "error"];
         }
 
         //Inheritance?
@@ -231,11 +232,11 @@ class RightAdmin extends AdminController implements AdminInterface
         $rights = $this->rights->convertSystemidArrayToShortIdString($permissionRow);
 
         if ($this->rights->setRights($rights, $strSystemid)) {
-            $strReturn = $this->objToolkit->warningBox($this->getLang("permissions_success"), "alert-success");
+            $strReturn = ["message" => $this->getLang("save_rights_success"), "type" => "success"];
         } else {
-            $strReturn = $this->objToolkit->warningBox($this->getLang("fehler_setzen"), "alert-danger");
+            $strReturn = ["message" => $this->getLang("save_rights_error"), "type" => "error"];
         }
 
-        return json_encode(array("message" => $strReturn));
+        return $strReturn;
     }
 }
