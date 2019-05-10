@@ -9,6 +9,8 @@
 
 namespace Kajona\System\Admin\Systemtasks;
 
+use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\Formentries\FormentryDropdown;
 use Kajona\System\System\CacheManager;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\SystemModule;
@@ -89,37 +91,35 @@ class SystemtaskFlushcache extends SystemtaskBase implements AdminSystemtaskInte
      */
     public function getAdminForm()
     {
-        $strReturn = "";
+        $form = new AdminFormgenerator("", null);
 
         // show dropdown to select cache-source
-        $arrSources = CacheManager::getAvailableDriver();
-        $arrOptions = array();
-        $arrOptions[CacheManager::TYPE_APC | CacheManager::TYPE_FILESYSTEM | CacheManager::TYPE_PHPFILE] = $this->getLang("systemtask_flushcache_all");
-        foreach ($arrSources as $intValue => $strLabel) {
-            $arrOptions[$intValue] = $strLabel;
+        $sources = CacheManager::getAvailableDriver();
+        $options = [];
+        $options[CacheManager::TYPE_APC | CacheManager::TYPE_FILESYSTEM | CacheManager::TYPE_PHPFILE] = $this->getLang("systemtask_flushcache_all");
+        foreach ($sources as $value => $label) {
+            $options[$value] = $label;
         }
-        $strReturn .= $this->objToolkit->formInputDropdown("cache_source", $arrOptions, $this->getLang("systemtask_cacheSource_source"), current(array_keys($arrOptions)));
+
+        $field = new FormentryDropdown("", "cache_source");
+        $field->setStrLabel($this->getLang("systemtask_cacheSource_source"));
+        $field->setArrKeyValues($options);
+        $field->setStrValue(current(array_keys($options)));
+        $form->addField($field);
 
         // show dropdown to select cache-namespace
-        $arrNamespaces = CacheManager::getAvailableNamespace();
-        $arrOptions = array();
-        foreach ($arrNamespaces as $strValue => $strLabel) {
-            $arrOptions[$strValue] = $strLabel;
+        $namespaces = CacheManager::getAvailableNamespace();
+        $options = [];
+        foreach ($namespaces as $value => $label) {
+            $options[$value] = $label;
         }
-        $strReturn .= $this->objToolkit->formInputDropdown("cache_namespace", $arrOptions, $this->getLang("systemtask_cacheSource_namespace"), CacheManager::NS_GLOBAL);
 
-        return $strReturn;
-    }
+        $field = new FormentryDropdown("", "cache_namespace");
+        $field->setStrLabel($this->getLang("systemtask_cacheSource_namespace"));
+        $field->setArrKeyValues($options);
+        $field->setStrValue(CacheManager::NS_GLOBAL);
+        $form->addField($field);
 
-    /**
-     * @inheritdoc
-     */
-    public function getSubmitParams()
-    {
-        $arrParams = array(
-            "cache_source" => $this->getParam("cache_source"),
-            "cache_namespace" => $this->getParam("cache_namespace"),
-        );
-        return "&" . http_build_query($arrParams, "", "&");
+        return $form;
     }
 }
