@@ -1,9 +1,9 @@
-import Vue from "vue";
-import Router from "vue-router";
+import Vue from 'vue'
+import Router from 'vue-router'
 
-Vue.use(<any>Router);
+Vue.use(<any>Router)
 
 export default new Router({
-  mode: "history",
-  routes: []
-});
+    mode: 'history',
+    routes: []
+})
