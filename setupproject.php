@@ -115,6 +115,9 @@ project/vendor
 project/log
 project/dbdumps
 files/cache
+.vscode
+tsconfig.json
+.eslintrc.json
 TEXT;
         file_put_contents(self::$strRealPath . "/.gitignore", $content);
     }
