@@ -189,7 +189,7 @@ JSON;
     "handle-callback-err": ["error", "^(err|error)$"],
     "indent": [
       "error",
-      2,
+      4,
       {
         "SwitchCase": 1,
         "VariableDeclarator": 1,
