@@ -10,12 +10,6 @@ interface Response {
     arrConfigs: Array<string>
 }
 
-//interface dataInterface {
-//    type: string,
-//    message: string,
-//    [key: string]: any
-//}
-
 /**
  * Little helper function for the system permissions matrix
  */
@@ -47,22 +41,8 @@ class Permissions {
 
             // load rights
             Permissions.loadRights();
-            switch (data.type) {
-                case 'success' :
-                    Toastr.success(data.message);
-                    break;
-                case 'info' :
-                    Toastr.info(data.message);
-                    break;
-                case 'error' :
-                    Toastr.error(data.message);
-                    break;
-                case 'warning' :
-                    Toastr.warning(data.message);
-                    break;
-                default :
-                    break;
-            }
+            // needs change after implementing type definition for toastr
+            (<any>Toastr)[data.type](data.message)
 
         });
 
