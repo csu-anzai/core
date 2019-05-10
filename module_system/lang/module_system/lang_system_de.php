@@ -297,3 +297,9 @@ $lang["copy_page_url"] = "Seiten-URL";
 $lang["link_was_copied"] = "Link wurde kopiert";
 
 $lang["error_model_not_found"] = "Fehler beim Verarbeiten der Anfrage, der zu ladende Datensatz ist nicht bekannt. Bitte starten Sie die letzte Aktion erneut.";
+
+$lang["systemtask_samplecontent_installer"] = "Samplecontent";
+$lang["systemtask_samplecontent_installer_name"] = "Samplecontent Installer";
+$lang["systemtask_samplecontent_installer_error"] = "Samplecontent konnte nicht installiert werden";
+
+$lang["systemtask_form_name"] = "Form-Demo";
