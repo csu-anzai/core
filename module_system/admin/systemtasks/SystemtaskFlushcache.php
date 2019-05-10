@@ -122,4 +122,16 @@ class SystemtaskFlushcache extends SystemtaskBase implements AdminSystemtaskInte
 
         return $form;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSubmitParams()
+    {
+        $arrParams = array(
+            "cache_source" => $this->getParam("cache_source"),
+            "cache_namespace" => $this->getParam("cache_namespace"),
+        );
+        return "&" . http_build_query($arrParams, "", "&");
+    }
 }
