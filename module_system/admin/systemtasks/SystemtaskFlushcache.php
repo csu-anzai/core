@@ -78,8 +78,8 @@ class SystemtaskFlushcache extends SystemtaskBase implements AdminSystemtaskInte
      */
     public function execute($body)
     {
-        $type = isset($body["type"]) ? intval($body["type"]) : null;
-        $namespace = isset($body["namespace"]) ? intval($body["namespace"]) : CacheManager::NS_BOOTSTRAP;
+        $type = isset($body["cache_source"]) ? intval($body["cache_source"]) : null;
+        $namespace = isset($body["cache_namespace"]) ? intval($body["cache_namespace"]) : CacheManager::NS_BOOTSTRAP;
 
         CacheManager::getInstance()->flushCache($type, $namespace);
 
