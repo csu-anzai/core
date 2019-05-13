@@ -1,4 +1,5 @@
 // This webpack config is identically equal to the normal webpack.config.js .It compiles a bundle and lets you analyse it with graphical diagrams
+//! important : npm run analyse | to use this script
 const path = require('path')
 const webpack = require('webpack')
 const glob = require('glob')

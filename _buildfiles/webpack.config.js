@@ -1,3 +1,5 @@
+//! important : npm run dev | to run dev server with livereload
+//! important : npm run build | to compile the final prod bundle
 const path = require('path')
 const webpack = require('webpack')
 const glob = require('glob')
