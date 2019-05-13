@@ -100,7 +100,8 @@ module.exports = async env => {
                     'blueimp-file-upload/js/vendor/jquery.ui.widget.js',
                 '@': path.resolve(__dirname, '../../'),
                 core: path.resolve(__dirname, '../'),
-                core_agp: path.resolve(__dirname, '../../core_agp')
+                core_agp: path.resolve(__dirname, '../../core_agp'),
+                core_customer: path.resolve(__dirname, '../../core_customer')
             }
         },
         plugins: devMode

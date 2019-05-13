@@ -16,7 +16,8 @@
     "paths": {
       "@/*": ["../../../*"],
       "core/*": ["../../*"],
-      "core_agp/*": ["../../../core_agp/*"]
+      "core_agp/*": ["../../../core_agp/*"],
+      "core_customer/*": ["../../../core_customer/*"]
     }
   },
 
