@@ -57,6 +57,7 @@
     "@types/qtip2": "^2.2.29",
     "@types/requirejs": "^2.1.31",
     "@types/toastr": "^2.1.37",
+    "@typescript-eslint/parser": "^1.9.0",
     "babel-loader": "^8.0.5",
     "compression-webpack-plugin": "^2.0.0",
     "css-loader": "^2.1.1",

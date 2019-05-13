@@ -143,6 +143,7 @@ JSON;
         $content = <<<JSON
 {
   "parserOptions": {
+  "parser" : "@typescript-eslint/parser",
     "ecmaVersion": 2018,
     "ecmaFeatures": {
       "jsx": true
