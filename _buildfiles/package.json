@@ -5,7 +5,8 @@
   "scripts": {
     "build": "webpack --mode production --env.NODE_ENV=production --progress",
     "dev": "webpack --watch --mode development --env.NODE_ENV=development --progress",
-    "analyse": "webpack --mode production --env.NODE_ENV=production --progress --config webpack.analyse.js"
+    "analyse": "webpack --mode production --env.NODE_ENV=production --progress --config webpack.analyse.js",
+    "installEslint": "npm i -g eslint @typescript-eslint/parser @vue/eslint-config-standard @vue/eslint-config-typescript eslint-plugin-import eslint-plugin-node eslint-plugin-promise eslint-plugin-standard eslint-plugin-vue"
   },
   "dependencies": {
     "await-to-js": "^2.1.1",
@@ -57,11 +58,9 @@
     "@types/qtip2": "^2.2.29",
     "@types/requirejs": "^2.1.31",
     "@types/toastr": "^2.1.37",
-    "@typescript-eslint/parser": "^1.9.0",
     "babel-loader": "^8.0.5",
     "compression-webpack-plugin": "^2.0.0",
     "css-loader": "^2.1.1",
-    "eslint": "^5.8.0",
     "glob": "^7.1.3",
     "globby": "^9.2.0",
     "less": "^3.9.0",
