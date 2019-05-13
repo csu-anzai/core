@@ -87,60 +87,65 @@ module.exports = async env => {
             ]
         },
         resolve: {
-            modules: [path.resolve(__dirname, './node_modules')],
-            extensions: ['.ts', '.js', '.vue', '.json', '.less'],
+            modules: [path.resolve(__dirname, './node_modules')], // necessary to resolve npm packages
+            extensions: ['.ts', '.js', '.vue', '.json', '.less'], // necessary to build files with these extensions
             alias: {
-                vue$: 'vue/dist/vue.esm.js',
-                'load-image': 'blueimp-load-image/js/load-image.js',
-                'load-image-meta': 'blueimp-load-image/js/load-image-meta.js',
-                'load-image-exif': 'blueimp-load-image/js/load-image-exif.js',
-                'load-image-scale': 'blueimp-load-image/js/load-image-scale.js',
-                'canvas-to-blob': 'blueimp-canvas-to-blob/js/canvas-to-blob.js',
+                vue$: 'vue/dist/vue.esm.js', // necessary to work rith vue.js properly
+                'load-image': 'blueimp-load-image/js/load-image.js', // necessary to load jquery file upload properly
+                'load-image-meta': 'blueimp-load-image/js/load-image-meta.js', // necessary to load jquery file upload properly
+                'load-image-exif': 'blueimp-load-image/js/load-image-exif.js', // necessary to load jquery file upload properly
+                'load-image-scale': 'blueimp-load-image/js/load-image-scale.js', // necessary to load jquery file upload properly
+                'canvas-to-blob': 'blueimp-canvas-to-blob/js/canvas-to-blob.js', // necessary to load jquery file upload properly
                 'jquery-ui/ui/widget':
-                    'blueimp-file-upload/js/vendor/jquery.ui.widget.js',
-                '@': path.resolve(__dirname, '../../'),
-                core: path.resolve(__dirname, '../'),
-                core_agp: path.resolve(__dirname, '../../core_agp')
+                    'blueimp-file-upload/js/vendor/jquery.ui.widget.js', // necessary to load jquery file upload properly
+                '@': path.resolve(__dirname, '../../'), // define root directory as @ : makes typecript imports easier / avoid long relative path input
+                core: path.resolve(__dirname, '../'), // define core directory as core : makes typecript imports easier / avoid long relative path input
+                core_agp: path.resolve(__dirname, '../../core_agp') // define core_agp directory as core_agp : makes typecript imports easier / avoid long relative path input
+                // !important all the aliases definitions needs to be defined in the tsconfig.json as well
             }
         },
-        plugins: devMode
+        plugins: devMode // if devMode use these plugins
             ? [
                 new Dotenv({
+                    // adds support for .env files
                     path: devMode
                         ? path.resolve(__dirname, '.env.dev')
                         : path.resolve(__dirname, '.env.prod')
                 }),
                 new webpack.ProvidePlugin({
+                    // Automatically load modules instead of having to import or require them everywhere. needed for alot of jquery based modules
                     jQuery: 'jquery',
                     $: 'jquery',
                     jquery: 'jquery'
                 }),
-                new LiveReloadPlugin(liveReloadOptions),
-                new WatchMissingNodeModulesPlugin(
+                new LiveReloadPlugin(liveReloadOptions), // adds page reload on save support
+                new WatchMissingNodeModulesPlugin( // This Webpack plugin ensures npm install <library> forces a project rebuild.
                     path.resolve('node_modules')
                 ),
-                new VueLoaderPlugin()
-            ]
+                new VueLoaderPlugin() // adds support for the vue DevTools plugin (chrome)
+            ] // else use these plugins
             : [
                 new Dotenv({
+                    // adds support for .env files
                     path: devMode
                         ? path.resolve(__dirname, '.env.dev')
                         : path.resolve(__dirname, '.env.prod')
                 }),
                 new webpack.ProvidePlugin({
+                    // Automatically load modules instead of having to import or require them everywhere. needed for alot of jquery based modules
                     jQuery: 'jquery',
                     $: 'jquery',
                     jquery: 'jquery'
                 }),
-                new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-                new VueLoaderPlugin()
+                new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // ignores not used languages for moment.js and fullcalendar.js for a smaller bundle size
+                new VueLoaderPlugin() // adds support for the vue DevTools plugin (chrome)
             ],
-        // watch: true
         optimization: {
-            minimize: !devMode,
+            minimize: !devMode, // minimize bundle size only in prod
             minimizer: !devMode
                 ? [
                     new TerserPlugin({
+                        // This plugin uses terser to minify the bundle
                         terserOptions: {
                             parse: {
                                 ecma: 8
@@ -166,7 +171,7 @@ module.exports = async env => {
                 ]
                 : [],
             splitChunks: {
-                chunks: 'all',
+                chunks: 'all', // make a separate vendors.chunks bundle for all the npm modules (avoides duplicated dependecies + smaller bundle size)
                 name: 'vendors.chunks'
             }
         }
