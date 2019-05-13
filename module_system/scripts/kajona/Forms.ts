@@ -21,7 +21,7 @@ class Forms {
      * @param objField - my be a jquery field or a id selector
      * @param isResetValue if enabled, sets the fields value to emtpy / ""
      */
-    public static hideField(objField: string | JQuery, isResetValue?: boolean) {
+    public static hideField (objField: string | JQuery, isResetValue?: boolean) {
         objField = Util.getElement(objField)
 
         var objFormGroup =
@@ -29,18 +29,18 @@ class Forms {
                 ? objField
                 : objField.closest('.form-group')
 
-        //1. Hide field
+        // 1. Hide field
         objFormGroup.slideUp(0)
 
-        //2. Hide hint -> check if previous element has 'form-group' and if <span> with .help-block exists
+        // 2. Hide hint -> check if previous element has 'form-group' and if <span> with .help-block exists
         var objHintFormGroup = objFormGroup.prev('.form-group')
         if (objHintFormGroup.find('div > span.help-block').length > 0) {
             objHintFormGroup.slideUp(0)
         }
 
-        //reset value
+        // reset value
         if (isResetValue) {
-            objFormGroup.find('input, textarea, select').each(function() {
+            objFormGroup.find('input, textarea, select').each(function () {
                 $(this).val('')
                 if ($(this).is(':checkbox')) {
                     $(this).prop('checked', false)
@@ -58,7 +58,7 @@ class Forms {
      *
      * @param objField - my be a jquery object or an id selector
      */
-    public static showField(objField: string | JQuery) {
+    public static showField (objField: string | JQuery) {
         objField = Util.getElement(objField)
 
         var objFormGroup =
@@ -66,10 +66,10 @@ class Forms {
                 ? objField
                 : objField.closest('.form-group')
 
-        //1. Show field
+        // 1. Show field
         objFormGroup.slideDown(0)
 
-        //2. Show hint -> check if previous element has 'form-group' and if <span> with .help-block exists
+        // 2. Show hint -> check if previous element has 'form-group' and if <span> with .help-block exists
         var objHintFormGroup = objFormGroup.prev('.form-group')
         if (objHintFormGroup.find('div > span.help-block').length > 0) {
             objHintFormGroup.slideDown(0)
@@ -81,7 +81,7 @@ class Forms {
      *
      * @param objField - my be a jquery object or an id selector
      */
-    public static setFieldReadOnly(objField: string | JQuery) {
+    public static setFieldReadOnly (objField: string | JQuery) {
         objField = Util.getElement(objField)
 
         if (
@@ -105,7 +105,7 @@ class Forms {
      *
      * @param objField - my be a jquery object or an id selector
      */
-    public static setFieldEditable(objField: string | JQuery) {
+    public static setFieldEditable (objField: string | JQuery) {
         objField = Util.getElement(objField)
 
         if (
@@ -130,7 +130,7 @@ class Forms {
      * @param objField - my be a jquery object or an id selector
      * @deprecated
      */
-    public static getObjField(objField: string | JQuery) {
+    public static getObjField (objField: string | JQuery) {
         // If objField is already a jQuery object
         return Util.getElement(objField)
     }
@@ -140,7 +140,7 @@ class Forms {
      * @param strFormid
      * @param onChangeDetection
      */
-    public static initForm(strFormid: string, onChangeDetection: Function) {
+    public static initForm (strFormid: string, onChangeDetection: Function) {
         $(
             '#' +
                 strFormid +
@@ -149,7 +149,7 @@ class Forms {
                 ' select , #' +
                 strFormid +
                 ' textarea '
-        ).each(function() {
+        ).each(function () {
             if ($(this).data('kajona-block-initval')) {
                 return
             }
@@ -165,9 +165,9 @@ class Forms {
      * May be triggered to determine whether a form has been changed or not
      * @param $objForm
      */
-    public static hasChanged($objForm: JQuery) {
+    public static hasChanged ($objForm: JQuery) {
         var changed = false
-        $objForm.find('[data-kajona-initval]').each(function() {
+        $objForm.find('[data-kajona-initval]').each(function () {
             var el = $(this)
             if (el.val() != el.attr('data-kajona-initval')) {
                 changed = true
@@ -182,13 +182,13 @@ class Forms {
      * Fires the animation on the submit button
      * @param objForm
      */
-    public static animateSubmitStart(objForm: HTMLFormElement) {
+    public static animateSubmitStart (objForm: HTMLFormElement) {
         var processingElemet = undefined
 
         if ($('button.clicked').length == 1) {
             processingElemet = $('button.clicked')
         } else if ($(document.activeElement).prop('tagName') == 'BUTTON') {
-            //try to get the button currently clicked
+            // try to get the button currently clicked
             processingElemet = $(document.activeElement)
         } else {
             processingElemet = $(objForm).find('.savechanges[name=submitbtn]')
@@ -197,7 +197,7 @@ class Forms {
         processingElemet.attr('disabled', 'disabled')
     }
 
-    public static animateSubmitStop(objForm: HTMLFormElement) {
+    public static animateSubmitStop (objForm: HTMLFormElement) {
         var processingElemet = $(objForm).find('.savechanges')
 
         processingElemet.removeClass('processing')
@@ -212,11 +212,11 @@ class Forms {
      * @param strElementId
      * @param bitConfirmChange
      */
-    public static addChangelistener(
+    public static addChangelistener (
         strElementId: string,
         bitConfirmChange: boolean
     ) {
-        $('#' + strElementId).on('change', function(objEvent) {
+        $('#' + strElementId).on('change', function (objEvent) {
             if ($(this).val() != $(this).attr('data-kajona-initval')) {
                 if (
                     $(this)
@@ -245,7 +245,7 @@ class Forms {
      * @param strElementId
      * @param strHint
      */
-    public static addHint(strElementId: string, strHint: string) {
+    public static addHint (strElementId: string, strHint: string) {
         var $objTarget = $('#' + strElementId)
         Forms.removeHint(strElementId)
         $objTarget.closest('.form-group').addClass('has-warning')
@@ -265,7 +265,7 @@ class Forms {
      * Removes a hint from an input field
      * @param strElementId
      */
-    public static removeHint(strElementId: string) {
+    public static removeHint (strElementId: string) {
         var $objTarget = $('#' + strElementId)
         $objTarget.closest('.form-group').removeClass('has-warning')
         if ($objTarget.closest('.form-group').find('div.changeHint')) {
@@ -276,7 +276,7 @@ class Forms {
         }
     }
 
-    public static renderMandatoryFields(arrFields: Array<Array<string>>) {
+    public static renderMandatoryFields (arrFields: Array<Array<string>>) {
         for (var i = 0; i < arrFields.length; i++) {
             var arrElement = arrFields[i]
             if (arrElement.length == 2) {
@@ -289,10 +289,10 @@ class Forms {
         }
     }
 
-    public static renderMissingMandatoryFields(
+    public static renderMissingMandatoryFields (
         arrFields: Array<Array<string>>
     ) {
-        $(arrFields).each(function(intIndex, strField) {
+        $(arrFields).each(function (intIndex, strField) {
             var strFieldName = strField[0]
             if (
                 $('#' + strFieldName) &&
@@ -311,11 +311,11 @@ class Forms {
         })
     }
 
-    public static loadTab(strEl: string, strHref: string) {
+    public static loadTab (strEl: string, strHref: string) {
         if (strHref && $('#' + strEl).length > 0) {
             $('#' + strEl).html('')
             $('#' + strEl).addClass('loadingContainer')
-            $.get(strHref, function(data) {
+            $.get(strHref, function (data) {
                 $('#' + strEl).removeClass('loadingContainer')
                 $('#' + strEl).html(data)
                 Tooltip.initTooltip()
@@ -323,8 +323,8 @@ class Forms {
         }
     }
 
-    public static defaultOnSubmit(objForm: HTMLFormElement) {
-        $(objForm).on('submit', function() {
+    public static defaultOnSubmit (objForm: HTMLFormElement) {
+        $(objForm).on('submit', function () {
             return false
         })
         Router.markerElements.forms.submittedEl = objForm
@@ -345,7 +345,7 @@ class Forms {
             ) &&
             $btn.is('[name]')
         ) {
-            //name, value
+            // name, value
             $(objForm).append(
                 $('<input type="hidden">')
                     .attr('name', $btn.attr('name'))
@@ -354,7 +354,7 @@ class Forms {
             /* access $btn.attr("name") and $btn.val() for data */
         }
 
-        Router.registerFormCallback('activate_polling', function() {
+        Router.registerFormCallback('activate_polling', function () {
             // enable polling after we receive the response of the form
             Messaging.setPollingEnabled(true)
         })
@@ -364,8 +364,8 @@ class Forms {
         return false
     }
 
-    public static registerUnlockId(strId: string) {
-        Router.registerLoadCallback('form_unlock', function() {
+    public static registerUnlockId (strId: string) {
+        Router.registerLoadCallback('form_unlock', function () {
             $.ajax({
                 url:
                     KAJONA_WEBPATH +
@@ -375,7 +375,7 @@ class Forms {
         })
     }
 
-    public static getFilterURL() {
+    public static getFilterURL () {
         var filterUrl =
             $('.contentFolder form').attr('action') +
             '&' +
@@ -384,7 +384,7 @@ class Forms {
             'tinyurl',
             'getShortUrl',
             { url: filterUrl },
-            function(data: any) {
+            function (data: any) {
                 if (data) {
                     var modalContent =
                         '<div class="input-group">' +
@@ -405,7 +405,7 @@ class Forms {
                     Lang.fetchSingleProperty(
                         'system',
                         'copy_to_clipboard',
-                        function(value: string) {
+                        function (value: string) {
                             $('.copy-btn').attr('title', value)
                         }
                     )
@@ -413,7 +413,7 @@ class Forms {
                     Lang.fetchSingleProperty(
                         'system',
                         'copy_page_url',
-                        function(value: string) {
+                        function (value: string) {
                             $('#jsDialog_0_title').text(value)
                         }
                     )

@@ -13,7 +13,7 @@ class DesktopNotification {
      * @param strBody
      * @param {callback} onClick
      */
-    public static showMessage(
+    public static showMessage (
         strTitle: string,
         strBody?: string,
         onClick?: any
@@ -35,7 +35,7 @@ class DesktopNotification {
     /**
      * Requests notification rights
      */
-    public static grantPermissions() {
+    public static grantPermissions () {
         if (!this.hasNotification()) {
             return
         }
@@ -46,10 +46,10 @@ class DesktopNotification {
             DesktopNotification.bitGranted = true
         } else if (Notification.permission === 'default') {
             Notification.requestPermission()
-                .then(function() {
+                .then(function () {
                     DesktopNotification.bitGranted = true
                 })
-                .catch(function() {
+                .catch(function () {
                     DesktopNotification.bitGranted = false
                 })
         } else {
@@ -57,7 +57,7 @@ class DesktopNotification {
         }
     }
 
-    private static hasNotification(): boolean {
+    private static hasNotification (): boolean {
         return typeof Notification !== 'undefined'
     }
 }

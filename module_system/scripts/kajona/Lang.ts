@@ -28,13 +28,13 @@ class Lang {
      * @param {HTMLElement} containerEl
      * @param {function} onReady
      */
-    public static initializeProperties(containerEl?: any, onReady?: Function) {
+    public static initializeProperties (containerEl?: any, onReady?: Function) {
         if (!containerEl) {
             containerEl = 'body'
         }
         $(containerEl)
             .find('*[data-lang-property]')
-            .each(function() {
+            .each(function () {
                 var strProperty = $(this).data('lang-property')
                 if (strProperty) {
                     var arrValues = strProperty.split(':', 2)
@@ -45,7 +45,7 @@ class Lang {
                             arrParams = strParams.split('|')
                         }
 
-                        var objCallback = function(strText: string) {
+                        var objCallback = function (strText: string) {
                             $(this).html(strText)
                         }
 
@@ -70,7 +70,7 @@ class Lang {
      * @param key
      * @param callback
      */
-    public static fetchSingleProperty(
+    public static fetchSingleProperty (
         module: string,
         key: string,
         callback: Function
@@ -92,7 +92,7 @@ class Lang {
      *
      * @param {function} onReady
      */
-    public static fetchProperties(onReady?: Function) {
+    public static fetchProperties (onReady?: Function) {
         if (this.queue.length == 0) {
             if (onReady) {
                 onReady.apply(this)
@@ -142,7 +142,7 @@ class Lang {
                 '/xml.php?admin=1&module=system&action=fetchProperty',
             data: { target_module: arrData.module },
             dataType: 'json',
-            success: function(objResp) {
+            success: function (objResp) {
                 var arrData = Lang.queue.shift()
                 if (arrData === undefined) {
                     Lang.fetchProperties(onReady)
@@ -188,7 +188,7 @@ class Lang {
      * @param {String} strText
      * @param {Array} arrParams
      */
-    public static replacePropertyParams(
+    public static replacePropertyParams (
         strText: string,
         arrParams: Array<string>
     ) {

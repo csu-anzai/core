@@ -12,7 +12,7 @@ declare var kajonaSystemtaskDialogContent: string
  * Functions to execute system tasks
  */
 class SystemTask {
-    public static executeTask(
+    public static executeTask (
         strTaskname: string,
         strAdditionalParam: string,
         bitNoContentReset: boolean
@@ -37,11 +37,11 @@ class SystemTask {
             'system',
             'executeSystemTask',
             '&task=' + strTaskname + strAdditionalParam,
-            function(data: any, status: string, jqXHR: XMLHttpRequest) {
+            function (data: any, status: string, jqXHR: XMLHttpRequest) {
                 if (status == 'success') {
                     var strResponseText = data
 
-                    //parse the response and check if it's valid
+                    // parse the response and check if it's valid
                     if (strResponseText.indexOf('<error>') != -1) {
                         StatusDisplay.displayXMLMessage(strResponseText)
                     } else if (strResponseText.indexOf('<statusinfo>') == -1) {
@@ -56,7 +56,7 @@ class SystemTask {
                             strResponseText.indexOf('</statusinfo>') - intStart
                         )
 
-                        //parse text to decide if a reload is necessary
+                        // parse text to decide if a reload is necessary
                         var strReload = ''
                         if (strResponseText.indexOf('<reloadurl>') != -1) {
                             intStart =
@@ -68,7 +68,7 @@ class SystemTask {
                             )
                         }
 
-                        //show status info
+                        // show status info
                         $('#systemtaskStatusDiv').html(strStatusInfo)
 
                         if (strReload == '') {
@@ -92,11 +92,11 @@ class SystemTask {
         )
     }
 
-    public static cancelExecution() {
+    public static cancelExecution () {
         jsDialog_0.hide()
     }
 
-    public static setName(strName: string) {
+    public static setName (strName: string) {
         $('#systemtaskNameDiv').html(strName)
     }
 }

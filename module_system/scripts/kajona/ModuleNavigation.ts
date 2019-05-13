@@ -2,13 +2,13 @@ import $ from 'jquery'
 import Ajax from './Ajax'
 
 class ModuleNavigation {
-    public static combinedActive() {
+    public static combinedActive () {
         $('#moduleNavigation')
             .find('.panel .linkcontainer')
             .removeClass('collapsed')
     }
 
-    public static combinedInactive() {
+    public static combinedInactive () {
         $('#moduleNavigation')
             .find('.panel .linkcontainer')
             .addClass('collapsed')
@@ -18,7 +18,7 @@ class ModuleNavigation {
      * @deprecated
      * @param strModule
      */
-    public static setModuleActive(strModule: string) {
+    public static setModuleActive (strModule: string) {
         var $moduleNavigation = $('#moduleNavigation')
         $moduleNavigation.find('a.active').removeClass('active')
         $moduleNavigation.find('.linkcontainer.active').removeClass('active')
@@ -30,13 +30,13 @@ class ModuleNavigation {
                     '"]'
             ).length != 0
         ) {
-            //is combined
+            // is combined
             $moduleNavigation.find('.panel .linkcontainer').addClass('active')
         } else {
-            //default: not combined
+            // default: not combined
             $("a[data-kajona-module='" + strModule + "']").addClass('active')
 
-            //see if the aspect needs to be switched
+            // see if the aspect needs to be switched
             var $objAspect = $(
                 '[data-kajona-module="' + strModule + '"]'
             ).closest('.aspect-container')
@@ -46,21 +46,21 @@ class ModuleNavigation {
         }
     }
 
-    public static loadNavigation(strAspect: string) {
+    public static loadNavigation (strAspect: string) {
         if (!strAspect) {
             strAspect = ''
         }
         Ajax.loadUrlToElement(
             '#moduleNavigation',
             '/xml.php?admin=1&module=v4skin&action=getBackendNavi&aspect=' +
-                (strAspect ? strAspect : '')
+                (strAspect || '')
         )
     }
 
     /**
      * @deprecated
      */
-    public static switchAspect(strTargetId: string) {
+    public static switchAspect (strTargetId: string) {
         $('.mainnavi-container .aspect-container').addClass('hidden')
         $(
             '.mainnavi-container .aspect-container[data-kajona-aspectid=' +

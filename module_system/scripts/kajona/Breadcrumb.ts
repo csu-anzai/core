@@ -5,11 +5,11 @@ class Breadcrumb {
         'div.pathNaviContainer ul.breadcrumb'
     )
 
-    public static updateEllipsis() {
+    public static updateEllipsis () {
         this.updatePathNavigationEllipsis()
     }
 
-    public static appendLinkToPathNavigation(linkContent: string) {
+    public static appendLinkToPathNavigation (linkContent: string) {
         this.breadcrumbEl = $('div.pathNaviContainer ul.breadcrumb')
 
         let link = $("<li class='pathentry'></li>").append(
@@ -19,23 +19,23 @@ class Breadcrumb {
         this.updatePathNavigationEllipsis()
     }
 
-    public static resetBar() {
+    public static resetBar () {
         this.breadcrumbEl = $('div.pathNaviContainer ul.breadcrumb')
         this.breadcrumbEl.find('li.pathentry:not(.home)').remove()
     }
 
-    private static updatePathNavigationEllipsis() {
+    private static updatePathNavigationEllipsis () {
         this.breadcrumbEl = $('div.pathNaviContainer ul.breadcrumb')
         let $arrPathLIs = $('.pathNaviContainer  .breadcrumb  li.pathentry')
 
-        //first run: get the number of entries and a first styling
+        // first run: get the number of entries and a first styling
         let intEntries = $arrPathLIs.length
         let intWidth = this.breadcrumbEl.width()
         let intMaxWidth = Math.ceil(intWidth / intEntries)
 
         $arrPathLIs.css('max-width', intMaxWidth)
 
-        //second run: calc the remaining x-space
+        // second run: calc the remaining x-space
         let intTotalUnused = this.getUnusedSpace(intMaxWidth)
 
         if (intTotalUnused > intMaxWidth) {
@@ -47,9 +47,9 @@ class Breadcrumb {
         }
     }
 
-    private static getUnusedSpace(intMaxWidth: number): number {
+    private static getUnusedSpace (intMaxWidth: number): number {
         let intTotalUnused = 0
-        $('.pathNaviContainer  .breadcrumb  li.pathentry').each(function() {
+        $('.pathNaviContainer  .breadcrumb  li.pathentry').each(function () {
             let $li = $(this)
             if ($li.width() < intMaxWidth) {
                 intTotalUnused += intMaxWidth - $li.width()

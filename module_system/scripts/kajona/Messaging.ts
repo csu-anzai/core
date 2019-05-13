@@ -49,8 +49,8 @@ class Messaging {
     /**
      * Forces a polling of unread messages and alert, but only once
      */
-    public static pollMessages() {
-        Messaging.getUnreadCount(function(intCount: number) {
+    public static pollMessages () {
+        Messaging.getUnreadCount(function (intCount: number) {
             Messaging.updateCountInfo(intCount)
         })
     }
@@ -61,7 +61,7 @@ class Messaging {
      *
      * @param objCallback
      */
-    public static getUnreadCount(objCallback: Function) {
+    public static getUnreadCount (objCallback: Function) {
         // in case we are on the login page dont poll
         if ($('#loginContainer').length > 0) {
             return
@@ -71,7 +71,7 @@ class Messaging {
             'messaging',
             'getUnreadMessagesCount',
             '',
-            function(data: any, status: string, jqXHR: any) {
+            function (data: any, status: string, jqXHR: any) {
                 if (status == 'success') {
                     var $objResult = $.parseJSON(data)
                     objCallback($objResult.count)
@@ -98,8 +98,8 @@ class Messaging {
      * The callback is passed the json-object as a param.
      * @param objCallback
      */
-    public static getRecentMessages(objCallback: Function) {
-        Ajax.genericAjaxCall('messaging', 'getRecentMessages', '', function(
+    public static getRecentMessages (objCallback: Function) {
+        Ajax.genericAjaxCall('messaging', 'getRecentMessages', '', function (
             data: any,
             status: string,
             jqXHR: any
@@ -115,7 +115,7 @@ class Messaging {
      * Enables or disables the polling of message counts / alerts
      * @param bitEnabled
      */
-    public static setPollingEnabled(bitEnabled: boolean) {
+    public static setPollingEnabled (bitEnabled: boolean) {
         if (Util.isStackedDialog() || $('body').hasClass('anonymous')) {
             bitEnabled = false
         }
@@ -138,7 +138,7 @@ class Messaging {
      * Updates the count info of the current unread messages
      * @param intCount
      */
-    public static updateCountInfo(intCount: number) {
+    public static updateCountInfo (intCount: number) {
         var $userNotificationsCount = $('#userNotificationsCount')
         var oldCount = parseInt($userNotificationsCount.text())
         $userNotificationsCount.text(intCount)
@@ -159,13 +159,13 @@ class Messaging {
         }
     }
 
-    private static registerListener() {
+    private static registerListener () {
         // listen to browser events to enable/disable notification polling if window is not active
-        $(window).focus(function() {
+        $(window).focus(function () {
             Messaging.setPollingEnabled(true)
         })
 
-        $(window).blur(function() {
+        $(window).blur(function () {
             Messaging.setPollingEnabled(false)
         })
     }
@@ -173,8 +173,8 @@ class Messaging {
     /**
      * Triggers the polling of unread messages from the backend
      */
-    private static pollMessageCount() {
-        Messaging.getUnreadCount(function(intCount: number) {
+    private static pollMessageCount () {
+        Messaging.getUnreadCount(function (intCount: number) {
             Messaging.updateCountInfo(intCount)
         })
 
@@ -188,12 +188,12 @@ class Messaging {
      * Renders an alert generated on the backend
      * @param $objAlert
      */
-    private static renderAlert($objAlert: Alert) {
+    private static renderAlert ($objAlert: Alert) {
         if (
             $objAlert.type === 'Kajona\\System\\System\\MessagingNotification'
         ) {
             var options = {
-                onclick: function() {
+                onclick: function () {
                     let callback = Messaging.getActionCallback(
                         $objAlert.onAccept
                     )
@@ -223,11 +223,11 @@ class Messaging {
      * @param $onAccept
      * @returns {Function}
      */
-    private static getActionCallback($onAccept: Accept): Function {
+    private static getActionCallback ($onAccept: Accept): Function {
         if ($onAccept && $onAccept.type === 'redirect') {
             let data = <RedirectAction>$onAccept
-            return function() {
-                Router.registerLoadCallback('alert_redirect', function() {
+            return function () {
+                Router.registerLoadCallback('alert_redirect', function () {
                     $('.modal-backdrop.fade.in').remove()
                     Messaging.pollMessages()
                 })
@@ -239,18 +239,18 @@ class Messaging {
             }
         } else if ($onAccept && $onAccept.type === 'ajax') {
             let data = <AjaxAction>$onAccept
-            return function() {
+            return function () {
                 Ajax.genericAjaxCall(
                     data.module,
                     data.action,
                     data.systemid,
-                    function(resp: any) {
+                    function (resp: any) {
                         // on ok we trigger the getUnreadCount again since the ajax call could have created
                         // other alert messages
                         Messaging.pollMessages() // check whether the ajax call returns actions which we should execute
                         let data = JSON.parse(resp)
                         if (data.actions) {
-                            data.actions.forEach(function(action: Accept) {
+                            data.actions.forEach(function (action: Accept) {
                                 let callback = Messaging.getActionCallback(
                                     action
                                 )
@@ -263,9 +263,9 @@ class Messaging {
         } else if ($onAccept && $onAccept.type === 'update_status') {
             let data = <UpdateStatusAction>$onAccept
 
-            return function() {
+            return function () {
                 // search for the specific status flag and update
-                $('.flow-status-icon').each(function() {
+                $('.flow-status-icon').each(function () {
                     let el = $(this).find('.navbar-link')
                     if ($(this).data('systemid') == data.systemid) {
                         el.html(data.icon)
@@ -274,7 +274,7 @@ class Messaging {
             }
         }
 
-        return function() {}
+        return function () {}
     }
 }
 ;(<any>window).Messaging = Messaging

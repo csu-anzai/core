@@ -1,4 +1,4 @@
-///<reference path="../../../_buildfiles/definitions/kajona.d.ts" />
+/// <reference path="../../../_buildfiles/definitions/kajona.d.ts" />
 import Router from './Router'
 import 'jquery-ui.custom'
 import 'jquery-ui-touch-punch'
@@ -25,8 +25,8 @@ declare global {
 }
 
 class App {
-    public static init() {
-        //backwards compatibility
+    public static init () {
+        // backwards compatibility
         window.KAJONA = {
             util: {
                 dialogHelper: DialogHelper,
@@ -49,7 +49,7 @@ class App {
 
         Folderview.dialog = KAJONA.admin.folderview.dialog
 
-        //register the global router
+        // register the global router
         Router.init()
 
         // V4skin
@@ -74,7 +74,7 @@ class App {
         // configure toastr global
         toastr.options.positionClass = 'toast-bottom-right'
     }
-    public static initVue(): void {
+    public static initVue (): void {
         Vue.config.productionTip = false
         if (process.env.NODE_ENV === 'development') {
             Vue.config.devtools = true
@@ -90,7 +90,7 @@ class App {
     }
 }
 
-//register all the global dependencies in window object
+// register all the global dependencies in window object
 ;(<any>window).App = App
 ;(<any>window).$ = (<any>window).jQuery = require('jquery')
 ;(<any>window).moment = moment

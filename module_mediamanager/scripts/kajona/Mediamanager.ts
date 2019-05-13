@@ -3,21 +3,21 @@ import Ajax from '../../../module_system/scripts/kajona/Ajax'
 import StatusDisplay from '../../../module_system/scripts/kajona/StatusDisplay'
 
 class Mediamanager {
-    public static createFolder(strInputId: string, strRepoId: string) {
+    public static createFolder (strInputId: string, strRepoId: string) {
         var strNewFoldername = $('#' + strInputId).val()
         if (strNewFoldername != '') {
             this.createFolderBackend(strRepoId, strNewFoldername + '')
         }
     }
 
-    private static createFolderBackend(strFmRepoId: string, strFolder: string) {
+    private static createFolderBackend (strFmRepoId: string, strFolder: string) {
         Ajax.genericAjaxCall(
             'mediamanager',
             'createFolder',
             strFmRepoId + '&folder=' + strFolder,
-            function(data: any, status: string, jqXHR: XMLHttpRequest) {
+            function (data: any, status: string, jqXHR: XMLHttpRequest) {
                 if (status == 'success') {
-                    //check if answer contains an error
+                    // check if answer contains an error
                     if (data.indexOf('<error>') != -1) {
                         StatusDisplay.displayXMLMessage(data)
                     } else {
@@ -25,16 +25,16 @@ class Mediamanager {
                             'mediamanager',
                             'partialSyncRepo',
                             strFmRepoId,
-                            function(
+                            function (
                                 data: any,
                                 status: string,
                                 jqXHR: XMLHttpRequest
                             ) {
                                 if (status == 'success') location.reload()
                                 else
-                                    StatusDisplay.messageError(
+                                    {StatusDisplay.messageError(
                                         '<b>Request failed!</b><br />' + data
-                                    )
+                                    )}
                             }
                         )
                     }

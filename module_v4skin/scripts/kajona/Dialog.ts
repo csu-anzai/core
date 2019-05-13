@@ -15,7 +15,7 @@ class Dialog {
 
     private unbindOnClick: boolean = false
 
-    constructor(
+    constructor (
         strDialogId: string,
         intDialogType: number,
         bitDragging?: boolean,
@@ -33,16 +33,16 @@ class Dialog {
         /** Set this variable to false if you don't want to remove actions on click */
         this.unbindOnClick = true
 
-        //register event to reset the dialog with default settings (only if the dialog has template dialog)
+        // register event to reset the dialog with default settings (only if the dialog has template dialog)
         if ($('#template_' + this.containerId).length > 0) {
-            $('#' + this.containerId).on('hidden', function(e) {
+            $('#' + this.containerId).on('hidden', function (e) {
                 // @ts-ignore
                 this.resetDialog.call(this)
             })
         }
     }
 
-    public setTitle(strTitle: string) {
+    public setTitle (strTitle: string) {
         if (strTitle == '') {
             $('#' + this.containerId + '_title').html('&nbsp;')
         } else {
@@ -50,15 +50,15 @@ class Dialog {
         }
     }
 
-    public setBitLarge(bitLarge: boolean) {
+    public setBitLarge (bitLarge: boolean) {
         this.bitLarge = bitLarge
     }
 
-    public getContainerId(): string {
+    public getContainerId (): string {
         return this.containerId
     }
 
-    public setContent(
+    public setContent (
         strContent: string,
         strConfirmButton: string,
         strLinkHref: string | Function,
@@ -76,7 +76,7 @@ class Dialog {
             var bitUnbind = this.unbindOnClick
 
             if (jQuery.isFunction(strLinkHref)) {
-                $confirmButton.click(function() {
+                $confirmButton.click(function () {
                     var objReturn = strLinkHref()
 
                     if (!blockHide) {
@@ -85,7 +85,7 @@ class Dialog {
 
                     if (bitUnbind) {
                         $confirmButton.unbind()
-                        $confirmButton.click(function() {
+                        $confirmButton.click(function () {
                             return false
                         })
                     }
@@ -93,7 +93,7 @@ class Dialog {
                     return objReturn != undefined ? objReturn : false
                 })
             } else {
-                $confirmButton.click(function() {
+                $confirmButton.click(function () {
                     window.location.href = strLinkHref
 
                     if (!blockHide) {
@@ -102,7 +102,7 @@ class Dialog {
 
                     if (bitUnbind) {
                         $confirmButton.unbind()
-                        $confirmButton.click(function() {
+                        $confirmButton.click(function () {
                             return false
                         })
                     }
@@ -113,22 +113,22 @@ class Dialog {
         }
     }
 
-    public isVisible() {
+    public isVisible () {
         return $('#' + this.containerId + '.modal-dialog').is(':visible')
     }
 
-    public setContentRaw(strContent: string) {
+    public setContentRaw (strContent: string) {
         $('#' + this.containerId + '_content').html(strContent)
     }
 
-    public setContentIFrame(strUrl: string) {
+    public setContentIFrame (strUrl: string) {
         this.iframeId = this.containerId + '_iframe'
         let result = Router.generateUrl(strUrl)
         strUrl = KAJONA_WEBPATH + result.url + '&combinedLoad=1'
         this.iframeURL = strUrl
     }
 
-    public init(intWidth?: number, intHeight?: number) {
+    public init (intWidth?: number, intHeight?: number) {
         var $modal = $('#' + this.containerId).modal({
             backdrop: true,
             keyboard: false,
@@ -146,19 +146,19 @@ class Dialog {
         }
 
         if (Util.isStackedDialog()) {
-            //trigger a new dialog on the base window
+            // trigger a new dialog on the base window
 
             if (this.iframeURL != null) {
-                //TODO: POC:
+                // TODO: POC:
                 parent.KAJONA.util.dialogHelper.showIframeDialogStacked(
                     this.iframeURL,
                     $('#' + this.containerId + '_title').text()
                 )
                 parent.KAJONA.util.folderviewHandler = Folderview
 
-                //open the iframe in a regular popup
-                //workaround for stacked dialogs. if a modal is already opened, the second iframe is loaded in a popup window.
-                //stacked modals still face issues with dimensions and scrolling. (see http://trace.kajona.de/view.php?id=724)
+                // open the iframe in a regular popup
+                // workaround for stacked dialogs. if a modal is already opened, the second iframe is loaded in a popup window.
+                // stacked modals still face issues with dimensions and scrolling. (see http://trace.kajona.de/view.php?id=724)
                 if (!intWidth) {
                     intWidth = 500
                 }
@@ -167,7 +167,7 @@ class Dialog {
                     intHeight = 500
                 }
 
-                //window.open(this.iframeURL, $('#' + this.containerId + '_title').text(), 'scrollbars=yes,resizable=yes,width=' + (intWidth) + ',height=' + (intHeight));
+                // window.open(this.iframeURL, $('#' + this.containerId + '_title').text(), 'scrollbars=yes,resizable=yes,width=' + (intWidth) + ',height=' + (intHeight));
                 return
             }
         }
@@ -189,7 +189,7 @@ class Dialog {
 
             var id = this.iframeId
             var containerId = this.containerId
-            $('#' + this.iframeId).on('load', function() {
+            $('#' + this.iframeId).on('load', function () {
                 $('#' + containerId + '_loading').css('display', 'none')
                 $('#' + id)
                     .contents()
@@ -201,7 +201,7 @@ class Dialog {
         if (!Util.isStackedDialog() && this.bitLarge) {
             $('#' + this.containerId + ' .modal-dialog').addClass('modal-lg-lg')
 
-            $('#' + this.containerId).on('hidden.bs.modal', function(e) {
+            $('#' + this.containerId).on('hidden.bs.modal', function (e) {
                 $(this)
                     .find('.modal-dialog')
                     .removeClass('modal-lg-lg')
@@ -210,7 +210,7 @@ class Dialog {
             this.bitLarge = false
         }
 
-        //finally show the modal
+        // finally show the modal
         $('#' + this.containerId).modal('show')
 
         if (this.bitDragging) {
@@ -221,18 +221,18 @@ class Dialog {
         }
     }
 
-    public hide() {
+    public hide () {
         $('#' + this.containerId).modal('hide')
         this.unbindEvents()
     }
 
-    public enableDragging() {}
+    public enableDragging () {}
 
-    public enableResizing() {
-        //$('#' + this.containerId).resizable();
+    public enableResizing () {
+        // $('#' + this.containerId).resizable();
         $('#' + this.containerId + ' .modal-content')
             .resizable()
-            .on('resize', function(event, ui) {
+            .on('resize', function (event, ui) {
                 ui.element.css(
                     'height',
                     ui.size.height + $('.modal-footer').outerHeight()
@@ -240,7 +240,7 @@ class Dialog {
 
                 $(ui.element)
                     .find('.modal-body')
-                    .each(function() {
+                    .each(function () {
                         $(this).css(
                             'max-height',
                             ui.size.height -
@@ -250,8 +250,8 @@ class Dialog {
 
                         $(ui.element)
                             .find('iframe.seamless')
-                            .each(function() {
-                                //-12 = resizable handle, -15 = padding
+                            .each(function () {
+                                // -12 = resizable handle, -15 = padding
                                 $(this).css(
                                     'height',
                                     ui.size.height -
@@ -265,7 +265,7 @@ class Dialog {
             })
     }
 
-    public unbindEvents() {
+    public unbindEvents () {
         if (this.intDialogType == 1) {
             $('#' + this.containerId + '_cancelButton').unbind()
             $('#' + this.containerId + '_confirmButton').unbind()
@@ -274,12 +274,12 @@ class Dialog {
         }
     }
 
-    public resetDialog() {
-        //clone the template
+    public resetDialog () {
+        // clone the template
         var clone = $('#template_' + this.containerId).clone()
 
-        //remove "template_" from all id's of the clone
-        clone.find('*[id]').each(function() {
+        // remove "template_" from all id's of the clone
+        clone.find('*[id]').each(function () {
             $(this).attr(
                 'id',
                 $(this)
@@ -288,11 +288,11 @@ class Dialog {
             )
         })
 
-        //replace the current dialog with the clone
+        // replace the current dialog with the clone
         $('#' + this.containerId).replaceWith(clone)
 
-        //set hidden event again (needed as when replacing the events are not set anymore)
-        $('#' + this.containerId).on('hidden', function(e) {
+        // set hidden event again (needed as when replacing the events are not set anymore)
+        $('#' + this.containerId).on('hidden', function (e) {
             // @ts-ignore
             this.resetDialog.call(this)
         })

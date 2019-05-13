@@ -59,11 +59,11 @@ class Router {
      */
     public static markerElements: MarkedElements = Router.markedElements
 
-    public static init() {
+    public static init () {
         routie('*', Router.defaultRoutieCallback)
     }
 
-    public static defaultRoutieCallback(url: string) {
+    public static defaultRoutieCallback (url: string) {
         // in case we receive an absolute url with no hash redirect the user to this url
         // since we cant resolve this url to a hash route
         if (url.indexOf(KAJONA_WEBPATH) === 0 && url.indexOf('/#') === -1) {
@@ -78,11 +78,11 @@ class Router {
         }
 
         Router.cleanPage()
-        //moduleNavigation.setModuleActive(objUrl.module);
+        // moduleNavigation.setModuleActive(objUrl.module);
 
         Router.applyLoadCallbacks()
 
-        //split between post and get
+        // split between post and get
         if (Router.markedElements.forms.submittedEl != null) {
             var data = $(Router.markedElements.forms.submittedEl).serialize()
             Router.markedElements.forms.submittedEl = null
@@ -93,7 +93,7 @@ class Router {
                 data,
                 false,
                 'POST',
-                function() {
+                function () {
                     Router.applyFormCallbacks()
                 }
             )
@@ -112,8 +112,8 @@ class Router {
         }
     }
 
-    public static generateUrl(url: string) {
-        //if we have a php url, return directly
+    public static generateUrl (url: string) {
+        // if we have a php url, return directly
         if (url.indexOf('index.php') > 0) {
             return { url: url.replace(KAJONA_WEBPATH, ''), module: '' }
         }
@@ -121,7 +121,7 @@ class Router {
         // detect where the page was loaded from an iframe and thus is displayed in a dialog
         var isStackedDialog = Util.isStackedDialog()
 
-        //strip webpaths injected into the url
+        // strip webpaths injected into the url
         if (url.indexOf(KAJONA_WEBPATH) === 0) {
             url = url.replace(KAJONA_WEBPATH + '/#', '')
         }
@@ -144,7 +144,7 @@ class Router {
         }
 
         if (isStackedDialog && url.indexOf('peClose=1') != -1) {
-            //react on peClose statements by reloading the parent view
+            // react on peClose statements by reloading the parent view
             parent.KAJONA.admin.folderview.dialog.hide()
 
             if (url.indexOf('peLoad=1') != -1) {
@@ -158,7 +158,7 @@ class Router {
             return
         }
 
-        //split to get module, action and params
+        // split to get module, action and params
         var strParams = ''
         if (url.indexOf('?') > 0) {
             strParams = url.substr(url.indexOf('?') + 1)
@@ -183,16 +183,16 @@ class Router {
         return { url: strUrlToLoad, module: arrSections[0] }
     }
 
-    private static cleanPage() {
-        //contentToolbar.resetBar(); //TODO: aktuell in ToolkitAdmin und RequestDispatcher, muss aber in einen Callback bevor der content in das target div geschrieben wird
-        //breadcrumb.resetBar();
+    private static cleanPage () {
+        // contentToolbar.resetBar(); //TODO: aktuell in ToolkitAdmin und RequestDispatcher, muss aber in einen Callback bevor der content in das target div geschrieben wird
+        // breadcrumb.resetBar();
         Quickhelp.resetQuickhelp()
         Tooltip.removeTooltip($('*[rel=tooltip]'))
-        //disable visible tooltips
+        // disable visible tooltips
         $('.qtip:visible').css('display', '')
     }
 
-    private static applyLoadCallbacks() {
+    private static applyLoadCallbacks () {
         var key
         for (key in this.arrLoadCallbacks) {
             if (typeof this.arrLoadCallbacks[key] === 'function') {
@@ -203,7 +203,7 @@ class Router {
         }
     }
 
-    private static applyFormCallbacks() {
+    private static applyFormCallbacks () {
         var key
         for (key in this.arrFormCallbacks) {
             if (typeof this.arrFormCallbacks[key] === 'function') {
@@ -214,7 +214,7 @@ class Router {
         }
     }
 
-    public static loadUrl(strUrl: string) {
+    public static loadUrl (strUrl: string) {
         var actionHash = strUrl
         if (strUrl.indexOf('#') > 0) {
             var parser = document.createElement('a')
@@ -229,7 +229,7 @@ class Router {
         }
     }
 
-    public static reload() {
+    public static reload () {
         routie.reload()
     }
 
@@ -239,7 +239,7 @@ class Router {
      * @param {String} strName
      * @param {Function} objCallback
      */
-    public static registerLoadCallback(strName: string, objCallback: Function) {
+    public static registerLoadCallback (strName: string, objCallback: Function) {
         this.arrLoadCallbacks[strName] = objCallback
     }
 
@@ -248,7 +248,7 @@ class Router {
      *
      * @param strName
      */
-    public static removeLoadCallback(strName: string) {
+    public static removeLoadCallback (strName: string) {
         delete this.arrLoadCallbacks[strName]
     }
 
@@ -258,7 +258,7 @@ class Router {
      * @param {String} strName
      * @param {Function} objCallback
      */
-    public static registerFormCallback(strName: string, objCallback: Function) {
+    public static registerFormCallback (strName: string, objCallback: Function) {
         this.arrFormCallbacks[strName] = objCallback
     }
 
@@ -267,7 +267,7 @@ class Router {
      *
      * @param strName
      */
-    public static removeFormCallback(strName: string) {
+    public static removeFormCallback (strName: string) {
         delete this.arrFormCallbacks[strName]
     }
 }

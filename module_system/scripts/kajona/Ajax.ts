@@ -37,7 +37,7 @@ class Ajax {
      * @param {String} strMethod default is GET
      * @param {Function} objCallback - is called if the request was successful
      */
-    public static loadUrlToElement(
+    public static loadUrlToElement (
         strElementSelector: string | JQuery,
         strUrl: string,
         strData?: any,
@@ -68,7 +68,7 @@ class Ajax {
                     : KAJONA_WEBPATH + strUrl,
             data: strData
         })
-            .done(function(data, status, xhr) {
+            .done(function (data, status, xhr) {
                 // detect file download
                 var disposition = xhr.getResponseHeader('Content-Disposition')
                 if (disposition && disposition.indexOf('filename') !== -1) {
@@ -89,11 +89,11 @@ class Ajax {
                     }
                 }
             })
-            .always(function(response) {
+            .always(function (response) {
                 WorkingIndicator.stop()
                 objElement.css('opacity', '1')
             })
-            .fail(function(data) {
+            .fail(function (data) {
                 if (data.status === 500) {
                     if (KAJONA_DEBUG === 1) {
                         objElement.html(data.responseText)
@@ -110,17 +110,17 @@ class Ajax {
                     return
                 }
 
-                //maybe it was xml, so strip
+                // maybe it was xml, so strip
                 StatusDisplay.messageError('<b>Request failed!</b><br />')
             })
     }
 
-    public static getDataObjectFromString(
+    public static getDataObjectFromString (
         strData: any,
         bitFirstIsSystemid: boolean
     ) {
         if (typeof strData === 'string') {
-            //strip other params, backwards compatibility
+            // strip other params, backwards compatibility
             let arrElements = strData.split('&')
             let data: any = {}
 
@@ -128,9 +128,9 @@ class Ajax {
                 data['systemid'] = arrElements[0]
             }
 
-            //first one is the systemid
+            // first one is the systemid
             if (arrElements.length > 1) {
-                $.each(arrElements, function(index, strValue) {
+                $.each(arrElements, function (index, strValue) {
                     if (!bitFirstIsSystemid || index > 0) {
                         var arrSingleParams = strValue.split('=')
                         data[arrSingleParams[0]] = arrSingleParams[1]
@@ -143,7 +143,7 @@ class Ajax {
         }
     }
 
-    public static regularCallback(
+    public static regularCallback (
         data: any,
         status: string,
         jqXHR: XMLHttpRequest
@@ -167,7 +167,7 @@ class Ajax {
      * @param strMethod default is POST
      * @param dataType
      */
-    public static genericAjaxCall(
+    public static genericAjaxCall (
         module: string,
         action: string,
         systemid: any,
@@ -190,10 +190,10 @@ class Ajax {
 
         WorkingIndicator.start()
         $.ajax({
-            type: strMethod ? strMethod : 'POST',
+            type: strMethod || 'POST',
             url: postTarget,
             data: data,
-            error: function(
+            error: function (
                 xhr: JQuery.jqXHR,
                 textStatus: string,
                 errorThrown: string
@@ -202,7 +202,7 @@ class Ajax {
                     objCallback(xhr, textStatus, errorThrown)
                 }
             },
-            success: function(
+            success: function (
                 data: any,
                 textStatus: string,
                 xhr: JQuery.jqXHR
@@ -211,24 +211,24 @@ class Ajax {
                     objCallback(data, textStatus, xhr)
                 }
             },
-            dataType: dataType ? dataType : 'text'
+            dataType: dataType || 'text'
         })
-            .always(function() {
+            .always(function () {
                 WorkingIndicator.stop()
             })
-            .fail(function() {
+            .fail(function () {
                 if (objErrorCallback) {
                     objErrorCallback()
                 }
             })
-            .done(function() {
+            .done(function () {
                 if (objDoneCallback) {
                     objDoneCallback()
                 }
             })
     }
 
-    public static setAbsolutePosition(
+    public static setAbsolutePosition (
         systemIdToMove: string,
         intNewPos: number,
         strIdOfList: string,
@@ -236,10 +236,10 @@ class Ajax {
         strTargetModule?: string
     ) {
         if (strTargetModule == null || strTargetModule == '')
-            strTargetModule = 'system'
+            {strTargetModule = 'system'}
 
-        if (typeof objCallback == 'undefined' || objCallback == null)
-            objCallback = this.regularCallback
+        if (typeof objCallback === 'undefined' || objCallback == null)
+            {objCallback = this.regularCallback}
 
         this.genericAjaxCall(
             strTargetModule,
@@ -249,12 +249,12 @@ class Ajax {
         )
     }
 
-    public static setSystemStatus(
+    public static setSystemStatus (
         strSystemIdToSet: string,
         bitReload: boolean
     ) {
         var me = this
-        var objCallback = function(
+        var objCallback = function (
             data: any,
             status: string,
             jqXHR: JQuery.jqXHR

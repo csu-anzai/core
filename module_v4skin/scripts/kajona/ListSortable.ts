@@ -14,7 +14,7 @@ class ListSortable {
      * @param strTargetModule
      * @param bitMoveToTree
      */
-    public static init(
+    public static init (
         strListId: string,
         strTargetModule: string,
         bitMoveToTree: boolean
@@ -29,26 +29,26 @@ class ListSortable {
 
         $('#' + strListId + '_prev').sortable({
             placeholder: 'dndPlaceholder',
-            over: function(event, ui) {
+            over: function (event, ui) {
                 $(ui.placeholder).hide()
                 $(this)
                     .removeClass('alert-info')
                     .addClass('alert-success')
             },
-            out: function(event, ui) {
+            out: function (event, ui) {
                 $(this)
                     .removeClass('alert-success')
                     .addClass('alert-info')
                 $(ui.placeholder).show()
             },
-            receive: function(event, ui) {
+            receive: function (event, ui) {
                 $(ui.placeholder).hide()
                 if (intCurPage > 1) {
                     Ajax.setAbsolutePosition(
                         ui.item.find('tr').data('systemid'),
                         intElementsPerPage * (intCurPage - 1),
                         null,
-                        function(data: any, status: string, jqXHR: any) {
+                        function (data: any, status: string, jqXHR: any) {
                             if (status == 'success') {
                                 location.reload()
                             } else {
@@ -66,19 +66,19 @@ class ListSortable {
         })
 
         $('#' + strListId + '_next').sortable({
-            over: function(event, ui) {
+            over: function (event, ui) {
                 $(ui.placeholder).hide()
                 $(this)
                     .removeClass('alert-info')
                     .addClass('alert-success')
             },
-            out: function(event, ui) {
+            out: function (event, ui) {
                 $(this)
                     .removeClass('alert-success')
                     .addClass('alert-info')
                 $(ui.placeholder).show()
             },
-            receive: function(event, ui) {
+            receive: function (event, ui) {
                 $(ui.placeholder).hide()
                 var intOnPage =
                     $('#' + strListId + ' tbody:has(tr[data-systemid!=""])')
@@ -88,7 +88,7 @@ class ListSortable {
                         ui.item.find('tr').data('systemid'),
                         intElementsPerPage * intCurPage + 1,
                         null,
-                        function(data: any, status: string, jqXHR: any) {
+                        function (data: any, status: string, jqXHR: any) {
                             if (status == 'success') {
                                 location.reload()
                             } else {
@@ -113,7 +113,7 @@ class ListSortable {
             forceHelperSize: true,
             placeholder: 'dndPlaceholder table',
             connectWith: '.divPageTarget',
-            start: function(event, ui) {
+            start: function (event, ui) {
                 let pageNum = parseInt(
                     $('#' + strListId).attr('data-kajona-pagenum')
                 )
@@ -138,31 +138,31 @@ class ListSortable {
 
                 oldPos = ui.item.index()
 
-                //hack the placeholder
+                // hack the placeholder
                 ui.placeholder.html(ui.helper.html())
                 ui.placeholder.height(ui.item.height())
             },
-            stop: function(event, ui) {
+            stop: function (event, ui) {
                 if (oldPos != ui.item.index() && !ui.item.parent().is('div')) {
                     var intOffset = 1
-                    //see, if there are nodes not being sortable - would lead to another offset
-                    $('#' + strListId + ' > tbody').each(function(index) {
+                    // see, if there are nodes not being sortable - would lead to another offset
+                    $('#' + strListId + ' > tbody').each(function (index) {
                         if (
                             $(this)
                                 .find('tr')
                                 .data('systemid') == ''
                         )
-                            intOffset--
+                            {intOffset--}
                         if (
                             $(this)
                                 .find('tr')
                                 .data('systemid') ==
                             ui.item.find('tr').data('systemid')
                         )
-                            return false
+                            {return false}
                     })
 
-                    //calc the page-offset
+                    // calc the page-offset
                     var intCurPage = parseInt(
                         $('#' + strListId).attr('data-kajona-pagenum')
                     )
@@ -172,8 +172,8 @@ class ListSortable {
 
                     var intPagingOffset = 0
                     if (intCurPage > 1 && intElementsPerPage > 0)
-                        intPagingOffset =
-                            intCurPage * intElementsPerPage - intElementsPerPage
+                        {intPagingOffset =
+                            intCurPage * intElementsPerPage - intElementsPerPage}
 
                     Ajax.setAbsolutePosition(
                         ui.item.find('tr').data('systemid'),
@@ -193,7 +193,7 @@ class ListSortable {
             '#' +
                 strListId +
                 ' > tbody:has(tr[data-systemid!=""][data-deleted=""][data-systemid!="batchActionSwitch"]) > tr'
-        ).each(function(index) {
+        ).each(function (index) {
             $(this)
                 .find('td.listsorthandle')
                 .css('cursor', 'move')
@@ -203,7 +203,7 @@ class ListSortable {
             Lang.fetchSingleProperty(
                 'commons',
                 'commons_sort_vertical',
-                function(strText: string) {
+                function (strText: string) {
                     Tooltip.addTooltip(
                         $(self).find('td.listsorthandle'),
                         strText
@@ -224,7 +224,7 @@ class ListSortable {
                 Lang.fetchSingleProperty(
                     'commons',
                     'commons_sort_totree',
-                    function(strText: string) {
+                    function (strText: string) {
                         Tooltip.addTooltip($(self).find('td.treedrag'), strText)
                     }
                 )

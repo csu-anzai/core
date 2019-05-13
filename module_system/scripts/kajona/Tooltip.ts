@@ -6,7 +6,7 @@ import 'qtip2/dist/jquery.qtip.min.css'
  * Common tooltips
  */
 class Tooltip {
-    public static initTooltip() {
+    public static initTooltip () {
         $('*[rel=tooltip][title!=""]').qtip({
             position: {
                 viewport: $('body'),
@@ -22,8 +22,8 @@ class Tooltip {
             }
         })
 
-        //tag tooltips
-        $('*[rel=tagtooltip][title!=""]').each(function() {
+        // tag tooltips
+        $('*[rel=tagtooltip][title!=""]').each(function () {
             $(this).qtip({
                 position: {
                     viewport: $('body'),
@@ -47,7 +47,7 @@ class Tooltip {
                         "'></div>"
                 },
                 events: {
-                    render: function(event, api: any) {
+                    render: function (event, api: any) {
                         Tags.loadTagTooltipContent(
                             $(api.elements.content)
                                 .find('div')
@@ -63,7 +63,7 @@ class Tooltip {
         })
     }
 
-    public static addTooltip(objElement: any, strText?: string) {
+    public static addTooltip (objElement: any, strText?: string) {
         if (strText) {
             $(objElement).qtip({
                 position: {
@@ -91,7 +91,7 @@ class Tooltip {
         }
     }
 
-    public static removeTooltip(objElement: any) {
+    public static removeTooltip (objElement: any) {
         $(objElement).qtip('destroy')
     }
 }

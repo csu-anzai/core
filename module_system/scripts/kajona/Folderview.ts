@@ -33,7 +33,7 @@ class Folderview {
      * Loads the passed url to the parent frame and closes the dialog
      * @param url
      */
-    public static loadParentUrl(url: string) {
+    public static loadParentUrl (url: string) {
         var context = window.opener ? window.opener : parent
         context.location = url
         this.close()
@@ -46,7 +46,7 @@ class Folderview {
      * @param {Array} arrTargetsValues
      * @param {function} objCallback
      */
-    public static selectCallback(
+    public static selectCallback (
         arrTargetsValues: Array<Array<String>>,
         objCallback: Function
     ) {
@@ -73,7 +73,7 @@ class Folderview {
     /**
      * fills the form fields with the selected values
      */
-    public static fillFormFields(arrTargetsValues: Array<Array<string>>) {
+    public static fillFormFields (arrTargetsValues: Array<Array<string>>) {
         for (var i in arrTargetsValues) {
             let key = arrTargetsValues[i][0]
             let value = arrTargetsValues[i][1]
@@ -99,7 +99,7 @@ class Folderview {
      * @param {string} strDeleteButton -
      * @param {boolean} bitStayOpen
      */
-    public static setObjectListItems(
+    public static setObjectListItems (
         strElementName: string,
         arrItems: Array<ObjectListItem>,
         arrAvailableIds: Array<string | number | string[]>,
@@ -113,12 +113,12 @@ class Folderview {
             table.data('max-values') > 0 ? table.data('max-values') : 500
         if (tbody.length > 0) {
             // remove only elements which are in the arrAvailableIds array
-            tbody.children().each(function() {
+            tbody.children().each(function () {
                 var strId = $(this)
                     .find('input[type="hidden"]')
                     .val()
                 if ($.inArray(strId, arrAvailableIds) !== -1) {
-                    //if strId in array
+                    // if strId in array
                     $(this).remove()
                 }
             })
@@ -202,7 +202,7 @@ class Folderview {
      * @param {string} strElementName  - name of the objectlist element
      * @param {Array} arrItems        - array with item of the following format {strSystemId: <systemid>, strDisplayName:<displayname>, strIcon:<icon>, strPath:<string>}
      */
-    public static setCheckboxArrayObjectListItems(
+    public static setCheckboxArrayObjectListItems (
         strElementName: string,
         arrItems: Array<ObjectListItem>
     ) {
@@ -272,7 +272,7 @@ class Folderview {
     /**
      * closes the current dialog
      */
-    public static close() {
+    public static close () {
         if (window.opener) {
             window.close()
         } else if (parent) {
@@ -289,7 +289,7 @@ class Folderview {
      * Enables selection by clicking a row-entry
      * @deprecated
      */
-    public static initRowClick() {
+    public static initRowClick () {
         return Lists.initRowClick()
     }
 }

@@ -9,7 +9,7 @@ class Entry {
     public strIdentifier: string
     public bitActive: boolean
 
-    constructor(strContent: string, strIdentifier?: string, bitActive?: any) {
+    constructor (strContent: string, strIdentifier?: string, bitActive?: any) {
         this.strContent = strContent
         this.strIdentifier = strIdentifier
         this.bitActive =
@@ -35,7 +35,7 @@ class ContentToolbar {
      *
      * @param objEntry {Entry}
      */
-    public static registerContentToolbarEntry(objEntry: Entry) {
+    public static registerContentToolbarEntry (objEntry: Entry) {
         if (objEntry.strContent != '') {
             this.$objToolbarContainer = $('.contentToolbar')
             this.$objToolbarList = $('.contentToolbar ul:first')
@@ -72,9 +72,9 @@ class ContentToolbar {
      * Adds a list of entries
      * @param arrEntries {Entry[]}
      */
-    public static registerContentToolbarEntries(arrEntries: Array<Entry>) {
+    public static registerContentToolbarEntries (arrEntries: Array<Entry>) {
         if (arrEntries) {
-            $.each(arrEntries, function(index: any, objEntry: Entry) {
+            $.each(arrEntries, function (index: any, objEntry: Entry) {
                 ContentToolbar.registerContentToolbarEntry(objEntry)
             })
         }
@@ -84,7 +84,7 @@ class ContentToolbar {
      *
      * @param $objContainer
      */
-    public static registerRecordActions($objContainer: JQuery) {
+    public static registerRecordActions ($objContainer: JQuery) {
         this.$objActionToolbarContainer = $('.contentToolbar .navbar-inner')
         if (!Util.isStackedDialog()) {
             let $objNode = $('<div>')
@@ -99,7 +99,7 @@ class ContentToolbar {
      * Removes a sinvle entry
      * @param strIdentifier
      */
-    public static removeEntry(strIdentifier: string) {
+    public static removeEntry (strIdentifier: string) {
         this.$objToolbarList = $('.contentToolbar ul:first')
         if ($('#' + strIdentifier)) {
             $('#' + strIdentifier).remove()
@@ -113,7 +113,7 @@ class ContentToolbar {
     /**
      * Resets the whole bar and hides it
      */
-    public static resetBar() {
+    public static resetBar () {
         this.$objToolbarList.empty()
         this.$objToolbarContainer.find('.actionToolbar').remove()
         this.$objToolbarContainer.addClass('hidden')
@@ -122,7 +122,7 @@ class ContentToolbar {
     /**
      * Enables the bar in general
      */
-    public static showBar() {
+    public static showBar () {
         this.$objToolbarContainer.removeClass('hidden')
     }
 }

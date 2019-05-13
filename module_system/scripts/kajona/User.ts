@@ -9,7 +9,7 @@ class User {
      * @param userid
      * @returns {boolean}
      */
-    public static addGroupToUser(groupid: string, userid: string) {
+    public static addGroupToUser (groupid: string, userid: string) {
         if ($('tr[data-systemid=' + groupid + ']').length > 0) {
             return true
         }
@@ -18,7 +18,7 @@ class User {
             'user',
             'apiGroupMemberAdd',
             '&userid=' + userid + '&groupid=' + groupid,
-            function(data: any, status: string) {
+            function (data: any, status: string) {
                 if (status == 'success') {
                     // $('.admintable').append(data.row);
                     $('.admintable tbody')
@@ -43,12 +43,12 @@ class User {
      * @param groupid
      * @param userid
      */
-    public static removeGroupFromUser(groupid: string, userid: string) {
+    public static removeGroupFromUser (groupid: string, userid: string) {
         Ajax.genericAjaxCall(
             'user',
             'apiGroupMemberDelete',
             '&userid=' + userid + '&groupid=' + groupid,
-            function(data: any, status: string) {
+            function (data: any, status: string) {
                 if (status == 'success') {
                     $('tr[data-systemid=' + groupid + ']')
                         .closest('tbody')

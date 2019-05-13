@@ -3,14 +3,14 @@ import $ from 'jquery'
 class WorkingIndicator {
     private static intWorkingCount = 0
 
-    public static start() {
+    public static start () {
         if (this.intWorkingCount == 0) {
             $('#status-indicator').addClass('active')
         }
         this.intWorkingCount++
     }
 
-    public static stop() {
+    public static stop () {
         this.intWorkingCount--
 
         if (this.intWorkingCount == 0) {
@@ -18,7 +18,7 @@ class WorkingIndicator {
         }
     }
 
-    public static getInstance() {
+    public static getInstance () {
         return WorkingIndicator
     }
 }

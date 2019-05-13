@@ -21,7 +21,7 @@ class Imageeditor {
     public static init_fm_screenlock_dialog: Function = null
     public static hide_fm_screenlock_dialog: Function = null
 
-    public static saveImageCropping(
+    public static saveImageCropping (
         intX: number,
         intY: number,
         intWidth: number,
@@ -49,7 +49,7 @@ class Imageeditor {
         )
     }
 
-    public static saveImageRotating(
+    public static saveImageRotating (
         intAngle: number,
         strFile: string,
         objCallback: Function
@@ -63,7 +63,7 @@ class Imageeditor {
         )
     }
 
-    public static showRealSize() {
+    public static showRealSize () {
         $('#fm_mediamanagerPic').attr(
             'src',
             this.fm_image_rawurl + '&x=' + new Date().getMilliseconds()
@@ -72,7 +72,7 @@ class Imageeditor {
         this.hideCropping()
     }
 
-    public static showPreview() {
+    public static showPreview () {
         $('#fm_mediamanagerPic').attr(
             'src',
             this.fm_image_scaledurl
@@ -85,18 +85,18 @@ class Imageeditor {
         this.hideCropping()
     }
 
-    public static showCropping() {
+    public static showCropping () {
         // init the cropping
         var iE = this
         if (this.fm_cropObj == null) {
-            $('#fm_mediamanagerPic').Jcrop({}, function() {
+            $('#fm_mediamanagerPic').Jcrop({}, function () {
                 iE.fm_cropObj = this
             })
 
             this.fm_cropObj.animateTo([120, 120, 80, 80])
 
             $('#accept_icon').html(this.strCropEnabled)
-            $('#fm_mediamanagerPic_wrap').bind('dblclick', function(event) {
+            $('#fm_mediamanagerPic_wrap').bind('dblclick', function (event) {
                 Imageeditor.saveCropping()
             })
         } else {
@@ -104,7 +104,7 @@ class Imageeditor {
         }
     }
 
-    public static hideCropping() {
+    public static hideCropping () {
         if (this.fm_cropObj != null) {
             this.fm_cropObj.destroy()
             this.fm_cropObj = null
@@ -113,13 +113,13 @@ class Imageeditor {
         }
     }
 
-    public static saveCropping() {
+    public static saveCropping () {
         if (this.fm_cropObj != null) {
             this.init_fm_crop_save_warning_dialog()
         }
     }
 
-    public static saveCroppingToBackend() {
+    public static saveCroppingToBackend () {
         jsDialog_1.hide()
         this.init_fm_screenlock_dialog()
         this.cropArea = this.fm_cropObj.tellSelect()
@@ -154,7 +154,7 @@ class Imageeditor {
         }
 
         var iE = this
-        var callback = function(
+        var callback = function (
             data: any,
             status: string,
             jqXHR: XMLHttpRequest
@@ -198,11 +198,11 @@ class Imageeditor {
         )
     }
 
-    public static rotate(intAngle: number) {
+    public static rotate (intAngle: number) {
         this.init_fm_screenlock_dialog()
 
         var iE = this
-        var callback = function(
+        var callback = function (
             data: any,
             status: string,
             jqXHR: XMLHttpRequest
@@ -216,7 +216,7 @@ class Imageeditor {
                     $('#accept_icon').html(iE.strCropDisabled)
                 }
 
-                //switch width and height
+                // switch width and height
                 var intScaledMaxWidthOld = iE.fm_image_scaledMaxWidth
                 iE.fm_image_scaledMaxWidth = iE.fm_image_scaledMaxHeight
                 iE.fm_image_scaledMaxHeight = intScaledMaxWidthOld

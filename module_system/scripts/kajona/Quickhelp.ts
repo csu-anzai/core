@@ -4,7 +4,7 @@ import $ from 'jquery'
  * Module to handle the general quickhelp entry
  */
 class Quickhelp {
-    public static setQuickhelp(strTitle: string, strText: string) {
+    public static setQuickhelp (strTitle: string, strText: string) {
         if (strText.trim() == '') {
             return
         }
@@ -20,7 +20,7 @@ class Quickhelp {
             .show()
     }
 
-    public static resetQuickhelp() {
+    public static resetQuickhelp () {
         $('#quickhelp')
             .hide()
             .popover('destroy')

@@ -6,7 +6,7 @@ import WorkingIndicator from '../../../module_system/scripts/kajona/WorkingIndic
 import Util from '../../../module_system/scripts/kajona/Util'
 
 class TagEditor {
-    public static updateMandatoryRendering($objInput: JQuery) {
+    public static updateMandatoryRendering ($objInput: JQuery) {
         var $tagInput = $objInput.closest('.form-group').find('.tag-editor')
         if ($tagInput && $objInput.hasClass('mandatoryFormElement')) {
             $tagInput.addClass('mandatoryFormElement')
@@ -20,7 +20,7 @@ class TagEditor {
      * @param initialTags
      * @param onChangeCallback
      */
-    public static init(
+    public static init (
         strElementId: string,
         strSource: string,
         initialTags: Array<string>,
@@ -28,7 +28,7 @@ class TagEditor {
     ) {
         let objConfig: JQueryUI.AutocompleteOptions = new V4skin.defaultAutoComplete()
 
-        objConfig.search = function(event: any, ui: any) {
+        objConfig.search = function (event: any, ui: any) {
             if (event.target.value.length < 2) {
                 event.stopPropagation()
                 return false
@@ -41,7 +41,7 @@ class TagEditor {
             WorkingIndicator.getInstance().start()
         }
 
-        objConfig.response = function(event: any, ui: any) {
+        objConfig.response = function (event: any, ui: any) {
             $(this)
                 .closest('ul.tag-editor')
                 .parent()
@@ -50,11 +50,11 @@ class TagEditor {
             WorkingIndicator.getInstance().stop()
         }
 
-        objConfig.select = function(event: any, ui: any) {
+        objConfig.select = function (event: any, ui: any) {
             var found = false
             $('#' + strElementId + '-list')
                 .find('input')
-                .each(function() {
+                .each(function () {
                     if ($(this).val() == ui.item.systemid) {
                         found = true
                     }
@@ -72,8 +72,8 @@ class TagEditor {
             }
         }
 
-        objConfig.create = function(event: any, ui: any) {
-            $(this).data('ui-autocomplete')._renderItem = function(
+        objConfig.create = function (event: any, ui: any) {
+            $(this).data('ui-autocomplete')._renderItem = function (
                 ul: any,
                 item: any
             ) {
@@ -89,7 +89,7 @@ class TagEditor {
             }
         }
 
-        objConfig.source = function(request: any, response: Function) {
+        objConfig.source = function (request: any, response: Function) {
             $.ajax({
                 url: strSource,
                 type: 'POST',
@@ -97,7 +97,7 @@ class TagEditor {
                 data: {
                     filter: request.term
                 },
-                success: function(resp) {
+                success: function (resp) {
                     if (resp) {
                         // replace commas
                         for (var i = 0; i < resp.length; i++) {
@@ -116,18 +116,18 @@ class TagEditor {
             forceLowercase: false,
             sortable: false,
             autocomplete: objConfig,
-            onChange: function(field: any, editor: any, tags: Array<string>) {
-                //sync with exiting list to remove hidden input elements
+            onChange: function (field: any, editor: any, tags: Array<string>) {
+                // sync with exiting list to remove hidden input elements
                 $('#' + strElementId + '-list')
                     .find('input')
-                    .each(function() {
+                    .each(function () {
                         if (!Util.inArray($(this).data('title'), tags)) {
                             $(this).remove()
                         }
                     })
                 onChangeCallback()
             },
-            beforeTagSave: function(
+            beforeTagSave: function (
                 field: any,
                 editor: any,
                 tags: Array<string>,
@@ -137,7 +137,7 @@ class TagEditor {
                 var found = false
                 $('#' + strElementId + '-list')
                     .find('input')
-                    .each(function() {
+                    .each(function () {
                         if ($(this).data('title') == val) {
                             found = true
                         }
@@ -146,7 +146,7 @@ class TagEditor {
                     return false
                 }
             },
-            beforeTagDelete: function(
+            beforeTagDelete: function (
                 field: any,
                 editor: any,
                 tags: Array<string>,
@@ -154,7 +154,7 @@ class TagEditor {
             ) {
                 $('#' + strElementId + '-list')
                     .find('input')
-                    .each(function() {
+                    .each(function () {
                         if ($(this).data('title') == val) {
                             $(this).remove()
                         }
@@ -168,26 +168,26 @@ class TagEditor {
                 "<span class='form-control-feedback loading-feedback' style='right: 15px;'><i class='fa fa-keyboard-o'></i></span>"
             )
 
-        //listen on mandatory change events
-        $objInput.on('kajona.forms.mandatoryAdded', function() {
+        // listen on mandatory change events
+        $objInput.on('kajona.forms.mandatoryAdded', function () {
             TagEditor.updateMandatoryRendering($(this))
         })
         TagEditor.updateMandatoryRendering($objInput)
 
-        //highlight current input
+        // highlight current input
         $('#tageditor_' + strElementId + ' .tag-editor').on(
             'click',
-            function() {
+            function () {
                 $('#tageditor_' + strElementId)
                     .find('ul.tag-editor')
                     .addClass('active')
             }
         )
 
-        //set all othter inactive
-        $('.tag-editor').on('click', function(e, el) {
+        // set all othter inactive
+        $('.tag-editor').on('click', function (e, el) {
             var objOuter = $(this)
-            $('.tag-editor.active').each(function() {
+            $('.tag-editor.active').each(function () {
                 if (
                     $(this)
                         .closest('.inputTagEditor')
@@ -199,8 +199,8 @@ class TagEditor {
             })
         })
 
-        //general outer click
-        $('*:not(.tag-editor)').on('click', function() {
+        // general outer click
+        $('*:not(.tag-editor)').on('click', function () {
             if ($('.tag-editor').hasClass('active')) {
                 $('.tag-editor').removeClass('active')
             }

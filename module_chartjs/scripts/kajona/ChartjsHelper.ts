@@ -11,14 +11,14 @@ declare var Chart: any
  */
 class ChartjsHelper {
     /**
-     * Chartjs onClick handler
-     *
-     * @param ev
-     * @param seriesIndex
-     * @param pointIndex
-     * @param dataPoint
-     */
-    public static onClickHandler(
+   * Chartjs onClick handler
+   *
+   * @param ev
+   * @param seriesIndex
+   * @param pointIndex
+   * @param dataPoint
+   */
+    public static onClickHandler (
         ev: any,
         seriesIndex: any,
         pointIndex: number,
@@ -27,14 +27,7 @@ class ChartjsHelper {
         if (dataPoint.actionhandler && dataPoint.actionhandler != null) {
             var objFunction = eval('(' + dataPoint.actionhandler + ')')
             if ($.isFunction(objFunction)) {
-                objFunction.call(
-                    this,
-                    ev,
-                    seriesIndex,
-                    pointIndex,
-                    null,
-                    dataPoint
-                )
+                objFunction.call(this, ev, seriesIndex, pointIndex, null, dataPoint)
             }
         } else {
             this.dataPointOnClickURLHandler(dataPoint)
@@ -42,15 +35,15 @@ class ChartjsHelper {
     }
 
     /**
-     * Opens URL in dialog pop-up window
-     *
-     * @param dataPoint
-     */
-    public static dataPointOnClickURLHandler(dataPoint: any) {
+   * Opens URL in dialog pop-up window
+   *
+   * @param dataPoint
+   */
+    public static dataPointOnClickURLHandler (dataPoint: any) {
         if (
             dataPoint.actionhandlervalue &&
-            dataPoint.actionhandlervalue != null &&
-            dataPoint.actionhandlervalue != ''
+      dataPoint.actionhandlervalue != null &&
+      dataPoint.actionhandlervalue != ''
         ) {
             Folderview.dialog.setContentIFrame(dataPoint.actionhandlervalue)
             Folderview.dialog.setTitle('')
@@ -59,16 +52,16 @@ class ChartjsHelper {
     }
 
     /**
-     * Converts data value in a percentage view
-     *
-     * @param value
-     * @param ctx
-     * @returns {string}
-     */
-    public static dataShowPercentage(value: number, ctx: any) {
+   * Converts data value in a percentage view
+   *
+   * @param value
+   * @param ctx
+   * @returns {string}
+   */
+    public static dataShowPercentage (value: number, ctx: any) {
         var sum: number = 0
         var dataArr = ctx.chart.data.datasets[0].data
-        dataArr.map(function(data: number) {
+        dataArr.map(function (data: number) {
             sum += data
         })
         var percentage = ((value * 100) / sum).toFixed(0)
@@ -76,47 +69,44 @@ class ChartjsHelper {
     }
 
     /**
-     * Add thousand separator in big numeric values
-     *
-     * @param value
-     * @param ctx
-     * @returns {string}
-     */
-    public static addThousandSeparator(value: number, ctx: any) {
+   * Add thousand separator in big numeric values
+   *
+   * @param value
+   * @param ctx
+   * @returns {string}
+   */
+    public static addThousandSeparator (value: number, ctx: any) {
         let strValue = value.toString()
         let strThousandSeparator = '.'
-        Lang.fetchSingleProperty('system', 'numberStyleThousands', function(
+        Lang.fetchSingleProperty('system', 'numberStyleThousands', function (
             strText: string
         ) {
             strThousandSeparator = strText
         })
-        strValue = strValue.replace(
-            /\B(?=(\d{3})+(?!\d))/g,
-            strThousandSeparator
-        )
+        strValue = strValue.replace(/\B(?=(\d{3})+(?!\d))/g, strThousandSeparator)
         return strValue
     }
 
     /**
-     * Changes "0" values to empty string
-     *
-     * @param value
-     * @returns {string}
-     */
-    public static dataNotShowNullValues(value: number) {
+   * Changes "0" values to empty string
+   *
+   * @param value
+   * @returns {string}
+   */
+    public static dataNotShowNullValues (value: number) {
         return value != 0 ? value : ''
     }
 
     /**
-     * Creates the chart using "chartjs" library and set parameters
-     *
-     * @param ctx
-     * @param chartData
-     * @param chartOptions
-     */
-    public static createChart(ctx: any, chartData: any, chartOptions: any) {
+   * Creates the chart using "chartjs" library and set parameters
+   *
+   * @param ctx
+   * @param chartData
+   * @param chartOptions
+   */
+    public static createChart (ctx: any, chartData: any, chartOptions: any) {
         Chart.defaults.global.defaultFontFamily =
-            '"Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif'
+      '"Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif'
         Chart.defaults.global.defaultFontSize = 10
         Chart.defaults.global.elements.line.fill = false
         Chart.defaults.global.elements.line.lineTension = 0.9
@@ -134,7 +124,7 @@ class ChartjsHelper {
 
         if (
             typeof chartOptions['createImageLink'] !== 'undefined' &&
-            chartOptions['createImageLink']
+      chartOptions['createImageLink']
         ) {
             chartData['options']['animation'] = {
                 onComplete: createExportLink
@@ -143,10 +133,10 @@ class ChartjsHelper {
 
         if (
             typeof chartOptions['notShowNullValues'] !== 'undefined' &&
-            chartOptions['notShowNullValues']
+      chartOptions['notShowNullValues']
         ) {
             chartData['options']['plugins']['datalabels'] = {
-                formatter: function(value: number) {
+                formatter: function (value: number) {
                     return ChartjsHelper.dataNotShowNullValues(value)
                 }
             }
@@ -154,10 +144,10 @@ class ChartjsHelper {
 
         if (
             typeof chartOptions['percentageValues'] !== 'undefined' &&
-            chartOptions['percentageValues']
+      chartOptions['percentageValues']
         ) {
             chartData['options']['plugins']['datalabels'] = {
-                formatter: function(value: number, ctx: any) {
+                formatter: function (value: number, ctx: any) {
                     return ChartjsHelper.dataShowPercentage(value, ctx)
                 }
             }
@@ -165,21 +155,21 @@ class ChartjsHelper {
 
         if (
             typeof chartOptions['addThousandSeparator'] !== 'undefined' &&
-            chartOptions['addThousandSeparator']
+      chartOptions['addThousandSeparator']
         ) {
             chartData['options']['scales']['xAxes'][0]['ticks'][
                 'userCallback'
-            ] = function(value: number, ctx: any) {
+            ] = function (value: number, ctx: any) {
                 return ChartjsHelper.addThousandSeparator(value, ctx)
             }
             chartData['options']['scales']['yAxes'][0]['ticks'][
                 'userCallback'
-            ] = function(value: number, ctx: any) {
+            ] = function (value: number, ctx: any) {
                 return ChartjsHelper.addThousandSeparator(value, ctx)
             }
         }
 
-        chartData['options']['onClick'] = function(evt: any) {
+        chartData['options']['onClick'] = function (evt: any) {
             var item = this.getElementAtEvent(evt)[0]
             if (typeof item !== 'undefined') {
                 var datasetIndex = item._datasetIndex
@@ -188,9 +178,7 @@ class ChartjsHelper {
                     evt,
                     index,
                     datasetIndex,
-                    chartData['data']['datasets'][datasetIndex]['dataPoints'][
-                        index
-                    ]
+                    chartData['data']['datasets'][datasetIndex]['dataPoints'][index]
                 )
             }
         }
@@ -201,11 +189,11 @@ class ChartjsHelper {
             options: chartData['options']
         })
 
-        function createExportLink() {
+        function createExportLink () {
             var url = myChart.toBase64Image()
             $('#' + chartOptions['strLinkExportId']).attr('href', url)
         }
     }
 }
-;(<any>window).ChartjsHelper = ChartjsHelper
+; (<any>window).ChartjsHelper = ChartjsHelper
 export default ChartjsHelper

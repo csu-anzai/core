@@ -11,8 +11,8 @@ class Loader {
     private static arrFilesLoaded: Array<string> = []
     private static arrFilesInProgress: Array<string> = []
 
-    public static checkCallbacks() {
-        //check if we're ready to call some registered callbacks
+    public static checkCallbacks () {
+        // check if we're ready to call some registered callbacks
         for (var i = 0; i < this.arrCallbacks.length; i++) {
             if (this.arrCallbacks[i]) {
                 var bitCallback = true
@@ -32,7 +32,7 @@ class Loader {
                     }
                 }
 
-                //execute callback and delete it so it won't get called again
+                // execute callback and delete it so it won't get called again
                 if (bitCallback) {
                     this.arrCallbacks[i].callback()
                     delete this.arrCallbacks[i]
@@ -41,7 +41,7 @@ class Loader {
         }
     }
 
-    public static loadFile(
+    public static loadFile (
         arrInputFiles: Array<string>,
         objCallback?: Function,
         bitPreventPathAdding?: boolean
@@ -50,20 +50,20 @@ class Loader {
 
         if (!$.isArray(arrInputFiles)) arrInputFiles = [arrInputFiles]
 
-        //add suffixes
-        $.each(arrInputFiles, function(index, strOneFile) {
+        // add suffixes
+        $.each(arrInputFiles, function (index, strOneFile) {
             if ($.inArray(strOneFile, Loader.arrFilesLoaded) == -1)
-                arrFilesToLoad.push(strOneFile)
+                {arrFilesToLoad.push(strOneFile)}
         })
 
         if (arrFilesToLoad.length == 0) {
-            //all files already loaded, call callback
+            // all files already loaded, call callback
             if ($.isFunction(objCallback)) objCallback()
         } else {
-            //start loader-processing
+            // start loader-processing
             var bitCallbackAdded = false
-            $.each(arrFilesToLoad, function(index, strOneFileToLoad) {
-                //check what loader to take - js or css
+            $.each(arrFilesToLoad, function (index, strOneFileToLoad) {
+                // check what loader to take - js or css
                 var fileType =
                     strOneFileToLoad.substr(strOneFileToLoad.length - 2, 2) ==
                     'js'
@@ -72,7 +72,7 @@ class Loader {
 
                 if (!bitCallbackAdded && $.isFunction(objCallback)) {
                     Loader.arrCallbacks.push({
-                        callback: function() {
+                        callback: function () {
                             setTimeout(objCallback, 100)
                         },
                         requiredModules: arrFilesToLoad
@@ -85,7 +85,7 @@ class Loader {
                 ) {
                     Loader.arrFilesInProgress.push(strOneFileToLoad)
 
-                    //start loading process
+                    // start loading process
                     if (fileType == 'css') {
                         Loader.loadCss(
                             Loader.createFinalLoadPath(
@@ -110,11 +110,11 @@ class Loader {
         }
     }
 
-    public static createFinalLoadPath(
+    public static createFinalLoadPath (
         strPath: string,
         bitPreventPathAdding: boolean
     ) {
-        //see if the path has to be changed according to a phar-extracted content
+        // see if the path has to be changed according to a phar-extracted content
         if (KAJONA_PHARMAP && !bitPreventPathAdding) {
             var arrMatches = strPath.match(
                 /(core(.*))\/((module_|element_)([a-zA-Z0-9_])*)/i
@@ -135,7 +135,7 @@ class Loader {
         return strPath
     }
 
-    public static loadCss(strPath: string, strOriginalPath: string) {
+    public static loadCss (strPath: string, strOriginalPath: string) {
         $(
             '<link rel="stylesheet" type="text/css" href="' + strPath + '" />'
         ).appendTo('head')
@@ -147,7 +147,7 @@ class Loader {
     /**
      * @deprecated
      */
-    public static loadJs(strPath: string, strOriginalPath: string) {
+    public static loadJs (strPath: string, strOriginalPath: string) {
         console.info(
             'Loading JS through loader.loadJs() is deprecated use require instead (' +
                 strOriginalPath +
@@ -156,7 +156,7 @@ class Loader {
 
         //        console. debug('loading '+strOriginalPath);
 
-        //enable caching, cache flushing is done by the cachebuster
+        // enable caching, cache flushing is done by the cachebuster
         var options = {
             dataType: 'script',
             cache: true,
@@ -166,12 +166,12 @@ class Loader {
         // Use $.ajax() since it is more flexible than $.getScript
         // Return the jqXHR object so we can chain callbacks
         $.ajax(options)
-            .done(function(script, textStatus) {
+            .done(function (script, textStatus) {
                 //                console. debug('loaded '+strOriginalPath);
                 Loader.arrFilesLoaded.push(strOriginalPath)
                 Loader.checkCallbacks()
             })
-            .fail(function(jqxhr, settings, exception) {
+            .fail(function (jqxhr, settings, exception) {
                 //                console. error('loading file '+strPath+' failed: '+exception);
             })
     }

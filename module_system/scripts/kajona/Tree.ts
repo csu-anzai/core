@@ -11,7 +11,7 @@ class Helper {
      *
      * @returns {*}
      */
-    public static getTreeInstance() {
+    public static getTreeInstance () {
         var treeId = $('.treeDiv').first()[0].id
         return $.jstree.reference('#' + treeId)
     }
@@ -22,7 +22,7 @@ class Helper {
      *
      * @returns {*}
      */
-    public static isLoadAllNode(objNode: any) {
+    public static isLoadAllNode (objNode: any) {
         return (
             objNode.hasOwnProperty('data') &&
             objNode.data.hasOwnProperty('loadall')
@@ -37,7 +37,7 @@ class ContextMenu {
      * @param o - the node
      * @param cb - callback function
      */
-    public static createDefaultContextMenu(o: any, cb: Function) {
+    public static createDefaultContextMenu (o: any, cb: Function) {
         if (Helper.isLoadAllNode(o)) return null
 
         var objItems = {
@@ -57,11 +57,11 @@ class ContextMenu {
      *
      * @param data
      */
-    public static openAllNodes(data: any) {
-        var objTreeInstance = $.jstree.reference(data.reference),
-            objNode = objTreeInstance.get_node(data.reference)
+    public static openAllNodes (data: any) {
+        var objTreeInstance = $.jstree.reference(data.reference);
+            var objNode = objTreeInstance.get_node(data.reference)
 
-        /*Check if node was already loaded (also check if parent node was loaded)*/
+        /* Check if node was already loaded (also check if parent node was loaded)*/
         var arrNodesToCheck = objNode.parents
         arrNodesToCheck.unshift(objNode.id)
         var bitAlreadyLoaded = false
@@ -79,14 +79,14 @@ class ContextMenu {
             }
         }
 
-        //only load if have not been loaded yet, else just open all nodes
+        // only load if have not been loaded yet, else just open all nodes
         if (!bitAlreadyLoaded) {
             objNode.data.jstree_loadallchildnodes = true
-            objTreeInstance.load_node(objNode, function(node) {
+            objTreeInstance.load_node(objNode, function (node) {
                 objTreeInstance.open_all(node)
             })
         } else {
-            //all child nodes are already loaded
+            // all child nodes are already loaded
             objTreeInstance.open_all(objNode)
         }
     }
@@ -101,10 +101,10 @@ class ConditionalSelect {
      * @param event - the event being fired
      *
      */
-    public static handleConditionalSelect(objNode: any, event: any) {
-        //handle on click events
+    public static handleConditionalSelect (objNode: any, event: any) {
+        // handle on click events
         if (event.type == 'click') {
-            //if "load all" node was clicked
+            // if "load all" node was clicked
             if (Helper.isLoadAllNode(objNode)) {
                 var parent = Helper.getTreeInstance().get_parent(objNode)
                 var parentObj = Helper.getTreeInstance().get_node(parent)
@@ -112,7 +112,7 @@ class ConditionalSelect {
                 $('#' + objNode.id).addClass('jstree-loading')
 
                 var openNodes = Tree.getAllOpenNodes()
-                Helper.getTreeInstance().load_node(parentObj, function() {
+                Helper.getTreeInstance().load_node(parentObj, function () {
                     Helper.getTreeInstance().open_node(openNodes)
                     parentObj.data.loadall = false
                 })
@@ -120,10 +120,10 @@ class ConditionalSelect {
                 return true
             }
 
-            //if node contains a_attr with href -> relaod page
+            // if node contains a_attr with href -> relaod page
             if (objNode.a_attr) {
                 if (objNode.a_attr.href) {
-                    document.location.href = objNode.a_attr.href //Document reload
+                    document.location.href = objNode.a_attr.href // Document reload
                 }
             }
         }
@@ -135,10 +135,10 @@ class ConditionalSelect {
 class JSTree {
     private loadNodeDataUrl: string = null
     private rootNodeSystemid: string = null
-    private treeConfig: any = null //@see class \Kajona\System\System\SystemJSTreeConfig for structure
+    private treeConfig: any = null // @see class \Kajona\System\System\SystemJSTreeConfig for structure
     private treeId: string = null
-    private treeviewExpanders: Array<string> = null //array of ids
-    private initiallySelectedNodes: Array<string> = null //array of ids
+    private treeviewExpanders: Array<string> = null // array of ids
+    private initiallySelectedNodes: Array<string> = null // array of ids
 
     /**
      * Moves nodes below another node.
@@ -147,22 +147,22 @@ class JSTree {
      * @param data
      * @returns {boolean}
      */
-    public moveNode(data: any) {
-        //node data
-        var strNodeId = data.node.id,
-            strNewParentId = data.parent,
-            strOldParentId = data.old_parent,
-            intNewPostiton = data.position,
-            intOldPostiton = data.old_position
+    public moveNode (data: any) {
+        // node data
+        var strNodeId = data.node.id;
+            var strNewParentId = data.parent;
+            var strOldParentId = data.old_parent;
+            var intNewPostiton = data.position;
+            var intOldPostiton = data.old_position
 
-        /* Get table row which should be moved*/
+        /* Get table row which should be moved */
         var $objTableRowMoved = $(
             'tr[data-systemid=' + strNodeId + ']'
         ).closest('tbody')
 
-        //same parent
+        // same parent
         if (strNewParentId == strOldParentId) {
-            /* Move table row to according position*/
+            /* Move table row to according position */
             if ($objTableRowMoved.length > 0) {
                 var arrElementsInTable = $objTableRowMoved
                     .closest('table')
@@ -180,35 +180,35 @@ class JSTree {
                 }
             }
 
-            /* Call server*/
+            /* Call server */
             Ajax.genericAjaxCall(
                 'system',
                 'setAbsolutePosition',
                 strNodeId + '&listPos=' + (intNewPostiton + 1),
-                function(data: any, status: string, jqXHR: XMLHttpRequest) {
+                function (data: any, status: string, jqXHR: XMLHttpRequest) {
                     Ajax.regularCallback(data, status, jqXHR)
                 }
             )
         }
-        //different parent
+        // different parent
         else if (strNewParentId != strOldParentId) {
-            /* hide table row*/
+            /* hide table row */
             if ($objTableRowMoved.length > 0) {
                 $objTableRowMoved.hide()
             }
 
-            /* Call server*/
+            /* Call server */
             Ajax.genericAjaxCall(
                 'system',
                 'setPrevid',
                 strNodeId + '&prevId=' + strNewParentId,
-                function(data: any, status: string, jqXHR: XMLHttpRequest) {
+                function (data: any, status: string, jqXHR: XMLHttpRequest) {
                     if (status == 'success') {
                         Ajax.genericAjaxCall(
                             'system',
                             'setAbsolutePosition',
                             strNodeId + '&listPos=' + (intNewPostiton + 1),
-                            function(
+                            function (
                                 data: any,
                                 status: string,
                                 jqXHR: XMLHttpRequest
@@ -235,45 +235,45 @@ class JSTree {
      * @param more
      * @returns {boolean}
      */
-    public checkMoveNode(
+    public checkMoveNode (
         node: any,
         node_parent: any,
         node_position: number,
         more: any
     ) {
-        var targetNode = more.ref,
-            strDragId = node.id,
-            strTargetId = targetNode.id,
-            strInsertPosition = more.pos //"b"=>before, "a"=>after, "i"=inside
+        var targetNode = more.ref;
+            var strDragId = node.id;
+            var strTargetId = targetNode.id;
+            var strInsertPosition = more.pos // "b"=>before, "a"=>after, "i"=inside
 
-        //1. user can only move node if he has right on the dragged node and the parent node
+        // 1. user can only move node if he has right on the dragged node and the parent node
         if (!node.data.rightedit && !node_parent.data.rightedit) {
             return false
         }
 
-        //2. dragged node already direct childnode of target?
+        // 2. dragged node already direct childnode of target?
         var arrTargetChildren = targetNode.children
         if ($.inArray(strDragId, arrTargetChildren) > -1) {
             return false
         }
 
-        //3. dragged node is parent of target?
+        // 3. dragged node is parent of target?
         var arrTargetParents = targetNode.parents
         if ($.inArray(strDragId, arrTargetParents) > -1) {
-            return false //TODO maybe not needed, already check by jstree it self
+            return false // TODO maybe not needed, already check by jstree it self
         }
 
-        //4. dragged node same as target node?
+        // 4. dragged node same as target node?
         if (strDragId == strTargetId) {
-            return false //TODO maybe not needed, already check by jstree it self
+            return false // TODO maybe not needed, already check by jstree it self
         }
 
-        //5. Check if node is valid child of node_parent
+        // 5. Check if node is valid child of node_parent
         if (!this.isValidChildNodeForParent(node, node_parent)) {
             return false
         }
 
-        //6. Check node_parent is valid parent for node
+        // 6. Check node_parent is valid parent for node
         if (!this.isValidParentNodeForChild(node, node_parent)) {
             return false
         }
@@ -288,7 +288,7 @@ class JSTree {
      * @param node_parent
      * @returns {boolean}
      */
-    public isValidChildNodeForParent(node: any, node_parent: any) {
+    public isValidChildNodeForParent (node: any, node_parent: any) {
         if (node.data.customtypes) {
             var curType = node.data.customtypes.type
             var arrValidChildrenTargetParent =
@@ -298,9 +298,9 @@ class JSTree {
                 return true
             }
 
-            //now check if the current type can be placed to the target node by checking the valid children
+            // now check if the current type can be placed to the target node by checking the valid children
             if ($.inArray(curType, arrValidChildrenTargetParent) === -1) {
-                //-1 == curType not in array
+                // -1 == curType not in array
                 return false
             }
         }
@@ -315,7 +315,7 @@ class JSTree {
      *  If this is not the case, everything is ok -> return true
      *  If this is case it will checked, if the the new parent node 'node_parent' is somewhere within the path of the found node
      */
-    public isValidParentNodeForChild(node: any, node_parent: any) {
+    public isValidParentNodeForChild (node: any, node_parent: any) {
         var nodeWithDataAttribute = this.getNodeWithDataAttribute(
             node,
             'check_parent_id_active',
@@ -344,12 +344,12 @@ class JSTree {
      * @param bitCheckParentNodesOnly - set to true if only parant nodes should be checked
      * @returns Returns the node which has the given data attribute or null
      */
-    public getNodeWithDataAttribute(
+    public getNodeWithDataAttribute (
         node: any,
         strAttribute: string,
         bitCheckParentNodesOnly?: boolean
     ) {
-        //Check parent nodes
+        // Check parent nodes
         if (bitCheckParentNodesOnly === true) {
             var tree = Helper.getTreeInstance()
             var arrParents = node.parents
@@ -357,7 +357,7 @@ class JSTree {
             for (var i = 0, len = arrParents.length; i < len; i++) {
                 var parentNode = tree.get_node(arrParents[i])
                 if (parentNode.id == '#') {
-                    //skip internal root node
+                    // skip internal root node
                     return null
                 }
                 if (parentNode.data.hasOwnProperty(strAttribute)) {
@@ -365,7 +365,7 @@ class JSTree {
                 }
             }
         } else {
-            //Check node directly
+            // Check node directly
             if (node.data.hasOwnProperty(strAttribute)) {
                 return node
             }
@@ -380,7 +380,7 @@ class JSTree {
      * @param e
      * @returns {*}
      */
-    public listDnd(e: any) {
+    public listDnd (e: any) {
         var strSystemId = $(this)
             .closest('tr')
             .data('systemid')
@@ -389,16 +389,16 @@ class JSTree {
             .find('.title')
             .text()
 
-        //Check if there a jstree instance (there should only one)
+        // Check if there a jstree instance (there should only one)
         var jsTree = $.jstree.reference('#' + this.treeId)
 
-        //create basic node
+        // create basic node
         var objNode = {
             id: strSystemId,
             text: strTitle
         }
 
-        //if a jstree instanse exists try to find a node for it
+        // if a jstree instanse exists try to find a node for it
         if (jsTree != null) {
             var treeNode = jsTree.get_node(strSystemId)
             if (treeNode != false) {
@@ -415,17 +415,17 @@ class JSTree {
         var strHtml =
             '<div id="jstree-dnd" class="jstree-default"><i class="jstree-icon jstree-er"></i>' +
             strTitle +
-            '</div>' //drag container
+            '</div>' // drag container
         return $.vakata.dnd.start(event, objData, strHtml)
     }
 
     /**
      * Initializes the jstree
      */
-    public initTree() {
+    public initTree () {
         var treeContext = this
 
-        /* Create config object*/
+        /* Create config object */
         var jsTreeObj: JSTreeStaticDefaults = {
             core: {
                 /**
@@ -437,7 +437,7 @@ class JSTree {
                  * @param more on dnd => more is the hovered node
                  * @returns {boolean}
                  */
-                check_callback: function(
+                check_callback: function (
                     operation: string,
                     node: any,
                     node_parent: any,
@@ -450,7 +450,7 @@ class JSTree {
                     var bitReturn = false
 
                     if (operation === 'move_node') {
-                        //check when dragging
+                        // check when dragging
                         bitReturn = true
                         if (more.dnd) {
                             bitReturn = treeContext.checkMoveNode(
@@ -463,18 +463,18 @@ class JSTree {
                     }
 
                     if (operation === 'create_node') {
-                        bitReturn = true //Check for assignment tree
+                        bitReturn = true // Check for assignment tree
                     }
 
                     return bitReturn
                 },
-                expand_selected_onload: true, //if left as true all parents of all selected nodes will be opened once the tree loads (so that all selected nodes are visible to the user)
+                expand_selected_onload: true, // if left as true all parents of all selected nodes will be opened once the tree loads (so that all selected nodes are visible to the user)
                 data: {
-                    url: function(node: any) {
+                    url: function (node: any) {
                         return treeContext.loadNodeDataUrl
                     },
-                    data: function(node: any, cb: any) {
-                        //params to be added to the given ulr on ajax call
+                    data: function (node: any, cb: any) {
+                        // params to be added to the given ulr on ajax call
                         var data: any = {}
                         if (node.id === '#') {
                             data.systemid = treeContext.rootNodeSystemid
@@ -504,7 +504,7 @@ class JSTree {
             },
             dnd: {
                 check_while_dragging: true,
-                is_draggable: function(arrArguments: any, event: any) {
+                is_draggable: function (arrArguments: any, event: any) {
                     var node = arrArguments[0]
                     var nodeDataAttribute = treeContext.getNodeWithDataAttribute(
                         node,
@@ -522,10 +522,10 @@ class JSTree {
             plugins: ['conditionalselect']
         }
 
-        /* Extend Js Tree Object due to jsTreeConfig*/
+        /* Extend Js Tree Object due to jsTreeConfig */
         if (this.treeConfig.checkbox) {
             let defaultsCheckbox: JSTreeStaticDefaultsCheckbox = {
-                three_state: false //disable three state checkboxes by default
+                three_state: false // disable three state checkboxes by default
             }
 
             jsTreeObj.plugins.push('checkbox')
@@ -551,25 +551,25 @@ class JSTree {
         /* Create the tree */
         var $jsTree = $('#' + this.treeId).jstree(jsTreeObj)
 
-        /*Register events*/
-        $jsTree.on('show_contextmenu.jstree', function(objNode, x, y) {
-            //initialze properties when context menu is shown
+        /*Register events */
+        $jsTree.on('show_contextmenu.jstree', function (objNode, x, y) {
+            // initialze properties when context menu is shown
             Lang.initializeProperties($('.jstree-contextmenu'))
         })
 
-        $jsTree.on('move_node.jstree', function(e, dataEvent) {
+        $jsTree.on('move_node.jstree', function (e, dataEvent) {
             treeContext.moveNode(dataEvent)
         })
 
-        $jsTree.on('ready.jstree', function(e, data) {
+        $jsTree.on('ready.jstree', function (e, data) {
             treeContext.selectNodesOnLoad(e, data, treeContext)
         })
 
-        $jsTree.on('load_node.jstree', function(e, data) {
+        $jsTree.on('load_node.jstree', function (e, data) {
             treeContext.selectNodesOnLoad(e, data, treeContext)
         })
 
-        //4. init jstree draggable for lists
+        // 4. init jstree draggable for lists
         $('td.treedrag.jstree-listdraggable').on('mousedown', this.listDnd)
     }
 
@@ -582,10 +582,10 @@ class JSTree {
      * @param data - data of the event
      * @param treeContext
      */
-    public selectNodesOnLoad(e: any, data: any, treeContext: JSTree) {
+    public selectNodesOnLoad (e: any, data: any, treeContext: JSTree) {
         var treeInstance = data.instance
 
-        /*Select nodes after the tree has loaded
+        /* Select nodes after the tree has loaded
             if treeContext.initiallySelectedNodes contains id's, select all nodes with the given id's in the tree
             otherwise the last id in array treeContext.treeviewExpanders is automatically being selected
          */
@@ -612,7 +612,7 @@ class Tree {
     private static contextmenu: ContextMenu = ContextMenu
     private static conditionalselect: ConditionalSelect = ConditionalSelect
 
-    public static jstree() {
+    public static jstree () {
         return new JSTree()
     }
 
@@ -621,9 +621,9 @@ class Tree {
      *
      * @returns {array}
      */
-    public static getAllOpenNodes() {
+    public static getAllOpenNodes () {
         var openedNodes: Array<string> = []
-        $('li.jstree-open').each(function() {
+        $('li.jstree-open').each(function () {
             var $this = $(this)
             openedNodes.push($this.attr('id'))
         })
@@ -631,7 +631,7 @@ class Tree {
         return openedNodes
     }
 
-    public static toggleInitial(strTreeId: string) {
+    public static toggleInitial (strTreeId: string) {
         var treeStates = CacheManager.get('treestate')
         if (treeStates != null && treeStates != '') {
             treeStates = JSON.parse(treeStates)
@@ -642,7 +642,7 @@ class Tree {
         }
     }
 
-    public static toggleTreeView(strTreeId: string) {
+    public static toggleTreeView (strTreeId: string) {
         var $treeviewPane = $(
             '.treeViewColumn[data-kajona-treeid=' + strTreeId + ']'
         )

@@ -8,8 +8,8 @@ import Util from '../../../module_system/scripts/kajona/Util'
  * Tags-handling
  */
 class Tags {
-    public static createFavorite(strSystemid: string, objLink: any) {
-        Ajax.genericAjaxCall('tags', 'addFavorite', strSystemid, function(
+    public static createFavorite (strSystemid: string, objLink: any) {
+        Ajax.genericAjaxCall('tags', 'addFavorite', strSystemid, function (
             data: any,
             status: string,
             jqXHR: XMLHttpRequest
@@ -19,9 +19,9 @@ class Tags {
             if (
                 $(objLink).find("[data-kajona-icon='icon_favorite']").length > 0
             ) {
-                $(objLink).html(this.createFavoriteDisabledIcon) //createFavoriteDisabledIcon set via class_module_tags_admin->renderAdditionalActions
+                $(objLink).html(this.createFavoriteDisabledIcon) // createFavoriteDisabledIcon set via class_module_tags_admin->renderAdditionalActions
             } else {
-                $(objLink).html(this.createFavoriteEnabledIcon) //createFavoriteEnabledIcon set via class_module_tags_admin->renderAdditionalActions
+                $(objLink).html(this.createFavoriteEnabledIcon) // createFavoriteEnabledIcon set via class_module_tags_admin->renderAdditionalActions
             }
 
             Tooltip.addTooltip($(objLink).find("[rel='tooltip']"))
@@ -30,7 +30,7 @@ class Tags {
         })
     }
 
-    public static saveTag(
+    public static saveTag (
         strTagname: string,
         strSystemid: string,
         strAttribute: string
@@ -43,7 +43,7 @@ class Tags {
                 strTagname +
                 '&attribute=' +
                 strAttribute,
-            function(data: any, status: string, jqXHR: XMLHttpRequest) {
+            function (data: any, status: string, jqXHR: XMLHttpRequest) {
                 if (status == 'success') {
                     Tags.reloadTagList(strSystemid, strAttribute)
                     $('#tagname').val('')
@@ -56,14 +56,14 @@ class Tags {
         )
     }
 
-    public static reloadTagList(strSystemid: string, strAttribute: string) {
+    public static reloadTagList (strSystemid: string, strAttribute: string) {
         $('#tagsLoading_' + strSystemid).addClass('loadingContainer')
 
         Ajax.genericAjaxCall(
             'tags',
             'tagList',
             strSystemid + '&attribute=' + strAttribute,
-            function(data: any, status: string, jqXHR: XMLHttpRequest) {
+            function (data: any, status: string, jqXHR: XMLHttpRequest) {
                 if (status == 'success') {
                     var intStart = data.indexOf('<tags>') + 6
                     var strContent = data.substr(
@@ -87,7 +87,7 @@ class Tags {
         )
     }
 
-    public static removeTag(
+    public static removeTag (
         strTagId: string,
         strTargetSystemid: string,
         strAttribute: string
@@ -100,7 +100,7 @@ class Tags {
                 strTargetSystemid +
                 '&attribute=' +
                 strAttribute,
-            function(data: any, status: string, jqXHR: XMLHttpRequest) {
+            function (data: any, status: string, jqXHR: XMLHttpRequest) {
                 if (status == 'success') {
                     Tags.reloadTagList(strTargetSystemid, strAttribute)
                     $('#tagname').val('')
@@ -113,7 +113,7 @@ class Tags {
         )
     }
 
-    public static loadTagTooltipContent(
+    public static loadTagTooltipContent (
         strTargetSystemid: string,
         strAttribute: string,
         strTargetContainer: string
@@ -124,7 +124,7 @@ class Tags {
             'tags',
             'tagList',
             strTargetSystemid + '&attribute=' + strAttribute + '&delete=false',
-            function(data: any, status: string, jqXHR: XMLHttpRequest) {
+            function (data: any, status: string, jqXHR: XMLHttpRequest) {
                 if (status == 'success') {
                     var intStart = data.indexOf('<tags>') + 6
                     var strContent = data.substr(

@@ -13,8 +13,8 @@ class StatusDisplay {
      *
      * @param {String} message
      */
-    public static displayXMLMessage(message: string) {
-        //decide, whether to show an error or a message, message only in debug mode
+    public static displayXMLMessage (message: string) {
+        // decide, whether to show an error or a message, message only in debug mode
         if (
             message.indexOf('<message>') != -1 &&
             message.indexOf('<error>') == -1
@@ -42,7 +42,7 @@ class StatusDisplay {
      *
      * @param {String} strMessage
      */
-    public static messageSuccess(strMessage: string) {
+    public static messageSuccess (strMessage: string) {
         toastr.success(strMessage)
     }
 
@@ -51,7 +51,7 @@ class StatusDisplay {
      *
      * @param {String} strMessage
      */
-    public static messageOK(strMessage: string) {
+    public static messageOK (strMessage: string) {
         toastr.info(strMessage)
     }
 
@@ -60,7 +60,7 @@ class StatusDisplay {
      *
      * @param {String} strMessage
      */
-    public static messageError(strMessage: string) {
+    public static messageError (strMessage: string) {
         toastr.error(strMessage)
     }
 }

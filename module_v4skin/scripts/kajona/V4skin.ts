@@ -15,7 +15,7 @@ import Folderview from '../../../module_system/scripts/kajona/Folderview'
 import WorkingIndicator from '../../../module_system/scripts/kajona/WorkingIndicator'
 import Breadcrumb from '../../../module_system/scripts/kajona/Breadcrumb'
 
-//import all the kajona styles
+// import all the kajona styles
 import '../../admin/skins/kajona_v4/less/styles.less'
 
 class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
@@ -31,13 +31,13 @@ class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
 
     public messages = {
         noResults: '',
-        results: function() {
+        results: function () {
             return ''
         }
     }
 
-    public search: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
-        //If input field changes -> reset hidden id field
+    public search: JQueryUI.AutocompleteEvent = function (event: any, ui: any) {
+        // If input field changes -> reset hidden id field
         var $objCur = $(this)
         if (!$objCur.is('[readonly]')) {
             if ($('#' + $objCur.attr('id') + '_id')) {
@@ -47,7 +47,7 @@ class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
             }
         }
 
-        //Formentry must have at least 2 characters to trigger search.
+        // Formentry must have at least 2 characters to trigger search.
         if (event.target.value.length < 2) {
             event.stopPropagation()
             return false
@@ -59,7 +59,7 @@ class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
         WorkingIndicator.getInstance().start()
     }
 
-    public response: JQueryUI.AutocompleteEvent = function(
+    public response: JQueryUI.AutocompleteEvent = function (
         event: any,
         ui: any
     ) {
@@ -70,17 +70,17 @@ class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
         WorkingIndicator.getInstance().stop()
     }
 
-    public focus: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
+    public focus: JQueryUI.AutocompleteEvent = function (event: any, ui: any) {
         return true
     }
 
-    public close: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
+    public close: JQueryUI.AutocompleteEvent = function (event: any, ui: any) {
         if (this.keepUi) {
             $(event.currentTarget).show()
         }
     }.bind(this)
 
-    public select: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
+    public select: JQueryUI.AutocompleteEvent = function (event: any, ui: any) {
         if (ui.item) {
             var $objCur = $(this)
             $objCur.val(ui.item.title)
@@ -93,7 +93,7 @@ class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
         }
     }
 
-    public create: JQueryUI.AutocompleteEvent = function(event: any, ui: any) {
+    public create: JQueryUI.AutocompleteEvent = function (event: any, ui: any) {
         var $objCur = $(this)
         $objCur.closest('.form-group').addClass('has-feedback')
         $objCur.after(
@@ -105,28 +105,28 @@ class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
 class MessagingOptions {
     public static properties: any = null
 
-    public static pollMessages() {
-        Messaging.getRecentMessages(function(objResponse: any) {
+    public static pollMessages () {
+        Messaging.getRecentMessages(function (objResponse: any) {
             Messaging.updateCountInfo(objResponse.messageCount)
 
             $('#messagingShortlist').empty()
-            $.each(objResponse.messages, function(index, item) {
+            $.each(objResponse.messages, function (index, item) {
                 if (item.unread == 0)
-                    $('#messagingShortlist').append(
+                    {$('#messagingShortlist').append(
                         "<li><a href='" +
                             item.details +
                             "'><i class='fa fa-envelope'></i> <b>" +
                             item.title +
                             '</b></a></li>'
-                    )
+                    )}
                 else
-                    $('#messagingShortlist').append(
+                    {$('#messagingShortlist').append(
                         "<li><a href='" +
                             item.details +
                             "'><i class='fa fa-envelope'></i> " +
                             item.title +
                             '</a></li>'
-                    )
+                    )}
             })
             $('#messagingShortlist').append(
                 "<li class='divider'></li><li><a href='#/messaging'><i class='fa fa-envelope'></i> " +
@@ -156,15 +156,15 @@ class V4skin {
 
     public static defaultAutoComplete = DefaultAutoComplete
 
-    public static initTagMenu() {
-        Ajax.genericAjaxCall('tags', 'getFavoriteTags', '', function(
+    public static initTagMenu () {
+        Ajax.genericAjaxCall('tags', 'getFavoriteTags', '', function (
             data: any,
             status: string,
             jqXHR: XMLHttpRequest
         ) {
             if (status == 'success') {
                 $('#tagsSubemenu').empty()
-                $.each($.parseJSON(data), function(index, item) {
+                $.each($.parseJSON(data), function (index, item) {
                     $('#tagsSubemenu').append(
                         "<li><a href='" +
                             item.url +
@@ -186,7 +186,7 @@ class V4skin {
      *
      * @param el
      */
-    public static removeObjectListItem(el: any) {
+    public static removeObjectListItem (el: any) {
         // remove all active tooltips
         Tooltip.removeTooltip(el)
 
@@ -196,7 +196,7 @@ class V4skin {
             .find('.table')
             .first()
 
-        //remove marker
+        // remove marker
         if (table.siblings('.initval-marker').length > 0) {
             let marker = table.siblings('.initval-marker').val() + ''
             marker = marker.replace(
@@ -214,14 +214,14 @@ class V4skin {
         $(el)
             .parent()
             .parent()
-            .fadeOut(0, function() {
+            .fadeOut(0, function () {
                 $(this).remove()
             })
 
         table.trigger('updated')
     }
 
-    public static removeAllObjectListItems(strTableId: string) {
+    public static removeAllObjectListItems (strTableId: string) {
         $('#' + strTableId)
             .find('.removeLink')
             .trigger('click')
@@ -233,7 +233,7 @@ class V4skin {
      * @param strElementName
      * @returns {Array}
      */
-    public static getObjectListItems(
+    public static getObjectListItems (
         strElementName: string
     ): Array<string | number | string[]> {
         var table = Util.getElementFromOpener(strElementName)
@@ -243,7 +243,7 @@ class V4skin {
         var tbody = table.find('tbody')
         if (tbody.length > 0) {
             // remove only elements which are in the arrAvailableIds array
-            tbody.children().each(function() {
+            tbody.children().each(function () {
                 var strId = $(this)
                     .find('input[type="hidden"]')
                     .val()
@@ -263,7 +263,7 @@ class V4skin {
      * @param arrAvailableIds
      * @param strDeleteButton
      */
-    public static setObjectListItems(
+    public static setObjectListItems (
         strElementName: string,
         arrItems: Array<any>,
         arrAvailableIds: Array<string>,
@@ -287,7 +287,7 @@ class V4skin {
      * @param strElementName
      * @param arrItems
      */
-    public static setCheckboxArrayObjectListItems(
+    public static setCheckboxArrayObjectListItems (
         strElementName: string,
         arrItems: Array<any>
     ) {
@@ -304,7 +304,7 @@ class V4skin {
      * @param strElementName
      * @param strDeleteButton
      */
-    public static updateCheckboxTreeSelection(
+    public static updateCheckboxTreeSelection (
         objIframeEl: any,
         strElementName: string,
         strDeleteButton: string
@@ -314,7 +314,7 @@ class V4skin {
             if (jstree.length > 0) {
                 // we modify only the ids which are visible for the user all other ids stay untouched
                 var arrAvailableIds: Array<string> = []
-                jstree.find('li').each(function() {
+                jstree.find('li').each(function () {
                     arrAvailableIds.push($(this).attr('systemid'))
                 })
 
@@ -351,14 +351,14 @@ class V4skin {
      *
      * @returns array
      */
-    public static getCheckboxTreeSelectionFromParent() {
+    public static getCheckboxTreeSelectionFromParent () {
         if ($('.jstree').length > 0) {
             // the query parameter contains the name of the form element where we insert the selected elements
             var strElementName = Util.getQueryParameter('element_name')
             var table = parent.$('#' + strElementName)
             var arrSystemIds: Array<string | number | string[]> = []
             if (table.length > 0) {
-                table.find('input[type="hidden"]').each(function() {
+                table.find('input[type="hidden"]').each(function () {
                     arrSystemIds.push($(this).val())
                 })
             }
@@ -367,9 +367,9 @@ class V4skin {
         }
     }
 
-    public static initCatComplete() {
+    public static initCatComplete () {
         $.widget('custom.catcomplete', $.ui.autocomplete, {
-            _create: function() {
+            _create: function () {
                 this._super()
                 this.widget().menu(
                     'option',
@@ -377,11 +377,11 @@ class V4skin {
                     '> :not(.ui-autocomplete-category)'
                 )
             },
-            _renderMenu: function(ul: any, items: Array<Item>) {
+            _renderMenu: function (ul: any, items: Array<Item>) {
                 var self = this
                 var currentCategory = ''
 
-                $.each(items, function(index: number, item: Item) {
+                $.each(items, function (index: number, item: Item) {
                     if (item.module != currentCategory) {
                         ul.append(
                             '<li class="ui-autocomplete-category"><h3>' +
@@ -403,13 +403,13 @@ class V4skin {
                 ul.addClass('dropdown-menu')
                 ul.addClass('search-dropdown-menu')
 
-                ul.find('.detailedResults div').on('click', function() {
+                ul.find('.detailedResults div').on('click', function () {
                     $('.navbar-search').submit()
                 })
 
                 Lang.initializeProperties(ul)
             },
-            _renderItemData: function(ul: any, item: Item) {
+            _renderItemData: function (ul: any, item: Item) {
                 return $('<li></li>')
                     .data('ui-autocomplete-item', item)
                     .append('<div>' + item.icon + item.description + '</div>')
@@ -421,7 +421,7 @@ class V4skin {
             minLength: 2,
             delay: 500,
 
-            source: function(request: any, response: any) {
+            source: function (request: any, response: any) {
                 $.ajax({
                     url: KAJONA_WEBPATH + '/xml.php?admin=1',
                     type: 'POST',
@@ -435,23 +435,23 @@ class V4skin {
                     success: response
                 })
             },
-            select: function(event: any, ui: any) {
+            select: function (event: any, ui: any) {
                 if (ui.item && ui.item.link) {
                     document.location = ui.item.link
                 }
             },
             messages: {
                 noResults: '',
-                results: function() {}
+                results: function () {}
             },
-            search: function(event: any, ui: any) {
+            search: function (event: any, ui: any) {
                 $(this)
                     .parent()
                     .find('.input-group-addon')
                     .html('<i class="fa fa-spinner fa-spin"></i></span>')
                 WorkingIndicator.start()
             },
-            response: function(event: any, ui: any) {
+            response: function (event: any, ui: any) {
                 $(this)
                     .parent()
                     .find('.input-group-addon')
@@ -461,15 +461,15 @@ class V4skin {
         })
     }
 
-    public static initPopover() {
+    public static initPopover () {
         // init popovers & tooltips
         $('#content a[rel=popover]').popover()
         Tooltip.initTooltip()
     }
 
-    public static initScroll() {
+    public static initScroll () {
         let kajonaScroll: string = null
-        $(window).scroll(function() {
+        $(window).scroll(function () {
             var scroll = $(this).scrollTop()
             if (scroll > 10 && kajonaScroll != 'top') {
                 $('ul.breadcrumb').addClass('breadcrumbTop')
@@ -485,22 +485,22 @@ class V4skin {
         })
     }
 
-    public static initBreadcrumb() {
+    public static initBreadcrumb () {
         Breadcrumb.updateEllipsis()
-        $(window).on('resize', function() {
+        $(window).on('resize', function () {
             Breadcrumb.updateEllipsis()
         })
     }
 
-    public static initMenu() {
-        //init offacanvas menu
-        $('[data-toggle="offcanvas"]').click(function() {
+    public static initMenu () {
+        // init offacanvas menu
+        $('[data-toggle="offcanvas"]').click(function () {
             $('.row-offcanvas').toggleClass('active')
         })
     }
 
-    public static initTopNavigation() {
-        //enable the top navigation
+    public static initTopNavigation () {
+        // enable the top navigation
         if (!Util.isStackedDialog()) {
             $('div.navbar-fixed-top .navbar-topbar').removeClass('hidden')
             $('div.pathNaviContainer').removeClass('hidden')

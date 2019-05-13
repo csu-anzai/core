@@ -10,7 +10,7 @@ interface Response {
  * Little helper function for the system permissions matrix
  */
 class Permissions {
-    public static submitForm() {
+    public static submitForm () {
         var objResponse: Response = {
             bitInherited: $('#inherit').is(':checked'),
             arrConfigs: []
@@ -18,7 +18,7 @@ class Permissions {
 
         $('.core-component-rights tbody > tr')
             .find('input:checked')
-            .each(function() {
+            .each(function () {
                 objResponse.arrConfigs.push($(this).attr('id'))
             })
 
@@ -35,7 +35,7 @@ class Permissions {
             data: JSON.stringify(objResponse),
             contentType: 'application/json',
             dataType: 'json'
-        }).done(function(data) {
+        }).done(function (data) {
             // enable submit button
             $('.savechanges').removeClass('processing')
             $('.savechanges').prop('disabled', false)
@@ -47,16 +47,16 @@ class Permissions {
         return false
     }
 
-    public static toggleInherit() {
+    public static toggleInherit () {
         $('.core-component-rights')
             .find("input[type='checkbox']")
-            .each(function() {
+            .each(function () {
                 $(this).prop('disabled', Permissions.isInherited())
                 $('#group_add').prop('disabled', Permissions.isInherited())
 
                 $('.core-component-rights')
                     .find('.fa-trash-o')
-                    .each(function() {
+                    .each(function () {
                         if (Permissions.isInherited()) {
                             $(this).addClass('text-muted')
                         } else {
@@ -66,11 +66,11 @@ class Permissions {
             })
     }
 
-    public static isInherited() {
+    public static isInherited () {
         return $('#inherit').prop('checked')
     }
 
-    public static addGroup(groupId: string) {
+    public static addGroup (groupId: string) {
         if (!groupId) {
             return
         }
@@ -93,7 +93,7 @@ class Permissions {
             '\',this);return false;"><i class="kj-icon fa fa-trash-o" ></i></a></td>'
         row += '<td>' + groupName + '</td>'
 
-        $('.core-component-rights thead > tr > th').each(function() {
+        $('.core-component-rights thead > tr > th').each(function () {
             var right = $(this).data('right')
             if (right) {
                 row +=
@@ -114,13 +114,13 @@ class Permissions {
             .find('tbody')
             .append(row)
 
-        setTimeout(function() {
+        setTimeout(function () {
             $('#group_add').val('')
             $('#group_add_id').val('')
         }, 100)
     }
 
-    public static removeGroup(groupId: string, el: string) {
+    public static removeGroup (groupId: string, el: string) {
         if (this.isInherited()) {
             return
         }
@@ -130,7 +130,7 @@ class Permissions {
             .remove()
     }
 
-    public static hasGroup(groupId: string) {
+    public static hasGroup (groupId: string) {
         return (
             $(
                 ".core-component-rights tbody > tr[data-groupid='" +
@@ -140,7 +140,7 @@ class Permissions {
         )
     }
 
-    public static loadRights() {
+    public static loadRights () {
         Ajax.loadUrlToElement(
             '#rightsContainer',
             KAJONA_WEBPATH +
@@ -150,7 +150,7 @@ class Permissions {
             '',
             true,
             'GET',
-            function() {
+            function () {
                 Permissions.toggleInherit()
             }
         )

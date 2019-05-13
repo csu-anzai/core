@@ -5,7 +5,7 @@ import Tooltip from '../../../module_system/scripts/kajona/Tooltip'
 import StatusDisplay from '../../../module_system/scripts/kajona/StatusDisplay'
 
 class Search {
-    public static triggerFullSearch() {
+    public static triggerFullSearch () {
         var strQuery = $('#search_query').val()
         if (strQuery == '') return
 
@@ -13,7 +13,7 @@ class Search {
 
         var filtermodules = ''
         $('input[name=search_formfiltermodules\\[\\]]:checked').each(
-            function() {
+            function () {
                 if (filtermodules != '') filtermodules += ','
 
                 filtermodules += $(this).val()
@@ -40,7 +40,7 @@ class Search {
                 '&search_formfilteruser_id=' +
                 userfilter +
                 '',
-            function(data: any, status: string, jqXHR: XMLHttpRequest) {
+            function (data: any, status: string, jqXHR: XMLHttpRequest) {
                 if (status == 'success') {
                     var intStart = data.indexOf('[CDATA[') + 7
                     $('#search_container').html(

@@ -9,15 +9,15 @@ class Dbbrowser {
      * @param tableName
      * @param column
      */
-    public static initDbBrowser(element: any) {
+    public static initDbBrowser (element: any) {
         new Vue({ el: '#' + element })
     }
-    public static addIndex(tableName: string, column: string) {
+    public static addIndex (tableName: string, column: string) {
         Ajax.genericAjaxCall(
             'dbbrowser',
             'apiAddIndex',
             '&table=' + tableName + '&column=' + column,
-            function(data: any, status: string) {
+            function (data: any, status: string) {
                 if (status == 'success') {
                     Ajax.loadUrlToElement(
                         '.schemaDetails',
@@ -38,12 +38,12 @@ class Dbbrowser {
      * @param tableName
      * @param indexName
      */
-    public static deleteIndex(tableName: string, indexName: string) {
+    public static deleteIndex (tableName: string, indexName: string) {
         Ajax.genericAjaxCall(
             'dbbrowser',
             'apiDeleteIndex',
             '&table=' + tableName + '&index=' + indexName,
-            function(data: any, status: string) {
+            function (data: any, status: string) {
                 if (status == 'success') {
                     Ajax.loadUrlToElement(
                         '.schemaDetails',
@@ -64,12 +64,12 @@ class Dbbrowser {
      * @param tableName
      * @param indexName
      */
-    public static recreateIndex(tableName: string, indexName: string) {
+    public static recreateIndex (tableName: string, indexName: string) {
         Ajax.genericAjaxCall(
             'dbbrowser',
             'apiRecreateIndex',
             '&table=' + tableName + '&index=' + indexName,
-            function(data: any, status: string) {
+            function (data: any, status: string) {
                 if (status == 'success') {
                     Ajax.loadUrlToElement(
                         '.schemaDetails',

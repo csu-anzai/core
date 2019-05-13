@@ -14,11 +14,11 @@ class SaveIndicator {
     private objDiv: JQuery
     private objSourceElement: JQuery<any>
 
-    constructor(objSourceElement: JQuery<any>) {
+    constructor (objSourceElement: JQuery<any>) {
         this.objSourceElement = objSourceElement
     }
 
-    public showProgress() {
+    public showProgress () {
         this.objDiv = $('<div>').addClass('peProgressIndicator peSaving')
         $('body').append(this.objDiv)
         this.objDiv
@@ -31,11 +31,11 @@ class SaveIndicator {
             .css('top', this.objSourceElement.offset().top)
     }
 
-    public addClass(strClass: string) {
+    public addClass (strClass: string) {
         this.objDiv.addClass(strClass)
     }
 
-    public hide() {
+    public hide () {
         this.objSourceElement.removeClass('peFailed')
         this.objDiv.remove()
         this.objDiv = null
@@ -51,7 +51,7 @@ class SaveIndicator {
  * $('#id').on('kajona.instantsave.updated', function(){console.log('update registered')});
  */
 class InstantSave {
-    private static saveChangeHandler() {
+    private static saveChangeHandler () {
         var $objChanged = $(this)
         var keySplitted = $objChanged.data('kajona-instantsave').split('#')
 
@@ -68,9 +68,9 @@ class InstantSave {
                 '&value=' +
                 $objChanged.val(),
             null,
-            function() {
+            function () {
                 objStatusIndicator.addClass('peSaved')
-                window.setTimeout(function() {
+                window.setTimeout(function () {
                     objStatusIndicator.hide()
                 }, 5000)
                 $objChanged.trigger('kajona.instantsave.updated', [
@@ -78,9 +78,9 @@ class InstantSave {
                     keySplitted[0]
                 ])
             },
-            function() {
+            function () {
                 objStatusIndicator.addClass('peFailed')
-                window.setTimeout(function() {
+                window.setTimeout(function () {
                     objStatusIndicator.hide()
                 }, 5000)
                 $objChanged.trigger('kajona.instantsave.updated', [
@@ -91,9 +91,9 @@ class InstantSave {
         )
     }
 
-    private static scanElements() {
+    private static scanElements () {
         $('[data-kajona-instantsave][data-kajona-instantsave != ""]').each(
-            function(key, value) {
+            function (key, value) {
                 if (!$(this)[0].hasAttribute('data-kajona-instantsave-init')) {
                     $(this).on('change', InstantSave.saveChangeHandler)
                     $(this).attr('data-kajona-instantsave-init', 'true')
@@ -102,7 +102,7 @@ class InstantSave {
         )
     }
 
-    public static init() {
+    public static init () {
         this.scanElements()
     }
 }

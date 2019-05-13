@@ -34,7 +34,7 @@ class Changelog {
     /**
      * Method to compare and highlite changes of two version properties table
      */
-    public static compareTable() {
+    public static compareTable () {
         var strType = Changelog.selectedColumn
         var propsLeft = Changelog.getTableProperties(strType)
         var propsRight = Changelog.getTableProperties(
@@ -67,7 +67,7 @@ class Changelog {
      *
      * @param {string} strType
      */
-    public static selectColumn(strType: string) {
+    public static selectColumn (strType: string) {
         $('#date_' + strType).css('background-color', '#ccc')
         $('#date_' + Changelog.getInverseColumn(strType)).css(
             'background-color',
@@ -82,7 +82,7 @@ class Changelog {
      * @param strType
      * @returns {string}
      */
-    public static getInverseColumn(strType: string) {
+    public static getInverseColumn (strType: string) {
         return strType == 'left' ? 'right' : 'left'
     }
 
@@ -92,9 +92,9 @@ class Changelog {
      * @param {string} type
      * @returns {object}
      */
-    public static getTableProperties(type: string): any {
+    public static getTableProperties (type: string): any {
         var props: any = {}
-        $('.changelog_property_' + type).each(function() {
+        $('.changelog_property_' + type).each(function () {
             props[$(this).data('name')] = '' + $(this).html()
         })
         return props
@@ -108,7 +108,7 @@ class Changelog {
      * @param {string} strType
      * @param {function} objCallback
      */
-    public static loadDate(
+    public static loadDate (
         strSystemId: string,
         strDate: string,
         strType: string,
@@ -120,7 +120,7 @@ class Changelog {
             'system',
             'changelogPropertiesForDate',
             '&systemid=' + strSystemId + '&date=' + strDate,
-            function(body: any, status: string, jqXHR: any) {
+            function (body: any, status: string, jqXHR: any) {
                 let data = JSON.parse(body)
                 let props = data.properties
                 $('#date_' + strType).html(
@@ -155,7 +155,7 @@ class Changelog {
     /**
      * Loads the chart for the next year
      */
-    public static loadNextYear() {
+    public static loadNextYear () {
         $('#changelogTimeline').fadeOut()
 
         Changelog.now = moment(Changelog.now)
@@ -170,7 +170,7 @@ class Changelog {
     /**
      * Loads the chart for the previous year
      */
-    public static loadPrevYear() {
+    public static loadPrevYear () {
         $('#changelogTimeline').fadeOut()
 
         Changelog.now = moment(Changelog.now)
@@ -185,7 +185,7 @@ class Changelog {
     /**
      * Loads the chart
      */
-    public static loadChartData() {
+    public static loadChartData () {
         var now = moment(Changelog.now).format('YYYYMMDD235959')
         var yearAgo = moment(Changelog.yearAgo).format('YYYYMMDD235959')
 
@@ -198,12 +198,12 @@ class Changelog {
                 now +
                 '&yearAgo=' +
                 yearAgo,
-            function(body: any, status: string, jqXHR: any) {
+            function (body: any, status: string, jqXHR: any) {
                 let data = JSON.parse(body)
 
                 var chartData = d3.time
                     .days(Changelog.yearAgo, Changelog.now)
-                    .map(function(dateElement) {
+                    .map(function (dateElement) {
                         var count = 0
                         if (
                             data.hasOwnProperty(
@@ -233,7 +233,7 @@ class Changelog {
                     .legendEnabled(false)
                     .toggleDays(false)
                     .colorRange(['#eeeeee', '#6cb121'])
-                    .onClick(function(data: DatePoint) {
+                    .onClick(function (data: DatePoint) {
                         var date = moment(data.date).format('YYYYMMDD235959')
                         Changelog.loadDate(
                             Changelog.systemId,

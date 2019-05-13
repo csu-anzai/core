@@ -13,7 +13,7 @@ class DialogHelper {
      * @param strConfirmationHref
      * @returns {module:dialog}
      */
-    public static showConfirmationDialog(
+    public static showConfirmationDialog (
         strTitle: string,
         strContent: string,
         strConfirmationLabel: string,
@@ -38,25 +38,25 @@ class DialogHelper {
      * @param strTitle
      * @returns {module:dialog}
      */
-    public static showIframeDialog(strUrl: string, strTitle: string) {
+    public static showIframeDialog (strUrl: string, strTitle: string) {
         var dialogInstance = new Dialog('folderviewDialog', 0)
         dialogInstance.setContentIFrame(strUrl)
         dialogInstance.setTitle(strTitle)
         dialogInstance.init()
 
-        //register the dialog
+        // register the dialog
         Folderview.dialog = dialogInstance
 
         return dialogInstance
     }
 
-    public static showIframeDialogStacked(strUrl: string, strTitle: string) {
+    public static showIframeDialogStacked (strUrl: string, strTitle: string) {
         var dialogInstance = new Dialog('folderviewDialogStacked', 0)
         dialogInstance.setContentIFrame(strUrl)
         dialogInstance.setTitle(strTitle)
         dialogInstance.init()
 
-        //register the dialog
+        // register the dialog
         Folderview.dialog = dialogInstance
 
         return dialogInstance
@@ -66,7 +66,7 @@ class DialogHelper {
      * Registers and shows a loading modal
      * @returns {module:dialog}
      */
-    public static showLoadingModal() {
+    public static showLoadingModal () {
         if (this.loadingModal === null) {
             this.loadingModal = new Dialog('jsDialog_3', 3)
         }
@@ -79,7 +79,7 @@ class DialogHelper {
      * Registers and shows a information modal
      * @returns {module:dialog}
      */
-    public static showInfoModal(title: string, content: string) {
+    public static showInfoModal (title: string, content: string) {
         var dialogInstance = new Dialog('jsDialog_0', 0)
         dialogInstance.setTitle(title)
         dialogInstance.setContentRaw(content)
@@ -91,7 +91,7 @@ class DialogHelper {
     /**
      * Hides the currently open loading modal
      */
-    public static hideLoadingModal() {
+    public static hideLoadingModal () {
         if (this.loadingModal instanceof Dialog) {
             this.loadingModal.hide()
         }

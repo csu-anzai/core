@@ -27,7 +27,7 @@ class DownloadIndicator {
      * Generates a key to be used by the backend in order to set a cookie indicating the end of the
      * progress
      */
-    public generateKey(): string {
+    public generateKey (): string {
         if (this.key == null) {
             this.key = new Date().getTime() + ''
             this.cookieName = 'kj_' + new Date().getTime()
@@ -38,12 +38,12 @@ class DownloadIndicator {
     /**
      * Starts the "in progress" animation
      */
-    public setWorking(): void {
+    public setWorking (): void {
         DialogHelper.showLoadingModal()
         WorkingIndicator.getInstance().start()
 
         let outer = this
-        this.intervalHandle = window.setInterval(function() {
+        this.intervalHandle = window.setInterval(function () {
             outer.checkFinished()
         }, 200)
     }
@@ -51,7 +51,7 @@ class DownloadIndicator {
     /**
      * Validates if the current request was finished on the backend
      */
-    public checkFinished(): void {
+    public checkFinished (): void {
         let token = this.getCookie()
 
         if (token == this.key) {
@@ -66,7 +66,7 @@ class DownloadIndicator {
     /**
      * Stops all working animation
      */
-    private stopWorking(): void {
+    private stopWorking (): void {
         window.clearInterval(this.intervalHandle)
         this.expireCookie()
         DialogHelper.hideLoadingModal()
@@ -77,19 +77,19 @@ class DownloadIndicator {
      * Internal helper to get the cookie value
      * @returns {string}
      */
-    private getCookie(): string {
+    private getCookie (): string {
         let parts = document.cookie.split(this.cookieName + '=')
         if (parts.length == 2)
-            return parts
+            {return parts
                 .pop()
                 .split(';')
-                .shift()
+                .shift()}
     }
 
     /**
      * Invalidates the cookie
      */
-    private expireCookie() {
+    private expireCookie () {
         document.cookie =
             encodeURIComponent(this.cookieName) +
             '=deleted; expires=' +
@@ -102,7 +102,7 @@ class DownloadIndicatorPublic {
      * Returns a new indicator
      * @returns {DownloadIndicator}
      */
-    public static getIndicator() {
+    public static getIndicator () {
         return new DownloadIndicator()
     }
 
@@ -111,7 +111,7 @@ class DownloadIndicatorPublic {
      * A new manager is being created and takes care of the processing afterwards
      * @param downloadUrl
      */
-    public static triggerDownload(downloadUrl: string) {
+    public static triggerDownload (downloadUrl: string) {
         let manager = new DownloadIndicator()
         let key = manager.generateKey()
         manager.setWorking()

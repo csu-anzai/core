@@ -8,7 +8,7 @@ import Util from '../../../module_system/scripts/kajona/Util'
 class Todo {
     public static selectedCategory: string = ''
 
-    public static loadCategory(category: string, search: any) {
+    public static loadCategory (category: string, search: any) {
         if (search == '') {
             $('#listfilter_search').val('')
         }
@@ -18,14 +18,14 @@ class Todo {
             'dashboard',
             'todoCategory',
             '&category=' + category + '&search=' + search,
-            function(data: any) {
+            function (data: any) {
                 $('#todo-table').html(data)
                 Tooltip.initTooltip()
             }
         )
     }
 
-    public static formSearch() {
+    public static formSearch () {
         this.loadCategory(this.selectedCategory, $('#listfilter_search').val())
     }
 }
@@ -33,8 +33,8 @@ class Todo {
 class Dashboard {
     public static todo: Todo = Todo
 
-    public static removeWidget(strSystemid: string) {
-        Ajax.genericAjaxCall('dashboard', 'deleteWidget', strSystemid, function(
+    public static removeWidget (strSystemid: string) {
+        Ajax.genericAjaxCall('dashboard', 'deleteWidget', strSystemid, function (
             data: any,
             status: string,
             jqXHR: XMLHttpRequest
@@ -51,8 +51,8 @@ class Dashboard {
         })
     }
 
-    public static init() {
-        $('.adminwidgetColumn > div.core-component-widget').each(function() {
+    public static init () {
+        $('.adminwidgetColumn > div.core-component-widget').each(function () {
             let systemId = $(this).data('systemid')
             let data = Util.getQueryParameters()
             data['admin'] = '1'
@@ -73,7 +73,7 @@ class Dashboard {
             )
         })
 
-        $('div.adminwidgetColumn').each(function(index: number) {
+        $('div.adminwidgetColumn').each(function (index: number) {
             $(this)
                 .sortable({
                     items: 'div.core-component-widget',
@@ -82,11 +82,11 @@ class Dashboard {
                     cursor: 'move',
                     connectWith: '.adminwidgetColumn',
                     placeholder: 'dndPlaceholder',
-                    stop: function(event: any, ui: any) {
+                    stop: function (event: any, ui: any) {
                         ui.item.removeClass('sortActive')
-                        //search list for new pos
+                        // search list for new pos
                         let intPos = 0
-                        $('.core-component-widget').each(function(
+                        $('.core-component-widget').each(function (
                             index: number
                         ) {
                             intPos++
@@ -111,7 +111,7 @@ class Dashboard {
                         })
                     },
                     delay: Util.isTouchDevice() ? 500 : 0,
-                    start: function(event: any, ui: any) {
+                    start: function (event: any, ui: any) {
                         ui.item.addClass('sortActive')
                         ui.placeholder.height(ui.item.height())
                     }
@@ -121,7 +121,7 @@ class Dashboard {
         })
     }
 
-    public static editWidget(strSystemid: string) {
+    public static editWidget (strSystemid: string) {
         Ajax.loadUrlToElement(
             "div.core-component-widget[data-systemid='" +
                 strSystemid +
@@ -131,7 +131,7 @@ class Dashboard {
         )
     }
 
-    public static updateWidget(
+    public static updateWidget (
         form: string,
         strSystemid: string,
         updateAdditionalContent: boolean
@@ -167,14 +167,14 @@ class Dashboard {
                 null,
                 null,
                 null,
-                function() {
+                function () {
                     Dashboard.updateWidgetAdditionalContent(strSystemid)
                 }
             )
         }
     }
 
-    public static updateWidgetAdditionalContent(strSystemid: string) {
+    public static updateWidgetAdditionalContent (strSystemid: string) {
         Ajax.loadUrlToElement(
             "div.core-component-widget[data-systemid='" +
                 strSystemid +

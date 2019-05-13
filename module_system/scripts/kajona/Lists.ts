@@ -16,9 +16,9 @@ class Lists {
     /**
      * Toggles all fields
      */
-    public static toggleAllFields() {
-        //batchActionSwitch
-        $("table.admintable input[type='checkbox']").each(function() {
+    public static toggleAllFields () {
+        // batchActionSwitch
+        $("table.admintable input[type='checkbox']").each(function () {
             if (
                 $(this)
                     .attr('id')
@@ -38,9 +38,9 @@ class Lists {
      *
      * @param arrSystemIds
      */
-    public static toggleFields(arrSystemIds: Array<string>) {
-        //batchActionSwitch
-        $("table.admintable input[type='checkbox']").each(function() {
+    public static toggleFields (arrSystemIds: Array<string>) {
+        // batchActionSwitch
+        $("table.admintable input[type='checkbox']").each(function () {
             if (
                 $(this)
                     .attr('id')
@@ -51,7 +51,7 @@ class Lists {
                     .closest('tr')
                     .data('systemid')
                 if ($.inArray(strSysid, arrSystemIds) !== -1) {
-                    //if strId in array
+                    // if strId in array
                     $(this).prop('checked', !$(this).prop('checked'))
                 }
             }
@@ -59,7 +59,7 @@ class Lists {
         this.updateToolbar()
     }
 
-    public static updateToolbar() {
+    public static updateToolbar () {
         if ($('table.admintable  input:checked').length == 0) {
             $('.batchActionsWrapper').removeClass('visible')
         } else {
@@ -67,7 +67,7 @@ class Lists {
         }
     }
 
-    public static triggerAction(
+    public static triggerAction (
         strTitle: string,
         strUrl: string,
         bitRenderInfo: boolean,
@@ -78,7 +78,7 @@ class Lists {
         this.strCurrentTitle = strTitle
         this.bitRenderInfo = bitRenderInfo
 
-        //get the selected elements
+        // get the selected elements
         this.arrSystemids = this.getSelectedElements()
 
         if (this.arrSystemids.length == 0) return
@@ -98,9 +98,9 @@ class Lists {
         )
         jsDialog_1.init()
 
-        //reset pending list on hide
+        // reset pending list on hide
         var me = this
-        $('#' + jsDialog_1.containerId).on('hidden.bs.modal', function() {
+        $('#' + jsDialog_1.containerId).on('hidden.bs.modal', function () {
             me.arrSystemids = []
         })
 
@@ -112,7 +112,7 @@ class Lists {
         return false
     }
 
-    public static executeActions(reloadOnFinish: boolean) {
+    public static executeActions (reloadOnFinish: boolean) {
         this.intTotal = this.arrSystemids.length
 
         $('.batchActionsProgress > .progresstitle').text(this.strCurrentTitle)
@@ -122,9 +122,9 @@ class Lists {
         this.triggerSingleAction(reloadOnFinish)
     }
 
-    public static triggerSingleAction(reloadOnFinish: boolean) {
+    public static triggerSingleAction (reloadOnFinish: boolean) {
         if (this.arrSystemids.length < 1 && reloadOnFinish)
-            window.location.reload()
+            {window.location.reload()}
         if (this.arrSystemids.length > 0 && this.intTotal > 0) {
             $('.batch_progressed').text(
                 this.intTotal - this.arrSystemids.length + 1
@@ -145,7 +145,7 @@ class Lists {
             $.ajax({
                 type: 'POST',
                 url: strUrl,
-                success: function(resp) {
+                success: function (resp) {
                     me.triggerSingleAction(reloadOnFinish)
                     if (me.bitRenderInfo) {
                         var data = JSON.parse(resp)
@@ -170,7 +170,7 @@ class Lists {
                 $('#jsDialog_1_cancelButton').css('display', 'none')
                 $('#jsDialog_1_confirmButton')
                     .remove('click')
-                    .on('click', function() {
+                    .on('click', function () {
                         Router.reload()
                         jsDialog_1.hide()
                     })
@@ -187,11 +187,11 @@ class Lists {
      *
      * @returns {Array}
      */
-    public static getSelectedElements() {
+    public static getSelectedElements () {
         var selectedElements: Array<string> = []
 
-        //get the selected elements
-        $('table.admintable  input:checked').each(function() {
+        // get the selected elements
+        $('table.admintable  input:checked').each(function () {
             if (
                 $(this)
                     .attr('id')
@@ -213,11 +213,11 @@ class Lists {
      *
      * @returns {Array}
      */
-    public static getAllElements() {
+    public static getAllElements () {
         var selectedElements: Array<string> = []
 
-        //get the selected elements
-        $("table.admintable  input[type='checkbox']").each(function() {
+        // get the selected elements
+        $("table.admintable  input[type='checkbox']").each(function () {
             if (
                 $(this)
                     .attr('id')
@@ -237,13 +237,13 @@ class Lists {
     /**
      * Enables selection by clicking a row-entry
      */
-    public static initRowClick() {
+    public static initRowClick () {
         var dialog = Util.isStackedDialog()
         var tds = $('#moduleOutput .admintable tr td')
         tds.addClass('clickable')
-        tds.on('click', function(e) {
+        tds.on('click', function (e) {
             var source = e.target
-            //if not fired within an td, skip
+            // if not fired within an td, skip
             if (source.tagName.toLowerCase() != 'td') {
                 return
             }

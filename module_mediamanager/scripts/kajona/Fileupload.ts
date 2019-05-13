@@ -32,7 +32,7 @@ class UploadManager {
     private settings: UploadSettings
     private uploader: JQueryFileUpload
 
-    public constructor(options: UploadSettings) {
+    public constructor (options: UploadSettings) {
         this.settings = $.extend(
             {
                 baseElement: null,
@@ -71,7 +71,7 @@ class UploadManager {
 
         if (this.settings.autoUpload && !this.settings.multiUpload) {
             var self = this
-            optionsMerged.add = function(e: any, data: any) {
+            optionsMerged.add = function (e: any, data: any) {
                 if (
                     !self.settings.multiUpload &&
                     (self.settings.baseElement.find('.drop-zone >').length >=
@@ -97,7 +97,7 @@ class UploadManager {
                     (data.autoUpload !== false &&
                         $(this).fileupload('option', 'autoUpload'))
                 ) {
-                    data.process().done(function() {
+                    data.process().done(function () {
                         data.submit()
                     })
                 }
@@ -114,14 +114,14 @@ class UploadManager {
     /**
      * Get the upload instance
      */
-    public getUploader() {
+    public getUploader () {
         return this.uploader
     }
 
     /**
      * Query the backend to version all files
      */
-    public fileVersioning() {
+    public fileVersioning () {
         var me = this
         Ajax.genericAjaxCall(
             'mediamanager',
@@ -130,9 +130,9 @@ class UploadManager {
                 this.settings.formData[0].value +
                 '&folder=' +
                 this.settings.formData[2].value,
-            function(e: any) {
+            function (e: any) {
                 if (e.status && e.status === 'ok') {
-                    //in case of success, flush the list
+                    // in case of success, flush the list
                     me.settings.baseElement.find('.files').empty()
                     me.renderArchiveList()
                 }
@@ -147,7 +147,7 @@ class UploadManager {
     /**
      * Query the backend to send all files to the archive
      */
-    public fileArchiving(
+    public fileArchiving (
         targetSystemId: string,
         alertTitle: string,
         alertBody: string,
@@ -159,7 +159,7 @@ class UploadManager {
             alertTitle,
             alertBody,
             alertButton,
-            function() {
+            function () {
                 Ajax.genericAjaxCall(
                     'mediamanager',
                     'documentArchiving',
@@ -169,9 +169,9 @@ class UploadManager {
                         settings.formData[2].value +
                         '&target=' +
                         targetSystemId,
-                    function(e: any) {
+                    function (e: any) {
                         if (e.status && e.status === 'ok') {
-                            //in case of success, flush the list
+                            // in case of success, flush the list
                             me.settings.baseElement.find('.files').empty()
                             me.renderArchiveList()
 
@@ -188,7 +188,7 @@ class UploadManager {
         )
     }
 
-    public renderArchiveList() {
+    public renderArchiveList () {
         Ajax.loadUrlToElement(
             this.settings.baseElement.find('.archive-list'),
             '/xml.php?admin=1&module=mediamanager&action=getArchiveList&systemid=' +
@@ -212,8 +212,8 @@ class Fileupload {
      * Callback used when deleting a file
      * @param strFileId
      */
-    public static deleteFile(strFileId: string) {
-        Ajax.genericAjaxCall('system', 'delete', strFileId, null, function() {
+    public static deleteFile (strFileId: string) {
+        Ajax.genericAjaxCall('system', 'delete', strFileId, null, function () {
             $(
                 'tbody.template-upload[data-uploadid="' + strFileId + '"]'
             ).remove()
@@ -226,23 +226,23 @@ class Fileupload {
      * @param options
      * @returns {UploadManager}
      */
-    public static initUploader(options: UploadSettings) {
+    public static initUploader (options: UploadSettings) {
         var uploader = new UploadManager(options)
         this.initDragover()
         return uploader
     }
 
-    private static initDragover = function() {
-        //only once, plz
+    private static initDragover = function () {
+        // only once, plz
         if (Fileupload.dropoverInitialized) {
             return
         }
 
-        $(document).bind('dragover', function(e) {
+        $(document).bind('dragover', function (e) {
             var dropZone = $(
                     '.fileupload-wrapper:not(.blueimp-fileupload-disabled) .drop-zone'
-                ),
-                timeout = window.dropZoneTimeout
+                );
+                var timeout = window.dropZoneTimeout
             if (!timeout) {
                 dropZone.addClass('active-dropzone')
             } else {
@@ -257,7 +257,7 @@ class Fileupload {
             } else {
                 dropZone.removeClass('hover')
             }
-            ;(<any>window.dropZoneTimeout) = setTimeout(function() {
+            ;(<any>window.dropZoneTimeout) = setTimeout(function () {
                 window.dropZoneTimeout = null
                 dropZone.removeClass('active-dropzone hover')
             }, 100)

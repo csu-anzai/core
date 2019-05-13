@@ -5,7 +5,7 @@ import Tooltip from '../../../module_system/scripts/kajona/Tooltip'
 import Loader from '../../../module_system/scripts/kajona/Loader'
 
 class DashboardCalendar {
-    public static init() {
+    public static init () {
         Loader.loadFile([
             '/core/module_dashboard/scripts/fullcalendar/fullcalendar.min.css'
         ])
@@ -17,19 +17,19 @@ class DashboardCalendar {
                 right: ''
             },
             editable: false,
-            //theme: false,
+            // theme: false,
             locale: KAJONA_LANGUAGE,
             eventLimit: true,
             events:
                 KAJONA_WEBPATH +
                 '/xml.php?admin=1&module=dashboard&action=getCalendarEvents',
-            eventRender: function(event, el) {
+            eventRender: function (event, el) {
                 Tooltip.addTooltip(el, event.tooltip)
                 if (event.icon) {
                     el.find('span.fc-title').prepend(event.icon + ' ')
                 }
             },
-            loading: function(isLoading) {
+            loading: function (isLoading) {
                 if (isLoading) {
                     WorkingIndicator.start()
                 } else {

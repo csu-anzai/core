@@ -2,7 +2,7 @@ class Oauth2 {
     /**
      * @param {string} url
      */
-    public static redirect(url: string) {
+    public static redirect (url: string) {
         location.href = url
     }
 }
