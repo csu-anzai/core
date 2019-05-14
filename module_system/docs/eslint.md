@@ -13,7 +13,7 @@ This script installs all the requirements for Eslint.
 ## Setup Eslint in the IDE
 ### Phpstorm
 If you are using Phpstorm this should be straightforward. Just open the setting , go to Languages and frameworks/Javascript/Code Quality Tools/Eslint/
-<div id="bg">
+<div>
   <img src="./eslintPhpstorm.PNG" alt="">
 </div>
 
@@ -25,7 +25,7 @@ If you are using Phpstorm this should be straightforward. Just open the setting 
 ### Visual Studio Code
  
 - Go to Extensions and Install eslint
-<div id="bg" style="text-align:center">
+<div style="text-align:center">
   <img src="./eslintVscode.PNG" alt="">
 </div>
 
