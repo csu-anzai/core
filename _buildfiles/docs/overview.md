@@ -31,6 +31,7 @@
 * [reference_sql](../../module_system/docs/reference_sql.md)
 * [update_guide_en](../../module_system/docs/update_guide_en.md)
 * [update_v4_to_v5](../../module_system/docs/update_v4_to_v5.md)
+* [webpack](../../module_system/docs/webpack.md)
 * [eslint](../../module_system/docs/eslint.md)
 
 ## module_wizard
