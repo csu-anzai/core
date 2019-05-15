@@ -1374,10 +1374,10 @@ HTML;
      * @param AdminListableInterface|ModelInterface|Model $objEntry
      * @param string $strActions
      * @param bool $bitCheckbox
-     *
+     * @param string $strCssAddon
      * @return string
      */
-    public function simpleAdminList(AdminListableInterface $objEntry, $strActions, $bitCheckbox = false)
+    public function simpleAdminList(AdminListableInterface $objEntry, $strActions, $bitCheckbox = false , $strCssAddon ="")
     {
         $strImage = $objEntry->getStrIcon();
         if (is_array($strImage)) {
@@ -1385,11 +1385,16 @@ HTML;
         } else {
             $strImage = AdminskinHelper::getAdminImage($strImage);
         }
-
         $strCSSAddon = "";
-        if (method_exists($objEntry, "getIntRecordStatus")) {
-            $strCSSAddon = $objEntry->getIntRecordStatus() == 0 ? "disabled" : "";
+        if($strCssAddon!=""){
+            $strCSSAddon = $strCssAddon ;
+        }else {
+            if (method_exists($objEntry, "getIntRecordStatus")) {
+                $strCSSAddon = $objEntry->getIntRecordStatus() == 0 ? "disabled" : "";
+            }
         }
+
+
 
         $comp = new Listbody($objEntry->getSystemid(), $objEntry->getStrDisplayName(), $strImage, $strActions);
         $comp->setAdditionalInfo($objEntry->getStrAdditionalInfo())
@@ -1597,7 +1602,7 @@ HTML;
             $strLinkText
         );
     }
-    
+
     /**
      * Generates a button allowing to change the status of the record passed.
      * Therefore an ajax-method is called.
