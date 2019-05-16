@@ -13,6 +13,7 @@ import Forms = require("../../../module_system/scripts/kajona/Forms");
 import Ajax = require("../../../module_system/scripts/kajona/Ajax");
 import DialogHelper = require("../../../module_v4skin/scripts/kajona/DialogHelper");
 import Messaging = require("../../../module_system/scripts/kajona/Messaging");
+import Router = require("../../../module_system/scripts/kajona/Router");
 
 declare global {
     interface Window {
@@ -132,9 +133,9 @@ class UploadManager {
                     //in case of success, flush the list
                     me.settings.baseElement.find('.files').empty();
                     me.renderArchiveList();
-
                     // update messages
                     Messaging.pollMessages();
+                    Router.reload();
                 }
             }, null, null, "post", "json");
         });
