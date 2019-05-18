@@ -1,25 +1,24 @@
-import * as $ from 'jquery'
+import $ from 'jquery'
 import Ajax from '../../../module_system/scripts/kajona/Ajax'
 import StatusDisplay from '../../../module_system/scripts/kajona/StatusDisplay'
-// import * as JQuery from "jquery";
 
 class Imageeditor {
     public static cropArea: any = null
-    public static fm_cropObj: any = null
-    public static fm_image_isScaled = true
+    public static fmCropObj: any = null
+    public static fmImageIsScaled = true
 
     public static strCropEnabled = ''
     public static strCropDisabled = ''
 
-    public static fm_image_rawurl = ''
-    public static fm_image_scaledurl = ''
-    public static fm_image_scaledMaxWidth = ''
-    public static fm_image_scaledMaxHeight = ''
-    public static fm_file = ''
+    public static fmImageRawUrl = ''
+    public static fmImageScaledUrl = ''
+    public static fmImageScaledMaxWidth = ''
+    public static fmImageScaledMaxHeight = ''
+    public static fmFile = ''
 
-    public static init_fm_crop_save_warning_dialog: Function = null
-    public static init_fm_screenlock_dialog: Function = null
-    public static hide_fm_screenlock_dialog: Function = null
+    public static initFmCropSaveWarningDialog: Function = null
+    public static initFmScreenlockDialog: Function = null
+    public static hideFmScreenlockDialog: Function = null
 
     public static saveImageCropping (
         intX: number,
@@ -66,34 +65,34 @@ class Imageeditor {
     public static showRealSize () {
         $('#fm_mediamanagerPic').attr(
             'src',
-            this.fm_image_rawurl + '&x=' + new Date().getMilliseconds()
+            this.fmImageRawUrl + '&x=' + new Date().getMilliseconds()
         )
-        this.fm_image_isScaled = false
+        this.fmImageIsScaled = false
         this.hideCropping()
     }
 
     public static showPreview () {
         $('#fm_mediamanagerPic').attr(
             'src',
-            this.fm_image_scaledurl
-                .replace('__width__', this.fm_image_scaledMaxWidth)
-                .replace('__height__', this.fm_image_scaledMaxHeight) +
+            this.fmImageScaledUrl
+                .replace('__width__', this.fmImageScaledMaxWidth)
+                .replace('__height__', this.fmImageScaledMaxHeight) +
                 '&x=' +
                 new Date().getMilliseconds()
         )
-        this.fm_image_isScaled = true
+        this.fmImageIsScaled = true
         this.hideCropping()
     }
 
     public static showCropping () {
         // init the cropping
         var iE = this
-        if (this.fm_cropObj == null) {
+        if (this.fmCropObj == null) {
             $('#fm_mediamanagerPic').Jcrop({}, function () {
-                iE.fm_cropObj = this
+                iE.fmCropObj = this
             })
 
-            this.fm_cropObj.animateTo([120, 120, 80, 80])
+            this.fmCropObj.animateTo([120, 120, 80, 80])
 
             $('#accept_icon').html(this.strCropEnabled)
             $('#fm_mediamanagerPic_wrap').bind('dblclick', function (event) {
@@ -105,26 +104,26 @@ class Imageeditor {
     }
 
     public static hideCropping () {
-        if (this.fm_cropObj != null) {
-            this.fm_cropObj.destroy()
-            this.fm_cropObj = null
+        if (this.fmCropObj != null) {
+            this.fmCropObj.destroy()
+            this.fmCropObj = null
             $('#fm_mediamanagerPic').css('visibility', 'visible')
             $('#accept_icon').html(this.strCropDisabled)
         }
     }
 
     public static saveCropping () {
-        if (this.fm_cropObj != null) {
-            this.init_fm_crop_save_warning_dialog()
+        if (this.fmCropObj != null) {
+            this.initFmCropSaveWarningDialog()
         }
     }
 
     public static saveCroppingToBackend () {
-        jsDialog_1.hide()
-        this.init_fm_screenlock_dialog()
-        this.cropArea = this.fm_cropObj.tellSelect()
+        jsDialog1.hide()
+        this.initFmScreenlockDialog()
+        this.cropArea = this.fmCropObj.tellSelect()
 
-        if (this.fm_image_isScaled) {
+        if (this.fmImageIsScaled) {
             // recalculate the "real" crop-coordinates
             var intScaledWidth = parseInt(
                 $('#fm_mediamanagerPic').attr('width')
@@ -159,10 +158,10 @@ class Imageeditor {
             status: string,
             jqXHR: XMLHttpRequest
         ) {
-            if (status == 'success') {
+            if (status === 'success') {
                 StatusDisplay.displayXMLMessage(data)
-                iE.fm_cropObj.destroy()
-                iE.fm_cropObj = null
+                iE.fmCropObj.destroy()
+                iE.fmCropObj = null
                 $('#accept_icon').html(iE.strCropEnabled)
                 $('#fm_image_dimensions').html(
                     iE.cropArea.w + ' x ' + iE.cropArea.h
@@ -172,7 +171,7 @@ class Imageeditor {
                 $('#fm_int_realheight').val(iE.cropArea.h)
 
                 $('#fm_mediamanagerPic').css('visibility', 'visible')
-                if (iE.fm_image_isScaled) {
+                if (iE.fmImageIsScaled) {
                     iE.showPreview()
                 } else {
                     iE.showRealSize()
@@ -181,10 +180,10 @@ class Imageeditor {
                 iE.cropArea = null
 
                 location.reload()
-                iE.hide_fm_screenlock_dialog()
+                iE.hideFmScreenlockDialog()
             } else {
                 StatusDisplay.messageError('<b>Request failed!</b>' + data)
-                iE.hide_fm_screenlock_dialog()
+                iE.hideFmScreenlockDialog()
             }
         }
 
@@ -193,13 +192,13 @@ class Imageeditor {
             this.cropArea.y,
             this.cropArea.w,
             this.cropArea.h,
-            this.fm_file,
+            this.fmFile,
             callback
         )
     }
 
     public static rotate (intAngle: number) {
-        this.init_fm_screenlock_dialog()
+        this.initFmScreenlockDialog()
 
         var iE = this
         var callback = function (
@@ -207,21 +206,21 @@ class Imageeditor {
             status: string,
             jqXHR: XMLHttpRequest
         ) {
-            if (status == 'success') {
+            if (status === 'success') {
                 StatusDisplay.displayXMLMessage(data)
 
-                if (iE.fm_cropObj != null) {
-                    iE.fm_cropObj.destroy()
-                    iE.fm_cropObj = null
+                if (iE.fmCropObj != null) {
+                    iE.fmCropObj.destroy()
+                    iE.fmCropObj = null
                     $('#accept_icon').html(iE.strCropDisabled)
                 }
 
                 // switch width and height
-                var intScaledMaxWidthOld = iE.fm_image_scaledMaxWidth
-                iE.fm_image_scaledMaxWidth = iE.fm_image_scaledMaxHeight
-                iE.fm_image_scaledMaxHeight = intScaledMaxWidthOld
+                var intScaledMaxWidthOld = iE.fmImageScaledMaxWidth
+                iE.fmImageScaledMaxWidth = iE.fmImageScaledMaxHeight
+                iE.fmImageScaledMaxHeight = intScaledMaxWidthOld
 
-                if (iE.fm_image_isScaled) {
+                if (iE.fmImageIsScaled) {
                     iE.showPreview()
                 } else {
                     iE.showRealSize()
@@ -236,14 +235,14 @@ class Imageeditor {
                     intHeightOld + ' x ' + intWidthOld
                 )
 
-                iE.hide_fm_screenlock_dialog()
+                iE.hideFmScreenlockDialog()
             } else {
                 StatusDisplay.messageError('<b>Request failed!</b>' + data)
-                iE.hide_fm_screenlock_dialog()
+                iE.hideFmScreenlockDialog()
             }
         }
 
-        this.saveImageRotating(intAngle, this.fm_file, callback)
+        this.saveImageRotating(intAngle, this.fmFile, callback)
     }
 }
 ;(<any>window).Imageeditor = Imageeditor

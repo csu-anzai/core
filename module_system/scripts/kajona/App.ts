@@ -17,10 +17,10 @@ import VueRouter from './VueMainComponent/VueRouter'
 declare global {
     interface Window {
         KAJONA: Kajona
-        jsDialog_0: Dialog
-        jsDialog_1: Dialog
-        jsDialog_2: Dialog
-        jsDialog_3: Dialog
+        jsDialog0: Dialog
+        jsDialog1: Dialog
+        jsDialog2: Dialog
+        jsDialog3: Dialog
     }
 }
 
@@ -63,13 +63,13 @@ class App {
         // BC layer
 
         /** @deprecated */
-        window.jsDialog_0 = new Dialog('jsDialog_0', 0)
+        window.jsDialog0 = new Dialog('jsDialog0', 0)
         /** @deprecated */
-        window.jsDialog_1 = new Dialog('jsDialog_1', 1)
+        window.jsDialog1 = new Dialog('jsDialog1', 1)
         /** @deprecated */
-        window.jsDialog_2 = new Dialog('jsDialog_2', 2)
+        window.jsDialog2 = new Dialog('jsDialog2', 2)
         /** @deprecated */
-        window.jsDialog_3 = new Dialog('jsDialog_3', 3)
+        window.jsDialog3 = new Dialog('jsDialog3', 3)
 
         // configure toastr global
         toastr.options.positionClass = 'toast-bottom-right'
@@ -79,6 +79,7 @@ class App {
         if (process.env.NODE_ENV === 'development') {
             Vue.config.devtools = true
         }
+        // eslint-disable-next-line no-new
         new Vue({
             el: '#vueContainer',
             // @ts-ignore

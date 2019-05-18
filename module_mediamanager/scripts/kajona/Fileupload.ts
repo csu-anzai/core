@@ -240,9 +240,9 @@ class Fileupload {
 
         $(document).bind('dragover', function (e) {
             var dropZone = $(
-                    '.fileupload-wrapper:not(.blueimp-fileupload-disabled) .drop-zone'
-                );
-                var timeout = window.dropZoneTimeout
+                '.fileupload-wrapper:not(.blueimp-fileupload-disabled) .drop-zone'
+            )
+            var timeout = window.dropZoneTimeout
             if (!timeout) {
                 dropZone.addClass('active-dropzone')
             } else {

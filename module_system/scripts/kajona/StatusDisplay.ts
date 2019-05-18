@@ -16,8 +16,8 @@ class StatusDisplay {
     public static displayXMLMessage (message: string) {
         // decide, whether to show an error or a message, message only in debug mode
         if (
-            message.indexOf('<message>') != -1 &&
-            message.indexOf('<error>') == -1
+            message.indexOf('<message>') !== -1 &&
+            message.indexOf('<error>') === -1
         ) {
             let intStart = message.indexOf('<message>') + 9
             let responseText = message.substr(
@@ -27,7 +27,7 @@ class StatusDisplay {
             this.messageOK(responseText)
         }
 
-        if (message.indexOf('<error>') != -1) {
+        if (message.indexOf('<error>') !== -1) {
             let intStart = message.indexOf('<error>') + 7
             let responseText = message.substr(
                 intStart,

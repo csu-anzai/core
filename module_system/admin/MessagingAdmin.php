@@ -501,9 +501,9 @@ JS;
             $strLink = Link::getLinkAdminHref($this->getArrModule("modul"), "list");
             $strMessage = "<script type='text/javascript'>
                 $(function() { setTimeout(function() {
-                    jsDialog_1.setTitle('&nbsp; ');
-                    jsDialog_1.setContent('{$strText}', '{$strOk}', '{$strLink}'); jsDialog_1.init();
-                    $('#'+jsDialog_1.containerId+'_cancelButton').css('display', 'none');
+                    jsDialog1.setTitle('&nbsp; ');
+                    jsDialog1.setContent('{$strText}', '{$strOk}', '{$strLink}'); jsDialog1.init();
+                    $('#'+jsDialog1.containerId+'_cancelButton').css('display', 'none');
                 }, 500) } );
             </script>";
 

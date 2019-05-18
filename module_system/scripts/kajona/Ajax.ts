@@ -148,7 +148,7 @@ class Ajax {
         status: string,
         jqXHR: XMLHttpRequest
     ) {
-        if (status == 'success') {
+        if (status === 'success') {
             StatusDisplay.displayXMLMessage(data)
         } else {
             StatusDisplay.messageError('<b>Request failed!</b>')
@@ -235,11 +235,9 @@ class Ajax {
         objCallback: Function,
         strTargetModule?: string
     ) {
-        if (strTargetModule == null || strTargetModule == '')
-            {strTargetModule = 'system'}
+        if (strTargetModule == null || strTargetModule === '') { strTargetModule = 'system' }
 
-        if (typeof objCallback === 'undefined' || objCallback == null)
-            {objCallback = this.regularCallback}
+        if (typeof objCallback === 'undefined' || objCallback == null) { objCallback = this.regularCallback }
 
         this.genericAjaxCall(
             strTargetModule,
@@ -259,7 +257,7 @@ class Ajax {
             status: string,
             jqXHR: JQuery.jqXHR
         ) {
-            if (status == 'success') {
+            if (status === 'success') {
                 StatusDisplay.displayXMLMessage(data)
 
                 if (bitReload !== null && bitReload === true) {
@@ -267,8 +265,8 @@ class Ajax {
                 }
 
                 if (
-                    data.indexOf('<error>') == -1 &&
-                    data.indexOf('<html>') == -1
+                    data.indexOf('<error>') === -1 &&
+                    data.indexOf('<html>') === -1
                 ) {
                     var newStatus = $($.parseXML(data))
                         .find('newstatus')

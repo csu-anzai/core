@@ -22,8 +22,8 @@ class Lists {
             if (
                 $(this)
                     .attr('id')
-                    .substr(0, 6) == 'kj_cb_' &&
-                $(this).attr('id') != 'kj_cb_batchActionSwitch'
+                    .substr(0, 6) === 'kj_cb_' &&
+                $(this).attr('id') !== 'kj_cb_batchActionSwitch'
             ) {
                 $(this).prop(
                     'checked',
@@ -44,8 +44,8 @@ class Lists {
             if (
                 $(this)
                     .attr('id')
-                    .substr(0, 6) == 'kj_cb_' &&
-                $(this).attr('id') != 'kj_cb_batchActionSwitch'
+                    .substr(0, 6) === 'kj_cb_' &&
+                $(this).attr('id') !== 'kj_cb_batchActionSwitch'
             ) {
                 var strSysid = $(this)
                     .closest('tr')
@@ -60,7 +60,7 @@ class Lists {
     }
 
     public static updateToolbar () {
-        if ($('table.admintable  input:checked').length == 0) {
+        if ($('table.admintable  input:checked').length === 0) {
             $('.batchActionsWrapper').removeClass('visible')
         } else {
             $('.batchActionsWrapper').addClass('visible')
@@ -81,7 +81,7 @@ class Lists {
         // get the selected elements
         this.arrSystemids = this.getSelectedElements()
 
-        if (this.arrSystemids.length == 0) return
+        if (this.arrSystemids.length === 0) return
 
         var curConfirm = this.strConfirm.replace(
             '%amount%',
@@ -89,18 +89,18 @@ class Lists {
         )
         curConfirm = curConfirm.replace('%title%', strTitle)
 
-        jsDialog_1.setTitle(this.strDialogTitle)
-        jsDialog_1.setContent(
+        jsDialog1.setTitle(this.strDialogTitle)
+        jsDialog1.setContent(
             curConfirm,
             this.strDialogStart,
             "javascript:Lists.executeActions('+reloadOnFinish+');",
             true
         )
-        jsDialog_1.init()
+        jsDialog1.init()
 
         // reset pending list on hide
         var me = this
-        $('#' + jsDialog_1.containerId).on('hidden.bs.modal', function () {
+        $('#' + jsDialog1.containerId).on('hidden.bs.modal', function () {
             me.arrSystemids = []
         })
 
@@ -117,14 +117,13 @@ class Lists {
 
         $('.batchActionsProgress > .progresstitle').text(this.strCurrentTitle)
         $('.batchActionsProgress > .total').text(this.intTotal)
-        jsDialog_1.setContentRaw($('.batchActionsProgress').html())
+        jsDialog1.setContentRaw($('.batchActionsProgress').html())
 
         this.triggerSingleAction(reloadOnFinish)
     }
 
     public static triggerSingleAction (reloadOnFinish: boolean) {
-        if (this.arrSystemids.length < 1 && reloadOnFinish)
-            {window.location.reload()}
+        if (this.arrSystemids.length < 1 && reloadOnFinish) { window.location.reload() }
         if (this.arrSystemids.length > 0 && this.intTotal > 0) {
             $('.batch_progressed').text(
                 this.intTotal - this.arrSystemids.length + 1
@@ -165,14 +164,14 @@ class Lists {
 
             if (!this.bitRenderInfo) {
                 Router.reload()
-                jsDialog_1.hide()
+                jsDialog1.hide()
             } else {
                 $('#jsDialog_1_cancelButton').css('display', 'none')
                 $('#jsDialog_1_confirmButton')
                     .remove('click')
                     .on('click', function () {
                         Router.reload()
-                        jsDialog_1.hide()
+                        jsDialog1.hide()
                     })
                     .html(
                         '<span data-lang-property="system:systemtask_close_dialog"></span>'
@@ -195,13 +194,13 @@ class Lists {
             if (
                 $(this)
                     .attr('id')
-                    .substr(0, 6) == 'kj_cb_' &&
-                $(this).attr('id') != 'kj_cb_batchActionSwitch'
+                    .substr(0, 6) === 'kj_cb_' &&
+                $(this).attr('id') !== 'kj_cb_batchActionSwitch'
             ) {
                 var sysid = $(this)
                     .closest('tr')
                     .data('systemid')
-                if (sysid != '') selectedElements.push(sysid)
+                if (sysid !== '') selectedElements.push(sysid)
             }
         })
 
@@ -221,13 +220,13 @@ class Lists {
             if (
                 $(this)
                     .attr('id')
-                    .substr(0, 6) == 'kj_cb_' &&
-                $(this).attr('id') != 'kj_cb_batchActionSwitch'
+                    .substr(0, 6) === 'kj_cb_' &&
+                $(this).attr('id') !== 'kj_cb_batchActionSwitch'
             ) {
                 var sysid = $(this)
                     .closest('tr')
                     .data('systemid')
-                if (sysid != '') selectedElements.push(sysid)
+                if (sysid !== '') selectedElements.push(sysid)
             }
         })
 
@@ -244,7 +243,7 @@ class Lists {
         tds.on('click', function (e) {
             var source = e.target
             // if not fired within an td, skip
-            if (source.tagName.toLowerCase() != 'td') {
+            if (source.tagName.toLowerCase() !== 'td') {
                 return
             }
 
@@ -257,10 +256,11 @@ class Lists {
                 callbacks[0].click()
                 return
             }
+            var button
             if (dialog) {
-                var button = row.find('td.actions .listButton:last a')
+                button = row.find('td.actions .listButton:last a')
             } else {
-                var button = row.find('td.actions .listButton:first a')
+                button = row.find('td.actions .listButton:first a')
             }
             if (button.length) {
                 var attr = button.attr('data-toggle')

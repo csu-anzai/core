@@ -83,7 +83,7 @@ class Changelog {
      * @returns {string}
      */
     public static getInverseColumn (strType: string) {
-        return strType == 'left' ? 'right' : 'left'
+        return strType === 'left' ? 'right' : 'left'
     }
 
     /**

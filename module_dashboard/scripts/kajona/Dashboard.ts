@@ -9,7 +9,7 @@ class Todo {
     public static selectedCategory: string = ''
 
     public static loadCategory (category: string, search: any) {
-        if (search == '') {
+        if (search === '') {
             $('#listfilter_search').val('')
         }
         this.selectedCategory = category
@@ -39,10 +39,10 @@ class Dashboard {
             status: string,
             jqXHR: XMLHttpRequest
         ) {
-            if (status == 'success') {
+            if (status === 'success') {
                 $('div[data-systemid=' + strSystemid + ']').remove()
                 StatusDisplay.displayXMLMessage(data)
-                jsDialog_1.hide()
+                jsDialog1.hide()
             } else {
                 StatusDisplay.messageError(
                     '<b>Request failed!</b><br />' + data
@@ -91,7 +91,7 @@ class Dashboard {
                         ) {
                             intPos++
                             if (
-                                $(this).data('systemid') ==
+                                $(this).data('systemid') ===
                                 ui.item.data('systemid')
                             ) {
                                 Ajax.genericAjaxCall(

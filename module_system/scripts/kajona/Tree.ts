@@ -58,10 +58,10 @@ class ContextMenu {
      * @param data
      */
     public static openAllNodes (data: any) {
-        var objTreeInstance = $.jstree.reference(data.reference);
-            var objNode = objTreeInstance.get_node(data.reference)
+        var objTreeInstance = $.jstree.reference(data.reference)
+        var objNode = objTreeInstance.get_node(data.reference)
 
-        /* Check if node was already loaded (also check if parent node was loaded)*/
+        /* Check if node was already loaded (also check if parent node was loaded) */
         var arrNodesToCheck = objNode.parents
         arrNodesToCheck.unshift(objNode.id)
         var bitAlreadyLoaded = false
@@ -103,7 +103,7 @@ class ConditionalSelect {
      */
     public static handleConditionalSelect (objNode: any, event: any) {
         // handle on click events
-        if (event.type == 'click') {
+        if (event.type === 'click') {
             // if "load all" node was clicked
             if (Helper.isLoadAllNode(objNode)) {
                 var parent = Helper.getTreeInstance().get_parent(objNode)
@@ -149,11 +149,11 @@ class JSTree {
      */
     public moveNode (data: any) {
         // node data
-        var strNodeId = data.node.id;
-            var strNewParentId = data.parent;
-            var strOldParentId = data.old_parent;
-            var intNewPostiton = data.position;
-            var intOldPostiton = data.old_position
+        var strNodeId = data.node.id
+        var strNewParentId = data.parent
+        var strOldParentId = data.old_parent
+        var intNewPostiton = data.position
+        var intOldPostiton = data.old_position
 
         /* Get table row which should be moved */
         var $objTableRowMoved = $(
@@ -161,7 +161,7 @@ class JSTree {
         ).closest('tbody')
 
         // same parent
-        if (strNewParentId == strOldParentId) {
+        if (strNewParentId === strOldParentId) {
             /* Move table row to according position */
             if ($objTableRowMoved.length > 0) {
                 var arrElementsInTable = $objTableRowMoved
@@ -189,9 +189,8 @@ class JSTree {
                     Ajax.regularCallback(data, status, jqXHR)
                 }
             )
-        }
-        // different parent
-        else if (strNewParentId != strOldParentId) {
+        } else if (strNewParentId !== strOldParentId) {
+            // different parent
             /* hide table row */
             if ($objTableRowMoved.length > 0) {
                 $objTableRowMoved.hide()
@@ -203,7 +202,7 @@ class JSTree {
                 'setPrevid',
                 strNodeId + '&prevId=' + strNewParentId,
                 function (data: any, status: string, jqXHR: XMLHttpRequest) {
-                    if (status == 'success') {
+                    if (status === 'success') {
                         Ajax.genericAjaxCall(
                             'system',
                             'setAbsolutePosition',
@@ -230,24 +229,24 @@ class JSTree {
      * Checks if a node can be dropped to a certain place in the tree
      *
      * @param node - the dragged node
-     * @param node_parent
-     * @param node_position
+     * @param nodeParent
+     * @param nodePosition
      * @param more
      * @returns {boolean}
      */
     public checkMoveNode (
         node: any,
-        node_parent: any,
-        node_position: number,
+        nodeParent: any,
+        nodePosition: number,
         more: any
     ) {
-        var targetNode = more.ref;
-            var strDragId = node.id;
-            var strTargetId = targetNode.id;
-            var strInsertPosition = more.pos // "b"=>before, "a"=>after, "i"=inside
+        var targetNode = more.ref
+        var strDragId = node.id
+        var strTargetId = targetNode.id
+        var strInsertPosition = more.pos // "b"=>before, "a"=>after, "i"=inside
 
         // 1. user can only move node if he has right on the dragged node and the parent node
-        if (!node.data.rightedit && !node_parent.data.rightedit) {
+        if (!node.data.rightedit && !nodeParent.data.rightedit) {
             return false
         }
 
@@ -264,17 +263,17 @@ class JSTree {
         }
 
         // 4. dragged node same as target node?
-        if (strDragId == strTargetId) {
+        if (strDragId === strTargetId) {
             return false // TODO maybe not needed, already check by jstree it self
         }
 
-        // 5. Check if node is valid child of node_parent
-        if (!this.isValidChildNodeForParent(node, node_parent)) {
+        // 5. Check if node is valid child of nodeParent
+        if (!this.isValidChildNodeForParent(node, nodeParent)) {
             return false
         }
 
-        // 6. Check node_parent is valid parent for node
-        if (!this.isValidParentNodeForChild(node, node_parent)) {
+        // 6. Check nodeParent is valid parent for node
+        if (!this.isValidParentNodeForChild(node, nodeParent)) {
             return false
         }
 
@@ -285,14 +284,14 @@ class JSTree {
      * Checks if given node is a valid child node for the given parent
      *
      * @param node
-     * @param node_parent
+     * @param nodeParent
      * @returns {boolean}
      */
-    public isValidChildNodeForParent (node: any, node_parent: any) {
+    public isValidChildNodeForParent (node: any, nodeParent: any) {
         if (node.data.customtypes) {
             var curType = node.data.customtypes.type
             var arrValidChildrenTargetParent =
-                node_parent.data.customtypes.valid_children
+                nodeParent.data.customtypes.valid_children
 
             if (arrValidChildrenTargetParent === null) {
                 return true
@@ -315,7 +314,7 @@ class JSTree {
      *  If this is not the case, everything is ok -> return true
      *  If this is case it will checked, if the the new parent node 'node_parent' is somewhere within the path of the found node
      */
-    public isValidParentNodeForChild (node: any, node_parent: any) {
+    public isValidParentNodeForChild (node: any, nodeParent: any) {
         var nodeWithDataAttribute = this.getNodeWithDataAttribute(
             node,
             'check_parent_id_active',
@@ -323,8 +322,8 @@ class JSTree {
         )
         if (nodeWithDataAttribute !== null) {
             var idToCheck = nodeWithDataAttribute.id
-            var arrParents = node_parent.parents
-            arrParents.unshift(node_parent.id)
+            var arrParents = nodeParent.parents
+            arrParents.unshift(nodeParent.id)
 
             if ($.inArray(idToCheck, arrParents) === -1) {
                 return false
@@ -356,7 +355,7 @@ class JSTree {
 
             for (var i = 0, len = arrParents.length; i < len; i++) {
                 var parentNode = tree.get_node(arrParents[i])
-                if (parentNode.id == '#') {
+                if (parentNode.id === '#') {
                     // skip internal root node
                     return null
                 }
@@ -401,7 +400,7 @@ class JSTree {
         // if a jstree instanse exists try to find a node for it
         if (jsTree != null) {
             var treeNode = jsTree.get_node(strSystemId)
-            if (treeNode != false) {
+            if (treeNode !== false) {
                 objNode = treeNode
             }
         }
@@ -432,20 +431,20 @@ class JSTree {
                  *
                  * @param operation operation can be 'create_node', 'rename_node', 'delete_node', 'move_node' or 'copy_node'
                  * @param node the selected node
-                 * @param node_parent
-                 * @param node_position
+                 * @param nodeParent
+                 * @param nodePosition
                  * @param more on dnd => more is the hovered node
                  * @returns {boolean}
                  */
                 check_callback: function (
                     operation: string,
                     node: any,
-                    node_parent: any,
-                    node_position: number,
+                    nodeParent: any,
+                    nodePosition: number,
                     more: any
                 ) {
                     // operation can be 'create_node', 'rename_node', 'delete_node', 'move_node' or 'copy_node'
-                    // in case of 'rename_node' node_position is filled with the new node name
+                    // in case of 'rename_node' nodePosition is filled with the new node name
 
                     var bitReturn = false
 
@@ -455,8 +454,8 @@ class JSTree {
                         if (more.dnd) {
                             bitReturn = treeContext.checkMoveNode(
                                 node,
-                                node_parent,
-                                node_position,
+                                nodeParent,
+                                nodePosition,
                                 more
                             )
                         }
@@ -551,7 +550,7 @@ class JSTree {
         /* Create the tree */
         var $jsTree = $('#' + this.treeId).jstree(jsTreeObj)
 
-        /*Register events */
+        /* Register events */
         $jsTree.on('show_contextmenu.jstree', function (objNode, x, y) {
             // initialze properties when context menu is shown
             Lang.initializeProperties($('.jstree-contextmenu'))
@@ -599,9 +598,7 @@ class JSTree {
             treeContext.treeviewExpanders.length > 0
         ) {
             var strSelectId =
-                treeContext.treeviewExpanders[
-                    treeContext.treeviewExpanders.length - 1
-                ]
+                treeContext.treeviewExpanders[treeContext.treeviewExpanders.length - 1]
             treeInstance.select_node(strSelectId)
         }
     }
@@ -633,10 +630,10 @@ class Tree {
 
     public static toggleInitial (strTreeId: string) {
         var treeStates = CacheManager.get('treestate')
-        if (treeStates != null && treeStates != '') {
+        if (treeStates != null && treeStates !== '') {
             treeStates = JSON.parse(treeStates)
 
-            if (treeStates[strTreeId] == 'false') {
+            if (treeStates[strTreeId] === 'false') {
                 Tree.toggleTreeView(strTreeId)
             }
         }
@@ -650,7 +647,7 @@ class Tree {
             '.treeViewContent[data-kajona-treeid=' + strTreeId + ']'
         )
         var treeStates = CacheManager.get('treestate')
-        if (treeStates == null || treeStates == '') {
+        if (treeStates == null || treeStates === '') {
             treeStates = {}
         } else {
             treeStates = JSON.parse(treeStates)

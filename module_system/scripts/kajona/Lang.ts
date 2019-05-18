@@ -38,7 +38,7 @@ class Lang {
                 var strProperty = $(this).data('lang-property')
                 if (strProperty) {
                     var arrValues = strProperty.split(':', 2)
-                    if (arrValues.length == 2) {
+                    if (arrValues.length === 2) {
                         var arrParams = []
                         var strParams = $(this).data('lang-params')
                         if (strParams) {
@@ -93,7 +93,7 @@ class Lang {
      * @param {function} onReady
      */
     public static fetchProperties (onReady?: Function) {
-        if (this.queue.length == 0) {
+        if (this.queue.length === 0) {
             if (onReady) {
                 onReady.apply(this)
             }
@@ -113,7 +113,7 @@ class Lang {
             objCache = $.parseJSON(objCache)
             var strResp = null
             for (var strCacheKey in objCache) {
-                if (arrData.text == strCacheKey) {
+                if (arrData.text === strCacheKey) {
                     strResp = objCache[strCacheKey]
                 }
             }
@@ -160,7 +160,7 @@ class Lang {
 
                 var strResp = null
                 for (strKey in objResp) {
-                    if (arrData.text == strKey) {
+                    if (arrData.text === strKey) {
                         strResp = objResp[strKey]
                     }
                 }

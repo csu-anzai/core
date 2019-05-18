@@ -25,7 +25,7 @@ class Loader {
                         $.inArray(
                             this.arrCallbacks[i].requiredModules[j],
                             this.arrFilesLoaded
-                        ) == -1
+                        ) === -1
                     ) {
                         bitCallback = false
                         break
@@ -52,11 +52,10 @@ class Loader {
 
         // add suffixes
         $.each(arrInputFiles, function (index, strOneFile) {
-            if ($.inArray(strOneFile, Loader.arrFilesLoaded) == -1)
-                {arrFilesToLoad.push(strOneFile)}
+            if ($.inArray(strOneFile, Loader.arrFilesLoaded) === -1) { arrFilesToLoad.push(strOneFile) }
         })
 
-        if (arrFilesToLoad.length == 0) {
+        if (arrFilesToLoad.length === 0) {
             // all files already loaded, call callback
             if ($.isFunction(objCallback)) objCallback()
         } else {
@@ -65,7 +64,7 @@ class Loader {
             $.each(arrFilesToLoad, function (index, strOneFileToLoad) {
                 // check what loader to take - js or css
                 var fileType =
-                    strOneFileToLoad.substr(strOneFileToLoad.length - 2, 2) ==
+                    strOneFileToLoad.substr(strOneFileToLoad.length - 2, 2) ===
                     'js'
                         ? 'js'
                         : 'css'
@@ -81,12 +80,12 @@ class Loader {
                 }
 
                 if (
-                    $.inArray(strOneFileToLoad, Loader.arrFilesInProgress) == -1
+                    $.inArray(strOneFileToLoad, Loader.arrFilesInProgress) === -1
                 ) {
                     Loader.arrFilesInProgress.push(strOneFileToLoad)
 
                     // start loading process
-                    if (fileType == 'css') {
+                    if (fileType === 'css') {
                         Loader.loadCss(
                             Loader.createFinalLoadPath(
                                 strOneFileToLoad,
@@ -96,7 +95,7 @@ class Loader {
                         )
                     }
 
-                    if (fileType == 'js') {
+                    if (fileType === 'js') {
                         Loader.loadJs(
                             Loader.createFinalLoadPath(
                                 strOneFileToLoad,

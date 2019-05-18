@@ -111,22 +111,23 @@ class MessagingOptions {
 
             $('#messagingShortlist').empty()
             $.each(objResponse.messages, function (index, item) {
-                if (item.unread == 0)
-                    {$('#messagingShortlist').append(
+                if (item.unread === 0) {
+                    $('#messagingShortlist').append(
                         "<li><a href='" +
                             item.details +
                             "'><i class='fa fa-envelope'></i> <b>" +
                             item.title +
                             '</b></a></li>'
-                    )}
-                else
-                    {$('#messagingShortlist').append(
+                    )
+                } else {
+                    $('#messagingShortlist').append(
                         "<li><a href='" +
                             item.details +
                             "'><i class='fa fa-envelope'></i> " +
                             item.title +
                             '</a></li>'
-                    )}
+                    )
+                }
             })
             $('#messagingShortlist').append(
                 "<li class='divider'></li><li><a href='#/messaging'><i class='fa fa-envelope'></i> " +
@@ -162,7 +163,7 @@ class V4skin {
             status: string,
             jqXHR: XMLHttpRequest
         ) {
-            if (status == 'success') {
+            if (status === 'success') {
                 $('#tagsSubemenu').empty()
                 $.each($.parseJSON(data), function (index, item) {
                     $('#tagsSubemenu').append(
@@ -340,7 +341,7 @@ class V4skin {
                     strDeleteButton
                 )
 
-                jsDialog_1.hide()
+                jsDialog1.hide()
             }
         }
     }
@@ -382,7 +383,7 @@ class V4skin {
                 var currentCategory = ''
 
                 $.each(items, function (index: number, item: Item) {
-                    if (item.module != currentCategory) {
+                    if (item.module !== currentCategory) {
                         ul.append(
                             '<li class="ui-autocomplete-category"><h3>' +
                                 item.module +
@@ -471,12 +472,12 @@ class V4skin {
         let kajonaScroll: string = null
         $(window).scroll(function () {
             var scroll = $(this).scrollTop()
-            if (scroll > 10 && kajonaScroll != 'top') {
+            if (scroll > 10 && kajonaScroll !== 'top') {
                 $('ul.breadcrumb').addClass('breadcrumbTop')
                 $('#quickhelp').addClass('quickhelpTop')
                 $('.pathNaviContainer').addClass('pathNaviContainerTop')
                 kajonaScroll = 'top'
-            } else if (scroll <= 10 && kajonaScroll != 'margin') {
+            } else if (scroll <= 10 && kajonaScroll !== 'margin') {
                 $('ul.breadcrumb').removeClass('breadcrumbTop')
                 $('#quickhelp').removeClass('quickhelpTop')
                 $('.pathNaviContainer').removeClass('pathNaviContainerTop')

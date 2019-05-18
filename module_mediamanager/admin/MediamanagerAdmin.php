@@ -325,7 +325,7 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
                         if(status == 'success') {
                             if(data.indexOf("<repo>0</repo>") == -1) {
                                 //show a dialog to reload the current page
-                                jsDialog_1.setTitle('{$this->getLang('repo_change')}'); jsDialog_1.setContent('{$this->getLang('repo_change_hint')}', '{$this->getLang('repo_reload')}', 'javascript:document.location.reload();'); jsDialog_1.init();
+                                jsDialog1.setTitle('{$this->getLang('repo_change')}'); jsDialog1.setContent('{$this->getLang('repo_change_hint')}', '{$this->getLang('repo_reload')}', 'javascript:document.location.reload();'); jsDialog1.init();
                             }
                         }
                         else {
@@ -370,14 +370,13 @@ HTML;
         $strReturn .= "<script type=\"text/javascript\">
 
                         function init_fm_newfolder_dialog() {
-                            jsDialog_1.setTitle('" . $this->getLang("folder_new_dialogHeader") . "');
-                            jsDialog_1.setContent('" . StringUtil::replace(array("\r\n", "\n"), "", addslashes($strDialog)) . "',
+                            jsDialog1.setTitle('" . $this->getLang("folder_new_dialogHeader") . "');
+                            jsDialog1.setContent('" . StringUtil::replace(array("\r\n", "\n"), "", addslashes($strDialog)) . "',
                                                   '" . $this->getLang("commons_create_folder") . "',
-                                                  'javascript:Mediamanager.createFolder(\'folderName\', \'" . $this->getSystemid() . "\'); jsDialog_1.hide();');
-                                    jsDialog_1.init(); }
-                      ";
+                                                  jsDialog1" . $this->getSystemid() . ");
+                                    jsDialog1.injsDialog1                    ";
 
-        $strReturn .= "</script>";
+        $strReturn .= "<jsDialog1
         return $strReturn;
     }
 
@@ -528,16 +527,16 @@ HTML;
             Imageeditor.strCropEnabled= '" . addslashes(AdminskinHelper::getAdminImage("icon_crop_accept", $this->getLang("cropImageAccept"))) . "';
             Imageeditor.strCropDisabled = '" . addslashes(AdminskinHelper::getAdminImage("icon_crop_acceptDisabled", $this->getLang("cropImageAccept"))) . "';
 
-            Imageeditor.fm_image_rawurl = '" . _webpath_ . "/image.php?image=" . urlencode($strFile) . "&quality=80';
-            Imageeditor.fm_image_scaledurl = '" . _webpath_ . "/image.php?image=" . urlencode($strFile) . "&maxWidth=__width__&maxHeight=__height__';
-            Imageeditor.fm_image_scaledMaxWidth = $intWidth;
-            Imageeditor.fm_image_scaledMaxHeight = $intHeight;
-            Imageeditor.fm_image_isScaled = true;
-            Imageeditor.fm_file = '" . $strFile . "' ;
+            Imageeditor.fmImageRawUrl = '" . _webpath_ . "/image.php?image=" . urlencode($strFile) . "&quality=80';
+            Imageeditor.fmImageScaledUrl = '" . _webpath_ . "/image.php?image=" . urlencode($strFile) . "&maxWidth=__width__&maxHeight=__height__';
+            Imageeditor.fmImageScaledMaxWidth = $intWidth;
+            Imageeditor.fmImageScaledMaxHeight = $intHeight;
+            Imageeditor.fmImageIsScaled = true;
+            Imageeditor.fmFile = '" . $strFile . "' ;
 
-            Imageeditor.init_fm_crop_save_warning_dialog = function () { jsDialog_1.setTitle('" . $this->getLang("cropWarningDialogHeader") . "'); jsDialog_1.setContent('" . $this->getLang("cropWarningSaving") . "', '" . $this->getLang("cropWarningCrop") . "', 'javascript:Imageeditor.saveCroppingToBackend()'); jsDialog_1.init(); };
-            Imageeditor.init_fm_screenlock_dialog = function () { jsDialog_3.init(); };
-            Imageeditor.hide_fm_screenlock_dialog = function () { jsDialog_3.hide(); }
+            Imageeditor.initFmCropSaveWarningDialog = function () { jsDialog1.setTitle('" . $this->getLang("cropWarningDialogHeader") . "'jsDialog1g_1.setContent('" . $this->getLang("cropWarningSaving") . "', '"jsDialog1getLang("cropWarningCrop") . "', 'javascript:Imageeditor.saveCroppingToBackend()'); jsDialog1.init(); };
+            Imageeditor.initFmScreenlockDialog = jsDialog1) { jsDialog3.init(); };
+            Imageeditor.hideFmScreenlockDialog = function () { jsDialog3.hide(); }
                 </script>";
 
             $strJs .= "<input type=\"hidden\" name=\"fm_int_realwidth\" id=\"fm_int_realwidth\" value=\"" . $arrSize[0] . "\" />";

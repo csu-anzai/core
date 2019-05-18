@@ -26,6 +26,7 @@ class TagEditor {
         initialTags: Array<string>,
         onChangeCallback: Function
     ) {
+        // eslint-disable-next-line new-cap
         let objConfig: JQueryUI.AutocompleteOptions = new V4skin.defaultAutoComplete()
 
         objConfig.search = function (event: any, ui: any) {
@@ -55,7 +56,7 @@ class TagEditor {
             $('#' + strElementId + '-list')
                 .find('input')
                 .each(function () {
-                    if ($(this).val() == ui.item.systemid) {
+                    if ($(this).val() === ui.item.systemid) {
                         found = true
                     }
                 })
@@ -101,7 +102,9 @@ class TagEditor {
                     if (resp) {
                         // replace commas
                         for (var i = 0; i < resp.length; i++) {
+                            // eslint-disable-next-line no-useless-escape
                             resp[i].title = resp[i].title.replace(/\,/g, '')
+                            // eslint-disable-next-line no-useless-escape
                             resp[i].value = resp[i].value.replace(/\,/g, '')
                         }
                     }
@@ -138,7 +141,7 @@ class TagEditor {
                 $('#' + strElementId + '-list')
                     .find('input')
                     .each(function () {
-                        if ($(this).data('title') == val) {
+                        if ($(this).data('title') === val) {
                             found = true
                         }
                     })
@@ -155,7 +158,7 @@ class TagEditor {
                 $('#' + strElementId + '-list')
                     .find('input')
                     .each(function () {
-                        if ($(this).data('title') == val) {
+                        if ($(this).data('title') === val) {
                             $(this).remove()
                         }
                     })
@@ -191,7 +194,7 @@ class TagEditor {
                 if (
                     $(this)
                         .closest('.inputTagEditor')
-                        .attr('id') !=
+                        .attr('id') !==
                     objOuter.closest('.inputTagEditor').attr('id')
                 ) {
                     $(this).removeClass('active')

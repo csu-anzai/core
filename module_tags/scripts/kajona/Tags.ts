@@ -44,7 +44,7 @@ class Tags {
                 '&attribute=' +
                 strAttribute,
             function (data: any, status: string, jqXHR: XMLHttpRequest) {
-                if (status == 'success') {
+                if (status === 'success') {
                     Tags.reloadTagList(strSystemid, strAttribute)
                     $('#tagname').val('')
                 } else {
@@ -64,7 +64,7 @@ class Tags {
             'tagList',
             strSystemid + '&attribute=' + strAttribute,
             function (data: any, status: string, jqXHR: XMLHttpRequest) {
-                if (status == 'success') {
+                if (status === 'success') {
                     var intStart = data.indexOf('<tags>') + 6
                     var strContent = data.substr(
                         intStart,
@@ -101,7 +101,7 @@ class Tags {
                 '&attribute=' +
                 strAttribute,
             function (data: any, status: string, jqXHR: XMLHttpRequest) {
-                if (status == 'success') {
+                if (status === 'success') {
                     Tags.reloadTagList(strTargetSystemid, strAttribute)
                     $('#tagname').val('')
                 } else {
@@ -125,7 +125,7 @@ class Tags {
             'tagList',
             strTargetSystemid + '&attribute=' + strAttribute + '&delete=false',
             function (data: any, status: string, jqXHR: XMLHttpRequest) {
-                if (status == 'success') {
+                if (status === 'success') {
                     var intStart = data.indexOf('<tags>') + 6
                     var strContent = data.substr(
                         intStart,

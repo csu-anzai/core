@@ -4,7 +4,7 @@ class WorkingIndicator {
     private static intWorkingCount = 0
 
     public static start () {
-        if (this.intWorkingCount == 0) {
+        if (this.intWorkingCount === 0) {
             $('#status-indicator').addClass('active')
         }
         this.intWorkingCount++
@@ -13,7 +13,7 @@ class WorkingIndicator {
     public static stop () {
         this.intWorkingCount--
 
-        if (this.intWorkingCount == 0) {
+        if (this.intWorkingCount === 0) {
             $('#status-indicator').removeClass('active')
         }
     }

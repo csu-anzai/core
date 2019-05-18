@@ -37,13 +37,13 @@ class Dialog {
         if ($('#template_' + this.containerId).length > 0) {
             $('#' + this.containerId).on('hidden', function (e) {
                 // @ts-ignore
-                this.resetDialog.call(this)
+                this.resetDialog()
             })
         }
     }
 
     public setTitle (strTitle: string) {
-        if (strTitle == '') {
+        if (strTitle === '') {
             $('#' + this.containerId + '_title').html('&nbsp;')
         } else {
             $('#' + this.containerId + '_title').text(strTitle)
@@ -64,7 +64,7 @@ class Dialog {
         strLinkHref: string | Function,
         blockHide?: boolean
     ) {
-        if (this.intDialogType == 1) {
+        if (this.intDialogType === 1) {
             this.unbindEvents()
 
             $('#' + this.containerId + '_content').html(strContent)
@@ -90,7 +90,7 @@ class Dialog {
                         })
                     }
 
-                    return objReturn != undefined ? objReturn : false
+                    return objReturn !== undefined ? objReturn : false
                 })
             } else {
                 $confirmButton.click(function () {
@@ -266,7 +266,7 @@ class Dialog {
     }
 
     public unbindEvents () {
-        if (this.intDialogType == 1) {
+        if (this.intDialogType === 1) {
             $('#' + this.containerId + '_cancelButton').unbind()
             $('#' + this.containerId + '_confirmButton').unbind()
             this.unbindOnClick = true
@@ -294,7 +294,7 @@ class Dialog {
         // set hidden event again (needed as when replacing the events are not set anymore)
         $('#' + this.containerId).on('hidden', function (e) {
             // @ts-ignore
-            this.resetDialog.call(this)
+            this.resetDialog()
         })
     }
 }

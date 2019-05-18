@@ -23,14 +23,14 @@ class SystemTask {
                 paramsEl.css('display', 'none')
             }
 
-            jsDialog_0 = new Dialog('jsDialog_0', 0)
-            jsDialog_0.setTitle(KAJONA_SYSTEMTASK_TITLE)
-            jsDialog_0.setContentRaw(kajonaSystemtaskDialogContent)
-            $('#' + jsDialog_0.getContainerId())
+            jsDialog0 = new Dialog('jsDialog0', 0)
+            jsDialog0.setTitle(KAJONA_SYSTEMTASK_TITLE)
+            jsDialog0.setContentRaw(kajonaSystemtaskDialogContent)
+            $('#' + jsDialog0.getContainerId())
                 .find('div.modal-dialog')
                 .removeClass('modal-lg')
             $('#systemtaskCancelButton').click(SystemTask.cancelExecution)
-            jsDialog_0.init()
+            jsDialog0.init()
         }
 
         Ajax.genericAjaxCall(
@@ -38,13 +38,13 @@ class SystemTask {
             'executeSystemTask',
             '&task=' + strTaskname + strAdditionalParam,
             function (data: any, status: string, jqXHR: XMLHttpRequest) {
-                if (status == 'success') {
+                if (status === 'success') {
                     var strResponseText = data
 
                     // parse the response and check if it's valid
-                    if (strResponseText.indexOf('<error>') != -1) {
+                    if (strResponseText.indexOf('<error>') !== -1) {
                         StatusDisplay.displayXMLMessage(strResponseText)
-                    } else if (strResponseText.indexOf('<statusinfo>') == -1) {
+                    } else if (strResponseText.indexOf('<statusinfo>') === -1) {
                         StatusDisplay.messageError(
                             '<b>Request failed!</b><br />' + strResponseText
                         )
@@ -58,7 +58,7 @@ class SystemTask {
 
                         // parse text to decide if a reload is necessary
                         var strReload = ''
-                        if (strResponseText.indexOf('<reloadurl>') != -1) {
+                        if (strResponseText.indexOf('<reloadurl>') !== -1) {
                             intStart =
                                 strResponseText.indexOf('<reloadurl>') + 11
                             strReload = strResponseText.substr(
@@ -71,8 +71,8 @@ class SystemTask {
                         // show status info
                         $('#systemtaskStatusDiv').html(strStatusInfo)
 
-                        if (strReload == '') {
-                            jsDialog_0.setTitle(KAJONA_SYSTEMTASK_TITLE_DONE)
+                        if (strReload === '') {
+                            jsDialog0.setTitle(KAJONA_SYSTEMTASK_TITLE_DONE)
                             $('#systemtaskLoadingDiv').css('display', 'none')
                             $('#systemtaskCancelButton').attr(
                                 'value',
@@ -83,7 +83,7 @@ class SystemTask {
                         }
                     }
                 } else {
-                    jsDialog_0.hide()
+                    jsDialog0.hide()
                     StatusDisplay.messageError(
                         '<b>Request failed!</b><br />' + data
                     )
@@ -93,7 +93,7 @@ class SystemTask {
     }
 
     public static cancelExecution () {
-        jsDialog_0.hide()
+        jsDialog0.hide()
     }
 
     public static setName (strName: string) {

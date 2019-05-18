@@ -1540,7 +1540,7 @@ HTML;
 
         //create the list-button and the js code to show the dialog
         $strButton = Link::getLinkAdminManual(
-            "href=\"#\" onclick=\"javascript:jsDialog_1.setTitle('{$strHeader}'); jsDialog_1.setContent('{$strDialogContent}', '{$strConfirmationButtonLabel}', {$strConfirmationLink}); jsDialog_1.init(); return false;\"",
+            "href=\"#\" onclick=\"javascript:jsDialog1.setTitle('{$strHeader}'); jsDialog1.setContent('{$strDialogContent}', '{$strConfirmationButtonLabel}', {$strConfirmationLink}); jsDialog1.init(); return false;\"",
             "",
             $strButtonTooltip,
             $strButton
@@ -1577,7 +1577,7 @@ HTML;
 
         //create the list-button and the js code to show the dialog
         return Link::getLinkAdminManual(
-            "href=\"#\" onclick=\"javascript:jsDialog_1.setTitle('{$strHeader}'); jsDialog_1.setContent('{$strDialogContent}', '{$strConfirmationButtonLabel}',  '" . $strConfirmationLinkHref . $strParam . "'); jsDialog_1.init(); return false;\"",
+            "href=\"#\" onclick=\"javascript:jsDialog1.setTitle('{$strHeader}'); jsDialog1.setContent('{$strDialogContent}', '{$strConfirmationButtonLabel}',  '" . $strConfirmationLinkHref . $strParam . "'); jsDialog1.init(); return false;\"",
             $strLinkText
         );
     }
