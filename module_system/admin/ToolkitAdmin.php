@@ -1388,10 +1388,6 @@ HTML;
         $strCSSAddon = "";
         if($strCssAddon!=""){
             $strCSSAddon = $strCssAddon ;
-        }else {
-            if (method_exists($objEntry, "getIntRecordStatus")) {
-                $strCSSAddon = $objEntry->getIntRecordStatus() == 0 ? "disabled" : "";
-            }
         }
 
 
