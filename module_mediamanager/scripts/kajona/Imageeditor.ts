@@ -1,24 +1,34 @@
 import $ from 'jquery'
-import Ajax from '../../../module_system/scripts/kajona/Ajax'
-import StatusDisplay from '../../../module_system/scripts/kajona/StatusDisplay'
+import Ajax from 'core/module_system/scripts/kajona/Ajax'
+import StatusDisplay from 'core/module_system/scripts/kajona/StatusDisplay'
 
 class Imageeditor {
     public static cropArea: any = null
-    public static fmCropObj: any = null
-    public static fmImageIsScaled = true
+    // eslint-disable-next-line camelcase
+    public static fm_cropObj: any = null
+    // eslint-disable-next-line camelcase
+    public static fm_image_isScaled = true
 
     public static strCropEnabled = ''
     public static strCropDisabled = ''
 
-    public static fmImageRawUrl = ''
-    public static fmImageScaledUrl = ''
-    public static fmImageScaledMaxWidth = ''
-    public static fmImageScaledMaxHeight = ''
-    public static fmFile = ''
+    // eslint-disable-next-line camelcase
+    public static fm_image_rawurl = ''
+    // eslint-disable-next-line camelcase
+    public static fm_image_scaledurl = ''
+    // eslint-disable-next-line camelcase
+    public static fm_image_scaledMaxWidth = ''
+    // eslint-disable-next-line camelcase
+    public static fm_image_scaledMaxHeight = ''
+    // eslint-disable-next-line camelcase
+    public static fm_file = ''
 
-    public static initFmCropSaveWarningDialog: Function = null
-    public static initFmScreenlockDialog: Function = null
-    public static hideFmScreenlockDialog: Function = null
+    // eslint-disable-next-line camelcase
+    public static init_fm_crop_save_warning_dialog: Function = null
+    // eslint-disable-next-line camelcase
+    public static init_fm_screenlock_dialog: Function = null
+    // eslint-disable-next-line camelcase
+    public static hide_fm_screenlock_dialog: Function = null
 
     public static saveImageCropping (
         intX: number,

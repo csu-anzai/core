@@ -236,8 +236,10 @@ class JSTree {
      */
     public checkMoveNode (
         node: any,
-        nodeParent: any,
-        nodePosition: number,
+        // eslint-disable-next-line camelcase
+        node_parent: any,
+        // eslint-disable-next-line camelcase
+        node_position: number,
         more: any
     ) {
         var targetNode = more.ref
@@ -287,7 +289,8 @@ class JSTree {
      * @param nodeParent
      * @returns {boolean}
      */
-    public isValidChildNodeForParent (node: any, nodeParent: any) {
+    // eslint-disable-next-line camelcase
+    public isValidChildNodeForParent (node: any, node_parent: any) {
         if (node.data.customtypes) {
             var curType = node.data.customtypes.type
             var arrValidChildrenTargetParent =
@@ -314,7 +317,8 @@ class JSTree {
      *  If this is not the case, everything is ok -> return true
      *  If this is case it will checked, if the the new parent node 'node_parent' is somewhere within the path of the found node
      */
-    public isValidParentNodeForChild (node: any, nodeParent: any) {
+    // eslint-disable-next-line camelcase
+    public isValidParentNodeForChild (node: any, node_parent: any) {
         var nodeWithDataAttribute = this.getNodeWithDataAttribute(
             node,
             'check_parent_id_active',
@@ -439,8 +443,10 @@ class JSTree {
                 check_callback: function (
                     operation: string,
                     node: any,
-                    nodeParent: any,
-                    nodePosition: number,
+                    // eslint-disable-next-line camelcase
+                    node_parent: any,
+                    // eslint-disable-next-line camelcase
+                    node_position: number,
                     more: any
                 ) {
                     // operation can be 'create_node', 'rename_node', 'delete_node', 'move_node' or 'copy_node'

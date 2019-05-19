@@ -36,10 +36,14 @@ declare var routie: any
 declare var KAJONA: Kajona
 
 /** @deprecated */
-declare var jsDialog0: any
+// eslint-disable-next-line camelcase
+declare var jsDialog_0: any
 /** @deprecated */
-declare var jsDialog1: any
+// eslint-disable-next-line camelcase
+declare var jsDialog_1: any
 /** @deprecated */
-declare var jsDialog2: any
+// eslint-disable-next-line camelcase
+declare var jsDialog_2: any
 /** @deprecated */
-declare var jsDialog3: any
+// eslint-disable-next-line camelcase
+declare var jsDialog_3: any

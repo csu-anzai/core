@@ -1,4 +1,4 @@
-import DialogHelper from '../../../module_v4skin/scripts/kajona/DialogHelper'
+import DialogHelper from 'core/module_v4skin/scripts/kajona/DialogHelper'
 import WorkingIndicator from './WorkingIndicator'
 
 /**

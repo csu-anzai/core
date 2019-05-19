@@ -1,4 +1,4 @@
-import Ajax from '../../../module_system/scripts/kajona/Ajax'
+import Ajax from 'core/module_system/scripts/kajona/Ajax'
 import Vue from 'vue'
 /**
  * Fronend controller for the dbbrowser module

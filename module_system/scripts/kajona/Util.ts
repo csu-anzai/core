@@ -1,6 +1,6 @@
 import $ from 'jquery'
 import * as toastr from 'toastr'
-import Lang from '../../../module_system/scripts/kajona/Lang'
+import Lang from 'core/module_system/scripts/kajona/Lang'
 
 declare global {
     interface Window {

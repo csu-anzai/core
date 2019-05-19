@@ -1,10 +1,10 @@
 import $ from 'jquery'
 import 'jquery-ui.custom'
-import Ajax from '../../../module_system/scripts/kajona/Ajax'
-import StatusDisplay from '../../../module_system/scripts/kajona/StatusDisplay'
-import Lang from '../../../module_system/scripts/kajona/Lang'
-import Tooltip from '../../../module_system/scripts/kajona/Tooltip'
-import Util from '../../../module_system/scripts/kajona/Util'
+import Ajax from 'core/module_system/scripts/kajona/Ajax'
+import StatusDisplay from 'core/module_system/scripts/kajona/StatusDisplay'
+import Lang from 'core/module_system/scripts/kajona/Lang'
+import Tooltip from 'core/module_system/scripts/kajona/Tooltip'
+import Util from 'core/module_system/scripts/kajona/Util'
 
 class ListSortable {
     /**

@@ -1,9 +1,9 @@
 import $ from 'jquery'
 import Ajax from './Ajax'
 import Util from './Util'
-import DialogHelper from '../../../module_v4skin/scripts/kajona/DialogHelper'
+import DialogHelper from 'core/module_v4skin/scripts/kajona/DialogHelper'
 import Router from './Router'
-import Dialog from '../../../module_v4skin/scripts/kajona/Dialog'
+import Dialog from 'core/module_v4skin/scripts/kajona/Dialog'
 const toastr = require('toastr')
 interface Accept {
     type: string

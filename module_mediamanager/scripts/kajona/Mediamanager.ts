@@ -1,6 +1,6 @@
 import $ from 'jquery'
-import Ajax from '../../../module_system/scripts/kajona/Ajax'
-import StatusDisplay from '../../../module_system/scripts/kajona/StatusDisplay'
+import Ajax from 'core/module_system/scripts/kajona/Ajax'
+import StatusDisplay from 'core/module_system/scripts/kajona/StatusDisplay'
 
 class Mediamanager {
     public static createFolder (strInputId: string, strRepoId: string) {

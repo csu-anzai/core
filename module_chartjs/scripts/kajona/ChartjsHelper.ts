@@ -1,8 +1,10 @@
 import $ from 'jquery'
-import Lang from '../../../module_system/scripts/kajona/Lang'
-import Folderview from '../../../module_system/scripts/kajona/Folderview'
+import Lang from 'core/module_system/scripts/kajona/Lang'
+import Folderview from 'core/module_system/scripts/kajona/Folderview'
 const ChartDataLabels = require('chartjs-plugin-datalabels')
 var Chart = require('chart.js')
+
+declare var Chart: any
 
 /**
  * Chartjs service with helper procedures.

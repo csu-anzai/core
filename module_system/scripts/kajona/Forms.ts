@@ -4,7 +4,7 @@ import Router from './Router'
 import Tooltip from './Tooltip'
 import Ajax from './Ajax'
 import Messaging from './Messaging'
-import DialogHelper from '../../../module_v4skin/scripts/kajona/DialogHelper'
+import DialogHelper from 'core/module_v4skin/scripts/kajona/DialogHelper'
 import Lang from './Lang'
 
 /**

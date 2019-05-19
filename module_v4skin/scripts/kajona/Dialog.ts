@@ -1,7 +1,7 @@
 import $ from 'jquery'
-import Router from '../../../module_system/scripts/kajona/Router'
-import Util from '../../../module_system/scripts/kajona/Util'
-import Folderview from '../../../module_system/scripts/kajona/Folderview'
+import Router from 'core/module_system/scripts/kajona/Router'
+import Util from 'core/module_system/scripts/kajona/Util'
+import Folderview from 'core/module_system/scripts/kajona/Folderview'
 
 class Dialog {
     private intDialogType: number

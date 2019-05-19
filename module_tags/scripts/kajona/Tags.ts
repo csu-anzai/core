@@ -1,8 +1,8 @@
 import $ from 'jquery'
-import Ajax from '../../../module_system/scripts/kajona/Ajax'
-import Tooltip from '../../../module_system/scripts/kajona/Tooltip'
-import StatusDisplay from '../../../module_system/scripts/kajona/StatusDisplay'
-import Util from '../../../module_system/scripts/kajona/Util'
+import Ajax from 'core/module_system/scripts/kajona/Ajax'
+import Tooltip from 'core/module_system/scripts/kajona/Tooltip'
+import StatusDisplay from 'core/module_system/scripts/kajona/StatusDisplay'
+import Util from 'core/module_system/scripts/kajona/Util'
 
 /**
  * Tags-handling

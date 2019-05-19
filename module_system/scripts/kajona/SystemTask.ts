@@ -1,7 +1,7 @@
 import $ from 'jquery'
 import Ajax from './Ajax'
 import StatusDisplay from './StatusDisplay'
-import Dialog from '../../../module_v4skin/scripts/kajona/Dialog'
+import Dialog from 'core/module_v4skin/scripts/kajona/Dialog'
 
 declare var KAJONA_SYSTEMTASK_TITLE: string
 declare var KAJONA_SYSTEMTASK_TITLE_DONE: string
@@ -23,10 +23,11 @@ class SystemTask {
                 paramsEl.css('display', 'none')
             }
 
-            jsDialog0 = new Dialog('jsDialog0', 0)
-            jsDialog0.setTitle(KAJONA_SYSTEMTASK_TITLE)
-            jsDialog0.setContentRaw(kajonaSystemtaskDialogContent)
-            $('#' + jsDialog0.getContainerId())
+            // eslint-disable-next-line camelcase
+            jsDialog_0 = new Dialog('jsDialog_0', 0)
+            jsDialog_0.setTitle(KAJONA_SYSTEMTASK_TITLE)
+            jsDialog_0.setContentRaw(kajonaSystemtaskDialogContent)
+            $('#' + jsDialog_0.getContainerId())
                 .find('div.modal-dialog')
                 .removeClass('modal-lg')
             $('#systemtaskCancelButton').click(SystemTask.cancelExecution)
@@ -72,7 +73,7 @@ class SystemTask {
                         $('#systemtaskStatusDiv').html(strStatusInfo)
 
                         if (strReload === '') {
-                            jsDialog0.setTitle(KAJONA_SYSTEMTASK_TITLE_DONE)
+                            jsDialog_0.setTitle(KAJONA_SYSTEMTASK_TITLE_DONE)
                             $('#systemtaskLoadingDiv').css('display', 'none')
                             $('#systemtaskCancelButton').attr(
                                 'value',
