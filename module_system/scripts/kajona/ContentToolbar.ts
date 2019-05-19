@@ -13,7 +13,7 @@ class Entry {
         this.strContent = strContent
         this.strIdentifier = strIdentifier
         this.bitActive =
-            bitActive != undefined && bitActive != '' ? bitActive : false
+            bitActive !== undefined && bitActive !== '' ? bitActive : false
     }
 }
 
@@ -36,7 +36,7 @@ class ContentToolbar {
      * @param objEntry {Entry}
      */
     public static registerContentToolbarEntry (objEntry: Entry) {
-        if (objEntry.strContent != '') {
+        if (objEntry.strContent !== '') {
             this.$objToolbarContainer = $('.contentToolbar')
             this.$objToolbarList = $('.contentToolbar ul:first')
             if (this.$objToolbarContainer.hasClass('hidden')) {
@@ -45,7 +45,7 @@ class ContentToolbar {
 
             let strIdentifier = ''
             let strClass = ''
-            if (objEntry.strIdentifier != '') {
+            if (objEntry.strIdentifier !== '') {
                 strIdentifier = ' id="' + objEntry.strIdentifier + '"'
             }
 
@@ -105,7 +105,7 @@ class ContentToolbar {
             $('#' + strIdentifier).remove()
         }
 
-        if (this.$objToolbarList.children().length == 0) {
+        if (this.$objToolbarList.children().length === 0) {
             this.resetBar()
         }
     }

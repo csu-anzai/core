@@ -1,10 +1,10 @@
 import $ from 'jquery'
 import 'jquery-ui.custom'
-import Ajax from '../../../module_system/scripts/kajona/Ajax'
-import StatusDisplay from '../../../module_system/scripts/kajona/StatusDisplay'
-import Lang from '../../../module_system/scripts/kajona/Lang'
-import Tooltip from '../../../module_system/scripts/kajona/Tooltip'
-import Util from '../../../module_system/scripts/kajona/Util'
+import Ajax from 'core/module_system/scripts/kajona/Ajax'
+import StatusDisplay from 'core/module_system/scripts/kajona/StatusDisplay'
+import Lang from 'core/module_system/scripts/kajona/Lang'
+import Tooltip from 'core/module_system/scripts/kajona/Tooltip'
+import Util from 'core/module_system/scripts/kajona/Util'
 
 class ListSortable {
     /**
@@ -49,7 +49,7 @@ class ListSortable {
                         intElementsPerPage * (intCurPage - 1),
                         null,
                         function (data: any, status: string, jqXHR: any) {
-                            if (status == 'success') {
+                            if (status === 'success') {
                                 location.reload()
                             } else {
                                 StatusDisplay.messageError(
@@ -89,7 +89,7 @@ class ListSortable {
                         intElementsPerPage * intCurPage + 1,
                         null,
                         function (data: any, status: string, jqXHR: any) {
-                            if (status == 'success') {
+                            if (status === 'success') {
                                 location.reload()
                             } else {
                                 StatusDisplay.messageError(
@@ -143,23 +143,21 @@ class ListSortable {
                 ui.placeholder.height(ui.item.height())
             },
             stop: function (event, ui) {
-                if (oldPos != ui.item.index() && !ui.item.parent().is('div')) {
+                if (oldPos !== ui.item.index() && !ui.item.parent().is('div')) {
                     var intOffset = 1
                     // see, if there are nodes not being sortable - would lead to another offset
                     $('#' + strListId + ' > tbody').each(function (index) {
                         if (
                             $(this)
                                 .find('tr')
-                                .data('systemid') == ''
-                        )
-                            {intOffset--}
+                                .data('systemid') === ''
+                        ) { intOffset-- }
                         if (
                             $(this)
                                 .find('tr')
-                                .data('systemid') ==
+                                .data('systemid') ===
                             ui.item.find('tr').data('systemid')
-                        )
-                            {return false}
+                        ) { return false }
                     })
 
                     // calc the page-offset
@@ -171,9 +169,10 @@ class ListSortable {
                     )
 
                     var intPagingOffset = 0
-                    if (intCurPage > 1 && intElementsPerPage > 0)
-                        {intPagingOffset =
-                            intCurPage * intElementsPerPage - intElementsPerPage}
+                    if (intCurPage > 1 && intElementsPerPage > 0) {
+                        intPagingOffset =
+                            intCurPage * intElementsPerPage - intElementsPerPage
+                    }
 
                     Ajax.setAbsolutePosition(
                         ui.item.find('tr').data('systemid'),

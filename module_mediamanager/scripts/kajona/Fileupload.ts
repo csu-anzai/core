@@ -1,7 +1,7 @@
 import $ from 'jquery'
-import Lang from '../../../module_system/scripts/kajona/Lang'
-import Forms from '../../../module_system/scripts/kajona/Forms'
-import Ajax from '../../../module_system/scripts/kajona/Ajax'
+import Lang from 'core/module_system/scripts/kajona/Lang'
+import Forms from 'core/module_system/scripts/kajona/Forms'
+import Ajax from 'core/module_system/scripts/kajona/Ajax'
 import 'blueimp-tmpl'
 import 'blueimp-file-upload'
 import 'blueimp-file-upload/js/jquery.fileupload-ui.js'
@@ -240,9 +240,9 @@ class Fileupload {
 
         $(document).bind('dragover', function (e) {
             var dropZone = $(
-                    '.fileupload-wrapper:not(.blueimp-fileupload-disabled) .drop-zone'
-                );
-                var timeout = window.dropZoneTimeout
+                '.fileupload-wrapper:not(.blueimp-fileupload-disabled) .drop-zone'
+            )
+            var timeout = window.dropZoneTimeout
             if (!timeout) {
                 dropZone.addClass('active-dropzone')
             } else {

@@ -139,15 +139,15 @@ class Router {
             }
         }
 
-        if (url.charAt(0) == '/') {
+        if (url.charAt(0) === '/') {
             url = url.substr(1)
         }
 
-        if (isStackedDialog && url.indexOf('peClose=1') != -1) {
+        if (isStackedDialog && url.indexOf('peClose=1') !== -1) {
             // react on peClose statements by reloading the parent view
             parent.KAJONA.admin.folderview.dialog.hide()
 
-            if (url.indexOf('peLoad=1') != -1) {
+            if (url.indexOf('peLoad=1') !== -1) {
                 // in this case we want that the parent routes to the provided url
                 url = url.replace('peClose=1', '')
                 url = url.replace('peLoad=1', '')
@@ -175,7 +175,7 @@ class Router {
             strUrlToLoad += '&systemid=' + arrSections[2]
         }
 
-        if (strParams != '') {
+        if (strParams !== '') {
             strUrlToLoad += '&' + strParams
         }
         strUrlToLoad += '&contentFill=1'

@@ -4,7 +4,7 @@ import Router from './Router'
 import Tooltip from './Tooltip'
 import Ajax from './Ajax'
 import Messaging from './Messaging'
-import DialogHelper from '../../../module_v4skin/scripts/kajona/DialogHelper'
+import DialogHelper from 'core/module_v4skin/scripts/kajona/DialogHelper'
 import Lang from './Lang'
 
 /**
@@ -169,7 +169,7 @@ class Forms {
         var changed = false
         $objForm.find('[data-kajona-initval]').each(function () {
             var el = $(this)
-            if (el.val() != el.attr('data-kajona-initval')) {
+            if (el.val() !== el.attr('data-kajona-initval')) {
                 changed = true
                 return false
             }
@@ -183,11 +183,11 @@ class Forms {
      * @param objForm
      */
     public static animateSubmitStart (objForm: HTMLFormElement) {
-        var processingElemet = undefined
+        var processingElemet
 
-        if ($('button.clicked').length == 1) {
+        if ($('button.clicked').length === 1) {
             processingElemet = $('button.clicked')
-        } else if ($(document.activeElement).prop('tagName') == 'BUTTON') {
+        } else if ($(document.activeElement).prop('tagName') === 'BUTTON') {
             // try to get the button currently clicked
             processingElemet = $(document.activeElement)
         } else {
@@ -217,13 +217,13 @@ class Forms {
         bitConfirmChange: boolean
     ) {
         $('#' + strElementId).on('change', function (objEvent) {
-            if ($(this).val() != $(this).attr('data-kajona-initval')) {
+            if ($(this).val() !== $(this).attr('data-kajona-initval')) {
                 if (
                     $(this)
                         .closest('.form-group')
-                        .find('div.changeHint').length == 0
+                        .find('div.changeHint').length === 0
                 ) {
-                    if (bitConfirmChange && bitConfirmChange == true) {
+                    if (bitConfirmChange && bitConfirmChange === true) {
                         var bitResponse = confirm(Forms.changeConfirmation)
                         if (!bitResponse) {
                             $(this).val($(this).attr('data-kajona-initval'))
@@ -279,7 +279,7 @@ class Forms {
     public static renderMandatoryFields (arrFields: Array<Array<string>>) {
         for (var i = 0; i < arrFields.length; i++) {
             var arrElement = arrFields[i]
-            if (arrElement.length == 2) {
+            if (arrElement.length === 2) {
                 var $objElement = $('#' + arrElement[0])
                 if ($objElement) {
                     $objElement.addClass('mandatoryFormElement')

@@ -28,7 +28,7 @@ class ModuleNavigation {
                 '.panel-combined .collapse[data-kajona-module="' +
                     strModule +
                     '"]'
-            ).length != 0
+            ).length !== 0
         ) {
             // is combined
             $moduleNavigation.find('.panel .linkcontainer').addClass('active')

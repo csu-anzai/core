@@ -22,8 +22,8 @@ class Lists {
             if (
                 $(this)
                     .attr('id')
-                    .substr(0, 6) == 'kj_cb_' &&
-                $(this).attr('id') != 'kj_cb_batchActionSwitch'
+                    .substr(0, 6) === 'kj_cb_' &&
+                $(this).attr('id') !== 'kj_cb_batchActionSwitch'
             ) {
                 $(this).prop(
                     'checked',
@@ -44,8 +44,8 @@ class Lists {
             if (
                 $(this)
                     .attr('id')
-                    .substr(0, 6) == 'kj_cb_' &&
-                $(this).attr('id') != 'kj_cb_batchActionSwitch'
+                    .substr(0, 6) === 'kj_cb_' &&
+                $(this).attr('id') !== 'kj_cb_batchActionSwitch'
             ) {
                 var strSysid = $(this)
                     .closest('tr')
@@ -60,7 +60,7 @@ class Lists {
     }
 
     public static updateToolbar () {
-        if ($('table.admintable  input:checked').length == 0) {
+        if ($('table.admintable  input:checked').length === 0) {
             $('.batchActionsWrapper').removeClass('visible')
         } else {
             $('.batchActionsWrapper').addClass('visible')
@@ -81,7 +81,7 @@ class Lists {
         // get the selected elements
         this.arrSystemids = this.getSelectedElements()
 
-        if (this.arrSystemids.length == 0) return
+        if (this.arrSystemids.length === 0) return
 
         var curConfirm = this.strConfirm.replace(
             '%amount%',
@@ -123,8 +123,7 @@ class Lists {
     }
 
     public static triggerSingleAction (reloadOnFinish: boolean) {
-        if (this.arrSystemids.length < 1 && reloadOnFinish)
-            {window.location.reload()}
+        if (this.arrSystemids.length < 1 && reloadOnFinish) { window.location.reload() }
         if (this.arrSystemids.length > 0 && this.intTotal > 0) {
             $('.batch_progressed').text(
                 this.intTotal - this.arrSystemids.length + 1
@@ -195,13 +194,13 @@ class Lists {
             if (
                 $(this)
                     .attr('id')
-                    .substr(0, 6) == 'kj_cb_' &&
-                $(this).attr('id') != 'kj_cb_batchActionSwitch'
+                    .substr(0, 6) === 'kj_cb_' &&
+                $(this).attr('id') !== 'kj_cb_batchActionSwitch'
             ) {
                 var sysid = $(this)
                     .closest('tr')
                     .data('systemid')
-                if (sysid != '') selectedElements.push(sysid)
+                if (sysid !== '') selectedElements.push(sysid)
             }
         })
 
@@ -221,13 +220,13 @@ class Lists {
             if (
                 $(this)
                     .attr('id')
-                    .substr(0, 6) == 'kj_cb_' &&
-                $(this).attr('id') != 'kj_cb_batchActionSwitch'
+                    .substr(0, 6) === 'kj_cb_' &&
+                $(this).attr('id') !== 'kj_cb_batchActionSwitch'
             ) {
                 var sysid = $(this)
                     .closest('tr')
                     .data('systemid')
-                if (sysid != '') selectedElements.push(sysid)
+                if (sysid !== '') selectedElements.push(sysid)
             }
         })
 
@@ -244,7 +243,7 @@ class Lists {
         tds.on('click', function (e) {
             var source = e.target
             // if not fired within an td, skip
-            if (source.tagName.toLowerCase() != 'td') {
+            if (source.tagName.toLowerCase() !== 'td') {
                 return
             }
 
@@ -257,10 +256,11 @@ class Lists {
                 callbacks[0].click()
                 return
             }
+            var button
             if (dialog) {
-                var button = row.find('td.actions .listButton:last a')
+                button = row.find('td.actions .listButton:last a')
             } else {
-                var button = row.find('td.actions .listButton:first a')
+                button = row.find('td.actions .listButton:first a')
             }
             if (button.length) {
                 var attr = button.attr('data-toggle')

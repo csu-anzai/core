@@ -1,14 +1,14 @@
-///<reference path="calendarheatmap.d.ts" />
-///<reference path="catcomplete.d.ts" />
-///<reference path="jstree.ts" />
-///<reference path="moment.d.ts" />
-///<reference path="tageditor.d.ts" />
+/// <reference path="calendarheatmap.d.ts" />
+/// <reference path="catcomplete.d.ts" />
+/// <reference path="jstree.ts" />
+/// <reference path="moment.d.ts" />
+/// <reference path="tageditor.d.ts" />
 
-declare module "jquery" {
+declare module 'jquery' {
     export = jQuery;
 }
 
-declare module "chartjs" {
+declare module 'chartjs' {
     export = Chart;
 }
 
@@ -24,22 +24,26 @@ interface Kajona {
     admin: any;
 }
 
-declare var KAJONA_WEBPATH: string;
-declare var KAJONA_DEBUG: number;
-declare var KAJONA_LANGUAGE: string;
-declare var KAJONA_BROWSER_CACHEBUSTER: number;
-declare var KAJONA_PHARMAP: Array<string>;
+declare var KAJONA_WEBPATH: string
+declare var KAJONA_DEBUG: number
+declare var KAJONA_LANGUAGE: string
+declare var KAJONA_BROWSER_CACHEBUSTER: number
+declare var KAJONA_PHARMAP: Array<string>
 
-declare var routie: any;
-
-/** @deprecated */
-declare var KAJONA: Kajona;
+declare var routie: any
 
 /** @deprecated */
-declare var jsDialog_0: any;
+declare var KAJONA: Kajona
+
 /** @deprecated */
-declare var jsDialog_1: any;
+// eslint-disable-next-line camelcase
+declare var jsDialog_0: any
 /** @deprecated */
-declare var jsDialog_2: any;
+// eslint-disable-next-line camelcase
+declare var jsDialog_1: any
 /** @deprecated */
-declare var jsDialog_3: any;
+// eslint-disable-next-line camelcase
+declare var jsDialog_2: any
+/** @deprecated */
+// eslint-disable-next-line camelcase
+declare var jsDialog_3: any

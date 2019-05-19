@@ -5,7 +5,7 @@ import $ from 'jquery'
  */
 class Quickhelp {
     public static setQuickhelp (strTitle: string, strText: string) {
-        if (strText.trim() == '') {
+        if (strText.trim() === '') {
             return
         }
         $('#quickhelp')

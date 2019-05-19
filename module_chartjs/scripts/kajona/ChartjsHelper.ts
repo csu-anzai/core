@@ -4,8 +4,6 @@ import Folderview from '../../../module_system/scripts/kajona/Folderview'
 const ChartDataLabels = require('chartjs-plugin-datalabels')
 var Chart = require('chart.js')
 
-declare var Chart: any
-
 /**
  * Chartjs service with helper procedures.
  */
@@ -25,6 +23,8 @@ class ChartjsHelper {
         dataPoint: any
     ) {
         if (dataPoint.actionhandler && dataPoint.actionhandler != null) {
+            /* eslint no-eval: 0 */
+            // FIXME find another alternative for eval because it can be harmful
             var objFunction = eval('(' + dataPoint.actionhandler + ')')
             if ($.isFunction(objFunction)) {
                 objFunction.call(this, ev, seriesIndex, pointIndex, null, dataPoint)
@@ -43,7 +43,7 @@ class ChartjsHelper {
         if (
             dataPoint.actionhandlervalue &&
       dataPoint.actionhandlervalue != null &&
-      dataPoint.actionhandlervalue != ''
+      dataPoint.actionhandlervalue !== ''
         ) {
             Folderview.dialog.setContentIFrame(dataPoint.actionhandlervalue)
             Folderview.dialog.setTitle('')
@@ -65,7 +65,7 @@ class ChartjsHelper {
             sum += data
         })
         var percentage = ((value * 100) / sum).toFixed(0)
-        return percentage != '0' ? percentage + '%' : ''
+        return percentage !== '0' ? percentage + '%' : ''
     }
 
     /**
@@ -94,7 +94,7 @@ class ChartjsHelper {
    * @returns {string}
    */
     public static dataNotShowNullValues (value: number) {
-        return value != 0 ? value : ''
+        return value !== 0 ? value : ''
     }
 
     /**
@@ -157,14 +157,10 @@ class ChartjsHelper {
             typeof chartOptions['addThousandSeparator'] !== 'undefined' &&
       chartOptions['addThousandSeparator']
         ) {
-            chartData['options']['scales']['xAxes'][0]['ticks'][
-                'userCallback'
-            ] = function (value: number, ctx: any) {
+            chartData['options']['scales']['xAxes'][0]['ticks']['userCallback'] = function (value: number, ctx: any) {
                 return ChartjsHelper.addThousandSeparator(value, ctx)
             }
-            chartData['options']['scales']['yAxes'][0]['ticks'][
-                'userCallback'
-            ] = function (value: number, ctx: any) {
+            chartData['options']['scales']['yAxes'][0]['ticks']['userCallback'] = function (value: number, ctx: any) {
                 return ChartjsHelper.addThousandSeparator(value, ctx)
             }
         }

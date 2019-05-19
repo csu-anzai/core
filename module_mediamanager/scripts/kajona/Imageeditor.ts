@@ -1,24 +1,34 @@
-import * as $ from 'jquery'
-import Ajax from '../../../module_system/scripts/kajona/Ajax'
-import StatusDisplay from '../../../module_system/scripts/kajona/StatusDisplay'
+import $ from 'jquery'
+import Ajax from 'core/module_system/scripts/kajona/Ajax'
+import StatusDisplay from 'core/module_system/scripts/kajona/StatusDisplay'
 // import * as JQuery from "jquery";
 
 class Imageeditor {
     public static cropArea: any = null
+    // eslint-disable-next-line camelcase
     public static fm_cropObj: any = null
+    // eslint-disable-next-line camelcase
     public static fm_image_isScaled = true
 
     public static strCropEnabled = ''
     public static strCropDisabled = ''
 
+    // eslint-disable-next-line camelcase
     public static fm_image_rawurl = ''
+    // eslint-disable-next-line camelcase
     public static fm_image_scaledurl = ''
+    // eslint-disable-next-line camelcase
     public static fm_image_scaledMaxWidth = ''
+    // eslint-disable-next-line camelcase
     public static fm_image_scaledMaxHeight = ''
+    // eslint-disable-next-line camelcase
     public static fm_file = ''
 
+    // eslint-disable-next-line camelcase
     public static init_fm_crop_save_warning_dialog: Function = null
+    // eslint-disable-next-line camelcase
     public static init_fm_screenlock_dialog: Function = null
+    // eslint-disable-next-line camelcase
     public static hide_fm_screenlock_dialog: Function = null
 
     public static saveImageCropping (
@@ -159,7 +169,7 @@ class Imageeditor {
             status: string,
             jqXHR: XMLHttpRequest
         ) {
-            if (status == 'success') {
+            if (status === 'success') {
                 StatusDisplay.displayXMLMessage(data)
                 iE.fm_cropObj.destroy()
                 iE.fm_cropObj = null
@@ -207,7 +217,7 @@ class Imageeditor {
             status: string,
             jqXHR: XMLHttpRequest
         ) {
-            if (status == 'success') {
+            if (status === 'success') {
                 StatusDisplay.displayXMLMessage(data)
 
                 if (iE.fm_cropObj != null) {

@@ -1,8 +1,8 @@
 import $ from 'jquery'
-import Ajax from '../../../module_system/scripts/kajona/Ajax'
-import Tooltip from '../../../module_system/scripts/kajona/Tooltip'
-import StatusDisplay from '../../../module_system/scripts/kajona/StatusDisplay'
-import Util from '../../../module_system/scripts/kajona/Util'
+import Ajax from 'core/module_system/scripts/kajona/Ajax'
+import Tooltip from 'core/module_system/scripts/kajona/Tooltip'
+import StatusDisplay from 'core/module_system/scripts/kajona/StatusDisplay'
+import Util from 'core/module_system/scripts/kajona/Util'
 
 /**
  * Tags-handling
@@ -44,7 +44,7 @@ class Tags {
                 '&attribute=' +
                 strAttribute,
             function (data: any, status: string, jqXHR: XMLHttpRequest) {
-                if (status == 'success') {
+                if (status === 'success') {
                     Tags.reloadTagList(strSystemid, strAttribute)
                     $('#tagname').val('')
                 } else {
@@ -64,7 +64,7 @@ class Tags {
             'tagList',
             strSystemid + '&attribute=' + strAttribute,
             function (data: any, status: string, jqXHR: XMLHttpRequest) {
-                if (status == 'success') {
+                if (status === 'success') {
                     var intStart = data.indexOf('<tags>') + 6
                     var strContent = data.substr(
                         intStart,
@@ -101,7 +101,7 @@ class Tags {
                 '&attribute=' +
                 strAttribute,
             function (data: any, status: string, jqXHR: XMLHttpRequest) {
-                if (status == 'success') {
+                if (status === 'success') {
                     Tags.reloadTagList(strTargetSystemid, strAttribute)
                     $('#tagname').val('')
                 } else {
@@ -125,7 +125,7 @@ class Tags {
             'tagList',
             strTargetSystemid + '&attribute=' + strAttribute + '&delete=false',
             function (data: any, status: string, jqXHR: XMLHttpRequest) {
-                if (status == 'success') {
+                if (status === 'success') {
                     var intStart = data.indexOf('<tags>') + 6
                     var strContent = data.substr(
                         intStart,

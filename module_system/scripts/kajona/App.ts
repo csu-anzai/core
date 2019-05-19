@@ -3,10 +3,10 @@ import Router from './Router'
 import 'jquery-ui.custom'
 import 'jquery-ui-touch-punch'
 import * as toastr from 'toastr'
-import V4skin from '../../../module_v4skin/scripts/kajona/V4skin'
-import Dialog from '../../../module_v4skin/scripts/kajona/Dialog'
+import V4skin from 'core/module_v4skin/scripts/kajona/V4skin'
+import Dialog from 'core/module_v4skin/scripts/kajona/Dialog'
 import Folderview from './Folderview'
-import DialogHelper from '../../../module_v4skin/scripts/kajona/DialogHelper'
+import DialogHelper from 'core/module_v4skin/scripts/kajona/DialogHelper'
 import moment from 'moment'
 import mermaid from 'mermaid'
 import VueMain from './VueMainComponent/VueMain.vue'
@@ -17,9 +17,13 @@ import VueRouter from './VueMainComponent/VueRouter'
 declare global {
     interface Window {
         KAJONA: Kajona
+        // eslint-disable-next-line camelcase
         jsDialog_0: Dialog
+        // eslint-disable-next-line camelcase
         jsDialog_1: Dialog
+        // eslint-disable-next-line camelcase
         jsDialog_2: Dialog
+        // eslint-disable-next-line camelcase
         jsDialog_3: Dialog
     }
 }
@@ -79,6 +83,7 @@ class App {
         if (process.env.NODE_ENV === 'development') {
             Vue.config.devtools = true
         }
+        // eslint-disable-next-line no-new
         new Vue({
             el: '#vueContainer',
             // @ts-ignore

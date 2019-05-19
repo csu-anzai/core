@@ -1,4 +1,4 @@
-import Ajax from '../../../module_system/scripts/kajona/Ajax'
+import Ajax from 'core/module_system/scripts/kajona/Ajax'
 import Vue from 'vue'
 /**
  * Fronend controller for the dbbrowser module
@@ -10,6 +10,7 @@ class Dbbrowser {
      * @param column
      */
     public static initDbBrowser (element: any) {
+        // eslint-disable-next-line no-new
         new Vue({ el: '#' + element })
     }
     public static addIndex (tableName: string, column: string) {
@@ -18,7 +19,7 @@ class Dbbrowser {
             'apiAddIndex',
             '&table=' + tableName + '&column=' + column,
             function (data: any, status: string) {
-                if (status == 'success') {
+                if (status === 'success') {
                     Ajax.loadUrlToElement(
                         '.schemaDetails',
                         '/xml.php?module=dbbrowser&action=apiSystemSchema&table=' +
@@ -44,7 +45,7 @@ class Dbbrowser {
             'apiDeleteIndex',
             '&table=' + tableName + '&index=' + indexName,
             function (data: any, status: string) {
-                if (status == 'success') {
+                if (status === 'success') {
                     Ajax.loadUrlToElement(
                         '.schemaDetails',
                         '/xml.php?module=dbbrowser&action=apiSystemSchema&table=' +
@@ -70,7 +71,7 @@ class Dbbrowser {
             'apiRecreateIndex',
             '&table=' + tableName + '&index=' + indexName,
             function (data: any, status: string) {
-                if (status == 'success') {
+                if (status === 'success') {
                     Ajax.loadUrlToElement(
                         '.schemaDetails',
                         '/xml.php?module=dbbrowser&action=apiSystemSchema&table=' +

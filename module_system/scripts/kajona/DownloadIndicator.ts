@@ -1,4 +1,4 @@
-import DialogHelper from '../../../module_v4skin/scripts/kajona/DialogHelper'
+import DialogHelper from 'core/module_v4skin/scripts/kajona/DialogHelper'
 import WorkingIndicator from './WorkingIndicator'
 
 /**
@@ -54,7 +54,7 @@ class DownloadIndicator {
     public checkFinished (): void {
         let token = this.getCookie()
 
-        if (token == this.key) {
+        if (token === this.key) {
             this.stopWorking()
         }
 
@@ -79,11 +79,12 @@ class DownloadIndicator {
      */
     private getCookie (): string {
         let parts = document.cookie.split(this.cookieName + '=')
-        if (parts.length == 2)
-            {return parts
+        if (parts.length === 2) {
+            return parts
                 .pop()
                 .split(';')
-                .shift()}
+                .shift()
+        }
     }
 
     /**
@@ -116,7 +117,7 @@ class DownloadIndicatorPublic {
         let key = manager.generateKey()
         manager.setWorking()
 
-        if (downloadUrl.indexOf('?') == -1) {
+        if (downloadUrl.indexOf('?') === -1) {
             downloadUrl = downloadUrl + '?indicatorToken=' + key
         } else {
             downloadUrl = downloadUrl + '&indicatorToken=' + key

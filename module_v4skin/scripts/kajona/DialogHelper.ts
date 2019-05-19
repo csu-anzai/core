@@ -1,5 +1,5 @@
 import Dialog from './Dialog'
-import Folderview from '../../../module_system/scripts/kajona/Folderview'
+import Folderview from 'core/module_system/scripts/kajona/Folderview'
 
 class DialogHelper {
     private static loadingModal: Dialog = null

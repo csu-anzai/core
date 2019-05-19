@@ -1,9 +1,9 @@
 import $ from 'jquery'
 import Ajax from './Ajax'
 import Util from './Util'
-import DialogHelper from '../../../module_v4skin/scripts/kajona/DialogHelper'
+import DialogHelper from 'core/module_v4skin/scripts/kajona/DialogHelper'
 import Router from './Router'
-import Dialog from '../../../module_v4skin/scripts/kajona/Dialog'
+import Dialog from 'core/module_v4skin/scripts/kajona/Dialog'
 const toastr = require('toastr')
 interface Accept {
     type: string
@@ -72,7 +72,7 @@ class Messaging {
             'getUnreadMessagesCount',
             '',
             function (data: any, status: string, jqXHR: any) {
-                if (status == 'success') {
+                if (status === 'success') {
                     var $objResult = $.parseJSON(data)
                     objCallback($objResult.count)
 
@@ -82,8 +82,8 @@ class Messaging {
                 } else {
                     // in case the API returns a 401 the user has logged out so reload the page to show the login page
                     if (
-                        data.status == 401 &&
-                        $('#loginContainer').length == 0 &&
+                        data.status === 401 &&
+                        $('#loginContainer').length === 0 &&
                         !$('body').hasClass('anonymous')
                     ) {
                         location.reload()
@@ -104,7 +104,7 @@ class Messaging {
             status: string,
             jqXHR: any
         ) {
-            if (status == 'success') {
+            if (status === 'success') {
                 var objResponse = $.parseJSON(data)
                 objCallback(objResponse)
             }
@@ -144,7 +144,7 @@ class Messaging {
         $userNotificationsCount.text(intCount)
         if (intCount > 0) {
             $userNotificationsCount.show()
-            if (oldCount != intCount) {
+            if (oldCount !== intCount) {
                 if (document.title.match(/\(\d+\)/)) {
                     document.title = document.title.replace(
                         /\(\d+\)/,
@@ -267,7 +267,7 @@ class Messaging {
                 // search for the specific status flag and update
                 $('.flow-status-icon').each(function () {
                     let el = $(this).find('.navbar-link')
-                    if ($(this).data('systemid') == data.systemid) {
+                    if ($(this).data('systemid') === data.systemid) {
                         el.html(data.icon)
                     }
                 })

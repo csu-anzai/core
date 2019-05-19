@@ -1,4 +1,4 @@
-import * as $ from 'jquery'
+import $ from 'jquery'
 import 'fullcalendar'
 import WorkingIndicator from '../../../module_system/scripts/kajona/WorkingIndicator'
 import Tooltip from '../../../module_system/scripts/kajona/Tooltip'

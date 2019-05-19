@@ -1,6 +1,6 @@
 import $ from 'jquery'
 import * as toastr from 'toastr'
-import Lang from '../../../module_system/scripts/kajona/Lang'
+import Lang from 'core/module_system/scripts/kajona/Lang'
 
 declare global {
     interface Window {
@@ -49,7 +49,7 @@ class Util {
      */
     public static evalScript (scripts: string) {
         try {
-            if (scripts != '') {
+            if (scripts !== '') {
                 var script = ''
                 scripts = scripts.replace(
                     /<script[^>]*>([\s\S]*?)<\/script>/gi,
@@ -58,10 +58,11 @@ class Util {
                         return ''
                     }
                 )
-                if (script)
-                    {window.execScript
+                if (script) {
+                    window.execScript
                         ? window.execScript(script)
-                        : window.setTimeout(script, 0)}
+                        : window.setTimeout(script, 0)
+                }
             }
             return false
         } catch (e) {
@@ -81,7 +82,7 @@ class Util {
      */
     public static inArray (strNeedle: string, arrHaystack: Array<any>) {
         for (var i = 0; i < arrHaystack.length; i++) {
-            if (arrHaystack[i] == strNeedle) {
+            if (arrHaystack[i] === strNeedle) {
                 return true
             }
         }
@@ -96,7 +97,7 @@ class Util {
         return !!(
             window.frameElement &&
             window.frameElement.nodeName &&
-            window.frameElement.nodeName.toLowerCase() == 'iframe'
+            window.frameElement.nodeName.toLowerCase() === 'iframe'
         )
     }
 
@@ -144,7 +145,7 @@ class Util {
     ) {
         var element = document.getElementById(strElementId)
         var image = document.getElementById(strImageId)
-        if (element.style.display == 'none') {
+        if (element.style.display === 'none') {
             element.style.display = 'block'
             image.setAttribute('src', strImageVisible)
         } else {
@@ -276,8 +277,8 @@ class Util {
                 (intLengthWholePart || 3) +
                 '})+' +
                 (intDecimalLength > 0 ? '\\D' : '$') +
-                ')';
-            var num = floatValue.toFixed(Math.max(0, ~~intDecimalLength))
+                ')'
+        var num = floatValue.toFixed(Math.max(0, ~~intDecimalLength))
 
         return (strDelimiterDecimal
             ? num.replace('.', strDelimiterDecimal)
@@ -292,12 +293,12 @@ class Util {
      * @param {string} type
      */
     public static transformDateFormat (format: string, type: string) {
-        if (type == 'bootstrap-datepicker') {
+        if (type === 'bootstrap-datepicker') {
             return format
                 .replace('d', 'dd')
                 .replace('m', 'mm')
                 .replace('Y', 'yyyy')
-        } else if (type == 'momentjs') {
+        } else if (type === 'momentjs') {
             return format
                 .replace('d', 'DD')
                 .replace('m', 'MM')
@@ -315,9 +316,9 @@ class Util {
      */
     public static getQueryParameter (name: string) {
         var pos = location.search.indexOf('&' + name + '=')
-        if (pos != -1) {
+        if (pos !== -1) {
             var endPos = location.search.indexOf('&', pos + 1)
-            if (endPos == -1) {
+            if (endPos === -1) {
                 return location.search.substr(pos + name.length + 2)
             } else {
                 return location.search.substr(

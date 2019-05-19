@@ -19,7 +19,7 @@ class User {
             'apiGroupMemberAdd',
             '&userid=' + userid + '&groupid=' + groupid,
             function (data: any, status: string) {
-                if (status == 'success') {
+                if (status === 'success') {
                     // $('.admintable').append(data.row);
                     $('.admintable tbody')
                         .last()
@@ -49,7 +49,7 @@ class User {
             'apiGroupMemberDelete',
             '&userid=' + userid + '&groupid=' + groupid,
             function (data: any, status: string) {
-                if (status == 'success') {
+                if (status === 'success') {
                     $('tr[data-systemid=' + groupid + ']')
                         .closest('tbody')
                         .remove()

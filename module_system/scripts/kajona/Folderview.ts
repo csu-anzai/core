@@ -1,5 +1,5 @@
 import $ from 'jquery'
-import Dialog from '../../../module_v4skin/scripts/kajona/Dialog'
+import Dialog from 'core/module_v4skin/scripts/kajona/Dialog'
 import Util from './Util'
 import Lists from './Lists'
 
