@@ -492,23 +492,23 @@ class ToolkitAdmin extends Toolkit
         );
 
         $strOpener .= " " . getLinkAdminDialog(
-            "mediamanager",
-            "imageDetails",
-            "file='+document.getElementById('" . $strName . "').value+'",
-            Carrier::getInstance()->getObjLang()->getLang("action_edit_image", "mediamanager"),
-            Carrier::getInstance()->getObjLang()->getLang("action_edit_image", "mediamanager"),
-            "icon_crop",
-            Carrier::getInstance()->getObjLang()->getLang("action_edit_image", "mediamanager"),
-            true,
-            false,
-            " (function() {
+                "mediamanager",
+                "imageDetails",
+                "file='+document.getElementById('" . $strName . "').value+'",
+                Carrier::getInstance()->getObjLang()->getLang("action_edit_image", "mediamanager"),
+                Carrier::getInstance()->getObjLang()->getLang("action_edit_image", "mediamanager"),
+                "icon_crop",
+                Carrier::getInstance()->getObjLang()->getLang("action_edit_image", "mediamanager"),
+                true,
+                false,
+                " (function() {
          if(document.getElementById('" . $strName . "').value != '') {
              Folderview.dialog.setContentIFrame('" . urldecode(getLinkAdminHref("mediamanager", "imageDetails", "file='+document.getElementById('" . $strName . "').value+'")) . "');
              Folderview.dialog.setTitle('" . $strTitle . "');
              Folderview.dialog.init();
          }
          return false; })(); return false;"
-        );
+            );
 
         return $this->formInputText($strName, $strTitle, $strValue, $strClass, $strOpener);
     }
@@ -537,7 +537,7 @@ class ToolkitAdmin extends Toolkit
         $cmp->setPlaceholder($strPlaceholder);
 
         return $cmp->renderComponent();
-  }
+    }
 
     /**
      * Returns a password text-input field
@@ -1540,7 +1540,7 @@ HTML;
 
         //create the list-button and the js code to show the dialog
         $strButton = Link::getLinkAdminManual(
-            "href=\"#\" onclick=\"javascript:jsDialog1.setTitle('{$strHeader}'); jsDialog1.setContent('{$strDialogContent}', '{$strConfirmationButtonLabel}', {$strConfirmationLink}); jsDialog1.init(); return false;\"",
+            "href=\"#\" onclick=\"javascript:jsDialog_1.setTitle('{$strHeader}'); jsDialog_1.setContent('{$strDialogContent}', '{$strConfirmationButtonLabel}', {$strConfirmationLink}); jsDialog_1.init(); return false;\"",
             "",
             $strButtonTooltip,
             $strButton
@@ -1577,7 +1577,7 @@ HTML;
 
         //create the list-button and the js code to show the dialog
         return Link::getLinkAdminManual(
-            "href=\"#\" onclick=\"javascript:jsDialog1.setTitle('{$strHeader}'); jsDialog1.setContent('{$strDialogContent}', '{$strConfirmationButtonLabel}',  '" . $strConfirmationLinkHref . $strParam . "'); jsDialog1.init(); return false;\"",
+            "href=\"#\" onclick=\"javascript:jsDialog_1.setTitle('{$strHeader}'); jsDialog_1.setContent('{$strDialogContent}', '{$strConfirmationButtonLabel}',  '" . $strConfirmationLinkHref . $strParam . "'); jsDialog_1.init(); return false;\"",
             $strLinkText
         );
     }
@@ -1898,10 +1898,10 @@ JS;
 
             if ($strCombinedHeader != "") {
                 $strModules = $this->objTemplate->fillTemplateFile(
-                    ["combined_header" => $strCombinedHeader, "combined_body" => $strCombinedBody],
-                    "/admin/skins/kajona_v4/elements.tpl",
-                    "sitemap_combined_entry_wrapper"
-                ) . $strModules;
+                        ["combined_header" => $strCombinedHeader, "combined_body" => $strCombinedBody],
+                        "/admin/skins/kajona_v4/elements.tpl",
+                        "sitemap_combined_entry_wrapper"
+                    ) . $strModules;
             }
 
             $strAllModules .= $this->objTemplate->fillTemplateFile(
@@ -1916,7 +1916,7 @@ JS;
         if (!empty($arrToggleEntries)) {
             $strToggle = $this->registerMenu("mainNav", $arrToggleEntries);
             $strToggleDD =
-            "<span class='dropdown pull-left'><a href='#' data-toggle='dropdown' role='button'>" . AdminskinHelper::getAdminImage("icon_submenu") . "</a>{$strToggle}</span>"
+                "<span class='dropdown pull-left'><a href='#' data-toggle='dropdown' role='button'>" . AdminskinHelper::getAdminImage("icon_submenu") . "</a>{$strToggle}</span>"
             ;
         }
 
@@ -2228,9 +2228,9 @@ JS;
         $arrTemplate["treeId"] = "tree_" . $objTreeConfig->getStrRootNodeId();
         $arrTemplate["treeConfig"] = $objTreeConfig->toJson();
         $arrTemplate["treeviewExpanders"] = is_array($objTreeConfig->getArrNodesToExpand()) ?
-        json_encode(array_values($objTreeConfig->getArrNodesToExpand())) : "[]"; //using array_values just in case an associative array is being returned
+            json_encode(array_values($objTreeConfig->getArrNodesToExpand())) : "[]"; //using array_values just in case an associative array is being returned
         $arrTemplate["initiallySelectedNodes"] = is_array($objTreeConfig->getArrInitiallySelectedNodes()) ?
-        json_encode(array_values($objTreeConfig->getArrInitiallySelectedNodes())) : "[]"; //using array_values just in case an associative array is being returned
+            json_encode(array_values($objTreeConfig->getArrInitiallySelectedNodes())) : "[]"; //using array_values just in case an associative array is being returned
 
         return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "tree");
     }
@@ -2296,8 +2296,8 @@ JS;
             </script>";
 
             $strImage = TagsFavorite::getAllFavoritesForUserAndTag(Carrier::getInstance()->getObjSession()->getUserID(), $objTag->getSystemid()) != null ?
-            AdminskinHelper::getAdminImage("icon_favorite", Carrier::getInstance()->getObjLang()->getLang("tag_favorite_remove", "tags")) :
-            AdminskinHelper::getAdminImage("icon_favoriteDisabled", Carrier::getInstance()->getObjLang()->getLang("tag_favorite_add", "tags"));
+                AdminskinHelper::getAdminImage("icon_favorite", Carrier::getInstance()->getObjLang()->getLang("tag_favorite_remove", "tags")) :
+                AdminskinHelper::getAdminImage("icon_favoriteDisabled", Carrier::getInstance()->getObjLang()->getLang("tag_favorite_add", "tags"));
 
             $strFavorite = $strJs . "<a href=\"#\" onclick=\"Tags.createFavorite('" . $objTag->getSystemid() . "', this); return false;\">" . $strImage . "</a>";
         }
