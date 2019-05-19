@@ -75,34 +75,34 @@ class Imageeditor {
     public static showRealSize () {
         $('#fm_mediamanagerPic').attr(
             'src',
-            this.fmImageRawUrl + '&x=' + new Date().getMilliseconds()
+            this.fm_image_rawurl + '&x=' + new Date().getMilliseconds()
         )
-        this.fmImageIsScaled = false
+        this.fm_image_isScaled = false
         this.hideCropping()
     }
 
     public static showPreview () {
         $('#fm_mediamanagerPic').attr(
             'src',
-            this.fmImageScaledUrl
-                .replace('__width__', this.fmImageScaledMaxWidth)
-                .replace('__height__', this.fmImageScaledMaxHeight) +
-                '&x=' +
-                new Date().getMilliseconds()
+            this.fm_image_scaledurl
+                .replace('__width__', this.fm_image_scaledMaxWidth)
+                .replace('__height__', this.fm_image_scaledMaxHeight) +
+            '&x=' +
+            new Date().getMilliseconds()
         )
-        this.fmImageIsScaled = true
+        this.fm_image_isScaled = true
         this.hideCropping()
     }
 
     public static showCropping () {
         // init the cropping
         var iE = this
-        if (this.fmCropObj == null) {
+        if (this.fm_cropObj == null) {
             $('#fm_mediamanagerPic').Jcrop({}, function () {
-                iE.fmCropObj = this
+                iE.fm_cropObj = this
             })
 
-            this.fmCropObj.animateTo([120, 120, 80, 80])
+            this.fm_cropObj.animateTo([120, 120, 80, 80])
 
             $('#accept_icon').html(this.strCropEnabled)
             $('#fm_mediamanagerPic_wrap').bind('dblclick', function (event) {
@@ -114,26 +114,26 @@ class Imageeditor {
     }
 
     public static hideCropping () {
-        if (this.fmCropObj != null) {
-            this.fmCropObj.destroy()
-            this.fmCropObj = null
+        if (this.fm_cropObj != null) {
+            this.fm_cropObj.destroy()
+            this.fm_cropObj = null
             $('#fm_mediamanagerPic').css('visibility', 'visible')
             $('#accept_icon').html(this.strCropDisabled)
         }
     }
 
     public static saveCropping () {
-        if (this.fmCropObj != null) {
-            this.initFmCropSaveWarningDialog()
+        if (this.fm_cropObj != null) {
+            this.init_fm_crop_save_warning_dialog()
         }
     }
 
     public static saveCroppingToBackend () {
-        jsDialog1.hide()
-        this.initFmScreenlockDialog()
-        this.cropArea = this.fmCropObj.tellSelect()
+        jsDialog_1.hide()
+        this.init_fm_screenlock_dialog()
+        this.cropArea = this.fm_cropObj.tellSelect()
 
-        if (this.fmImageIsScaled) {
+        if (this.fm_image_isScaled) {
             // recalculate the "real" crop-coordinates
             var intScaledWidth = parseInt(
                 $('#fm_mediamanagerPic').attr('width')
@@ -170,8 +170,8 @@ class Imageeditor {
         ) {
             if (status === 'success') {
                 StatusDisplay.displayXMLMessage(data)
-                iE.fmCropObj.destroy()
-                iE.fmCropObj = null
+                iE.fm_cropObj.destroy()
+                iE.fm_cropObj = null
                 $('#accept_icon').html(iE.strCropEnabled)
                 $('#fm_image_dimensions').html(
                     iE.cropArea.w + ' x ' + iE.cropArea.h
@@ -181,7 +181,7 @@ class Imageeditor {
                 $('#fm_int_realheight').val(iE.cropArea.h)
 
                 $('#fm_mediamanagerPic').css('visibility', 'visible')
-                if (iE.fmImageIsScaled) {
+                if (iE.fm_image_isScaled) {
                     iE.showPreview()
                 } else {
                     iE.showRealSize()
@@ -190,10 +190,10 @@ class Imageeditor {
                 iE.cropArea = null
 
                 location.reload()
-                iE.hideFmScreenlockDialog()
+                iE.hide_fm_screenlock_dialog()
             } else {
                 StatusDisplay.messageError('<b>Request failed!</b>' + data)
-                iE.hideFmScreenlockDialog()
+                iE.hide_fm_screenlock_dialog()
             }
         }
 
@@ -202,13 +202,13 @@ class Imageeditor {
             this.cropArea.y,
             this.cropArea.w,
             this.cropArea.h,
-            this.fmFile,
+            this.fm_file,
             callback
         )
     }
 
     public static rotate (intAngle: number) {
-        this.initFmScreenlockDialog()
+        this.init_fm_screenlock_dialog()
 
         var iE = this
         var callback = function (
@@ -219,18 +219,18 @@ class Imageeditor {
             if (status === 'success') {
                 StatusDisplay.displayXMLMessage(data)
 
-                if (iE.fmCropObj != null) {
-                    iE.fmCropObj.destroy()
-                    iE.fmCropObj = null
+                if (iE.fm_cropObj != null) {
+                    iE.fm_cropObj.destroy()
+                    iE.fm_cropObj = null
                     $('#accept_icon').html(iE.strCropDisabled)
                 }
 
                 // switch width and height
-                var intScaledMaxWidthOld = iE.fmImageScaledMaxWidth
-                iE.fmImageScaledMaxWidth = iE.fmImageScaledMaxHeight
-                iE.fmImageScaledMaxHeight = intScaledMaxWidthOld
+                var intScaledMaxWidthOld = iE.fm_image_scaledMaxWidth
+                iE.fm_image_scaledMaxWidth = iE.fm_image_scaledMaxHeight
+                iE.fm_image_scaledMaxHeight = intScaledMaxWidthOld
 
-                if (iE.fmImageIsScaled) {
+                if (iE.fm_image_isScaled) {
                     iE.showPreview()
                 } else {
                     iE.showRealSize()
@@ -245,14 +245,14 @@ class Imageeditor {
                     intHeightOld + ' x ' + intWidthOld
                 )
 
-                iE.hideFmScreenlockDialog()
+                iE.hide_fm_screenlock_dialog()
             } else {
                 StatusDisplay.messageError('<b>Request failed!</b>' + data)
-                iE.hideFmScreenlockDialog()
+                iE.hide_fm_screenlock_dialog()
             }
         }
 
-        this.saveImageRotating(intAngle, this.fmFile, callback)
+        this.saveImageRotating(intAngle, this.fm_file, callback)
     }
 }
 ;(<any>window).Imageeditor = Imageeditor

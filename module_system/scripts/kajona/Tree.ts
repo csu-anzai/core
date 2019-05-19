@@ -229,8 +229,8 @@ class JSTree {
      * Checks if a node can be dropped to a certain place in the tree
      *
      * @param node - the dragged node
-     * @param nodeParent
-     * @param nodePosition
+     * @param node_parent
+     * @param node_position
      * @param more
      * @returns {boolean}
      */
@@ -248,7 +248,7 @@ class JSTree {
         var strInsertPosition = more.pos // "b"=>before, "a"=>after, "i"=inside
 
         // 1. user can only move node if he has right on the dragged node and the parent node
-        if (!node.data.rightedit && !nodeParent.data.rightedit) {
+        if (!node.data.rightedit && !node_parent.data.rightedit) {
             return false
         }
 
@@ -269,13 +269,13 @@ class JSTree {
             return false // TODO maybe not needed, already check by jstree it self
         }
 
-        // 5. Check if node is valid child of nodeParent
-        if (!this.isValidChildNodeForParent(node, nodeParent)) {
+        // 5. Check if node is valid child of node_parent
+        if (!this.isValidChildNodeForParent(node, node_parent)) {
             return false
         }
 
-        // 6. Check nodeParent is valid parent for node
-        if (!this.isValidParentNodeForChild(node, nodeParent)) {
+        // 6. Check node_parent is valid parent for node
+        if (!this.isValidParentNodeForChild(node, node_parent)) {
             return false
         }
 
@@ -286,7 +286,7 @@ class JSTree {
      * Checks if given node is a valid child node for the given parent
      *
      * @param node
-     * @param nodeParent
+     * @param node_parent
      * @returns {boolean}
      */
     // eslint-disable-next-line camelcase
@@ -294,7 +294,7 @@ class JSTree {
         if (node.data.customtypes) {
             var curType = node.data.customtypes.type
             var arrValidChildrenTargetParent =
-                nodeParent.data.customtypes.valid_children
+                node_parent.data.customtypes.valid_children
 
             if (arrValidChildrenTargetParent === null) {
                 return true
@@ -326,8 +326,8 @@ class JSTree {
         )
         if (nodeWithDataAttribute !== null) {
             var idToCheck = nodeWithDataAttribute.id
-            var arrParents = nodeParent.parents
-            arrParents.unshift(nodeParent.id)
+            var arrParents = node_parent.parents
+            arrParents.unshift(node_parent.id)
 
             if ($.inArray(idToCheck, arrParents) === -1) {
                 return false
@@ -435,8 +435,8 @@ class JSTree {
                  *
                  * @param operation operation can be 'create_node', 'rename_node', 'delete_node', 'move_node' or 'copy_node'
                  * @param node the selected node
-                 * @param nodeParent
-                 * @param nodePosition
+                 * @param node_parent
+                 * @param node_position
                  * @param more on dnd => more is the hovered node
                  * @returns {boolean}
                  */
@@ -450,7 +450,7 @@ class JSTree {
                     more: any
                 ) {
                     // operation can be 'create_node', 'rename_node', 'delete_node', 'move_node' or 'copy_node'
-                    // in case of 'rename_node' nodePosition is filled with the new node name
+                    // in case of 'rename_node' node_position is filled with the new node name
 
                     var bitReturn = false
 
@@ -460,8 +460,8 @@ class JSTree {
                         if (more.dnd) {
                             bitReturn = treeContext.checkMoveNode(
                                 node,
-                                nodeParent,
-                                nodePosition,
+                                node_parent,
+                                node_position,
                                 more
                             )
                         }

@@ -341,7 +341,7 @@ class V4skin {
                     strDeleteButton
                 )
 
-                jsDialog1.hide()
+                jsDialog_1.hide()
             }
         }
     }

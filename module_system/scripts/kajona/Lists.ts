@@ -89,18 +89,18 @@ class Lists {
         )
         curConfirm = curConfirm.replace('%title%', strTitle)
 
-        jsDialog1.setTitle(this.strDialogTitle)
-        jsDialog1.setContent(
+        jsDialog_1.setTitle(this.strDialogTitle)
+        jsDialog_1.setContent(
             curConfirm,
             this.strDialogStart,
             "javascript:Lists.executeActions('+reloadOnFinish+');",
             true
         )
-        jsDialog1.init()
+        jsDialog_1.init()
 
         // reset pending list on hide
         var me = this
-        $('#' + jsDialog1.containerId).on('hidden.bs.modal', function () {
+        $('#' + jsDialog_1.containerId).on('hidden.bs.modal', function () {
             me.arrSystemids = []
         })
 
@@ -117,7 +117,7 @@ class Lists {
 
         $('.batchActionsProgress > .progresstitle').text(this.strCurrentTitle)
         $('.batchActionsProgress > .total').text(this.intTotal)
-        jsDialog1.setContentRaw($('.batchActionsProgress').html())
+        jsDialog_1.setContentRaw($('.batchActionsProgress').html())
 
         this.triggerSingleAction(reloadOnFinish)
     }
@@ -164,14 +164,14 @@ class Lists {
 
             if (!this.bitRenderInfo) {
                 Router.reload()
-                jsDialog1.hide()
+                jsDialog_1.hide()
             } else {
                 $('#jsDialog_1_cancelButton').css('display', 'none')
                 $('#jsDialog_1_confirmButton')
                     .remove('click')
                     .on('click', function () {
                         Router.reload()
-                        jsDialog1.hide()
+                        jsDialog_1.hide()
                     })
                     .html(
                         '<span data-lang-property="system:systemtask_close_dialog"></span>'

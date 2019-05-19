@@ -31,7 +31,7 @@ class SystemTask {
                 .find('div.modal-dialog')
                 .removeClass('modal-lg')
             $('#systemtaskCancelButton').click(SystemTask.cancelExecution)
-            jsDialog0.init()
+            jsDialog_0.init()
         }
 
         Ajax.genericAjaxCall(
@@ -65,7 +65,7 @@ class SystemTask {
                             strReload = strResponseText.substr(
                                 intStart,
                                 strResponseText.indexOf('</reloadurl>') -
-                                    intStart
+                                intStart
                             )
                         }
 
@@ -84,7 +84,7 @@ class SystemTask {
                         }
                     }
                 } else {
-                    jsDialog0.hide()
+                    jsDialog_0.hide()
                     StatusDisplay.messageError(
                         '<b>Request failed!</b><br />' + data
                     )
@@ -94,7 +94,7 @@ class SystemTask {
     }
 
     public static cancelExecution () {
-        jsDialog0.hide()
+        jsDialog_0.hide()
     }
 
     public static setName (strName: string) {

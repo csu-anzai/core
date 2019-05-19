@@ -42,7 +42,7 @@ class Dashboard {
             if (status === 'success') {
                 $('div[data-systemid=' + strSystemid + ']').remove()
                 StatusDisplay.displayXMLMessage(data)
-                jsDialog1.hide()
+                jsDialog_1.hide()
             } else {
                 StatusDisplay.messageError(
                     '<b>Request failed!</b><br />' + data
@@ -67,8 +67,8 @@ class Dashboard {
 
             Ajax.loadUrlToElement(
                 "div.core-component-widget[data-systemid='" +
-                    systemId +
-                    "'] .content",
+                systemId +
+                "'] .content",
                 '/xml.php?' + params
             )
         })
@@ -98,12 +98,12 @@ class Dashboard {
                                     'dashboard',
                                     'setDashboardPosition',
                                     ui.item.data('systemid') +
-                                        '&listPos=' +
-                                        intPos +
-                                        '&listId=' +
-                                        ui.item
-                                            .closest('div.adminwidgetColumn')
-                                            .attr('id'),
+                                    '&listPos=' +
+                                    intPos +
+                                    '&listId=' +
+                                    ui.item
+                                        .closest('div.adminwidgetColumn')
+                                        .attr('id'),
                                     Ajax.regularCallback
                                 )
                                 return false
@@ -124,10 +124,10 @@ class Dashboard {
     public static editWidget (strSystemid: string) {
         Ajax.loadUrlToElement(
             "div.core-component-widget[data-systemid='" +
-                strSystemid +
-                "'] .content",
+            strSystemid +
+            "'] .content",
             '/xml.php?admin=1&module=dashboard&action=switchOnEditMode&systemid=' +
-                strSystemid
+            strSystemid
         )
     }
 
@@ -140,12 +140,12 @@ class Dashboard {
         if (!updateAdditionalContent) {
             Ajax.loadUrlToElement(
                 "div.core-component-widget[data-systemid='" +
-                    strSystemid +
-                    "'] .content",
+                strSystemid +
+                "'] .content",
                 '/xml.php?admin=1&module=dashboard&action=updateWidgetContent&systemid=' +
-                    strSystemid +
-                    '&' +
-                    data
+                strSystemid +
+                '&' +
+                data
             )
         } else {
             // add all current query parameters to the reload request
@@ -157,13 +157,13 @@ class Dashboard {
 
             Ajax.loadUrlToElement(
                 "div.core-component-widget[data-systemid='" +
-                    strSystemid +
-                    "'] .content",
+                strSystemid +
+                "'] .content",
                 '/xml.php?admin=1&module=dashboard&action=updateWidgetContent&systemid=' +
-                    strSystemid +
-                    '&' +
-                    data +
-                    query,
+                strSystemid +
+                '&' +
+                data +
+                query,
                 null,
                 null,
                 null,
@@ -177,10 +177,10 @@ class Dashboard {
     public static updateWidgetAdditionalContent (strSystemid: string) {
         Ajax.loadUrlToElement(
             "div.core-component-widget[data-systemid='" +
-                strSystemid +
-                "'] .additionalNameContent",
+            strSystemid +
+            "'] .additionalNameContent",
             '/xml.php?admin=1&module=dashboard&action=updateWidgetAdditionalContent&systemid=' +
-                strSystemid
+            strSystemid
         )
     }
 }
