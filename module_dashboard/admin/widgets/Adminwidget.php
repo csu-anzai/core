@@ -314,7 +314,7 @@ $strAdditionalContent = $this->getWidgetNameAdditionalContent();
         if (!empty($strAdditionalContent)) {
             $objFormgenerator->setStrOnSubmit("Dashboard.updateWidget(this, '{$this->getSystemid()}', true);return false");
         } else {
-            $objFormgenerator->setStrOnSubmit("require('dashboard').updateWidget(this, '{$this->getSystemid()}');return false");
+            $objFormgenerator->setStrOnSubmit("Dashboard.updateWidget(this, '{$this->getSystemid()}');return false");
         }
 
         $this->getEditFormContent($objFormgenerator);
