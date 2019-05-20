@@ -937,9 +937,57 @@ class AdminFormgenerator implements AdminFormgeneratorContainerInterface, \Count
      */
     public function jsonSerialize()
     {
-        return [
-            "fields" => array_values($this->arrFields),
-        ];
+        if ($this->intGroupStyle == self::GROUP_TYPE_TABS) {
+            return [
+                "type" => "tabs",
+                "fields" => $this->jsonSerializeGroups(),
+            ];
+        } elseif ($this->intGroupStyle == self::GROUP_TYPE_HEADLINE) {
+            return [
+                "type" => "headline",
+                "fields" => $this->jsonSerializeGroups(),
+            ];
+        } else {
+            return [
+                "type" => "panel",
+                "fields" => array_values($this->arrFields),
+            ];
+        }
+    }
+
+    /**
+     * @return array
+     */
+    private function jsonSerializeGroups()
+    {
+        $groups = [self::DEFAULT_GROUP => []];
+        foreach ($this->arrFields as $field) {
+            $key = $this->getGroupKeyForEntry($field);
+            if (empty($key)) {
+                // in case we have no key use the default key
+                $key = self::DEFAULT_GROUP;
+            }
+
+            if (!isset($groups[$key])) {
+                $groups[$key] = [];
+            }
+
+            $groups[$key][] = $field;
+        }
+
+        $panels = [];
+        foreach ($this->arrGroupSort as $key) {
+            $fields = $groups[$key] ?? null;
+            if (!empty($fields)) {
+                $panels[] = [
+                    "type" => "panel",
+                    "title" => $this->getGroupTitleByKey($key),
+                    "fields" => $fields,
+                ];
+            }
+        }
+
+        return $panels;
     }
 
     /**
