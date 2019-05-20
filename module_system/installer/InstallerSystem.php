@@ -755,9 +755,18 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $strReturn = "Updating to 7.1.6...".PHP_EOL;
         $strReturn .= "Removing deprecated workflow".PHP_EOL;
 
-        $wf = WorkflowsHandler::getHandlerByClass('AGP\Devops\System\Workflows\WorkflowDevopsSender');
-        $wf->deleteObjectFromDatabase();
+        //break if workflows present and < 7.1.6
+        $con = SystemModule::getModuleByName("workflows");
+        if ($con !== null && version_compare($con->getStrVersion(), "7.1", "l")) {
+            return "Update workflows to at least 7.1 before".PHP_EOL;
+        }
 
+        $wf = WorkflowsHandler::getHandlerByClass('AGP\Devops\System\Workflows\WorkflowDevopsSender');
+        if ($wf !== null) {
+            $wf->deleteObjectFromDatabase();
+        }
+
+        //TODO: geht erst wenn schema der wf durchmigriert ist, daher: dbupdate
         foreach(WorkflowsWorkflow::getWorkflowsForClass('AGP\Devops\System\Workflows\WorkflowDevopsSender') as $wf) {
             $wf->deleteObjectFromDatabase();
         }
