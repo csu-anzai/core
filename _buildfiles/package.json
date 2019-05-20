@@ -6,7 +6,7 @@
     "build": "webpack --mode production --env.NODE_ENV=production --progress",
     "dev": "webpack --watch --mode development --env.NODE_ENV=development --progress",
     "analyse": "webpack --mode production --env.NODE_ENV=production --progress --config webpack.analyse.js",
-    "installEslint": "npm i -g eslint @typescript-eslint/parser @vue/eslint-config-standard @vue/eslint-config-typescript eslint-plugin-import eslint-plugin-node eslint-plugin-promise eslint-plugin-standard eslint-plugin-vue"
+    "installEslint": "npm i -g eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin @vue/eslint-config-standard @vue/eslint-config-typescript eslint-plugin-import eslint-plugin-node eslint-plugin-promise eslint-plugin-standard eslint-plugin-vue"
   },
   "dependencies": {
     "await-to-js": "^2.1.1",
