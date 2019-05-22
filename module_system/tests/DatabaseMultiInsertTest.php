@@ -40,10 +40,9 @@ class DatabaseMultiInsertTest extends Testbase
         $arrFields["temp_longtext"] = array("longtext", true);
         $arrFields["temp_json"] = array("longtext", true);
 
-        $escapeValues = array_values(array_map(function ($field) {
-            return false;
-        }, $arrFields));
+        $escapeValues = array_fill(0, count($arrFields), false);
 
+        $this->assertEquals(count($arrFields), count($escapeValues));
         $this->assertEquals(count($arrFields), count($escapeValues));
         $this->assertTrue($objDB->createTable("agp_temp_autotest", $arrFields, array("temp_id")), "testDataBase createTable");
 
