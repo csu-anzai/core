@@ -72,45 +72,57 @@ class SystemtaskForm extends SystemtaskBase implements AdminSystemtaskInterface,
     public function getAdminForm()
     {
         $form = new AdminFormgenerator("", null);
+        $form->setGroupStyle(AdminFormgenerator::GROUP_TYPE_TABS);
+        $form->createGroup("first", "First");
+        $form->createGroup("second", "Second");
 
         $field = new FormentryCheckbox("", "checkbox");
         $field->setStrLabel("Checkbox");
         $form->addField($field);
+        $form->addFieldToGroup($field, "first");
 
         $field = new FormentryCheckboxarray("", "checkboxarray");
         $field->setStrLabel("Checkbox-Array");
         $field->setArrKeyValues(["foo", "bar"]);
         $field->setStrValue("foo");
         $form->addField($field);
+        $form->addFieldToGroup($field, "first");
 
         $field = new FormentryDate("", "date");
         $field->setStrLabel("Date");
         $form->addField($field);
+        $form->addFieldToGroup($field, "first");
 
         $field = new FormentryDatetime("", "datetime");
         $field->setStrLabel("Date-Time");
         $form->addField($field);
+        $form->addFieldToGroup($field, "first");
 
         $field = new FormentryDropdown("", "dropdown");
         $field->setStrLabel("Dropdown");
         $field->setArrKeyValues(["foo", "bar"]);
         $field->setStrValue("foo");
         $form->addField($field);
+        $form->addFieldToGroup($field, "second");
 
         $field = new FormentryHidden("", "hidden");
         $form->addField($field);
+        $form->addFieldToGroup($field, "second");
 
         $field = new FormentryPassword("", "password");
         $field->setStrLabel("Password");
         $form->addField($field);
+        $form->addFieldToGroup($field, "second");
 
         $field = new FormentryText("", "text");
         $field->setStrLabel("Text");
         $form->addField($field);
+        $form->addFieldToGroup($field, "second");
 
         $field = new FormentryTextarea("", "textarea");
         $field->setStrLabel("Textarea");
         $form->addField($field);
+        $form->addFieldToGroup($field, "second");
 
         return $form;
     }
