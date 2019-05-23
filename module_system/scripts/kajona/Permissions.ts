@@ -1,5 +1,6 @@
 import $ from 'jquery'
 import Ajax from './Ajax'
+import Toaster from './Toastr'
 
 interface Response {
     bitInherited: boolean
@@ -22,9 +23,9 @@ class Permissions {
                 objResponse.arrConfigs.push($(this).attr('id'))
             })
 
+        var submitBtn = $(".savechanges");
         // disable submit button
-        $('.savechanges').addClass('processing')
-        $('.savechanges').prop('disabled', true)
+        submitBtn.addClass("processing").prop("disabled", true);
 
         $.ajax({
             url:
@@ -37,11 +38,13 @@ class Permissions {
             dataType: 'json'
         }).done(function (data) {
             // enable submit button
-            $('.savechanges').removeClass('processing')
-            $('.savechanges').prop('disabled', false)
+            submitBtn.removeClass("processing").prop("disabled", false);
 
             // load rights
             Permissions.loadRights()
+            // needs change after implementing type definition for toastr
+            (<any>Toastr)[data.type](data.message)
+
         })
 
         return false

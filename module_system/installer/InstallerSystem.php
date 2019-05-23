@@ -38,6 +38,8 @@ use Kajona\System\System\SystemPwHistory;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserUser;
+use Kajona\Workflows\System\WorkflowsHandler;
+use Kajona\Workflows\System\WorkflowsWorkflow;
 
 /**
  * Installer for the system-module
@@ -537,6 +539,10 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         if($arrModule["module_version"] == "7.1.4") {
             $strReturn .= $this->update_714_715();
         }
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.1.5") {
+            $strReturn .= $this->update_715_716();
+        }
 
         return $strReturn."\n\n";
     }
@@ -595,23 +601,6 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1");
 
-        if (Config::getInstance()->getConfig("dbdriver") == "mysqli") {
-            // flush cache to exclude deleted tables
-            Database::getInstance()->flushTablesCache();
-
-            $strReturn .= "Updating myisam tables".PHP_EOL;
-
-            foreach (Database::getInstance()->getTables() as $table) {
-                $create = StringUtil::toLowerCase(Database::getInstance()->getPRow("show create table {$table}", [])["Create Table"]);
-
-                if (StringUtil::indexOf($create, "engine=myisam") !== false) {
-                    $strReturn .= "Updating engine of {$table}".PHP_EOL;
-                    Database::getInstance()->_pQuery("ALTER TABLE {$table} ENGINE = InnoDB", []);
-                }
-
-
-            }
-        }
         return $strReturn;
     }
 
@@ -633,47 +622,6 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
     {
         $strReturn = "Updating to 7.1.2...".PHP_EOL;
         $strReturn .= "Updating changelog column types".PHP_EOL;
-
-        $arrTables = array("agp_changelog");
-        $arrProvider = SystemChangelog::getAdditionalProviders();
-        foreach($arrProvider as $objOneProvider) {
-            $arrTables[] = $objOneProvider->getTargetTable();
-        }
-
-        foreach($arrTables as $strOneTable) {
-            $strReturn .= "Checking {$strOneTable}...";
-            //only transform if required
-            $metainfo = Database::getInstance()->getTableInformation($strOneTable);
-            $col = $metainfo->getColumnByName("change_oldvalue");
-            if ($col === null) {
-                continue;
-            }
-            if ($col->getInternalType() == DbDatatypes::STR_TYPE_TEXT) {
-                $strReturn .= " not required".PHP_EOL;
-                continue;
-            }
-
-            if (Config::getInstance()->getConfig("dbdriver") == "mysqli") {
-                //direct change on the table, if required
-                Database::getInstance()->changeColumn($strOneTable, "change_oldvalue", "change_oldvalue", DbDatatypes::STR_TYPE_TEXT);
-                Database::getInstance()->changeColumn($strOneTable, "change_newvalue", "change_newvalue", DbDatatypes::STR_TYPE_TEXT);
-
-            } elseif (Config::getInstance()->getConfig("dbdriver") == "oci8") {
-
-                //Need to do it this way since under oracle converting from varchar2 to clob is not possible
-                Database::getInstance()->addColumn($strOneTable, "temp_change_oldvalue", DbDatatypes::STR_TYPE_TEXT);
-                Database::getInstance()->_pQuery("UPDATE $strOneTable SET temp_change_oldvalue=change_oldvalue", []);
-                Database::getInstance()->removeColumn($strOneTable, "change_oldvalue");
-                Database::getInstance()->changeColumn($strOneTable, "temp_change_oldvalue", "change_oldvalue", DbDatatypes::STR_TYPE_TEXT);
-
-                Database::getInstance()->addColumn($strOneTable, "temp_change_newvalue", DbDatatypes::STR_TYPE_TEXT);
-                Database::getInstance()->_pQuery("UPDATE $strOneTable SET temp_change_newvalue=change_newvalue", []);
-                Database::getInstance()->removeColumn($strOneTable, "change_newvalue");
-                Database::getInstance()->changeColumn($strOneTable, "temp_change_newvalue", "change_newvalue", DbDatatypes::STR_TYPE_TEXT);
-            }
-
-            $strReturn .= " migrated".PHP_EOL;
-        }
 
         $strReturn .= "Updating module-versions...\n";
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.2");
@@ -793,12 +741,37 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
     {
         $strReturn = "Updating to 7.1.5...".PHP_EOL;
         $this->objDB->changeColumn("agp_user_log", "user_log_ip", "user_log_ip", DbDatatypes::STR_TYPE_CHAR254);
-        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.5");
 
         $strReturn .= "Updating messages schema".PHP_EOL;
         $this->objDB->changeColumn("agp_messages", "message_title", "message_title", DbDatatypes::STR_TYPE_CHAR500);
 
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.5");
 
+        return $strReturn;
+    }
+
+    private function update_715_716()
+    {
+        $strReturn = "Updating to 7.1.6...".PHP_EOL;
+        $strReturn .= "Removing deprecated workflow".PHP_EOL;
+
+        //break if workflows present and < 7.1.6
+        $con = SystemModule::getModuleByName("workflows");
+        if ($con !== null && version_compare($con->getStrVersion(), "7.1", "l")) {
+            return "Update workflows to at least 7.1 before".PHP_EOL;
+        }
+
+        $wf = WorkflowsHandler::getHandlerByClass('AGP\Devops\System\Workflows\WorkflowDevopsSender');
+        if ($wf !== null) {
+            $wf->deleteObjectFromDatabase();
+        }
+
+        //TODO: geht erst wenn schema der wf durchmigriert ist, daher: dbupdate
+        foreach(WorkflowsWorkflow::getWorkflowsForClass('AGP\Devops\System\Workflows\WorkflowDevopsSender') as $wf) {
+            $wf->deleteObjectFromDatabase();
+        }
+
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.6");
         return $strReturn;
     }
 

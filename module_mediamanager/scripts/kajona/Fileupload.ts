@@ -7,6 +7,7 @@ import 'blueimp-file-upload'
 import 'blueimp-file-upload/js/jquery.fileupload-ui.js'
 import DialogHelper from '../../../module_v4skin/scripts/kajona/DialogHelper'
 import Messaging from '../../../module_system/scripts/kajona/Messaging'
+import Router from '../../../module_system/scripts/kajona/Router'
 
 declare global {
     interface Window {
@@ -177,6 +178,7 @@ class UploadManager {
 
                             // update messages
                             Messaging.pollMessages()
+                            Router.reload()
                         }
                     },
                     null,
@@ -217,6 +219,19 @@ class Fileupload {
             $(
                 'tbody.template-upload[data-uploadid="' + strFileId + '"]'
             ).remove()
+        })
+    }
+
+    /**
+     * Removes all files from a upload-field
+     * @param containerId
+     */
+    public static clearFileupload(containerId: string) {
+        $(containerId).find('[data-uploadid]').each(function() {
+            let $tr = $(this);
+            if ($tr.data('uploadid') !== '') {
+                Fileupload.deleteFile($tr.data('uploadid'));
+            }
         })
     }
 
