@@ -1977,3 +1977,65 @@ body.login {
     animation: shake 2s ease-in-out;
   }
 }
+
+
+/* toastr */
+#toast-container {
+
+  > div {
+    .borderRadius(0);
+    border: 1px solid;
+    .boxShadow(none);
+  }
+
+  > div:hover {
+    .boxShadow(none);
+    border: 1px solid;
+  }
+
+  > .toast {
+    background-image: none !important;
+
+    &:before {
+      position: relative;
+      font-family: FontAwesome;
+      font-size: 24px;
+      line-height: 18px;
+      float: left;
+      margin-left: -1em;
+      margin-right: 0.5em;
+    }
+  }
+
+
+  > .toast-info {
+    .alert-variant(@alert-info-bg; @alert-info-border; @alert-info-text);
+    &:before {
+      content: @fa-var-info;
+    }
+  }
+
+  > .toast-error {
+    .alert-variant(@alert-danger-bg; @alert-danger-border; @alert-danger-text);
+    &:before {
+      content: @fa-var-warning;
+    }
+  }
+
+  > .toast-success {
+    .alert-variant(@alert-success-bg; @alert-success-border; @alert-success-text);
+    &:before {
+      content: @fa-var-check;
+    }
+  }
+
+  > .toast-warning {
+    .alert-variant(@alert-warning-bg; @alert-warning-border; @alert-warning-text);
+    &:before {
+      content: @fa-var-warning;
+    }
+  }
+
+}
+
+
