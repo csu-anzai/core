@@ -169,6 +169,19 @@ class Fileupload {
     }
 
     /**
+     * Removes all files from a upload-field
+     * @param containerId
+     */
+    public static clearFileupload(containerId: string) {
+        $(containerId).find('[data-uploadid]').each(function() {
+            let $tr = $(this);
+            if ($tr.data('uploadid') !== '') {
+                Fileupload.deleteFile($tr.data('uploadid'));
+            }
+        })
+    }
+
+    /**
      * Inits the uploader and returns an instance.
      * Makes sure to init the dragover functions, too
      * @param options
