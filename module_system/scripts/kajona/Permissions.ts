@@ -1,6 +1,6 @@
 import $ from 'jquery'
 import Ajax from './Ajax'
-import Toaster from './Toastr'
+const toastr = require('toastr')
 
 interface Response {
     bitInherited: boolean
@@ -43,7 +43,9 @@ class Permissions {
             // load rights
             Permissions.loadRights()
             // needs change after implementing type definition for toastr
-            (<any>Toastr)[data.type](data.message)
+            toastr[data.type](data.message)
+
+
 
         })
 

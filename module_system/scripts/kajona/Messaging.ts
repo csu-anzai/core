@@ -4,6 +4,7 @@ import Util from './Util'
 import DialogHelper from 'core/module_v4skin/scripts/kajona/DialogHelper'
 import Router from './Router'
 import Dialog from 'core/module_v4skin/scripts/kajona/Dialog'
+
 const toastr = require('toastr')
 interface Accept {
     type: string
