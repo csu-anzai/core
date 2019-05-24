@@ -1,6 +1,7 @@
 import $ from 'jquery'
 import 'jquery-tageditor/jquery.caret.min'
 import 'jquery-tageditor/jquery.tag-editor.min'
+import 'jquery-tageditor/jquery.tag-editor.css'
 import V4skin from './V4skin'
 import WorkingIndicator from 'core/module_system/scripts/kajona/WorkingIndicator'
 import Util from 'core/module_system/scripts/kajona/Util'
