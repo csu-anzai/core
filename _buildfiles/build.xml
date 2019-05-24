@@ -156,15 +156,6 @@
     </target>
 
     <target name="installNpmBuildDependencies">
-        <!--echo>npm Build Dependencies</echo>
-        <echo>Execute npm</echo -->
-        <exec dir="${basedir}${jsPath}" executable="${path.npm}" failonerror="on">
-            <arg line=" config set registry ${npmLocalRegistry}"/>
-        </exec>
-        <exec dir="${basedir}${jsPath}" executable="${path.npm}" failonerror="on">
-            <arg line=" install"/>
-        </exec>
-
         <exec dir="${basedir}" executable="${path.npm}" failonerror="on">
             <arg line=" install"/>
         </exec>
@@ -205,24 +196,24 @@
     <!-- possible params: targetDir -->
     <target name="copy2project">
         <copy todir="${targetDir}" overwrite="true"  includeEmptyDirs="true" >
-            <fileset id="sources.dirs" dir="${basedir}${sourcesPath}">		              
-                <exclude name=".git"/>		              
-                <exclude name="files/extract/**"/>		              
-                <exclude name="files/cache/**"/>		              
-                <exclude name="project/log/**"/>		              
-                <exclude name="project/dbdumps"/>		              
-                <exclude name="project/temp/**"/>		              
-                <include name="core*/module_*/*/**"/>		 
-                <include name="core*/_debugging/*/**"/>	
+            <fileset id="sources.dirs" dir="${basedir}${sourcesPath}">
+                <exclude name=".git"/>
+                <exclude name="files/extract/**"/>
+                <exclude name="files/cache/**"/>
+                <exclude name="project/log/**"/>
+                <exclude name="project/dbdumps"/>
+                <exclude name="project/temp/**"/>
+                <include name="core*/module_*/*/**"/>
+                <include name="core*/_debugging/*/**"/>
                 <include name="core*/_buildfiles/bin/*/**"/>
                 <include name="core*/_buildfiles/*.xml"/>
                 <include name="core*/_buildfiles/jstests/*/**"/>
                 <include name="core*/*.php"/>
-                <include name="core*/*.htaccess"/>	
-                <include name="files/**"/>	
-                <include name="project/**"/>	
-                <include name=".htaccess"/>	
-            </fileset>		              
+                <include name="core*/*.htaccess"/>
+                <include name="files/**"/>
+                <include name="project/**"/>
+                <include name=".htaccess"/>
+            </fileset>
         </copy>
     </target>
 
@@ -245,7 +236,7 @@
 
         <antcall target="buildPackageHelper" />
         <antcall target="modulePharHelper" />
-    
+
         <zip destfile="${basedir}${packagesPath}/build_${DSTAMP}-${TSTAMP}.zip">
             <fileset dir="${basedir}${tempPath}/../" />
         </zip>
@@ -274,7 +265,7 @@
         <antcall target="cleanZipContent" />
     </target>
 
-    
+
 
     <!-- triggers the installation of the project aka. creating the db-structure -->
 
