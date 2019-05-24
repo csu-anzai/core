@@ -1,9 +1,9 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2004-2006 by MulchProductions, www.mulchprod.de                                                 *
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-********************************************************************************************************/
+ *   (c) 2004-2006 by MulchProductions, www.mulchprod.de                                                 *
+ *   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
+ *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
+ ********************************************************************************************************/
 
 namespace Kajona\Flow\System;
 
@@ -360,10 +360,10 @@ trait FlowControllerTrait
                                 foreach ($arrErrors as $strError) {
                                     if (!empty($strError)) {
                                         $strError = htmlspecialchars($strError);
-                                        $strTooltip.= "<li>{$strError}</li>";
+                                        $strTooltip .= "<li>{$strError}</li>";
                                     }
                                 }
-                                $strTooltip.= "</ul>";
+                                $strTooltip .= "</ul>";
 
                                 $objAlert = new MessagingAlert();
                                 $objAlert->setStrTitle($this->getLang("action_status_change_title", "flow"));

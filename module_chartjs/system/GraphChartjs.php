@@ -4,7 +4,7 @@
  *       Published under the GNU LGPL v2.1
  ********************************************************************************************************/
 
-declare(strict_types=1);
+declare (strict_types = 1);
 
 namespace Kajona\Chartjs\System;
 
@@ -38,7 +38,7 @@ class GraphChartjs implements GraphInterfaceFronted, \JsonSerializable
             'plugins' => [
                 'datalabels' => [
                     'display' => false,
-                ]
+                ],
             ],
             "title" => [
                 "display" => false,
@@ -47,20 +47,20 @@ class GraphChartjs implements GraphInterfaceFronted, \JsonSerializable
                 'xAxes' => [
                     [
                         'ticks' => [
-                            'beginAtZero' => true
-                        ]
-                    ]
+                            'beginAtZero' => true,
+                        ],
+                    ],
                 ],
                 'yAxes' => [
                     [
                         'id' => 'defaultYID',
                         'ticks' => [
-                            'beginAtZero' => true
-                        ]
-                    ]
-                ]
-            ]
-        ]
+                            'beginAtZero' => true,
+                        ],
+                    ],
+                ],
+            ],
+        ],
     ];
 
     /**
@@ -83,7 +83,7 @@ class GraphChartjs implements GraphInterfaceFronted, \JsonSerializable
     private $arrColors = [
         "#8bbc21", "#2f7ed8", "#f28f43", "#1aadce", "#77a1e5", "#0d233a", "#c42525", "#a6c96a", "#910000",
         '#0048Ba', '#B0BF1A', '#C46210', '#FFBF00', '#9966CC', '#841B2D', '#FAEBD7', '#8DB600', '#D0FF14',
-        '#FF9966', '#007FFF', '#FF91AF', '#E94196', '#CAE00D', '#54626F'
+        '#FF9966', '#007FFF', '#FF91AF', '#E94196', '#CAE00D', '#54626F',
     ];
 
     /**
@@ -154,14 +154,14 @@ class GraphChartjs implements GraphInterfaceFronted, \JsonSerializable
         $this->arrChartData['data']['datasets'][] = [
             "dataPoints" => $this->dataPointObjArrayToArray($arrDataPointObjects),
             "type" => $type,
-            "label" => !empty($strLegend) ? $strLegend : "Dataset ".$intDatasetNumber,
+            "label" => !empty($strLegend) ? $strLegend : "Dataset " . $intDatasetNumber,
             "data" => GraphCommons::getDataPointFloatValues($arrDataPointObjects),
             "backgroundColor" => $this->arrColors[$intColorNumber],
             "borderColor" => $this->arrColors[$intColorNumber],
             "borderWidth" => 1,
             "yAxisID" => empty($yAxisID) ? "defaultYID" : $yAxisID,
             "datalabels" => $bitWriteValues ? ["display" => 'auto'] : ["display" => false],
-            "lineTension" => $lineTension
+            "lineTension" => $lineTension,
         ];
         $this->intXLabelsCount = count($arrValues);
     }
@@ -248,7 +248,6 @@ class GraphChartjs implements GraphInterfaceFronted, \JsonSerializable
                 $nrOfNonNullValues++;
             }
         }, $arrDataPointObjects);
-
 
         $this->setPieChart(true);
         foreach ($this->arrColors as $arrColor) {
@@ -640,7 +639,7 @@ class GraphChartjs implements GraphInterfaceFronted, \JsonSerializable
             $this->arrChartData['options']['scales']['xAxes'][0]['ticks']['suggestedMax'] = $intMax;
         }
         if ($intTickInterval !== null) {
-            $this->setTickStepYAxis((int)$intTickInterval);
+            $this->setTickStepYAxis((int) $intTickInterval);
         }
     }
 
@@ -657,7 +656,7 @@ class GraphChartjs implements GraphInterfaceFronted, \JsonSerializable
             $this->arrChartData['options']['scales']['yAxes'][0]['ticks']['suggestedMax'] = $intMax;
         }
         if ($intTickInterval !== null) {
-            $this->setTickStepYAxis((int)$intTickInterval);
+            $this->setTickStepYAxis((int) $intTickInterval);
         }
     }
 
@@ -674,7 +673,7 @@ class GraphChartjs implements GraphInterfaceFronted, \JsonSerializable
             $this->arrChartData['options']['scales']['yAxes'][1]['ticks']['suggestedMax'] = $intMax;
         }
         if ($intTickInterval !== null) {
-            $this->setTickStepY2Axis((int)$intTickInterval);
+            $this->setTickStepY2Axis((int) $intTickInterval);
         }
     }
 
@@ -738,9 +737,9 @@ class GraphChartjs implements GraphInterfaceFronted, \JsonSerializable
         }
 
         $strSystemId = generateSystemid();
-        $strResizeableId = "resize_".$strSystemId;
-        $strChartId = "chart_".$strSystemId;
-        $strLinkExportId = $strChartId."_exportlink";
+        $strResizeableId = "resize_" . $strSystemId;
+        $strChartId = "chart_" . $strSystemId;
+        $strLinkExportId = $strChartId . "_exportlink";
 
         $style = "";
         if ($this->intWidth !== null) {
@@ -750,7 +749,6 @@ class GraphChartjs implements GraphInterfaceFronted, \JsonSerializable
         if ($this->intHeight !== null) {
             $style .= " height: {$this->intHeight}px; ";
         }
-
 
         $strReturn = "<div onmouseover='$(\"#{$strLinkExportId}\").show();' onmouseout='$(\"#{$strLinkExportId}\").hide();' id='{$strResizeableId}' style='{$style}'>";
         $strReturn .= "<canvas id='{$strChartId}' style=' width: 100%; height: 100%' ></canvas>";
@@ -763,12 +761,10 @@ class GraphChartjs implements GraphInterfaceFronted, \JsonSerializable
         $strReturn .= "</div>";
 
         $strReturn .= "<script type='text/javascript'>
-            require(['chartjsHelper'], function(chartjsHelper) {
-                var chartData = ".json_encode($this->arrChartData, JSON_NUMERIC_CHECK).";
-    	        var chartOptions = ".json_encode($this->arrChartOptions, JSON_NUMERIC_CHECK).";
-                var ctx = document.getElementById('".$strChartId."');
-                chartjsHelper.createChart(ctx, chartData, chartOptions);
-            });
+        var chartData = " . json_encode($this->arrChartData, JSON_NUMERIC_CHECK) . ";
+        var chartOptions = " . json_encode($this->arrChartOptions, JSON_NUMERIC_CHECK) . ";
+        var ctx = document.getElementById('" . $strChartId . "');
+        ChartjsHelper.createChart(ctx, chartData, chartOptions);
         </script>";
 
         return $strReturn;

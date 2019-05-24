@@ -1,8 +1,8 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2015-2016 by Kajona, www.kajona.de                                                         *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-********************************************************************************************************/
+ *   (c) 2015-2016 by Kajona, www.kajona.de                                                         *
+ *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
+ ********************************************************************************************************/
 
 namespace Kajona\System\System;
 
@@ -290,7 +290,7 @@ class CacheManager
 
         if ($intType & self::TYPE_FILESYSTEM) {
             try {
-                $arrDriver[] = new FilesystemCache(_realpath_."project/temp/cache", ".cache");
+                $arrDriver[] = new FilesystemCache(_realpath_ . "project/temp/cache", ".cache");
             } catch (\InvalidArgumentException $objEx) {
                 $arrDriver[] = new ArrayCache();
             }
@@ -298,7 +298,7 @@ class CacheManager
 
         if ($intType & self::TYPE_PHPFILE) {
             try {
-                $arrDriver[] = new PhpFileCache(_realpath_."project/temp/cache", ".cache.php");
+                $arrDriver[] = new PhpFileCache(_realpath_ . "project/temp/cache", ".cache.php");
             } catch (\InvalidArgumentException $objEx) {
                 $arrDriver[] = new ArrayCache();
             }

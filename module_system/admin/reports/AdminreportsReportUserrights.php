@@ -63,7 +63,7 @@ class AdminreportsReportUserrights extends AuswertungReportBase implements Auswe
 
         $linkHref = Link::getLinkAdminXml("auswertung", "showDirect", "&report=".$this->getInternalTitle()."&getCsv=true");
         $strLink = Link::getLinkAdminManual(
-            "href='#' onclick=\"require('downloadIndicator').triggerDownload('{$linkHref}');return false;\"",
+            "href='#' onclick=\"DownloadIndicator.triggerDownload('{$linkHref}');return false;\"",
             AdminskinHelper::getAdminImage("icon_text")." ".$this->getLang("report_evaluations_csv_export", "slareporting"),
             "",
             "",
@@ -123,7 +123,7 @@ class AdminreportsReportUserrights extends AuswertungReportBase implements Auswe
             $strReturn = $this->getLang("commons_error_permissions");
         }
 
-        return $strReturn."<script type='text/javascript'>require(['downloadIndicator']);</script>";
+        return $strReturn ; 
     }
 
     /**

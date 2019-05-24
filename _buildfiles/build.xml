@@ -164,6 +164,14 @@
         <exec dir="${basedir}${jsPath}" executable="${path.npm}" failonerror="on">
             <arg line=" install"/>
         </exec>
+
+        <exec dir="${basedir}" executable="${path.npm}" failonerror="on">
+            <arg line=" install"/>
+        </exec>
+
+        <exec dir="${basedir}" executable="${path.npm}" failonerror="on">
+            <arg line=" run build "/>
+        </exec>
     </target>
 
     <target name="postBuildWorkspaceClean" description="Deletes some folders created during the build to preserve diskspace">

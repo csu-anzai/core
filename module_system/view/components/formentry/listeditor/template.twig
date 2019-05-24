@@ -36,9 +36,9 @@
 
     {% if not readOnly %}
     <script type="text/javascript">
-        require(['jquery', 'util', 'jquery-ui'], function($, util) {
+
             $("#{{ name }}-add").click(function(){
-                var id = util.generateSystemId();
+                var id = Util.generateSystemId();
                 {% if continuousIndexes %}
                     var maxIndex = $("#{{ name }}-container .item").length + 1;
                     $("#{{ name }}-container .item .form-control").each(function() {
@@ -70,7 +70,6 @@
                 handle: 'span.fa-arrows',
                 cursor: 'move'
             });
-        });
     </script>
     {% endif %}
 </div>
