@@ -44,11 +44,9 @@
 
 {% if floatThead %}
 <script type="text/javascript">
-    require(["jquery-floatThread"], function() {
         $('table.core-component-datatable:not(.kajona-data-table-ignore-floatthread)').floatThead({
-            scrollingTop: $("body.dialogBody").size() > 0 ? 0 : 70,
+            scrollingTop: $("body.dialogBody").length > 0 ? 0 : 70,
             useAbsolutePositioning: true
         });
-    });
 </script>
 {% endif %}

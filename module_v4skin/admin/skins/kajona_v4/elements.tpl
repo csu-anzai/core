@@ -23,8 +23,7 @@ templates!
     </ul>
 </div>
 <script type="text/javascript">
-require(["jquery", "ajax", "util"], function($, ajax, util) {
-    $(function() {
+   $(function() {
         $('.grid > ul.sortable').sortable( {
             items: 'li[data-systemid!=""]',
             handle: 'div.thumbnail',
@@ -43,15 +42,14 @@ require(["jquery", "ajax", "util"], function($, ajax, util) {
                     if(intCurPage > 1 && intElementsPerPage > 0)
                         intPagingOffset = (intCurPage*intElementsPerPage)-intElementsPerPage;
 
-                    ajax.setAbsolutePosition(ui.item.data('systemid'), ui.item.index()+1+intPagingOffset);
+                    Ajax.setAbsolutePosition(ui.item.data('systemid'), ui.item.index()+1+intPagingOffset);
                 }
                 oldPos = 0;
             },
-            delay: util.isTouchDevice() ? 500 : 0
+            delay: Util.isTouchDevice() ? 500 : 0
         });
         $('.grid > ul.sortable > li[data-systemid!=""] > div.thumbnail ').css("cursor", "move");
     });
-});
 </script>
 </grid_footer>
 
@@ -84,7 +82,9 @@ Header to use when creating drag n dropable lists. places an id an loads the nee
 background using the ajaxHelper.
 Loads the script-helper and adds the table to the drag-n-dropable tables getting parsed later
 <dragable_list_header>
-<script type="text/javascript"> require(['listSortable'], function(sortManager) { sortManager.init('%%listid%%', '%%targetModule%%', %%bitMoveToTree%%); }); </script>
+<script type="text/javascript">
+ListSortable.init('%%listid%%', '%%targetModule%%', %%bitMoveToTree%%); 
+</script>
 <div id='%%listid%%_prev' class='alert alert-info divPageTarget'>[lang,commons_list_sort_prev,system]</div>
 <table id="%%listid%%" class="table admintable table-striped-tbody" data-kajona-pagenum="%%curPage%%" data-kajona-elementsperpage="%%elementsPerPage%%">
 
@@ -93,13 +93,13 @@ Loads the script-helper and adds the table to the drag-n-dropable tables getting
 Optional Element to close a list
 <list_footer>
 </table>
-<script type="text/javascript"> if (%%clickable%%) { require(['lists'], function(l) { l.initRowClick() }); }</script>
+<script type="text/javascript"> if (%%clickable%%) {  Lists.initRowClick() }</script>
 </list_footer>
 
 <dragable_list_footer>
 </table>
 <div id='%%listid%%_next' class='alert alert-info divPageTarget'>[lang,commons_list_sort_next,system]</div>
-<script type="text/javascript"> if (%%clickable%%) { require(['lists'], function(l) { l.initRowClick() }); }</script>
+<script type="text/javascript"> if (%%clickable%%) { Lists.initRowClick()  }</script>
 </dragable_list_footer>
 
 
@@ -108,7 +108,7 @@ It is responsible for rendering the different admin-lists.
 Currently, there are two modes: with and without a description.
 
 <generallist_checkbox>
-    <input type="checkbox" name="kj_cb_%%systemid%%" id="kj_cb_%%systemid%%" onchange="require('lists').updateToolbar();">
+    <input type="checkbox" name="kj_cb_%%systemid%%" id="kj_cb_%%systemid%%" onchange="Lists.updateToolbar();">
 </generallist_checkbox>
 
 <generallist>
@@ -161,13 +161,11 @@ Currently, there are two modes: with and without a description.
     </div>
 </div>
 <script type="text/javascript">
-    require(["jquery", "lists"], function($, lists) {
-        $("#kj_cb_batchActionSwitch").on('click', function() { lists.toggleAllFields(); lists.updateToolbar(); });
-        lists.strConfirm = '[lang,commons_batchaction_confirm,pages]';
-        lists.strDialogTitle = '[lang,commons_batchaction_title,pages]';
-        lists.strDialogStart = '[lang,commons_start,pages]';
-        lists.updateToolbar();
-    });
+     $("#kj_cb_batchActionSwitch").on('click', function() { Lists.toggleAllFields(); Lists.updateToolbar(); });
+        Lists.strConfirm = '[lang,commons_batchaction_confirm,pages]';
+        Lists.strDialogTitle = '[lang,commons_batchaction_title,pages]';
+        Lists.strDialogStart = '[lang,commons_start,pages]';
+        Lists.updateToolbar();
 </script>
 </batchactions_wrapper>
 
@@ -197,14 +195,12 @@ To avoid side-effects, no line-break in this case -> not needed by default, but 
 <form_start>
 <form name="%%name%%" id="%%name%%" method="%%method%%" action="%%action%%" enctype="%%enctype%%" onsubmit="%%onsubmit%%" class="form-horizontal">
     <script type="text/javascript">
-        require(["forms"], function(forms) {
-            $(function() {
-                forms.initForm('%%name%%', %%onchangedetection%%);
-                forms.changeLabel = '[lang,commons_form_entry_changed,system]';
-                forms.changeConfirmation = '[lang,commons_form_entry_changed_conf,system]';
-                forms.leaveUnsaved = '[lang,commons_form_unchanged,system]';
-            });
-        });
+        //    $(function() {
+                Forms.initForm('%%name%%', %%onchangedetection%%);
+                Forms.changeLabel = '[lang,commons_form_entry_changed,system]';
+                Forms.changeConfirmation = '[lang,commons_form_entry_changed_conf,system]';
+                Forms.leaveUnsaved = '[lang,commons_form_unchanged,system]';
+            // });
     </script>
 </form_start>
 
@@ -333,8 +329,7 @@ Checkbox
 Toggle_On_Off (using bootstrap-switch.org)
 <input_on_off_switch>
     <script type="text/javascript">
-        require(["bootstrap-switch"], function(){
-            window.setTimeout(function() {
+             window.setTimeout(function() {
                 var divId = '%%name%%';
                 divId = '#' + divId.replace( /(:|\.|\[|\])/g, "\\$1" );
                 $(divId).bootstrapSwitch();
@@ -343,7 +338,6 @@ Toggle_On_Off (using bootstrap-switch.org)
                 });
 
             }, 200);
-        });
     </script>
 
     <div class="form-group">
@@ -385,14 +379,12 @@ Color Picker
             </div>
         </div>
         <script type="text/javascript">
-        require(["bootstrap-colorpicker"], function(colorpicker) {
-            $('#c_%%name%%').colorpicker({component: '*'});
+     $('#c_%%name%%').colorpicker({component: '*'});
 
 //            if($('#%%name%%').is(':focus')) {
 //                $('#%%name%%').blur();
 //                $('#%%name%%').focus();
 //            }
-        });
         </script>
     </div>
 </input_colorpicker>
@@ -495,11 +487,8 @@ Upload-Field for multiple files with progress bar
     </div>
 
 <script type="text/javascript">
-    require(["fileupload", "ajax"], function(fileupload, ajax) {
-        var filesToUpload = 0;
-
-
-        var uploader = fileupload.initUploader({
+var filesToUpload = 0;
+        var uploader = Fileupload.initUploader({
             baseElement: $('#%%name%%'),
             paramName: '%%name%%',
             formData: [
@@ -550,10 +539,6 @@ Upload-Field for multiple files with progress bar
                     $(this).find('.fileupload-progress').css('display', 'none');
                 }
             });
-
-    });
-
-
 </script>
 </input_upload_multiple>
 
@@ -613,12 +598,11 @@ Upload-Field for multiple files with progress bar
     </div>
 
     <script type="text/javascript">
-        require(["fileupload", "ajax"], function(fileupload, ajax) {
-            /**
+               /**
              *
              * @type {UploadManager}
              */
-            var uploader = fileupload.initUploader({
+            var uploader = Fileupload.initUploader({
                 baseElement: $('#%%name%%_upl'),
                 autoUpload: true,
                 readOnly: %%readOnly%%,
@@ -669,7 +653,7 @@ Upload-Field for multiple files with progress bar
             });
 
             //load files from the backend
-            ajax.genericAjaxCall("mediamanager", "fileUploadList", "&systemid=%%mediamanagerRepoId%%&folder=%%folder%%", function(data) {
+            Ajax.genericAjaxCall("mediamanager", "fileUploadList", "&systemid=%%mediamanagerRepoId%%&folder=%%folder%%", function(data) {
                 uploader.getUploader().fileupload('option', 'done').call(uploader.getUploader(), $.Event('done'), {result: data});
             }, null, null, "post", "json");
 
@@ -686,9 +670,6 @@ Upload-Field for multiple files with progress bar
             }
 
             uploader.renderArchiveList();
-        });
-
-
     </script>
 </input_upload_inline>
 
@@ -704,10 +685,9 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
                 <input id="%%calendarId%%" name="%%calendarId%%" class="form-control %%class%%" size="16" type="text" value="%%valuePlain%%" %%readonly%% autocomplete="off">
             </div>
             <script>
-                require(["bootstrap-datepicker"], function() {
-                    require(["bootstrap-datepicker-%%calendarLang%%", "util"], function(datepicker, util){
+                
                         $('#%%calendarId%%').datepicker({
-                            format: util.transformDateFormat('%%dateFormat%%', "bootstrap-datepicker"),
+                            format: Util.transformDateFormat('%%dateFormat%%', "bootstrap-datepicker"),
                             weekStart: 1,
                             autoclose: true,
                             language: '%%calendarLang%%',
@@ -722,8 +702,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
                             $('#%%calendarId%%').blur();
                             $('#%%calendarId%%').focus();
                         }
-                    });
-                });
+            
             </script>
         </div>
     </div>
@@ -754,10 +733,9 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         <div class="col-sm-1">
         </div>
         <script>
-            require(["bootstrap-datepicker"], function() {
-                require(["bootstrap-datepicker-%%calendarLang%%", "util"], function(datepicker, util){
+          
                     $('#%%calendarId%%').datepicker({
-                        format: util.transformDateFormat('%%dateFormat%%', "bootstrap-datepicker"),
+                        format: Util.transformDateFormat('%%dateFormat%%', "bootstrap-datepicker"),
                         weekStart: 1,
                         autoclose: true,
                         language: '%%calendarLang%%',
@@ -772,8 +750,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
                         $('#%%calendarId%%').blur();
                         $('#%%calendarId%%').focus();
                     }
-                });
-            });
+          
         </script>
     </div>
 </input_datetime_simple>
@@ -787,10 +764,9 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         </div>
     </div>
     <script type="text/javascript">
-        require(["jquery", "jquerytageditor", "tagEditor"], function($, jqTag, tagEditor){
-            var onChange = %%onChange%%;
+         var onChange = %%onChange%%;
             var $objInput = $("#%%name%%");
-            $objInput.tagEditor({
+            $objInput.TagEditor({
                 initialTags: %%values%%,
                 forceLowercase: false,
                 delimiter: %%delimiter%%,
@@ -798,11 +774,10 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
                 onChange: onChange
             });
             $objInput.on('kajona.forms.mandatoryAdded', function() {
-                tagEditor.updateMandatoryRendering($(this));
+                TagEditor.updateMandatoryRendering($(this));
             });
-            tagEditor.updateMandatoryRendering($objInput);
-            onChange("#%%name%%", $objInput.tagEditor('getTags')[0].editor, %%values%%);
-        });
+            TagEditor.updateMandatoryRendering($objInput);
+            onChange("#%%name%%", $objInput.TagEditor('getTags')[0].editor, %%values%%);
     </script>
 </input_tageditor>
 
@@ -820,9 +795,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         </div>
     </div>
     <script type="text/javascript">
-        require(["tagEditor"], function(tagEditor) {
-            tagEditor.init('%%name%%', '%%source%%', %%values%%, %%onChange%%);
-        });
+        TagEditor.init('%%name%%', '%%source%%', %%values%%, %%onChange%%);
     </script>
 </input_objecttags>
 
@@ -908,12 +881,10 @@ A list of checkbox for object elements
     </div>
 
     <script type='text/javascript'>
-        require(["jquery"], function($) {
-            $("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
+          $("input:checkbox[name='checkAll_%%name%%']").on('change', function() {
                 var checkBoxes = $("input:checkbox[name^='%%name%%']").not("[disabled]");
                 checkBoxes.prop('checked', $("input:checkbox[name='checkAll_%%name%%']").prop('checked')).trigger('change');
             });
-        });
     </script>
 </input_checkboxarrayobjectlist>
 
@@ -959,8 +930,7 @@ A fieldset to structure logical sections
     <iframe src="%%iframesrc%%" id="%%iframeid%%" class="seamless" width="100%" height="100%" frameborder="0" seamless ></iframe>
 
     <script type='text/javascript'>
-        require(["jquery"], function($) {
-            $(document).ready(function(){
+           $(document).ready(function(){
                 var frame = $('iframe#%%iframeid%%');
                 frame.load(function() {
                     $('.tab-content.fullHeight iframe').each(function() {
@@ -978,7 +948,6 @@ A fieldset to structure logical sections
                 });
 
             });
-        });
     </script>
 </iframe_container>
 
@@ -998,11 +967,9 @@ Needed Elements: %%error%%, %%form%%
 	if (navigator.cookieEnabled == false) {
 	    document.getElementById("loginError").innerHTML = "%%loginCookiesInfo%%";
 	}
-    require(["jquery"], function($) {
         if ($('#loginError > p').html() == "") {
             $('#loginError').remove();
         }
-    });
 </script>
 <noscript><div class="alert alert-danger">%%loginJsInfo%%</div></noscript>
 </login_form>
@@ -1044,22 +1011,21 @@ Part to display the login status, user is logged in
     </ul>
 </div>
 <script type="text/javascript">
-    require(['jquery', 'v4skin', 'messaging'], function($, v4skin, messaging){
-        if(%%renderMessages%%) {
+      if(%%renderMessages%%) {
             $(function() {
-                v4skin.messaging.properties = {
+                V4skin.messaging.properties = {
                     notification_title : '[lang,messaging_notification_title,messaging]',
                     notification_body : '[lang,messaging_notification_body,messaging]',
                     show_all : '[lang,action_show_all,messaging]'
                 };
 
                 $('#messagingShortlist').parent().on('mouseover', function(e) {
-                    v4skin.messaging.pollMessages();
+                    V4skin.messaging.pollMessages();
                     $('#messagingShortlist').parent().unbind('mouseover');
 
                 });
 
-                window.setTimeout(function() { messaging.setPollingEnabled(true); }, 1000);
+                window.setTimeout(function() { Messaging.setPollingEnabled(true); }, 1000);
             });
         }
         else {
@@ -1068,10 +1034,10 @@ Part to display the login status, user is logged in
 
         if(%%renderTags%%) {
             $(function() {
-                v4skin.properties.tags.show_all = '[lang,action_show_all,tags]';
+                V4skin.properties.tags.show_all = '[lang,action_show_all,tags]';
 
                 $('#tagsSubemenu').parent().on('mouseover', function(e) {
-                    v4skin.initTagMenu();
+                    V4skin.initTagMenu();
                     $('#tagsSubemenu').parent().unbind('mouseover');
                 });
             });
@@ -1079,7 +1045,6 @@ Part to display the login status, user is logged in
         else {
             $('#tagsSubemenu').closest("li").hide();
         }
-    });
 </script>
 </logout_form>
 
@@ -1115,7 +1080,7 @@ The following sections specify the layout of the rights-mgmt
 <rights_form_header>
     <div>
         %%desc%% %%record%% <br />
-        <a href="javascript:require('permissions').toggleEmtpyRows('[lang,permissions_toggle_visible,system]', '[lang,permissions_toggle_hidden,system]', '#rightsForm tr');" id="rowToggleLink" class="rowsVisible">[lang,permissions_toggle_visible,system]</a><br /><br />
+        <a href="javascript:Permissions.toggleEmtpyRows('[lang,permissions_toggle_visible,system]', '[lang,permissions_toggle_hidden,system]', '#rightsForm tr');" id="rowToggleLink" class="rowsVisible">[lang,permissions_toggle_visible,system]</a><br /><br />
     </div>
 </rights_form_header>
 
@@ -1139,12 +1104,10 @@ The following sections specify the layout of the rights-mgmt
         %%rows%%
     </table>
     <script type="text/javascript">
-        require(["jquery-floatThread"], function() {
-            $('table.kajona-data-table').floatThead({
-                scrollingTop: $("body.dialogBody").size() > 0 ? 0 : 70,
+          $('table.kajona-data-table').floatThead({
+                scrollingTop: $("body.dialogBody").length > 0 ? 0 : 70,
                 useAbsolutePositioning: true
             });
-        });
     </script>
     %%inherit%%
 </rights_form_form>
@@ -1172,7 +1135,7 @@ The following sections specify the layout of the rights-mgmt
     <div class="col-sm-6">
         <div class="checkbox">
             <label>
-                    <input name="%%name%%" type="checkbox" id="%%name%%" value="1" onclick="this.blur();" onchange="require('permissions').checkRightMatrix();" %%checked%% />
+                    <input name="%%name%%" type="checkbox" id="%%name%%" value="1" onclick="this.blur();" onchange="Permissions.checkRightMatrix();" %%checked%% />
                 %%title%%
             </label>
         </div>
@@ -1187,7 +1150,7 @@ The following sections specify the layout of the rights-mgmt
 The following sections are used to display the path-navigations, e.g. used by the navigation module
 
 <path_entry>
-  <script type="text/javascript"> require(['breadcrumb'], function(breadcrumb) { breadcrumb.appendLinkToPathNavigation(%%pathlink%%) }); </script>
+  <script type="text/javascript">Breadcrumb.appendLinkToPathNavigation(%%pathlink%%) ; </script>
 </path_entry>
 
 ---------------------------------------------------------------------------------------------------------
@@ -1195,18 +1158,20 @@ The following sections are used to display the path-navigations, e.g. used by th
 
 Toolbar, prominent in the layout. Rendered to switch between action.
 <contentToolbar_wrapper>
-    <script type="text/javascript"> require(['contentToolbar'], function(contentToolbar) { %%entries%% }); </script>
+    <script type="text/javascript">  %%entries%% ; </script>
 </contentToolbar_wrapper>
 
 <contentToolbar_entry>
-    contentToolbar.registerContentToolbarEntry(new contentToolbar.Entry('%%entry%%', '%%identifier%%', %%active%%));
+    ContentToolbar.registerContentToolbarEntry(new ContentToolbar.Entry('%%entry%%', '%%identifier%%', %%active%%));
 </contentToolbar_entry>
 
 
 Toolbar for the current record, rendered to quick-access the actions of the current record.
 <contentActionToolbar_wrapper>
 <div class="hidden toolbarContentContainer">%%content%%</div>
-<script type="text/javascript"> require(['contentToolbar'], function(contentToolbar) { contentToolbar.registerRecordActions($('.toolbarContentContainer')); }); </script>
+<script type="text/javascript">
+ContentToolbar.registerRecordActions($('.toolbarContentContainer'));
+</script>
 </contentActionToolbar_wrapper>
 
 ---------------------------------------------------------------------------------------------------------
@@ -1294,9 +1259,7 @@ pe_iconbar, pe_disable
 
 <quickhelp>
     <script type="text/javascript">
-        require(['quickhelp', 'bootstrap'], function(quickhelp) {
-            quickhelp.setQuickhelp('%%title%%', '%%text%%');
-        });
+        Quickhelp.setQuickhelp('%%title%%', '%%text%%');
     </script>
 </quickhelp>
 
@@ -1352,13 +1315,10 @@ pe_iconbar, pe_disable
 <tree>
     <div id="%%treeId%%" class="treeDiv"></div>
     <script type="text/javascript">
-        require(["tree", "loader"], function(tree, loader){
 
-            loader.loadFile(["/core/module_system/scripts/jstree3/dist/themes/default/style.min.css"]);
+            Tree.toggleInitial('%%treeId%%');
 
-            tree.toggleInitial('%%treeId%%');
-
-            var jsTree = new tree.jstree();
+            var jsTree = new Tree.jstree();
             jsTree.loadNodeDataUrl = "%%loadNodeDataUrl%%";
             jsTree.rootNodeSystemid = '%%rootNodeSystemid%%';
             jsTree.treeConfig = %%treeConfig%%;
@@ -1367,7 +1327,6 @@ pe_iconbar, pe_disable
             jsTree.initiallySelectedNodes = %%initiallySelectedNodes%%;
 
             jsTree.initTree();
-        });
     </script>
 </tree>
 
@@ -1385,7 +1344,7 @@ pe_iconbar, pe_disable
 
         <script type='text/javascript'>
             $('#%%treeId%%_toggle').on('click', function(e) {
-                require('tree').toggleTreeView('%%treeId%%');
+                Tree.toggleTreeView('%%treeId%%');
                 e.preventDefault();
             })
         </script>
@@ -1399,27 +1358,21 @@ otherwise the JavaScript will fail!
     <div id="tagsLoading_%%targetSystemid%%" class="loadingContainer"></div>
     <div id="tagsWrapper_%%targetSystemid%%"></div>
     <script type="text/javascript">
-        require(["tags"], function(tags) {
-            tags.reloadTagList('%%targetSystemid%%', '%%attribute%%');
-        });
+            Tags.reloadTagList('%%targetSystemid%%', '%%attribute%%');
     </script>
 </tags_wrapper>
 
 <tags_tag>
     <span class="label label-default">%%tagname%%</span>
     <script type="text/javascript">
-        require(["tooltip"], function(tooltip) {
-            tooltip.addTooltip('#icon_%%strTagId%%');
-        });
+            Tooltip.addTooltip('#icon_%%strTagId%%');
     </script>
 </tags_tag>
 
 <tags_tag_delete>
-    <span class="label label-default taglabel">%%tagname%% <a href="javascript:require('tags').removeTag('%%strTagId%%', '%%strTargetSystemid%%', '%%strAttribute%%');"> %%strDelete%%</a> %%strFavorite%%</span>
+    <span class="label label-default taglabel">%%tagname%% <a href="javascript:Tags.removeTag('%%strTagId%%', '%%strTargetSystemid%%', '%%strAttribute%%');"> %%strDelete%%</a> %%strFavorite%%</span>
     <script type="text/javascript">
-        require(["tooltip"], function(tooltip) {
-            tooltip.addTooltip($(".taglabel [rel='tooltip']"));
-        });
+            Tooltip.addTooltip($(".taglabel [rel='tooltip']"));
     </script>
 </tags_tag_delete>
 
@@ -1455,11 +1408,9 @@ place ajaxScript before the closing input_tagselector-tag.
         </ul>
     </div>
     <script type="text/javascript">
-        require(['jquery'], function($) {
-            $('.dropdown-menu .dropdown-submenu a').click(function (e) {
+        $('.dropdown-menu .dropdown-submenu a').click(function (e) {
                 e.stopPropagation();
             });
-        });
     </script>
 </contextmenu_wrapper>
 
@@ -1516,7 +1467,7 @@ place ajaxScript before the closing input_tagselector-tag.
 <sitemap_combined_entry_header>
     <a data-toggle="collapse" data-parent="#%%aspectId%%" href="#menu_%%systemid%%%%aspectId%%" rel="tooltip"
        title="%%moduleName%%" data-kajona-module="%%moduleTitle%%"
-       onclick="require('moduleNavigation').combinedActive();">
+       onclick="ModuleNavigation.combinedActive();">
         <i class="fa %%faicon%%"></i>
     </a>
 </sitemap_combined_entry_header>
@@ -1547,7 +1498,7 @@ place ajaxScript before the closing input_tagselector-tag.
         <div class="panel-heading">
             <a data-toggle="collapse" data-parent="#%%aspectId%%" href="#menu_%%systemid%%%%aspectId%%"
                data-kajona-module="%%moduleTitle%%" class="collapsed"
-               onclick="require('moduleNavigation').combinedInactive();">
+               onclick="ModuleNavigation.combinedInactive();">
                 %%moduleName%%
             </a>
         </div>
@@ -1569,26 +1520,22 @@ place ajaxScript before the closing input_tagselector-tag.
 </sitemap_divider_entry>
 
 <changelog_heatmap>
-    <div class="chart-navigation pull-left"><a href="#" onclick="require('changelog').loadPrevYear();return false;"><i class="kj-icon fa fa-arrow-left"></i></a></div>
-    <div class="chart-navigation pull-right"><a href="#" onclick="require('changelog').loadNextYear();return false;"><i class="kj-icon fa fa-arrow-right"></i></a></div>
+    <div class="chart-navigation pull-left"><a href="#" onclick="Changelog.loadPrevYear();return false;"><i class="kj-icon fa fa-arrow-left"></i></a></div>
+    <div class="chart-navigation pull-right"><a href="#" onclick="Changelog.loadNextYear();return false;"><i class="kj-icon fa fa-arrow-right"></i></a></div>
     <div id='changelogTimeline' style='text-align:center;'></div>
 
     <script type="text/javascript">
-        require(['changelog', 'moment', 'loader', 'util'], function(changelog, moment, loader, util){
-            loader.loadFile(['/core/module_system/scripts/d3/calendar-heatmap.css']);
+            Changelog.lang = %%strLang%%;
+            Changelog.systemId = "%%strSystemId%%";
+            Changelog.format = Util.transformDateFormat('%%strDateFormat%%', "momentjs");
+            Changelog.now = moment().endOf('day').toDate();
+            Changelog.yearAgo = moment().startOf('day').subtract(1, 'year').toDate();
+            Changelog.selectColumn("right");
+            Changelog.loadChartData();
 
-            changelog.lang = %%strLang%%;
-            changelog.systemId = "%%strSystemId%%";
-            changelog.format = util.transformDateFormat('%%strDateFormat%%', "momentjs");
-            changelog.now = moment().endOf('day').toDate();
-            changelog.yearAgo = moment().startOf('day').subtract(1, 'year').toDate();
-            changelog.selectColumn("right");
-            changelog.loadChartData();
-
-            changelog.loadDate("%%strSystemId%%", "%%strLeftDate%%", "left", function(){
-                changelog.loadDate("%%strSystemId%%", "%%strRightDate%%", "right", changelog.compareTable);
+            Changelog.loadDate("%%strSystemId%%", "%%strLeftDate%%", "left", function(){
+                Changelog.loadDate("%%strSystemId%%", "%%strRightDate%%", "right", Changelog.compareTable);
             });
-        });
     </script>
 </changelog_heatmap>
 

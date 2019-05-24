@@ -1,11 +1,11 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2004-2006 by MulchProductions, www.mulchprod.de                                                 *
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-*-------------------------------------------------------------------------------------------------------*
-*   $Id$                                *
-********************************************************************************************************/
+ *   (c) 2004-2006 by MulchProductions, www.mulchprod.de                                                 *
+ *   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
+ *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
+ *-------------------------------------------------------------------------------------------------------*
+ *   $Id$                                *
+ ********************************************************************************************************/
 
 namespace Kajona\System\Admin;
 
@@ -94,7 +94,7 @@ class RightAdmin extends AdminController implements AdminInterface
             $arrRights = $this->rights->getArrayRights($objTargetRecord->getSystemid());
 
             //Followed by the form
-            $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "saverights"), "rightsForm", "", "require('permissions').submitForm();return false;");
+            $strReturn .= $this->objToolkit->formHeader(Link::getLinkAdminHref($this->getArrModule("modul"), "saverights"), "rightsForm", "", "Permissions.submitForm();return false;");
             $strReturn .= $this->objToolkit->formInputUserSelector("group_add", $this->getLang("permissons_add_group"), "", "", false, true);
             $strReturn .= "<div id=\"rightsContainer\">" . $this->actionLoadRights() . "</div>";
             $strReturn .= $this->objToolkit->formInputCheckbox("inherit", $this->getLang("titel_erben"), boolval($arrRights["inherit"]));
@@ -105,26 +105,24 @@ class RightAdmin extends AdminController implements AdminInterface
             $strReturn .= $this->objToolkit->formClose();
 
             $strReturn .= "<script type=\"text/javascript\">
-                require(['jquery', 'permissions'], function($, permissions){
-                    // add new group
-                    $('#group_add_id').on('change', function(){
-                        permissions.addGroup($('#group_add_id').val());
-                    });
+            // add new group
+            $('#group_add_id').on('change', function(){
+                Permissions.addGroup($('#group_add_id').val());
+            });
 
-                    // toggle inherit checkbox
-                    $('#inherit').on('change', permissions.toggleInherit);
-                    permissions.toggleInherit();
+            // toggle inherit checkbox
+            $('#inherit').on('change', Permissions.toggleInherit);
+            Permissions.toggleInherit();
 
-                    // ignore enter key press
-                    $(document).ready(function() {
-                        $(window).keydown(function(event){
-                            if (event.keyCode === 13) {
-                                event.preventDefault();
-                                return false;
-                            }
-                        });
-                    });
+            // ignore enter key press
+            $(document).ready(function() {
+                $(window).keydown(function(event){
+                    if (event.keyCode === 13) {
+                        event.preventDefault();
+                        return false;
+                    }
                 });
+            });
                 </script>";
         } else {
             $strReturn .= $this->getLang("commons_error_permissions");
@@ -179,7 +177,6 @@ class RightAdmin extends AdminController implements AdminInterface
         } else {
             $objTarget = Objectfactory::getInstance()->getObject($this->getSystemid());
         }
-
 
         //Special case: The root-record.
         if (!$objTarget->rightRight()) {
