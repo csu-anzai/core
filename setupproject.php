@@ -137,9 +137,6 @@ JSON;
     }
 
     private static function creatRootEslintConfig(){
-        if (is_file(self::$strRealPath . "/.eslintrc.json")) {
-            return;
-        }
         $content = <<<JSON
 {
   "env": {
