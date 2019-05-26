@@ -3,7 +3,7 @@ import axios from 'axios'
 @Component class Searchbar extends Vue {
     private userInput : String =''
     private mounted () : void {
-        var parent = document.getElementById('globalSearchInput')
+        var parent = document.getElementById('searchbarContainer')
         parent.appendChild(this.$el)
     }
     private onSubmit (e : Event) : void {
