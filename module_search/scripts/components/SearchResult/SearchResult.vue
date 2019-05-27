@@ -1,9 +1,10 @@
 <template>
     <div>
-        <div v-for="(item, index) in searchResults" :key="index">
-        <p>
+        <div v-for="(item, index) in searchResults" :key="index" class="searchResultContainer">
+        <a :href="item.link" @click="close">
+            <span v-html="item.icon"></span>
             {{item.description}}
-        </p>
+        </a>
     </div>
     </div>
 </template>
