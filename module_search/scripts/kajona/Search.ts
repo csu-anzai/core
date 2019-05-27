@@ -5,7 +5,7 @@ import Tooltip from 'core/module_system/scripts/kajona/Tooltip'
 import StatusDisplay from 'core/module_system/scripts/kajona/StatusDisplay'
 
 class Search {
-    public static triggerFullSearch () {
+    public static triggerFullSearch (searchQuery : String) {
         var strQuery = $('#search_query').val()
         if (strQuery === '') return
 

@@ -8,6 +8,9 @@
       </span>
       </div>
     </form>
+    <div v-if="searchResults.length!==0">
+      <SearchResult></SearchResult>
+    </div>
   </div>
 </template>
 <script lang="ts" src="./Searchbar.ts">
