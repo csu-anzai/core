@@ -1,7 +1,8 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import SearchResult from '../SearchResult/SearchResult.vue'
-@Component({ components: { SearchResult } }) class Searchbar extends Vue {
+import Loader from 'core/module_system/scripts/components/Loader.vue'
+@Component({ components: { SearchResult, Loader } }) class Searchbar extends Vue {
      @namespace('SearchModule').Action triggerSearch: any
      @namespace('SearchModule').Action resetSearchResults: any
      @namespace('SearchModule').State searchResults : Array<any>
@@ -10,7 +11,7 @@ import SearchResult from '../SearchResult/SearchResult.vue'
      @namespace('SearchModule').Action openDialog: any
      @namespace('SearchModule').Action closeDialog: any
      @namespace('SearchModule').Action resetSearchQuery: any
-
+     private loading :boolean = false
      private userInput : String =''
      private mounted () : void {
          var parent = document.getElementById('searchbarContainer')
@@ -20,8 +21,10 @@ import SearchResult from '../SearchResult/SearchResult.vue'
          e.preventDefault()
          console.log('submit : ', this.userInput)
      }
-     private onInput (e:Event) : void {
-         this.triggerSearch(this.userInput)
+     private async onInput (e:Event) : void {
+         this.loading = true
+         await this.triggerSearch(this.userInput)
+         this.loading = false
      }
      private open () : void {
          this.openDialog()

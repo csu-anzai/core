@@ -1,6 +1,9 @@
 <template>
     <div>
-        <div v-for="(item, index) in searchResults" :key="index" class="searchResultContainer">
+        <div>
+            {{searchResults.length}} Ergebnisse gefunden.
+        </div>
+        <div v-for="(item, index) in searchResults" :key="index" class="searchResultContainer col-sm-12">
         <a :href="item.link" @click="close">
             <span v-html="item.icon"></span>
             {{item.description}}

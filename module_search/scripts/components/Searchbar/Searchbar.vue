@@ -4,14 +4,19 @@
      <div v-bind:class="{ searchBarInnerContainerDialog: dialogIsOpen }" >
       <form @submit="onSubmit" class="navbar-search pull-left">
       <div class="input-group">
-          <input type="text" name="search_query" class="form-control search-query" @input="onInput" v-model="userInput" @mousedown="open"  >
+          <input type="text" name="search_query" class="form-control search-query" @input="onInput" v-model="userInput" @mousedown="open" autocomplete="off" >
       <span class="input-group-addon">
         <i class="fa fa-search" aria-hidden="true"></i>
       </span>
       </div>
     </form>
-    <div v-if="searchResults.length!==0" id="searchResultsContainer">
+    <div class="loaderContainer">
+      <Loader :loading="loading"></Loader>
+    </div>
+    <div  id="searchResultsContainer">
+      <div v-if="searchResults.length!==0">
       <SearchResult></SearchResult>
+    </div>
     </div>
     </div>
 </div>
