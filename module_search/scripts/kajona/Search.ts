@@ -30,16 +30,16 @@ class Search {
             'search',
             'renderSearch',
             '&search_query=' +
-                encodeURIComponent('' + strQuery) +
-                '&filtermodules=' +
-                filtermodules +
-                '&search_changestartdate=' +
-                startdate +
-                '&search_changeenddate=' +
-                enddate +
-                '&search_formfilteruser_id=' +
-                userfilter +
-                '',
+            encodeURIComponent('' + strQuery) +
+            '&filtermodules=' +
+            filtermodules +
+            '&search_changestartdate=' +
+            startdate +
+            '&search_changeenddate=' +
+            enddate +
+            '&search_formfilteruser_id=' +
+            userfilter +
+            '',
             function (data: any, status: string, jqXHR: XMLHttpRequest) {
                 var intStart
                 if (status === 'success') {
