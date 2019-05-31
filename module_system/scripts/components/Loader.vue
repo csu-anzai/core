@@ -1,14 +1,9 @@
 <template>
     <div v-if="loading">
-<div class="table">
-  <div class="cell">
-    <div class="gmb-loader">
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-  </div>
+<div class="centerfy">
+  <div class="spiner"></div>
 </div>
+
     </div>
 </template>
 <script lang="ts" src="./Loader.ts">

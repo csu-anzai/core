@@ -1,98 +1,38 @@
 @import (reference) "../../../module_v4skin/admin/skins/kajona_v4/less/styles.less";
-.gmb-loader {
-    font-size: 0;
-    display: inline-block;
-    position: relative;
-    height: 120px;
-    width: 120px;
+.centerfy {
+  display : flex ;
+  align-items: center ;
+  justify-content: center ;
+}
+
+.spiner {
+  position: relative;
+  // width: 100px;
+  // height: 100px;
+  width : 50px ;
+  height: 50px; ;
+  animation: anim-spin 1s infinite ease;
+}
+
+.spiner:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  border-top: solid 10px #ff3c50;
+  border-right: solid 10px transparent;
+  border-bottom: solid 10px #ff3c50;
+  border-left: solid 10px transparent;
+  border-radius: 100%;
+}
+
+@keyframes anim-spin {
+  from {
+    transform: rotate(0deg);
   }
-  .gmb-loader div {
-    background: @kajona-brand-color;
-    width: 30px;
-    height: 30px;
-    border-radius: 30px;
-    position: absolute;
-    -webkit-animation: gmb-bounce 1.75s infinite;
-            animation: gmb-bounce 1.75s infinite;
-    top: 50%;
-    margin-top: -15px;
+  to {
+    transform: rotate(360deg);
   }
-  .gmb-loader div:nth-child(2) {
-    -webkit-animation-delay: 0.25s;
-            animation-delay: 0.25s;
-    left: 50%;
-    margin-left: -15px;
-  }
-  .gmb-loader div:nth-child(3) {
-    -webkit-animation-delay: 0.5s;
-            animation-delay: 0.5s;
-    right: 0;
-  }
-  
-  @-webkit-keyframes gmb-bounce {
-    10% {
-      -webkit-transform: translate3d(0, 30px, 0);
-              transform: translate3d(0, 30px, 0);
-      -webkit-animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1);
-              animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1);
-      height: 30px;
-    }
-    14% {
-      height: 90px;
-    }
-    15% {
-      height: 30px;
-      -webkit-transform: translate3d(0, -60px, 0);
-              transform: translate3d(0, -60px, 0);
-      -webkit-animation-timing-function: cubic-bezier(0.8, 0, 0.8, 1);
-              animation-timing-function: cubic-bezier(0.8, 0, 0.8, 1);
-    }
-    35% {
-      -webkit-transform: translate3d(0, 0, 0);
-              transform: translate3d(0, 0, 0);
-    }
-  }
-  
-  @keyframes gmb-bounce {
-    10% {
-      -webkit-transform: translate3d(0, 30px, 0);
-              transform: translate3d(0, 30px, 0);
-      -webkit-animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1);
-              animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1);
-      height: 30px;
-    }
-    14% {
-      height: 90px;
-    }
-    15% {
-      height: 30px;
-      -webkit-transform: translate3d(0, -60px, 0);
-              transform: translate3d(0, -60px, 0);
-      -webkit-animation-timing-function: cubic-bezier(0.8, 0, 0.8, 1);
-              animation-timing-function: cubic-bezier(0.8, 0, 0.8, 1);
-    }
-    35% {
-      -webkit-transform: translate3d(0, 0, 0);
-              transform: translate3d(0, 0, 0);
-    }
-  }
-  body, html {
-    height: 100%;
-  }
-  
-  body {
-    margin: 0;
-    background: #e8ddca;
-  }
-  
-  .table {
-    display: table;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-  }
-  .table .cell {
-    display: table-cell;
-    vertical-align: middle;
-  }
-  
+}
