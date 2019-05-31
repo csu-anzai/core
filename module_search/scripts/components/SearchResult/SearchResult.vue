@@ -8,6 +8,9 @@
             <span v-html="item.icon"></span>
             {{item.description}}
         </a>
+        <small>
+            {{item.module}}
+        </small>
     </div>
     </div>
 </template>
