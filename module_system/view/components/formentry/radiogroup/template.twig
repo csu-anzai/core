@@ -6,7 +6,7 @@
             <div class="radio">
                 <label>
                     <input type="radio" name="{{ name|e('html_attr') }}" id="{{ name|e('html_attr') }}_{{ key }}" value="{{ key }}" class="{{ class }}" {% if key == selected %}checked{% endif %} {% if readOnly %}disabled{% endif %}>
-                    {{ value }}
+                    {{ value|raw }}
                 </label>
             </div>
         {% endfor %}
