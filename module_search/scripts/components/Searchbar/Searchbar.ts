@@ -21,7 +21,7 @@ import Loader from 'core/module_system/scripts/components/Loader.vue'
          e.preventDefault()
          console.log('submit : ', this.userInput)
      }
-     private async onInput (e:Event) : void {
+     private async onInput (e:Event) : Promise<void> {
          this.loading = true
          await this.triggerSearch(this.userInput)
          this.loading = false
