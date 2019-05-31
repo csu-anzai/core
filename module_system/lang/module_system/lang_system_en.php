@@ -32,7 +32,7 @@ $lang["_system_changehistory_enabled_"]  = "Changetrack enabled";
 $lang["_system_dbdump_amount_"]          = "Number of DB-dumps";
 $lang["_system_dbdump_amount_hint"]      = "Defines how many DB-dumps should be kept.";
 $lang["_system_graph_type_"]             = "Chart-library used";
-$lang["_system_graph_type_hint"]         = "Valid values: pchart, ezc, jqplot. pChat has to be downloaded manually, for optimal images ezc makes use of the php-module 'cairo'.<br />See also <a href=\"http://www.kajona.de/nicecharts.html\" taget=\"_blank\">http://www.kajona.de/nicecharts.html</a>";
+$lang["_system_graph_type_hint"]         = "Valid values: pchart, ezc, jqplot. pChat has to be downloaded manually, for optimal images ezc makes use of the php-module 'cairo'.<br />See also <a href=\"http://www.kajona.de/nicecharts.html\" target=\"_blank\">http://www.kajona.de/nicecharts.html</a>";
 $lang["_system_lock_maxtime_"]           = "Maximum locktime";
 $lang["_system_lock_maxtime_hint"]       = "After the given duration in seconds, locked records will be unlocked automatically.";
 $lang["_system_mod_rewrite_"]            = "URL-rewriting";
@@ -186,6 +186,8 @@ $lang["setStatusError"]                  = "Error changing the status";
 $lang["setStatusOk"]                     = "Changing the status succeeded";
 $lang["settings_updated"]                = "Settings changed successfully";
 $lang["setzen_erfolg"]                   = "Permissions saved successfully";
+$lang["save_rights_success"]             = "Permissions saved successfully";
+$lang["save_rights_error"]               = "Error on changing permissions";
 
 $lang["status_active"]                   = "Change status (is active)";
 $lang["status_inactive"]                 = "Change status (is inactive)";
@@ -287,6 +289,8 @@ $lang["changelog_tooltipUnitPlural"] = "changes";
 $lang["changelog_tooltipHtml"]       = "<span><strong>%count% %unit%</strong> on %date%</span>";
 $lang["changelog_tooltipColumn"]     = "Click on the calendar heatmap to load a record for a specific date.";
 
+$lang["workflow_oracle_stats_title"]  = "Gather oracle statistics";
+$lang["workflow_oracle_stats_val1"]  = "Hour to start gathering";
 
 $lang["workflow_messagequeue_title"]  = "Message-Queue sender";
 $lang["workflow_queue_sender_val1"]  = "Hours";
@@ -304,3 +308,9 @@ $lang["copy_page_url"] = "Page URL";
 $lang["link_was_copied"] = "Link was copied";
 
 $lang["error_model_not_found"] = "Error handling request, the object to be loaded is unknown. Please restart your action.";
+
+$lang["systemtask_samplecontent_installer"] = "Samplecontent";
+$lang["systemtask_samplecontent_installer_name"] = "Samplecontent Installer";
+$lang["systemtask_samplecontent_installer_error"] = "Could not install samplecontent";
+
+$lang["systemtask_form_name"] = "Form-Demo";

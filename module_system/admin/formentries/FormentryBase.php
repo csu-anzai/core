@@ -241,7 +241,7 @@ abstract class FormentryBase implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            "type" => get_class($this),
+            "type" => str_replace("\\", "", get_class($this)),
             "name" => $this->getStrEntryName(),
             "label" => $this->getStrLabel(),
             "readonly" => $this->getBitReadonly(),

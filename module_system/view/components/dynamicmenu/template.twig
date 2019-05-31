@@ -9,17 +9,16 @@
         <div id='{{ menuid }}-menu' style="padding:0"></div>
     </div>
     <script type="text/javascript">
-        require(["jquery", "ajax"], function($, ajax) {
             $("#{{ menuid }}").on("show.bs.dropdown", function () {
                 {% if filter %}$("#{{ menuid }}-filter").val("");{% endif %}
-                ajax.loadUrlToElement("#{{ menuid }}-menu", "{{ endpoint|raw }}");
+                Ajax.loadUrlToElement("#{{ menuid }}-menu", "{{ endpoint|raw }}");
             });
 
             {% if filter %}
             var timeout;
             var send = function(){
                 var value = $("#{{ menuid }}-filter").val();
-                ajax.loadUrlToElement("#{{ menuid }}-menu", "{{ endpoint|raw }}&filter=" + value);
+                Ajax.loadUrlToElement("#{{ menuid }}-menu", "{{ endpoint|raw }}&filter=" + value);
                 $('#{{ menuid }}-filter').focus();
             };
             var filter = function(){
@@ -32,6 +31,6 @@
             $('#{{ menuid }}-filter').on('keypress', filter);
             $('#{{ menuid }}-filter').on('change', filter);
             {% endif %}
-        });
+
     </script>
 </div>

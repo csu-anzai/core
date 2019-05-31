@@ -1,10 +1,10 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-*-------------------------------------------------------------------------------------------------------*
-*	$Id$	                                            *
-********************************************************************************************************/
+ *   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
+ *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
+ *-------------------------------------------------------------------------------------------------------*
+ *    $Id$                                                *
+ ********************************************************************************************************/
 
 namespace Kajona\System\Admin;
 
@@ -28,7 +28,6 @@ use Kajona\System\View\Components\Menu\Item\Text;
 use Kajona\System\View\Components\Menu\Menu;
 use Kajona\System\View\Components\Menu\MenuItem;
 
-
 /**
  * Class holding common methods for extended and simplified admin-guis.
  *
@@ -43,7 +42,6 @@ abstract class AdminSimple extends AdminController
      * @deprecated
      */
     private $strPeAddon = "";
-
 
     /**
      * @param string $strSystemid
@@ -98,7 +96,6 @@ abstract class AdminSimple extends AdminController
         return "";
     }
 
-
     /**
      * Renders the form to create a new entry
      *
@@ -125,7 +122,6 @@ abstract class AdminSimple extends AdminController
      * @permissions view
      */
     abstract protected function actionList();
-
 
     /**
      * A general action to delete a record.
@@ -158,7 +154,7 @@ abstract class AdminSimple extends AdminController
             }
 
             if ($strTargetUrl == "" || $bitFound) {
-                $strTargetUrl = "admin=1&module=".$this->getArrModule("modul");
+                $strTargetUrl = "admin=1&module=" . $this->getArrModule("modul");
 
                 $intI = 1;
                 while ($this->getHistory($intI) !== null) {
@@ -172,10 +168,11 @@ abstract class AdminSimple extends AdminController
                 $strTargetUrl = Link::plainUrlToHashUrl($strTargetUrl);
             }
 
-            return "<script type='text/javascript'>require(['router'], function(router){ router.loadUrl('{$strTargetUrl}'); });</script>";
+            return "<script type='text/javascript'>Router.loadUrl('{$strTargetUrl}');</script>";
         } else {
-            throw new Exception("error loading object ".$this->getSystemid(), Exception::$level_ERROR);
+            throw new Exception("error loading object " . $this->getSystemid(), Exception::$level_ERROR);
         }
+
     }
 
     /**
@@ -192,12 +189,11 @@ abstract class AdminSimple extends AdminController
         if ($objRecord != null && $objRecord->rightEdit()) {
             $this->objLifeCycleFactory->factory(get_class($objRecord))->copy($objRecord);
 
-            $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), $this->getActionNameForClass("list", $objRecord), "&systemid=".$objRecord->getPrevId()));
+            $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), $this->getActionNameForClass("list", $objRecord), "&systemid=" . $objRecord->getPrevId()));
         } else {
-            throw new Exception("error loading object ".$this->getSystemid(), Exception::$level_ERROR);
+            throw new Exception("error loading object " . $this->getSystemid(), Exception::$level_ERROR);
         }
     }
-
 
     /**
      * Returns the action name for a given class name.
@@ -211,7 +207,6 @@ abstract class AdminSimple extends AdminController
     {
         return $strAction;
     }
-
 
     /**
      * Renders a list of items in a floatable "thumbnail" view, so a grid.
@@ -243,11 +238,9 @@ abstract class AdminSimple extends AdminController
             $strReturn .= $this->objToolkit->listFooter();
         }
 
-
         if (!$objArraySectionIterator->valid()) {
             $strReturn .= $this->objToolkit->getTextRow($this->getLang("commons_list_empty"));
         }
-
 
         if ($objArraySectionIterator->valid()) {
             $strReturn .= $this->objToolkit->gridHeader($bitSortable, $objArraySectionIterator->getIntElementsPerPage(), $objArraySectionIterator->getPageNumber());
@@ -265,11 +258,10 @@ abstract class AdminSimple extends AdminController
             $strReturn .= $this->objToolkit->gridFooter();
         }
 
-        $strReturn .= $this->objToolkit->getPageview($objArraySectionIterator, $this->getArrModule("modul"), $this->getAction(), "&systemid=".$this->getSystemid().$strPagerAddon);
+        $strReturn .= $this->objToolkit->getPageview($objArraySectionIterator, $this->getArrModule("modul"), $this->getAction(), "&systemid=" . $this->getSystemid() . $strPagerAddon);
 
         return $strReturn;
     }
-
 
     /**
      * Renders a list of items, target is the common admin-list.
@@ -354,7 +346,7 @@ abstract class AdminSimple extends AdminController
         }
 
         $objArraySectionIterator->setIntTotalElements($intTotalNrOfElements);
-        $strReturn .= $this->objToolkit->getPageview($objArraySectionIterator, $this->getArrModule("modul"), $this->getAction(), "&systemid=".$this->getSystemid().$strPagerAddon);
+        $strReturn .= $this->objToolkit->getPageview($objArraySectionIterator, $this->getArrModule("modul"), $this->getAction(), "&systemid=" . $this->getSystemid() . $strPagerAddon);
 
         return $strReturn;
     }
@@ -387,7 +379,6 @@ abstract class AdminSimple extends AdminController
         return $strActions;
     }
 
-
     /**
      * Renders the action to jump a level upwards.
      * Overwrite this method if you want to provide such an action.
@@ -416,7 +407,6 @@ abstract class AdminSimple extends AdminController
     {
         return "";
     }
-
 
     /**
      * Renders the edit action button for the current record.
@@ -471,7 +461,6 @@ abstract class AdminSimple extends AdminController
         return "";
     }
 
-
     /**
      * Renders the unlock action button for the current record.
      *
@@ -490,13 +479,12 @@ abstract class AdminSimple extends AdminController
         if (!$objLockmanager->isAccessibleForCurrentUser()) {
             if ($objLockmanager->isUnlockableForCurrentUser()) {
                 return $this->objToolkit->listButton(
-                    Link::getLinkAdmin($objListEntry->getArrModule("modul"), $this->getAction(), "&systemid=".$this->getSystemid()."&unlockid=".$objListEntry->getSystemid(), "", $this->getLang("commons_unlock"), "icon_lockerOpen")
+                    Link::getLinkAdmin($objListEntry->getArrModule("modul"), $this->getAction(), "&systemid=" . $this->getSystemid() . "&unlockid=" . $objListEntry->getSystemid(), "", $this->getLang("commons_unlock"), "icon_lockerOpen")
                 );
             }
         }
         return "";
     }
-
 
     /**
      * Renders the delete action button for the current record.
@@ -520,8 +508,8 @@ abstract class AdminSimple extends AdminController
 
             return $this->objToolkit->listDeleteButton(
                 strip_tags($objListEntry->getStrDisplayName()),
-                $this->getLang($this->getObjLang()->stringToPlaceholder($this->getActionNameForClass("delete", $objListEntry)."_question"), $objListEntry->getArrModule("modul")),
-                Link::getLinkAdminHref($objListEntry->getArrModule("modul"), $this->getActionNameForClass("delete", $objListEntry), "&systemid=".$objListEntry->getSystemid())
+                $this->getLang($this->getObjLang()->stringToPlaceholder($this->getActionNameForClass("delete", $objListEntry) . "_question"), $objListEntry->getArrModule("modul")),
+                Link::getLinkAdminHref($objListEntry->getArrModule("modul"), $this->getActionNameForClass("delete", $objListEntry), "&systemid=" . $objListEntry->getSystemid())
             );
         }
         return "";
@@ -564,7 +552,7 @@ abstract class AdminSimple extends AdminController
                 Link::getLinkAdminDialog(
                     "right",
                     $this->getActionNameForClass("change", $objListEntry),
-                    "&systemid=".$objListEntry->getSystemid(),
+                    "&systemid=" . $objListEntry->getSystemid(),
                     "",
                     $this->getLang("commons_edit_permissions"),
                     getRightsImageAdminName($objListEntry->getSystemid()),
@@ -595,17 +583,15 @@ abstract class AdminSimple extends AdminController
             //sanitize critical chars
             $strDialogTitle = StringUtil::jsSafeString($objListEntry->getStrDisplayName());
 
-
             //the tag list is more complex and wrapped by a js-logic to load the tags by ajax afterwards
             // @codingStandardsIgnoreStart
-            $strOnClick = "require('folderview').dialog.setContentIFrame('".Link::getLinkAdminHref("tags", "genericTagForm", "&systemid=".$objListEntry->getSystemid())."'); require('folderview').dialog.setTitle('".$strDialogTitle."'); require('folderview').dialog.init(); return false;";
-            $strLink = "<a href=\"#\" onclick=\"".$strOnClick."\" title=\"".$this->getLang("commons_edit_tags")."\" rel=\"tagtooltip\" data-systemid=\"".$objListEntry->getSystemid()."\">".AdminskinHelper::getAdminImage("icon_tag", $this->getLang("commons_edit_tags"), true)."</a>";
+            $strOnClick = "Folderview.dialog.setContentIFrame('" . Link::getLinkAdminHref("tags", "genericTagForm", "&systemid=" . $objListEntry->getSystemid()) . "'); Folderview.dialog.setTitle('" . $strDialogTitle . "'); Folderview.dialog.init(); return false;";
+            $strLink = "<a href=\"#\" onclick=\"" . $strOnClick . "\" title=\"" . $this->getLang("commons_edit_tags") . "\" rel=\"tagtooltip\" data-systemid=\"" . $objListEntry->getSystemid() . "\">" . AdminskinHelper::getAdminImage("icon_tag", $this->getLang("commons_edit_tags"), true) . "</a>";
             // @codingStandardsIgnoreEnd
             return $this->objToolkit->listButton($strLink);
         }
         return "";
     }
-
 
     /**
      * Renders the permissions action button for the current record.
@@ -623,7 +609,7 @@ abstract class AdminSimple extends AdminController
 
         if ($objListEntry->rightEdit()) {
             $strQuestion = $this->getLang("commons_copy_record_question", "system", array(StringUtil::jsSafeString($objListEntry->getStrDisplayName())));
-            $strHref = Link::getLinkAdminHref($objListEntry->getArrModule("modul"), $this->getActionNameForClass("copyObject", $objListEntry), "&systemid=".$objListEntry->getSystemid());
+            $strHref = Link::getLinkAdminHref($objListEntry->getArrModule("modul"), $this->getActionNameForClass("copyObject", $objListEntry), "&systemid=" . $objListEntry->getSystemid());
             return $this->objToolkit->listConfirmationButton($strQuestion, $strHref, "icon_copy", $this->getLang("commons_edit_copy", "system"), $this->getLang("dialog_copyHeader", "system"), $this->getLang("dialog_copyButton", "system"));
         }
         return "";
@@ -665,9 +651,9 @@ abstract class AdminSimple extends AdminController
 
         if ($objObject->rightEdit()) {
             if ($bitDialog) {
-                return $this->objToolkit->listButton(Link::getLinkAdminDialog($this->getArrModule("modul"), $this->getActionNameForClass("new", null), "&folderview=1&systemid=".$this->getSystemid(), $this->getLang("commons_list_new"), $this->getLang("commons_list_new"), "icon_new"));
+                return $this->objToolkit->listButton(Link::getLinkAdminDialog($this->getArrModule("modul"), $this->getActionNameForClass("new", null), "&folderview=1&systemid=" . $this->getSystemid(), $this->getLang("commons_list_new"), $this->getLang("commons_list_new"), "icon_new"));
             } else {
-                return $this->objToolkit->listButton(Link::getLinkAdmin($this->getArrModule("modul"), $this->getActionNameForClass("new", null), "&systemid=".$this->getSystemid(), $this->getLang("commons_list_new"), $this->getLang("commons_list_new"), "icon_new"));
+                return $this->objToolkit->listButton(Link::getLinkAdmin($this->getArrModule("modul"), $this->getActionNameForClass("new", null), "&systemid=" . $this->getSystemid(), $this->getLang("commons_list_new"), $this->getLang("commons_list_new"), "icon_new"));
             }
         }
         return "";
@@ -713,9 +699,9 @@ abstract class AdminSimple extends AdminController
                 $arrMatchesLink = array();
                 if (preg_match('/<a.*?title=(["\'])(.*?)\1.*$/i', $strOneAction, $arrMatchesLink)) {
                     if (StringUtil::substring($strOneAction, -11) == "</a></span>") {
-                        $strOneAction = StringUtil::substring($strOneAction, 0, -11).$icon.$arrMatchesLink[2]."</a></span>";
+                        $strOneAction = StringUtil::substring($strOneAction, 0, -11) . $icon . $arrMatchesLink[2] . "</a></span>";
                     } else {
-                        $strOneAction .= $icon.$arrMatchesLink[2];
+                        $strOneAction .= $icon . $arrMatchesLink[2];
                     }
                 }
 
@@ -749,7 +735,6 @@ abstract class AdminSimple extends AdminController
     {
         return array();
     }
-
 
     /**
      * @return array
@@ -785,7 +770,7 @@ abstract class AdminSimple extends AdminController
                 Link::getLinkAdminDialog(
                     "system",
                     "genericChangelog",
-                    "&systemid=".$objListEntry->getSystemid()."&folderview=1",
+                    "&systemid=" . $objListEntry->getSystemid() . "&folderview=1",
                     $this->getLang("commons_edit_history"),
                     $this->getLang("commons_edit_history"),
                     "icon_history",
@@ -816,6 +801,4 @@ abstract class AdminSimple extends AdminController
         return $this->strPeAddon;
     }
 
-
 }
-

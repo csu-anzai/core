@@ -32,7 +32,7 @@ $lang["_system_changehistory_enabled_"]  = "Änderungshistorie aktiv";
 $lang["_system_dbdump_amount_"]          = "Anzahl DB-Dumps";
 $lang["_system_dbdump_amount_hint"]      = "Definiert, wie viele Datenbank-Sicherungen vorgehalten werden sollen.";
 $lang["_system_graph_type_"]             = "Verwendete Chart-Bibliothek: ";
-$lang["_system_graph_type_hint"]         = "Gültige Werte: pchart, ezc, jqplot. pChart muss gesondern heruntergeladen und installiert werden, ezc benötigt im Optimalfall das PHP-Modul 'cairo'.<br />Siehe hierzu auch <a href=\"http://www.kajona.de/nicecharts.html\" taget=\"_blank\">http://www.kajona.de/nicecharts.html</a>";
+$lang["_system_graph_type_hint"]         = "Gültige Werte: pchart, ezc, jqplot. pChart muss gesondern heruntergeladen und installiert werden, ezc benötigt im Optimalfall das PHP-Modul 'cairo'.<br />Siehe hierzu auch <a href=\"http://www.kajona.de/nicecharts.html\" target=\"_blank\">http://www.kajona.de/nicecharts.html</a>";
 $lang["_system_lock_maxtime_"]           = "Maximale Sperrdauer";
 $lang["_system_lock_maxtime_hint"]       = "Nach der angegebenen Dauer in Sekunden werden gesperrte Datensätze automatisch wieder freigegeben.";
 $lang["_system_mod_rewrite_"]            = "URL-Rewriting";
@@ -174,6 +174,8 @@ $lang["setStatusError"]                  = "Fehler beim Ändern des Status";
 $lang["setStatusOk"]                     = "Ändern des Status erfolgreich";
 $lang["settings_updated"]                = "Einstellungen wurden geändert.";
 $lang["setzen_erfolg"]                   = "Rechte erfolgreich gespeichert";
+$lang["save_rights_success"]             = "Rechte erfolgreich gespeichert";
+$lang["save_rights_error"]               = "Fehler beim Speichern der Berechtigungen";
 
 $lang["status_active"]                   = "Status ändern (ist aktiv)";
 $lang["status_inactive"]                 = "Status ändern (ist inaktiv)";
@@ -280,7 +282,8 @@ $lang["changelog_tooltipUnitPlural"] = "Änderungen";
 $lang["changelog_tooltipHtml"]       = "<span><strong>%count% %unit%</strong> am %date%</span>";
 $lang["changelog_tooltipColumn"]     = "Über die Kalender-Heatmap können Sie per Klick den Datensatz für ein bestimmtes Datum nachladen.";
 
-
+$lang["workflow_oracle_stats_title"]  = "Oracle Statistiken neu berechnen";
+$lang["workflow_oracle_stats_val1"]  = "Uhrzeit der Berechnung";
 
 $lang["workflow_messagequeue_title"]  = "Message-Queue Abarbeitung";
 $lang["workflow_queue_sender_val1"]  = "Stunden";
@@ -297,3 +300,9 @@ $lang["copy_page_url"] = "Seiten-URL";
 $lang["link_was_copied"] = "Link wurde kopiert";
 
 $lang["error_model_not_found"] = "Fehler beim Verarbeiten der Anfrage, der zu ladende Datensatz ist nicht bekannt. Bitte starten Sie die letzte Aktion erneut.";
+
+$lang["systemtask_samplecontent_installer"] = "Samplecontent";
+$lang["systemtask_samplecontent_installer_name"] = "Samplecontent Installer";
+$lang["systemtask_samplecontent_installer_error"] = "Samplecontent konnte nicht installiert werden";
+
+$lang["systemtask_form_name"] = "Form-Demo";
