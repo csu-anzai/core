@@ -1,11 +1,14 @@
 import axios from 'axios'
 import to from 'await-to-js'
 import * as toastr from 'toastr'
+import { SearchResult } from '../Interfaces/SearchInterfaces'
+// import SearchResult from '../components/SearchResult/SearchResult';
+
 const SearchModule = {
     namespaced: true,
     state: { searchResults: [], dialogIsOpen: false, searchQuery: '' },
     mutations: {
-        SET_SEARCH_RESULTS (state : any, payload : Array<any>) : void {
+        SET_SEARCH_RESULTS (state : any, payload : Array<SearchResult>) : void {
             state.searchResults = payload
         },
         RESET_SEARCH_RESULTS (state :any) : void{
