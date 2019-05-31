@@ -28,7 +28,7 @@ const SearchModule = {
     actions: {
         async triggerSearch ({ commit }, searchQuery : String) : Promise<void> {
             commit('SET_SEARCH_QUERY', searchQuery)
-            const [err, res] = await to(axios.post('/agp-core-project/xml.php?admin=1&module=search&action=SearchXml&asJson=1&search_query=' + searchQuery))
+            const [err, res] = await to(axios.post(KAJONA_WEBPATH + '/xml.php?admin=1&module=search&action=SearchXml&asJson=1&search_query=' + searchQuery))
             if (err) {
                 toastr.error('error')
             } if (res) {

@@ -4,7 +4,7 @@
      <div v-bind:class="{ searchBarInnerContainerDialog: dialogIsOpen }" >
       <form @submit="onSubmit" class="navbar-search pull-left">
       <div class="input-group">
-          <input type="text" name="search_query" class="form-control search-query" @input="onInput" v-model="userInput" @mousedown="open" autocomplete="off" >
+          <input type="text" name="search_query" class="form-control search-query" @input="onInput" v-model="userInput" @mousedown="open" autocomplete="off" :placeholder="$t('dashboard.globalSearchPlaceholder')">
       <span class="input-group-addon">
         <i class="fa fa-search" aria-hidden="true"></i>
       </span>

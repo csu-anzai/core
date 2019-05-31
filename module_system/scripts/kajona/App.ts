@@ -13,6 +13,7 @@ import VueMain from './VueMainComponent/VueMain.vue'
 import Vue from 'vue'
 import store from './VueMainComponent/Store'
 import VueRouter from './VueMainComponent/VueRouter'
+import i18n from './VueMainComponent/VueLang'
 
 declare global {
     interface Window {
@@ -90,6 +91,7 @@ class App {
             router: VueRouter,
             // @ts-ignore
             store: store,
+            i18n,
             render: h => h(VueMain)
         })
     }
