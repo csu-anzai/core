@@ -1,8 +1,5 @@
 <template>
-    <div v-if="loading">
-<div class="centerfy">
-  <div class="spiner"></div>
-</div>
+    <div v-bind:class="{loadingContainer : loading}">
 
     </div>
 </template>
