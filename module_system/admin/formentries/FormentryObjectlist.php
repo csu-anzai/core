@@ -66,6 +66,12 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
     /** @var bool */
     protected $showEditButton = false;
 
+    /** @var bool */
+    protected $showAdditionalLinkData = true;
+
+    /** @var bool */
+    protected $showLinkObjectType = true;
+
     /**
      * A closure which generates the fitting link button for the entry
      *
@@ -75,10 +81,13 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
 
     /**
      * @param string $strAddLink
+     * @return FormentryObjectlist
      */
-    public function setStrAddLink($strAddLink)
+    public function setStrAddLink($strAddLink): FormentryObjectlist
     {
         $this->strAddLink = $strAddLink;
+
+        return $this;
     }
 
     /**
@@ -92,21 +101,49 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
     /**
      * @param string $endpointUrl
      * @param array $objectTypes
+     * @return FormentryObjectlist
      */
-    public function setEndpointUrl($endpointUrl, array $objectTypes = [])
+    public function setEndpointUrl($endpointUrl, array $objectTypes = []): FormentryObjectlist
     {
         $this->endpointUrl = $endpointUrl;
         $this->objectTypes = $objectTypes;
+
+        return $this;
     }
 
     /**
      * Bitmask consisting of OPTION_SKIP_RIGHT_CHECK
      *
      * @param int $options
+     * @return FormentryObjectlist
      */
-    public function setOptions(int $options)
+    public function setOptions(int $options): FormentryObjectlist
     {
         $this->options = $options;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $showAdditionalLinkData
+     * @return FormentryObjectlist
+     */
+    public function setShowAdditionalLinkData(bool $showAdditionalLinkData): FormentryObjectlist
+    {
+        $this->showAdditionalLinkData = $showAdditionalLinkData;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $showLinkObjectType
+     * @return FormentryObjectlist
+     */
+    public function setShowLinkObjectType(bool $showLinkObjectType): FormentryObjectlist
+    {
+        $this->showLinkObjectType = $showLinkObjectType;
+
+        return $this;
     }
 
     protected function updateValue()
@@ -188,6 +225,10 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         return $objReturn;
     }
 
+    /**
+     * @return mixed|string
+     * @throws Exception
+     */
     public function setValueToObject()
     {
         $objSourceObject = $this->getObjSourceObject();
@@ -231,6 +272,9 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         return $objSourceObject->{$strSetter}($arrObjects);
     }
 
+    /**
+     * @return bool
+     */
     public function validateValue()
     {
         $arrIds = explode(",", $this->getStrValue());
@@ -243,6 +287,11 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         return true;
     }
 
+    /**
+     * @return string
+     * @throws Exception
+     * @throws \ReflectionException
+     */
     public function getValueAsText()
     {
 
@@ -265,7 +314,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
 
             //Render content
             foreach ($objects as $objObject) {
-                $strTitle = self::getDisplayName($objObject);
+                $strTitle = $this->showLinkObjectType ? $this->getDisplayName($objObject) : $objObject->getStrDisplayName();
                 if ($objObject->rightView()) {
                     //see, if the matching target-module provides a showSummary method
                     $objModule = SystemModule::getModuleByName($objObject->getArrModule("modul"));
@@ -278,7 +327,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
                     }
                 }
                 $strHtml .= $strTitle;
-                if ($objObject instanceof AdminListableInterface && $objObject->rightView()) {
+                if ($this->showAdditionalLinkData && $objObject instanceof AdminListableInterface && $objObject->rightView()) {
                     $strHtml .= " ".$objObject->getStrAdditionalInfo();
                 }
                 $strHtml .= "<br />";
@@ -376,8 +425,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
             return "";
         }
 
-        $strPath = implode(" &gt; ", array_reverse($arrPath));
-        return $strPath;
+        return implode(" &gt; ", array_reverse($arrPath));
     }
 
     /**
