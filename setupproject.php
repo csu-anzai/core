@@ -1,13 +1,12 @@
 <?php
-
 /*"******************************************************************************************************
 *   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
 *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
 ********************************************************************************************************/
 
+
 class class_project_setup
 {
-    private const NPM_REGISTRY = 'http://packages.artemeon.int:4873/';
 
     private static $strRealPath = "";
 
@@ -118,6 +117,7 @@ class class_project_setup
         echo "\n<b>Done.</b>\nIf everything went well, <a href=\"../installer.php\">open the installer</a>\n";
     }
 
+
     private static function creaeRootGitIgnore()
     {
         if (is_file(self::$strRealPath . "/.gitignore")) {
@@ -163,6 +163,7 @@ TEXT;
     {
         chmod(self::$strRealPath . $strFolder, 0777);
     }
+
 
     private static function copyFolder($strSourceFolder, $strTargetFolder, $arrExcludeSuffix = array())
     {
@@ -217,104 +218,71 @@ TEXT;
         file_put_contents(self::$strRealPath . $strPath, $strContent);
     }
 
-    private static function executeCommand(string $commandName, array $parameters): string
+    private static function loadNpmDependencies()
     {
-        $command = $commandName . ' ' . implode(' ', array_map('escapeshellarg', $parameters));
-
-        $output = [];
-        \exec($command, $output, $exitCode);
-
-        if ($exitCode !== 0) {
-            throw new \RuntimeException('command exited with a non-zero status');
-        }
-
-        return \implode('', \array_map(function(string $outputLine) {
-            return '   ' . $outputLine . "\n";
-        }, $output));
-    }
-
-    private static function loadNpmDependencies(): void
-    {
-        echo 'Installing node dependencies' . \PHP_EOL;
+        echo "Installing node dependencies" . PHP_EOL;
 
         //only if required
-        if (\is_dir(self::$strRealPath . '/core/_buildfiles/jstests/node_modules/clean-css') && \is_dir(self::$strRealPath . '/core/_buildfiles/jstests/node_modules/less') && \is_dir(self::$strRealPath . '/core/_buildfiles/jstests/node_modules/typescript/')) {
-            echo '  not required' . \PHP_EOL;
-
+        if (is_dir(self::$strRealPath."/core/_buildfiles/jstests/node_modules/clean-css") && is_dir(self::$strRealPath."/core/_buildfiles/jstests/node_modules/less") && is_dir( self::$strRealPath . "/core/_buildfiles/jstests/node_modules/typescript/")) {
+            echo "  not required".PHP_EOL;
             return;
         }
 
-        try {
-            \chdir(__DIR__ . '/_buildfiles/jstests');
-            self::executeCommand('npm', ['config', 'set', 'registry', self::NPM_REGISTRY]);
-            $output = self::executeCommand('npm', ['install']);
-            \chdir(__DIR__);
-        } catch (\RuntimeException $exception) {
-            echo 'Error exited with a non successful status code';
+        $arrOutput = array();
+        exec("ant -f ".escapeshellarg(self::$strRealPath."/core/_buildfiles/build.xml")." installNpmBuildDependencies ", $arrOutput, $exitCode);
+        if ($exitCode !== 0) {
+            echo "Error exited with a non successful status code";
             exit(1);
         }
-
-        echo $output;
+        echo "   " . implode("\n   ", $arrOutput);
     }
 
-    private static function buildSkinStyles(): void
+    private static function buildSkinStyles()
     {
-        if (!\is_file(__DIR__ . '/_buildfiles/bin/buildSkinStyles.php')) {
-            echo '<span style=\'color: red;\'>Missing buildSkinStyles.php helper</span>';
-
-            return;
+        if (is_file(__DIR__ . "/_buildfiles/bin/buildSkinStyles.php")) {
+            echo "Building skin css styles" . PHP_EOL;
+            $arrOutput = array();
+            exec("php -f " . escapeshellarg(self::$strRealPath . "/core/_buildfiles/bin/buildSkinStyles.php"), $arrOutput, $exitCode);
+            if ($exitCode !== 0) {
+                echo "Error exited with a non successful status code";
+                exit(1);
+            }
+            echo "   " . implode("\n   ", $arrOutput);
+        } else {
+            echo "<span style='color: red;'>Missing buildSkinStyles.php helper</span>";
         }
-
-        echo 'Building skin css styles' . \PHP_EOL;
-
-        try {
-            $output = self::executeCommand('php', ['-f', self::$strRealPath . '/core/_buildfiles/bin/buildSkinStyles.php']);
-        } catch (\RuntimeException $exception) {
-            echo 'Error exited with a non successful status code';
-            exit(1);
-        }
-
-        echo $output;
     }
 
-    private static function buildJavascript(): void
+    private static function buildJavascript()
     {
-        if (!\is_file(__DIR__ . '/_buildfiles/bin/buildJavascript.php')) {
-            echo '<span style=\'color: red;\'>Missing buildJavascript.php helper</span>';
-
-            return;
+        if (is_file(__DIR__ . "/_buildfiles/bin/buildJavascript.php")) {
+            echo "Compress and merge js files" . PHP_EOL;
+            $arrOutput = array();
+            exec("php -f " . escapeshellarg(self::$strRealPath . "/core/_buildfiles/bin/buildJavascript.php"), $arrOutput, $exitCode);
+            if ($exitCode !== 0) {
+                echo "Error exited with a non successful status code";
+                exit(1);
+            }
+            echo "   " . implode("\n   ", $arrOutput);
+        } else {
+            echo "<span style='color: red;'>Missing buildJavascript.php helper</span>";
         }
-
-        echo 'Compress and merge js files' . \PHP_EOL;
-
-        try {
-            $output = self::executeCommand('php', ['-f', self::$strRealPath . '/core/_buildfiles/bin/buildJavascript.php']);
-        } catch (\RuntimeException $exception) {
-            echo 'Error exited with a non successful status code';
-            exit(1);
-        }
-
-        echo $output;
     }
 
-    private static function scanComposer(): void
+    private static function scanComposer()
     {
-        if (!\is_file(__DIR__ . "/_buildfiles/bin/buildComposer.php")) {
-            echo '<span style=\'color: red;\'>Missing buildComposer.php helper</span>';
-
-            return;
+        if (is_file(__DIR__ . "/_buildfiles/bin/buildComposer.php")) {
+            echo "Install composer dependencies" . PHP_EOL;
+            $arrOutput = array();
+            exec("php -f " . escapeshellarg(self::$strRealPath . "/core/_buildfiles/bin/buildComposer.php"), $arrOutput, $exitCode);
+            if ($exitCode !== 0) {
+                echo "Error exited with a non successful status code";
+                exit(1);
+            }
+            echo "   " . implode("\n   ", $arrOutput);
+        } else {
+            echo "<span style='color: red;'>Missing buildComposer.php helper</span>";
         }
-
-        echo 'Install composer dependencies' . \PHP_EOL;
-
-        try {
-            $output = self::executeCommand('php', ['-f', self::$strRealPath . '/core/_buildfiles/bin/buildComposer.php']);
-        } catch (\RuntimeException $exception) {
-            echo 'Error exited with a non successful status code';
-            exit(1);
-        }
-
-        echo $output;
     }
 }
 
