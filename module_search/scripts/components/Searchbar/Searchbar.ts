@@ -16,12 +16,17 @@ import Loader from 'core/module_system/scripts/components/Loader.vue'
      private mounted () : void {
          var parent = document.getElementById('searchbarContainer')
          parent.appendChild(this.$el)
+         // add event listener : ctrl + f opens searchbar , Esc closes searchbar
+         document.body.addEventListener('keydown', this.shortcutHandler)
+     }
+     private destroyed () : void {
+         document.body.removeEventListener('keydown', this.shortcutHandler)
      }
      private onSubmit (e : Event) : void {
          e.preventDefault()
          console.log('submit : ', this.userInput)
      }
-     private async onInput (e:Event) : Promise<void> {
+     private async onInput (e: Event) : Promise<void> {
          this.loading = true
          await this.triggerSearch(this.userInput)
          this.loading = false
@@ -37,6 +42,16 @@ import Loader from 'core/module_system/scripts/components/Loader.vue'
      @Watch('searchQuery') onSearchQueryChange () {
          if (this.searchQuery === '') {
              this.userInput = ''
+         }
+     }
+     private shortcutHandler (e :KeyboardEvent) : void {
+         if (e.ctrlKey && e.key === 'f' && !this.dialogIsOpen) {
+             e.preventDefault()
+             document.getElementById('searchbarInput').focus()
+             this.open()
+         }
+         if (e.key === 'Escape' && this.dialogIsOpen) {
+             this.close()
          }
      }
 }
