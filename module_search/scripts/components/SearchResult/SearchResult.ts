@@ -5,6 +5,7 @@ import { namespace } from 'vuex-class'
 @namespace('SearchModule').Action closeDialog : any
 @namespace('SearchModule').Action resetSearchResults : any
 @namespace('SearchModule').Action resetSearchQuery : any
+@namespace('SearchModule').State searchQuery : string
 private close () : void {
     this.closeDialog()
     this.resetSearchQuery()

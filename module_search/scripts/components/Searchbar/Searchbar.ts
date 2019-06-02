@@ -54,6 +54,17 @@ import Loader from 'core/module_system/scripts/components/Loader.vue'
              this.close()
          }
      }
+     private get dialogClassName () : string {
+         if (!this.dialogIsOpen) {
+             return ''
+         } else {
+             if (this.userInput === '') {
+                 return 'searchbarContainerSemiOpen searchBarInnerContainer'
+             } else {
+                 return 'searchbarContainerOpen searchBarInnerContainer'
+             }
+         }
+     }
 }
 
 export default Searchbar
