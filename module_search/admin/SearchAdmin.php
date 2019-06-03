@@ -201,9 +201,24 @@ class SearchAdmin extends AdminSimple implements AdminInterface
     }
 
     /**
-     * Decoupled rendering of search results
-     *
+     * Returns the possible modules and their ids as json for filter
+     * @responseType json
      * @permissions view
+     * @return array
+     */
+    protected function actionGetModulesForFilter()
+    {
+        $objSearch = new SearchSearch($this->getParam("systemid"));
+        $arrayReturn = $objSearch->getPossibleModulesForFilter() ;
+        return json_encode($arrayReturn) ;
+
+    }
+
+    /**
+     * Returns search results as json or as rendered table
+     * @permissions view
+     * @return array
+     * @responseType json
      */
     public function actionRenderSearch()
     {
@@ -241,26 +256,28 @@ class SearchAdmin extends AdminSimple implements AdminInterface
         $arrMappedObjects = array_map(function (SearchResult $objSearchResult) {
             return $objSearchResult->getObjObject();
         }, $arrResult);
-
-        $strReturn = "<content><![CDATA[";
-
-        if (count($arrMappedObjects) > 20) {
-            $strReturn .= $this->objToolkit->warningBox($this->getLang("search_reduce_hits_link"));
+        if($this->getParam('asJson') === '1'){
+            return  $this->createSearchJson($this->getParam("search_query") , $arrResult) ;
         }
+            $strReturn = "<content><![CDATA[";
 
-        if (count($arrMappedObjects) > 0) {
-            $strReturn .= $this->objToolkit->listHeader();
-            foreach ($arrMappedObjects as $objOneObject) {
-                $strReturn .= $this->objToolkit->simpleAdminList($objOneObject, $this->getActionIcons($objOneObject, "searchResultList"));
+            if (count($arrMappedObjects) > 20) {
+                $strReturn .= $this->objToolkit->warningBox($this->getLang("search_reduce_hits_link"));
             }
-            $strReturn .= $this->objToolkit->listFooter();
-        } else {
-            $strReturn .= $this->getLang("commons_list_empty");
-        }
 
-        $strReturn .= "]]></content>";
+            if (count($arrMappedObjects) > 0) {
+                $strReturn .= $this->objToolkit->listHeader();
+                foreach ($arrMappedObjects as $objOneObject) {
+                    $strReturn .= $this->objToolkit->simpleAdminList($objOneObject, $this->getActionIcons($objOneObject, "searchResultList"));
+                }
+                $strReturn .= $this->objToolkit->listFooter();
+            } else {
+                $strReturn .= $this->getLang("commons_list_empty");
+            }
 
-        return $strReturn;
+            $strReturn .= "]]></content>";
+
+            return $strReturn;
     }
 
     /**
