@@ -50,20 +50,22 @@
   }
 }
 .searchbarContainerOpen {
-  animation: expand 300ms normal forwards ease-in-out;
-  height: @fullHeight;
+  // animation: expand 300ms normal forwards ease-in-out;
+  // height: @fullHeight;
 }
 .searchbarContainerSemiOpen {
   animation: popup 300ms normal forwards ease-in-out;
-  height: @semiOpenHeight;
+  // height: @semiOpenHeight;
 }
 
 @keyframes popup {
   0% {
-    opacity: 0;
+    // opacity: 0;
+    top : -1000px ; 
   }
   100% {
-    opacity: 1;
+    // opacity: 1;
+    top : 20px ; 
   }
 }
 @keyframes expand {

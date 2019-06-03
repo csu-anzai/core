@@ -20,16 +20,19 @@
           </span>
         </div>
       </form>
-      <div class="loaderContainer" v-if="userInput!==''">
+      <div v-if="userInput!==''">
         <Loader :loading="loading"></Loader>
+      </div>
+      <div v-if="dialogIsOpen">
+        <SearchbarFilter></SearchbarFilter>
       </div>
       <div id="searchResultsContainer">
         <div v-if="searchResults.length!==0 && userInput!==''">
           <SearchResult></SearchResult>
         </div>
-        <div v-if="userInput!=='' && searchResults.length===0">
+        <!-- <div v-if="userInput!=='' && searchResults.length===0">
           <h1>Keine Ergebnisse</h1>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
