@@ -210,7 +210,12 @@ class SearchAdmin extends AdminSimple implements AdminInterface
     protected function actionGetModulesForFilter()
     {
         $objSearch = new SearchSearch($this->getParam("systemid"));
-        return $objSearch->getPossibleModulesForFilter() ; ;
+        $arrModules = $objSearch->getPossibleModulesForFilter() ;
+        $arrReturn = [] ;
+        foreach($arrModules as $key => $value ){
+           $arrReturn[] = array("module" => $value , "id" => $key) ;
+       }
+        return $arrReturn ;
     }
 
     /**
