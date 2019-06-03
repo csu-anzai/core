@@ -57,19 +57,29 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
      */
     protected $options = 0;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $showAddButton = true;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $showDeleteAllButton = true;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $showEditButton = false;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $showAdditionalLinkData = true;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $showLinkObjectType = true;
 
     /**
@@ -83,7 +93,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
      * @param string $strAddLink
      * @return FormentryObjectlist
      */
-    public function setStrAddLink($strAddLink): FormentryObjectlist
+    public function setStrAddLink(string $strAddLink): FormentryObjectlist
     {
         $this->strAddLink = $strAddLink;
 
@@ -103,7 +113,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
      * @param array $objectTypes
      * @return FormentryObjectlist
      */
-    public function setEndpointUrl($endpointUrl, array $objectTypes = []): FormentryObjectlist
+    public function setEndpointUrl(string $endpointUrl, array $objectTypes = []): FormentryObjectlist
     {
         $this->endpointUrl = $endpointUrl;
         $this->objectTypes = $objectTypes;
@@ -124,10 +134,6 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         return $this;
     }
 
-    /**
-     * @param bool $showAdditionalLinkData
-     * @return FormentryObjectlist
-     */
     public function setShowAdditionalLinkData(bool $showAdditionalLinkData): FormentryObjectlist
     {
         $this->showAdditionalLinkData = $showAdditionalLinkData;
@@ -135,10 +141,6 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         return $this;
     }
 
-    /**
-     * @param bool $showLinkObjectType
-     * @return FormentryObjectlist
-     */
     public function setShowLinkObjectType(bool $showLinkObjectType): FormentryObjectlist
     {
         $this->showLinkObjectType = $showLinkObjectType;
@@ -292,50 +294,49 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
      * @throws Exception
      * @throws \ReflectionException
      */
-    public function getValueAsText()
+    public function getValueAsText(): string
     {
-
-        if (!empty($this->arrKeyValues)) {
-            $strHtml = "";
-
-            //Collect object and sort them by create date
-            $skipRightCheck = $this->options & self::OPTION_SKIP_RIGHT_CHECK;
-            $objects = [];
-            foreach ($this->arrKeyValues as $objObject) {
-                if ($objObject instanceof Model && $objObject instanceof ModelInterface) {
-                    if ($skipRightCheck || $objObject->rightView()) {
-                        $objects[] = $objObject;
-                    }
-                } else {
-                    throw new Exception("Array must contain objects", Exception::$level_ERROR);
-                }
-            }
-            $this->orderObject($objects);
-
-            //Render content
-            foreach ($objects as $objObject) {
-                $strTitle = $this->showLinkObjectType ? $this->getDisplayName($objObject) : $objObject->getStrDisplayName();
-                if ($objObject->rightView()) {
-                    //see, if the matching target-module provides a showSummary method
-                    $objModule = SystemModule::getModuleByName($objObject->getArrModule("modul"));
-                    if ($objModule != null) {
-                        $objAdmin = $objModule->getAdminInstanceOfConcreteModule($objObject->getSystemid());
-
-                        if ($objAdmin !== null && method_exists($objAdmin, "actionShowSummary")) {
-                            $strTitle = Link::getLinkAdminDialog($objObject->getArrModule("modul"), "showSummary", "&systemid=".$objObject->getSystemid()."&folderview=".Carrier::getInstance()->getParam("folderview"), $strTitle);
-                        }
-                    }
-                }
-                $strHtml .= $strTitle;
-                if ($this->showAdditionalLinkData && $objObject instanceof AdminListableInterface && $objObject->rightView()) {
-                    $strHtml .= " ".$objObject->getStrAdditionalInfo();
-                }
-                $strHtml .= "<br />";
-            }
-            return $strHtml;
+        if (empty($this->arrKeyValues)) {
+            return '-';
         }
 
-        return "-";
+        $htmlResponse = [];
+
+        //Collect object and sort them by create date
+        $skipRightCheck = $this->options & self::OPTION_SKIP_RIGHT_CHECK;
+        $objects = [];
+        foreach ($this->arrKeyValues as $object) {
+            if ($object instanceof Model && $object instanceof ModelInterface) {
+                if ($skipRightCheck || $object->rightView()) {
+                    $objects[] = $object;
+                }
+            } else {
+                throw new Exception('Array must contain objects', Exception::$level_ERROR);
+            }
+        }
+        $this->orderObject($objects);
+
+        //Render content
+        foreach ($objects as $object) {
+            $displayLinkText = $this->showLinkObjectType ? $this->getDisplayName($object) : $object->getStrDisplayName();
+            if ($object->rightView()) {
+                //see, if the matching target-module provides a showSummary method
+                $moduleByName = SystemModule::getModuleByName($object->getArrModule('modul'));
+                if ($moduleByName !== null) {
+                    $moduleAdmin = $moduleByName->getAdminInstanceOfConcreteModule($object->getSystemid());
+
+                    if ($moduleAdmin !== null && method_exists($moduleAdmin, 'actionShowSummary')) {
+                        $displayLinkText = Link::getLinkAdminDialog($object->getArrModule('modul'), 'showSummary', '&systemid='.$object->getSystemid().'&folderview='.Carrier::getInstance()->getParam('folderview'), $displayLinkText);
+                    }
+                }
+            }
+            if ($this->showAdditionalLinkData && $object instanceof AdminListableInterface && $object->rightView()) {
+                $displayLinkText .= ' '.$object->getStrAdditionalInfo();
+            }
+            $htmlResponse[] =  $displayLinkText;
+        }
+
+        return !empty($htmlResponse) ? implode('<br>', $htmlResponse) : '';
     }
 
 
