@@ -318,27 +318,44 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
 
         //Render content
         foreach ($objects as $object) {
-            $displayLinkText = $this->showLinkObjectType ? $this->getDisplayName($object) : $object->getStrDisplayName();
-            if ($object->rightView()) {
-                //see, if the matching target-module provides a showSummary method
-                $moduleByName = SystemModule::getModuleByName($object->getArrModule('modul'));
-                if ($moduleByName !== null) {
-                    $moduleAdmin = $moduleByName->getAdminInstanceOfConcreteModule($object->getSystemid());
-
-                    if ($moduleAdmin !== null && method_exists($moduleAdmin, 'actionShowSummary')) {
-                        $displayLinkText = Link::getLinkAdminDialog($object->getArrModule('modul'), 'showSummary', '&systemid='.$object->getSystemid().'&folderview='.Carrier::getInstance()->getParam('folderview'), $displayLinkText);
-                    }
-                }
-            }
-            if ($this->showAdditionalLinkData && $object instanceof AdminListableInterface && $object->rightView()) {
-                $displayLinkText .= ' '.$object->getStrAdditionalInfo();
-            }
-            $htmlResponse[] =  $displayLinkText;
+            $htmlResponse[] =  $this->createDisplayLinkTextForObject($object);
         }
 
         return implode('<br>', $htmlResponse);
     }
 
+
+    /**
+     * @param ModelInterface $modelObject
+     * @return string
+     * @throws \ReflectionException
+     */
+    private function createDisplayLinkTextForObject(ModelInterface $modelObject): string
+    {
+        $displayLinkText = $modelObject->getStrDisplayName();
+
+        // TODO: get rid of deprecated function usage once it is gone
+        if ($this->showLinkObjectType && method_exists($this, 'getDisplayName')) {
+            $displayLinkText = $this->getDisplayName($modelObject);
+        }
+
+        if ($modelObject->rightView()) {
+            //see, if the matching target-module provides a showSummary method
+            $moduleByName = SystemModule::getModuleByName($modelObject->getArrModule('modul'));
+            if ($moduleByName !== null) {
+                $moduleAdmin = $moduleByName->getAdminInstanceOfConcreteModule($modelObject->getSystemid());
+
+                if ($moduleAdmin !== null && method_exists($moduleAdmin, 'actionShowSummary')) {
+                    $displayLinkText = Link::getLinkAdminDialog($modelObject->getArrModule('modul'), 'showSummary', '&systemid='.$modelObject->getSystemid().'&folderview='.Carrier::getInstance()->getParam('folderview'), $displayLinkText);
+                }
+            }
+        }
+        if ($this->showAdditionalLinkData && $modelObject instanceof AdminListableInterface && $modelObject->rightView()) {
+            $displayLinkText .= ' '.$modelObject->getStrAdditionalInfo();
+        }
+
+        return $displayLinkText;
+    }
 
     /**
      * @param array $arrObjects
