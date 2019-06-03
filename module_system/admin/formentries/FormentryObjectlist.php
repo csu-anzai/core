@@ -336,7 +336,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
             $htmlResponse[] =  $displayLinkText;
         }
 
-        return !empty($htmlResponse) ? implode('<br>', $htmlResponse) : '';
+        return implode('<br>', $htmlResponse);
     }
 
 
