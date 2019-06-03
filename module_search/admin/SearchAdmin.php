@@ -205,22 +205,22 @@ class SearchAdmin extends AdminSimple implements AdminInterface
      * @responseType json
      * @permissions view
      * @return array
+     * @throws \Kajona\System\System\Exception
      */
     protected function actionGetModulesForFilter()
     {
         $objSearch = new SearchSearch($this->getParam("systemid"));
-        $arrayReturn = $objSearch->getPossibleModulesForFilter() ;
-        return json_encode($arrayReturn) ;
-
+        return $objSearch->getPossibleModulesForFilter() ; ;
     }
 
     /**
-     * Returns search results as json or as rendered table
+     * Returns search results as json
      * @permissions view
      * @return array
      * @responseType json
+     * @throws \Kajona\System\System\Exception
      */
-    public function actionRenderSearch()
+    public function actionGetFilteredSearch()
     {
 
         Carrier::getInstance()->getObjSession()->sessionClose();
@@ -252,32 +252,7 @@ class SearchAdmin extends AdminSimple implements AdminInterface
 
         $objSearchCommons = new SearchCommons();
         $arrResult = $objSearchCommons->doIndexedSearch($objSearch, 0, self::INT_MAX_NR_OF_RESULTS_FULLSEARCH);
-
-        $arrMappedObjects = array_map(function (SearchResult $objSearchResult) {
-            return $objSearchResult->getObjObject();
-        }, $arrResult);
-        if($this->getParam('asJson') === '1'){
-            return  $this->createSearchJson($this->getParam("search_query") , $arrResult) ;
-        }
-            $strReturn = "<content><![CDATA[";
-
-            if (count($arrMappedObjects) > 20) {
-                $strReturn .= $this->objToolkit->warningBox($this->getLang("search_reduce_hits_link"));
-            }
-
-            if (count($arrMappedObjects) > 0) {
-                $strReturn .= $this->objToolkit->listHeader();
-                foreach ($arrMappedObjects as $objOneObject) {
-                    $strReturn .= $this->objToolkit->simpleAdminList($objOneObject, $this->getActionIcons($objOneObject, "searchResultList"));
-                }
-                $strReturn .= $this->objToolkit->listFooter();
-            } else {
-                $strReturn .= $this->getLang("commons_list_empty");
-            }
-
-            $strReturn .= "]]></content>";
-
-            return $strReturn;
+        return  $this->createSearchJson($this->getParam("search_query") , $arrResult) ;
     }
 
     /**
@@ -379,8 +354,7 @@ class SearchAdmin extends AdminSimple implements AdminInterface
     /**
      * @param string $strSearchterm
      * @param SearchResult[] $arrResults
-     *
-     * @return string
+     * @return array
      */
     private function createSearchJson($strSearchterm, $arrResults)
     {
