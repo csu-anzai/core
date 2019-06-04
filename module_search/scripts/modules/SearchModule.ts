@@ -44,7 +44,6 @@ const SearchModule = {
                 toastr.error('Fehler')
             } if (res) {
                 commit('SET_SEARCH_RESULTS', res.data)
-                console.log(res.data)
             }
             commit('SET_FETCHING_RESULTS', false)
         },
@@ -69,7 +68,6 @@ const SearchModule = {
                 toastr.error('Fehler')
             }
             if (res) {
-                console.log('modules filter : ', res.data)
                 commit('SET_FILTER_MODULES', res.data)
             }
         },
