@@ -1,12 +1,5 @@
 <template>
   <div>
-    <div class="numberOfResults">
-        {{$t("search.hitlist_text1")}}
-        "{{searchQuery}}"
-        {{$t("search.hitlist_text2")}}
-        {{searchResults.length}}
-        {{$t("search.hitlist_text3")}}
-        </div>
     <div
       v-for="(item, index) in searchResults"
       :key="index"

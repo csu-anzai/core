@@ -21,18 +21,24 @@
         </div>
       </form>
       <div v-if="userInput!==''">
-        <Loader :loading="loading"></Loader>
+        <Loader :loading="fetchingResults"></Loader>
       </div>
       <div v-if="dialogIsOpen">
         <SearchbarFilter></SearchbarFilter>
       </div>
+      <div v-if="dialogIsOpen && userInput!=='' && !fetchingResults">
+        <p>
+          {{$t("search.hitlist_text1")}}
+          "{{searchQuery}}"
+          {{$t("search.hitlist_text2")}}
+          {{searchResults.length}}
+          {{$t("search.hitlist_text3")}}
+        </p>
+      </div>
       <div id="searchResultsContainer">
-        <div v-if="searchResults.length!==0 && userInput!==''">
+        <div v-if="searchResults.length!==0 && userInput!=='' && !fetchingResults">
           <SearchResult></SearchResult>
         </div>
-        <!-- <div v-if="userInput!=='' && searchResults.length===0">
-          <h1>Keine Ergebnisse</h1>
-        </div> -->
       </div>
     </div>
   </div>

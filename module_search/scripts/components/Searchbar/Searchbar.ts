@@ -9,10 +9,12 @@ import SearchbarFilter from '../SearchbarFilter/SearchbarFilter.vue'
      @namespace('SearchModule').State searchResults : Array<any>
      @namespace('SearchModule').State dialogIsOpen : boolean
      @namespace('SearchModule').State searchQuery : String
+     @namespace('SearchModule').State fetchingResults : boolean
      @namespace('SearchModule').Action openDialog: any
      @namespace('SearchModule').Action closeDialog: any
      @namespace('SearchModule').Action resetSearchQuery: any
-     private loading :boolean = false
+     @namespace('SearchModule').Action setSearchQuery : any
+
      private userInput : String =''
      private mounted () : void {
          var parent = document.getElementById('searchbarContainer')
@@ -26,10 +28,9 @@ import SearchbarFilter from '../SearchbarFilter/SearchbarFilter.vue'
      private onSubmit (e : Event) : void {
          e.preventDefault()
      }
-     private async onInput (e: Event) : Promise<void> {
-         this.loading = true
-         await this.triggerSearch(this.userInput)
-         this.loading = false
+     private onInput (e: Event) : void {
+         this.setSearchQuery(this.userInput)
+         this.triggerSearch()
      }
      private open () : void {
          this.openDialog()
@@ -39,32 +40,32 @@ import SearchbarFilter from '../SearchbarFilter/SearchbarFilter.vue'
          this.resetSearchQuery()
          this.resetSearchResults()
      }
-     @Watch('searchQuery') onSearchQueryChange () {
+      @Watch('searchQuery') onSearchQueryChange () {
          if (this.searchQuery === '') {
              this.userInput = ''
          }
      }
-     private shortcutHandler (e :KeyboardEvent) : void {
-         if (e.ctrlKey && e.key === 'f' && !this.dialogIsOpen) {
-             e.preventDefault()
-             document.getElementById('searchbarInput').focus()
-             this.open()
-         }
-         if (e.key === 'Escape' && this.dialogIsOpen) {
-             this.close()
-         }
-     }
-     private get dialogClassName () : string {
-         if (!this.dialogIsOpen) {
-             return ''
-         } else {
-             if (this.userInput === '') {
-                 return 'searchbarContainerSemiOpen searchBarInnerContainer'
-             } else {
-                 return 'searchbarContainerOpen searchBarInnerContainer'
-             }
-         }
-     }
+      private shortcutHandler (e :KeyboardEvent) : void {
+          if (e.ctrlKey && e.key === 'f' && !this.dialogIsOpen) {
+              e.preventDefault()
+              document.getElementById('searchbarInput').focus()
+              this.open()
+          }
+          if (e.key === 'Escape' && this.dialogIsOpen) {
+              this.close()
+          }
+      }
+      private get dialogClassName () : string {
+          if (!this.dialogIsOpen) {
+              return ''
+          } else {
+              if (this.userInput === '') {
+                  return 'searchbarContainerSemiOpen searchBarInnerContainer'
+              } else {
+                  return 'searchbarContainerOpen searchBarInnerContainer'
+              }
+          }
+      }
 }
 
 export default Searchbar

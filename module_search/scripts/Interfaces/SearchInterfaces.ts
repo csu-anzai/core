@@ -6,4 +6,8 @@ interface SearchResult {
     score : String,
     systemid : String
 }
-export { SearchResult }
+interface FilterModule{
+    module : string,
+    id : number
+}
+export { SearchResult, FilterModule }

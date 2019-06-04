@@ -1,11 +1,11 @@
 import axios from 'axios'
 import to from 'await-to-js'
 import * as toastr from 'toastr'
-import { SearchResult } from '../Interfaces/SearchInterfaces'
+import { SearchResult, FilterModule } from '../Interfaces/SearchInterfaces'
 
 const SearchModule = {
     namespaced: true,
-    state: { searchResults: [], dialogIsOpen: false, searchQuery: '', filterModules: null },
+    state: { searchResults: [], dialogIsOpen: false, searchQuery: '', filterModules: null, selectedIds: '', fetchingResults: false },
     mutations: {
         SET_SEARCH_RESULTS (state : any, payload : Array<SearchResult>) : void {
             state.searchResults = payload
@@ -25,20 +25,31 @@ const SearchModule = {
         REST_SEARCH_QUERY (state : any) : void {
             state.searchQuery = ''
         },
-        SET_FILTER_MODULES (state : any, payload : object) {
+        SET_FILTER_MODULES (state : any, payload : Array<FilterModule>) {
             state.filterModules = payload
+        },
+        SET_SELECTED_IDS (state : any, payload : string) {
+            state.selectedIds = payload
+        },
+        SET_FETCHING_RESULTS (state : any, payload : boolean) {
+            state.fetchingResults = payload
         }
 
     },
     actions: {
-        async triggerSearch ({ commit }, searchQuery : String) : Promise<void> {
-            const [err, res] = await to(axios.post(KAJONA_WEBPATH + '/xml.php?admin=1&module=search&action=getFilteredSearch&search_query=' + searchQuery + '&filtermodules=190007,190001,190002,20170436,20141002,1416141702,20142810,190008,190013,190003,1472721851,0,130,191009,1503387058,20171018'))
+        async triggerSearch ({ commit, state }) : Promise<void> {
+            commit('SET_FETCHING_RESULTS', true)
+            const [err, res] = await to(axios.post(KAJONA_WEBPATH + '/xml.php?admin=1&module=search&action=getFilteredSearch&search_query=' + state.searchQuery + '&filtermodules=' + state.selectedIds))
             if (err) {
                 toastr.error('Fehler')
             } if (res) {
                 commit('SET_SEARCH_RESULTS', res.data)
                 console.log(res.data)
             }
+            commit('SET_FETCHING_RESULTS', false)
+        },
+        setSearchQuery ({ commit }, searchQuery : string) : void {
+            commit('SET_SEARCH_QUERY', searchQuery)
         },
         resetSearchResults ({ commit }) : void {
             commit('RESET_SEARCH_RESULTS')
@@ -61,6 +72,9 @@ const SearchModule = {
                 console.log('modules filter : ', res.data)
                 commit('SET_FILTER_MODULES', res.data)
             }
+        },
+        setSelectedIds ({ commit }, ids: string) : void {
+            commit('SET_SELECTED_IDS', ids)
         }
     },
     getters: {}
