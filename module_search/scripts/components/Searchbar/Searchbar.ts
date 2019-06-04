@@ -16,6 +16,7 @@ import SearchbarFilter from '../SearchbarFilter/SearchbarFilter.vue'
      @namespace('SearchModule').Action setSearchQuery : any
 
      private userInput : String =''
+     private inputTimer : number
      private mounted () : void {
          var parent = document.getElementById('searchbarContainer')
          parent.appendChild(this.$el)
@@ -29,8 +30,13 @@ import SearchbarFilter from '../SearchbarFilter/SearchbarFilter.vue'
          e.preventDefault()
      }
      private onInput (e: Event) : void {
+         clearTimeout(this.inputTimer)
          this.setSearchQuery(this.userInput)
-         this.triggerSearch()
+         this.inputTimer = window.setTimeout(() => {
+             if (this.userInput.length > 1) {
+                 this.triggerSearch()
+             }
+         }, 500)
      }
      private open () : void {
          this.openDialog()
