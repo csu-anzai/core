@@ -4,7 +4,9 @@ import Loader from 'core/module_system/scripts/components/Loader.vue'
 import Multiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
 import { FilterModule } from '../../Interfaces/SearchInterfaces'
-@Component({ components: { Loader, Multiselect } }) class SearchbarFilter extends Vue {
+import datePicker from 'vue-bootstrap-datetimepicker'
+import 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css'
+@Component({ components: { Loader, Multiselect, datePicker } }) class SearchbarFilter extends Vue {
     @namespace('SearchModule').Action getFilterModules : any
     @namespace('SearchModule').Action setSelectedIds : any
     @namespace('SearchModule').Action triggerSearch : any
@@ -13,6 +15,18 @@ import { FilterModule } from '../../Interfaces/SearchInterfaces'
     @namespace('SearchModule').State selectedIds : string
     private filterIsOpen : boolean = false
     private selectedModules : Array<string> = []
+    private date : string =''
+    private dateOptions : object = {
+        // format: Util.transformDateFormat('{{ format }}', "bootstrap-datepicker"),
+        // weekStart: 1,
+        // autoclose: true,
+        locale: KAJONA_LANGUAGE
+        // todayHighlight: true,
+        // container: '#content',
+        // todayBtn: 'linked',
+        // daysOfWeekHighlighted: '0,6',
+        // calendarWeeks: true
+    }
 
     private toggleFilter () : void {
         if (this.filterModules === null) {

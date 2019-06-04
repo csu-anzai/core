@@ -16,6 +16,7 @@
           :close-on-select="false"
           :show-labels="false"
         ></Multiselect>
+        <datePicker v-model="date" :config="dateOptions"></datePicker>
       </div>
     </div>
   </div>
