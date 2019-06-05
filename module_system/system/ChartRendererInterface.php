@@ -18,8 +18,9 @@ interface ChartRendererInterface
 
     /**
      * @param GraphInterface $chart
+     * @param string $outputPath
      * @return string
      */
-    public function render(GraphInterface $chart): string;
+    public function render(GraphInterface $chart, string $outputPath): string;
 
 }
