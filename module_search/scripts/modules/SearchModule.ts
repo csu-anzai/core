@@ -47,7 +47,10 @@ const SearchModule = {
             }
             commit('SET_FETCHING_RESULTS', false)
         },
-        setSearchQuery ({ commit }, searchQuery : string) : void {
+        setSearchQuery ({ commit, state }, searchQuery : string) : void {
+            if (state.searchQuery.length > searchQuery.length && searchQuery.length < 2 && state.searchResults.length !== 0) {
+                commit('RESET_SEARCH_RESULTS')
+            }
             commit('SET_SEARCH_QUERY', searchQuery)
         },
         resetSearchResults ({ commit }) : void {
