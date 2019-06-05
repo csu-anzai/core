@@ -2,24 +2,26 @@
   <div>
     <div v-bind:class="{ searchBarOuterContainer: dialogIsOpen }" @mousedown="close"></div>
     <div :class="dialogClassName">
-      <form @submit="onSubmit" class="navbar-search pull-left">
-        <div class="input-group">
-          <input
-            id="searchbarInput"
-            type="text"
-            name="search_query"
-            class="form-control search-query"
-            @input="onInput"
-            v-model="userInput"
-            @mousedown="open"
-            autocomplete="off"
-            :placeholder="$t('dashboard.globalSearchPlaceholder')"
-          >
-          <span class="input-group-addon">
-            <i class="fa fa-search" aria-hidden="true"></i>
-          </span>
-        </div>
-      </form>
+      <div id="bigSearchbarContainer">
+        <form @submit="onSubmit" class="navbar-search pull-left">
+          <div class="input-group">
+            <input
+              id="searchbarInput"
+              type="text"
+              name="search_query"
+              class="form-control search-query"
+              @input="onInput"
+              v-model="userInput"
+              @mousedown="open"
+              autocomplete="off"
+              :placeholder="$t('dashboard.globalSearchPlaceholder')"
+            >
+            <span class="input-group-addon">
+              <i class="fa fa-search" aria-hidden="true"></i>
+            </span>
+          </div>
+        </form>
+      </div>
       <div v-if="userInput!==''">
         <Loader :loading="fetchingResults"></Loader>
       </div>
