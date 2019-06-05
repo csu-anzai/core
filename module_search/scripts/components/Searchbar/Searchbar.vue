@@ -28,7 +28,7 @@
       <div v-if="dialogIsOpen">
         <SearchbarFilter></SearchbarFilter>
       </div>
-      <div v-if="dialogIsOpen && userInput!=='' && !fetchingResults">
+      <div v-if="dialogIsOpen && userInput.length>=2 && !fetchingResults">
         <p>
           {{$t("search.hitlist_text1")}}
           "{{searchQuery}}"
