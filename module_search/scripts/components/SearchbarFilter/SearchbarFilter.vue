@@ -17,6 +17,15 @@
           :show-labels="false"
         ></Multiselect>
         <datePicker v-model="date" :config="dateOptions"></datePicker>
+          <!-- <v-autocomplete
+        :items="users"
+        label="Public APIs"
+      ></v-autocomplete> -->
+  <b-form-input list="userFilter" v-model="userQuery"></b-form-input>
+
+  <datalist id="userFilter" >
+    <option v-for="(user, index) in users" :key="index">{{ user }}</option>
+  </datalist>
       </div>
     </div>
   </div>

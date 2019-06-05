@@ -6,6 +6,7 @@ import 'vue-multiselect/dist/vue-multiselect.min.css'
 import { FilterModule } from '../../Interfaces/SearchInterfaces'
 import datePicker from 'vue-bootstrap-datetimepicker'
 import 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css'
+import axios from 'axios'
 @Component({ components: { Loader, Multiselect, datePicker } }) class SearchbarFilter extends Vue {
     @namespace('SearchModule').Action getFilterModules : any
     @namespace('SearchModule').Action setSelectedIds : any
@@ -16,6 +17,8 @@ import 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min
     private filterIsOpen : boolean = false
     private selectedModules : Array<string> = []
     private date : string =''
+    private users : Array<object> = []
+    private userQuery : string = ''
     private dateOptions : object = {
         // format: Util.transformDateFormat('{{ format }}', "bootstrap-datepicker"),
         // weekStart: 1,
@@ -26,6 +29,10 @@ import 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min
         // todayBtn: 'linked',
         // daysOfWeekHighlighted: '0,6',
         // calendarWeeks: true
+    }
+    @Watch('userQuery') async onChange () : Promise<void> {
+        const res = await axios.post(KAJONA_WEBPATH + '/xml.php?module=user&action=getUserByFilter&filter=' + this.userQuery + '&user=true&group=false')
+        this.users = res.data.map(user => user.title)
     }
 
     private toggleFilter () : void {
