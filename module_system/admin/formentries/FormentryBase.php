@@ -75,12 +75,12 @@ abstract class FormentryBase implements \JsonSerializable
     /**
      * Creates a new instance of the current field.
      *
-     * @param string $strFormName
-     * @param string $strSourceProperty
+     * @param $strFormName
+     * @param $strSourceProperty
      * @param Model $objSourceObject
      * @throws Exception
      */
-    public function __construct(string $strFormName, string $strSourceProperty, Model $objSourceObject = null)
+    public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
     {
         $this->strSourceProperty = $strSourceProperty;
         $this->objSourceObject = $objSourceObject;
@@ -543,6 +543,8 @@ abstract class FormentryBase implements \JsonSerializable
     }
 
     /**
+     * get @FormEntryConfig Annotation (json format like {"configSetting1" => true, "configSetting2" => false})
+     * into usable config settings e.g. $this->configSetting1 = true, $this->configSetting2 = false
      * @throws Exception
      */
     private function getFormEntryConfigAnnotationValues(): void
@@ -559,8 +561,7 @@ abstract class FormentryBase implements \JsonSerializable
             return;
         }
 
-        $objectModule = $this->getObjSourceObject()->getArrModule("modul");
-        $formFieldConfigValues = self::convertFormEntryConfigAnnotationStringToArray($propertyAnnotationValue ?? '' , $objectModule);
+        $formFieldConfigValues = self::convertFormEntryConfigAnnotationStringToArray($propertyAnnotationValue ?? '');
 
         foreach ($formFieldConfigValues as $configName => $configValue) {
             $this->$configName = $configValue;
@@ -569,10 +570,9 @@ abstract class FormentryBase implements \JsonSerializable
 
     /**
      * @param string $formEntryConfig
-     * @param string $module
      * @return array
      */
-    public static function convertFormEntryConfigAnnotationStringToArray(string $formEntryConfig, string $module): array
+    public static function convertFormEntryConfigAnnotationStringToArray(string $formEntryConfig): array
     {
         if (empty($formEntryConfig)) {
             return [];
