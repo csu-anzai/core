@@ -299,7 +299,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
      * @throws Exception
      * @throws \ReflectionException
      */
-    public function getValueAsText(): string
+    public function getValueAsText()
     {
         if (empty($this->arrKeyValues)) {
             return '-';
