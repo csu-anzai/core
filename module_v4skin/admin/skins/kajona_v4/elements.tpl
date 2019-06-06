@@ -507,9 +507,9 @@ Upload-Field for multiple files with progress bar
                 {name: 'inputElement', value : '%%name%%'}
             ],
 
-            maxFileSize: %%maxFileSize%%,
-            acceptFileTypes: %%acceptFileTypes%%,
-            uploadTemplate: function (o) {
+                maxFileSize: %%maxFileSize%%,
+                acceptFileTypes: %%acceptFileTypes%%,
+                uploadTemplate: function (o) {
                 var rows = $();
                 $.each(o.files, function (index, file) {
                     var row = $('#%%name%% .fileupload-list-template .template-upload').clone();
@@ -586,6 +586,9 @@ Upload-Field for multiple files with progress bar
                             <span class="name"></span><div class="error"></div>
                         </td>
                         <td>
+                            <span class="date"></span>
+                        </td>
+                        <td>
                             <span class="size"></span>
                         </td>
                         <td class="actions">
@@ -628,7 +631,7 @@ Upload-Field for multiple files with progress bar
                     {name: 'systemid', value: '%%mediamanagerRepoId%%'},
                     {name: 'inputElement', value : '%%name%%_upl'},
                     {name: 'folder', value : '%%folder%%'}
-                ],
+            ],
                 maxFileSize: %%maxFileSize%%,
                 acceptFileTypes: %%acceptFileTypes%%,
                 downloadTemplate: function (o) {
@@ -637,6 +640,7 @@ Upload-Field for multiple files with progress bar
                         var row = $('#%%name%%_upl .fileupload-list-template .template-upload').clone();
                         //file.name = file.name.replace(/(.{60})/g,"$1 ");
                         row.find('.name').text(file.name);
+                        row.find('.date').text(file.createDate);
                         row.find('.size').text(o.formatFileSize(file.size));
                         if (file.error) {
                             row.find('.error').text(file.error);
@@ -651,22 +655,22 @@ Upload-Field for multiple files with progress bar
                         row.attr('data-uploadid', file.systemid);
                         rows = rows.add(row);
                     });
-                    return rows;
-                },
-                uploadTemplate: function (o) {
-                    var rows = $();
-                    $.each(o.files, function (index, file) {
-                        var row = $('#%%name%%_upl .fileupload-list-template .template-upload').clone();
-                        row.find('.name').text(file.name);
-                        row.find('.size').text(o.formatFileSize(file.size));
-                        if (file.error) {
-                            row.find('.error').text(file.error);
-                        }
-                        rows = rows.add(row);
-                    });
-                    return rows;
-                }
-            });
+                return rows;
+            },
+            uploadTemplate: function (o) {
+                var rows = $();
+                $.each(o.files, function (index, file) {
+                    var row = $('#%%name%%_upl .fileupload-list-template .template-upload').clone();
+                    row.find('.name').text(file.name);
+                    row.find('.size').text(o.formatFileSize(file.size));
+                    if (file.error) {
+                        row.find('.error').text(file.error);
+                    }
+                    rows = rows.add(row);
+                });
+                return rows;
+            }
+        });
 
             //load files from the backend
             ajax.genericAjaxCall("mediamanager", "fileUploadList", "&systemid=%%mediamanagerRepoId%%&folder=%%folder%%", function(data) {

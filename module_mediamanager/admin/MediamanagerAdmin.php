@@ -1061,6 +1061,7 @@ HTML;
         }
         return [
             "name" => $objFile->getStrName(),
+            "createDate" => dateToString($objFile->getObjCreateDate()),
             "size" => $objFile->getIntFileSize(),
             "url" => $objFile->rightRight2() ? _webpath_."/download.php?systemid=".$objFile->getSystemid() : "",
             "systemid" => $objFile->getSystemid(),
@@ -1108,7 +1109,8 @@ HTML;
                         $objSingleFile->getStrSystemid(),
                         $objSingleFile->getStrDisplayName(),
                         AdminskinHelper::getAdminImage($objSingleFile->getStrIcon()[0]),
-                        $objSingleFile->rightRight2() ? Link::getLinkAdminManual("href='"._webpath_."/download.php?systemid=".$objSingleFile->getSystemid()."'", $this->getLang("action_download"), $this->getLang("action_download"), "icon_downloads") : ""
+                        $objSingleFile->rightRight2() ? Link::getLinkAdminManual("href='" . _webpath_ . "/download.php?systemid=" . $objSingleFile->getSystemid() . "'", $this->getLang("action_download"), $this->getLang("action_download"), "icon_downloads") : "",
+                        dateToString($objSingleFile->getObjCreateDate())
                     );
                 }
 
@@ -1182,7 +1184,7 @@ HTML;
         }
 
 
-        
+
         return json_encode(["status" => "ok", "target" => $strTarget, "moved" => $arrSynced]);
     }
 
@@ -1278,8 +1280,7 @@ HTML;
             return json_encode([]);
         }
 
-
-        $arrFiles = MediamanagerFile::getObjectListFiltered(null, $objFile->getSystemid());
+        $arrFiles = MediamanagerFile::getObjectListFiltered(new MediamanagerFileFilter(), $objFile->getSystemid());
         $arrReturn = [];
         /** @var MediamanagerFile $objFile */
         foreach ($arrFiles as $objFile) {
