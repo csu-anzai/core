@@ -38,6 +38,11 @@ abstract class FormentryBase implements \JsonSerializable
     private $objSourceObject = null;
 
     /**
+     * A string with additional form entry configurations
+     */
+    private const FORM_FIELD_CONFIG_ANNOTATION = '@formEntryConfig';
+
+    /**
      * The name of the property as used in the forms, leading type-prefix is removed
      *
      * @var null
@@ -70,28 +75,29 @@ abstract class FormentryBase implements \JsonSerializable
     /**
      * Creates a new instance of the current field.
      *
-     * @param $strFormName
-     * @param $strSourceProperty
+     * @param string $strFormName
+     * @param string $strSourceProperty
      * @param Model $objSourceObject
      * @throws Exception
      */
-    public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
+    public function __construct(string $strFormName, string $strSourceProperty, Model $objSourceObject = null)
     {
         $this->strSourceProperty = $strSourceProperty;
         $this->objSourceObject = $objSourceObject;
         $this->strFormName = $strFormName;
 
-        if ($strFormName != "") {
-            $strFormName .= "_";
+        if ($strFormName !== '') {
+            $strFormName .= '_';
         }
 
         $this->strEntryName = StringUtil::toLowerCase($strFormName.$strSourceProperty);
 
-        if ($objSourceObject != null) {
+        if ($objSourceObject !== null) {
             $this->updateLabel();
         }
 
         $this->readValue();
+        $this->getFormEntryConfigAnnotationValues();
     }
 
     /**
@@ -521,7 +527,7 @@ abstract class FormentryBase implements \JsonSerializable
     /**
      * @return bool
      */
-    public function getBitHideLongHints() : bool
+    public function getBitHideLongHints(): bool
     {
         return $this->bitHideLongHints;
     }
@@ -532,6 +538,46 @@ abstract class FormentryBase implements \JsonSerializable
     public function setBitHideLongHints(bool $bitHideLongHints)
     {
         $this->bitHideLongHints = $bitHideLongHints;
+
         return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function getFormEntryConfigAnnotationValues(): void
+    {
+        if ($this->getObjSourceObject() === null || $this->getStrSourceProperty() === '') {
+            return;
+        }
+        if (!$currentSourceProperty = $this->getCurrentProperty(self::FORM_FIELD_CONFIG_ANNOTATION)) {
+            return;
+        }
+
+        $reflection = new Reflection($this->getObjSourceObject());
+        if (empty($propertyAnnotationValue = $reflection->getAnnotationValueForProperty($currentSourceProperty, self::FORM_FIELD_CONFIG_ANNOTATION))) {
+            return;
+        }
+
+        $objectModule = $this->getObjSourceObject()->getArrModule("modul");
+        $formFieldConfigValues = self::convertFormEntryConfigAnnotationStringToArray($propertyAnnotationValue ?? '' , $objectModule);
+
+        foreach ($formFieldConfigValues as $configName => $configValue) {
+            $this->$configName = $configValue;
+        }
+    }
+
+    /**
+     * @param string $formEntryConfig
+     * @param string $module
+     * @return array
+     */
+    public static function convertFormEntryConfigAnnotationStringToArray(string $formEntryConfig, string $module): array
+    {
+        if (empty($formEntryConfig)) {
+            return [];
+        }
+
+        return json_decode($formEntryConfig, true);
     }
 }

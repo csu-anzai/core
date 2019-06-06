@@ -33,11 +33,6 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
     const OPTION_SKIP_RIGHT_CHECK = 1;
 
     /**
-     * A string where to load the fitting dd values
-     */
-    private const FIELD_CONFIG_ANNOTATION = "@formEntryConfig";
-
-    /**
      * @var string
      */
     protected $strAddLink;
@@ -345,7 +340,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         $displayLinkText = $modelObject->getStrDisplayName();
 
         // TODO: get rid of deprecated function usage once it is gone
-        if ($this->formFieldConfig['showLinkObjectType'] && method_exists($this, 'getDisplayName')) {
+        if ($this->showLinkObjectType && method_exists($this, 'getDisplayName')) {
             $displayLinkText = $this->getDisplayName($modelObject);
         }
 
@@ -360,7 +355,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
                 }
             }
         }
-        if ($this->formFieldConfig['showAdditionalLinkData'] && $modelObject instanceof AdminListableInterface && $modelObject->rightView()) {
+        if ($this->showAdditionalLinkData && $modelObject instanceof AdminListableInterface && $modelObject->rightView()) {
             $displayLinkText .= ' '.$modelObject->getStrAdditionalInfo();
         }
 
@@ -389,35 +384,6 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         }
 
         return array();
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function getFormEntryConfigAnnotationValues (): void
-    {
-        $reflection = new Reflection($this->getObjSourceObject());
-
-        $currentSourceProperty = $this->getCurrentProperty(self::FIELD_CONFIG_ANNOTATION);
-        $propertyAnnotationValue = $reflection->getAnnotationValueForProperty($currentSourceProperty, self::FIELD_CONFIG_ANNOTATION);
-        $objectModule = $this->getObjSourceObject()->getArrModule("modul");
-        $this->formFieldConfig = self::convertFormEntryConfigAnnotationStringToArray($propertyAnnotationValue, $objectModule);
-    }
-
-
-
-    /**
-     * @param string $formEntryConfig
-     * @param string $module
-     * @return array
-     */
-    public static function convertFormEntryConfigAnnotationStringToArray(string $formEntryConfig, string $module): array
-    {
-        if (empty($formEntryConfig)) {
-            return [];
-        }
-
-        return json_decode($formEntryConfig, true);
     }
 
     /**
