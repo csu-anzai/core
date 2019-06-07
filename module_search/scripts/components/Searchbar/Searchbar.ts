@@ -1,7 +1,7 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import SearchResult from '../SearchResult/SearchResult.vue'
-import Loader from 'core/module_system/scripts/components/Loader.vue'
+import Loader from 'core/module_system/scripts/components/Loader/Loader.vue'
 import SearchbarFilter from '../SearchbarFilter/SearchbarFilter.vue'
 @Component({ components: { SearchResult, Loader, SearchbarFilter } }) class Searchbar extends Vue {
      @namespace('SearchModule').Action triggerSearch: any
@@ -43,8 +43,6 @@ import SearchbarFilter from '../SearchbarFilter/SearchbarFilter.vue'
      }
      private close () : void {
          this.closeDialog()
-         this.resetSearchQuery()
-         this.resetSearchResults()
      }
       @Watch('searchQuery') onSearchQueryChange () {
          if (this.searchQuery === '') {
