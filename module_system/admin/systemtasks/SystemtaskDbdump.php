@@ -88,7 +88,16 @@ class SystemtaskDbdump extends SystemtaskBase implements AdminSystemtaskInterfac
      */
     public function execute($body)
     {
-        return $this->executeTask();
+        if (isset($body["excludedtables"]) && is_array($body["excludedtables"])) {
+            $excludeTables = $body["excludedtables"];
+        } else {
+            $excludeTables = [];
+        }
+
+        $connection = Carrier::getInstance()->getObjDB();
+        $connection->dumpDb($excludeTables);
+
+        return $this->getLang("systemtask_dbexport_success");
     }
 
     /**

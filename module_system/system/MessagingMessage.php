@@ -42,7 +42,7 @@ class MessagingMessage extends Model implements ModelInterface, AdminListableInt
     /**
      * @var string
      * @tableColumn agp_messages.message_title
-     * @tableColumnDatatype char254
+     * @tableColumnDatatype char500
      * @fieldType Kajona\System\Admin\Formentries\FormentryText
      * @fieldLabel message_subject
      * @fieldMandatory

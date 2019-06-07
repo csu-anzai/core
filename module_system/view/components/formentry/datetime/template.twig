@@ -25,10 +25,8 @@
     </div>
     {% endif %}
     <script type="text/javascript">
-        require(["bootstrap-datepicker"], function() {
-            require(["jquery", "bootstrap-datepicker-{{ lang }}", "util"], function($, datepicker, util){
-                $('#{{ name }}').datepicker({
-                    format: util.transformDateFormat('{{ format }}', "bootstrap-datepicker"),
+                       $('#{{ name }}').datepicker({
+                    format: Util.transformDateFormat('{{ format }}', "bootstrap-datepicker"),
                     weekStart: 1,
                     autoclose: true,
                     language: '{{ lang }}',
@@ -43,7 +41,5 @@
                     $('#{{ name }}').blur();
                     $('#{{ name }}').focus();
                 }
-            });
-        });
     </script>
 </div>

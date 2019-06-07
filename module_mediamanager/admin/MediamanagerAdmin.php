@@ -1,10 +1,10 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-*-------------------------------------------------------------------------------------------------------*
-*    $Id$                        *
-********************************************************************************************************/
+ *   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
+ *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
+ *-------------------------------------------------------------------------------------------------------*
+ *    $Id$                        *
+ ********************************************************************************************************/
 
 namespace Kajona\Mediamanager\Admin;
 
@@ -77,7 +77,6 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
         return $arrReturn;
     }
 
-
     /**
      * @param \Kajona\System\System\Model|MediamanagerRepo|MediamanagerFile $objListEntry
      *
@@ -89,11 +88,11 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
 
         if ($objListEntry instanceof MediamanagerRepo && $objListEntry->rightView()) {
             return array($this->objToolkit->listButton(
-                Link::getLinkAdmin($this->getArrModule("modul"), "openFolder", "&sync=true&systemid=".$objListEntry->getSystemid(), "", $this->getLang("action_open_folder"), "icon_folderActionOpen")
+                Link::getLinkAdmin($this->getArrModule("modul"), "openFolder", "&sync=true&systemid=" . $objListEntry->getSystemid(), "", $this->getLang("action_open_folder"), "icon_folderActionOpen")
             ));
         } elseif ($objListEntry instanceof MediamanagerFile && $objListEntry->getIntType() == MediamanagerFile::$INT_TYPE_FOLDER && $objListEntry->rightView()) {
             return array($this->objToolkit->listButton(
-                Link::getLinkAdmin($this->getArrModule("modul"), "openFolder", "&systemid=".$objListEntry->getSystemid(), "", $this->getLang("action_open_folder"), "icon_folderActionOpen")
+                Link::getLinkAdmin($this->getArrModule("modul"), "openFolder", "&systemid=" . $objListEntry->getSystemid(), "", $this->getLang("action_open_folder"), "icon_folderActionOpen")
             ));
         } elseif ($objListEntry instanceof MediamanagerFile && $objListEntry->getIntType() == MediamanagerFile::$INT_TYPE_FILE) {
             $arrReturn = array();
@@ -101,13 +100,13 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
             $arrMime = $this->objToolkit->mimeType($objListEntry->getStrFilename());
             if (($arrMime[1] == "jpg" || $arrMime[1] == "png" || $arrMime[1] == "gif") && $objListEntry->rightEdit()) {
                 $arrReturn[] = $this->objToolkit->listButton(
-                    Link::getLinkAdminDialog($this->getArrModule("modul"), "imageDetails", "&file=".$objListEntry->getStrFilename(), "", $this->getLang("action_edit_image"), "icon_crop", $objListEntry->getStrDisplayName())
+                    Link::getLinkAdminDialog($this->getArrModule("modul"), "imageDetails", "&file=" . $objListEntry->getStrFilename(), "", $this->getLang("action_edit_image"), "icon_crop", $objListEntry->getStrDisplayName())
                 );
             }
 
             if ($objListEntry->rightRight2()) {
                 $arrReturn[] = $this->objToolkit->listButton(
-                    Link::getLinkAdminManual("href='"._webpath_."/download.php?systemid=".$objListEntry->getSystemid()."'", $this->getLang("action_download"), $this->getLang("action_download"), "icon_downloads")
+                    Link::getLinkAdminManual("href='" . _webpath_ . "/download.php?systemid=" . $objListEntry->getSystemid() . "'", $this->getLang("action_download"), $this->getLang("action_download"), "icon_downloads")
                 );
             }
 
@@ -135,7 +134,7 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
                 return $this->objToolkit->listDeleteButton(
                     $objListEntry->getStrDisplayName(),
                     $this->getLang("delete_question_repo", $objListEntry->getArrModule("modul")),
-                    Link::getLinkAdminHref($objListEntry->getArrModule("modul"), "delete", "&systemid=".$objListEntry->getSystemid())
+                    Link::getLinkAdminHref($objListEntry->getArrModule("modul"), "delete", "&systemid=" . $objListEntry->getSystemid())
                 );
             } else {
                 return "";
@@ -144,7 +143,6 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
             return parent::renderDeleteAction($objListEntry);
         }
     }
-
 
     /**
      * @param string $strListIdentifier
@@ -183,7 +181,7 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
             $objCur = Objectfactory::getInstance()->getObject($this->getSystemid());
 
             if ($objCur instanceof MediamanagerFile) {
-                return $this->objToolkit->listButton(Link::getLinkAdmin($this->getArrModule("modul"), "openFolder", "&systemid=".$objCur->getPrevId(), "..", $this->getLang("commons_one_level_up"), "icon_folderActionLevelup"));
+                return $this->objToolkit->listButton(Link::getLinkAdmin($this->getArrModule("modul"), "openFolder", "&systemid=" . $objCur->getPrevId(), "..", $this->getLang("commons_one_level_up"), "icon_folderActionLevelup"));
             } elseif ($objCur instanceof MediamanagerRepo) {
                 return $this->objToolkit->listButton(Link::getLinkAdmin($this->getArrModule("modul"), "list", "", "..", $this->getLang("commons_one_level_up"), "icon_folderActionLevelup"));
             }
@@ -198,7 +196,7 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
 
             $strTargetfield = xssSafeString($this->getParam("form_element"));
             return $this->objToolkit->listButton(
-                Link::getLinkAdmin($this->getArrModule("modul"), "folderContentFolderviewMode", "&form_element=".$strTargetfield."&systemid=".$strTargetId, "", $this->getLang("commons_one_level_up"), "icon_folderActionLevelup")
+                Link::getLinkAdmin($this->getArrModule("modul"), "folderContentFolderviewMode", "&form_element=" . $strTargetfield . "&systemid=" . $strTargetId, "", $this->getLang("commons_one_level_up"), "icon_folderActionLevelup")
             );
         }
         return parent::renderLevelUpAction($strListIdentifier);
@@ -217,7 +215,7 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
         if ($objListEntry instanceof MediamanagerFile) {
             if ($objListEntry->rightEdit()) {
                 return $this->objToolkit->listButton(
-                    Link::getLinkAdminDialog($objListEntry->getArrModule("modul"), "editFile", "&systemid=".$objListEntry->getSystemid(), $this->getLang("commons_list_edit"), $this->getLang("commons_list_edit"), "icon_edit")
+                    Link::getLinkAdminDialog($objListEntry->getArrModule("modul"), "editFile", "&systemid=" . $objListEntry->getSystemid(), $this->getLang("commons_list_edit"), $this->getLang("commons_list_edit"), "icon_edit")
                 );
             }
 
@@ -241,7 +239,6 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
         return parent::renderCopyAction($objListEntry);
     }
 
-
     /**
      * A general action to delete a record.
      * This method may be overwritten by subclasses.
@@ -261,17 +258,17 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
             }
 
             if (!$objRecord->deleteObject()) {
-                throw new Exception("error deleting object ".$objRecord->getStrDisplayName(), Exception::$level_ERROR);
+                throw new Exception("error deleting object " . $objRecord->getStrDisplayName(), Exception::$level_ERROR);
             }
 
             if ($objRecord instanceof MediamanagerRepo) {
                 $this->actionMassSync();
                 $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "list"));
             } else {
-                $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "openFolder", "&systemid=".$strPrevid));
+                $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "openFolder", "&systemid=" . $strPrevid));
             }
         } else {
-            throw new Exception("error loading object ".$this->getSystemid(), Exception::$level_ERROR);
+            throw new Exception("error loading object " . $this->getSystemid(), Exception::$level_ERROR);
         }
     }
 
@@ -290,15 +287,15 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
             if ($objOneIterable instanceof MediamanagerFile && $objOneIterable->rightView()) {
                 if ($objOneIterable->getIntType() == MediamanagerFile::$INT_TYPE_FOLDER) {
                     return $this->objToolkit->listButton(
-                        Link::getLinkAdmin($this->getArrModule("modul"), "folderContentFolderviewMode", "&form_element=".$strTargetfield."&systemid=".$objOneIterable->getSystemid()."&download=".$this->getParam("download"), "", $this->getLang("action_open_folder"), "icon_folderActionOpen")
+                        Link::getLinkAdmin($this->getArrModule("modul"), "folderContentFolderviewMode", "&form_element=" . $strTargetfield . "&systemid=" . $objOneIterable->getSystemid() . "&download=" . $this->getParam("download"), "", $this->getLang("action_open_folder"), "icon_folderActionOpen")
                     );
                 } elseif ($objOneIterable->getIntType() == MediamanagerFile::$INT_TYPE_FILE) {
                     $strValue = $objOneIterable->getStrFilename();
-                    if($this->getParam("download") == "1") {
-                        $strValue = _webpath_."/download.php?systemid=".$objOneIterable->getSystemid();
+                    if ($this->getParam("download") == "1") {
+                        $strValue = _webpath_ . "/download.php?systemid=" . $objOneIterable->getSystemid();
                     }
                     return $this->objToolkit->listButton( //TODO
-                        "<a href=\"#\" title=\"".$this->getLang("commons_accept")."\" rel=\"tooltip\" onclick=\"require('folderview').selectCallback([['".$strTargetfield."', '".$strValue."']]);\">".AdminskinHelper::getAdminImage("icon_accept")."</a>"
+                        "<a href=\"#\" title=\"" . $this->getLang("commons_accept") . "\" rel=\"tooltip\" onclick=\"Folderview.selectCallback([['" . $strTargetfield . "', '" . $strValue . "']]);\">" . AdminskinHelper::getAdminImage("icon_accept") . "</a>"
                     );
                 }
 
@@ -308,7 +305,6 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
         }
         return parent::getActionIcons($objOneIterable, $strListIdentifier);
     }
-
 
     /**
      * Loads the content of a folder
@@ -325,8 +321,7 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
         if ($this->getParam("sync") == "true" && Objectfactory::getInstance()->getObject($this->getSystemid())->rightRight1()) {
             $strJsCode = <<<HTML
             <script type="text/javascript">
-                require(['mediamanager', 'ajax', 'statusDisplay'], function(mediamanager, ajax) {
-                    ajax.genericAjaxCall("mediamanager", "syncRepo", "{$this->getSystemid()}", function(data, status, jqXHR) {
+                    Ajax.genericAjaxCall("mediamanager", "syncRepo", "{$this->getSystemid()}", function(data, status, jqXHR) {
                         if(status == 'success') {
                             if(data.indexOf("<repo>0</repo>") == -1) {
                                 //show a dialog to reload the current page
@@ -334,10 +329,9 @@ class MediamanagerAdmin extends AdminEvensimpler implements AdminInterface
                             }
                         }
                         else {
-                            statusDisplay.messageError("<b>Request failed!</b>")
+                            StatusDisplay.messageError("<b>Request failed!</b>")
                         }
                     })
-                });
 
             </script>
 HTML;
@@ -351,10 +345,9 @@ HTML;
         $objIterator->setPageNumber($this->getParam("pv"));
         $objIterator->setArraySection(MediamanagerFile::loadFilesDB($this->getSystemid(), false, false, $objIterator->calculateStartPos(), $objIterator->calculateEndPos()));
 
-        return $strJsCode.$strActions.$this->renderFloatingGrid($objIterator, MediamanagerAdmin::INT_LISTTYPE_FOLDER);
+        return $strJsCode . $strActions . $this->renderFloatingGrid($objIterator, MediamanagerAdmin::INT_LISTTYPE_FOLDER);
 
     }
-
 
     /**
      * Generates the code to delete a folder via ajax
@@ -375,19 +368,18 @@ HTML;
         $strDialog = $this->objToolkit->formInputText("folderName", $this->getLang("commons_name"));
 
         $strReturn .= "<script type=\"text/javascript\">
-                        require(['mediamanager']);
+
                         function init_fm_newfolder_dialog() {
-                            jsDialog_1.setTitle('".$this->getLang("folder_new_dialogHeader")."');
-                            jsDialog_1.setContent('".StringUtil::replace(array("\r\n", "\n"), "", addslashes($strDialog))."',
-                                                  '".$this->getLang("commons_create_folder")."',
-                                                  'javascript:require(\'mediamanager\').createFolder(\'folderName\', \'".$this->getSystemid()."\'); jsDialog_1.hide();');
+                            jsDialog_1.setTitle('" . $this->getLang("folder_new_dialogHeader") . "');
+                            jsDialog_1.setContent('" . StringUtil::replace(array("\r\n", "\n"), "", addslashes($strDialog)) . "',
+                                                  '" . $this->getLang("commons_create_folder") . "',
+                                                  'javascript:Mediamanager.createFolder(\'folderName\', \'" . $this->getSystemid() . "\'); jsDialog_1.hide();');
                                     jsDialog_1.init(); }
                       ";
 
         $strReturn .= "</script>";
         return $strReturn;
     }
-
 
     /**
      * Uploads or shows the form to upload a file
@@ -418,7 +410,6 @@ HTML;
         return $strReturn;
     }
 
-
     /**
      * Synchronizes all repos available
      *
@@ -441,11 +432,10 @@ HTML;
             }
         }
         $strReturn = $this->getLang("sync_end");
-        $strReturn .= $this->objToolkit->getTextRow($this->getLang("sync_add").$arrSyncs["insert"].$this->getLang("sync_del").$arrSyncs["delete"]);
+        $strReturn .= $this->objToolkit->getTextRow($this->getLang("sync_add") . $arrSyncs["insert"] . $this->getLang("sync_del") . $arrSyncs["delete"]);
 
         return $strReturn;
     }
-
 
     /**
      * @return string
@@ -462,14 +452,13 @@ HTML;
         $objFile = Objectfactory::getInstance()->getObject($this->getSystemid());
 
         if ($this->getParam("source") != "") {
-            $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "openFolder", "&systemid=".$objFile->getPrevId()));
+            $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "openFolder", "&systemid=" . $objFile->getPrevId()));
         } else {
-            $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "openFolder", "&peClose=1&blockAction=1&systemid=".$objFile->getPrevId()));
+            $this->adminReload(Link::getLinkAdminHref($this->getArrModule("modul"), "openFolder", "&peClose=1&blockAction=1&systemid=" . $objFile->getPrevId()));
         }
         return "";
 
     }
-
 
     /**
      * Returns details and additional functions handling the current image.
@@ -484,11 +473,10 @@ HTML;
         $strFile = $this->getParam("file");
         $strFile = StringUtil::replace(_webpath_, "", $strFile);
 
-        if (is_file(_realpath_.$strFile)) {
+        if (is_file(_realpath_ . $strFile)) {
             $objFilesystem = new Filesystem();
             $arrDetails = $objFilesystem->getFileDetails($strFile);
-            $arrSize = getimagesize(_realpath_.$strFile);
-
+            $arrSize = getimagesize(_realpath_ . $strFile);
 
             //Generate Dimensions
             $intHeight = $arrSize[1];
@@ -501,80 +489,73 @@ HTML;
             //Round
             $intWidth = number_format($intWidth, 0);
             $intHeight = number_format($intHeight, 0);
-            $strImage = "<img src=\""._webpath_."/image.php?image=".urlencode($strFile)."&amp;maxWidth=".$intWidth."&amp;maxHeight=".$intHeight."\" id=\"fm_mediamanagerPic\" style=\"max-width: none;\" />";
-
+            $strImage = "<img src=\"" . _webpath_ . "/image.php?image=" . urlencode($strFile) . "&amp;maxWidth=" . $intWidth . "&amp;maxHeight=" . $intHeight . "\" id=\"fm_mediamanagerPic\" style=\"max-width: none;\" />";
 
             $arrActions = array();
             $arrActions[] = $this->objToolkit->listButton(
-                Link::getLinkAdminManual("href=\"#\" onclick=\"require('imageeditor').showRealSize(); return false;\"", "", $this->getLang("showRealsize"), "icon_zoom_in")
+                Link::getLinkAdminManual("href=\"#\" onclick=\"Imageeditor.showRealSize(); return false;\"", "", $this->getLang("showRealsize"), "icon_zoom_in")
             );
             $arrActions[] = $this->objToolkit->listButton(
-                Link::getLinkAdminManual(
-                    "href=\"#\" onclick=\"require('imageeditor').showPreview(); return false;\"",
-                    "",
-                    $this->getLang("showPreview"),
-                    "icon_zoom_out"
-                )
-            )." ";
+                    Link::getLinkAdminManual(
+                        "href=\"#\" onclick=\"Imageeditor.showPreview(); return false;\"",
+                        "",
+                        $this->getLang("showPreview"),
+                        "icon_zoom_out"
+                    )
+                ) . " ";
             $arrActions[] = $this->objToolkit->listButton(
-                Link::getLinkAdminManual("href=\"#\" onclick=\"require('imageeditor').rotate(90); return false;\"", "", $this->getLang("rotateImageLeft"), "icon_rotate_left")
+                Link::getLinkAdminManual("href=\"#\" onclick=\"Imageeditor.rotate(90); return false;\"", "", $this->getLang("rotateImageLeft"), "icon_rotate_left")
             );
             $arrActions[] = $this->objToolkit->listButton(
-                Link::getLinkAdminManual("href=\"#\" onclick=\"require('imageeditor').rotate(270); return false;\"", "", $this->getLang("rotateImageRight"), "icon_rotate_right")
-            )." ";
+                    Link::getLinkAdminManual("href=\"#\" onclick=\"Imageeditor.rotate(270); return false;\"", "", $this->getLang("rotateImageRight"), "icon_rotate_right")
+                ) . " ";
             $arrActions[] = $this->objToolkit->listButton(
-                Link::getLinkAdminManual("href=\"#\" onclick=\"require('imageeditor').showCropping(); return false;\"", "", $this->getLang("cropImage"), "icon_crop")
+                Link::getLinkAdminManual("href=\"#\" onclick=\"Imageeditor.showCropping(); return false;\"", "", $this->getLang("cropImage"), "icon_crop")
             );
             $arrActions[] = $this->objToolkit->listButton(
-                Link::getLinkAdminManual("href=\"#\" id=\"accept_icon\"  onclick=\"require('imageeditor').saveCropping(); return false;\"", "", $this->getLang("cropImageAccept"), "icon_crop_acceptDisabled")
-            )." ";
-
+                    Link::getLinkAdminManual("href=\"#\" id=\"accept_icon\"  onclick=\"Imageeditor.saveCropping(); return false;\"", "", $this->getLang("cropImageAccept"), "icon_crop_acceptDisabled")
+                ) . " ";
 
             $strReturn .= $this->objToolkit->getContentToolbar($arrActions);
 
-            $strReturn .= "<div class=\"imageContainer\"><div class=\"image\">".$strImage."</div></div>";
+            $strReturn .= "<div class=\"imageContainer\"><div class=\"image\">" . $strImage . "</div></div>";
 
             $strJs = "<script type=\"text/javascript\">
-                require(['imageeditor', 'loader'], function (imageeditor, loader) {
-                    loader.loadFile([
-                        '".Resourceloader::getInstance()->getCorePathForModule("module_mediamanager")."/module_mediamanager/scripts/jcrop/css/jquery.Jcrop.min.css'
-                    ]);
-                    
-                    imageeditor.strCropEnabled= '".addslashes(AdminskinHelper::getAdminImage("icon_crop_accept", $this->getLang("cropImageAccept")))."';
-                    imageeditor.strCropDisabled = '".addslashes(AdminskinHelper::getAdminImage("icon_crop_acceptDisabled", $this->getLang("cropImageAccept")))."';
+            Loader.loadFile([
+                '" . Resourceloader::getInstance()->getCorePathForModule("module_mediamanager") . "/module_mediamanager/scripts/jcrop/css/jquery.Jcrop.min.css'
+            ]);
 
-                    imageeditor.fm_image_rawurl = '"._webpath_."/image.php?image=".urlencode($strFile)."&quality=80';
-                    imageeditor.fm_image_scaledurl = '"._webpath_."/image.php?image=".urlencode($strFile)."&maxWidth=__width__&maxHeight=__height__';
-                    imageeditor.fm_image_scaledMaxWidth = $intWidth;
-                    imageeditor.fm_image_scaledMaxHeight = $intHeight;
-                    imageeditor.fm_image_isScaled = true;
-                    imageeditor.fm_file = '".$strFile."' ;
-    
-                    imageeditor.init_fm_crop_save_warning_dialog = function () { jsDialog_1.setTitle('".$this->getLang("cropWarningDialogHeader")."'); jsDialog_1.setContent('".$this->getLang("cropWarningSaving")."', '".$this->getLang("cropWarningCrop")."', 'javascript:require(\'imageeditor\').saveCroppingToBackend()'); jsDialog_1.init(); };
-                    imageeditor.init_fm_screenlock_dialog = function () { jsDialog_3.init(); };
-                    imageeditor.hide_fm_screenlock_dialog = function () { jsDialog_3.hide(); }
+            Imageeditor.strCropEnabled= '" . addslashes(AdminskinHelper::getAdminImage("icon_crop_accept", $this->getLang("cropImageAccept"))) . "';
+            Imageeditor.strCropDisabled = '" . addslashes(AdminskinHelper::getAdminImage("icon_crop_acceptDisabled", $this->getLang("cropImageAccept"))) . "';
 
-                });
+            Imageeditor.fm_image_rawurl = '" . _webpath_ . "/image.php?image=" . urlencode($strFile) . "&quality=80';
+            Imageeditor.fm_image_scaledurl = '" . _webpath_ . "/image.php?image=" . urlencode($strFile) . "&maxWidth=__width__&maxHeight=__height__';
+            Imageeditor.fm_image_scaledMaxWidth = $intWidth;
+            Imageeditor.fm_image_scaledMaxHeight = $intHeight;
+            Imageeditor.fm_image_isScaled = true;
+            Imageeditor.fm_file = '" . $strFile . "' ;
 
+            Imageeditor.init_fm_crop_save_warning_dialog = function () { jsDialog_1.setTitle('" . $this->getLang("cropWarningDialogHeader") . "'); jsDialog_1.setContent('" . $this->getLang("cropWarningSaving") . "', '" . $this->getLang("cropWarningCrop") . "', 'javascript:Imageeditor.saveCroppingToBackend()'); jsDialog_1.init(); };
+            Imageeditor.init_fm_screenlock_dialog = function () { jsDialog_3.init(); };
+            Imageeditor.hide_fm_screenlock_dialog = function () { jsDialog_3.hide(); }
                 </script>";
 
-            $strJs .= "<input type=\"hidden\" name=\"fm_int_realwidth\" id=\"fm_int_realwidth\" value=\"".$arrSize[0]."\" />";
-            $strJs .= "<input type=\"hidden\" name=\"fm_int_realheight\" id=\"fm_int_realheight\" value=\"".$arrSize[1]."\" />";
+            $strJs .= "<input type=\"hidden\" name=\"fm_int_realwidth\" id=\"fm_int_realwidth\" value=\"" . $arrSize[0] . "\" />";
+            $strJs .= "<input type=\"hidden\" name=\"fm_int_realheight\" id=\"fm_int_realheight\" value=\"" . $arrSize[1] . "\" />";
 
             $strReturn .= $strJs;
 
             $arrTable = array();
             $arrTable[] = array($this->getLang("commons_path"), $strFile);
 
-            $arrTable[] = array($this->getLang("image_dimensions"), $arrSize[0]." x ".$arrSize[1]);
+            $arrTable[] = array($this->getLang("image_dimensions"), $arrSize[0] . " x " . $arrSize[1]);
             $arrTable[] = array($this->getLang("file_size"), bytesToString($arrDetails["filesize"]));
             $arrTable[] = array($this->getLang("file_editdate"), timeToString($arrDetails["filechange"]));
-            $strReturn .= $this->objToolkit->divider().$this->objToolkit->dataTable(array(), $arrTable);
+            $strReturn .= $this->objToolkit->divider() . $this->objToolkit->dataTable(array(), $arrTable);
 
         }
         return $strReturn;
     }
-
 
     /**
      * @return array
@@ -598,9 +579,8 @@ HTML;
      */
     protected function getOutputNaviEntry(ModelInterface $objInstance)
     {
-        return Link::getLinkAdmin($this->getArrModule("modul"), "openFolder", "&systemid=".$objInstance->getSystemid(), $objInstance->getStrDisplayName());
+        return Link::getLinkAdmin($this->getArrModule("modul"), "openFolder", "&systemid=" . $objInstance->getSystemid(), $objInstance->getStrDisplayName());
     }
-
 
     /**
      * Loads the content of a folder
@@ -615,12 +595,12 @@ HTML;
      */
     protected function actionFolderContentFolderviewMode()
     {
-        $strReturn = "<script type='text/javascript'>require(['mediamanager']);</script>";
+        $strReturn = "";
 
         //if set, save CKEditors CKEditorFuncNum parameter to read it again in require('folderview').selectCallback()
         //so we don't have to pass through the param with all requests
         if ($this->getParam("CKEditorFuncNum") != "") {
-            $strReturn .= "<script type=\"text/javascript\">window.opener.require('folderview').selectCallbackCKEditorFuncNum = ".(int)$this->getParam("CKEditorFuncNum").";</script>";
+            $strReturn .= "<script type=\"text/javascript\">window.opener.Folderview.selectCallbackCKEditorFuncNum = " . (int) $this->getParam("CKEditorFuncNum") . ";</script>";
         }
 
         $strTargetfield = xssSafeString($this->getParam("form_element"));
@@ -639,7 +619,7 @@ HTML;
                         Link::getLinkAdmin(
                             $this->getArrModule("modul"),
                             "folderContentFolderviewMode",
-                            "&form_element=".$strTargetfield."&systemid=".$objOneRepo->getSystemid()."&download=".$this->getParam("download"),
+                            "&form_element=" . $strTargetfield . "&systemid=" . $objOneRepo->getSystemid() . "&download=" . $this->getParam("download"),
                             "",
                             $this->getLang("action_open_folder"),
                             "icon_folderActionOpen"
@@ -651,7 +631,7 @@ HTML;
             }
 
             if (StringUtil::length($strReturn) != 0) {
-                $strReturn = $this->objToolkit->listHeader().$strReturn.$this->objToolkit->listFooter();
+                $strReturn = $this->objToolkit->listHeader() . $strReturn . $this->objToolkit->listFooter();
             }
 
             if (count($arrObjRepos) == 0) {
@@ -669,10 +649,10 @@ HTML;
 
             $strReturn .= $this->actionUploadFileInternal();
             $strReturn .= $this->generateNewFolderDialogCode();
-            $strReturn .= $this->renderFloatingGrid($objIterator, MediamanagerAdmin::INT_LISTTYPE_FOLDERVIEW, "&form_element=".$strTargetfield."&download=".$this->getParam("download"), false);
+            $strReturn .= $this->renderFloatingGrid($objIterator, MediamanagerAdmin::INT_LISTTYPE_FOLDERVIEW, "&form_element=" . $strTargetfield . "&download=" . $this->getParam("download"), false);
         }
 
-        $strReturn .= "<script type='text/javascript'>require(['lists'], function(l) { l.initRowClick(); });</script>";
+        $strReturn .= "<script type='text/javascript'>Lists.initRowClick();</script>";
         return $strReturn;
     }
 
@@ -688,7 +668,7 @@ HTML;
             $strTargetfield = xssSafeString($this->getParam("form_element"));
 
             if ($objOneIterable->getIntType() == MediamanagerFile::$INT_TYPE_FOLDER) {
-                return "onclick=\"document.location='".Link::getLinkAdminHref($this->getArrModule("modul"), "folderContentFolderviewMode", "&form_element=".$strTargetfield."&systemid=".$objOneIterable->getSystemid())."&download=".$this->getParam("download")."'\"";
+                return "onclick=\"document.location='" . Link::getLinkAdminHref($this->getArrModule("modul"), "folderContentFolderviewMode", "&form_element=" . $strTargetfield . "&systemid=" . $objOneIterable->getSystemid()) . "&download=" . $this->getParam("download") . "'\"";
             } elseif ($objOneIterable->getIntType() == MediamanagerFile::$INT_TYPE_FILE) {
                 $strValue = $objOneIterable->getStrFilename();
                 $arrMime = $this->objToolkit->mimeType($strValue);
@@ -698,21 +678,20 @@ HTML;
                 }
 
                 if ($bitImage && $strTargetfield == "ckeditor") {
-                    $strValue = _webpath_."/image.php?image=".$strValue;
-                } elseif($this->getParam("download") == "1") {
-                    $strValue = _webpath_."/download.php?systemid=".$objOneIterable->getSystemid();
+                    $strValue = _webpath_ . "/image.php?image=" . $strValue;
+                } elseif ($this->getParam("download") == "1") {
+                    $strValue = _webpath_ . "/download.php?systemid=" . $objOneIterable->getSystemid();
                 } else {
-                    $strValue = _webpath_.$strValue;
+                    $strValue = _webpath_ . $strValue;
                 }
 
-                return "onclick=\"require('folderview').selectCallback([['".$strTargetfield."', '".$strValue."']]);\"";
+                return "onclick=\"Folderview.selectCallback([['" . $strTargetfield . "', '" . $strValue . "']]);\"";
             }
 
             return "";
         }
         return parent::renderGridEntryClickAction($objOneIterable, $strListIdentifier);
     }
-
 
     /**
      * Generates a view to browse the filesystem directly.
@@ -735,7 +714,6 @@ HTML;
         $arrExcludeFolder = array(0 => ".", 1 => "..");
         $strFormElement = xssSafeString($this->getParam("form_element"));
 
-
         $objFilesystem = new Filesystem();
         $arrContent = $objFilesystem->getCompleteList($strFolder, array(), array(), $arrExcludeFolder, true, false);
 
@@ -754,7 +732,7 @@ HTML;
                 Link::getLinkAdmin(
                     $this->getArrModule("modul"),
                     "folderListFolderview",
-                    "&folder=".StringUtil::substring($strFolder, 0, StringUtil::lastIndexOf($strFolder, "/"))."&form_element=".$strFormElement,
+                    "&folder=" . StringUtil::substring($strFolder, 0, StringUtil::lastIndexOf($strFolder, "/")) . "&form_element=" . $strFormElement,
                     $this->getLang("commons_one_level_up"),
                     $this->getLang("commons_one_level_up"),
                     "icon_folderActionLevelup"
@@ -768,15 +746,15 @@ HTML;
                     Link::getLinkAdmin(
                         $this->getArrModule("modul"),
                         "folderListFolderview",
-                        "&folder=".$strFolder."/".$strFolderCur."&form_element=".$strFormElement,
+                        "&folder=" . $strFolder . "/" . $strFolderCur . "&form_element=" . $strFormElement,
                         $this->getLang("action_open_folder"),
                         $this->getLang("action_open_folder"),
                         "icon_folderActionOpen"
                     )
                 );
                 $strAction .= $this->objToolkit->listButton(
-                    "<a href=\"#\" title=\"".$this->getLang("commons_accept")."\" rel=\"tooltip\" onclick=\"require('folderview').selectCallback([['".$strFormElement."', '".$strFolder."/".$strFolderCur."']]);\">"
-                    .AdminskinHelper::getAdminImage("icon_accept")
+                    "<a href=\"#\" title=\"" . $this->getLang("commons_accept") . "\" rel=\"tooltip\" onclick=\"Folderview.selectCallback([['" . $strFormElement . "', '" . $strFolder . "/" . $strFolderCur . "']]);\">"
+                    . AdminskinHelper::getAdminImage("icon_accept")
                 );
                 $strReturn .= $this->objToolkit->genericAdminList(generateSystemid(), $strFolderCur, AdminskinHelper::getAdminImage("icon_folderOpen"), $strAction);
             }
@@ -787,7 +765,6 @@ HTML;
 
         return $strReturn;
     }
-
 
     /**
      * Show a logbook of all downloads
@@ -806,7 +783,7 @@ HTML;
         $objLogbook = new MediamanagerLogbook();
         $objArraySectionIterator = new ArraySectionIterator($objLogbook->getLogbookDataCount());
         $objArraySectionIterator->setIntElementsPerPage($intNrOfRecordsPerPage);
-        $objArraySectionIterator->setPageNumber((int)($this->getParam("pv") != "" ? $this->getParam("pv") : 1));
+        $objArraySectionIterator->setPageNumber((int) ($this->getParam("pv") != "" ? $this->getParam("pv") : 1));
         $objArraySectionIterator->setArraySection($objLogbook->getLogbookData($objArraySectionIterator->calculateStartPos(), $objArraySectionIterator->calculateEndPos()));
 
         $arrLogs = array();
@@ -837,7 +814,6 @@ HTML;
         return $strReturn;
     }
 
-
     /**
      * Create a new folder using the combination of passed folder & systemid
      *
@@ -867,29 +843,28 @@ HTML;
             //Create the folder
             $strFolder = createFilename($strFolder, true);
             //folder already existing?
-            if (!is_dir(_realpath_.$strPrevPath."/".$strFolder)) {
+            if (!is_dir(_realpath_ . $strPrevPath . "/" . $strFolder)) {
 
-                Logger::getInstance()->info("creating folder ".$strPrevPath."/".$strFolder);
+                Logger::getInstance()->info("creating folder " . $strPrevPath . "/" . $strFolder);
 
                 $objFilesystem = new Filesystem();
-                if ($objFilesystem->folderCreate($strPrevPath."/".$strFolder)) {
-                    $strReturn = "<message>".xmlSafeString($this->getLang("folder_create_success"))."</message>";
+                if ($objFilesystem->folderCreate($strPrevPath . "/" . $strFolder)) {
+                    $strReturn = "<message>" . xmlSafeString($this->getLang("folder_create_success")) . "</message>";
                 } else {
                     ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_INTERNAL_SERVER_ERROR);
-                    $strReturn = "<message><error>".xmlSafeString($this->getLang("folder_create_error"))."</error></message>";
+                    $strReturn = "<message><error>" . xmlSafeString($this->getLang("folder_create_error")) . "</error></message>";
                 }
             } else {
                 ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_INTERNAL_SERVER_ERROR);
-                $strReturn = "<message><error>".xmlSafeString($this->getLang("folder_create_error"))."</error></message>";
+                $strReturn = "<message><error>" . xmlSafeString($this->getLang("folder_create_error")) . "</error></message>";
             }
         } else {
             ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
-            $strReturn .= "<message><error>".xmlSafeString($this->getLang("commons_error_permissions"))."</error></message>";
+            $strReturn .= "<message><error>" . xmlSafeString($this->getLang("commons_error_permissions")) . "</error></message>";
         }
 
         return $strReturn;
     }
-
 
     /**
      * Tries to save the passed file.
@@ -939,8 +914,6 @@ HTML;
             return json_encode(['error' => $this->getLang("commons_error_permissions")]);
         }
 
-
-
         $arrReturn = [];
 
         //Handle the fileupload
@@ -953,13 +926,13 @@ HTML;
             if ($strFilename == "blob") {
                 switch ($arrSource["type"]) {
                     case 'image/png':
-                        $strFilename = generateSystemid().".png";
+                        $strFilename = generateSystemid() . ".png";
                         break;
                     case 'image/gif':
-                        $strFilename = generateSystemid().".gif";
+                        $strFilename = generateSystemid() . ".gif";
                         break;
                     case 'image/jpg':
-                        $strFilename = generateSystemid().".jpg";
+                        $strFilename = generateSystemid() . ".jpg";
                         break;
                 }
             }
@@ -968,16 +941,15 @@ HTML;
             $strFilename = $arrSource;
         }
 
-
-        $strFullTargetFolder = $strTargetFolder.($strUploadFolder != "" ? "/".$strUploadFolder : "");
-        $strTargetFile = $strFullTargetFolder . "/" .createFilename($strFilename);
+        $strFullTargetFolder = $strTargetFolder . ($strUploadFolder != "" ? "/" . $strUploadFolder : "");
+        $strTargetFile = $strFullTargetFolder . "/" . createFilename($strFilename);
         $objFilesystem = new Filesystem();
 
-        if (!file_exists(_realpath_.$strFullTargetFolder)) {
+        if (!file_exists(_realpath_ . $strFullTargetFolder)) {
             $objFilesystem->folderCreate($strFullTargetFolder, true);
         }
 
-        if (is_file(_realpath_.$strTargetFile)) {
+        if (is_file(_realpath_ . $strTargetFile)) {
             $arrReturn['error'] = $this->getLang("upload_multiple_errorExisting");
             $arrReturn["files"][] = ["name" => createFilename($strFilename), "error" => $this->getLang("upload_multiple_errorExisting")];
         }
@@ -1004,7 +976,7 @@ HTML;
                 if ($bitCopySuccess) {
                     //see if we need to add the parent dir directly - avoid a full repo-sync
                     $objTargetMMFolder = MediamanagerFile::getFileForPath($objRepo->getSystemid(), $strFullTargetFolder);
-                    if ($objTargetMMFolder == null && $strUploadFolder != "" &&  StringUtil::indexOf($strUploadFolder, "/") === false) {
+                    if ($objTargetMMFolder == null && $strUploadFolder != "" && StringUtil::indexOf($strUploadFolder, "/") === false) {
                         $objTargetMMFolder = new MediamanagerFile();
                         $objTargetMMFolder->setStrFilename($strFullTargetFolder);
                         $objTargetMMFolder->setStrName($strUploadFolder);
@@ -1029,7 +1001,7 @@ HTML;
                     if ($objFile != null) {
                         $arrReturn["files"][] = $this->mediamanagerFileToJqueryFileuploadArray($objFile);
                     }
-                    Logger::getInstance()->info("uploaded file ".$strTargetFile);
+                    Logger::getInstance()->info("uploaded file " . $strTargetFile);
 
                 } else {
                     $arrReturn['error'] = $this->getLang("xmlupload_error_copyUpload");
@@ -1056,13 +1028,14 @@ HTML;
 
         $strDeleteButton = "";
         if ($objFile->rightDelete()) {
-            $strLink = "javascript:require(\'fileupload\').deleteFile(\'{$objFile->getSystemid()}\')";
+            $strLink = "javascript:Fileupload.deleteFile(\'{$objFile->getSystemid()}\')";
             $strDeleteButton = $this->objToolkit->listDeleteButton($objFile->getStrDisplayName(), $this->getLang("delete_file_question"), $strLink);
         }
         return [
             "name" => $objFile->getStrName(),
+            "createDate" => dateToString($objFile->getObjCreateDate()),
             "size" => $objFile->getIntFileSize(),
-            "url" => $objFile->rightRight2() ? _webpath_."/download.php?systemid=".$objFile->getSystemid() : "",
+            "url" => $objFile->rightRight2() ? _webpath_ . "/download.php?systemid=" . $objFile->getSystemid() : "",
             "systemid" => $objFile->getSystemid(),
             "deleteButton" => $strDeleteButton,
         ];
@@ -1084,7 +1057,7 @@ HTML;
             return " ";
         }
 
-        $objFile = MediamanagerFile::getFileForPath($this->getSystemid(), $objRepo->getStrPath()."/".$this->getParam("folder"));
+        $objFile = MediamanagerFile::getFileForPath($this->getSystemid(), $objRepo->getStrPath() . "/" . $this->getParam("folder"));
         if ($objFile == null || !$objFile->rightView()) {
             return " ";
         }
@@ -1108,7 +1081,8 @@ HTML;
                         $objSingleFile->getStrSystemid(),
                         $objSingleFile->getStrDisplayName(),
                         AdminskinHelper::getAdminImage($objSingleFile->getStrIcon()[0]),
-                        $objSingleFile->rightRight2() ? Link::getLinkAdminManual("href='"._webpath_."/download.php?systemid=".$objSingleFile->getSystemid()."'", $this->getLang("action_download"), $this->getLang("action_download"), "icon_downloads") : ""
+                        $objSingleFile->rightRight2() ? Link::getLinkAdminManual("href='" . _webpath_ . "/download.php?systemid=" . $objSingleFile->getSystemid() . "'", $this->getLang("action_download"), $this->getLang("action_download"), "icon_downloads") : "",
+                        dateToString($objSingleFile->getObjCreateDate())
                     );
                 }
 
@@ -1137,7 +1111,7 @@ HTML;
             return json_encode([]);
         }
 
-        $objFile = MediamanagerFile::getFileForPath($this->getSystemid(), $objRepo->getStrPath()."/".$this->getParam("folder"));
+        $objFile = MediamanagerFile::getFileForPath($this->getSystemid(), $objRepo->getStrPath() . "/" . $this->getParam("folder"));
         if ($objFile == null || !$objFile->rightView()) {
             return json_encode(["status" => "error", "error" => "permissions"]);
         }
@@ -1150,11 +1124,11 @@ HTML;
         }
         //create a new target folder
         $objDate = new Date();
-        $strBaseTarget = $objFile->getStrFilename()."/".$objDate->getIntYear()."-".$objDate->getIntMonth()."-".$objDate->getIntDay();
-        $strTarget = $objFile->getStrFilename()."/".$objDate->getIntYear()."-".$objDate->getIntMonth()."-".$objDate->getIntDay();
+        $strBaseTarget = $objFile->getStrFilename() . "/" . $objDate->getIntYear() . "-" . $objDate->getIntMonth() . "-" . $objDate->getIntDay();
+        $strTarget = $objFile->getStrFilename() . "/" . $objDate->getIntYear() . "-" . $objDate->getIntMonth() . "-" . $objDate->getIntDay();
         $intI = 1;
-        while (file_exists(_realpath_.$strTarget)) {
-            $strTarget = $strBaseTarget."_".$intI++;
+        while (file_exists(_realpath_ . $strTarget)) {
+            $strTarget = $strBaseTarget . "_" . $intI++;
         }
 
         $objFilesystem = new Filesystem();
@@ -1163,7 +1137,7 @@ HTML;
         $arrSynced = [];
         /** @var MediamanagerFile $objCurFile */
         foreach ($arrFiles as $objCurFile) {
-            $objFilesystem->fileRename($objCurFile->getStrFilename(), $strTarget."/".basename($objCurFile->getStrFilename()));
+            $objFilesystem->fileRename($objCurFile->getStrFilename(), $strTarget . "/" . basename($objCurFile->getStrFilename()));
             $arrSynced[] = $objCurFile->getStrName();
         }
 
@@ -1181,8 +1155,6 @@ HTML;
             }
         }
 
-
-        
         return json_encode(["status" => "ok", "target" => $strTarget, "moved" => $arrSynced]);
     }
 
@@ -1273,13 +1245,12 @@ HTML;
             return json_encode([]);
         }
 
-        $objFile = MediamanagerFile::getFileForPath($this->getSystemid(), $objRepo->getStrPath()."/".$this->getParam("folder"));
+        $objFile = MediamanagerFile::getFileForPath($this->getSystemid(), $objRepo->getStrPath() . "/" . $this->getParam("folder"));
         if ($objFile == null || !$objFile->rightView()) {
             return json_encode([]);
         }
 
-
-        $arrFiles = MediamanagerFile::getObjectListFiltered(null, $objFile->getSystemid());
+        $arrFiles = MediamanagerFile::getObjectListFiltered(new MediamanagerFileFilter(), $objFile->getSystemid());
         $arrReturn = [];
         /** @var MediamanagerFile $objFile */
         foreach ($arrFiles as $objFile) {
@@ -1314,13 +1285,12 @@ HTML;
             return "";
         }
 
+        $strResult .= $this->getLang("sync_end") . "<br />";
+        $strResult .= $this->getLang("sync_add") . $arrSyncs["insert"] . "<br />" . $this->getLang("sync_del") . $arrSyncs["delete"];
 
-        $strResult .= $this->getLang("sync_end")."<br />";
-        $strResult .= $this->getLang("sync_add").$arrSyncs["insert"]."<br />".$this->getLang("sync_del").$arrSyncs["delete"];
+        $strReturn .= "<repo>" . xmlSafeString(strip_tags($strResult)) . "</repo>";
 
-        $strReturn .= "<repo>".xmlSafeString(strip_tags($strResult))."</repo>";
-
-        Logger::getInstance()->info("synced gallery partially >".$this->getSystemid().": ".$strResult);
+        Logger::getInstance()->info("synced gallery partially >" . $this->getSystemid() . ": " . $strResult);
 
         return $strReturn;
     }
@@ -1348,13 +1318,12 @@ HTML;
         $strResult = 0;
 
         $strResult += $arrSyncs["insert"] + $arrSyncs["delete"];
-        $strReturn .= "<repo>".xmlSafeString(strip_tags($strResult))."</repo>";
+        $strReturn .= "<repo>" . xmlSafeString(strip_tags($strResult)) . "</repo>";
 
-        Logger::getInstance()->info("synced gallery partially >".$this->getSystemid().": ".$strResult);
+        Logger::getInstance()->info("synced gallery partially >" . $this->getSystemid() . ": " . $strResult);
 
         return $strReturn;
     }
-
 
     /**
      * Tries to rotate the passed imaged.
@@ -1374,16 +1343,16 @@ HTML;
 
         $strFile = $this->getParam("file");
 
-        $objImage = new Image(_realpath_._images_cachepath_);
+        $objImage = new Image(_realpath_ . _images_cachepath_);
         $objImage->setUseCache(false);
-        $objImage->load(_realpath_.$strFile);
+        $objImage->load(_realpath_ . $strFile);
         $objImage->addOperation(new ImageRotate($this->getParam("angle")));
-        if ($objImage->save(_realpath_.$strFile)) {
-            Logger::getInstance()->info("rotated file ".$strFile);
-            $strReturn .= "<message>".xmlSafeString($this->getLang("xml_rotate_success"))."</message>";
+        if ($objImage->save(_realpath_ . $strFile)) {
+            Logger::getInstance()->info("rotated file " . $strFile);
+            $strReturn .= "<message>" . xmlSafeString($this->getLang("xml_rotate_success")) . "</message>";
         } else {
             ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
-            $strReturn .= "<message><error>".xmlSafeString($this->getLang("commons_error_permissions"))."</error></message>";
+            $strReturn .= "<message><error>" . xmlSafeString($this->getLang("commons_error_permissions")) . "</error></message>";
         }
 
         return $strReturn;
@@ -1410,20 +1379,19 @@ HTML;
 
         $strFile = $this->getParam("file");
 
-        $objImage = new Image(_realpath_._images_cachepath_);
+        $objImage = new Image(_realpath_ . _images_cachepath_);
         $objImage->setUseCache(false);
-        $objImage->load(_realpath_.$strFile);
+        $objImage->load(_realpath_ . $strFile);
         $objImage->addOperation(new ImageCrop($this->getParam("intX"), $this->getParam("intY"), $this->getParam("intWidth"), $this->getParam("intHeight")));
         if ($objImage->save($strFile)) {
-            Logger::getInstance()->info("cropped file ".$strFile);
-            $strReturn .= "<message>".xmlSafeString($this->getLang("xml_cropping_success"))."</message>";
+            Logger::getInstance()->info("cropped file " . $strFile);
+            $strReturn .= "<message>" . xmlSafeString($this->getLang("xml_cropping_success")) . "</message>";
         } else {
             ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
-            $strReturn .= "<message><error>".xmlSafeString($this->getLang("commons_error_permissions"))."</error></message>";
+            $strReturn .= "<message><error>" . xmlSafeString($this->getLang("commons_error_permissions")) . "</error></message>";
         }
 
         return $strReturn;
     }
 
 }
-

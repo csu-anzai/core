@@ -129,16 +129,16 @@ abstract class FlowHandlerAbstract implements FlowHandlerInterface
     {
         $objResult = new FlowConditionResult();
 
-        $objResultForms = $this->validateObjectForm($objObject, $objTransition);
-
-        if ($shortCircuit && !$objResultForms->isValid()) {
-            return $objResultForms;
-        }
-
         $objResultCondition = $this->validateTransitionsConditions($objObject, $objTransition, $shortCircuit);
 
         if ($shortCircuit && !$objResultCondition->isValid()) {
             return $objResultCondition;
+        }
+
+        $objResultForms = $this->validateObjectForm($objObject, $objTransition);
+
+        if ($shortCircuit && !$objResultForms->isValid()) {
+            return $objResultForms;
         }
 
         $objResult->merge($objResultForms);

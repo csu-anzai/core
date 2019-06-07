@@ -6,6 +6,7 @@
 
 namespace Kajona\System\Admin\Formentries;
 
+use Kajona\Packagemanager\System\PackagemanagerManager;
 use Kajona\System\Admin\FormentryPrintableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\DropdownLoaderInterface;
@@ -122,7 +123,9 @@ class FormentryDropdown extends FormentryBase implements FormentryPrintableInter
                 $loader = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_DROPDOWN_LOADER);
 
                 $arrParams = $this->getAnnotationParamsForCurrentProperty(self::STR_DDPROVIDER_ANNOTATION);
-                $arrDDValues = $loader->fetchValues($strDDProvider, is_array($arrParams) ? $arrParams : []);
+                if (($this->checkIfModuleExists($arrParams))) {
+                    $arrDDValues = $loader->fetchValues($strDDProvider, is_array($arrParams) ? $arrParams : []);
+                }
             } else {
                 // load values from the annotations
                 $strDDValues = $objReflection->getAnnotationValueForProperty($strSourceProperty, self::STR_DDVALUES_ANNOTATION);
@@ -138,6 +141,19 @@ class FormentryDropdown extends FormentryBase implements FormentryPrintableInter
                 $this->setArrKeyValues($arrDDValues);
             }
         }
+    }
+
+    /**
+     * @param array $arrModulInfo
+     * @return bool
+     */
+    private function checkIfModuleExists(array $arrModuleInfo)
+    {
+        $strModuleName = StringUtil::substring($arrModuleInfo['module'], strlen("module_"), strlen($arrModuleInfo['module']));
+        $objPackageManager = new PackagemanagerManager();
+        $objPackage = $objPackageManager->getPackage($strModuleName);
+
+        return !empty($objPackage);
     }
 
     /**
@@ -184,6 +200,16 @@ class FormentryDropdown extends FormentryBase implements FormentryPrintableInter
     public function getValueAsText()
     {
         return isset($this->arrKeyValues[$this->getStrValue()]) ? $this->arrKeyValues[$this->getStrValue()] : "";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return array_merge(parent::jsonSerialize(), [
+            "values" => $this->arrKeyValues
+        ]);
     }
 
     /**
