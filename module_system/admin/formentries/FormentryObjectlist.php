@@ -83,11 +83,6 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
     protected $showLinkObjectType = true;
 
     /**
-     * @var array
-     */
-    protected $formFieldConfig = [];
-
-    /**
      * A closure which generates the fitting link button for the entry
      *
      * @var \Closure
