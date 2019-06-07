@@ -1,11 +1,12 @@
 import $ from 'jquery'
 import { Component, Vue } from 'vue-property-decorator'
 import uuid from 'uuid//v1'
-
+import Util from 'core/module_system/scripts/kajona/Util'
 @Component class Datepicker extends Vue {
 private id : string = uuid()
 private mounted () : void {
     var input = $('#' + this.id).datepicker({
+        format: Util.transformDateFormat(<string> this.$i18n.t('system.dateStyleShort'), 'bootstrap-datepicker'),
         weekStart: 1,
         autoclose: true,
         language: KAJONA_LANGUAGE,
@@ -16,7 +17,7 @@ private mounted () : void {
     }).on('changeDate', this.onDateChange)
 }
 private onDateChange (e : DatepickerEventObject) : void {
-    this.$emit('change', e)
+    this.$emit('change', $('#' + this.id).val())
 }
 }
 export default Datepicker
