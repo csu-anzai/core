@@ -10,4 +10,11 @@ interface FilterModule{
     module : string,
     id : number
 }
-export { SearchResult, FilterModule }
+interface User {
+    icon : string,
+    label : string,
+    systemid : string,
+    title : string,
+    value : string
+}
+export { SearchResult, FilterModule, User }
