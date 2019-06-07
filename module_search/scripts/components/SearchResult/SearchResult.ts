@@ -8,8 +8,6 @@ import { namespace } from 'vuex-class'
 @namespace('SearchModule').State searchQuery : string
 private close () : void {
     this.closeDialog()
-    this.resetSearchQuery()
-    this.resetSearchResults()
 }
 }
 export default SearchResult
