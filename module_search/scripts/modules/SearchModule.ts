@@ -5,7 +5,16 @@ import { SearchResult, FilterModule } from '../Interfaces/SearchInterfaces'
 
 const SearchModule = {
     namespaced: true,
-    state: { searchResults: [], dialogIsOpen: false, searchQuery: '', filterModules: null, selectedIds: '', fetchingResults: false },
+    state: { searchResults: [],
+        dialogIsOpen: false,
+        searchQuery: '',
+        filterModules: null,
+        selectedIds: '',
+        fetchingResults: false,
+        startDate: '',
+        endDate: '',
+        selectedUser: ''
+    },
     mutations: {
         SET_SEARCH_RESULTS (state : any, payload : Array<SearchResult>) : void {
             state.searchResults = payload
@@ -31,15 +40,50 @@ const SearchModule = {
         SET_SELECTED_IDS (state : any, payload : string) {
             state.selectedIds = payload
         },
+        RESET_SELECTED_IDS (state : any) {
+            state.selectedIds = ''
+        },
         SET_FETCHING_RESULTS (state : any, payload : boolean) {
             state.fetchingResults = payload
+        },
+        SET_START_DATE (state : any, payload : Date) {
+            state.startDate = payload
+        },
+        SET_END_DATE (state : any, payload : Date) {
+            state.endDate = payload
+        },
+        REST_END_DATE (state : any) {
+            state.endDate = ''
+        },
+        REST_START_DATE (state : any) {
+            state.startDate = ''
+        },
+        SET_SELECTED_USER (state : any, payload : string) {
+            state.selectedUser = payload
+        },
+        RESET_SELECTED_USER (state : any) {
+            state.selectedUser = ''
         }
 
     },
     actions: {
         async triggerSearch ({ commit, state }) : Promise<void> {
             commit('SET_FETCHING_RESULTS', true)
-            const [err, res] = await to(axios.post(KAJONA_WEBPATH + '/xml.php?admin=1&module=search&action=getFilteredSearch&search_query=' + state.searchQuery + '&filtermodules=' + state.selectedIds))
+            let url = '/xml.php?admin=1&module=search&action=getFilteredSearch'
+            if (state.searchQuery !== '') {
+                url += '&search_query=' + state.searchQuery
+            } if (state.selectedIds !== '') {
+                url += '&filtermodules=' + state.selectedIds
+            } if (state.startDate !== '') {
+                url += '&search_changestartdate=' + state.startDate
+            }
+            if (state.endDate !== '') {
+                url += '&search_changeenddate=' + state.endDate
+            }
+            if (state.selectedUser !== '') {
+                url += '&search_formfilteruser_id=' + state.selectedUser
+            }
+            const [err, res] = await to(axios.post(KAJONA_WEBPATH + url))
             if (err) {
                 toastr.error('Fehler')
             } if (res) {
@@ -58,6 +102,12 @@ const SearchModule = {
         },
         closeDialog ({ commit }) : void {
             commit('CLOSE_SEARCH_DIALOG')
+            commit('RESET_SEARCH_RESULTS')
+            commit('REST_SEARCH_QUERY')
+            commit('REST_END_DATE')
+            commit('REST_START_DATE')
+            commit('RESET_SELECTED_IDS')
+            // commit('RESET_SELECTED_IDS')
         },
         openDialog ({ commit }) : void {
             commit('OPEN_SEARCH_DIALOG')
@@ -76,6 +126,15 @@ const SearchModule = {
         },
         setSelectedIds ({ commit }, ids: string) : void {
             commit('SET_SELECTED_IDS', ids)
+        },
+        setSelectedUser ({ commit }, user:string) : void {
+            commit('SET_SELECTED_USER', user)
+        },
+        setStartDate ({ commit }, startDate : Date) : void {
+            commit('SET_START_DATE', startDate)
+        },
+        setEndDate ({ commit }, endDate : Date) : void {
+            commit('SET_END_DATE', endDate)
         }
     },
     getters: {}
