@@ -16,7 +16,7 @@ private mounted () : void {
     }).on('changeDate', this.onDateChange)
 }
 private onDateChange (e : DatepickerEventObject) : void {
-    this.$emit('changeDate', e)
+    this.$emit('change', e)
 }
 }
 export default Datepicker
