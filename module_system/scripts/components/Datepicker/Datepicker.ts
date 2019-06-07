@@ -1,8 +1,9 @@
 import $ from 'jquery'
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 import uuid from 'uuid//v1'
 import Util from 'core/module_system/scripts/kajona/Util'
 @Component class Datepicker extends Vue {
+@Prop({ type: String, required: true }) label : string
 private id : string = uuid()
 private mounted () : void {
     var input = $('#' + this.id).datepicker({
