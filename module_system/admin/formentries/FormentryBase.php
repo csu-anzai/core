@@ -18,6 +18,7 @@ use Kajona\System\System\StringUtil;
 use Kajona\System\System\ValidationError;
 use Kajona\System\System\ValidatorExtendedInterface;
 use Kajona\System\System\ValidatorInterface;
+use RuntimeException;
 
 /**
  * The base-class for all form-entries.
@@ -40,7 +41,7 @@ abstract class FormentryBase implements \JsonSerializable
     /**
      * A string with additional form entry configurations
      */
-    private const FORM_FIELD_CONFIG_ANNOTATION = '@formEntryConfig';
+    private const FORM_FIELD_CONFIG_ANNOTATION = '@fieldConfig';
 
     /**
      * The name of the property as used in the forms, leading type-prefix is removed
@@ -572,12 +573,17 @@ abstract class FormentryBase implements \JsonSerializable
      * @param string $formEntryConfig
      * @return array
      */
-    public static function convertFormEntryConfigAnnotationStringToArray(string $formEntryConfig): array
+    private static function convertFormEntryConfigAnnotationStringToArray(string $formEntryConfig): array
     {
         if (empty($formEntryConfig)) {
             return [];
         }
 
-        return json_decode($formEntryConfig, true);
+        $configResponse = json_decode($formEntryConfig, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new RuntimeException('JSON Error: ' . json_last_error_msg());
+        }
+
+        return $configResponse ?? [];
     }
 }
