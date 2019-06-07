@@ -4,7 +4,6 @@ import Loader from 'core/module_system/scripts/components/Loader/Loader.vue'
 import Multiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
 import { FilterModule, User } from '../../Interfaces/SearchInterfaces'
-import axios from 'axios'
 import Datepicker from 'core/module_system/scripts/components/Datepicker/Datepicker.vue'
 import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Autocomplete.vue'
 @Component({ components: { Loader, Multiselect, Datepicker, Autocomplete } }) class SearchbarFilter extends Vue {
@@ -20,14 +19,6 @@ import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Aut
 
     private filterIsOpen : boolean = false
     private selectedModules : Array<string> = []
-    private users : Array<object> = []
-    private userQuery : string = ''
-
-    // @Watch('userQuery') async onChange () : Promise<void> {
-    //     const res = await axios.post(KAJONA_WEBPATH + '/xml.php?module=user&action=getUserByFilter&filter=' + this.userQuery + '&user=true&group=false')
-    //     this.users = res.data.map(user => user.title)
-    // }
-
     private toggleFilter () : void {
         if (this.filterModules === null) {
             this.getFilterModules()
