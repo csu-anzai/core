@@ -28,10 +28,7 @@
         <b-row>
           <b-col sm="3" md="3" lg="3">{{$t("search.search_users")}}</b-col>
           <b-col sm="6" md="6" lg="6">
-            <b-form-input list="userFilter" v-model="userQuery" autocomplete="off"></b-form-input>
-            <datalist id="userFilter">
-              <option v-for="(user, index) in users" :key="index">{{ user }}</option>
-            </datalist>
+            <Autocomplete  :module="'user'" :action="'getUserByFilter'" :queryPropertyName="'filter'" :extraProperties="'&user=true&group=false'" :jsonKey="'title'" @select="onUserSelect"></Autocomplete>
           </b-col>
           <b-col sm="3" md="3" lg="3">
             <span class="listButton">
@@ -53,7 +50,7 @@
               <div class="input-group-addon">
                 <i class="fa fa-calendar-o"></i>
               </div>
-              <datePicker v-model="date" :config="dateOptions"></datePicker>
+              <Datepicker v-on:change="onStartDateChange"></Datepicker>
             </div>
           </b-col>
         </b-row>
@@ -64,7 +61,7 @@
               <div class="input-group-addon">
                 <i class="fa fa-calendar-o"></i>
               </div>
-              <datePicker v-model="date" :config="dateOptions"></datePicker>
+              <Datepicker v-on:change="onEndDateChange"></Datepicker>
             </div>
           </b-col>
         </b-row>
