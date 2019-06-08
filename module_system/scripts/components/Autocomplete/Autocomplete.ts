@@ -11,20 +11,26 @@ import axios from 'axios'
     private results : Array<object> =[]
     private mappedResults : Array<string> = []
     @Watch('userQuery') async onChange () : Promise<void> {
-        var found = false
-        this.results.map(el => {
-            if (el[this.jsonKey] === this.userQuery) {
-                found = true
-                this.$emit('select', el)
-            }
-        })
-        if (!found) {
-            const res = await axios.post(KAJONA_WEBPATH + '/xml.php?module=' + this.module + '&action=' + this.action + '&' + this.queryPropertyName + '=' + this.userQuery + this.extraProperties)
-            this.results = res.data
-            this.mappedResults = res.data.map(el => {
-                return el[this.jsonKey]
+        if (this.userQuery !== '') {
+            var found = false
+            this.results.map(el => {
+                if (el[this.jsonKey] === this.userQuery) {
+                    found = true
+                    this.$emit('select', el)
+                }
             })
+            if (!found) {
+                const res = await axios.post(KAJONA_WEBPATH + '/xml.php?module=' + this.module + '&action=' + this.action + '&' + this.queryPropertyName + '=' + this.userQuery + this.extraProperties)
+                this.results = res.data
+                this.mappedResults = res.data.map(el => {
+                    return el[this.jsonKey]
+                })
+            }
         }
+    }
+    private deleteUserQuery () : void {
+        this.userQuery = ''
+        this.$emit('delete')
     }
 }
 export default Autocomplete

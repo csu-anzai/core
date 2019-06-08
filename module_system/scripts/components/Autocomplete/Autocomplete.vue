@@ -9,7 +9,7 @@
     </b-col>
     <b-col sm="3" md="3" lg="3">
       <span class="listButton">
-        <a>
+        <a @click="deleteUserQuery">
           <i class="kj-icon fa fa-trash-o"></i>
         </a>
       </span>
