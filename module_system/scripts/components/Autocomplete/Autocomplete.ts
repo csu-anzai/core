@@ -6,6 +6,7 @@ import axios from 'axios'
     @Prop({ type: String, required: true }) queryPropertyName : string // the name of property which stores the value of the userInput
     @Prop({ type: String, required: true }) extraProperties : string // extra post properties
     @Prop({ type: String, required: true }) jsonKey : string // name of key : needed to map the correct key in the autocomplete menu
+    @Prop({ type: String, required: true }) label : string
     private userQuery : string = ''
     private results : Array<object> =[]
     private mappedResults : Array<string> = []
