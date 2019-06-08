@@ -107,7 +107,7 @@ const SearchModule = {
             commit('REST_END_DATE')
             commit('REST_START_DATE')
             commit('RESET_SELECTED_IDS')
-            // commit('RESET_SELECTED_IDS')
+            commit('RESET_SELECTED_USER')
         },
         openDialog ({ commit }) : void {
             commit('OPEN_SEARCH_DIALOG')
@@ -129,6 +129,9 @@ const SearchModule = {
         },
         setSelectedUser ({ commit }, user:string) : void {
             commit('SET_SELECTED_USER', user)
+        },
+        resetSelectedUser ({ commit }) : void {
+            commit('RESET_SELECTED_USER')
         },
         setStartDate ({ commit }, startDate : Date) : void {
             commit('SET_START_DATE', startDate)
