@@ -14,7 +14,7 @@
       <div v-else>
         <b-row>
           <b-col sm="3" md="3" lg="3">{{$t("search.search_modules")}}</b-col>
-          <b-col sm="9" md="9" lg="9">
+          <b-col sm="6" md="6" lg="6">
             <Multiselect
               :multiple="true"
               :options="moduleNames"
