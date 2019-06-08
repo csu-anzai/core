@@ -13,6 +13,7 @@ import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Aut
     @namespace('SearchModule').Action setStartDate: any
     @namespace('SearchModule').Action setEndDate: any
     @namespace('SearchModule').Action setSelectedUser : any
+    @namespace('SearchModule').Action resetSelectedUser : any
     @namespace('SearchModule').State filterModules : Array<FilterModule>
     @namespace('SearchModule').State searchQuery : string
     @namespace('SearchModule').State selectedIds : string
@@ -60,6 +61,12 @@ import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Aut
     }
     private onUserSelect (user : User) : void {
         this.setSelectedUser(user.systemid)
+        if (this.searchQuery.length >= 2) {
+            this.triggerSearch()
+        }
+    }
+    private onUserDelete () : void {
+        this.resetSelectedUser()
         if (this.searchQuery.length >= 2) {
             this.triggerSearch()
         }

@@ -32,6 +32,7 @@
           :extraProperties="'&user=true&group=false'"
           :jsonKey="'title'"
           @select="onUserSelect"
+          @delete="onUserDelete"
           :label="$t('search.search_users')"
         ></Autocomplete>
         <Datepicker
