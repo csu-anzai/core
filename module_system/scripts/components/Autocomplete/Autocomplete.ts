@@ -1,4 +1,5 @@
 import { Component, Vue, Watch, Prop } from 'vue-property-decorator'
+import uuid from 'uuid/v1'
 import axios from 'axios'
 @Component class Autocomplete extends Vue {
     @Prop({ type: String, required: true }) module : string // name of the module
@@ -10,6 +11,8 @@ import axios from 'axios'
     private userQuery : string = ''
     private results : Array<object> =[]
     private mappedResults : Array<string> = []
+    private listId : string = uuid()
+    private inputId : string = uuid()
     @Watch('userQuery') async onChange () : Promise<void> {
         if (this.userQuery !== '') {
             var found = false
@@ -22,9 +25,9 @@ import axios from 'axios'
             if (!found) {
                 const res = await axios.post(KAJONA_WEBPATH + '/xml.php?module=' + this.module + '&action=' + this.action + '&' + this.queryPropertyName + '=' + this.userQuery + this.extraProperties)
                 this.results = res.data
-                this.mappedResults = res.data.map(el => {
-                    return el[this.jsonKey]
-                })
+                // this.mappedResults = res.data.map(el => {
+                //     return el[this.jsonKey]
+                // })
             }
         }
     }
