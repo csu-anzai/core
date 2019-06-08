@@ -25,31 +25,15 @@
             ></Multiselect>
           </b-col>
         </b-row>
-        <b-row>
-          <b-col sm="3" md="3" lg="3">{{$t("search.search_users")}}</b-col>
-          <b-col sm="6" md="6" lg="6">
-            <Autocomplete
-              :module="'user'"
-              :action="'getUserByFilter'"
-              :queryPropertyName="'filter'"
-              :extraProperties="'&user=true&group=false'"
-              :jsonKey="'title'"
-              @select="onUserSelect"
-            ></Autocomplete>
-          </b-col>
-          <b-col sm="3" md="3" lg="3">
-            <span class="listButton">
-              <a>
-                <i class="kj-icon fa fa-search"></i>
-              </a>
-            </span>
-            <span class="listButton">
-              <a>
-                <i class="kj-icon fa fa-trash-o"></i>
-              </a>
-            </span>
-          </b-col>
-        </b-row>
+        <Autocomplete
+          :module="'user'"
+          :action="'getUserByFilter'"
+          :queryPropertyName="'filter'"
+          :extraProperties="'&user=true&group=false'"
+          :jsonKey="'title'"
+          @select="onUserSelect"
+          :label="$t('search.search_users')"
+        ></Autocomplete>
         <Datepicker
           v-on:change="onStartDateChange"
           :label="$t('search.form_search_changestartdate')"
