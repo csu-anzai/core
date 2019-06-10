@@ -6,7 +6,7 @@ import 'vue-multiselect/dist/vue-multiselect.min.css'
 import { FilterModule, User } from '../../Interfaces/SearchInterfaces'
 import Datepicker from 'core/module_system/scripts/components/Datepicker/Datepicker.vue'
 import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Autocomplete.vue'
-import axios from 'axios'
+
 @Component({ components: { Loader, Multiselect, Datepicker, Autocomplete } }) class SearchbarFilter extends Vue {
     @namespace('SearchModule').Action getFilterModules : any
     @namespace('SearchModule').Action setSelectedIds : any
@@ -15,13 +15,15 @@ import axios from 'axios'
     @namespace('SearchModule').Action setEndDate: any
     @namespace('SearchModule').Action setSelectedUser : any
     @namespace('SearchModule').Action resetSelectedUser : any
+    @namespace('SearchModule').Action getAutocompleteUsers : any
     @namespace('SearchModule').State filterModules : Array<FilterModule>
     @namespace('SearchModule').State searchQuery : string
     @namespace('SearchModule').State selectedIds : string
+    @namespace('SearchModule').State autoCompleteUsers : Array<User>
 
     private filterIsOpen : boolean = false
     private selectedModules : Array<string> = []
-    private users : Array<User> = []
+
     private toggleFilter () : void {
         if (this.filterModules === null) {
             this.getFilterModules()
@@ -73,9 +75,8 @@ import axios from 'axios'
             this.triggerSearch()
         }
     }
-    private async onAutocompleteInput (e) : Promise<void> {
-        const res = await axios.post(KAJONA_WEBPATH + '/xml.php?module=user&action=getUserByFilter&filter=' + e + '&user=true&group=false')
-        this.users = res.data
+    private async onAutocompleteInput (e : string) : Promise<void> {
+        this.getAutocompleteUsers(e)
     }
 }
 

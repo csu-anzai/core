@@ -31,7 +31,7 @@
           :label="$t('search.search_users')"
           @input="onAutocompleteInput"
           :jsonKey="'title'"
-          :data="users"
+          :data="autoCompleteUsers"
         ></Autocomplete>
         <Datepicker
           v-on:change="onStartDateChange"

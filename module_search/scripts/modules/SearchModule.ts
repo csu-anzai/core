@@ -1,7 +1,7 @@
 import axios from 'axios'
 import to from 'await-to-js'
 import * as toastr from 'toastr'
-import { SearchResult, FilterModule } from '../Interfaces/SearchInterfaces'
+import { SearchResult, FilterModule, User } from '../Interfaces/SearchInterfaces'
 
 const SearchModule = {
     namespaced: true,
@@ -13,7 +13,8 @@ const SearchModule = {
         fetchingResults: false,
         startDate: '',
         endDate: '',
-        selectedUser: ''
+        selectedUser: '',
+        autoCompleteUsers: []
     },
     mutations: {
         SET_SEARCH_RESULTS (state : any, payload : Array<SearchResult>) : void {
@@ -57,6 +58,9 @@ const SearchModule = {
         },
         REST_START_DATE (state : any) {
             state.startDate = ''
+        },
+        SET_AUTOCPMPLETE_USERS (state : any, payload : Array<User>) {
+            state.autoCompleteUsers = payload
         },
         SET_SELECTED_USER (state : any, payload : string) {
             state.selectedUser = payload
@@ -126,6 +130,15 @@ const SearchModule = {
         },
         setSelectedIds ({ commit }, ids: string) : void {
             commit('SET_SELECTED_IDS', ids)
+        },
+        async getAutocompleteUsers ({ commit }, userQuery :string) : Promise<void> {
+            const [err, res] = await to(axios.post(KAJONA_WEBPATH + '/xml.php?module=user&action=getUserByFilter&filter=' + userQuery + '&user=true&group=false'))
+            if (err) {
+                toastr.error('Fehler')
+            }
+            if (res) {
+                commit('SET_AUTOCPMPLETE_USERS', res.data)
+            }
         },
         setSelectedUser ({ commit }, user:string) : void {
             commit('SET_SELECTED_USER', user)
