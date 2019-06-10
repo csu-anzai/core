@@ -39,9 +39,13 @@ import SearchbarFilter from '../SearchbarFilter/SearchbarFilter.vue'
          }, 500)
      }
      private open () : void {
+         var parent = document.getElementById('content')
+         parent.appendChild(this.$el)
          this.openDialog()
      }
      private close () : void {
+         var parent = document.getElementById('searchbarContainer')
+         parent.appendChild(this.$el)
          this.closeDialog()
      }
       @Watch('searchQuery') onSearchQueryChange () {
@@ -52,8 +56,8 @@ import SearchbarFilter from '../SearchbarFilter/SearchbarFilter.vue'
       private shortcutHandler (e :KeyboardEvent) : void {
           if (e.ctrlKey && e.key === 'f' && !this.dialogIsOpen) {
               e.preventDefault()
-              document.getElementById('searchbarInput').focus()
               this.open()
+              document.getElementById('searchbarInput').focus()
           }
           if (e.key === 'Escape' && this.dialogIsOpen) {
               this.close()
