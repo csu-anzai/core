@@ -26,14 +26,12 @@
           </b-col>
         </b-row>
         <Autocomplete
-          :module="'user'"
-          :action="'getUserByFilter'"
-          :queryPropertyName="'filter'"
-          :extraProperties="'&user=true&group=false'"
-          :jsonKey="'title'"
           @select="onUserSelect"
           @delete="onUserDelete"
           :label="$t('search.search_users')"
+          @input="onAutocompleteInput"
+          :jsonKey="'title'"
+          :data="users"
         ></Autocomplete>
         <Datepicker
           v-on:change="onStartDateChange"
