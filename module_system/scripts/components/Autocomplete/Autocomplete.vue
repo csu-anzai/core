@@ -3,18 +3,16 @@
     <div class="form-group has-feedback">
     <label :for="inputId" class="col-sm-3 control-label">{{label}}</label>
     <b-col sm="6" md="6" lg="6">
-      <b-form-input :list="listId" v-model="userQuery" autocomplete="off" :id="inputId"></b-form-input>
-      <datalist :id="listId">
-        <option
-          v-for="(element, index) in results"
-          :key="index"
-          v-html="element.icon + ' ' +element[jsonKey]"
-        ></option>
-      </datalist>
+      <input type="text" :id="inputId" class="form-control" v-model="input">
+
+      <span class="form-control-feedback loading-feedback">
+        <i class="fa fa-keyboard-o"></i>
+      </span>
+      <div :id="listId"></div>
     </b-col>
     <b-col sm="2" md="2" lg="2" class="form-opener">
       <span class="listButton">
-        <a @click="deleteUserQuery">
+        <a @click="deleteInput">
           <i class="kj-icon fa fa-trash-o"></i>
         </a>
       </span>

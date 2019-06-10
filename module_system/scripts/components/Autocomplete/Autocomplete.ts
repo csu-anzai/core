@@ -1,38 +1,41 @@
+import $ from 'jquery'
 import { Component, Vue, Watch, Prop } from 'vue-property-decorator'
 import uuid from 'uuid/v1'
-import axios from 'axios'
+import { watch } from 'fs'
+
 @Component class Autocomplete extends Vue {
-    @Prop({ type: String, required: true }) module : string // name of the module
-    @Prop({ type: String, required: true }) action : string // name of the action
-    @Prop({ type: String, required: true }) queryPropertyName : string // the name of property which stores the value of the userInput
-    @Prop({ type: String, required: true }) extraProperties : string // extra post properties
     @Prop({ type: String, required: true }) jsonKey : string // name of key : needed to map the correct key in the autocomplete menu
-    @Prop({ type: String, required: true }) label : string
-    private userQuery : string = ''
-    private results : Array<object> =[]
-    private mappedResults : Array<string> = []
+    @Prop({ type: String, required: true }) label : string // label of the autocomplete
+    @Prop({ type: Array, required: true }) data : Array<any> // data to display in the results list
+    private input : string = ''
     private listId : string = uuid()
     private inputId : string = uuid()
-    @Watch('userQuery') async onChange () : Promise<void> {
-        if (this.userQuery !== '') {
-            var found = false
-            this.results.map(el => {
-                if (el[this.jsonKey] === this.userQuery) {
-                    found = true
-                    this.$emit('select', el)
-                }
-            })
-            if (!found) {
-                const res = await axios.post(KAJONA_WEBPATH + '/xml.php?module=' + this.module + '&action=' + this.action + '&' + this.queryPropertyName + '=' + this.userQuery + this.extraProperties)
-                this.results = res.data
-                // this.mappedResults = res.data.map(el => {
-                //     return el[this.jsonKey]
-                // })
-            }
-        }
+    private mounted () : void {
+        $('#' + this.inputId).autocomplete()
     }
-    private deleteUserQuery () : void {
-        this.userQuery = ''
+
+    @Watch('input') onChange () : void {
+        this.$emit('input', this.input)
+        $('#' + this.inputId).autocomplete({
+            source: this.data,
+            appendTo: '#' + this.listId,
+            select: (event, ui) => {
+                this.$emit('select', ui.item)
+            }
+        }).data('ui-autocomplete')._renderItem = function (ul, item) {
+            return $('<li></li>')
+                .data('ui-autocomplete-item', item)
+                .append('<div class=\'ui-autocomplete-item\' >' + item.icon + item[this.jsonKey] + '</div>')
+                .appendTo(ul)
+        }.bind(this)
+    }
+    @Watch('data') onDataChange () : void {
+        $('#' + this.inputId).autocomplete({
+            source: this.data
+        })
+    }
+    private deleteInput () : void {
+        this.input = ''
         this.$emit('delete')
     }
 }
