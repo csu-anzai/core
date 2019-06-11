@@ -1521,7 +1521,12 @@ JS;
                 $strGetter = $objReflection->getGetter($strPropertyName);
                 if (!empty($strGetter)) {
                     $strValue = $objObject->$strGetter();
-                    $arrData[$strPropertyName] = strval($objObject->renderVersionValue($strPropertyName, $strValue));
+                    $versionValue = $objObject->renderVersionValue($strPropertyName, $strValue);
+                    if (is_array($versionValue)) {
+                        $arrData[$strPropertyName] = print_r($versionValue, true);
+                    } else {
+                        $arrData[$strPropertyName] = (string)$versionValue;
+                    }
                 }
             }
 
@@ -1530,9 +1535,9 @@ JS;
                 "date"       => date("d.m.Y", $strDate->getTimeInOldStyle()),
                 "properties" => $arrData,
             ));
-        } else {
-            throw new Exception("Invalid object type", Exception::$level_ERROR);
         }
+
+        throw new Exception("Invalid object type", Exception::$level_ERROR);
     }
 
     /**

@@ -299,12 +299,14 @@ class SystemChangelogRenderer
                 }
 
             default:
-                if (validateSystemid($strValue)) {
-                    return $this->getStrValueForObjects($strValue);
-                }
-                $arrJson = json_decode($strValue, true);
-                if (!empty($arrJson)) {
-                    $strValue = print_r($arrJson, true);
+                if (is_string($strValue)) {
+                    if (validateSystemid($strValue)) {
+                        return $this->getStrValueForObjects($strValue);
+                    }
+                    $arrJson = json_decode($strValue, true);
+                    if (!empty($arrJson)) {
+                        $strValue = print_r($arrJson, true);
+                    }
                 }
                 return $strValue;
         }
