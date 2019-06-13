@@ -127,7 +127,9 @@ class FormentryObjecttags extends FormentryTageditor
                 }
             }
         }
-        $strValue = implode(",", $arrValuesIds);
+        if (!empty($arrValuesIds)) {
+            $strValue = implode(",", $arrValuesIds);
+        }
 
         $objReturn = parent::setStrValue($strValue);
         $this->setArrKeyValues($this->toObjectArray());
