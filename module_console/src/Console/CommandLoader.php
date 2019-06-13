@@ -32,6 +32,6 @@ class CommandLoader implements CommandLoaderInterface
 
     public function getNames(): array
     {
-        return $this->commandBag->names();
+        return $this->commandBag->getNames();
     }
 }

@@ -43,7 +43,7 @@ class CommandBag
     /**
      * @return string[]
      */
-    public function names(): array
+    public function getNames(): array
     {
         return \array_keys($this->commands);
     }
