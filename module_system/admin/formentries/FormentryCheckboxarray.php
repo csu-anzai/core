@@ -216,7 +216,7 @@ class FormentryCheckboxarray extends FormentryBase implements FormentryPrintable
     public function jsonSerialize()
     {
         return array_merge(parent::jsonSerialize(), [
-            "values" => $this->arrKeyValues
+            "values" => (object) $this->arrKeyValues
         ]);
     }
 }
