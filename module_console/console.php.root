@@ -1,5 +1,9 @@
 <?php
 
+if (\http_response_code() !== false) {
+    die('only command line usage is allowed');
+}
+
 if (\is_dir('./core/module_system/')) {
     require_once './core/module_system/bootstrap.php';
 } else {
