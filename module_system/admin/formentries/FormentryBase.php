@@ -6,6 +6,7 @@
 
 namespace Kajona\System\Admin\Formentries;
 
+use JsonSerializable;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminFormgeneratorContainerInterface;
 use Kajona\System\System\Carrier;
@@ -30,7 +31,7 @@ use RuntimeException;
  * @since 4.0
  * @package module_formgenerator
  */
-abstract class FormentryBase implements \JsonSerializable
+abstract class FormentryBase implements JsonSerializable
 {
 
     /**
@@ -544,7 +545,7 @@ abstract class FormentryBase implements \JsonSerializable
     }
 
     /**
-     * get @FormEntryConfig Annotation (json format like {"configSetting1" => true, "configSetting2" => false})
+     * get @FormEntryConfig Annotation (json format like {"configSetting1": true, "configSetting2": false})
      * into usable config settings e.g. $this->configSetting1 = true, $this->configSetting2 = false
      * @throws Exception
      */
