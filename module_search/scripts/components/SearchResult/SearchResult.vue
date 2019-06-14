@@ -1,8 +1,8 @@
 <template>
   <div>
     <div
-      v-for="(item, index) in searchResults"
-      :key="index"
+      v-for="item in searchResults"
+      :key="item.systemid"
       class="searchResultContainer"
     >
       <a :href="item.link" @click="close">
