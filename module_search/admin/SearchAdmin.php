@@ -20,6 +20,7 @@ use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\ArraySectionIterator;
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Date;
 use Kajona\System\System\HttpResponsetypes;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
@@ -389,7 +390,12 @@ class SearchAdmin extends AdminSimple implements AdminInterface
             $arrItem["systemid"] = $objOneResult->getStrSystemid();
             $arrItem["icon"] = AdminskinHelper::getAdminImage($strIcon, "", true);
             $arrItem["score"] = $objOneResult->getStrSystemid();
-            $arrItem["description"] = StringUtil::truncate($objOneResult->getObjObject()->getStrDisplayName(), 200);
+            $arrItem["description"] = $objOneResult->getObjObject()->getStrDisplayName();
+            if ($objOneResult->getObjObject() instanceof AdminListableInterface) {
+
+                $arrItem["additional"] = $objOneResult->getObjObject()->getStrAdditionalInfo();
+            }
+            $arrItem["lm_time"] = dateToString(new Date($objOneResult->getObjObject()->getIntLmTime()));
             $arrItem["link"] = html_entity_decode($strLink);
 
             $arrItems[] = $arrItem;
