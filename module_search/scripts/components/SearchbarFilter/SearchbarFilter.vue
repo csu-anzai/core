@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="form-horizontal">
     <b-row>
       <b-col sm="12" md="12" lg="12" id="toggleFilters">
         <p @click="toggleFilter" class="btn btn-default">
