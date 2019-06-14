@@ -3,7 +3,8 @@ import { namespace } from 'vuex-class'
 import SearchResult from '../SearchResult/SearchResult.vue'
 import Loader from 'core/module_system/scripts/components/Loader/Loader.vue'
 import SearchbarFilter from '../SearchbarFilter/SearchbarFilter.vue'
-@Component({ components: { SearchResult, Loader, SearchbarFilter } }) class Searchbar extends Vue {
+import Modal from 'core/module_system/scripts/components/Modal/Modal.vue'
+@Component({ components: { SearchResult, Loader, SearchbarFilter, Modal } }) class Searchbar extends Vue {
      @namespace('SearchModule').Action triggerSearch: any
      @namespace('SearchModule').Action resetSearchResults: any
      @namespace('SearchModule').State searchResults : Array<any>
@@ -39,12 +40,13 @@ import SearchbarFilter from '../SearchbarFilter/SearchbarFilter.vue'
          }, 500)
      }
      private open () : void {
-         var parent = document.getElementById('content')
+         let parent = document.getElementById('content')
          parent.appendChild(this.$el)
          this.openDialog()
+         document.getElementById('searchbarInput').focus()
      }
      private close () : void {
-         var parent = document.getElementById('searchbarContainer')
+         let parent = document.getElementById('searchbarContainer')
          parent.appendChild(this.$el)
          this.closeDialog()
      }
