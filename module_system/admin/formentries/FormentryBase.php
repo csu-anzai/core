@@ -559,14 +559,12 @@ abstract class FormentryBase implements JsonSerializable
         }
 
         $reflection = new Reflection($this->getObjSourceObject());
-        if (empty($propertyAnnotationValue = $reflection->getAnnotationValueForProperty($currentSourceProperty, self::FORM_FIELD_CONFIG_ANNOTATION))) {
+        if (empty($propertyAnnotationValues = $reflection->getAnnotationValueForProperty($currentSourceProperty, self::FORM_FIELD_CONFIG_ANNOTATION, ReflectionEnum::PARAMS))) {
             return;
         }
 
-        $formFieldConfigValues = self::convertFormEntryConfigAnnotationStringToArray($propertyAnnotationValue ?? '');
-
-        foreach ($formFieldConfigValues as $configName => $configValue) {
-            $this->$configName = $configValue;
+        foreach ($propertyAnnotationValues as $configName => $configValue) {
+            $this->$configName = (bool) $configValue;
         }
     }
 
