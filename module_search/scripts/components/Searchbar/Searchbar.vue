@@ -14,7 +14,6 @@
     </form>
     <Modal :show="dialogIsOpen" @close="close">
     <div class="modal-body">
-      <div class="row">
         <form @submit="onSubmit" class="navbar-search pull-left">
         <div class="input-group">
           <input
@@ -49,7 +48,6 @@
         <div v-if="searchResults.length!==0 && userInput!=='' && !fetchingResults">
           <SearchResult></SearchResult>
         </div>
-      </div>
       </div>
     </div>
     </Modal>

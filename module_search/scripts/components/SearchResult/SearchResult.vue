@@ -3,7 +3,7 @@
     <div
       v-for="(item, index) in searchResults"
       :key="index"
-      class="searchResultContainer col-sm-12 col-md-12 col-lg-12 col-xl-12"
+      class="searchResultContainer"
     >
       <a :href="item.link" @click="close">
         <span v-html="item.icon"></span>
