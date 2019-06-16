@@ -117,8 +117,8 @@ class FormentryObjecttags extends FormentryTageditor
      */
     public function setStrValue($strValue)
     {
-        $arrValuesIds = array();
         if (is_array($strValue) || $strValue instanceof Traversable) {
+            $arrValuesIds = array();
             foreach ($strValue as $objValue) {
                 if ($objValue instanceof Model) {
                     $arrValuesIds[] = $objValue->getStrSystemid();
@@ -126,8 +126,8 @@ class FormentryObjecttags extends FormentryTageditor
                     $arrValuesIds[] = $objValue;
                 }
             }
+            $strValue = implode(",", $arrValuesIds);
         }
-        $strValue = implode(",", $arrValuesIds);
 
         $objReturn = parent::setStrValue($strValue);
         $this->setArrKeyValues($this->toObjectArray());
