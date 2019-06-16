@@ -119,7 +119,7 @@ class FormentryObjecttags extends FormentryTageditor
     {
         if (is_array($strValue) || $strValue instanceof Traversable) {
             $arrValuesIds = array();
-            foreach ((Array)$strValue as $objValue) {
+            foreach ($strValue as $objValue) {
                 if ($objValue instanceof Model) {
                     $arrValuesIds[] = $objValue->getStrSystemid();
                 } else {
