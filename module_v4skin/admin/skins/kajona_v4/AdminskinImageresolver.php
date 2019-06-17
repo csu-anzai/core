@@ -200,6 +200,7 @@ class AdminskinImageresolver implements AdminskinImageresolverInterface
         "icon_rotate_left"            => "<i class='kj-icon fa fa-undo'></i>",
         "icon_rotate_right"           => "<i class='kj-icon fa fa-repeat'></i>",
         "icon_rss"                    => "<i class='kj-icon fa fa-rss'></i>",
+        "icon_settings"               => "<i class='kj-icon fa fa-wrench'></i>",
         "icon_sitemap"                => "<i class='kj-icon fa fa-sitemap'></i>",
         "icon_sound"                  => "<i class='kj-icon fa fa-music'></i>",
         "icon_sort_numeric"           => "<i class='kj-icon fa fa-sort-numeric-asc'></i>",

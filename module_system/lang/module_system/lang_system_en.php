@@ -289,6 +289,8 @@ $lang["changelog_tooltipUnitPlural"] = "changes";
 $lang["changelog_tooltipHtml"]       = "<span><strong>%count% %unit%</strong> on %date%</span>";
 $lang["changelog_tooltipColumn"]     = "Click on the calendar heatmap to load a record for a specific date.";
 
+$lang["workflow_oracle_stats_title"]  = "Gather oracle statistics";
+$lang["workflow_oracle_stats_val1"]  = "Hour to start gathering";
 
 $lang["workflow_messagequeue_title"]  = "Message-Queue sender";
 $lang["workflow_queue_sender_val1"]  = "Hours";

@@ -98,6 +98,7 @@ class class_project_setup
         self::createRootTsconfig();
         self::creatRootEslintConfig();
         self::loadNpmDependencies();
+        self::buildJavascript();
         self::scanComposer();
 
         echo "\n<b>Done.</b>\nIf everything went well, <a href=\"../installer.php\">open the installer</a>\n";
@@ -284,16 +285,42 @@ TEXT;
         file_put_contents(self::$strRealPath . $strPath, $strContent);
     }
 
+    private static function buildJavascript()
+    {
+
+        echo "Build js files" . PHP_EOL;
+        $arrOutput = array();
+
+        $workingDirectory = \getcwd();
+        \chdir(__DIR__ . '/_buildfiles');
+        exec('npm run build', $arrOutput, $exitCode);
+        \chdir($workingDirectory);
+
+        if ($exitCode !== 0) {
+            echo "Error exited with a non successful status code";
+            exit(1);
+        }
+        echo "   " . implode("\n   ", $arrOutput);
+
+    }
+
     private static function loadNpmDependencies()
     {
         echo "Installing node dependencies" . PHP_EOL;
 
         $arrOutput = array();
-        exec("ant -f ".escapeshellarg(self::$strRealPath."/core/_buildfiles/build.xml")." installNpmBuildDependencies ", $arrOutput, $exitCode);
+
+        $workingDirectory = \getcwd();
+        \chdir(__DIR__ . '/_buildfiles');
+        exec('npm config set registry "http://packages.artemeon.int:4873/"');
+        exec('npm install', $arrOutput, $exitCode);
+        \chdir($workingDirectory);
+
         if ($exitCode !== 0) {
             echo "Error exited with a non successful status code";
             exit(1);
         }
+
         echo "   " . implode("\n   ", $arrOutput);
     }
 

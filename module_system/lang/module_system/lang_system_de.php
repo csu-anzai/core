@@ -282,7 +282,8 @@ $lang["changelog_tooltipUnitPlural"] = "Änderungen";
 $lang["changelog_tooltipHtml"]       = "<span><strong>%count% %unit%</strong> am %date%</span>";
 $lang["changelog_tooltipColumn"]     = "Über die Kalender-Heatmap können Sie per Klick den Datensatz für ein bestimmtes Datum nachladen.";
 
-
+$lang["workflow_oracle_stats_title"]  = "Oracle Statistiken neu berechnen";
+$lang["workflow_oracle_stats_val1"]  = "Uhrzeit der Berechnung";
 
 $lang["workflow_messagequeue_title"]  = "Message-Queue Abarbeitung";
 $lang["workflow_queue_sender_val1"]  = "Stunden";
