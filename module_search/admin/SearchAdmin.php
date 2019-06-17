@@ -361,6 +361,7 @@ class SearchAdmin extends AdminSimple implements AdminInterface
      * @param string $strSearchterm
      * @param SearchResult[] $arrResults
      * @return array
+     * @throws \Kajona\System\System\Exception
      */
     private function createSearchJson($strSearchterm, $arrResults)
     {
@@ -393,9 +394,10 @@ class SearchAdmin extends AdminSimple implements AdminInterface
             $arrItem["description"] = $objOneResult->getObjObject()->getStrDisplayName();
             if ($objOneResult->getObjObject() instanceof AdminListableInterface) {
 
-                $arrItem["additional"] = $objOneResult->getObjObject()->getStrAdditionalInfo();
+                $arrItem["additionalInfos"] = $objOneResult->getObjObject()->getStrAdditionalInfo();
             }
-            $arrItem["lm_time"] = dateToString(new Date($objOneResult->getObjObject()->getIntLmTime()));
+            $arrItem["lastModifiedBy"] = $objOneResult->getObjObject()->getLastEditUser($this->getSystemid()) ;
+            $arrItem["lastModifiedTime"] = dateToString(new Date($objOneResult->getObjObject()->getIntLmTime()));
             $arrItem["link"] = html_entity_decode($strLink);
 
             $arrItems[] = $arrItem;
