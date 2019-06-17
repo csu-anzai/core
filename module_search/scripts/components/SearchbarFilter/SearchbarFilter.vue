@@ -12,19 +12,7 @@
     <div v-if="filterIsOpen">
       <Loader v-if="filterModules===null" :loading="true"></Loader>
       <div v-else>
-        <b-row>
-          <b-col sm="3" md="3" lg="3">{{$t("search.search_modules")}}</b-col>
-          <b-col sm="6" md="6" lg="6">
-            <Multiselect
-              :multiple="true"
-              :options="moduleNames"
-              v-model="selectedModules"
-              :searchable="true"
-              :close-on-select="false"
-              :show-labels="false"
-            ></Multiselect>
-          </b-col>
-        </b-row>
+        <Multiselect :options="moduleNames" :label="$t('search.search_modules')" @select="onModulesChange"></Multiselect>
         <Autocomplete
           @select="onUserSelect"
           @delete="onUserDelete"

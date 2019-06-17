@@ -1,7 +1,7 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import Loader from 'core/module_system/scripts/components/Loader/Loader.vue'
-import Multiselect from 'vue-multiselect'
+import Multiselect from 'core/module_system/scripts/components/Multiselect/Multiselect.vue'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
 import { FilterModule, User } from '../../Interfaces/SearchInterfaces'
 import Datepicker from 'core/module_system/scripts/components/Datepicker/Datepicker.vue'
@@ -22,7 +22,7 @@ import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Aut
     @namespace('SearchModule').State autoCompleteUsers : Array<User>
 
     private filterIsOpen : boolean = false
-    private selectedModules : Array<string> = []
+    // private selectedModules : Array<string> = []
 
     private toggleFilter () : void {
         if (this.filterModules === null) {
@@ -33,9 +33,27 @@ import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Aut
     private get moduleNames () : Array<string> {
         return this.filterModules.map(element => element.module)
     }
-    @Watch('selectedModules') onModulesChange () : void {
+    // @Watch('selectedModules') onModulesChange () : void {
+    //     var ids = ''
+    //     this.selectedModules.map(selectedFilter => {
+    //         this.filterModules.map(filter => {
+    //             if (filter.module === selectedFilter) {
+    //                 if (ids === '') {
+    //                     ids += filter.id.toString()
+    //                 } else {
+    //                     ids += ',' + filter.id.toString()
+    //                 }
+    //             }
+    //         })
+    //     })
+    //     this.setSelectedIds(ids)
+    //     if (this.searchQuery.length >= 2) {
+    //         this.triggerSearch()
+    //     }
+    // }
+    onModulesChange (filters : Array<string>) : void {
         var ids = ''
-        this.selectedModules.map(selectedFilter => {
+        filters.map(selectedFilter => {
             this.filterModules.map(filter => {
                 if (filter.module === selectedFilter) {
                     if (ids === '') {
@@ -50,6 +68,7 @@ import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Aut
         if (this.searchQuery.length >= 2) {
             this.triggerSearch()
         }
+        console.log('selected ids : ', ids)
     }
     private onStartDateChange (startDate : string) : void {
         this.setStartDate(startDate)
