@@ -1,0 +1,28 @@
+.multiselect {
+  min-height: 32px !important ;
+  .multiselect__tags {
+    background-color: @gray-lighter!important;
+    border: 1px solid @gray-darker !important;
+    border-radius: 0px !important;
+    .multiselect__tag {
+      background-color: @kajona-brand-color!important;
+      i.multiselect__tag-icon::after {
+        color: @white !important ;
+      }
+      i.multiselect__tag-icon:hover {
+        background-color: @kajona-brand-color!important;
+      }
+    }
+  }
+  input.multiselect__input {
+    background: @gray-lighter!important;
+    color: #555555 !important ;
+  }
+  span.multiselect__option--highlight {
+    background: @kajona-brand-color !important;
+  }
+  span.multiselect__option--selected:hover {
+    background: #ff6a6a !important;
+    color: @white!important;
+  }
+}
