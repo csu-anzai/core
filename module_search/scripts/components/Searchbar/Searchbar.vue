@@ -55,5 +55,4 @@
 </template>
 <script lang="ts" src="./Searchbar.ts">
 </script>
-<style lang="less" scoped src="./Searchbar.less">
-</style>
+

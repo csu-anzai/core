@@ -36,5 +36,4 @@
 </template>
 <script lang="ts" src="./SearchbarFilter.ts">
 </script>
-<style lang="less" scoped src="./SearchbarFilter.less">
-</style>
+

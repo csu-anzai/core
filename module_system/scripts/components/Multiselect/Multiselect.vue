@@ -25,6 +25,5 @@
 </template>
 <script lang="ts" src="./Multiselect.ts">
 </script>
-<style lang="less" scoped src="./Multiselect.less">
-</style>
+
 

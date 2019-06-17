@@ -15,5 +15,4 @@
 </template>
 <script lang="ts" src="./Datepicker.ts">
 </script>
-<style lang="less" scoped src="./Datepicker.less">
-</style>
+

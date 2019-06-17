@@ -16,5 +16,4 @@
 
 <script lang="ts" src="./SearchResult">
 </script>
-<style lang="less" scoped src="./SearchResult.less">
-</style>
+

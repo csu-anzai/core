@@ -22,5 +22,4 @@
 </template>
 <script lang="ts" src="./Autocomplete.ts">
 </script>
-<style lang="less" scoped src="./Autocomplete.less">
-</style>
+
