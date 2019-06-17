@@ -4,7 +4,10 @@ interface SearchResult {
     link : String,
     module : String,
     score : String,
-    systemid : String
+    systemid : String,
+    additionalInfos : String,
+    lastModifiedBy : String,
+    lastModifiedTime : String
 }
 interface FilterModule{
     module : string,
