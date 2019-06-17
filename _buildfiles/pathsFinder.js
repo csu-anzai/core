@@ -73,6 +73,13 @@ module.exports = {
                             packageConfig[coreEntry][i] +
                             '/**/less/**/*.less'
                     )
+                    moduleMap.push(
+                        '../../' +
+                            coreEntry +
+                            '/' +
+                            packageConfig[coreEntry][i] +
+                            '/scripts/components/**/*.less'
+                    )
                 }
             }
             moduleMap.push('../../project/**/less/*.less')
