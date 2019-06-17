@@ -31,6 +31,10 @@ const de = {
     quickhelp_new: 'Über diese Funktion können routinemäßig bzw. regelmäßig zu überprüfende Suchbegriffe angelegt werden. Durch Anklicken des Buttons werden diese in die Liste der angelegten Suchen übernommen und die Abfrage kann weiter spezifiziert, gestartet bzw. geändert werden.',
     workflow_deferredindexer_cfg_val1: 'Sekunden zwischen zwei Ausführungen',
     workflow_deferredindexer_cfg_val2: 'Zu indexierende Objekte je Durchlauf',
-    search_reduce_hits_link: 'Die Suchanfrage liefert sehr viele Ergebnisse. Bitte verfeinern Sie die Suchanfrage durch zusätzliche Filter oder Bedingungen:<br /><ul><li>Mehrere Suchbegriffe werden durch Leerzeichen voneinander getrennt: wort1 wort2</li><li>Ist ein Wort zwingend erforderlich, kann dieses mit einem + Symbol gekennzeichnet werden: wort1 +wort2</li><li>Soll ein Wort ausgeschlossen werden, kann dieses mit einem - Symbol gekennzeichnet werden: wort1 -wort2</li></ul>'
+    search_reduce_hits_link: 'Die Suchanfrage liefert sehr viele Ergebnisse. Bitte verfeinern Sie die Suchanfrage durch zusätzliche Filter oder Bedingungen:<br /><ul><li>Mehrere Suchbegriffe werden durch Leerzeichen voneinander getrennt: wort1 wort2</li><li>Ist ein Wort zwingend erforderlich, kann dieses mit einem + Symbol gekennzeichnet werden: wort1 +wort2</li><li>Soll ein Wort ausgeschlossen werden, kann dieses mit einem - Symbol gekennzeichnet werden: wort1 -wort2</li></ul>',
+    last_modification_date: 'Letzte Bearbeitung',
+    last_modification_user: 'von',
+    module_label: 'Modul',
+    additional_information: 'Zusätzliche Informationen'
 }
 export default de
