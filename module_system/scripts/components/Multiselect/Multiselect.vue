@@ -2,7 +2,7 @@
   <div class="row">
     <div class="form-group has-feedback">
       <label :for="id" class="col-sm-3 control-label">{{label}}</label>
-      <div class="col-sm-6 ">
+      <div class="col-sm-6">
         <MSelect
           :id="id"
           :multiple="true"
@@ -13,13 +13,13 @@
           :show-labels="false"
         ></MSelect>
       </div>
-      <b-col sm="2" class="form-opener">
+      <div class="col-sm-2 form-opener">
         <span class="listButton">
           <a @click="deleteSelection">
             <i class="kj-icon fa fa-trash-o"></i>
           </a>
         </span>
-      </b-col>
+      </div>
     </div>
   </div>
 </template>

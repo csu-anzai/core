@@ -48,7 +48,6 @@ import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Aut
         if (this.searchQuery.length >= 2) {
             this.triggerSearch()
         }
-        console.log('selected ids : ', ids)
     }
     private onStartDateChange (startDate : string) : void {
         this.setStartDate(startDate)

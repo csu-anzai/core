@@ -1,18 +1,22 @@
 <template>
   <div class="form-horizontal">
-    <b-row>
-      <b-col sm="12" md="12" lg="12" id="toggleFilters">
+    <div class="row">
+      <div class="col-sm-12 col-md-12 col-lg-12" id="toggleFilters">
         <p @click="toggleFilter" class="btn btn-default">
           {{$t("search.form_additionalheader")}}
           <i class="fa fa-caret-up" v-if="filterIsOpen"></i>
           <i class="fa fa-caret-down" v-else></i>
         </p>
-      </b-col>
-    </b-row>
+      </div>
+    </div>
     <div v-if="filterIsOpen">
       <Loader v-if="filterModules===null" :loading="true"></Loader>
       <div v-else>
-        <Multiselect :options="moduleNames" :label="$t('search.search_modules')" @select="onModulesChange"></Multiselect>
+        <Multiselect
+          :options="moduleNames"
+          :label="$t('search.search_modules')"
+          @select="onModulesChange"
+        ></Multiselect>
         <Autocomplete
           @select="onUserSelect"
           @delete="onUserDelete"
