@@ -1,5 +1,10 @@
 <?php
 
+/*"******************************************************************************************************
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
+
 if (\http_response_code() !== false) {
     die('only command line usage is allowed');
 }
