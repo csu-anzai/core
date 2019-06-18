@@ -74,8 +74,8 @@ class TagEditor {
                     if (resp) {
                         // replace commas
                         for (var i = 0; i < resp.length; i++) {
-                            resp[i].title = resp[i].title.replace(/\,/g, '');
-                            resp[i].value = resp[i].value.replace(/\,/g, '');
+                            resp[i].title = resp[i].title.replace(/\,/g, '').replace(/\s\s+/g, ' ');
+                            resp[i].value = resp[i].value.replace(/\,/g, '').replace(/\s\s+/g, ' ');
                         }
                     }
                     response.call(this, resp);
