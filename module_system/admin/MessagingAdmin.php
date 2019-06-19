@@ -567,6 +567,7 @@ JS;
 
             $strBody = nl2br($objMessage->getStrBody());
             $strBody = replaceTextLinks($strBody);
+            $strBody = html_entity_decode($strBody);
             $strReturn .= $this->objToolkit->getFieldset($objMessage->getStrTitle(), $this->objToolkit->getTextRow($strBody));
 
             return $strReturn;
