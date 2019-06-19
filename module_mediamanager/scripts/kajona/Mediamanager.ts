@@ -36,6 +36,10 @@ class Mediamanager {
         })
     }
 
+    public static editFileMark (systemId: string, newIconNumber: number) {
+        Ajax.loadUrlToElement("tbody.template-upload[data-uploadid='"+systemId+"'] .file-details .mark a.navbar-link", "/xml.php?admin=1&module=mediamanager&action=apiFileMarksUpdate&systemId="+systemId+"&iconNumber="+newIconNumber);
+    }
+
 }
 
 export = Mediamanager;

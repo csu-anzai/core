@@ -10,6 +10,7 @@
     "bootstrap-datepicker-sv": "bootstrap/datepicker/locales/bootstrap-datepicker.sv",
     "bootstrap-switch": "bootstrap/bootstrap-switch.min",
     "bootstrap-colorpicker": "bootstrap/bootstrap-colorpicker/js/bootstrap-colorpicker.min",
+    "bootstrap-select": "bootstrap/bootstrap-select/dist/js/bootstrap-select.min",
     "html5": "html5/html5",
     "jquery-floatThread": "jquery/jquery.floatThead.min",
     "jquery-touchPunch": "jquery/jquery.ui.touch-punch.min"
