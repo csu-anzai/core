@@ -19,7 +19,6 @@ use Kajona\System\System\StringUtil;
 use Kajona\System\System\ValidationError;
 use Kajona\System\System\ValidatorExtendedInterface;
 use Kajona\System\System\ValidatorInterface;
-use RuntimeException;
 
 /**
  * The base-class for all form-entries.
