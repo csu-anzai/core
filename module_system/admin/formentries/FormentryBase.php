@@ -559,7 +559,7 @@ abstract class FormentryBase implements JsonSerializable
         }
 
         $reflection = new Reflection($this->getObjSourceObject());
-        if (empty($propertyAnnotationValues = $reflection->getAnnotationValueForProperty($currentSourceProperty, self::FORM_FIELD_CONFIG_ANNOTATION, ReflectionEnum::PARAMS))) {
+        if (empty($propertyAnnotationValues = $reflection->getAnnotationJsonValueForProperty($currentSourceProperty, self::FORM_FIELD_CONFIG_ANNOTATION))) {
             return;
         }
 
@@ -568,21 +568,4 @@ abstract class FormentryBase implements JsonSerializable
         }
     }
 
-    /**
-     * @param string $formEntryConfig
-     * @return array
-     */
-    private static function convertFormEntryConfigAnnotationStringToArray(string $formEntryConfig): array
-    {
-        if (empty($formEntryConfig)) {
-            return [];
-        }
-
-        $configResponse = json_decode($formEntryConfig, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new RuntimeException('JSON Error: ' . json_last_error_msg());
-        }
-
-        return $configResponse ?? [];
-    }
 }
