@@ -5,7 +5,11 @@
     },
     "autoload": {
         "psr-4": {
-            "AGP\\Console\\": "src/"
+            "AGP\\Console\\Command\\System\\": "command/system/",
+            "AGP\\Console\\Command\\": "command/",
+            "AGP\\Console\\Console\\": "console/",
+            "AGP\\Console\\Container\\": "container/",
+            "AGP\\Console\\": ""
         }
     }
 }

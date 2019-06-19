@@ -34,9 +34,16 @@ final class ServiceProvider implements ServiceProviderInterface
 
     private function registerCommands(Container $container): void
     {
-        $container[CommandBag::class]->add(
-            $container[LockCommand::class],
-            $container[UnlockCommand::class]
+        $container->extend(
+            CommandBag::class,
+            static function (CommandBag $commandBag, Container $container): CommandBag {
+                $commandBag->add(...[
+                    $container[LockCommand::class],
+                    $container[UnlockCommand::class],
+                ]);
+
+                return $commandBag;
+            }
         );
     }
 
