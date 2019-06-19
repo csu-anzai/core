@@ -569,6 +569,9 @@ Upload-Field for multiple files with progress bar
                     </tr>
                     <tr class="file-details">
                         <td><span class="preview"></span></td>
+                        <td class="marker">
+                            <span class="mark"></span>
+                        </td>
                         <td>
                             <span class="name"></span><div class="error"></div>
                         </td>
@@ -626,6 +629,7 @@ Upload-Field for multiple files with progress bar
                     $.each(o.files, function (index, file) {
                         var row = $('#%%name%%_upl .fileupload-list-template .template-upload').clone();
                         //file.name = file.name.replace(/(.{60})/g,"$1 ");
+                        row.find('.mark').html(file.mark);
                         row.find('.name').text(file.name);
                         row.find('.date').text(file.createDate);
                         row.find('.size').text(o.formatFileSize(file.size));

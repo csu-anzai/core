@@ -7,9 +7,10 @@
 namespace Kajona\Mediamanager\System;
 
 use Kajona\Packagemanager\System\PackagemanagerMetadata;
-use Kajona\Search\System\SearchResult;
 use Kajona\System\System\AdminGridableInterface;
+use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Config;
 use Kajona\System\System\Filesystem;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Link;
@@ -152,6 +153,15 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
      * @blockEscaping
      */
     private $strSearchContent = "";
+
+    /**
+     * @var int
+     * @tableColumn agp_mediamanager_file.file_mark
+     * @tableColumnDatatype int
+     * @fieldType Kajona\System\Admin\Formentries\FormentryIconDropdown
+     * @fieldDDProvider file_marks (module="module_mediamanager")
+     */
+    private $intMark = 0;
 
     /**
      * Return an on-lick link for the passed object.
@@ -833,4 +843,44 @@ class MediamanagerFile extends Model implements ModelInterface, AdminGridableInt
     {
         $this->strSearchContent = $strSearchContent;
     }
+
+    /**
+     * @return int
+     */
+    public function getIntMark(): int
+    {
+        return $this->intMark;
+    }
+
+    /**
+     * @param int $intMark
+     */
+    public function setIntMark(int $mark): void
+    {
+        $this->intMark = $mark;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getDefaultFileMarker(): string
+    {
+        return AdminskinHelper::getAdminImage("icon_flag_grey");
+    }
+
+    /**
+     * @param int $iconNumber
+     * @return string
+     */
+    public static function getFileMarkerIcon(int $iconNumber): string
+    {
+        $fileMarks = Config::getInstance("module_mediamanager", "config.php")->getConfig("file_marks");
+
+        if (empty($fileMarks) || !isset($fileMarks[$iconNumber])) {
+            return self::getDefaultFileMarker();
+        }
+
+        return html_entity_decode($fileMarks[$iconNumber]);
+    }
+
 }
