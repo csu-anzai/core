@@ -36,6 +36,28 @@ const webpackOptions = {
                 ],
 
                 exclude: /node_modules/
+            },
+            {
+                test: /\.less$/,
+                use: [
+                    {
+                        loader: 'style-loader' // creates style nodes from JS strings
+                    },
+                    {
+                        loader: 'css-loader' // translates CSS into CommonJS
+                    },
+                    {
+                        loader: 'less-loader' // compiles Less to CSS
+                    }
+                ]
+            },
+            {
+                test: /\.css$/, // normal css loader
+                use: ['style-loader', 'css-loader']
+            },
+            {
+                test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)|\.(png|jpg|gif)$/, // loader for the fonts/images , makes import of this files possible
+                loader: 'url-loader'
             }
         ]
     },
