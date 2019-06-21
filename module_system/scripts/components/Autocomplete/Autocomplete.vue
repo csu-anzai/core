@@ -1,26 +1,25 @@
 <template>
- <b-row>
+  <div class="row">
     <div class="form-group has-feedback">
-    <label :for="inputId" class="col-sm-3 control-label">{{label}}</label>
-    <b-col sm="6" md="6" lg="6">
-      <input type="text" :id="inputId" class="form-control" v-model="input">
+      <label :for="inputId" class="col-sm-3 control-label">{{label}}</label>
+      <div class="col-sm-6 col-md-6 col-lg-6">
+        <input type="text" :id="inputId" class="form-control" v-model="input">
 
-      <span class="form-control-feedback loading-feedback">
-        <i class="fa fa-keyboard-o"></i>
-      </span>
-      <div :id="listId"></div>
-    </b-col>
-    <b-col sm="2" md="2" lg="2" class="form-opener">
-      <span class="listButton">
-        <a @click="deleteInput">
-          <i class="kj-icon fa fa-trash-o"></i>
-        </a>
-      </span>
-    </b-col>
+        <span class="form-control-feedback loading-feedback">
+          <i class="fa fa-keyboard-o"></i>
+        </span>
+        <div :id="listId"></div>
+      </div>
+      <div class="col-sm-2 col-md-2 col-lg-2 form-opener">
+        <span class="listButton">
+          <a @click="deleteInput">
+            <i class="kj-icon fa fa-trash-o"></i>
+          </a>
+        </span>
+      </div>
+    </div>
   </div>
- </b-row>
 </template>
 <script lang="ts" src="./Autocomplete.ts">
 </script>
-<style lang="less" scoped src="./Autocomplete.less">
-</style>
+

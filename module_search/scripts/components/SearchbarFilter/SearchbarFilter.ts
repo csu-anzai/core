@@ -1,8 +1,7 @@
-import { Component, Vue, Watch } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import Loader from 'core/module_system/scripts/components/Loader/Loader.vue'
-import Multiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.min.css'
+import Multiselect from 'core/module_system/scripts/components/Multiselect/Multiselect.vue'
 import { FilterModule, User } from '../../Interfaces/SearchInterfaces'
 import Datepicker from 'core/module_system/scripts/components/Datepicker/Datepicker.vue'
 import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Autocomplete.vue'
@@ -22,7 +21,6 @@ import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Aut
     @namespace('SearchModule').State autoCompleteUsers : Array<User>
 
     private filterIsOpen : boolean = false
-    private selectedModules : Array<string> = []
 
     private toggleFilter () : void {
         if (this.filterModules === null) {
@@ -33,9 +31,9 @@ import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Aut
     private get moduleNames () : Array<string> {
         return this.filterModules.map(element => element.module)
     }
-    @Watch('selectedModules') onModulesChange () : void {
+    onModulesChange (filters : Array<string>) : void {
         var ids = ''
-        this.selectedModules.map(selectedFilter => {
+        filters.map(selectedFilter => {
             this.filterModules.map(filter => {
                 if (filter.module === selectedFilter) {
                     if (ids === '') {

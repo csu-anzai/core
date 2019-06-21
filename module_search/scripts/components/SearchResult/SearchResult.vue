@@ -1,20 +1,26 @@
 <template>
   <div>
     <div
-      v-for="(item, index) in searchResults"
-      :key="index"
-      class="searchResultContainer col-sm-12 col-md-12 col-lg-12 col-xl-12"
+      v-for="item in searchResults"
+      :key="item.systemid"
+      class="searchResultContainer row"
+      @click="close(item.link)"
     >
-      <a :href="item.link" @click="close">
-        <span v-html="item.icon"></span>
-        {{item.description}}
-      </a>
-      <small>{{item.module}}</small>
+      <div class="col-sm-2">
+        <small>{{$t("search.module_label")}} : {{item.module}}</small>
+      </div>
+      <div class="col-sm-10">
+        <p>
+          <span v-html="item.icon"></span>
+          {{item.description}}
+        </p>
+
+        <small>{{$t("search.last_modification_date")}} {{item.lastModifiedTime}} {{$t("search.last_modification_user")}} {{item.lastModifiedBy}}</small>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" src="./SearchResult">
 </script>
-<style lang="less" scoped src="./SearchResult.less">
-</style>
+

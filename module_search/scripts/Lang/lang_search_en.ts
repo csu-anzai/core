@@ -31,6 +31,10 @@ const en = {
     quickhelp_new: 'By using this function it is possible to create regular/continuous search queries. By clicking the corresponding button information will be saved to the search list and the query can be specified, started or changed.',
     workflow_deferredindexer_cfg_val1: 'Seconds between workflow runs',
     workflow_deferredindexer_cfg_val2: 'Max number of object to index per run',
-    search_reduce_hits_link: 'The query returns a lot of hits. Please refine the query by using additional filters or conditions:<br /><ul><li>Multiple terms are seperated by a blank space: term1 term2</li><li>If a term must be included, the term may be marked with a + character: term1 +term2</li><li>If a term should be excluded, the term may be marked with a - symbol: term1 -term2</li></ul>'
+    search_reduce_hits_link: 'The query returns a lot of hits. Please refine the query by using additional filters or conditions:<br /><ul><li>Multiple terms are seperated by a blank space: term1 term2</li><li>If a term must be included, the term may be marked with a + character: term1 +term2</li><li>If a term should be excluded, the term may be marked with a - symbol: term1 -term2</li></ul>',
+    last_modification_date: 'Last modification',
+    last_modification_user: 'by',
+    module_label: 'Module',
+    additional_information: 'Additional information'
 }
 export default en

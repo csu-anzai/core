@@ -1,30 +1,37 @@
 <template>
   <div>
-    <div v-bind:class="{ searchBarOuterContainer: dialogIsOpen }" @mousedown="close"></div>
-    <div :class="dialogClassName">
-      <div id="bigSearchbarContainer">
+    <form  class="navbar-search pull-left" v-if="!dialogIsOpen">
+      <div class="input-group">
+        <input
+          class="form-control search-query"
+          @mousedown="open"
+          :placeholder="$t('dashboard.globalSearchPlaceholder')"
+        >
+        <span class="input-group-addon">
+          <i class="fa fa-search" aria-hidden="true"></i>
+        </span>
+      </div>
+    </form>
+    <Modal :show="dialogIsOpen" @close="close">
+    <div class="modal-body">
         <form @submit="onSubmit" class="navbar-search pull-left">
-          <div class="input-group">
-            <input
-              id="searchbarInput"
-              type="text"
-              name="search_query"
-              class="form-control search-query"
-              @input="onInput"
-              v-model="userInput"
-              @mousedown="open"
-              autocomplete="off"
-              :placeholder="$t('dashboard.globalSearchPlaceholder')"
-            >
-            <span class="input-group-addon">
-              <i class="fa fa-search" aria-hidden="true"></i>
-            </span>
-          </div>
-        </form>
-      </div>
-      <div v-if="userInput!==''">
-        <Loader :loading="fetchingResults"></Loader>
-      </div>
+        <div class="input-group">
+          <input
+            id="searchbarInput"
+            type="text"
+            name="search_query"
+            class="form-control search-query"
+            @input="onInput"
+            v-model="userInput"
+            @mousedown="open"
+            autocomplete="off"
+            :placeholder="$t('dashboard.globalSearchPlaceholder')"
+          >
+          <span class="input-group-addon">
+            <i class="fa fa-search" aria-hidden="true"></i>
+          </span>
+        </div>
+      </form>
       <div v-if="dialogIsOpen">
         <SearchbarFilter></SearchbarFilter>
       </div>
@@ -43,9 +50,9 @@
         </div>
       </div>
     </div>
+    </Modal>
   </div>
 </template>
 <script lang="ts" src="./Searchbar.ts">
 </script>
-<style lang="less" scoped src="./Searchbar.less">
-</style>
+

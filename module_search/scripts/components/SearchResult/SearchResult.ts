@@ -6,7 +6,8 @@ import { namespace } from 'vuex-class'
 @namespace('SearchModule').Action resetSearchResults : any
 @namespace('SearchModule').Action resetSearchQuery : any
 @namespace('SearchModule').State searchQuery : string
-private close () : void {
+private close (link : string) : void {
+    window.location.href = link
     this.closeDialog()
 }
 }
