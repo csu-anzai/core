@@ -17,6 +17,7 @@
     "bootstrap-colorpicker": "^2.5.1",
     "bootstrap-datepicker": "^1.9.0",
     "bootstrap-less": "^3.3.8",
+    "bootstrap-select": "^1.13.10",
     "bootstrap-switch": "^3.3.4",
     "calendar-heatmap": "github:artemeon/calendar-heatmap",
     "chart.js": "^2.7.3",
