@@ -47,7 +47,6 @@ import Modal from 'core/module_system/scripts/components/Modal/Modal.vue'
          let parent = document.getElementById('content')
          parent.appendChild(this.$el)
          this.openDialog()
-         //  document.getElementById('searchbarInput').focus()
      }
      private close () : void {
          let parent = document.getElementById('searchbarContainer')
@@ -63,7 +62,6 @@ import Modal from 'core/module_system/scripts/components/Modal/Modal.vue'
           if (e.ctrlKey && e.key === 'f' && !this.dialogIsOpen) {
               e.preventDefault()
               this.open()
-              //   document.getElementById('searchbarInput').focus()
           }
           if (e.key === 'Escape' && this.dialogIsOpen) {
               this.close()
