@@ -10,9 +10,15 @@
           <input type="text" :id="id" class="form-control">
         </div>
       </div>
+      <div class="col-sm-2 col-md-2 col-lg-2 form-opener">
+        <span class="listButton">
+          <a @click="deleteInput">
+            <i class="kj-icon fa fa-trash-o"></i>
+          </a>
+        </span>
+      </div>
     </div>
   </div>
 </template>
 <script lang="ts" src="./Datepicker.ts">
 </script>
-

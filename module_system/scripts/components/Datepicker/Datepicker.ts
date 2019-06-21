@@ -5,6 +5,7 @@ import Util from 'core/module_system/scripts/kajona/Util'
 @Component class Datepicker extends Vue {
 @Prop({ type: String, required: true }) label : string
 private id : string = uuid()
+
 private mounted () : void {
     var input = $('#' + this.id).datepicker({
         format: Util.transformDateFormat(<string> this.$i18n.t('system.dateStyleShort'), 'bootstrap-datepicker'),
@@ -18,6 +19,10 @@ private mounted () : void {
     }).on('changeDate', this.onDateChange)
 }
 private onDateChange (e : DatepickerEventObject) : void {
+    this.$emit('change', $('#' + this.id).val())
+}
+private deleteInput () : void {
+    $('#' + this.id).val('')
     this.$emit('change', $('#' + this.id).val())
 }
 }
