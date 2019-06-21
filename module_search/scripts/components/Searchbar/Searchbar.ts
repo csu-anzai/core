@@ -4,17 +4,20 @@ import SearchResult from '../SearchResult/SearchResult.vue'
 import Loader from 'core/module_system/scripts/components/Loader/Loader.vue'
 import SearchbarFilter from '../SearchbarFilter/SearchbarFilter.vue'
 import Modal from 'core/module_system/scripts/components/Modal/Modal.vue'
+import { watch } from 'fs'
 @Component({ components: { SearchResult, Loader, SearchbarFilter, Modal } }) class Searchbar extends Vue {
      @namespace('SearchModule').Action triggerSearch: any
      @namespace('SearchModule').Action resetSearchResults: any
      @namespace('SearchModule').State searchResults : Array<any>
      @namespace('SearchModule').State dialogIsOpen : boolean
      @namespace('SearchModule').State searchQuery : String
+     @namespace('SearchModule').State showResultsNumber : boolean
      @namespace('SearchModule').State fetchingResults : boolean
      @namespace('SearchModule').Action openDialog: any
      @namespace('SearchModule').Action closeDialog: any
      @namespace('SearchModule').Action resetSearchQuery: any
      @namespace('SearchModule').Action setSearchQuery : any
+     @namespace('SearchModule').Action setShowResultsNumber : any
 
      private userInput : String =''
      private inputTimer : number
@@ -31,6 +34,7 @@ import Modal from 'core/module_system/scripts/components/Modal/Modal.vue'
          e.preventDefault()
      }
      private onInput (e: Event) : void {
+         this.setShowResultsNumber(false)
          clearTimeout(this.inputTimer)
          this.setSearchQuery(this.userInput)
          this.inputTimer = window.setTimeout(() => {

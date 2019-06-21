@@ -12,6 +12,7 @@ const SearchModule = {
         filterModules: null,
         selectedIds: [],
         fetchingResults: false,
+        showResultsNumber: false,
         startDate: '',
         endDate: '',
         selectedUser: '',
@@ -45,7 +46,10 @@ const SearchModule = {
         RESET_SELECTED_IDS (state : any) {
             state.selectedIds = ''
         },
-        SET_FETCHING_RESULTS (state : any, payload : boolean) {
+        SET_SHOW_RESULTS_NUMBER (state : any, payload : boolean) {
+            state.showResultsNumber = payload
+        },
+        SET_FETCHING_RESULTS  (state : any, payload : boolean) {
             state.fetchingResults = payload
         },
         SET_START_DATE (state : any, payload : Date) {
@@ -73,6 +77,8 @@ const SearchModule = {
     },
     actions: {
         async triggerSearch ({ commit, state }) : Promise<void> {
+            commit('SET_SHOW_RESULTS_NUMBER', false)
+            commit('SET_FETCHING_RESULTS', true)
             const [err, res] = await to(axios({
                 url: '/xml.php',
                 method: 'POST',
@@ -95,6 +101,8 @@ const SearchModule = {
             } if (res) {
                 commit('SET_SEARCH_RESULTS', res.data)
             }
+            commit('SET_FETCHING_RESULTS', false)
+            commit('SET_SHOW_RESULTS_NUMBER', true)
         },
         setSearchQuery ({ commit, state }, searchQuery : string) : void {
             if (state.searchQuery.length > searchQuery.length && searchQuery.length < 2 && state.searchResults.length !== 0) {
@@ -113,6 +121,8 @@ const SearchModule = {
             commit('REST_START_DATE')
             commit('RESET_SELECTED_IDS')
             commit('RESET_SELECTED_USER')
+            commit('SET_SHOW_RESULTS_NUMBER', false)
+            commit('SET_FETCHING_RESULTS', false)
         },
         openDialog ({ commit }) : void {
             commit('OPEN_SEARCH_DIALOG')
@@ -169,6 +179,9 @@ const SearchModule = {
         },
         setEndDate ({ commit }, endDate : Date) : void {
             commit('SET_END_DATE', endDate)
+        },
+        setShowResultsNumber ({ commit }, payload : boolean) : void {
+            commit('SET_SHOW_RESULTS_NUMBER', payload)
         }
     },
     getters: {}
