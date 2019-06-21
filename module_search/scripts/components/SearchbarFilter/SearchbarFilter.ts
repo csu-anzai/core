@@ -17,7 +17,7 @@ import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Aut
     @namespace('SearchModule').Action getAutocompleteUsers : any
     @namespace('SearchModule').State filterModules : Array<FilterModule>
     @namespace('SearchModule').State searchQuery : string
-    @namespace('SearchModule').State selectedIds : string
+    @namespace('SearchModule').State selectedIds : Array<string>
     @namespace('SearchModule').State autoCompleteUsers : Array<User>
 
     private filterIsOpen : boolean = false
@@ -32,15 +32,11 @@ import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Aut
         return this.filterModules.map(element => element.module)
     }
     onModulesChange (filters : Array<string>) : void {
-        var ids = ''
+        let ids = []
         filters.map(selectedFilter => {
             this.filterModules.map(filter => {
                 if (filter.module === selectedFilter) {
-                    if (ids === '') {
-                        ids += filter.id.toString()
-                    } else {
-                        ids += ',' + filter.id.toString()
-                    }
+                    ids.push(filter.id.toString())
                 }
             })
         })

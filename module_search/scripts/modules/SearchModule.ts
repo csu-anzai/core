@@ -2,6 +2,7 @@ import axios from 'axios'
 import to from 'await-to-js'
 import * as toastr from 'toastr'
 import { SearchResult, FilterModule, User } from '../Interfaces/SearchInterfaces'
+import qs from 'qs'
 
 const SearchModule = {
     namespaced: true,
@@ -9,7 +10,7 @@ const SearchModule = {
         dialogIsOpen: false,
         searchQuery: '',
         filterModules: null,
-        selectedIds: '',
+        selectedIds: [],
         fetchingResults: false,
         startDate: '',
         endDate: '',
@@ -79,10 +80,13 @@ const SearchModule = {
                     module: 'search',
                     action: 'getFilteredSearch',
                     search_query: state.searchQuery !== '' ? state.searchQuery : undefined,
-                    filtermodules: state.selectedIds !== '' ? state.selectedIds : undefined,
+                    filtermodules: state.selectedIds.length !== 0 ? state.selectedIds : undefined,
                     search_changestartdate: state.startDate !== '' ? state.startDate : undefined,
                     search_changeenddate: state.endDate !== '' ? state.endDate : undefined,
                     search_formfilteruser_id: state.selectedUser !== '' ? state.selectedUser : undefined
+                },
+                paramsSerializer: (params : any) => {
+                    return qs.stringify(params, { arrayFormat: 'comma' })
                 }
 
             }))
