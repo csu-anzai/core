@@ -9,7 +9,7 @@ class GlobalAxiosConfig {
     private service : any
     constructor () {
         // global parameter serializer for axios : converts json data to url params
-        axios.defaults.paramsSerializer = (params) => {
+        axios.defaults.paramsSerializer = (params : any) => {
             return qs.stringify(params, { arrayFormat: 'brackets' })
         }
         // golbal axios's baseURL config
@@ -20,7 +20,6 @@ class GlobalAxiosConfig {
      * use a middleware to be able to start/stop loader animation onRequest
      */
     private createMiddleware () : void {
-        console.log('create middleware')
         this.service = new Service(axios)
         this.service.register({
             onRequest (config : any) {
