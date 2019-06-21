@@ -4,7 +4,7 @@ import SearchResult from '../SearchResult/SearchResult.vue'
 import Loader from 'core/module_system/scripts/components/Loader/Loader.vue'
 import SearchbarFilter from '../SearchbarFilter/SearchbarFilter.vue'
 import Modal from 'core/module_system/scripts/components/Modal/Modal.vue'
-import { watch } from 'fs'
+
 @Component({ components: { SearchResult, Loader, SearchbarFilter, Modal } }) class Searchbar extends Vue {
      @namespace('SearchModule').Action triggerSearch: any
      @namespace('SearchModule').Action resetSearchResults: any
@@ -47,7 +47,7 @@ import { watch } from 'fs'
          let parent = document.getElementById('content')
          parent.appendChild(this.$el)
          this.openDialog()
-         document.getElementById('searchbarInput').focus()
+         //  document.getElementById('searchbarInput').focus()
      }
      private close () : void {
          let parent = document.getElementById('searchbarContainer')
@@ -63,7 +63,7 @@ import { watch } from 'fs'
           if (e.ctrlKey && e.key === 'f' && !this.dialogIsOpen) {
               e.preventDefault()
               this.open()
-              document.getElementById('searchbarInput').focus()
+              //   document.getElementById('searchbarInput').focus()
           }
           if (e.key === 'Escape' && this.dialogIsOpen) {
               this.close()
@@ -79,6 +79,9 @@ import { watch } from 'fs'
                   return 'searchbarContainerOpen searchBarInnerContainer'
               }
           }
+      }
+      private onModalOpen () : void {
+          document.getElementById('searchbarInput').focus()
       }
 }
 

@@ -12,7 +12,7 @@
         </span>
       </div>
     </form>
-    <Modal :show="dialogIsOpen" @close="close">
+    <Modal :show="dialogIsOpen" @close="close" @open="onModalOpen">
       <div class="modal-body">
         <form @submit="onSubmit" class="navbar-search pull-left">
           <div class="input-group">
