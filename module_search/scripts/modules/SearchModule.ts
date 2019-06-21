@@ -72,28 +72,25 @@ const SearchModule = {
     },
     actions: {
         async triggerSearch ({ commit, state }) : Promise<void> {
-            commit('SET_FETCHING_RESULTS', true)
-            let url = '/xml.php?admin=1&module=search&action=getFilteredSearch'
-            if (state.searchQuery !== '') {
-                url += '&search_query=' + state.searchQuery
-            } if (state.selectedIds !== '') {
-                url += '&filtermodules=' + state.selectedIds
-            } if (state.startDate !== '') {
-                url += '&search_changestartdate=' + state.startDate
-            }
-            if (state.endDate !== '') {
-                url += '&search_changeenddate=' + state.endDate
-            }
-            if (state.selectedUser !== '') {
-                url += '&search_formfilteruser_id=' + state.selectedUser
-            }
-            const [err, res] = await to(axios.post(KAJONA_WEBPATH + url))
+            const [err, res] = await to(axios({
+                url: '/xml.php',
+                method: 'POST',
+                params: {
+                    module: 'search',
+                    action: 'getFilteredSearch',
+                    search_query: state.searchQuery !== '' ? state.searchQuery : undefined,
+                    filtermodules: state.selectedIds !== '' ? state.selectedIds : undefined,
+                    search_changestartdate: state.startDate !== '' ? state.startDate : undefined,
+                    search_changeenddate: state.endDate !== '' ? state.endDate : undefined,
+                    search_formfilteruser_id: state.selectedUser !== '' ? state.selectedUser : undefined
+                }
+
+            }))
             if (err) {
                 toastr.error('Fehler')
             } if (res) {
                 commit('SET_SEARCH_RESULTS', res.data)
             }
-            commit('SET_FETCHING_RESULTS', false)
         },
         setSearchQuery ({ commit, state }, searchQuery : string) : void {
             if (state.searchQuery.length > searchQuery.length && searchQuery.length < 2 && state.searchResults.length !== 0) {
@@ -120,7 +117,14 @@ const SearchModule = {
             commit('REST_SEARCH_QUERY')
         },
         async getFilterModules ({ commit }) : Promise<void> {
-            const [err, res] = await to(axios.get(KAJONA_WEBPATH + '/xml.php?admin=1&module=search&action=getModulesForFilter'))
+            const [err, res] = await to(axios({
+                url: '/xml.php?',
+                method: 'GET',
+                params: {
+                    module: 'search',
+                    action: 'getModulesForFilter'
+                }
+            }))
             if (err) {
                 toastr.error('Fehler')
             }
@@ -132,7 +136,17 @@ const SearchModule = {
             commit('SET_SELECTED_IDS', ids)
         },
         async getAutocompleteUsers ({ commit }, userQuery :string) : Promise<void> {
-            const [err, res] = await to(axios.post(KAJONA_WEBPATH + '/xml.php?module=user&action=getUserByFilter&filter=' + userQuery + '&user=true&group=false'))
+            const [err, res] = await to(axios({
+                url: '/xml.php',
+                method: 'POST',
+                params: {
+                    module: 'user',
+                    action: 'getUserByFilter',
+                    user: true,
+                    group: false,
+                    filter: userQuery !== '' ? userQuery : undefined
+                }
+            }))
             if (err) {
                 toastr.error('Fehler')
             }

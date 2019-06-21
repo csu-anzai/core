@@ -1,4 +1,4 @@
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
 import Searchbar from 'core/module_search/scripts/components/Searchbar/Searchbar.vue'
 
 @Component({ components: { Searchbar } })
