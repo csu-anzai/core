@@ -183,6 +183,19 @@ class Database
         return $bitReturn;
     }
 
+    /**
+     * Creates a simple insert for a single row where the values parameter is an associative array with column names to
+     * value mapping
+     *
+     * @param string $tableName
+     * @param array $values
+     * @param array $escapes
+     * @return bool
+     */
+    public function insert(string $tableName, array $values, ?array $escapes = null)
+    {
+        return $this->multiInsert($tableName, array_keys($values), [array_values($values)], $escapes);
+    }
 
     /**
      * Fires an insert or update of a single record. it's up to the database (driver)
@@ -503,7 +516,7 @@ class Database
             $strQuery
         );
 
-        //$strQuery = $this->prettifyQuery($strQuery, $arrParams);
+        $strQuery = $this->prettifyQuery($strQuery, $arrParams);
 
         $strErrorCode = "";
         $strErrorCode .= "Error in query\n\n";
@@ -1202,14 +1215,16 @@ class Database
      */
     private function dbsafeParams($arrParams, $arrEscapes = array())
     {
-        foreach ($arrParams as $intKey => &$strParam) {
+        $replace = [];
+        foreach ($arrParams as $intKey => $strParam) {
             if (isset($arrEscapes[$intKey])) {
                 $strParam = $this->dbsafeString($strParam, $arrEscapes[$intKey], false);
             } else {
                 $strParam = $this->dbsafeString($strParam, true, false);
             }
+            $replace[$intKey] = $strParam;
         }
-        return $arrParams;
+        return $replace;
     }
 
     /**
@@ -1389,8 +1404,11 @@ class Database
     public function prettifyQuery($strQuery, $arrParams)
     {
         foreach ($arrParams as $strOneParam) {
-            if (!is_numeric($strOneParam)) {
+            if (!is_numeric($strOneParam) && $strOneParam !== null) {
                 $strOneParam = "'{$strOneParam}'";
+            }
+            if ($strOneParam === null) {
+                $strOneParam = 'null';
             }
 
             $intPos = StringUtil::indexOf($strQuery, '?');

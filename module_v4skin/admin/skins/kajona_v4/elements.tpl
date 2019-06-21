@@ -83,7 +83,7 @@ background using the ajaxHelper.
 Loads the script-helper and adds the table to the drag-n-dropable tables getting parsed later
 <dragable_list_header>
 <script type="text/javascript">
-ListSortable.init('%%listid%%', '%%targetModule%%', %%bitMoveToTree%%); 
+ListSortable.init('%%listid%%', '%%targetModule%%', %%bitMoveToTree%%);
 </script>
 <div id='%%listid%%_prev' class='alert alert-info divPageTarget'>[lang,commons_list_sort_prev,system]</div>
 <table id="%%listid%%" class="table admintable table-striped-tbody" data-kajona-pagenum="%%curPage%%" data-kajona-elementsperpage="%%elementsPerPage%%">
@@ -486,19 +486,20 @@ Upload-Field for multiple files with progress bar
         </div>
     </div>
 
-<script type="text/javascript">
-var filesToUpload = 0;
-        var uploader = Fileupload.initUploader({
-            baseElement: $('#%%name%%'),
-            paramName: '%%name%%',
-            formData: [
-                {name: 'systemid', value: '%%mediamanagerRepoId%%'},
-                {name: 'inputElement', value : '%%name%%'}
-            ],
+    <script type="text/javascript">
+        (function () {
+            var filesToUpload = 0;
+            var uploader = Fileupload.initUploader({
+                baseElement: $('#%%name%%'),
+                paramName: '%%name%%',
+                formData: [
+                    {name: 'systemid', value: '%%mediamanagerRepoId%%'},
+                    {name: 'inputElement', value : '%%name%%'}
+                ],
 
-            maxFileSize: %%maxFileSize%%,
-            acceptFileTypes: %%acceptFileTypes%%,
-            uploadTemplate: function (o) {
+                maxFileSize: %%maxFileSize%%,
+                acceptFileTypes: %%acceptFileTypes%%,
+                uploadTemplate: function (o) {
                 var rows = $();
                 $.each(o.files, function (index, file) {
                     var row = $('#%%name%% .fileupload-list-template .template-upload').clone();
@@ -513,33 +514,34 @@ var filesToUpload = 0;
             }
         });
 
-        uploader.getUploader()
-            .bind('fileuploadadded', function (e, data) {
-                $(this).find('.fileupload-buttonbar button.start').css('display', '');
-                $(this).find('.fileupload-buttonbar button.cancel').css('display', '');
-                $(this).find('.fileupload-progress').css('display', '');
-                filesToUpload++;
-            })
-            .bind('fileuploadfail', function (e, data) {
-                filesToUpload--;
-                $(this).trigger('kajonahideelements');
-            })
-            .bind('fileuploaddone', function (e, data) {
-                filesToUpload--;
-                $(this).trigger('kajonahideelements');
-            })
-            .bind('fileuploadstop', function (e) {
-                $(this).trigger('kajonahideelements');
-                document.location.reload();
-            })
-            .bind('kajonahideelements', function() {
-                if(filesToUpload == 0) {
-                    $(this).find('.fileupload-buttonbar button.start').css('display', 'none');
-                    $(this).find('.fileupload-buttonbar button.cancel').css('display', 'none');
-                    $(this).find('.fileupload-progress').css('display', 'none');
-                }
-            });
-</script>
+            uploader.getUploader()
+                .bind('fileuploadadded', function (e) {
+                    $(this).find('.fileupload-buttonbar button.start').css('display', '');
+                    $(this).find('.fileupload-buttonbar button.cancel').css('display', '');
+                    $(this).find('.fileupload-progress').css('display', '');
+                    filesToUpload++;
+                })
+                .bind('fileuploadfail', function (e) {
+                    filesToUpload--;
+                    $(this).trigger('kajonahideelements');
+                })
+                .bind('fileuploaddone', function (e) {
+                    filesToUpload--;
+                    $(this).trigger('kajonahideelements');
+                })
+                .bind('fileuploadstop', function (e) {
+                    $(this).trigger('kajonahideelements');
+                    document.location.reload();
+                })
+                .bind('kajonahideelements', function() {
+                    if(filesToUpload === 0) {
+                        $(this).find('.fileupload-buttonbar button.start').css('display', 'none');
+                        $(this).find('.fileupload-buttonbar button.cancel').css('display', 'none');
+                        $(this).find('.fileupload-progress').css('display', 'none');
+                    }
+                });
+        })();
+    </script>
 </input_upload_multiple>
 
 
@@ -567,8 +569,14 @@ Upload-Field for multiple files with progress bar
                     </tr>
                     <tr class="file-details">
                         <td><span class="preview"></span></td>
+                        <td class="marker">
+                            <span class="mark"></span>
+                        </td>
                         <td>
                             <span class="name"></span><div class="error"></div>
+                        </td>
+                        <td>
+                            <span class="date"></span>
                         </td>
                         <td>
                             <span class="size"></span>
@@ -598,7 +606,8 @@ Upload-Field for multiple files with progress bar
     </div>
 
     <script type="text/javascript">
-               /**
+        (function () {
+            /**
              *
              * @type {UploadManager}
              */
@@ -612,7 +621,7 @@ Upload-Field for multiple files with progress bar
                     {name: 'systemid', value: '%%mediamanagerRepoId%%'},
                     {name: 'inputElement', value : '%%name%%_upl'},
                     {name: 'folder', value : '%%folder%%'}
-                ],
+            ],
                 maxFileSize: %%maxFileSize%%,
                 acceptFileTypes: %%acceptFileTypes%%,
                 downloadTemplate: function (o) {
@@ -620,7 +629,9 @@ Upload-Field for multiple files with progress bar
                     $.each(o.files, function (index, file) {
                         var row = $('#%%name%%_upl .fileupload-list-template .template-upload').clone();
                         //file.name = file.name.replace(/(.{60})/g,"$1 ");
+                        row.find('.mark').html(file.mark);
                         row.find('.name').text(file.name);
+                        row.find('.date').text(file.createDate);
                         row.find('.size').text(o.formatFileSize(file.size));
                         if (file.error) {
                             row.find('.error').text(file.error);
@@ -635,22 +646,22 @@ Upload-Field for multiple files with progress bar
                         row.attr('data-uploadid', file.systemid);
                         rows = rows.add(row);
                     });
-                    return rows;
-                },
-                uploadTemplate: function (o) {
-                    var rows = $();
-                    $.each(o.files, function (index, file) {
-                        var row = $('#%%name%%_upl .fileupload-list-template .template-upload').clone();
-                        row.find('.name').text(file.name);
-                        row.find('.size').text(o.formatFileSize(file.size));
-                        if (file.error) {
-                            row.find('.error').text(file.error);
-                        }
-                        rows = rows.add(row);
-                    });
-                    return rows;
-                }
-            });
+                return rows;
+            },
+            uploadTemplate: function (o) {
+                var rows = $();
+                $.each(o.files, function (index, file) {
+                    var row = $('#%%name%%_upl .fileupload-list-template .template-upload').clone();
+                    row.find('.name').text(file.name);
+                    row.find('.size').text(o.formatFileSize(file.size));
+                    if (file.error) {
+                        row.find('.error').text(file.error);
+                    }
+                    rows = rows.add(row);
+                });
+                return rows;
+            }
+        });
 
             //load files from the backend
             Ajax.genericAjaxCall("mediamanager", "fileUploadList", "&systemid=%%mediamanagerRepoId%%&folder=%%folder%%", function(data) {
@@ -670,6 +681,7 @@ Upload-Field for multiple files with progress bar
             }
 
             uploader.renderArchiveList();
+        })();
     </script>
 </input_upload_inline>
 
@@ -685,7 +697,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
                 <input id="%%calendarId%%" name="%%calendarId%%" class="form-control %%class%%" size="16" type="text" value="%%valuePlain%%" %%readonly%% autocomplete="off">
             </div>
             <script>
-                
+
                         $('#%%calendarId%%').datepicker({
                             format: Util.transformDateFormat('%%dateFormat%%', "bootstrap-datepicker"),
                             weekStart: 1,
@@ -702,7 +714,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
                             $('#%%calendarId%%').blur();
                             $('#%%calendarId%%').focus();
                         }
-            
+
             </script>
         </div>
     </div>
@@ -733,7 +745,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
         <div class="col-sm-1">
         </div>
         <script>
-          
+
                     $('#%%calendarId%%').datepicker({
                         format: Util.transformDateFormat('%%dateFormat%%', "bootstrap-datepicker"),
                         weekStart: 1,
@@ -750,7 +762,7 @@ in addition, a container for the calendar is needed. Use %%calendarContainerId%%
                         $('#%%calendarId%%').blur();
                         $('#%%calendarId%%').focus();
                     }
-          
+
         </script>
     </div>
 </input_datetime_simple>

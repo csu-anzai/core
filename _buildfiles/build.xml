@@ -259,12 +259,8 @@
         <exec executable="php" dir="${basedir}"  failonerror="on" >
             <arg line="-f buildProject.php ${tempPath} onlySetup"/>
         </exec>
-        <parallel>
-            <antcall target="compressCss" />
-        </parallel>
         <antcall target="cleanZipContent" />
     </target>
-
 
 
     <!-- triggers the installation of the project aka. creating the db-structure -->
@@ -328,27 +324,7 @@
     </target>
 
 
-    <target name="compressCss" description="Minifies the css files using the cleancss compressor">
-        <echo>Compressing css files</echo>
 
-        <copy todir="${basedir}${tempPath}">
-            <fileset dir="${basedir}${tempPath}">
-                <include name="**/*.css"/>
-                <exclude name="**/build/**/*.css"/>
-                <exclude name="**/composer/**/*.css"/>
-                <exclude name="**/jstests/**/*.css"/>
-            </fileset>
-            <globmapper from="*.css" to="*-full.css"/>
-        </copy>
-
-        <apply executable="${basedir}${jsPath}/node_modules/.bin/cleancss${script-suffix-cmd}" parallel="false" dest="${basedir}${tempPath}" verbose="false" failonerror="true">
-            <fileset dir="${basedir}${tempPath}" includes="**/*-full.css"/>
-            <arg line="--output"/>
-            <mapper type="glob" from="*-full.css" to="*.css"/>
-            <targetfile/>
-            <srcfile/>
-        </apply>
-    </target>
 
     <target name="lint" description="Perform syntax check of sourcecode files">
         <apply executable="${path.php}" failonerror="true" output="${basedir}${buildPath}/logs/lint.log">
