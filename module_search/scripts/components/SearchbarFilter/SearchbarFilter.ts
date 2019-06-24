@@ -5,6 +5,7 @@ import Multiselect from 'core/module_system/scripts/components/Multiselect/Multi
 import { FilterModule, User } from '../../Interfaces/SearchInterfaces'
 import Datepicker from 'core/module_system/scripts/components/Datepicker/Datepicker.vue'
 import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Autocomplete.vue'
+import { AutocompleteInterface, AutocompleteItem } from 'core/module_system/scripts/components/Autocomplete/AutcompleteInterfaces'
 
 @Component({ components: { Loader, Multiselect, Datepicker, Autocomplete } }) class SearchbarFilter extends Vue {
     @namespace('SearchModule').Action getFilterModules : any
@@ -57,8 +58,8 @@ import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Aut
             this.triggerSearch()
         }
     }
-    private onUserSelect (user : User) : void {
-        this.setSelectedUser(user.systemid)
+    private onUserSelect (userId : User) : void {
+        this.setSelectedUser(userId)
         if (this.searchQuery.length >= 2) {
             this.triggerSearch()
         }
@@ -71,6 +72,11 @@ import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Aut
     }
     private async onAutocompleteInput (e : string) : Promise<void> {
         this.getAutocompleteUsers(e)
+    }
+    public get parsedAutoCompleteData () : Array<AutocompleteItem> {
+        return this.autoCompleteUsers.map(user => {
+            return { label: user.icon + user.title, value: user.systemid, title: user.title }
+        })
     }
 }
 

@@ -22,8 +22,7 @@
           @delete="onUserDelete"
           :label="$t('search.search_users')"
           @input="onAutocompleteInput"
-          :jsonKey="'title'"
-          :data="autoCompleteUsers"
+          :data="parsedAutoCompleteData"
         ></Autocomplete>
         <Datepicker
           v-on:change="onStartDateChange"
