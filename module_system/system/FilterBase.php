@@ -71,7 +71,7 @@ abstract class FilterBase
      * @var boolean
      * @tableColumn agp_system.system_id
      */
-    private $bitViewRight = false;
+    protected $bitViewRight = false;
 
     /**
      * FilterBase constructor.

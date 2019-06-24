@@ -22,11 +22,13 @@ use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\ArraySectionIterator;
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Config;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Filesystem;
 use Kajona\System\System\HttpStatuscodes;
+use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Link;
 use Kajona\System\System\Logger;
 use Kajona\System\System\Model;
@@ -38,6 +40,9 @@ use Kajona\System\System\Rights;
 use Kajona\System\System\Root;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\UserUser;
+use Kajona\System\View\Components\Dynamicmenu\DynamicMenu;
+use Kajona\System\View\Components\Menu\Menu;
+use Kajona\System\View\Components\Menu\MenuItem;
 
 /**
  * Admin class of the mediamanager-module. Used to sync the repos with the filesystem and to upload / manage
@@ -1023,7 +1028,7 @@ HTML;
      * @return array
      * @throws Exception
      */
-    private function mediamanagerFileToJqueryFileuploadArray(MediamanagerFile $objFile)
+    private function mediamanagerFileToJqueryFileuploadArray(MediamanagerFile $objFile): array
     {
 
         $strDeleteButton = "";
@@ -1031,6 +1036,15 @@ HTML;
             $strLink = "javascript:Fileupload.deleteFile(\'{$objFile->getSystemid()}\')";
             $strDeleteButton = $this->objToolkit->listDeleteButton($objFile->getStrDisplayName(), $this->getLang("delete_file_question"), $strLink);
         }
+        $htmlMark = MediamanagerFile::getFileMarkerIcon($objFile->getIntMark());
+        if ($objFile->rightEdit()) {
+            $menu = new DynamicMenu(
+                $htmlMark,
+                Link::getLinkAdminXml("mediamanager", "apiFileMarksMenu", ["systemId" => $objFile->getStrSystemid()])
+            );
+            $htmlMark = $menu->renderComponent();
+        }
+
         return [
             "name" => $objFile->getStrName(),
             "createDate" => dateToString($objFile->getObjCreateDate()),
@@ -1038,7 +1052,53 @@ HTML;
             "url" => $objFile->rightRight2() ? _webpath_ . "/download.php?systemid=" . $objFile->getSystemid() : "",
             "systemid" => $objFile->getSystemid(),
             "deleteButton" => $strDeleteButton,
+            "mark" => $htmlMark,
         ];
+    }
+
+
+    /**
+     * @return string
+     * @responseType html
+     * @permissions edit
+     */
+    public function actionApiFileMarksMenu(): string
+    {
+        $systemId = Carrier::getInstance()->getParam('systemId');
+        $menu = new Menu();
+        $fileMarks = Config::getInstance("module_mediamanager", "config.php")->getConfig("file_marks");
+        foreach ($fileMarks as $key => $fileMark) {
+            $item = new MenuItem();
+            $item->setName($fileMark);
+            $item->setLink('#');
+            $item->setOnClick(" Mediamanager.editFileMark('{$systemId}', {$key}); return false; ");
+            $menu->addItem($item);
+        }
+        $menu->setRenderMenuContainer(false);
+        return $menu->renderComponent();
+    }
+
+    /**
+     * @return string
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
+     * @responseType html
+     * @permissions edit
+     */
+    public function actionApiFileMarksUpdate(): string
+    {
+        $systemId = Carrier::getInstance()->getParam('systemId');
+        $iconNumber = Carrier::getInstance()->getParam('iconNumber');
+
+        if (!isset($iconNumber)) {
+            return '';
+        }
+
+        /** @var MediamanagerFile $mediaFile */
+        $mediaFile = Objectfactory::getInstance()->getObject($systemId);
+        $mediaFile->setIntMark($iconNumber);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($mediaFile))->update($mediaFile);
+
+        return MediamanagerFile::getFileMarkerIcon($iconNumber);
     }
 
     /**
@@ -1080,7 +1140,7 @@ HTML;
                     $strReturn .= $this->objToolkit->genericAdminList(
                         $objSingleFile->getStrSystemid(),
                         $objSingleFile->getStrDisplayName(),
-                        AdminskinHelper::getAdminImage($objSingleFile->getStrIcon()[0]),
+                        MediamanagerFile::getFileMarkerIcon($objSingleFile->getIntMark()),
                         $objSingleFile->rightRight2() ? Link::getLinkAdminManual("href='" . _webpath_ . "/download.php?systemid=" . $objSingleFile->getSystemid() . "'", $this->getLang("action_download"), $this->getLang("action_download"), "icon_downloads") : "",
                         dateToString($objSingleFile->getObjCreateDate())
                     );
@@ -1135,9 +1195,12 @@ HTML;
         $objFilesystem->folderCreate($strTarget);
 
         $arrSynced = [];
+        $renamedFileObjects = [];
         /** @var MediamanagerFile $objCurFile */
         foreach ($arrFiles as $objCurFile) {
-            $objFilesystem->fileRename($objCurFile->getStrFilename(), $strTarget . "/" . basename($objCurFile->getStrFilename()));
+            $newFileName = $strTarget . "/" . basename($objCurFile->getStrFilename());
+            $objFilesystem->fileRename($objCurFile->getStrFilename(), $newFileName);
+            $renamedFileObjects[$newFileName] = $objCurFile;
             $arrSynced[] = $objCurFile->getStrName();
         }
 
@@ -1152,6 +1215,21 @@ HTML;
                 foreach ($arrGroups[$strRight] as $strGroup) {
                     $objRights->removeGroupFromRight($strGroup, $objNewRoot->getSystemid(), $strRight);
                 }
+            }
+        }
+        //save old file object parameters to the new file object
+        if (!empty($renamedFileObjects)) {
+            foreach ($renamedFileObjects as $fileName => $oldFileObject) {
+                $filter = new MediamanagerFileFilter();
+                $filter->setIntFileType(MediamanagerFile::$INT_TYPE_FILE);
+                $filter->setStrFilename($fileName);
+                /** @var MediamanagerFile $file */
+                foreach (MediamanagerFile::getObjectListFiltered($filter) as $file) {
+                    $file->setIntMark($oldFileObject->getIntMark());
+                    $file->setStrDescription($oldFileObject->getStrDescription());
+                    $file->setStrSubtitle($oldFileObject->getStrSubtitle());
+                    $this->objLifeCycleFactory->factory(get_class($file))->update($file);
+                };
             }
         }
 

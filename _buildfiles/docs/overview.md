@@ -33,6 +33,7 @@
 * [update_v4_to_v5](../../module_system/docs/update_v4_to_v5.md)
 * [webpack](../../module_system/docs/webpack.md)
 * [eslint](../../module_system/docs/eslint.md)
+* [cypress.io](../../module_system/docs/cypress.io.md)
 
 ## module_wizard
 * [manual_wizard](../../module_wizard/docs/manual_wizard.md)

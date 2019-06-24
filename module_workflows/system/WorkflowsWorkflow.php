@@ -66,14 +66,14 @@ class WorkflowsWorkflow extends \Kajona\System\System\Model implements \Kajona\S
      * @tableColumnDatatype int
      * @tableColumnIndex
      */
-    private $intState = "1";
+    private $intState = 1;
 
     /**
      * @var int
      * @tableColumn agp_workflows.workflows_runs
      * @tableColumnDatatype int
      */
-    private $intRuns = "0";
+    private $intRuns = 0;
 
     /**
      * @var string

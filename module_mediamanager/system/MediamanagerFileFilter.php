@@ -62,7 +62,7 @@ class MediamanagerFileFilter extends FilterBase
 
             case "strFilename":
                 if (!empty($strValue)) {
-                    return new OrmCondition(" {$strTableColumn} LIKE ? ", ["{$strValue}/%"]);
+                    return new OrmCondition(" {$strTableColumn} LIKE ? ", ["{$strValue}%"]);
                 }
                 break;
         }
