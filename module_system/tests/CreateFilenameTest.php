@@ -1,18 +1,26 @@
 <?php
 
-namespace Kajona\System\Tests;
+declare(strict_types=1);
 
-use Kajona\System\System\Date;
-use Kajona\System\System\DateFormatter;
-use Kajona\System\System\Lang;
+namespace Kajona\System\Tests;
 
 class CreateFilenameTest extends Testbase
 {
-    public function testFilename()
+    public function testStripsVerticalWhitespace(): void
     {
-        $this->assertEquals("Test.doc", createFilename("Test.doc"));
-        $this->assertEquals("Test.doc", createFilename("Test\n.doc"));
-        $this->assertEquals("Teaest.doc", createFilename("Teäst\n.doc"));
-        $this->assertEquals("Te st.doc", createFilename("Te st.doc"));
+        $this->assertSame("Test.doc", createFilename("Test.doc"));
+        $this->assertSame("Test.doc", createFilename("Test\n.doc"));
+    }
+
+    public function testStripsUmlautsAndWhitespace(): void
+    {
+        $this->assertSame("Teaest.doc", createFilename("Teäst\n.doc"));
+    }
+
+    public function testStripsWhitespace(): void
+    {
+        $this->assertSame("Test .doc", createFilename("Test\t.doc"));
+        $this->assertSame("Tes t.doc", createFilename("Tes\tt.doc"));
+        $this->assertSame("Te st.doc", createFilename("Te st.doc"));
     }
 }
