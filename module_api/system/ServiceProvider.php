@@ -41,11 +41,6 @@ class ServiceProvider implements ServiceProviderInterface
     const STR_AUTHORIZATION_FILETOKEN = "api_authorization_filetoken";
 
     /**
-     * @see BasicAuth
-     */
-    const STR_AUTHORIZATION_BASICAUTH = "api_authorization_basicauth";
-
-    /**
      * @see UserToken
      */
     const STR_AUTHORIZATION_USERTOKEN = "api_authorization_usertoken";
@@ -74,10 +69,6 @@ class ServiceProvider implements ServiceProviderInterface
             return new FileToken(
                 $c[self::STR_TOKEN_READER]
             );
-        };
-
-        $objContainer[self::STR_AUTHORIZATION_BASICAUTH] = function ($c) {
-            return new BasicAuth();
         };
 
         $objContainer[self::STR_AUTHORIZATION_USERTOKEN] = function ($c) {
