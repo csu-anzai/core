@@ -20,15 +20,28 @@ use Kajona\System\System\Security\PasswordExpiredException;
  */
 final class Session
 {
+    const SCOPE_SESSION = 1;
+    const SCOPE_REQUEST = 2;
 
+    /**
+     * @var string
+     */
     private $strKey = null;
 
+    /**
+     * @var array
+     */
     private $arrRequestArray;
 
-    public static $intScopeSession = 1;
     /**
      * @var int
-     * @deprecated use static fields instead
+     * @deprecated
+     */
+    public static $intScopeSession = 1;
+
+    /**
+     * @var int
+     * @deprecated
      */
     public static $intScopeRequest = 2;
 
@@ -51,6 +64,11 @@ final class Session
     private $objUser = null;
 
     private $bitClosed = false;
+
+    /**
+     * @var int
+     */
+    private $sessionScope = null;
 
     const STR_SESSION_ADMIN_LANG_KEY = "STR_SESSION_ADMIN_LANG_KEY";
 
@@ -103,6 +121,10 @@ final class Session
      */
     private function sessionStart()
     {
+        if ($this->sessionScope === self::SCOPE_REQUEST) {
+            return;
+        }
+
         if ($this->bitPhpSessionStarted || $this->bitClosed) {
             return;
         }
@@ -132,6 +154,10 @@ final class Session
      */
     public function sessionClose()
     {
+        if ($this->sessionScope === self::SCOPE_REQUEST) {
+            return;
+        }
+
         if (defined("_autotesting_") && _autotesting_ === true) {
             return;
         }
@@ -149,15 +175,18 @@ final class Session
      *
      * @param string $strKey
      * @param string $strValue
-     * @param int $intSessionScope one of Session::$intScopeRequest or Session::$intScopeSession
+     * @param int $intSessionScope - deprecated
      *
      * @throws Exception
      * @return bool
      */
     public function setSession($strKey, $strValue, $intSessionScope = 1)
     {
+        if ($this->sessionScope !== null) {
+            $intSessionScope = $this->sessionScope;
+        }
 
-        if ($intSessionScope == Session::$intScopeRequest) {
+        if ($intSessionScope === self::SCOPE_REQUEST) {
             $this->arrRequestArray[$strKey] = $strValue;
             return true;
         } else {
@@ -212,13 +241,17 @@ final class Session
      * Returns a value from the session
      *
      * @param string $strKey
-     * @param int $intScope one of Session::$intScopeRequest or Session::$intScopeSession
+     * @param int $intScope - deprecated
      *
      * @return string
      */
     public function getSession($strKey, $intScope = 1)
     {
-        if ($intScope == Session::$intScopeRequest) {
+        if ($this->sessionScope !== null) {
+            $intScope = $this->sessionScope;
+        }
+
+        if ($intScope === self::SCOPE_REQUEST) {
             if (!isset($this->arrRequestArray[$strKey])) {
                 return false;
             } else {
@@ -243,11 +276,11 @@ final class Session
      */
     public function sessionIsset($strKey)
     {
-        $this->sessionStart();
-        if (isset($_SESSION[$this->getSessionKey()][$strKey])) {
-            return true;
+        if ($this->sessionScope === self::SCOPE_REQUEST) {
+            return isset($this->arrRequestArray[$strKey]);
         } else {
-            return false;
+            $this->sessionStart();
+            return isset($_SESSION[$this->getSessionKey()][$strKey]);
         }
     }
 
@@ -260,9 +293,15 @@ final class Session
      */
     public function sessionUnset($strKey)
     {
-        $this->sessionStart();
-        if ($this->sessionIsset($strKey)) {
-            unset($_SESSION[$this->getSessionKey()][$strKey]);
+        if ($this->sessionScope === self::SCOPE_REQUEST) {
+            if (isset($this->arrRequestArray[$strKey])) {
+                unset($this->arrRequestArray[$strKey]);
+            }
+        } else {
+            $this->sessionStart();
+            if ($this->sessionIsset($strKey)) {
+                unset($_SESSION[$this->getSessionKey()][$strKey]);
+            }
         }
     }
 
@@ -483,6 +522,23 @@ final class Session
         return false;
     }
 
+    /**
+     * Authenticates the user for the current request without starting a session
+     *
+     * @param UserUser $targetUser
+     * @throws Exception
+     */
+    public function loginUserForRequest(UserUser $targetUser)
+    {
+        $this->bitBlockDbUpdate = true;
+        $this->bitClosed = true;
+        $this->sessionScope = self::SCOPE_REQUEST;
+
+        $this->setSession(self::STR_SESSION_USERID, $targetUser->getSystemid());
+        $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $targetUser->getArrGroupIds()));
+        $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $targetUser->getArrShortGroupIds()));
+        $this->initInternalSession();
+    }
 
     /**
      * Does all the internal login-handling
@@ -551,6 +607,10 @@ final class Session
      */
     public function logout()
     {
+        if ($this->sessionScope === self::SCOPE_REQUEST) {
+            return;
+        }
+
         Logger::getInstance()->info("User: ".$this->getUsername()." successfully logged out");
         UserLog::registerLogout();
 
