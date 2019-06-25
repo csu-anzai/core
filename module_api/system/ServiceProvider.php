@@ -6,7 +6,6 @@
 
 namespace Kajona\Api\System;
 
-use Kajona\Api\System\Authorization\BasicAuth;
 use Kajona\Api\System\Authorization\FileToken;
 use Kajona\Api\System\Authorization\UserToken;
 use Pimple\Container;

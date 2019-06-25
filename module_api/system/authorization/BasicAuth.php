@@ -7,8 +7,6 @@
 namespace Kajona\Api\System\Authorization;
 
 use Kajona\Api\System\AuthorizationInterface;
-use Kajona\Api\System\TokenReader;
-use Kajona\System\System\Database;
 use Kajona\System\System\Session;
 use Slim\Http\Request;
 
