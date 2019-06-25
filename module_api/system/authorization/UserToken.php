@@ -11,6 +11,9 @@ use Kajona\Api\System\AppContext;
 use Kajona\Api\System\AuthorizationInterface;
 use Kajona\Api\System\TokenReader;
 use Kajona\System\System\Database;
+use Kajona\System\System\Objectfactory;
+use Kajona\System\System\Session;
+use Kajona\System\System\UserUser;
 use Slim\Http\Request;
 
 /**
@@ -58,6 +61,13 @@ class UserToken implements AuthorizationInterface
         if (!validateSystemid($userId)) {
             return false;
         }
+
+        $user = Objectfactory::getInstance()->getObject($userId);
+        if (!$user instanceof UserUser) {
+            return false;
+        }
+
+        Session::getInstance()->loginUserForRequest($user);
 
         $context->setUserId($userId);
 
