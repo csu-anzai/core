@@ -6,9 +6,11 @@
 
 namespace Kajona\Api\System\Authorization;
 
+use Firebase\JWT\JWT;
 use Kajona\Api\System\AppContext;
 use Kajona\Api\System\AuthorizationInterface;
 use Kajona\Api\System\TokenReader;
+use Kajona\System\System\Database;
 use Slim\Http\Request;
 
 /**
@@ -17,18 +19,25 @@ use Slim\Http\Request;
  * @author christoph.kappestein@gmail.com
  * @since 7.1
  */
-class FileToken implements AuthorizationInterface
+class UserToken implements AuthorizationInterface
 {
+    /**
+     * @var Database
+     */
+    private $connection;
+
     /**
      * @var TokenReader
      */
     private $tokenReader;
 
     /**
+     * @param Database $connection
      * @param TokenReader $tokenReader
      */
-    public function __construct(TokenReader $tokenReader)
+    public function __construct(Database $connection, TokenReader $tokenReader)
     {
+        $this->connection = $connection;
         $this->tokenReader = $tokenReader;
     }
 
@@ -45,10 +54,42 @@ class FileToken implements AuthorizationInterface
             return false;
         }
 
-        if ($token !== $this->tokenReader->getToken()) {
+        $userId = $this->getUserIdForToken($token);
+        if (!validateSystemid($userId)) {
             return false;
         }
 
+        $context->setUserId($userId);
+
         return true;
+    }
+
+    private function getUserIdForToken(string $token): bool
+    {
+        if (empty($token)) {
+            return null;
+        }
+
+        // decode and validate JWT
+        $data = JWT::decode($token, $this->tokenReader->getToken());
+
+        // check whether uid is set
+        if (!isset($data["uid"])) {
+            return null;
+        }
+
+        $row = $this->connection->getPRow("SELECT user_id FROM agp_user_kajona WHERE user_accesstoken = ?", [$token]);
+
+        if (empty($row)) {
+            // access token does not exist
+            return null;
+        }
+
+        if ($data["uid"] !== $row["user_id"]) {
+            // JWT belongs to a different user
+            return null;
+        }
+
+        return $row["user_id"] ?? null;
     }
 }

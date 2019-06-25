@@ -6,6 +6,8 @@
 
 namespace Kajona\Api\System;
 
+use Slim\Http\Request;
+
 /**
  * AuthorizationInterface
  *
@@ -15,10 +17,12 @@ namespace Kajona\Api\System;
 interface AuthorizationInterface
 {
     /**
-     * Validates the authorization header and returns whether the access is allowed or not
+     * Validates the authorization header and adds optional specific attributes to the app context i.e. in case we can
+     * determine a user id. Returns a boolean indicating whether the request is authorized or not
      *
-     * @param string $header
+     * @param Request $request
+     * @param AppContext $context
      * @return bool
      */
-    public function authorize(string $header) : bool;
+    public function authorize(Request $request, AppContext $context): bool;
 }

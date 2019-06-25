@@ -6,8 +6,10 @@
 
 namespace Kajona\Api\System\Authorization;
 
+use Kajona\Api\System\AppContext;
 use Kajona\Api\System\AuthorizationInterface;
 use Kajona\System\System\Session;
+use Slim\Http\Request;
 
 /**
  * BasicAuth
@@ -20,16 +22,26 @@ class BasicAuth implements AuthorizationInterface
     /**
      * @inheritdoc
      */
-    public function authorize(string $header): bool
+    public function authorize(Request $request, AppContext $context): bool
     {
-        $header = explode(" ", $header, 2);
-        $type   = $header[0] ?? null;
-        $auth   = $header[1] ?? null;
+        $header = explode(" ", $request->getHeaderLine("Authorization"), 2);
+        $type = $header[0] ?? null;
+        $auth = $header[1] ?? null;
 
-        $parts    = explode(":", base64_decode($auth));
+        $parts = explode(":", base64_decode($auth));
         $username = $parts[0] ?? null;
         $password = $parts[1] ?? null;
 
-        return $type == "Basic" && Session::getInstance()->login($username, $password);
+        if ($type !== "Basic") {
+            return false;
+        }
+
+        if (!Session::getInstance()->login($username, $password)) {
+            return false;
+        }
+
+        $context->setUserId(Session::getInstance()->getUserID());
+
+        return true;
     }
 }
