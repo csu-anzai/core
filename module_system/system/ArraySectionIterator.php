@@ -15,7 +15,7 @@ namespace Kajona\System\System;
  * @package module_system
  * @author sidler@mulchprod.de
  */
-class ArraySectionIterator extends ArrayIterator
+class ArraySectionIterator extends ArrayIterator implements \JsonSerializable
 {
 
     private $intTotalElements;
@@ -164,4 +164,13 @@ class ArraySectionIterator extends ArrayIterator
         return parent::getElementsOnPage($this->intPageNumber);
     }
 
+    public function jsonSerialize()
+    {
+        return [
+            "totalEntries" => $this->getNumberOfElements(),
+            "itemsPerPage" => (int) $this->getIntElementsPerPage(),
+            "page" => $this->getPageNumber(),
+            "entries" => iterator_to_array($this),
+        ];
+    }
 }
