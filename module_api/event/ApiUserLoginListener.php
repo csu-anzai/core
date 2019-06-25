@@ -7,6 +7,7 @@
 namespace Kajona\Api\Event;
 
 use Firebase\JWT\JWT;
+use Kajona\Api\System\Authorization\UserToken;
 use Kajona\Api\System\ServiceProvider;
 use Kajona\Api\System\TokenReader;
 use Kajona\System\System\Carrier;
@@ -48,7 +49,7 @@ class ApiUserLoginListener implements GenericeventListenerInterface
                 "exp" => $exp,
             ];
 
-            $token = JWT::encode($payload, $tokenReader->getToken());
+            $token = JWT::encode($payload, $tokenReader->getToken(), UserToken::JWT_ALG);
 
             $user->setStrAccessToken($token);
             ServiceLifeCycleFactory::getLifeCycle(get_class($user))->update($user);
