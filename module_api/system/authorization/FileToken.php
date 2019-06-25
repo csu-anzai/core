@@ -6,7 +6,6 @@
 
 namespace Kajona\Api\System\Authorization;
 
-use Kajona\Api\System\AppContext;
 use Kajona\Api\System\AuthorizationInterface;
 use Kajona\Api\System\TokenReader;
 use Slim\Http\Request;
@@ -35,7 +34,7 @@ class FileToken implements AuthorizationInterface
     /**
      * @inheritdoc
      */
-    public function authorize(Request $request, AppContext $context): bool
+    public function authorize(Request $request): bool
     {
         $header = explode(" ", $request->getHeaderLine("Authorization"), 2);
         $type = $header[0] ?? null;

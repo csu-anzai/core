@@ -7,7 +7,6 @@
 namespace Kajona\Api\System\Authorization;
 
 use Firebase\JWT\JWT;
-use Kajona\Api\System\AppContext;
 use Kajona\Api\System\AuthorizationInterface;
 use Kajona\Api\System\TokenReader;
 use Kajona\System\System\Database;
@@ -17,7 +16,7 @@ use Kajona\System\System\UserUser;
 use Slim\Http\Request;
 
 /**
- * Simple authorization service which reads a static token on the filesystem and requires this token for every request
+ * Authorization service which uses the access token for a user
  *
  * @author christoph.kappestein@gmail.com
  * @since 7.1
@@ -49,7 +48,7 @@ class UserToken implements AuthorizationInterface
     /**
      * @inheritdoc
      */
-    public function authorize(Request $request, AppContext $context): bool
+    public function authorize(Request $request): bool
     {
         $header = explode(" ", $request->getHeaderLine("Authorization"), 2);
         $type = $header[0] ?? null;
@@ -70,8 +69,6 @@ class UserToken implements AuthorizationInterface
         }
 
         Session::getInstance()->loginUserForRequest($user);
-
-        $context->setUserId($userId);
 
         return true;
     }

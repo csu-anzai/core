@@ -92,14 +92,12 @@ class AppBuilder
                 $instance = $objectBuilder->factory($route["class"]);
 
                 try {
-                    $context = new AppContext();
-
                     $auth = $route["authorization"] ?? null;
                     if (!empty($auth)) {
                         /** @var AuthorizationInterface $authorization */
                         $authorization = $container->offsetGet("api_authorization_" . $auth);
 
-                        if (!$authorization->authorize($request, $context)) {
+                        if (!$authorization->authorize($request)) {
                             throw new UnauthorizedException("Request not authorized", "Bearer");
                         }
                     }
@@ -108,9 +106,9 @@ class AppBuilder
                     $httpContext = new HttpContext(new Request(new Uri($request->getUri()->__toString()), $request->getMethod(), $request->getHeaders()), $args);
 
                     if (in_array($request->getMethod(), ["GET", "HEAD"])) {
-                        $data = call_user_func_array([$instance, $route["methodName"]], [$httpContext, $context]);
+                        $data = call_user_func_array([$instance, $route["methodName"]], [$httpContext]);
                     } else {
-                        $data = call_user_func_array([$instance, $route["methodName"]], [$body, $httpContext, $context]);
+                        $data = call_user_func_array([$instance, $route["methodName"]], [$body, $httpContext]);
                     }
 
                     $response = $response->withHeader("Content-Type", "application/json")

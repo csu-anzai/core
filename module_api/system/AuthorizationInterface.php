@@ -21,8 +21,7 @@ interface AuthorizationInterface
      * determine a user id. Returns a boolean indicating whether the request is authorized or not
      *
      * @param Request $request
-     * @param AppContext $context
      * @return bool
      */
-    public function authorize(Request $request, AppContext $context): bool;
+    public function authorize(Request $request): bool;
 }
