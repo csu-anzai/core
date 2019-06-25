@@ -7,6 +7,8 @@
 namespace Kajona\Api\System\Authorization;
 
 use Kajona\Api\System\AuthorizationInterface;
+use Kajona\Api\System\TokenReader;
+use Kajona\System\System\Database;
 use Kajona\System\System\Session;
 use Slim\Http\Request;
 
@@ -19,6 +21,19 @@ use Slim\Http\Request;
  */
 class BasicAuth implements AuthorizationInterface
 {
+    /**
+     * @var Session
+     */
+    private $session;
+
+    /**
+     * @param Session $session
+     */
+    public function __construct(Session $session)
+    {
+        $this->session = $session;
+    }
+
     /**
      * @inheritdoc
      */
@@ -36,7 +51,7 @@ class BasicAuth implements AuthorizationInterface
             return false;
         }
 
-        if (!Session::getInstance()->login($username, $password)) {
+        if (!$this->session->login($username, $password)) {
             return false;
         }
 

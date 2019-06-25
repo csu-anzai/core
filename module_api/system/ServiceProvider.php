@@ -74,7 +74,8 @@ class ServiceProvider implements ServiceProviderInterface
         $objContainer[self::STR_AUTHORIZATION_USERTOKEN] = function ($c) {
             return new UserToken(
                 $c[\Kajona\System\System\ServiceProvider::STR_DB],
-                $c[self::STR_TOKEN_READER]
+                $c[self::STR_TOKEN_READER],
+                $c[\Kajona\System\System\ServiceProvider::STR_SESSION]
             );
         };
     }

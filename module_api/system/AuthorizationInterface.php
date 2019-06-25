@@ -6,6 +6,7 @@
 
 namespace Kajona\Api\System;
 
+use Kajona\System\System\Exception;
 use Slim\Http\Request;
 
 /**
@@ -22,6 +23,7 @@ interface AuthorizationInterface
      *
      * @param Request $request
      * @return bool
+     * @throws Exception
      */
     public function authorize(Request $request): bool;
 }

@@ -10,6 +10,7 @@ use Firebase\JWT\JWT;
 use Kajona\Api\System\AuthorizationInterface;
 use Kajona\Api\System\TokenReader;
 use Kajona\System\System\Database;
+use Kajona\System\System\Exception;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Session;
 use Kajona\System\System\UserUser;
@@ -36,13 +37,20 @@ class UserToken implements AuthorizationInterface
     private $tokenReader;
 
     /**
+     * @var Session
+     */
+    private $session;
+
+    /**
      * @param Database $connection
      * @param TokenReader $tokenReader
+     * @param Session $session
      */
-    public function __construct(Database $connection, TokenReader $tokenReader)
+    public function __construct(Database $connection, TokenReader $tokenReader, Session $session)
     {
         $this->connection = $connection;
         $this->tokenReader = $tokenReader;
+        $this->session = $session;
     }
 
     /**
@@ -68,7 +76,7 @@ class UserToken implements AuthorizationInterface
             return false;
         }
 
-        Session::getInstance()->loginUserForRequest($user);
+        $this->session->loginUserForRequest($user);
 
         return true;
     }
