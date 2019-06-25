@@ -11,7 +11,7 @@ use Slim\Http\Request;
 /**
  * AuthorizationInterface
  *
- * @author christoph.kappestein@gmail.com
+ * @author christoph.kappestein@artemeon.de
  * @since 7.1
  */
 interface AuthorizationInterface

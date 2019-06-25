@@ -13,7 +13,7 @@ use Slim\Http\Request;
 /**
  * Simple authorization service which reads a static token on the filesystem and requires this token for every request
  *
- * @author christoph.kappestein@gmail.com
+ * @author christoph.kappestein@artemeon.de
  * @since 7.1
  */
 class FileToken implements AuthorizationInterface

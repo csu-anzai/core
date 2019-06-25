@@ -13,7 +13,7 @@ use Slim\Http\Request;
 /**
  * Just a POC please dont use it since it starts a PHP session which makes your API stateful
  *
- * @author christoph.kappestein@gmail.com
+ * @author christoph.kappestein@artemeon.de
  * @since 7.1
  * @internal
  */

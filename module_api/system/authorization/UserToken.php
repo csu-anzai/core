@@ -18,7 +18,7 @@ use Slim\Http\Request;
 /**
  * Authorization service which uses the access token for a user
  *
- * @author christoph.kappestein@gmail.com
+ * @author christoph.kappestein@artemeon.de
  * @since 7.1
  */
 class UserToken implements AuthorizationInterface

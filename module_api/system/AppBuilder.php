@@ -24,7 +24,7 @@ use Slim\Http\Response as SlimResponse;
 /**
  * AppBuilder
  *
- * @author christoph.kappestein@gmail.com
+ * @author christoph.kappestein@artemeon.de
  * @since 7.1
  */
 class AppBuilder
