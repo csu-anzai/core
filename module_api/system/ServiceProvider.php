@@ -8,6 +8,7 @@ namespace Kajona\Api\System;
 
 use Kajona\Api\System\Authorization\BasicAuth;
 use Kajona\Api\System\Authorization\FileToken;
+use Kajona\Api\System\Authorization\UserToken;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
@@ -30,6 +31,11 @@ class ServiceProvider implements ServiceProviderInterface
     const STR_ENDPOINT_SCANNER = "api_endpoint_scanner";
 
     /**
+     * @see TokenReader
+     */
+    const STR_TOKEN_READER = "api_token_reader";
+
+    /**
      * @see FileToken
      */
     const STR_AUTHORIZATION_FILETOKEN = "api_authorization_filetoken";
@@ -38,6 +44,11 @@ class ServiceProvider implements ServiceProviderInterface
      * @see BasicAuth
      */
     const STR_AUTHORIZATION_BASICAUTH = "api_authorization_basicauth";
+
+    /**
+     * @see UserToken
+     */
+    const STR_AUTHORIZATION_USERTOKEN = "api_authorization_usertoken";
 
     public function register(Container $objContainer)
     {
@@ -55,12 +66,25 @@ class ServiceProvider implements ServiceProviderInterface
             );
         };
 
+        $objContainer[self::STR_TOKEN_READER] = function ($c) {
+            return new TokenReader();
+        };
+
         $objContainer[self::STR_AUTHORIZATION_FILETOKEN] = function ($c) {
-            return new FileToken();
+            return new FileToken(
+                $c[self::STR_TOKEN_READER]
+            );
         };
 
         $objContainer[self::STR_AUTHORIZATION_BASICAUTH] = function ($c) {
             return new BasicAuth();
+        };
+
+        $objContainer[self::STR_AUTHORIZATION_USERTOKEN] = function ($c) {
+            return new UserToken(
+                $c[\Kajona\System\System\ServiceProvider::STR_DB],
+                $c[self::STR_TOKEN_READER]
+            );
         };
     }
 }
