@@ -73,7 +73,7 @@ class AppBuilder
         $routes = $this->endpointScanner->getEndpoints();
 
         // add CORS middleware
-        $app->add(function(SlimRequest $request, SlimResponse $response, callable $next){
+        $app->add(function (SlimRequest $request, SlimResponse $response, callable $next) {
             $response = $response
                 ->withHeader('Access-Control-Allow-Origin', '*')
                 ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
@@ -88,16 +88,18 @@ class AppBuilder
         });
 
         foreach ($routes as $route) {
-            $app->map($route["httpMethod"], $route["path"], function(SlimRequest $request, SlimResponse $response, array $args) use ($route, $objectBuilder, $container){
+            $app->map($route["httpMethod"], $route["path"], function (SlimRequest $request, SlimResponse $response, array $args) use ($route, $objectBuilder, $container) {
                 $instance = $objectBuilder->factory($route["class"]);
 
                 try {
+                    $context = new AppContext();
+
                     $auth = $route["authorization"] ?? null;
                     if (!empty($auth)) {
                         /** @var AuthorizationInterface $authorization */
                         $authorization = $container->offsetGet("api_authorization_" . $auth);
 
-                        if (!$authorization->authorize($request->getHeaderLine("Authorization"))) {
+                        if (!$authorization->authorize($request, $context)) {
                             throw new UnauthorizedException("Request not authorized", "Bearer");
                         }
                     }
@@ -106,9 +108,9 @@ class AppBuilder
                     $httpContext = new HttpContext(new Request(new Uri($request->getUri()->__toString()), $request->getMethod(), $request->getHeaders()), $args);
 
                     if (in_array($request->getMethod(), ["GET", "HEAD"])) {
-                        $data = call_user_func_array([$instance, $route["methodName"]], [$httpContext]);
+                        $data = call_user_func_array([$instance, $route["methodName"]], [$httpContext, $context]);
                     } else {
-                        $data = call_user_func_array([$instance, $route["methodName"]], [$body, $httpContext]);
+                        $data = call_user_func_array([$instance, $route["methodName"]], [$body, $httpContext, $context]);
                     }
 
                     $response = $response->withHeader("Content-Type", "application/json")
