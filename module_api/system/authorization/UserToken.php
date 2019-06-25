@@ -24,6 +24,8 @@ use Slim\Http\Request;
  */
 class UserToken implements AuthorizationInterface
 {
+    const JWT_ALG = 'HS256';
+
     /**
      * @var Database
      */
@@ -74,28 +76,28 @@ class UserToken implements AuthorizationInterface
         return true;
     }
 
-    private function getUserIdForToken(string $token): bool
+    private function getUserIdForToken(string $token): ?string
     {
         if (empty($token)) {
             return null;
         }
 
         // decode and validate JWT
-        $data = JWT::decode($token, $this->tokenReader->getToken());
+        $data = JWT::decode($token, $this->tokenReader->getToken(), [self::JWT_ALG]);
 
         // check whether uid is set
-        if (!isset($data["uid"])) {
+        if (!isset($data->uid)) {
             return null;
         }
 
-        $row = $this->connection->getPRow("SELECT user_id FROM agp_user_kajona WHERE user_accesstoken = ?", [$token]);
+        $row = $this->connection->getPRow("SELECT user_id FROM agp_user WHERE user_accesstoken = ?", [$token]);
 
         if (empty($row)) {
             // access token does not exist
             return null;
         }
 
-        if ($data["uid"] !== $row["user_id"]) {
+        if ($data->uid !== $row["user_id"]) {
             // JWT belongs to a different user
             return null;
         }
