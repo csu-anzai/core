@@ -15,6 +15,7 @@ use Kajona\System\System\GenericeventListenerInterface;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\SystemEventidentifier;
+use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserUser;
 
 /**
@@ -38,10 +39,13 @@ class ApiUserLoginListener implements GenericeventListenerInterface
         $user = Objectfactory::getInstance()->getObject($strUserid);
 
         if ($user instanceof UserUser) {
-            // every time the user executes a login we generate a new access token
+            // every time the user executes a login we generate a new access token which expires also after the session
+            // release time
+            $exp = time() + (int) SystemSetting::getConfigValue("_system_release_time_");
+
             $payload = [
                 "uid" => $user->getSystemid(),
-                "exp" => time() + (60 * 60), // by default the token is valid for one hour
+                "exp" => $exp,
             ];
 
             $token = JWT::encode($payload, $tokenReader->getToken());
