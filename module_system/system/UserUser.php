@@ -108,6 +108,13 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
     private $strAuthcode = "";
 
     /**
+     * @var string
+     * @tableColumn agp_user.user_accesstoken
+     * @tableColumnDatatype char254
+     */
+    private $strAccessToken = "";
+
+    /**
      * @var int
      * @tableColumn agp_user.user_items_per_page
      * @tableColumnDatatype int
@@ -550,6 +557,22 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
     public function setStrAuthcode($strAuthcode)
     {
         $this->strAuthcode = $strAuthcode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStrAccessToken()
+    {
+        return $this->strAccessToken;
+    }
+
+    /**
+     * @param string $strAccessToken
+     */
+    public function setStrAccessToken($strAccessToken)
+    {
+        $this->strAccessToken = $strAccessToken;
     }
 
     /**
