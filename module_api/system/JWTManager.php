@@ -9,6 +9,7 @@ namespace Kajona\Api\System;
 use Firebase\JWT\JWT;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserUser;
+use UnexpectedValueException;
 
 /**
  * JWTManager
@@ -66,13 +67,11 @@ class JWTManager
         $data = JWT::decode($token, $this->projectSecret->getToken(), [self::ALG]);
 
         if (!isset($data->sub) || $data->sub !== $userId) {
-            // JWT belongs to a different user
-            return false;
+            throw new UnexpectedValueException('Token belongs to a different user');
         }
 
         if (!isset($data->iss) || $data->iss !== _webpath_) {
-            // JWT was issued from another AGP instance
-            return false;
+            throw new UnexpectedValueException('Token was issued from a different AGP instance');
         }
 
         return true;
