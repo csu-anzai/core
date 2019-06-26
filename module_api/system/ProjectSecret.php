@@ -7,12 +7,12 @@
 namespace Kajona\Api\System;
 
 /**
- * TokenReader
+ * ProjectSecret
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.1
  */
-class TokenReader
+class ProjectSecret
 {
     /**
      * Returns the secret token for the project or throws an exception in case a token file was not generated

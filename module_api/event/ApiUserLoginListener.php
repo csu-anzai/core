@@ -6,17 +6,14 @@
 
 namespace Kajona\Api\Event;
 
-use Firebase\JWT\JWT;
-use Kajona\Api\System\Authorization\UserToken;
+use Kajona\Api\System\JWTManager;
 use Kajona\Api\System\ServiceProvider;
-use Kajona\Api\System\TokenReader;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\GenericeventListenerInterface;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\SystemEventidentifier;
-use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserUser;
 
 /**
@@ -34,29 +31,14 @@ class ApiUserLoginListener implements GenericeventListenerInterface
     {
         list($strUserid) = $arrArguments;
 
-        /** @var TokenReader $tokenReader */
-        $tokenReader = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_TOKEN_READER);
+        /** @var JWTManager $jwtManager */
+        $jwtManager = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_JWT_MANAGER);
 
         $user = Objectfactory::getInstance()->getObject($strUserid);
 
         if ($user instanceof UserUser && $user->getIntRecordStatus() == 1) {
-            // every time the user executes a login we generate a new access token which expires also after the session
-            // release time
-            $exp = time() + (int) SystemSetting::getConfigValue("_system_release_time_");
-
-            $payload = [
-                "iss" => _webpath_,
-                "sub" => $user->getSystemid(),
-                "exp" => $exp,
-                "iat" => time(),
-                "name" => $user->getStrUsername(),
-                "lastname" => $user->getStrName(),
-                "forename" => $user->getStrForename(),
-                "lang" => $user->getStrAdminlanguage(),
-                "admin" => $user->getIntAdmin(),
-            ];
-
-            $token = JWT::encode($payload, $tokenReader->getToken(), UserToken::JWT_ALG);
+            // every time the user executes a login we generate a new access token
+            $token = $jwtManager->generate($user);
 
             $user->setStrAccessToken($token);
             ServiceLifeCycleFactory::getLifeCycle(get_class($user))->update($user);

@@ -30,9 +30,14 @@ class ServiceProvider implements ServiceProviderInterface
     const STR_ENDPOINT_SCANNER = "api_endpoint_scanner";
 
     /**
-     * @see TokenReader
+     * @see ProjectSecret
      */
-    const STR_TOKEN_READER = "api_token_reader";
+    const STR_PROJECT_SECRET = "api_project_secret";
+
+    /**
+     * @see JWTManager
+     */
+    const STR_JWT_MANAGER = "api_jwt_manager";
 
     /**
      * @see FileToken
@@ -60,20 +65,26 @@ class ServiceProvider implements ServiceProviderInterface
             );
         };
 
-        $objContainer[self::STR_TOKEN_READER] = function ($c) {
-            return new TokenReader();
+        $objContainer[self::STR_PROJECT_SECRET] = function ($c) {
+            return new ProjectSecret();
+        };
+
+        $objContainer[self::STR_JWT_MANAGER] = function ($c) {
+            return new JWTManager(
+                $c[self::STR_PROJECT_SECRET]
+            );
         };
 
         $objContainer[self::STR_AUTHORIZATION_FILETOKEN] = function ($c) {
             return new FileToken(
-                $c[self::STR_TOKEN_READER]
+                $c[self::STR_PROJECT_SECRET]
             );
         };
 
         $objContainer[self::STR_AUTHORIZATION_USERTOKEN] = function ($c) {
             return new UserToken(
                 $c[\Kajona\System\System\ServiceProvider::STR_DB],
-                $c[self::STR_TOKEN_READER],
+                $c[self::STR_JWT_MANAGER],
                 $c[\Kajona\System\System\ServiceProvider::STR_SESSION]
             );
         };

@@ -7,7 +7,7 @@
 namespace Kajona\Api\System\Authorization;
 
 use Kajona\Api\System\AuthorizationInterface;
-use Kajona\Api\System\TokenReader;
+use Kajona\Api\System\ProjectSecret;
 use Slim\Http\Request;
 
 /**
@@ -19,16 +19,16 @@ use Slim\Http\Request;
 class FileToken implements AuthorizationInterface
 {
     /**
-     * @var TokenReader
+     * @var ProjectSecret
      */
-    private $tokenReader;
+    private $projectSecret;
 
     /**
-     * @param TokenReader $tokenReader
+     * @param ProjectSecret $projectSecret
      */
-    public function __construct(TokenReader $tokenReader)
+    public function __construct(ProjectSecret $projectSecret)
     {
-        $this->tokenReader = $tokenReader;
+        $this->projectSecret = $projectSecret;
     }
 
     /**
@@ -44,7 +44,7 @@ class FileToken implements AuthorizationInterface
             return false;
         }
 
-        if ($token !== $this->tokenReader->getToken()) {
+        if ($token !== $this->projectSecret->getToken()) {
             return false;
         }
 

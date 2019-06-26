@@ -6,9 +6,8 @@
 
 namespace Kajona\Api\System\Authorization;
 
-use Firebase\JWT\JWT;
 use Kajona\Api\System\AuthorizationInterface;
-use Kajona\Api\System\TokenReader;
+use Kajona\Api\System\JWTManager;
 use Kajona\System\System\Database;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Session;
@@ -23,17 +22,15 @@ use Slim\Http\Request;
  */
 class UserToken implements AuthorizationInterface
 {
-    const JWT_ALG = 'HS256';
-
     /**
      * @var Database
      */
     private $connection;
 
     /**
-     * @var TokenReader
+     * @var JWTManager
      */
-    private $tokenReader;
+    private $jwtManager;
 
     /**
      * @var Session
@@ -42,13 +39,13 @@ class UserToken implements AuthorizationInterface
 
     /**
      * @param Database $connection
-     * @param TokenReader $tokenReader
+     * @param JWTManager $jwtManager
      * @param Session $session
      */
-    public function __construct(Database $connection, TokenReader $tokenReader, Session $session)
+    public function __construct(Database $connection, JWTManager $jwtManager, Session $session)
     {
         $this->connection = $connection;
-        $this->tokenReader = $tokenReader;
+        $this->jwtManager = $jwtManager;
         $this->session = $session;
     }
 
@@ -86,26 +83,17 @@ class UserToken implements AuthorizationInterface
             return null;
         }
 
-        // decode and validate JWT
-        $data = JWT::decode($token, $this->tokenReader->getToken(), [self::JWT_ALG]);
-
-        // check whether uid is set
-        if (!isset($data->uid)) {
-            return null;
-        }
-
         $row = $this->connection->getPRow("SELECT user_id FROM agp_user WHERE user_accesstoken = ?", [$token]);
+        $userId = $row["user_id"] ?? null;
 
-        if (empty($row)) {
-            // access token does not exist
+        if (!validateSystemid($userId)) {
             return null;
         }
 
-        if ($data->uid !== $row["user_id"]) {
-            // JWT belongs to a different user
+        if (!$this->jwtManager->validate($token, $userId)) {
             return null;
         }
 
-        return $row["user_id"] ?? null;
+        return $userId;
     }
 }
