@@ -35,7 +35,7 @@ class BasicAuth implements AuthorizationInterface
     /**
      * @inheritdoc
      */
-    public function authorize(Request $request): bool
+    public function isAuthorized(Request $request): bool
     {
         $header = explode(" ", $request->getHeaderLine("Authorization"), 2);
         $type = $header[0] ?? null;

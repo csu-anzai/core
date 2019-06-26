@@ -12,7 +12,10 @@ use Kajona\System\System\UserUser;
 use UnexpectedValueException;
 
 /**
- * JWTManager
+ * Service which generates and validates JWTs. It uses the project secret token as key for the signature. Note the data
+ * inside the token is not encrypted means every user can decode the token and see the payload, but we can validate on
+ * the server side that the token was not modified through the signature. So please _DONT_ put any sensitive information
+ * inside the token
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.1

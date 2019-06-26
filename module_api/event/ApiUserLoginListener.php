@@ -23,9 +23,13 @@ use Kajona\System\System\UserUser;
 class ApiUserLoginListener implements GenericeventListenerInterface
 {
     /**
+     * Generates a new token every time the user executes a login. This token is intended for our internal javascript
+     * code to talk to our API layer, it can not be used by external API consumer since the token always changes
+     *
      * @param string $strEventName
      * @param array $arrArguments
      * @return bool
+     * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
     public function handleEvent($strEventName, array $arrArguments)
     {
@@ -37,7 +41,6 @@ class ApiUserLoginListener implements GenericeventListenerInterface
         $user = Objectfactory::getInstance()->getObject($strUserid);
 
         if ($user instanceof UserUser && $user->getIntRecordStatus() == 1) {
-            // every time the user executes a login we generate a new access token
             $token = $jwtManager->generate($user);
 
             $user->setStrAccessToken($token);

@@ -11,7 +11,8 @@ use Kajona\Api\System\ProjectSecret;
 use Slim\Http\Request;
 
 /**
- * Simple authorization service which reads a static token on the filesystem and requires this token for every request
+ * Simple authorization service which reads a static token on the filesystem and requires this token for every request.
+ * Useful for i.e. the installer where we dont have a working database
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.1
@@ -34,7 +35,7 @@ class FileToken implements AuthorizationInterface
     /**
      * @inheritdoc
      */
-    public function authorize(Request $request): bool
+    public function isAuthorized(Request $request): bool
     {
         $header = explode(" ", $request->getHeaderLine("Authorization"), 2);
         $type = $header[0] ?? null;

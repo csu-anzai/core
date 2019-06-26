@@ -97,7 +97,7 @@ class AppBuilder
                         /** @var AuthorizationInterface $authorization */
                         $authorization = $container->offsetGet("api_authorization_" . $auth);
 
-                        if (!$authorization->authorize($request)) {
+                        if (!$authorization->isAuthorized($request)) {
                             throw new UnauthorizedException("Request not authorized", "Bearer");
                         }
                     }

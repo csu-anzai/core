@@ -15,7 +15,7 @@ use Kajona\System\System\UserUser;
 use Slim\Http\Request;
 
 /**
- * Authorization service which uses the access token for a user
+ * Authorization service which uses the access token from a user
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.1
@@ -52,7 +52,7 @@ class UserToken implements AuthorizationInterface
     /**
      * @inheritdoc
      */
-    public function authorize(Request $request): bool
+    public function isAuthorized(Request $request): bool
     {
         $header = explode(" ", $request->getHeaderLine("Authorization"), 2);
         $type = $header[0] ?? null;

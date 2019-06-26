@@ -10,7 +10,8 @@ use Kajona\System\System\Exception;
 use Slim\Http\Request;
 
 /**
- * AuthorizationInterface
+ * Implemented by services which can authorize an incoming request. Those services can be used at your api controller
+ * by using the "authorization" annotation. Then every incoming request is checked with this service
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.1
@@ -18,12 +19,11 @@ use Slim\Http\Request;
 interface AuthorizationInterface
 {
     /**
-     * Validates the authorization header and adds optional specific attributes to the app context i.e. in case we can
-     * determine a user id. Returns a boolean indicating whether the request is authorized or not
+     * Returns a boolean indicating whether the request is authorized or not
      *
      * @param Request $request
      * @return bool
      * @throws Exception
      */
-    public function authorize(Request $request): bool;
+    public function isAuthorized(Request $request): bool;
 }

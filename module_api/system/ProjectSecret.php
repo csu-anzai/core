@@ -7,7 +7,8 @@
 namespace Kajona\Api\System;
 
 /**
- * ProjectSecret
+ * Service which returns a secret token for the current project. By default we generate a simple token file under
+ * the project/ folder
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.1
