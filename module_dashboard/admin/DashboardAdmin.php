@@ -159,7 +159,7 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
             $return .= $this->objToolkit->addToContentToolbar(Link::getLinkAdminDialog("dashboard", "listWidgets", [], $this->getLang("action_add_widget_to_dashboard"), $this->getLang("action_add_widget_to_dashboard"), "icon_new"));
         }
 
-$params = Carrier::getAllParams();
+        $params = Carrier::getAllParams();
         unset($params["module"]);
         unset($params["action"]);
 
@@ -594,6 +594,29 @@ JS;
     }
 
     /**
+     * @param Date|null $startDate
+     * @param Date|null $endDate
+     * @return array
+     */
+    private function getCalendarEventsList(?Date $startDate = null, ?Date $endDate = null): array
+    {
+        $events = [];
+        $arrCategories = EventRepository::getAllCategories();
+        $objStartDate = empty($startDate) ? new Date(strtotime($this->getParam("start"))) : $startDate;
+        $objEndDate = empty($endDate) ? new Date(strtotime($this->getParam("end"))) : $endDate;
+
+        foreach ($arrCategories as $arrCategory) {
+            foreach ($arrCategory as $strKey => $strValue) {
+                if ($this->objSession->getSession($strKey) != "disabled") {
+                    $events = array_merge($events, EventRepository::getEventsByCategoryAndDate($strKey, $objStartDate, $objEndDate));
+                }
+            }
+        }
+
+        return $events;
+    }
+
+    /**
      * @return string
      * @permissions view
      * @responseType json
@@ -601,18 +624,7 @@ JS;
     protected function actionGetCalendarEvents()
     {
 
-        $arrEvents = array();
-        $arrCategories = EventRepository::getAllCategories();
-        $objStartDate = new Date(strtotime($this->getParam("start")));
-        $objEndDate = new Date(strtotime($this->getParam("end")));
-
-        foreach ($arrCategories as $arrCategory) {
-            foreach ($arrCategory as $strKey => $strValue) {
-                if ($this->objSession->getSession($strKey) != "disabled") {
-                    $arrEvents = array_merge($arrEvents, EventRepository::getEventsByCategoryAndDate($strKey, $objStartDate, $objEndDate));
-                }
-            }
-        }
+        $arrEvents = $this->getCalendarEventsList();
 
         $arrData = array();
         foreach ($arrEvents as $objEvent) {
@@ -640,6 +652,54 @@ JS;
         }
 
         return json_encode($arrData);
+    }
+
+    /**
+     * @return string
+     * @permissions view
+     */
+    public function actionGetiCalendarEvents()
+    {
+        define('ICAL_FORMAT', 'Ymd\THis\Z');
+        define('ICAL_START', '-3 month');
+        define('ICAL_END', '+1 year');
+
+        $events = $this->getCalendarEventsList(new Date(strtotime(ICAL_START)), new Date(strtotime(ICAL_END)));
+        $icalObject = <<<ICALHEADER
+BEGIN:VCALENDAR
+VERSION:2.0
+METHOD:PUBLISH
+PRODID:-//AGP Events//DE\n
+ICALHEADER;
+
+        foreach ($events as $event) {
+            if ($event->getObjStartDate() instanceof Date && $event->getObjEndDate() instanceof Date) {
+                $eventStartDate = date(ICAL_FORMAT, $event->getObjStartDate()->getTimeInOldStyle());
+                $eventEndDate = date(ICAL_FORMAT, $event->getObjEndDate()->getTimeInOldStyle());
+            } elseif ($event->getObjValidDate() instanceof Date) {
+                $eventStartDate = date('Ymd\T000000', $event->getObjValidDate()->getTimeInOldStyle());
+                $eventEndDate = date('Ymd\T000000', $event->getObjValidDate()->getTimeInOldStyle());
+            } else {
+                continue;
+            }
+            $summary = strip_tags($event->getStrDisplayName());
+            $description = $event->getStrHref();
+            $icalObject .= <<<ICALBODY
+BEGIN:VEVENT
+DTSTART:$eventStartDate
+DTEND:$eventEndDate
+SUMMARY:$summary
+DESCRIPTION:$description
+END:VEVENT\n
+ICALBODY;
+        }
+        $icalObject .= "END:VCALENDAR";
+
+        // Set the headers
+        header('Content-type: text/calendar; charset=utf-8');
+        header('Content-Disposition: attachment; filename="agpCalendar.ics"');
+
+        return $icalObject;
     }
 
     /**

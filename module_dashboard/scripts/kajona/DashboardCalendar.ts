@@ -6,10 +6,6 @@ import Loader from '../../../module_system/scripts/kajona/Loader'
 
 class DashboardCalendar {
     public static init () {
-        Loader.loadFile([
-            '/core/module_dashboard/scripts/fullcalendar/fullcalendar.min.css'
-        ])
-
         $('#dashboard-calendar').fullCalendar({
             header: {
                 left: 'prev,next',
