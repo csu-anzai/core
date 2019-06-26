@@ -537,7 +537,10 @@ final class Session
         $this->setSession(self::STR_SESSION_USERID, $targetUser->getSystemid());
         $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $targetUser->getArrGroupIds()));
         $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $targetUser->getArrShortGroupIds()));
-        $this->initInternalSession();
+
+        $this->getObjInternalSession()->setStrLoginstatus(SystemSession::$LOGINSTATUS_LOGGEDIN);
+        $this->getObjInternalSession()->setStrUserid($targetUser->getSystemid());
+        $this->getObjInternalSession()->setStrLoginprovider($targetUser->getStrSubsystem());
     }
 
     /**
