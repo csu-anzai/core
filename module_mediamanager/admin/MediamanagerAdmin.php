@@ -1068,7 +1068,7 @@ HTML;
         if ($objFile->rightEdit()) {
             $menu = new DynamicMenu(
                 $htmlMark,
-                Link::getLinkAdminXml("mediamanager", "apiFileMarksMenu", ["systemId" => $objFile->getStrSystemid()])
+                Link::getLinkAdminXml("mediamanager", "apiFileMarksMenu", ["systemid" => $objFile->getStrSystemid()])
             );
             $htmlMark = $menu->renderComponent();
         }
@@ -1092,7 +1092,7 @@ HTML;
      */
     public function actionApiFileMarksMenu(): string
     {
-        $systemId = Carrier::getInstance()->getParam('systemId');
+        $systemId = Carrier::getInstance()->getParam('systemid');
         $menu = new Menu();
         $fileMarks = Config::getInstance("module_mediamanager", "config.php")->getConfig("file_marks");
         foreach ($fileMarks as $key => $fileMark) {
@@ -1118,7 +1118,7 @@ HTML;
      */
     public function actionApiFileMarksUpdate(): string
     {
-        $systemId = Carrier::getInstance()->getParam('systemId');
+        $systemId = Carrier::getInstance()->getParam('systemid');
         $iconNumber = Carrier::getInstance()->getParam('iconNumber');
 
         if (!isset($iconNumber)) {
