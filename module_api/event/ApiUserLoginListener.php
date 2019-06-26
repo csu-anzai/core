@@ -39,14 +39,21 @@ class ApiUserLoginListener implements GenericeventListenerInterface
 
         $user = Objectfactory::getInstance()->getObject($strUserid);
 
-        if ($user instanceof UserUser) {
+        if ($user instanceof UserUser && $user->getIntRecordStatus() == 1) {
             // every time the user executes a login we generate a new access token which expires also after the session
             // release time
             $exp = time() + (int) SystemSetting::getConfigValue("_system_release_time_");
 
             $payload = [
-                "uid" => $user->getSystemid(),
+                "iss" => _webpath_,
+                "sub" => $user->getSystemid(),
                 "exp" => $exp,
+                "iat" => time(),
+                "name" => $user->getStrUsername(),
+                "lastname" => $user->getStrName(),
+                "forename" => $user->getStrForename(),
+                "lang" => $user->getStrAdminlanguage(),
+                "admin" => $user->getIntAdmin(),
             ];
 
             $token = JWT::encode($payload, $tokenReader->getToken(), UserToken::JWT_ALG);
