@@ -110,7 +110,7 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
     /**
      * @var string
      * @tableColumn agp_user.user_accesstoken
-     * @tableColumnDatatype char254
+     * @tableColumnDatatype char500
      */
     private $strAccessToken = "";
 
