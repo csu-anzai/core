@@ -65,7 +65,7 @@ class JWTManager
      * @param string $userId
      * @return bool
      */
-    public function validate(string $token, string $userId)
+    public function validate(string $token, string $userId): bool
     {
         $data = JWT::decode($token, $this->projectSecret->getToken(), [self::ALG]);
 
