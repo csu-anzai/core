@@ -72,6 +72,10 @@ class UserToken implements AuthorizationInterface
             return false;
         }
 
+        if ($user->getIntRecordStatus() != 1) {
+            return false;
+        }
+
         $this->session->loginUserForRequest($user);
 
         return true;
