@@ -2,8 +2,8 @@ import $ from 'jquery'
 import Lang from 'core/module_system/scripts/kajona/Lang'
 import Folderview from 'core/module_system/scripts/kajona/Folderview'
 
-const ChartDataLabels = require('chartjs-plugin-datalabels');
-var Chart = require('chart.js');
+const ChartDataLabels = require('chartjs-plugin-datalabels')
+var Chart = require('chart.js')
 
 /**
  * Chartjs service with helper procedures.
@@ -26,7 +26,7 @@ class ChartjsHelper {
         if (dataPoint.actionhandler && dataPoint.actionhandler != null) {
             /* eslint no-eval: 0 */
             // FIXME find another alternative for eval because it can be harmful
-            var objFunction = eval('(' + dataPoint.actionhandler + ')');
+            var objFunction = eval('(' + dataPoint.actionhandler + ')')
             if ($.isFunction(objFunction)) {
                 objFunction.call(this, ev, seriesIndex, pointIndex, null, dataPoint)
             }
@@ -46,8 +46,8 @@ class ChartjsHelper {
             dataPoint.actionhandlervalue != null &&
             dataPoint.actionhandlervalue !== ''
         ) {
-            Folderview.dialog.setContentIFrame(dataPoint.actionhandlervalue);
-            Folderview.dialog.setTitle('');
+            Folderview.dialog.setContentIFrame(dataPoint.actionhandlervalue)
+            Folderview.dialog.setTitle('')
             Folderview.dialog.init()
         }
     }
@@ -60,12 +60,12 @@ class ChartjsHelper {
    * @returns {string}
    */
     public static dataShowPercentage (value: number, ctx: any) {
-        var sum: number = 0;
-        var dataArr = ctx.chart.data.datasets[0].data;
+        var sum: number = 0
+        var dataArr = ctx.chart.data.datasets[0].data
         dataArr.map(function (data: number) {
             sum += data
-        });
-        var percentage = ((value * 100) / sum).toFixed(0);
+        })
+        var percentage = ((value * 100) / sum).toFixed(0)
         return percentage !== '0' ? percentage + '%' : ''
     }
 
@@ -77,14 +77,14 @@ class ChartjsHelper {
    * @returns {string}
    */
     public static addThousandSeparator (value: number, ctx: any) {
-        let strValue = value.toString();
-        let strThousandSeparator = '.';
+        let strValue = value.toString()
+        let strThousandSeparator = '.'
         Lang.fetchSingleProperty('system', 'numberStyleThousands', function (
             strText: string
         ) {
             strThousandSeparator = strText
-        });
-        strValue = strValue.replace(/\B(?=(\d{3})+(?!\d))/g, strThousandSeparator);
+        })
+        strValue = strValue.replace(/\B(?=(\d{3})+(?!\d))/g, strThousandSeparator)
         return strValue
     }
 
@@ -105,12 +105,12 @@ class ChartjsHelper {
      * @param newObj : object that contains override properties
      */
     public static extend (deepMerge: boolean, extendedObj: any, newObj: any): any {
-        let extended = {};
-        let deep = false;
-        let i = 0;
+        let extended = {}
+        let deep = false
+        let i = 0
 
         if (typeof arguments[0] === 'boolean') {
-            deep = arguments[0];
+            deep = arguments[0]
             i++
         }
         // Merge the object into the extended object
@@ -131,7 +131,7 @@ class ChartjsHelper {
                     }
                 }
             }
-        };
+        }
         for (; i < arguments.length; i++) {
             merge(arguments[i])
         }
@@ -149,8 +149,8 @@ class ChartjsHelper {
             true,
             Chart.defaults.global,
             chartData['defaults']['global']
-        );
-        ctx.style.backgroundColor = chartOptions['backgroundColor'];
+        )
+        ctx.style.backgroundColor = chartOptions['backgroundColor']
 
         if (
             typeof chartOptions['createImageLink'] !== 'undefined' &&
@@ -189,17 +189,17 @@ class ChartjsHelper {
         ) {
             chartData['options']['scales']['xAxes'][0]['ticks']['userCallback'] = function (value: number, ctx: any) {
                 return ChartjsHelper.addThousandSeparator(value, ctx)
-            };
+            }
             chartData['options']['scales']['yAxes'][0]['ticks']['userCallback'] = function (value: number, ctx: any) {
                 return ChartjsHelper.addThousandSeparator(value, ctx)
             }
         }
 
         chartData['options']['onClick'] = function (evt: any) {
-            var item = this.getElementAtEvent(evt)[0];
+            var item = this.getElementAtEvent(evt)[0]
             if (typeof item !== 'undefined') {
-                var datasetIndex = item._datasetIndex;
-                var index = item._index;
+                var datasetIndex = item._datasetIndex
+                var index = item._index
                 ChartjsHelper.onClickHandler(
                     evt,
                     index,
@@ -207,20 +207,20 @@ class ChartjsHelper {
                     chartData['data']['datasets'][datasetIndex]['dataPoints'][index]
                 )
             }
-        };
+        }
 
         var myChart = new Chart.Chart(ctx, {
             type: chartData['type'],
             data: chartData['data'],
             options: chartData['options']
-        });
+        })
 
         function createExportLink () {
-            var url = myChart.toBase64Image();
+            var url = myChart.toBase64Image()
             $('#' + chartOptions['strLinkExportId']).attr('href', url)
         }
     }
 }
 
-(<any>window).ChartjsHelper = ChartjsHelper;
+(<any>window).ChartjsHelper = ChartjsHelper
 export default ChartjsHelper
