@@ -43,8 +43,8 @@ class ChartjsHelper {
     public static dataPointOnClickURLHandler (dataPoint: any) {
         if (
             dataPoint.actionhandlervalue &&
-        dataPoint.actionhandlervalue != null &&
-      dataPoint.actionhandlervalue !== ''
+            dataPoint.actionhandlervalue != null &&
+            dataPoint.actionhandlervalue !== ''
         ) {
             Folderview.dialog.setContentIFrame(dataPoint.actionhandlervalue);
             Folderview.dialog.setTitle('');
@@ -109,26 +109,33 @@ class ChartjsHelper {
         let deep = false;
         let i = 0;
 
-        if (typeof (arguments[0]) === 'boolean') {
+        if (typeof arguments[0] === 'boolean') {
             deep = arguments[0];
-            i++;
+            i++
         }
         // Merge the object into the extended object
         let merge = function (obj) {
             for (let prop in obj) {
                 if (obj.hasOwnProperty(prop)) {
-                    if (deep && Object.prototype.toString.call(obj[prop]) === '[object Object]') {
-                        extended[prop] = ChartjsHelper.extend(true, extended[prop], obj[prop]);
+                    if (
+                        deep &&
+                        Object.prototype.toString.call(obj[prop]) === '[object Object]'
+                    ) {
+                        extended[prop] = ChartjsHelper.extend(
+                            true,
+                            extended[prop],
+                            obj[prop]
+                        )
                     } else {
-                        extended[prop] = obj[prop];
+                        extended[prop] = obj[prop]
                     }
                 }
             }
         };
         for (; i < arguments.length; i++) {
-            merge(arguments[i]);
+            merge(arguments[i])
         }
-        return extended;
+        return extended
     }
     /**
    * Creates the chart using "chartjs" library and set parameters
@@ -138,15 +145,18 @@ class ChartjsHelper {
    * @param chartOptions
    */
     public static createChart (ctx: any, chartData: any, chartOptions: any) {
-
-        Chart.defaults.global = ChartjsHelper.extend(true, Chart.defaults.global, chartData['defaults']['global']);
+        Chart.defaults.global = ChartjsHelper.extend(
+            true,
+            Chart.defaults.global,
+            chartData['defaults']['global']
+        );
 
         console.log(Chart.defaults.global);
         ctx.style.backgroundColor = chartOptions['backgroundColor'];
 
         if (
             typeof chartOptions['createImageLink'] !== 'undefined' &&
-      chartOptions['createImageLink']
+            chartOptions['createImageLink']
         ) {
             chartData['options']['animation'] = {
                 onComplete: createExportLink
@@ -155,7 +165,7 @@ class ChartjsHelper {
 
         if (
             typeof chartOptions['notShowNullValues'] !== 'undefined' &&
-      chartOptions['notShowNullValues']
+            chartOptions['notShowNullValues']
         ) {
             chartData['options']['plugins']['datalabels'] = {
                 formatter: function (value: number) {
@@ -166,7 +176,7 @@ class ChartjsHelper {
 
         if (
             typeof chartOptions['percentageValues'] !== 'undefined' &&
-      chartOptions['percentageValues']
+            chartOptions['percentageValues']
         ) {
             chartData['options']['plugins']['datalabels'] = {
                 formatter: function (value: number, ctx: any) {
@@ -177,7 +187,7 @@ class ChartjsHelper {
 
         if (
             typeof chartOptions['addThousandSeparator'] !== 'undefined' &&
-      chartOptions['addThousandSeparator']
+            chartOptions['addThousandSeparator']
         ) {
             chartData['options']['scales']['xAxes'][0]['ticks']['userCallback'] = function (value: number, ctx: any) {
                 return ChartjsHelper.addThousandSeparator(value, ctx)
