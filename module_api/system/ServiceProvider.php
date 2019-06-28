@@ -22,69 +22,69 @@ class ServiceProvider implements ServiceProviderInterface
     /**
      * @see AppBuilder
      */
-    const STR_APP_BUILDER = "api_app_builder";
+    const APP_BUILDER = "api_app_builder";
 
     /**
      * @see EndpointScanner
      */
-    const STR_ENDPOINT_SCANNER = "api_endpoint_scanner";
+    const ENDPOINT_SCANNER = "api_endpoint_scanner";
 
     /**
      * @see ProjectSecret
      */
-    const STR_PROJECT_SECRET = "api_project_secret";
+    const PROJECT_SECRET = "api_project_secret";
 
     /**
      * @see JWTManager
      */
-    const STR_JWT_MANAGER = "api_jwt_manager";
+    const JWT_MANAGER = "api_jwt_manager";
 
     /**
      * @see FileToken
      */
-    const STR_AUTHORIZATION_FILETOKEN = "api_authorization_filetoken";
+    const AUTHORIZATION_FILETOKEN = "api_authorization_filetoken";
 
     /**
      * @see UserToken
      */
-    const STR_AUTHORIZATION_USERTOKEN = "api_authorization_usertoken";
+    const AUTHORIZATION_USERTOKEN = "api_authorization_usertoken";
 
     public function register(Container $container)
     {
-        $container[self::STR_APP_BUILDER] = function ($c) {
+        $container[self::APP_BUILDER] = function ($c) {
             return new AppBuilder(
-                $c[self::STR_ENDPOINT_SCANNER],
+                $c[self::ENDPOINT_SCANNER],
                 $c[\Kajona\System\System\ServiceProvider::STR_OBJECT_BUILDER],
                 $c
             );
         };
 
-        $container[self::STR_ENDPOINT_SCANNER] = function ($c) {
+        $container[self::ENDPOINT_SCANNER] = function ($c) {
             return new EndpointScanner(
                 $c[\Kajona\System\System\ServiceProvider::STR_CACHE_MANAGER]
             );
         };
 
-        $container[self::STR_PROJECT_SECRET] = function ($c) {
+        $container[self::PROJECT_SECRET] = function ($c) {
             return new ProjectSecret();
         };
 
-        $container[self::STR_JWT_MANAGER] = function ($c) {
+        $container[self::JWT_MANAGER] = function ($c) {
             return new JWTManager(
-                $c[self::STR_PROJECT_SECRET]
+                $c[self::PROJECT_SECRET]
             );
         };
 
-        $container[self::STR_AUTHORIZATION_FILETOKEN] = function ($c) {
+        $container[self::AUTHORIZATION_FILETOKEN] = function ($c) {
             return new FileToken(
-                $c[self::STR_PROJECT_SECRET]
+                $c[self::PROJECT_SECRET]
             );
         };
 
-        $container[self::STR_AUTHORIZATION_USERTOKEN] = function ($c) {
+        $container[self::AUTHORIZATION_USERTOKEN] = function ($c) {
             return new UserToken(
                 $c[\Kajona\System\System\ServiceProvider::STR_DB],
-                $c[self::STR_JWT_MANAGER],
+                $c[self::JWT_MANAGER],
                 $c[\Kajona\System\System\ServiceProvider::STR_SESSION]
             );
         };
