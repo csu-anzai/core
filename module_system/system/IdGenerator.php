@@ -7,8 +7,17 @@ declare(strict_types=1);
 
 namespace Kajona\System\System;
 
+use function fclose;
+use function fgets;
+use function file_exists;
+use function fopen;
+use function fseek;
+use function fwrite;
+use Kajona\System\System\Exceptions\UnableToCreateIdFileException;
+use Kajona\System\System\Exceptions\UnableToReadIdFileException;
+use Kajona\System\System\Exceptions\UnableToWriteInIdFileException;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
-
+use RuntimeException;
 
 /**
  * Model for a idgenerator record object itself
@@ -23,13 +32,15 @@ use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 class IdGenerator extends Model implements ModelInterface
 {
 
+    private const ID_LOCK_FILE = _realpath_ . '/project/temp/id-generator-lock.txt';
+
     /**
      * @var string
      * @tableColumn agp_idgenerator.generator_key
      * @tableColumnDatatype char20
      * @tableColumnIndex
      */
-    private $strKey = "";
+    private $strKey = '';
 
     /**
      * @var integer
@@ -41,33 +52,103 @@ class IdGenerator extends Model implements ModelInterface
     /**
      * Generates an id for an specific key. Creates a new entry if the key does not exist
      *
-     * @param string $strKey
-     *
+     * @param string $key
      * @return integer
+     * @throws Exception
+     * @throws Lifecycle\ServiceLifeCycleUpdateException
      */
-    public static function generateNextId(string $strKey): int
+    public static function generateNextId(string $key): int
     {
-        $objORM = new OrmObjectlist();
-        $objORM->addWhereRestriction(new OrmPropertyCondition("strKey", OrmComparatorEnum::Equal(), $strKey));
+        $ormObjectlist = new OrmObjectlist();
+        $ormObjectlist->addWhereRestriction(new OrmPropertyCondition('strKey', OrmComparatorEnum::Equal(), $key));
 
-        $arrResult = $objORM->getObjectList(get_called_class());
+        $result = $ormObjectlist->getObjectList(get_called_class());
 
-        if (empty($arrResult)) {
-            $intId = 1;
+        if (!$idFileExists = self::idFileExists()) {
+            self::createIdFile();
+        }
+        $lastId = $idFileExists ? self::getLastIdOfIdFile() : 1;
 
-            $objIdGenerator = new IdGenerator();
-            $objIdGenerator->setStrKey($strKey);
-            $objIdGenerator->setIntCount($intId);
-            ServiceLifeCycleFactory::getLifeCycle(get_class($objIdGenerator))->update($objIdGenerator);
+        if (empty($result)) {
+            $id = $idFileExists ? $lastId + 1 : $lastId;
+            $idGenerator = new IdGenerator();
+            $idGenerator->setStrKey($key);
+            $idGenerator->setIntCount($id);
+            self::updateLastIdOfIdFile($id);
+            ServiceLifeCycleFactory::getLifeCycle(get_class($idGenerator))->update($idGenerator);
         } else {
-            /* @var IdGenerator $objIdGenerator */
-            $objIdGenerator = current($arrResult);
-            $intId = $objIdGenerator->getIntCount() + 1;
-            $objIdGenerator->setIntCount($intId);
-            ServiceLifeCycleFactory::getLifeCycle(get_class($objIdGenerator))->update($objIdGenerator);
+            /* @var IdGenerator $idGenerator */
+            $idGenerator = current($result);
+            $id = $idFileExists ? $lastId + 1 : $idGenerator->getIntCount() + 1;
+            $idGenerator->setIntCount($id);
+            self::updateLastIdOfIdFile($id);
+            ServiceLifeCycleFactory::getLifeCycle(get_class($idGenerator))->update($idGenerator);
         }
 
-        return $intId;
+        return $id;
+    }
+
+
+    /**
+     * @return bool
+     */
+    private static function idFileExists(): bool
+    {
+        return file_exists(self::ID_LOCK_FILE);
+    }
+
+    /**
+     * throws UnableToCreateIdFileException
+     */
+    private static function createIdFile(): void
+    {
+        try {
+            $file = fopen(self::ID_LOCK_FILE, 'w');
+            fclose($file);
+        } catch (RuntimeException $exception) {
+            throw new UnableToCreateIdFileException($exception->getMessage());
+        }
+    }
+
+    /**
+     * @return int
+     * @throws UnableToReadIdFileException
+     */
+    private static function getLastIdOfIdFile(): int
+    {
+        try {
+            $file = fopen(self::ID_LOCK_FILE, 'r');
+            $pointer = -1;
+            fseek($file, $pointer, SEEK_END);
+            $line = fgets($file);
+            while ($line !== "\n" || $line !== "\r") {
+                fseek($file, $pointer--, SEEK_END);
+                $line = fgets($file);
+            }
+            fclose($file);
+        } catch (RuntimeException $exception) {
+            throw new UnableToReadIdFileException($exception->getMessage());
+        }
+
+        return (int) $line;
+    }
+
+    /**
+     * @param int $newId
+     * @return bool
+     * @throws UnableToWriteInIdFileException
+     */
+    private static function updateLastIdOfIdFile(int $newId): bool
+    {
+        try {
+            $file = fopen(self::ID_LOCK_FILE, 'r');
+            fwrite($file, $newId);
+            fclose($file);
+        } catch (RuntimeException $exception) {
+            throw new UnableToWriteInIdFileException($exception->getMessage());
+        }
+
+        return true;
     }
 
     /**
@@ -80,7 +161,7 @@ class IdGenerator extends Model implements ModelInterface
      */
     public function getStrIcon(): string
     {
-        return "icon_workflow";
+        return 'icon_workflow';
     }
 
     /**
@@ -90,7 +171,7 @@ class IdGenerator extends Model implements ModelInterface
      */
     public function getStrLongDescription(): string
     {
-        return $this->intCount."";
+        return $this->intCount . '';
     }
 
     /**
@@ -112,11 +193,11 @@ class IdGenerator extends Model implements ModelInterface
     }
 
     /**
-     * @param string $strKey
+     * @param string $key
      */
-    public function setStrKey(string $strKey)
+    public function setStrKey(string $key): void
     {
-        $this->strKey = $strKey;
+        $this->strKey = $key;
     }
 
     /**
@@ -128,11 +209,11 @@ class IdGenerator extends Model implements ModelInterface
     }
 
     /**
-     * @param integer $intCount
+     * @param int $count
      */
-    public function setIntCount(int $intCount)
+    public function setIntCount(int $count): void
     {
-        $this->intCount = $intCount;
+        $this->intCount = $count;
     }
 
 }
