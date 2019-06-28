@@ -104,7 +104,7 @@ class ChartjsHelper {
      * @param extendedObj : object that will be extended
      * @param newObj : object that contains override properties
      */
-    public static extend(deepMerge: boolean, extendedObj: any, newObj: any): any {
+    public static extend (deepMerge: boolean, extendedObj: any, newObj: any): any {
         let extended = {};
         let deep = false;
         let i = 0;
