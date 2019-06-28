@@ -49,9 +49,9 @@ class ServiceProvider implements ServiceProviderInterface
      */
     const STR_AUTHORIZATION_USERTOKEN = "api_authorization_usertoken";
 
-    public function register(Container $objContainer)
+    public function register(Container $container)
     {
-        $objContainer[self::STR_APP_BUILDER] = function ($c) {
+        $container[self::STR_APP_BUILDER] = function ($c) {
             return new AppBuilder(
                 $c[self::STR_ENDPOINT_SCANNER],
                 $c[\Kajona\System\System\ServiceProvider::STR_OBJECT_BUILDER],
@@ -59,29 +59,29 @@ class ServiceProvider implements ServiceProviderInterface
             );
         };
 
-        $objContainer[self::STR_ENDPOINT_SCANNER] = function ($c) {
+        $container[self::STR_ENDPOINT_SCANNER] = function ($c) {
             return new EndpointScanner(
                 $c[\Kajona\System\System\ServiceProvider::STR_CACHE_MANAGER]
             );
         };
 
-        $objContainer[self::STR_PROJECT_SECRET] = function ($c) {
+        $container[self::STR_PROJECT_SECRET] = function ($c) {
             return new ProjectSecret();
         };
 
-        $objContainer[self::STR_JWT_MANAGER] = function ($c) {
+        $container[self::STR_JWT_MANAGER] = function ($c) {
             return new JWTManager(
                 $c[self::STR_PROJECT_SECRET]
             );
         };
 
-        $objContainer[self::STR_AUTHORIZATION_FILETOKEN] = function ($c) {
+        $container[self::STR_AUTHORIZATION_FILETOKEN] = function ($c) {
             return new FileToken(
                 $c[self::STR_PROJECT_SECRET]
             );
         };
 
-        $objContainer[self::STR_AUTHORIZATION_USERTOKEN] = function ($c) {
+        $container[self::STR_AUTHORIZATION_USERTOKEN] = function ($c) {
             return new UserToken(
                 $c[\Kajona\System\System\ServiceProvider::STR_DB],
                 $c[self::STR_JWT_MANAGER],
