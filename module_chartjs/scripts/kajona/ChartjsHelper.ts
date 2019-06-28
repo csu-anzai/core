@@ -150,8 +150,6 @@ class ChartjsHelper {
             Chart.defaults.global,
             chartData['defaults']['global']
         );
-
-        console.log(Chart.defaults.global);
         ctx.style.backgroundColor = chartOptions['backgroundColor'];
 
         if (
