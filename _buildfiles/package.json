@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "author": "",
   "scripts": {
-    "build": "webpack --mode production --env.NODE_ENV=production --progress",
+    "build": "npm run test && webpack --mode production --env.NODE_ENV=production --progress",
     "dev": "webpack --watch --mode development --env.NODE_ENV=development --progress",
     "analyse": "webpack --mode production --env.NODE_ENV=production --progress --config webpack.analyse.js",
     "cypress": "./node_modules/.bin/cypress open",
+    "test" : "./node_modules/.bin/cypress run" , 
     "installEslint": "npm i -g eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin @vue/eslint-config-standard @vue/eslint-config-typescript eslint-plugin-import eslint-plugin-node eslint-plugin-promise eslint-plugin-standard eslint-plugin-vue"
   },
   "dependencies": {
