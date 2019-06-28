@@ -9,6 +9,7 @@
 // ***********************************************************
 
 const webpack = require('@cypress/webpack-preprocessor')
+const wbPack = require('webpack')
 const { VueLoaderPlugin } = require('vue-loader')
 const path = require('path')
 const webpackOptions = {
@@ -62,7 +63,13 @@ const webpackOptions = {
         ]
     },
     plugins: [
-        new VueLoaderPlugin()
+        new VueLoaderPlugin(),
+        new wbPack.ProvidePlugin({
+            // Automatically load modules instead of having to import or require them everywhere. needed for alot of jquery based modules
+            jQuery: 'jquery',
+            $: 'jquery',
+            jquery: 'jquery'
+        })
     ],
     resolve: {
         modules: [path.resolve(__dirname, '../../node_modules')], // necessary to resolve npm packages
