@@ -528,7 +528,7 @@ final class Session
      * @param UserUser $targetUser
      * @throws Exception
      */
-    public function loginUserForRequest(UserUser $targetUser)
+    public function loginUserForRequest(UserUser $targetUser): void
     {
         $this->bitBlockDbUpdate = true;
         $this->bitClosed = true;
