@@ -63,7 +63,7 @@ class UserToken implements AuthorizationInterface
         }
 
         $userId = $this->getUserIdForToken($token);
-        if (!validateSystemid($userId)) {
+        if ($userId === null) {
             return false;
         }
 
@@ -72,7 +72,7 @@ class UserToken implements AuthorizationInterface
             return false;
         }
 
-        if ($user->getIntRecordStatus() != 1) {
+        if ($user->getIntRecordStatus() !== 1) {
             return false;
         }
 
