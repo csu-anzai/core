@@ -43,18 +43,18 @@ class JWTManager
      */
     public function generate(UserUser $user): string
     {
-        $exp = time() + (int) SystemSetting::getConfigValue("_system_release_time_");
+        $exp = time() + (int) SystemSetting::getConfigValue('_system_release_time_');
 
         $payload = [
-            "iss" => _webpath_,
-            "sub" => $user->getSystemid(),
-            "exp" => $exp,
-            "iat" => time(),
-            "name" => $user->getStrUsername(),
-            "lastname" => $user->getStrName(),
-            "forename" => $user->getStrForename(),
-            "lang" => $user->getStrAdminlanguage(),
-            "admin" => $user->getIntAdmin(),
+            'iss' => _webpath_,
+            'sub' => $user->getSystemid(),
+            'exp' => $exp,
+            'iat' => time(),
+            'name' => $user->getStrUsername(),
+            'lastname' => $user->getStrName(),
+            'forename' => $user->getStrForename(),
+            'lang' => $user->getStrAdminlanguage(),
+            'admin' => $user->getIntAdmin(),
         ];
 
         return JWT::encode($payload, $this->projectSecret->getToken(), self::ALG);
