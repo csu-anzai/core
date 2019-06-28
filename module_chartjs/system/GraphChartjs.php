@@ -59,17 +59,16 @@ class GraphChartjs implements GraphInterfaceFronted, \JsonSerializable
                         ],
                     ],
                 ],
-            ]
+            ],
         ],
         'defaults' => [
             'global' => [
                 'defaultFontSize' => 10,
-                'defaultFontFamily' => '"Open Sans","Helvetica Neue","Helvetica","Arial","sans-serif"'
-                ,
+                'defaultFontFamily' => '"Open Sans","Helvetica Neue","Helvetica","Arial","sans-serif"',
                 'elements' => [
                     'line' => [
                         'fill' => false,
-                        'lineTension' => 0.9
+                        'lineTension' => 0.9,
                     ]
                 ],
                 'tooltips' => [
@@ -78,17 +77,17 @@ class GraphChartjs implements GraphInterfaceFronted, \JsonSerializable
                     'borderWidth' => 0.5,
                     'borderColor' => 'rgba(0,0,0,0.8)',
                     'bodyFontColor' => '#000',
-                    'titleFontColor' => '#000'
+                    'titleFontColor' => '#000',
                 ],
                 'legend' => [
                     'labels' => [
-                        'boxWidth' => 12
-                    ]
+                        'boxWidth' => 12,
+                    ],
                 ],
                 'maintainAspectRatio' => false
 
-            ]
-        ]
+            ],
+        ],
     ];
 
     /**
