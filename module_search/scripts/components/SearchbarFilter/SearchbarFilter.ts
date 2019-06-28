@@ -5,7 +5,7 @@ import Multiselect from 'core/module_system/scripts/components/Multiselect/Multi
 import { FilterModule, User } from '../../Interfaces/SearchInterfaces'
 import Datepicker from 'core/module_system/scripts/components/Datepicker/Datepicker.vue'
 import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Autocomplete.vue'
-
+import Util from 'core/module_system/scripts/kajona/Util'
 @Component({ components: { Loader, Multiselect, Datepicker, Autocomplete } }) class SearchbarFilter extends Vue {
     @namespace('SearchModule').Action getFilterModules : any
     @namespace('SearchModule').Action setSelectedIds : any
@@ -71,6 +71,9 @@ import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Aut
     }
     private async onAutocompleteInput (e : string) : Promise<void> {
         this.getAutocompleteUsers(e)
+    }
+    private get datepickerFormat () : string {
+        return Util.transformDateFormat(<string> this.$i18n.t('system.dateStyleShort'), 'bootstrap-datepicker')
     }
 }
 

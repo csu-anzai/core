@@ -28,8 +28,13 @@
         <Datepicker
           v-on:change="onStartDateChange"
           :label="$t('search.form_search_changestartdate')"
+          :format="datepickerFormat"
         ></Datepicker>
-        <Datepicker v-on:change="onEndDateChange" :label="$t('search.form_search_changeenddate')"></Datepicker>
+        <Datepicker
+          v-on:change="onEndDateChange"
+          :label="$t('search.form_search_changeenddate')"
+          :format="datepickerFormat"
+        ></Datepicker>
       </div>
     </div>
   </div>

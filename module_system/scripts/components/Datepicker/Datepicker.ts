@@ -4,14 +4,15 @@ import uuid from 'uuid//v1'
 import Util from 'core/module_system/scripts/kajona/Util'
 @Component class Datepicker extends Vue {
 @Prop({ type: String, required: true }) label : string
+@Prop({ type: String, required: true }) format : string
 private id : string = uuid()
 
 private mounted () : void {
     var input = $('#' + this.id).datepicker({
-        format: Util.transformDateFormat(<string> this.$i18n.t('system.dateStyleShort'), 'bootstrap-datepicker'),
+        format: this.format,
         weekStart: 1,
         autoclose: true,
-        language: KAJONA_LANGUAGE,
+        language: KAJONA_LANGUAGE || 'de',
         todayHighlight: true,
         todayBtn: 'linked',
         daysOfWeekHighlighted: '0,6',
