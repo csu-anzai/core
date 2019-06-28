@@ -26,19 +26,19 @@ class ApiUserLoginListener implements GenericeventListenerInterface
      * Generates a new token every time the user executes a login. This token is intended for our internal javascript
      * code to talk to our API layer, it can not be used by external API consumer since the token always changes
      *
-     * @param string $strEventName
-     * @param array $arrArguments
+     * @param string $eventName
+     * @param array $arguments
      * @return bool
      * @throws \Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException
      */
-    public function handleEvent($strEventName, array $arrArguments)
+    public function handleEvent($eventName, array $arguments)
     {
-        list($strUserid) = $arrArguments;
+        list($userId) = $arguments;
 
         /** @var JWTManager $jwtManager */
         $jwtManager = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_JWT_MANAGER);
 
-        $user = Objectfactory::getInstance()->getObject($strUserid);
+        $user = Objectfactory::getInstance()->getObject($userId);
 
         if ($user instanceof UserUser && $user->getIntRecordStatus() == 1) {
             $token = $jwtManager->generate($user);
