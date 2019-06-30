@@ -1,5 +1,5 @@
 <template>
-  <div class="form-horizontal">
+  <form class="form-horizontal">
     <div class="row">
       <div class="col-sm-12 col-md-12 col-lg-12" id="toggleFilters">
         <p @click="toggleFilter" class="btn btn-default">
@@ -37,8 +37,7 @@
         ></Datepicker>
       </div>
     </div>
-  </div>
+  </form>
 </template>
 <script lang="ts" src="./SearchbarFilter.ts">
 </script>
-
