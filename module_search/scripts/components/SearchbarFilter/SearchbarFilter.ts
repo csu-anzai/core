@@ -7,7 +7,7 @@ import Datepicker from 'core/module_system/scripts/components/Datepicker/Datepic
 import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Autocomplete.vue'
 import { AutocompleteInterface, AutocompleteItem } from 'core/module_system/scripts/components/Autocomplete/AutcompleteInterfaces'
 
-@Component({ components: { Loader, Multiselect, Datepicker, Autocomplete } }) class SearchbarFilter extends Vue {
+@Component({ components: { Loader, Multiselect, Datepicker, Autocomplete } }) class SearchbarFilter extends Vue implements AutocompleteInterface {
     @namespace('SearchModule').Action getFilterModules : any
     @namespace('SearchModule').Action setSelectedIds : any
     @namespace('SearchModule').Action triggerSearch : any
@@ -20,6 +20,7 @@ import { AutocompleteInterface, AutocompleteItem } from 'core/module_system/scri
     @namespace('SearchModule').State searchQuery : string
     @namespace('SearchModule').State selectedIds : Array<string>
     @namespace('SearchModule').State autoCompleteUsers : Array<User>
+    @namespace('SearchModule').State fetchingUsers : boolean
 
     private filterIsOpen : boolean = false
 

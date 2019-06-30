@@ -20,8 +20,9 @@
         <Autocomplete
           @select="onUserSelect"
           @delete="onUserDelete"
-          :label="$t('search.search_users')"
           @input="onAutocompleteInput"
+          :loading="fetchingUsers"
+          :label="$t('search.search_users')"
           :data="parsedAutoCompleteData"
         ></Autocomplete>
         <Datepicker
@@ -35,4 +36,3 @@
 </template>
 <script lang="ts" src="./SearchbarFilter.ts">
 </script>
-
