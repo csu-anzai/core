@@ -7,9 +7,8 @@ import Datepicker from 'core/module_system/scripts/components/Datepicker/Datepic
 import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Autocomplete.vue'
 import { AutocompleteInterface, AutocompleteItem } from 'core/module_system/scripts/components/Autocomplete/AutcompleteInterfaces'
 import Util from 'core/module_system/scripts/kajona/Util'
-@Component({ components: { Loader, Multiselect, Datepicker, Autocomplete } }) class SearchbarFilter extends Vue implements AutocompleteInterface {
 
-@Component({ components: { Loader, Multiselect, Datepicker, Autocomplete } }) class SearchbarFilter extends Vue {
+    @Component({ components: { Loader, Multiselect, Datepicker, Autocomplete } }) class SearchbarFilter extends Vue implements AutocompleteInterface {
     @namespace('SearchModule').Action getFilterModules : any
     @namespace('SearchModule').Action setSelectedIds : any
     @namespace('SearchModule').Action triggerSearch : any
@@ -61,7 +60,7 @@ import Util from 'core/module_system/scripts/kajona/Util'
             this.triggerSearch()
         }
     }
-    private onUserSelect (userId : User) : void {
+    private onUserSelect (userId : string) : void {
         this.setSelectedUser(userId)
         if (this.searchQuery.length >= 2) {
             this.triggerSearch()
@@ -84,6 +83,6 @@ import Util from 'core/module_system/scripts/kajona/Util'
     private get datepickerFormat () : string {
         return Util.transformDateFormat(<string> this.$i18n.t('system.dateStyleShort'), 'bootstrap-datepicker')
     }
-}
+    }
 
 export default SearchbarFilter
