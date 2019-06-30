@@ -5,7 +5,7 @@
       <input type="text" :id="inputId" class="form-control" v-model="input">
 
       <span class="form-control-feedback loading-feedback">
-        <i class="fa fa-keyboard-o"></i>
+          <i class="fa fa-keyboard-o" :id="inputIconId"></i>
       </span>
       <div :id="listId"></div>
     </div>
@@ -15,6 +15,7 @@
           <i class="kj-icon fa fa-trash-o"></i>
         </a>
       </span>
+        </span>
     </div>
   </div>
 </template>

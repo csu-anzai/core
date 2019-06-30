@@ -12,6 +12,7 @@ const SearchModule = {
         filterModules: null,
         selectedIds: [],
         fetchingResults: false,
+        fetchingUsers: false,
         showResultsNumber: false,
         startDate: '',
         endDate: '',
@@ -72,6 +73,9 @@ const SearchModule = {
         },
         RESET_SELECTED_USER (state : any) {
             state.selectedUser = ''
+        },
+        SET_FETCHING_USERS (state : any, payload : boolean) {
+            state.fetchingUsers = payload
         }
 
     },
@@ -150,6 +154,7 @@ const SearchModule = {
             commit('SET_SELECTED_IDS', ids)
         },
         async getAutocompleteUsers ({ commit }, userQuery :string) : Promise<void> {
+            commit('SET_FETCHING_USERS', true)
             const [err, res] = await to(axios({
                 url: '/xml.php',
                 method: 'POST',
@@ -167,6 +172,7 @@ const SearchModule = {
             if (res) {
                 commit('SET_AUTOCPMPLETE_USERS', res.data)
             }
+            commit('SET_FETCHING_USERS', false)
         },
         setSelectedUser ({ commit }, user:string) : void {
             commit('SET_SELECTED_USER', user)

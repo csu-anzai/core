@@ -5,7 +5,10 @@ import Multiselect from 'core/module_system/scripts/components/Multiselect/Multi
 import { FilterModule, User } from '../../Interfaces/SearchInterfaces'
 import Datepicker from 'core/module_system/scripts/components/Datepicker/Datepicker.vue'
 import Autocomplete from 'core/module_system/scripts/components/Autocomplete/Autocomplete.vue'
+import { AutocompleteInterface, AutocompleteItem } from 'core/module_system/scripts/components/Autocomplete/AutcompleteInterfaces'
 import Util from 'core/module_system/scripts/kajona/Util'
+@Component({ components: { Loader, Multiselect, Datepicker, Autocomplete } }) class SearchbarFilter extends Vue implements AutocompleteInterface {
+
 @Component({ components: { Loader, Multiselect, Datepicker, Autocomplete } }) class SearchbarFilter extends Vue {
     @namespace('SearchModule').Action getFilterModules : any
     @namespace('SearchModule').Action setSelectedIds : any
@@ -19,6 +22,7 @@ import Util from 'core/module_system/scripts/kajona/Util'
     @namespace('SearchModule').State searchQuery : string
     @namespace('SearchModule').State selectedIds : Array<string>
     @namespace('SearchModule').State autoCompleteUsers : Array<User>
+    @namespace('SearchModule').State fetchingUsers : boolean
 
     private filterIsOpen : boolean = false
 
@@ -57,8 +61,8 @@ import Util from 'core/module_system/scripts/kajona/Util'
             this.triggerSearch()
         }
     }
-    private onUserSelect (user : User) : void {
-        this.setSelectedUser(user.systemid)
+    private onUserSelect (userId : User) : void {
+        this.setSelectedUser(userId)
         if (this.searchQuery.length >= 2) {
             this.triggerSearch()
         }
@@ -71,6 +75,11 @@ import Util from 'core/module_system/scripts/kajona/Util'
     }
     private async onAutocompleteInput (e : string) : Promise<void> {
         this.getAutocompleteUsers(e)
+    }
+    public get parsedAutoCompleteData () : Array<AutocompleteItem> {
+        return this.autoCompleteUsers.map(user => {
+            return { label: user.icon + user.title, value: user.systemid, title: user.title }
+        })
     }
     private get datepickerFormat () : string {
         return Util.transformDateFormat(<string> this.$i18n.t('system.dateStyleShort'), 'bootstrap-datepicker')

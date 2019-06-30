@@ -20,10 +20,10 @@
         <Autocomplete
           @select="onUserSelect"
           @delete="onUserDelete"
-          :label="$t('search.search_users')"
           @input="onAutocompleteInput"
-          :jsonKey="'title'"
-          :data="autoCompleteUsers"
+          :loading="fetchingUsers"
+          :label="$t('search.search_users')"
+          :data="parsedAutoCompleteData"
         ></Autocomplete>
         <Datepicker
           v-on:change="onStartDateChange"
