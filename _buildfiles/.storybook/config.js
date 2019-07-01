@@ -1,5 +1,6 @@
 import { configure } from '@storybook/vue';
-const path = require('path')
+import "../../module_v4skin/admin/skins/kajona_v4/less/styles.less"
+
 function requireAll(requireContext) {
   return requireContext.keys().map(requireContext);
 }
