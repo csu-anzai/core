@@ -71,6 +71,19 @@ this should now look like:
 public function getBar(string $foo): string
 ```
 
+### Arrays
+
+We use trailing commas for the last entry of an array 
+
+```
+$array = [
+    'firstEntry',
+    'secondEntry',
+    ...,
+    'nthEntry',
+];
+```
+
 #### Controller
 
 In general the controller contains methods which are accessible through an url. These methods must be prefixed with 
