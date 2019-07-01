@@ -42,6 +42,7 @@ class FormentryDropdown extends FormentryBase implements FormentryPrintableInter
     private $strAddons = "";
     private $strDataPlaceholder = "";
     private $bitRenderReset = false;
+    private $iconValues = false;
 
     private $dataAttributes = [];
 
@@ -82,6 +83,7 @@ class FormentryDropdown extends FormentryBase implements FormentryPrintableInter
         $dropdown->setReadOnly($this->getBitReadonly());
         $dropdown->setOpener($strOpener);
         $dropdown->setAddons($this->getStrAddons());
+        $dropdown->setIconValues($this->isIconValues());
 
         if (!empty($this->getStrDataPlaceholder())) {
             $dropdown->setData('placeholder', $this->getStrDataPlaceholder());
@@ -283,6 +285,22 @@ class FormentryDropdown extends FormentryBase implements FormentryPrintableInter
     }
 
     /**
+     * @return bool
+     */
+    public function isIconValues(): bool
+    {
+        return $this->iconValues;
+    }
+
+    /**
+     * @param bool $iconValues
+     */
+    public function setIconValues(bool $iconValues): void
+    {
+        $this->iconValues = $iconValues;
+    }
+
+        /**
      * @return array
      */
     public function getDataAttributes(): array

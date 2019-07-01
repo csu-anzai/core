@@ -36,6 +36,11 @@ class Dropdown extends FormentryComponentAbstract
     protected $addons;
 
     /**
+     * @var bool
+     */
+    protected $iconValues;
+
+    /**
      * @param string $name
      * @param string $title
      * @param array $options
@@ -75,6 +80,22 @@ class Dropdown extends FormentryComponentAbstract
     }
 
     /**
+     * @return bool
+     */
+    public function isIconValues(): bool
+    {
+        return $this->iconValues;
+    }
+
+    /**
+     * @param bool $iconValues
+     */
+    public function setIconValues(bool $iconValues): void
+    {
+        $this->iconValues = $iconValues;
+    }
+
+    /**
      * @inheritdoc
      */
     public function buildContext()
@@ -89,6 +110,7 @@ class Dropdown extends FormentryComponentAbstract
         $context["selected"] = $this->selected;
         $context["no_select"] = $this->selected === null || $this->selected === '';
         $context["addons"] = $this->addons;
+        $context["icon_values"] = $this->iconValues;
 
         return $context;
     }

@@ -6,7 +6,10 @@
 
 namespace Kajona\Api\System;
 
+use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\ObjectBuilder;
+use Kajona\System\System\RequestEntrypointEnum;
+use Kajona\System\System\SystemEventidentifier;
 use Pimple\Container;
 use PSX\Http\Environment\HttpContext;
 use PSX\Http\Exception\StatusCodeException;
@@ -125,6 +128,9 @@ class AppBuilder
         }
 
         $app->run();
+
+        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_ENDPROCESSING, array());
+        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_AFTERCONTENTSEND, array(RequestEntrypointEnum::XML()));
     }
 
     /**
