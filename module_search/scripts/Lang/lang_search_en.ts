@@ -35,6 +35,7 @@ const en = {
     last_modification_date: 'Last modification',
     last_modification_user: 'by',
     module_label: 'Module',
-    additional_information: 'Additional information'
+    additional_information: 'Additional information',
+    delete_action: 'Delete'
 }
 export default en
