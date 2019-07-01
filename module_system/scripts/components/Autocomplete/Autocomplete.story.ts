@@ -42,9 +42,9 @@ stories.add('Autocomplete Component with actions and props', () => {
             loading: { default: boolean('loading', false) }
         },
         methods: {
-            onDelete: action('onDelete'),
-            onSelect: action('onSelect'),
-            onInput: action('onInput')
+            onDelete: action('Emit delete'),
+            onSelect: action('Emit select'),
+            onInput: action('Emit input')
         }
 
     }
