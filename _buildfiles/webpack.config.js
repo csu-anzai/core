@@ -23,7 +23,7 @@ module.exports = async env => {
     return {
         entry: {
             agp: devMode // if dev mode compile all the modules
-                ? glob.sync('../../core*/module_*/scripts/**/*.ts', { ignore: ['../../core*/module_*/scripts/**/*.e2e.cypress.ts', '../../core*/module_*/scripts/**/*.unit.cypress.ts'] })
+                ? glob.sync('../../core*/module_*/scripts/**/*.ts', { ignore: ['../../core*/module_*/scripts/**/*.e2e.cypress.ts', '../../core*/module_*/scripts/**/*.unit.cypress.ts', '../../core*/module_*/scripts/**/*.story.ts'] })
                 : tsPaths // else only compile the needed modules for prod
         },
         output: {
