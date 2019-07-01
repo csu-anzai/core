@@ -11,7 +11,6 @@ use Kajona\System\System\Exceptions\UnableToCreateIdFileException;
 use Kajona\System\System\Exceptions\UnableToReadIdFileException;
 use Kajona\System\System\Exceptions\UnableToWriteInIdFileException;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
-use RuntimeException;
 
 /**
  * Model for a idgenerator record object itself
