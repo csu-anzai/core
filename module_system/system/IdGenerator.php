@@ -7,12 +7,6 @@ declare(strict_types=1);
 
 namespace Kajona\System\System;
 
-use function fclose;
-use function fgets;
-use function file_exists;
-use function fopen;
-use function fseek;
-use function fwrite;
 use Kajona\System\System\Exceptions\UnableToCreateIdFileException;
 use Kajona\System\System\Exceptions\UnableToReadIdFileException;
 use Kajona\System\System\Exceptions\UnableToWriteInIdFileException;
