@@ -36,7 +36,7 @@ class ApiUserLoginListener implements GenericeventListenerInterface
         list($userId) = $arguments;
 
         /** @var JWTManager $jwtManager */
-        $jwtManager = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::STR_JWT_MANAGER);
+        $jwtManager = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::JWT_MANAGER);
 
         $user = Objectfactory::getInstance()->getObject($userId);
 
