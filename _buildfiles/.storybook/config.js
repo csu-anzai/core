@@ -1,9 +1,11 @@
-import { configure } from '@storybook/vue'
-
-function loadStories () {
-  // const req = require.context('../stories', true, /\.stories\.js$/);
-  // req.keys().forEach(filename => req(filename));
-  require('./stories/index.js');
+import { configure } from '@storybook/vue';
+const path = require('path')
+function requireAll(requireContext) {
+  return requireContext.keys().map(requireContext);
 }
 
-configure(loadStories, module)
+function loadStories() {
+  requireAll(require.context("../../", true, /story\.ts?$/));
+}
+
+configure(loadStories, module);
