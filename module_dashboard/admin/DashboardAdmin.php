@@ -16,6 +16,8 @@ use Kajona\Dashboard\System\DashboardUserRoot;
 use Kajona\Dashboard\System\DashboardWidget;
 use Kajona\Dashboard\System\EventEntry;
 use Kajona\Dashboard\System\EventRepository;
+use Kajona\Dashboard\System\Filter\DashboardICalendarFilter;
+use Kajona\Dashboard\System\ICalendar;
 use Kajona\Dashboard\System\Lifecycle\ConfigLifecycle;
 use Kajona\Dashboard\System\TodoJstreeNodeLoader;
 use Kajona\Dashboard\System\TodoRepository;
@@ -34,6 +36,7 @@ use Kajona\System\System\HttpStatuscodes;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
+use Kajona\System\System\Objectfactory;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Session;
 use Kajona\System\System\StringUtil;
@@ -41,6 +44,8 @@ use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemChangelog;
 use Kajona\System\System\SystemJSTreeBuilder;
 use Kajona\System\System\SystemJSTreeConfig;
+use Kajona\System\System\SystemSetting;
+use Kajona\System\System\UserUser;
 use Kajona\System\View\Components\Datatable\Datatable;
 use Kajona\System\View\Components\Dynamicmenu\DynamicMenu;
 use Kajona\System\View\Components\Menu\Item\Separator;
@@ -303,17 +308,43 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
      */
     protected function actionCalendar()
     {
-        $strReturn = "";
+        $return = "";
 
-        $strReturn .= "<div id='dashboard-calendar' class='calendar'></div>";
-        $strReturn .= "<script type=\"text/javascript\">";
-        $strReturn .= <<<JS
+        $return .= "<div id='dashboard-calendar' class='calendar'></div>";
+        $return .= "<script type=\"text/javascript\">";
+        $return .= <<<JS
 
         DashboardCalendar.init();
 JS;
-        $strReturn .= "</script>";
+        $return .= "</script>";
 
-        return $strReturn;
+        $icalLink = Link::getLinkAdminManual(["href" => "#", "onclick" => "DashboardCalendar.getICalendarURL();return false"], $this->getLang("dashboar_ical_url", "dashboard"));
+        $return .= $this->objToolkit->addToContentToolbar($icalLink);
+
+        return $return;
+    }
+
+    /**
+     * Returns a iCal URL
+     * @return array
+     * @throws Exception
+     * @permissions view
+     * @responseType json
+     */
+    public function actionGetICalUrl()
+    {
+        $filter = new DashboardICalendarFilter();
+        $filter->setStrUserSystemId(Carrier::getInstance()->getObjSession()->getUserID());
+        $result = ICalendar::getObjectListFiltered($filter);
+        if (!empty($result)) {
+            $iCal = $result[0];
+        } else {
+            $iCal = new ICalendar();
+            $iCal->setStrUserId(Carrier::getInstance()->getObjSession()->getUserID());
+            $this->objLifeCycleFactory->factory(get_class($iCal))->update($iCal);
+        }
+
+        return ["url" => Link::getLinkAdminHref("dashboard", "getiCalendarEvents", "&systemid=".$iCal->getStrSystemid())];
     }
 
     /**
@@ -656,44 +687,44 @@ JS;
 
     /**
      * @return string
-     * @permissions view
+     * @throws Exception
+     * @permissions anonymous
      */
     public function actionGetiCalendarEvents()
     {
-        define('ICAL_FORMAT', 'Ymd\THis\Z');
-        define('ICAL_START', '-3 month');
-        define('ICAL_END', '+1 year');
-
-        $events = $this->getCalendarEventsList(new Date(strtotime(ICAL_START)), new Date(strtotime(ICAL_END)));
-        $icalObject = <<<ICALHEADER
-BEGIN:VCALENDAR
-VERSION:2.0
-METHOD:PUBLISH
-PRODID:-//AGP Events//DE\n
-ICALHEADER;
-
-        foreach ($events as $event) {
-            if ($event->getObjStartDate() instanceof Date && $event->getObjEndDate() instanceof Date) {
-                $eventStartDate = date(ICAL_FORMAT, $event->getObjStartDate()->getTimeInOldStyle());
-                $eventEndDate = date(ICAL_FORMAT, $event->getObjEndDate()->getTimeInOldStyle());
-            } elseif ($event->getObjValidDate() instanceof Date) {
-                $eventStartDate = date('Ymd\T000000', $event->getObjValidDate()->getTimeInOldStyle());
-                $eventEndDate = date('Ymd\T000000', $event->getObjValidDate()->getTimeInOldStyle());
-            } else {
-                continue;
-            }
-            $summary = strip_tags($event->getStrDisplayName());
-            $description = $event->getStrHref();
-            $icalObject .= <<<ICALBODY
-BEGIN:VEVENT
-DTSTART:$eventStartDate
-DTEND:$eventEndDate
-SUMMARY:$summary
-DESCRIPTION:$description
-END:VEVENT\n
-ICALBODY;
+        if ($this->getParam("systemid") == "") {
+            return "";
         }
-        $icalObject .= "END:VCALENDAR";
+
+        $systemId = $this->getParam("systemid");
+        $iCal = Objectfactory::getInstance()->getObject($systemId);
+        if (!$iCal instanceof ICalendar) {
+            return "";
+        }
+
+        $userId = $iCal->getStrUserId();
+
+        $user = $this->objFactory->getObject($userId);
+
+        if (!$user instanceof UserUser) {
+            return "";
+        }
+
+        $this->objSession->loginUser($user);
+
+        $calDavValidTime = SystemSetting::getConfigValue('_dashboard_cal_dav_valid_time_');
+        $validTimeInterval = !empty($calDavValidTime) ? $calDavValidTime : $iCal::ICAL_VALID_TIME;
+        $validTime = strtotime("+$validTimeInterval min", strtotime($iCal->getLongCreateDate()));
+        if ($validTime > strtotime('now')) {
+            $icalObject = $iCal->getStrICalCache();
+        } else {
+            $events = $this->getCalendarEventsList(new Date(strtotime($iCal::ICAL_START)), new Date(strtotime($iCal::ICAL_END)));
+            $icalObject = $iCal->generate($events);
+            $iCal->setLongCreateDate((new Date())->getLongTimestamp());
+            $iCal->setStrICalCache($icalObject);
+            $this->objLifeCycleFactory->factory(get_class($iCal))->update($iCal);
+        }
+        $this->objSession->logout();
 
         // Set the headers
         header('Content-type: text/calendar; charset=utf-8');

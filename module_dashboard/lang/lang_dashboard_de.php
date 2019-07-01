@@ -48,3 +48,5 @@ $lang["add_button_title"]                = "Hinzufügen";
 $lang["select_col_button_info"]          = "Wählen Sie hier die Spalte aus";
 $lang["form_dashboard_default"]          = "Standard-Dashboard";
 $lang["form_dashboard_default_hint"]     = "Wird beim Login am System geladen";
+
+$lang["dashboar_ical_url"]               = "Teilen Sie den calDav-Kalender";

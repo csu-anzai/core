@@ -49,3 +49,5 @@ $lang["add_button_title"]                = "Add";
 $lang["select_col_button_info"]          = "Select dashboard column";
 $lang["form_dashboard_default"]          = "Default dashboard";
 $lang["form_dashboard_default_hint"]     = "Will be loaded at login";
+
+$lang["dashboar_ical_url"]               = "Share calDav calendar";
