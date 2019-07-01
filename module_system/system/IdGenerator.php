@@ -112,12 +112,11 @@ class IdGenerator extends Model implements ModelInterface
      */
     private static function getLastIdOfIdFile(string $filepath): ?int
     {
-        try {
-            $file = file($filepath);
-            $line = end($file);
-        } catch (RuntimeException $exception) {
-            throw new UnableToReadIdFileException($exception->getMessage());
+        $file = file($filepath);
+        if (!$file) {
+            throw new UnableToReadIdFileException('failed reading content from idFile');
         }
+        $line = end($file);
 
         return !$line ? null : (int) $line;
     }
