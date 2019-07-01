@@ -2,15 +2,21 @@ import $ from 'jquery'
 import { Component, Vue, Watch, Prop } from 'vue-property-decorator'
 import uuid from 'uuid/v1'
 import { AutocompleteItem } from './AutcompleteInterfaces'
+import Tooltip from '../../kajona/Tooltip'
 @Component class Autocomplete extends Vue {
     @Prop({ type: String, required: true }) label : string // label of the autocomplete
     @Prop({ type: Array, required: true }) data : Array<AutocompleteItem> // data to display
     @Prop({ type: Boolean, required: false }) loading : boolean // property for the loading animation
+    @Prop({ type: String, required: false }) tooltip : string // Text to display onHover over the action button
     private input : string = ''
     private listId : string = uuid()
     private inputId : string = uuid()
     private inputIconId : string = uuid()
+    private actionBtnId : string = uuid()
     private mounted () : void {
+        if (this.tooltip) {
+            Tooltip.addTooltip($('#' + this.actionBtnId), this.tooltip)
+        }
         $('#' + this.inputId).autocomplete({
             source: this.data,
             appendTo: '#' + this.listId,

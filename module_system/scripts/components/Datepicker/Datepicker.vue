@@ -10,7 +10,7 @@
       </div>
     </div>
     <div class="col-sm-2 form-opener">
-      <span class="listButton">
+      <span class="listButton" :id="actionBtnId">
         <a @click="deleteInput">
           <i class="kj-icon fa fa-trash-o"></i>
         </a>

@@ -1,13 +1,17 @@
 import $ from 'jquery'
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import uuid from 'uuid//v1'
-import Util from 'core/module_system/scripts/kajona/Util'
+import Tooltip from '../../kajona/Tooltip'
 @Component class Datepicker extends Vue {
 @Prop({ type: String, required: true }) label : string
 @Prop({ type: String, required: true }) format : string
+@Prop({ type: String, required: false }) tooltip : string
 private id : string = uuid()
-
+private actionBtnId : string = uuid()
 private mounted () : void {
+    if (this.tooltip) {
+        Tooltip.addTooltip($('#' + this.actionBtnId), this.tooltip)
+    }
     var input = $('#' + this.id).datepicker({
         format: this.format,
         weekStart: 1,
