@@ -32,7 +32,7 @@ use RuntimeException;
 class IdGenerator extends Model implements ModelInterface
 {
 
-    private const ID_LOCK_FILE = _realpath_ . '/project/temp/id-generator-lock.txt';
+    private const ID_LOCK_FILE_PATH = _realpath_ . 'project/temp/';
 
     /**
      * @var string
@@ -59,94 +59,89 @@ class IdGenerator extends Model implements ModelInterface
      */
     public static function generateNextId(string $key): int
     {
+        $filepath = self::ID_LOCK_FILE_PATH . 'idFile-' . $key . '.txt';
+
         $ormObjectlist = new OrmObjectlist();
         $ormObjectlist->addWhereRestriction(new OrmPropertyCondition('strKey', OrmComparatorEnum::Equal(), $key));
 
         $result = $ormObjectlist->getObjectList(get_called_class());
 
-        if (!$idFileExists = self::idFileExists()) {
-            self::createIdFile();
+        if (!$idFileExists = self::idFileExists($filepath)) {
+            self::createIdFile($filepath);
         }
-        $lastId = $idFileExists ? self::getLastIdOfIdFile() : 1;
+
+        $lastId = $idFileExists && is_int(self::getLastIdOfIdFile($filepath)) ? self::getLastIdOfIdFile($filepath) : 1;
 
         if (empty($result)) {
-            $id = $idFileExists ? $lastId + 1 : $lastId;
             $idGenerator = new IdGenerator();
+            $id = $idFileExists ? $lastId + 1 : $lastId;
             $idGenerator->setStrKey($key);
-            $idGenerator->setIntCount($id);
-            self::updateLastIdOfIdFile($id);
-            ServiceLifeCycleFactory::getLifeCycle(get_class($idGenerator))->update($idGenerator);
         } else {
-            /* @var IdGenerator $idGenerator */
             $idGenerator = current($result);
             $id = $idFileExists ? $lastId + 1 : $idGenerator->getIntCount() + 1;
-            $idGenerator->setIntCount($id);
-            self::updateLastIdOfIdFile($id);
-            ServiceLifeCycleFactory::getLifeCycle(get_class($idGenerator))->update($idGenerator);
         }
+
+        self::updateLastIdOfIdFile($filepath, $id);
+        $idGenerator->setIntCount($id);
+        ServiceLifeCycleFactory::getLifeCycle(get_class($idGenerator))->update($idGenerator);
 
         return $id;
     }
 
 
     /**
+     * @param string $filepath
      * @return bool
      */
-    private static function idFileExists(): bool
+    private static function idFileExists(string $filepath): bool
     {
-        return file_exists(self::ID_LOCK_FILE);
+        return file_exists($filepath);
     }
 
     /**
-     * throws UnableToCreateIdFileException
+     * @param string $filepath
+     * @throws UnableToCreateIdFileException
      */
-    private static function createIdFile(): void
+    private static function createIdFile(string $filepath): void
     {
-        try {
-            $file = fopen(self::ID_LOCK_FILE, 'w');
-            fclose($file);
-        } catch (RuntimeException $exception) {
-            throw new UnableToCreateIdFileException($exception->getMessage());
-        }
+         $file = fopen($filepath, 'w');
+         if (!$file) {
+             throw new UnableToCreateIdFileException('idFile could not be created');
+         }
+         fclose($file);
     }
 
     /**
-     * @return int
+     * @param string $filepath
+     * @return int|null
      * @throws UnableToReadIdFileException
      */
-    private static function getLastIdOfIdFile(): int
+    private static function getLastIdOfIdFile(string $filepath): ?int
     {
         try {
-            $file = fopen(self::ID_LOCK_FILE, 'r');
-            $pointer = -1;
-            fseek($file, $pointer, SEEK_END);
-            $line = fgets($file);
-            while ($line !== "\n" || $line !== "\r") {
-                fseek($file, $pointer--, SEEK_END);
-                $line = fgets($file);
-            }
-            fclose($file);
+            $file = file($filepath);
+            $line = end($file);
         } catch (RuntimeException $exception) {
             throw new UnableToReadIdFileException($exception->getMessage());
         }
 
-        return (int) $line;
+        return !$line ? null : (int) $line;
     }
 
     /**
+     * @param string $filepath
      * @param int $newId
      * @return bool
      * @throws UnableToWriteInIdFileException
      */
-    private static function updateLastIdOfIdFile(int $newId): bool
+    private static function updateLastIdOfIdFile(string $filepath, int $newId): bool
     {
-        try {
-            $file = fopen(self::ID_LOCK_FILE, 'r');
-            fwrite($file, $newId);
-            fclose($file);
-        } catch (RuntimeException $exception) {
-            throw new UnableToWriteInIdFileException($exception->getMessage());
+        $file = fopen($filepath, 'w+');
+        if (!$file) {
+            throw new UnableToWriteInIdFileException('unable to open idFile für writing');
         }
+        fwrite($file, (string) $newId);
+        fclose($file);
 
         return true;
     }
