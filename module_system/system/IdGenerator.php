@@ -7,23 +7,11 @@ declare(strict_types=1);
 
 namespace Kajona\System\System;
 
-use function ctype_digit;
-use function current;
-use function end;
-use function file;
-use function file_exists;
-use const FILE_IGNORE_NEW_LINES;
-use function file_put_contents;
-use const FILE_SKIP_EMPTY_LINES;
-use function get_class;
 use Kajona\System\System\Exceptions\InvalidIdValueInIdFileException;
 use Kajona\System\System\Exceptions\UnableToCreateIdFileException;
 use Kajona\System\System\Exceptions\UnableToReadIdFileException;
 use Kajona\System\System\Exceptions\UnableToWriteInIdFileException;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
-use const LOCK_EX;
-use function sprintf;
-use function touch;
 
 /**
  * Model for a idgenerator record object itself
@@ -65,7 +53,7 @@ class IdGenerator extends Model implements ModelInterface
      */
     public static function generateNextId(string $key): int
     {
-        $filepath = sprintf(self::ID_LOCK_FILE_PATH, $key);
+        $filepath = \sprintf(self::ID_LOCK_FILE_PATH, $key);
 
         $ormObjectList = new OrmObjectlist();
         $ormObjectList->addWhereRestriction(new OrmPropertyCondition('strKey', OrmComparatorEnum::Equal(), $key));
@@ -75,7 +63,7 @@ class IdGenerator extends Model implements ModelInterface
             $idGenerator = new self();
             $idGenerator->setStrKey($key);
         } else {
-            $idGenerator = current($result);
+            $idGenerator = \current($result);
             $lastGeneratorId = $idGenerator->getIntCount();
         }
 
@@ -84,7 +72,7 @@ class IdGenerator extends Model implements ModelInterface
 
         self::updateLastIdOfIdFile($filepath, $id);
         $idGenerator->setIntCount($id);
-        ServiceLifeCycleFactory::getLifeCycle(get_class($idGenerator))->update($idGenerator);
+        ServiceLifeCycleFactory::getLifeCycle(\get_class($idGenerator))->update($idGenerator);
 
         return $id;
     }
@@ -119,7 +107,7 @@ class IdGenerator extends Model implements ModelInterface
      */
     private static function idFileExists(string $filepath): bool
     {
-        return file_exists($filepath);
+        return \file_exists($filepath);
     }
 
     /**
@@ -128,7 +116,7 @@ class IdGenerator extends Model implements ModelInterface
      */
     private static function createIdFile(string $filepath): void
     {
-        if (!touch($filepath)) {
+        if (!\touch($filepath)) {
             throw new UnableToCreateIdFileException();
         }
     }
@@ -141,7 +129,7 @@ class IdGenerator extends Model implements ModelInterface
      */
     private static function getLastIdOfIdFile(string $filepath): int
     {
-        $linesInFile = file($filepath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $linesInFile = \file($filepath, \FILE_IGNORE_NEW_LINES | \FILE_SKIP_EMPTY_LINES);
 
         if ($linesInFile === false) {
             throw new UnableToReadIdFileException();
@@ -151,9 +139,9 @@ class IdGenerator extends Model implements ModelInterface
             return 0;
         }
 
-        $lastIdValue = end($linesInFile);
+        $lastIdValue = \end($linesInFile);
 
-        if (!ctype_digit($lastIdValue)) {
+        if (!\ctype_digit($lastIdValue)) {
             throw new InvalidIdValueInIdFileException();
         }
 
@@ -168,7 +156,7 @@ class IdGenerator extends Model implements ModelInterface
      */
     private static function updateLastIdOfIdFile(string $filepath, int $newId): void
     {
-        if (file_put_contents($filepath, (string) $newId, LOCK_EX) === false) {
+        if (\file_put_contents($filepath, (string) $newId, \LOCK_EX) === false) {
             throw new UnableToWriteInIdFileException();
         }
     }
