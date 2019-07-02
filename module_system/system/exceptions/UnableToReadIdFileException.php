@@ -9,8 +9,8 @@ use Throwable;
 
 final class UnableToReadIdFileException extends Exception
 {
-    public function __construct(string $message, Throwable $previousException = null)
+    public function __construct(Throwable $previousException = null)
     {
-        parent::__construct($message, $previousException);
+        parent::__construct('failed reading content from idFile', $previousException);
     }
 }
