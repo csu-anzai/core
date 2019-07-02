@@ -22,6 +22,7 @@ use Kajona\System\System\Exceptions\UnableToReadIdFileException;
 use Kajona\System\System\Exceptions\UnableToWriteInIdFileException;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use const LOCK_EX;
+use function sprintf;
 use function touch;
 
 /**
