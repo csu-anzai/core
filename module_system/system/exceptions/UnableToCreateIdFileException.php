@@ -11,6 +11,6 @@ final class UnableToCreateIdFileException extends Exception
 {
     public function __construct(Throwable $previousException = null)
     {
-        parent::__construct('idFile could not be created', $previousException);
+        parent::__construct('idFile could not be created', Exception::$level_FATALERROR, $previousException);
     }
 }

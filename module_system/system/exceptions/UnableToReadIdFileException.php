@@ -11,6 +11,6 @@ final class UnableToReadIdFileException extends Exception
 {
     public function __construct(Throwable $previousException = null)
     {
-        parent::__construct('failed reading content from idFile', $previousException);
+        parent::__construct('failed reading content from idFile', Exception::$level_FATALERROR, $previousException);
     }
 }

@@ -11,6 +11,6 @@ final class InvalidIdValueInIdFileException extends Exception
 {
     public function __construct(Throwable $previousException = null)
     {
-        parent::__construct('id value in idFile has invalid format', $previousException);
+        parent::__construct('id value in idFile has invalid format', Exception::$level_FATALERROR, $previousException);
     }
 }
