@@ -32,6 +32,7 @@ use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
+use Kajona\System\System\HttpResponsetypes;
 use Kajona\System\System\HttpStatuscodes;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException;
 use Kajona\System\System\Link;
@@ -706,8 +707,8 @@ JS;
         $this->objSession->logout();
 
         // Set the headers
-        header('Content-type: text/calendar; charset=utf-8');
-        header('Content-Disposition: attachment; filename="agpCalendar.ics"');
+        ResponseObject::getInstance()->setStrResponseType(HttpResponsetypes::STR_TYPE_ICAL);
+        ResponseObject::getInstance()->addHeader('Content-Disposition: attachment; filename="agpCalendar.ics"');
 
         return $icalObject;
     }

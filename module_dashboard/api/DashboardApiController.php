@@ -9,7 +9,9 @@ namespace AGP\Dashboard\Api;
 use Kajona\Api\System\ApiControllerInterface;
 use Kajona\Dashboard\System\ICalendar;
 use Kajona\System\System\Carrier;
+use Kajona\System\System\HttpResponsetypes;
 use Kajona\System\System\Objectfactory;
+use Kajona\System\System\ResponseObject;
 use Kajona\System\System\UserUser;
 use PSX\Http\Environment\HttpContext;
 
@@ -29,7 +31,7 @@ class DashboardApiController implements ApiControllerInterface
     protected $icalGenerator;
 
     /**
-     * Returns a list of contracts
+     * Returns internet calendar by token
      *
      * @api
      * @method GET
@@ -57,8 +59,8 @@ class DashboardApiController implements ApiControllerInterface
         Carrier::getInstance()->getObjSession()->logout();
 
         // Set the headers
-        header('Content-type: text/calendar; charset=utf-8');
-        header('Content-Disposition: attachment; filename="agpCalendar.ics"');
+        ResponseObject::getInstance()->setStrResponseType(HttpResponsetypes::STR_TYPE_ICAL);
+        ResponseObject::getInstance()->addHeader('Content-Disposition: attachment; filename="agpCalendar.ics"');
 
 
         return $icalObject;
