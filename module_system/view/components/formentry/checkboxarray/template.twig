@@ -1,7 +1,7 @@
 <div class="form-group form-list core-component-formentry-checkboxarray">
     <label for="{{ name }}" class="col-sm-3 control-label">{{ title }}</label>
     <div class="col-sm-6 inputText">
-        <div id="{{ name }}" class="inputContainer">
+        <div id="{{ name }}" class="inputContainer" {% for key, value in data %}data-{{ key }}="{{ value|e('html_attr') }}"{% endfor %}>
             <ul class="level1">
             {% set nesting = 1 %}
 

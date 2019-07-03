@@ -66,6 +66,7 @@ abstract class FormentryBase implements \JsonSerializable
     private $strHint = null;
     private $bitReadonly = false;
     private $bitHideLongHints = false;
+    private $dataAttributes = [];
 
     /**
      * Creates a new instance of the current field.
@@ -532,6 +533,24 @@ abstract class FormentryBase implements \JsonSerializable
     public function setBitHideLongHints(bool $bitHideLongHints)
     {
         $this->bitHideLongHints = $bitHideLongHints;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDataAttributes(): array
+    {
+        return $this->dataAttributes;
+    }
+
+    /**
+     * @param array $dataAttributes
+     * @return FormentryBase
+     */
+    public function setDataAttributes(array $dataAttributes): FormentryBase
+    {
+        $this->dataAttributes = $dataAttributes;
         return $this;
     }
 }

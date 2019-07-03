@@ -1508,7 +1508,7 @@ HTML;
     public function listDeleteButton($strElementName, $strQuestion, $strLinkHref)
     {
         $strElementName = StringUtil::replace(array('\''), array('\\\''), $strElementName);
-        $strQuestion = StringUtil::replace("%%element_name%%", StringUtil::jsSafeString($strElementName), $strQuestion);
+        $strQuestion = StringUtil::replace("%%element_name%%", StringUtil::jsSafeString(html_entity_decode($strElementName)), $strQuestion);
 
         return $this->listConfirmationButton($strQuestion, $strLinkHref, "icon_delete", Carrier::getInstance()->getObjLang()->getLang("commons_delete", "system"), Carrier::getInstance()->getObjLang()->getLang("dialog_deleteHeader", "system"), Carrier::getInstance()->getObjLang()->getLang("dialog_deleteButton", "system"));
     }
@@ -1597,7 +1597,7 @@ HTML;
             $strLinkText
         );
     }
-    
+
     /**
      * Generates a button allowing to change the status of the record passed.
      * Therefore an ajax-method is called.

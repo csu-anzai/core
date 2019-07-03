@@ -23,7 +23,6 @@ class FormentryCheckbox extends FormentryBase implements FormentryPrintableInter
 {
 
     private $strOpener = "";
-    private $dataAttributes = [];
 
     public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
     {
@@ -49,7 +48,7 @@ class FormentryCheckbox extends FormentryBase implements FormentryPrintableInter
 
         $inputCheckbox = new Inputcheckbox($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue() == true);
         $inputCheckbox->setReadOnly($this->getBitReadonly());
-        $inputCheckbox->setDataArray($this->dataAttributes);
+        $inputCheckbox->setDataArray($this->getDataAttributes());
         $strReturn .= $inputCheckbox->renderComponent();
 
         $strReturn .= $objToolkit->formInputHidden($this->getPresCheckKey(), "1");
@@ -134,24 +133,6 @@ class FormentryCheckbox extends FormentryBase implements FormentryPrintableInter
             return true;
         }
         return parent::setValueToObject();
-    }
-
-    /**
-     * @return array
-     */
-    public function getDataAttributes(): array
-    {
-        return $this->dataAttributes;
-    }
-
-    /**
-     * @param array $dataAttributes
-     * @return FormentryCheckbox
-     */
-    public function setDataAttributes(array $dataAttributes): FormentryCheckbox
-    {
-        $this->dataAttributes = $dataAttributes;
-        return $this;
     }
 
 
