@@ -26,8 +26,15 @@ class ICalendarTest extends Testbase
         $event->setStrDisplayName("Test event 02");
         $event->setObjValidDate(new Date(strtotime('02.01.2019')));
         $events[] = $event;
-        $iCal = new ICalendar();
-        $iCalendar = $iCal->generate($events);
+
+        $iCal = $this->getMockBuilder(ICalendar::class)
+            ->setMethods(['getCalendarEventsList'])
+            ->getMock();
+        $iCal->expects($this->any())
+            ->method('getCalendarEventsList')
+            ->willReturn($events);
+
+        $iCalendar = $iCal->getICalendar($events);
         $this->assertContains("BEGIN:VCALENDAR", $iCalendar);
         $this->assertContains("END:VCALENDAR", $iCalendar);
         $this->assertContains("SUMMARY:Test event 01", $iCalendar);

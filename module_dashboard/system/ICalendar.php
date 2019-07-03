@@ -6,9 +6,11 @@
 
 namespace Kajona\Dashboard\System;
 
+use Kajona\System\System\Carrier;
 use Kajona\System\System\Date;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
+use Kajona\System\System\SystemSetting;
 
 /**
  * Object which represents a iCal entry
@@ -108,10 +110,32 @@ class ICalendar extends Model implements ModelInterface
     }
 
     /**
+     * @param Date|null $startDate
+     * @param Date|null $endDate
+     * @return array
+     */
+    public function getCalendarEventsList(Date $startDate = null, Date $endDate = null): array
+    {
+        $events = [];
+        $arrCategories = EventRepository::getAllCategories();
+
+        foreach ($arrCategories as $arrCategory) {
+            foreach ($arrCategory as $strKey => $strValue) {
+                if (Carrier::getInstance()->getObjSession()->getSession($strKey) != "disabled") {
+                    $events = array_merge($events, EventRepository::getEventsByCategoryAndDate($strKey, $startDate, $endDate));
+                }
+            }
+        }
+
+        return $events;
+    }
+
+
+    /**
      * @param EventEntry[] $events
      * @return string
      */
-    public function generate(array $events): string
+    private function generate(array $events): string
     {
         $icalObject = <<<ICALHEADER
 BEGIN:VCALENDAR
@@ -146,4 +170,26 @@ ICALBODY;
         return $icalObject;
     }
 
+    /**
+     * Returns generierte calDav calendar
+     * @return string
+     */
+    public function getICalendar()
+    {
+        $calDavValidTime = SystemSetting::getConfigValue('_dashboard_cal_dav_valid_time_');
+        $validTimeInterval = !empty($calDavValidTime) ? $calDavValidTime : self::ICAL_VALID_TIME;
+        $validTime = strtotime("+$validTimeInterval min", strtotime($this->getLongCreateDate()));
+        if ($validTime > strtotime('now')) {
+            $icalObject = $this->getStrICalCache();
+        } else {
+            $events = $this->getCalendarEventsList(new Date(strtotime(self::ICAL_START)), new Date(strtotime(self::ICAL_END)));
+            $icalObject = $this->generate($events);
+            $this->setLongCreateDate((new Date())->getLongTimestamp());
+            $this->setStrICalCache($icalObject);
+            $objLifeCycleFactory = Carrier::getInstance()->getContainer()->offsetGet(\Kajona\System\System\ServiceProvider::STR_LIFE_CYCLE_FACTORY);
+            $objLifeCycleFactory->factory(get_class($this))->update($this);
+        }
+
+        return $icalObject;
+    }
 }

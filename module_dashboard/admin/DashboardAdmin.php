@@ -343,8 +343,10 @@ JS;
             $iCal->setStrUserId(Carrier::getInstance()->getObjSession()->getUserID());
             $this->objLifeCycleFactory->factory(get_class($iCal))->update($iCal);
         }
-
-        return ["url" => Link::getLinkAdminHref("dashboard", "getiCalendarEvents", "&systemid=".$iCal->getStrSystemid())];
+        //Todo: right now AGP API not support string output, but when the support be implemented, will be possible to use next link instead of link to action
+        //$iCalLink = _apipath_ . '/caldav/' . $iCal->getStrSystemid();
+        $iCalLink = Link::getLinkAdminHref("dashboard", "getiCalendarEvents", "&systemid=" . $iCal->getStrSystemid());
+        return ["url" => $iCalLink];
     }
 
     /**
@@ -625,29 +627,6 @@ JS;
     }
 
     /**
-     * @param Date|null $startDate
-     * @param Date|null $endDate
-     * @return array
-     */
-    private function getCalendarEventsList(?Date $startDate = null, ?Date $endDate = null): array
-    {
-        $events = [];
-        $arrCategories = EventRepository::getAllCategories();
-        $objStartDate = empty($startDate) ? new Date(strtotime($this->getParam("start"))) : $startDate;
-        $objEndDate = empty($endDate) ? new Date(strtotime($this->getParam("end"))) : $endDate;
-
-        foreach ($arrCategories as $arrCategory) {
-            foreach ($arrCategory as $strKey => $strValue) {
-                if ($this->objSession->getSession($strKey) != "disabled") {
-                    $events = array_merge($events, EventRepository::getEventsByCategoryAndDate($strKey, $objStartDate, $objEndDate));
-                }
-            }
-        }
-
-        return $events;
-    }
-
-    /**
      * @return string
      * @permissions view
      * @responseType json
@@ -655,7 +634,18 @@ JS;
     protected function actionGetCalendarEvents()
     {
 
-        $arrEvents = $this->getCalendarEventsList();
+        $arrEvents = array();
+        $arrCategories = EventRepository::getAllCategories();
+        $objStartDate = new Date(strtotime($this->getParam("start")));
+        $objEndDate = new Date(strtotime($this->getParam("end")));
+
+        foreach ($arrCategories as $arrCategory) {
+            foreach ($arrCategory as $strKey => $strValue) {
+                if ($this->objSession->getSession($strKey) != "disabled") {
+                    $arrEvents = array_merge($arrEvents, EventRepository::getEventsByCategoryAndDate($strKey, $objStartDate, $objEndDate));
+                }
+            }
+        }
 
         $arrData = array();
         foreach ($arrEvents as $objEvent) {
@@ -712,18 +702,8 @@ JS;
 
         $this->objSession->loginUser($user);
 
-        $calDavValidTime = SystemSetting::getConfigValue('_dashboard_cal_dav_valid_time_');
-        $validTimeInterval = !empty($calDavValidTime) ? $calDavValidTime : $iCal::ICAL_VALID_TIME;
-        $validTime = strtotime("+$validTimeInterval min", strtotime($iCal->getLongCreateDate()));
-        if ($validTime > strtotime('now')) {
-            $icalObject = $iCal->getStrICalCache();
-        } else {
-            $events = $this->getCalendarEventsList(new Date(strtotime($iCal::ICAL_START)), new Date(strtotime($iCal::ICAL_END)));
-            $icalObject = $iCal->generate($events);
-            $iCal->setLongCreateDate((new Date())->getLongTimestamp());
-            $iCal->setStrICalCache($icalObject);
-            $this->objLifeCycleFactory->factory(get_class($iCal))->update($iCal);
-        }
+        $icalObject = $iCal->getICalendar();
+
         $this->objSession->logout();
 
         // Set the headers
