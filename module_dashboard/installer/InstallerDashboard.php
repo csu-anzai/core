@@ -39,6 +39,9 @@ class InstallerDashboard extends InstallerBase implements InstallerInterface {
         $objManager->createTable(DashboardWidget::class);
         $objManager->createTable(DashboardConfig::class);
         $objManager->createTable(DashboardUserRoot::class);
+        $objManager->createTable(ICalendar::class);
+
+        $this->registerConstant("_dashboard_cal_dav_valid_time_", 15, SystemSetting::$int_TYPE_INT, _dashboard_module_id_);
 
         //the dashboard
         $this->registerModule("dashboard", _dashboard_module_id_, "", "DashboardAdmin.php", $this->objMetadata->getStrVersion());
