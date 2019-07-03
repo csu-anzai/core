@@ -562,17 +562,17 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
     /**
      * @return string
      */
-    public function getStrAccessToken()
+    public function getStrAccessToken(): ?string
     {
         return $this->strAccessToken;
     }
 
     /**
-     * @param string $strAccessToken
+     * @param string $accessToken
      */
-    public function setStrAccessToken($strAccessToken)
+    public function setStrAccessToken(?string $accessToken): void
     {
-        $this->strAccessToken = $strAccessToken;
+        $this->strAccessToken = $accessToken;
     }
 
     /**
