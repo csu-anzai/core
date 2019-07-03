@@ -44,7 +44,6 @@ use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemChangelog;
 use Kajona\System\System\SystemJSTreeBuilder;
 use Kajona\System\System\SystemJSTreeConfig;
-use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserUser;
 use Kajona\System\View\Components\Datatable\Datatable;
 use Kajona\System\View\Components\Dynamicmenu\DynamicMenu;
@@ -343,7 +342,7 @@ JS;
             $iCal->setStrUserId(Carrier::getInstance()->getObjSession()->getUserID());
             $this->objLifeCycleFactory->factory(get_class($iCal))->update($iCal);
         }
-        //Todo: right now AGP API not support string output, but when the support be implemented, will be possible to use next link instead of link to action
+        //Todo: right now AGP API not supports string output, but when the support be implemented, will be possible to use next link instead of the link to action
         //$iCalLink = _apipath_ . '/caldav/' . $iCal->getStrSystemid();
         $iCalLink = Link::getLinkAdminHref("dashboard", "getiCalendarEvents", "&systemid=" . $iCal->getStrSystemid());
         return ["url" => $iCalLink];
