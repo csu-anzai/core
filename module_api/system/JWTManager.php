@@ -39,16 +39,19 @@ class JWTManager
 
     /**
      * @param UserUser $user
+     * @param int|null $expirationTime
      * @return string
      */
-    public function generate(UserUser $user): string
+    public function generate(UserUser $user, int $expirationTime = null): string
     {
-        $exp = time() + (int) SystemSetting::getConfigValue('_system_release_time_');
+        if ($expirationTime === null) {
+            $expirationTime = time() + (int) SystemSetting::getConfigValue('_system_release_time_');
+        }
 
         $payload = [
             'iss' => _webpath_,
             'sub' => $user->getSystemid(),
-            'exp' => $exp,
+            'exp' => $expirationTime,
             'iat' => time(),
             'name' => $user->getStrUsername(),
             'lastname' => $user->getStrName(),
