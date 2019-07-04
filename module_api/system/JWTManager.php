@@ -22,7 +22,7 @@ use UnexpectedValueException;
  */
 class JWTManager
 {
-    const ALG = 'HS256';
+    private const ALG = 'HS256';
 
     /**
      * @var ProjectSecret
