@@ -170,7 +170,7 @@ class ArraySectionIterator extends ArrayIterator implements \JsonSerializable
             "totalEntries" => $this->getNumberOfElements(),
             "itemsPerPage" => (int) $this->getIntElementsPerPage(),
             "page" => $this->getPageNumber(),
-            "entries" => iterator_to_array($this),
+            "entries" => \iterator_to_array($this),
         ];
     }
 }
