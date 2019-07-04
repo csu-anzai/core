@@ -780,7 +780,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         return $strReturn;
     }
 
-    private function update_716_717()
+    private function update_716_717(): string
     {
         $return = "Updating to 7.1.7...".PHP_EOL;
         $return .= "Add access token column to user".PHP_EOL;
