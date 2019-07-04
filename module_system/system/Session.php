@@ -22,11 +22,11 @@ use Kajona\System\System\Security\PasswordExpiredException;
  */
 final class Session
 {
-    const SCOPE_SESSION = 1;
-    const SCOPE_REQUEST = 2;
+    public const SCOPE_SESSION = 1;
+    public const SCOPE_REQUEST = 2;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $strKey = null;
 
@@ -68,7 +68,7 @@ final class Session
     private $bitClosed = false;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $sessionScope = null;
 
@@ -247,7 +247,7 @@ final class Session
      *
      * @return string
      */
-    public function getSession($strKey, $intScope = 1)
+    public function getSession($strKey, $intScope = self::SCOPE_SESSION)
     {
         if ($this->sessionScope !== null) {
             $intScope = $this->sessionScope;
