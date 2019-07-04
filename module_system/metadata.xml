@@ -8,12 +8,13 @@
     <version>7.1.7</version>
     <author>Kajona Team</author>
     <providesInstaller>TRUE</providesInstaller>
-    <requiredModules />
+    <requiredModules>
+        <module name="api" version="7.1" />
+    </requiredModules>
     <constants>
         <constant name="_system_modul_id_" value="0" />
         <constant name="_user_modul_id_" value="15" />
         <constant name="_languages_modul_id_" value="65" />
         <constant name="_messaging_module_id_" value="135" />
     </constants>
-
 </package>

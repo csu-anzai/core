@@ -9,6 +9,8 @@
 
 namespace Kajona\System\System;
 
+use Kajona\Api\System\JWTManager;
+use Kajona\Api\System\ServiceProvider;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Security\PasswordExpiredException;
 
@@ -565,6 +567,9 @@ final class Session
             $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $objUser->getArrShortGroupIds()));
             $this->setSession(self::STR_SESSION_ISADMIN, $objUser->getIntAdmin());
 
+            /** @var JWTManager $jwtManager */
+            $jwtManager = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::JWT_MANAGER);
+
             ServiceLifeCycleFactory::getLifeCycle(get_class($this->getObjInternalSession()))->update($this->getObjInternalSession());
             $this->objUser = $objUser;
 
@@ -575,6 +580,7 @@ final class Session
 
             $objUser->setIntLogins($objUser->getIntLogins() + 1);
             $objUser->setIntLastLogin(time());
+            $objUser->setStrAccessToken($jwtManager->generate($objUser));
 
             if (!$objUser->getLockManager()->isAccessibleForCurrentUser()) {
                 //force an unlock, may be locked since the user is being edited in the backend
