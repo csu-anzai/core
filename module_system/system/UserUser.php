@@ -560,7 +560,7 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getStrAccessToken(): ?string
     {
@@ -568,7 +568,7 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
     }
 
     /**
-     * @param string $accessToken
+     * @param string|null $accessToken
      */
     public function setStrAccessToken(?string $accessToken): void
     {
