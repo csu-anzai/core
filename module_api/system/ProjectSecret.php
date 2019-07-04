@@ -29,7 +29,7 @@ class ProjectSecret
             throw new \RuntimeException("Token file not available");
         }
 
-        $token = trim(file_get_contents($tokenFile));
+        $token = trim(file_get_contents($tokenFile) ?: '');
 
         if (empty($token)) {
             throw new \RuntimeException("No token was specified");
