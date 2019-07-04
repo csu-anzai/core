@@ -51,7 +51,7 @@ class ServiceProvider implements ServiceProviderInterface
 
     public function register(Container $container)
     {
-        $container[self::APP_BUILDER] = function ($c) {
+        $container[self::APP_BUILDER] = static function ($c) {
             return new AppBuilder(
                 $c[self::ENDPOINT_SCANNER],
                 $c[\Kajona\System\System\ServiceProvider::STR_OBJECT_BUILDER],
@@ -59,29 +59,29 @@ class ServiceProvider implements ServiceProviderInterface
             );
         };
 
-        $container[self::ENDPOINT_SCANNER] = function ($c) {
+        $container[self::ENDPOINT_SCANNER] = static function ($c) {
             return new EndpointScanner(
                 $c[\Kajona\System\System\ServiceProvider::STR_CACHE_MANAGER]
             );
         };
 
-        $container[self::PROJECT_SECRET] = function ($c) {
+        $container[self::PROJECT_SECRET] = static function ($c) {
             return new ProjectSecret();
         };
 
-        $container[self::JWT_MANAGER] = function ($c) {
+        $container[self::JWT_MANAGER] = static function ($c) {
             return new JWTManager(
                 $c[self::PROJECT_SECRET]
             );
         };
 
-        $container[self::AUTHORIZATION_FILETOKEN] = function ($c) {
+        $container[self::AUTHORIZATION_FILETOKEN] = static function ($c) {
             return new FileToken(
                 $c[self::PROJECT_SECRET]
             );
         };
 
-        $container[self::AUTHORIZATION_USERTOKEN] = function ($c) {
+        $container[self::AUTHORIZATION_USERTOKEN] = static function ($c) {
             return new UserToken(
                 $c[\Kajona\System\System\ServiceProvider::STR_DB],
                 $c[self::JWT_MANAGER],
