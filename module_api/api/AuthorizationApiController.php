@@ -27,7 +27,7 @@ class AuthorizationApiController implements ApiControllerInterface
      * @method POST
      * @path /v1/authorization/token
      */
-    public function getAccessToken()
+    public function getAccessToken(): array
     {
         $user = Session::getInstance()->getUser();
         $loggedIn = Session::getInstance()->isLoggedin();
