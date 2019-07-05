@@ -84,8 +84,7 @@ class GraphChartjs implements GraphInterfaceFronted, \JsonSerializable
                         'boxWidth' => 12,
                     ],
                 ],
-                'maintainAspectRatio' => false
-
+                'maintainAspectRatio' => false,
             ],
         ],
     ];
@@ -808,7 +807,7 @@ class GraphChartjs implements GraphInterfaceFronted, \JsonSerializable
             "options" => $this->arrChartOptions,
             "colors" => $this->arrColors,
             "width" => $this->intWidth,
-            "height" => $this->intHeight
+            "height" => $this->intHeight,
         ];
     }
 }
