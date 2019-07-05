@@ -28,17 +28,17 @@ class DashboardICalendarFilter extends FilterBase
     /**
      * @return string
      */
-    public function getStrUserSystemId()
+    public function getStrUserSystemId(): string
     {
         return $this->strUserSystemId;
     }
 
     /**
-     * @param string $strUserSystemId
+     * @param string $userSystemId
      */
-    public function setStrUserSystemId($strUserSystemId)
+    public function setStrUserSystemId(string $userSystemId): void
     {
-        $this->strUserSystemId = $strUserSystemId;
+        $this->strUserSystemId = $userSystemId;
     }
 
 }

@@ -19,6 +19,7 @@ use Kajona\Dashboard\System\EventRepository;
 use Kajona\Dashboard\System\Filter\DashboardICalendarFilter;
 use Kajona\Dashboard\System\ICalendar;
 use Kajona\Dashboard\System\Lifecycle\ConfigLifecycle;
+use Kajona\Dashboard\System\ServiceProvider;
 use Kajona\Dashboard\System\TodoJstreeNodeLoader;
 use Kajona\Dashboard\System\TodoRepository;
 use Kajona\Dashboard\View\Components\Dashboard\Dashboard;
@@ -331,7 +332,7 @@ JS;
      * @permissions view
      * @responseType json
      */
-    public function actionGetICalUrl()
+    public function actionApiGetOrCreateICalUrl()
     {
         $filter = new DashboardICalendarFilter();
         $userId = Carrier::getInstance()->getObjSession()->getUserID();
@@ -681,41 +682,7 @@ JS;
      */
     public function actionGetiCalendarEvents()
     {
-        $response = ResponseObject::getInstance();
-
-        $systemId = $this->getParam("systemid");
-        if (!validateSystemid($systemId)) {
-            $response->setStrStatusCode(HttpStatuscodes::SC_BADREQUEST);
-            $response->sendHeaders();
-            return "";
-        }
-
-        $iCal = Objectfactory::getInstance()->getObject($systemId);
-        if (!$iCal instanceof ICalendar) {
-            $response->setStrStatusCode(HttpStatuscodes::SC_NOT_FOUND);
-            $response->sendHeaders();
-            return "";
-        }
-
-        $userId = $iCal->getStrUserId();
-
-        $user = $this->objFactory->getObject($userId);
-
-        if (!$user instanceof UserUser) {
-            return "";
-        }
-
-        $this->objSession->loginUser($user);
-
-        $calDavCalendar = $iCal->getICalendar();
-
-        $this->objSession->logout();
-
-        // Set the headers
-        $response->setStrResponseType(HttpResponsetypes::STR_TYPE_ICAL);
-        $response->addHeader('Content-Disposition: attachment; filename="agpCalendar.ics"');
-
-        return $calDavCalendar;
+        return (Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::DASHBOARD_ICAL_GENERATOR))->generate($this->getParam("systemid"));
     }
 
     /**

@@ -47,11 +47,10 @@ class DashboardCalendar {
     public static getICalendarURL () {
         Ajax.genericAjaxCall(
             'dashboard',
-            'getICalUrl',
+            'apiGetOrCreateICalUrl',
             {},
             function (data: any) {
                 if (data) {
-                    debugger;
                     var modalContent =
                         '<div class="input-group">' +
                         '<input type="text" class="form-control" value="' +

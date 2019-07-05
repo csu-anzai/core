@@ -10,6 +10,7 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\Date;
 use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
+use Kajona\System\System\ServiceProvider as SystemServiceProvider;
 use Kajona\System\System\SystemSetting;
 
 /**
@@ -186,7 +187,7 @@ ICALBODY;
             $iCalendar = $this->generate($events);
             $this->setLongCreateDate((new Date())->getLongTimestamp());
             $this->setStrICalCache($iCalendar);
-            $lifeCycleFactory = Carrier::getInstance()->getContainer()->offsetGet(\Kajona\System\System\ServiceProvider::STR_LIFE_CYCLE_FACTORY);
+            $lifeCycleFactory = Carrier::getInstance()->getContainer()->offsetGet(SystemServiceProvider::STR_LIFE_CYCLE_FACTORY);
             $lifeCycleFactory->factory(get_class($this))->update($this);
         }
 
