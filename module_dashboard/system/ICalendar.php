@@ -13,7 +13,7 @@ use Kajona\System\System\ModelInterface;
 use Kajona\System\System\SystemSetting;
 
 /**
- * Object which represents a iCal entry
+ * Object which represents a ICalendar entry
  *
  * @package module_dashboard
  * @author andrii.konoval@artemeon.de
@@ -46,10 +46,10 @@ class ICalendar extends Model implements ModelInterface
     private $strICalCache = "";
 
     /**
-     * @var int
+     * @var int|null
      * @tableColumn agp_dashboard_ical.create_date
      */
-    private $longCreateDate = null;
+    private $longCreateDate;
 
     /**
      * Returns the name to be used when rendering the current object, e.g. in admin-lists.
@@ -70,11 +70,11 @@ class ICalendar extends Model implements ModelInterface
     }
 
     /**
-     * @param string $strUserId
+     * @param string $userId
      */
-    public function setStrUserId($strUserId)
+    public function setStrUserId($userId)
     {
-        $this->strUserId = $strUserId;
+        $this->strUserId = $userId;
     }
 
     /**
@@ -86,11 +86,11 @@ class ICalendar extends Model implements ModelInterface
     }
 
     /**
-     * @param string $strICalCache
+     * @param string $iCalCache
      */
-    public function setStrICalCache($strICalCache)
+    public function setStrICalCache($iCalCache)
     {
-        $this->strICalCache = $strICalCache;
+        $this->strICalCache = $iCalCache;
     }
 
     /**
@@ -102,27 +102,27 @@ class ICalendar extends Model implements ModelInterface
     }
 
     /**
-     * @param Date $longCreateDate
+     * @param int|null $createDate
      */
-    public function setLongCreateDate($longCreateDate)
+    public function setLongCreateDate($createDate)
     {
-        $this->longCreateDate = $longCreateDate;
+        $this->longCreateDate = $createDate;
     }
 
     /**
      * @param Date|null $startDate
      * @param Date|null $endDate
-     * @return array
+     * @return EventEntry[]
      */
     public function getCalendarEventsList(Date $startDate = null, Date $endDate = null): array
     {
         $events = [];
-        $arrCategories = EventRepository::getAllCategories();
+        $categories = EventRepository::getAllCategories();
 
-        foreach ($arrCategories as $arrCategory) {
-            foreach ($arrCategory as $strKey => $strValue) {
-                if (Carrier::getInstance()->getObjSession()->getSession($strKey) != "disabled") {
-                    $events = array_merge($events, EventRepository::getEventsByCategoryAndDate($strKey, $startDate, $endDate));
+        foreach ($categories as $category) {
+            foreach ($category as $key => $value) {
+                if (Carrier::getInstance()->getObjSession()->getSession($key) !== "disabled") {
+                    $events = array_merge($events, EventRepository::getEventsByCategoryAndDate($key, $startDate, $endDate));
                 }
             }
         }
@@ -137,7 +137,7 @@ class ICalendar extends Model implements ModelInterface
      */
     private function generate(array $events): string
     {
-        $icalObject = <<<ICALHEADER
+        $iCalendar = <<<ICALHEADER
 BEGIN:VCALENDAR
 VERSION:2.0
 METHOD:PUBLISH
@@ -156,7 +156,7 @@ ICALHEADER;
             }
             $summary = strip_tags($event->getStrDisplayName());
             $description = $event->getStrHref();
-            $icalObject .= <<<ICALBODY
+            $iCalendar .= <<<ICALBODY
 BEGIN:VEVENT
 DTSTART:$eventStartDate
 DTEND:$eventEndDate
@@ -165,31 +165,31 @@ DESCRIPTION:$description
 END:VEVENT\n
 ICALBODY;
         }
-        $icalObject .= "END:VCALENDAR";
+        $iCalendar .= "END:VCALENDAR";
 
-        return $icalObject;
+        return $iCalendar;
     }
 
     /**
-     * Returns generierte calDav calendar
+     * Returns generated calDav calendar
      * @return string
      */
-    public function getICalendar()
+    public function getICalendar(): string
     {
         $calDavValidTime = SystemSetting::getConfigValue('_dashboard_cal_dav_valid_time_');
-        $validTimeInterval = !empty($calDavValidTime) ? $calDavValidTime : self::ICAL_VALID_TIME;
+        $validTimeInterval = $calDavValidTime ?: self::ICAL_VALID_TIME;
         $validTime = strtotime("+$validTimeInterval min", strtotime($this->getLongCreateDate()));
         if ($validTime > strtotime('now')) {
-            $icalObject = $this->getStrICalCache();
+            $iCalendar = $this->getStrICalCache();
         } else {
             $events = $this->getCalendarEventsList(new Date(strtotime(self::ICAL_START)), new Date(strtotime(self::ICAL_END)));
-            $icalObject = $this->generate($events);
+            $iCalendar = $this->generate($events);
             $this->setLongCreateDate((new Date())->getLongTimestamp());
-            $this->setStrICalCache($icalObject);
-            $objLifeCycleFactory = Carrier::getInstance()->getContainer()->offsetGet(\Kajona\System\System\ServiceProvider::STR_LIFE_CYCLE_FACTORY);
-            $objLifeCycleFactory->factory(get_class($this))->update($this);
+            $this->setStrICalCache($iCalendar);
+            $lifeCycleFactory = Carrier::getInstance()->getContainer()->offsetGet(\Kajona\System\System\ServiceProvider::STR_LIFE_CYCLE_FACTORY);
+            $lifeCycleFactory->factory(get_class($this))->update($this);
         }
 
-        return $icalObject;
+        return $iCalendar;
     }
 }

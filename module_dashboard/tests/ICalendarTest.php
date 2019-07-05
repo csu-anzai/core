@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace AGP\Dashboard\Tests;
 
@@ -14,7 +15,7 @@ class ICalendarTest extends Testbase
      * Test ICalendar generator output
      * @throws \Kajona\System\System\Exception
      */
-    public function testICalendarGenerator()
+    public function testICalendarGenerator(): void
     {
         $events = [];
         $event = new EventEntry();

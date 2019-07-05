@@ -356,6 +356,36 @@ abstract class Root
         return $objORM->getObjectList(get_called_class(), $strPrevid, $intStart, $intEnd);
     }
 
+    /**
+     * A generic approach to load a first object of currently available.
+     * This list can be filtered via the given filter object.
+     *
+     * @param FilterBase|null $filter
+     * @param string $prevId
+     * @param null $start
+     * @param null $end
+     * @return object|null
+     * @throws Exception
+     */
+    public static function getFirstObjectFiltered(FilterBase $filter = null, $prevId = "", $start = null, $end = null): ?object
+    {
+        $returnObject = null;
+
+        $orm = new OrmObjectlist();
+
+        if ($filter !== null) {
+            $filter->addWhereConditionToORM($orm);
+            $filter->addOrderByConditionToORM($orm);
+        }
+
+        $systemIds = $orm->getObjectListIds(get_called_class(), $prevId, $start, $end);
+
+        if (!empty($systemIds)) {
+            $returnObject = Objectfactory::getInstance()->getObject($systemIds[0]);
+        }
+
+        return $returnObject;
+    }
 
     /**
      * A generic approach to load a list of objects currently available.

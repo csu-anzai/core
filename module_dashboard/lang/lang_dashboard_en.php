@@ -51,4 +51,4 @@ $lang["form_dashboard_default"]          = "Default dashboard";
 $lang["form_dashboard_default_hint"]     = "Will be loaded at login";
 
 $lang["_dashboard_cal_dav_valid_time_"]  = "'CalDav' calendar validity in minutes";
-$lang["dashboar_ical_url"]               = "Share calDav calendar";
+$lang["dashboard_ical_url"]               = "Share calDav calendar";

@@ -318,7 +318,7 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
 JS;
         $return .= "</script>";
 
-        $icalLink = Link::getLinkAdminManual(["href" => "#", "onclick" => "DashboardCalendar.getICalendarURL();return false"], $this->getLang("dashboar_ical_url", "dashboard"));
+        $icalLink = Link::getLinkAdminManual(["href" => "#", "onclick" => "DashboardCalendar.getICalendarURL();return false"], $this->getLang("dashboard_ical_url", "dashboard"));
         $return .= $this->objToolkit->addToContentToolbar($icalLink);
 
         return $return;
@@ -334,13 +334,12 @@ JS;
     public function actionGetICalUrl()
     {
         $filter = new DashboardICalendarFilter();
-        $filter->setStrUserSystemId(Carrier::getInstance()->getObjSession()->getUserID());
-        $result = ICalendar::getObjectListFiltered($filter);
-        if (!empty($result)) {
-            $iCal = $result[0];
-        } else {
+        $userId = Carrier::getInstance()->getObjSession()->getUserID();
+        $filter->setStrUserSystemId($userId);
+        $iCal = ICalendar::getFirstObjectFiltered($filter);
+        if (empty($iCal)) {
             $iCal = new ICalendar();
-            $iCal->setStrUserId(Carrier::getInstance()->getObjSession()->getUserID());
+            $iCal->setStrUserId($userId);
             $this->objLifeCycleFactory->factory(get_class($iCal))->update($iCal);
         }
         //Todo: right now AGP API not supports string output, but when the support be implemented, will be possible to use next link instead of the link to action
@@ -682,13 +681,19 @@ JS;
      */
     public function actionGetiCalendarEvents()
     {
-        if ($this->getParam("systemid") == "") {
+        $response = ResponseObject::getInstance();
+
+        $systemId = $this->getParam("systemid");
+        if (!validateSystemid($systemId)) {
+            $response->setStrStatusCode(HttpStatuscodes::SC_BADREQUEST);
+            $response->sendHeaders();
             return "";
         }
 
-        $systemId = $this->getParam("systemid");
         $iCal = Objectfactory::getInstance()->getObject($systemId);
         if (!$iCal instanceof ICalendar) {
+            $response->setStrStatusCode(HttpStatuscodes::SC_NOT_FOUND);
+            $response->sendHeaders();
             return "";
         }
 
@@ -702,15 +707,15 @@ JS;
 
         $this->objSession->loginUser($user);
 
-        $icalObject = $iCal->getICalendar();
+        $calDavCalendar = $iCal->getICalendar();
 
         $this->objSession->logout();
 
         // Set the headers
-        ResponseObject::getInstance()->setStrResponseType(HttpResponsetypes::STR_TYPE_ICAL);
-        ResponseObject::getInstance()->addHeader('Content-Disposition: attachment; filename="agpCalendar.ics"');
+        $response->setStrResponseType(HttpResponsetypes::STR_TYPE_ICAL);
+        $response->addHeader('Content-Disposition: attachment; filename="agpCalendar.ics"');
 
-        return $icalObject;
+        return $calDavCalendar;
     }
 
     /**
