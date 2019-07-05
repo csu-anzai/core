@@ -64,7 +64,7 @@ class Router {
     }
 
     public static defaultRoutieCallback (url: string) {
-        if (url.indexOf('/#/vm') === -1) {
+        if (url.indexOf('/vm') === -1) {
             return
         }
         // in case we receive an absolute url with no hash redirect the user to this url
