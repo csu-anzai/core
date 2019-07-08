@@ -15,6 +15,6 @@ final class UnableToWriteInIdFileException extends Exception
 {
     public function __construct(Throwable $previousException = null)
     {
-        parent::__construct('unable to open idFile für writing', Exception::$level_FATALERROR, $previousException);
+        parent::__construct('Unable to open idFile für writing', Exception::$level_FATALERROR, $previousException);
     }
 }
