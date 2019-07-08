@@ -5,7 +5,7 @@ Vue.use(<any>Router)
 
 export default new Router({
     routes: [
-        { path: '/reportconfigurator/test',
+        { path: '/vm/reportconfigurator',
             component: Reportgenerator
         }
     ]
