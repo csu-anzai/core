@@ -12,6 +12,7 @@ use Kajona\System\System\RequestEntrypointEnum;
 use Kajona\System\System\SystemEventidentifier;
 use Pimple\Container;
 use PSX\Http\Environment\HttpContext;
+use PSX\Http\Environment\HttpResponse;
 use PSX\Http\Exception\StatusCodeException;
 use PSX\Http\Exception\UnauthorizedException;
 use PSX\Http\Request;
@@ -111,8 +112,19 @@ class AppBuilder
                         $data = call_user_func_array([$instance, $route["methodName"]], [$body, $httpContext]);
                     }
 
-                    $response = $response->withHeader("Content-Type", "application/json")
-                        ->write(json_encode($data, JSON_PRETTY_PRINT));
+                    if ($data instanceof HttpResponse) {
+                        $response = $response->withStatus($data->getStatusCode());
+
+                        $headers = $data->getHeaders();
+                        foreach ($headers as $name => $value) {
+                            $response = $response->withHeader($name, $value);
+                        }
+
+                        $response = $response->write($data->getBody());
+                    } else {
+                        $response = $response->withHeader("Content-Type", "application/json")
+                            ->write(json_encode($data, JSON_PRETTY_PRINT));
+                    }
                 } catch (StatusCodeException $e) {
                     $response = $response->withStatus($e->getStatusCode())
                         ->withHeader("Content-Type", "application/json")
