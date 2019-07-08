@@ -30,14 +30,17 @@ class AuthorizationApiController implements ApiControllerInterface
     public function getAccessToken(): array
     {
         $user = Session::getInstance()->getUser();
-        $loggedIn = Session::getInstance()->isLoggedin();
 
-        if ($user instanceof UserUser && $loggedIn) {
-            return [
-                'access_token' => $user->getStrAccessToken(),
-            ];
-        } else {
+        if (!$user instanceof UserUser) {
             throw new \RuntimeException('User not authorized');
         }
+
+        if (!Session::getInstance()->isLoggedin()) {
+            throw new \RuntimeException('User not authorized');
+        }
+
+        return [
+            'access_token' => $user->getStrAccessToken(),
+        ];
     }
 }
