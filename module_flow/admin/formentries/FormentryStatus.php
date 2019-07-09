@@ -39,14 +39,6 @@ class FormentryStatus extends FormentryToggleButtonbar
     }
 
     /**
-     * @return bool
-     */
-    public function isConfigured(): bool
-    {
-        return !empty($this->getArrKeyValues());
-    }
-
-    /**
      * Overwritten in order to load key-value pairs declared by annotations
      */
     protected function updateValue()
