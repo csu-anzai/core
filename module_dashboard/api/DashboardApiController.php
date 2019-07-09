@@ -20,6 +20,14 @@ use PSX\Http\Environment\HttpContext;
  */
 class DashboardApiController implements ApiControllerInterface
 {
+
+    /**
+     * @inject dashboard_ical_generator
+     * @var ServiceICalGenerator
+     */
+    private $iCalGenerator;
+
+
     /**
      * Returns internet calendar by token
      *
@@ -29,7 +37,7 @@ class DashboardApiController implements ApiControllerInterface
      */
     public function caldav(HttpContext $context)
     {
-        return (Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::DASHBOARD_ICAL_GENERATOR))->generate($context->getUriFragment('token'));
+        return $this->iCalGenerator->generate($context->getUriFragment('token'));
     }
 
 }

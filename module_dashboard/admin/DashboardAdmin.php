@@ -30,15 +30,17 @@ use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminInterface;
 use Kajona\System\Admin\Formentries\FormentryText;
 use Kajona\System\System\AdminskinHelper;
+use Kajona\System\System\AuthenticationException;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
+use Kajona\System\System\Exceptions\EntityNotFoundException;
+use Kajona\System\System\Exceptions\WrongSystemIdException;
 use Kajona\System\System\HttpResponsetypes;
 use Kajona\System\System\HttpStatuscodes;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
-use Kajona\System\System\Objectfactory;
 use Kajona\System\System\ResponseObject;
 use Kajona\System\System\Session;
 use Kajona\System\System\StringUtil;
@@ -46,7 +48,6 @@ use Kajona\System\System\SystemAspect;
 use Kajona\System\System\SystemChangelog;
 use Kajona\System\System\SystemJSTreeBuilder;
 use Kajona\System\System\SystemJSTreeConfig;
-use Kajona\System\System\UserUser;
 use Kajona\System\View\Components\Datatable\Datatable;
 use Kajona\System\View\Components\Dynamicmenu\DynamicMenu;
 use Kajona\System\View\Components\Menu\Item\Separator;
@@ -682,7 +683,23 @@ JS;
      */
     public function actionGetiCalendarEvents()
     {
-        return (Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::DASHBOARD_ICAL_GENERATOR))->generate($this->getParam("systemid"));
+        try {
+            ResponseObject::getInstance()->setStrResponseType(HttpResponsetypes::STR_TYPE_ICAL);
+            ResponseObject::getInstance()->addHeader('Content-Disposition: attachment; filename="agpCalendar.ics"');
+            return (Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::DASHBOARD_ICAL_GENERATOR))->generate($this->getParam("systemid"));
+        } catch (WrongSystemIdException $e) {
+            ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_BADREQUEST);
+            ResponseObject::getInstance()->sendHeaders();
+            return "";
+        } catch (EntityNotFoundException $e) {
+            ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_NOT_FOUND);
+            ResponseObject::getInstance()->sendHeaders();
+            return "";
+        } catch (AuthenticationException $e) {
+            ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
+            ResponseObject::getInstance()->sendHeaders();
+            return "";
+        }
     }
 
     /**
