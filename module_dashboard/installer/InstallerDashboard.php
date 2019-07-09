@@ -41,6 +41,8 @@ class InstallerDashboard extends InstallerBase implements InstallerInterface {
         $objManager->createTable(DashboardUserRoot::class);
         $objManager->createTable(ICalendar::class);
 
+        $this->registerConstant("_dashboard_cal_dav_month_after_", 12, SystemSetting::$int_TYPE_INT, _dashboard_module_id_);
+        $this->registerConstant("_dashboard_cal_dav_month_before_", 3, SystemSetting::$int_TYPE_INT, _dashboard_module_id_);
         $this->registerConstant("_dashboard_cal_dav_valid_time_", 15, SystemSetting::$int_TYPE_INT, _dashboard_module_id_);
 
         //the dashboard
@@ -162,6 +164,8 @@ class InstallerDashboard extends InstallerBase implements InstallerInterface {
 
         $schema = new OrmSchemamanager();
         $schema->updateTable(ICalendar::class);
+        $this->registerConstant("_dashboard_cal_dav_month_after_", 12, SystemSetting::$int_TYPE_INT, _dashboard_module_id_);
+        $this->registerConstant("_dashboard_cal_dav_month_before_", 3, SystemSetting::$int_TYPE_INT, _dashboard_module_id_);
         $this->registerConstant("_dashboard_cal_dav_valid_time_", 15, SystemSetting::$int_TYPE_INT, _dashboard_module_id_);
 
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.2");

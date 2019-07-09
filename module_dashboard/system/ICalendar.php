@@ -26,8 +26,8 @@ use Kajona\System\System\SystemSetting;
 class ICalendar extends Model implements ModelInterface
 {
 
-    const ICAL_START = '-3 month';
-    const ICAL_END = '+1 year';
+    const ICAL_START = 3; //month - from today
+    const ICAL_END = 12; //month + from today
     const ICAL_VALID_TIME = 15;
     const ICAL_LONG_FORMAT = 'Ymd\THis\Z';
     const ICAL_SHORT_FORMAT = 'Ymd\T000000';
@@ -178,12 +178,16 @@ ICALBODY;
     public function getICalendar(): string
     {
         $calDavValidTime = SystemSetting::getConfigValue('_dashboard_cal_dav_valid_time_');
+        $calDavMonthBefore = (int)SystemSetting::getConfigValue('_dashboard_cal_dav_month_before_');
+        $calDavMonthAfter = (int)SystemSetting::getConfigValue('_dashboard_cal_dav_month_after_');
         $validTimeInterval = $calDavValidTime ?: self::ICAL_VALID_TIME;
+        $monthBefore = ($calDavMonthBefore > 0) ? $calDavMonthBefore : self::ICAL_START;
+        $monthAfter = ($calDavMonthAfter > 0) ? $calDavMonthAfter : self::ICAL_END;
         $validTime = strtotime("+$validTimeInterval min", strtotime($this->getLongCreateDate()));
         if ($validTime > strtotime('now')) {
             $iCalendar = $this->getStrICalCache();
         } else {
-            $events = $this->getCalendarEventsList(new Date(strtotime(self::ICAL_START)), new Date(strtotime(self::ICAL_END)));
+            $events = $this->getCalendarEventsList(new Date(strtotime("-$monthBefore month")), new Date(strtotime("+$monthAfter month")));
             $iCalendar = $this->generate($events);
             $this->setLongCreateDate((new Date())->getLongTimestamp());
             $this->setStrICalCache($iCalendar);

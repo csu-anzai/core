@@ -49,5 +49,8 @@ $lang["select_col_button_info"]          = "Wählen Sie hier die Spalte aus";
 $lang["form_dashboard_default"]          = "Standard-Dashboard";
 $lang["form_dashboard_default_hint"]     = "Wird beim Login am System geladen";
 
-$lang["_dashboard_cal_dav_valid_time_"]  = "'CalDav' Kalender Gültigkeit in Minuten";
+$lang["_dashboard_cal_dav_valid_time_"]   = "Gültigkeit des 'CalDav'-Kalendercaches in Minuten";
+$lang["_dashboard_cal_dav_month_before_"] = "Aktivitäten für wie viele Monate vor dem heutigen Tag sollten im Internetkalender angezeigt werden (nur positive values werden eine Auswirkung haben)?";
+$lang["_dashboard_cal_dav_month_after_"]  = "Aktivitäten für wie viele Monate nach dem heutigen Tag sollten im Internetkalender angezeigt werden (nur positive values werden eine Auswirkung haben)?";
+
 $lang["dashboard_ical_url"]               = "Teilen Sie den calDav-Kalender";
