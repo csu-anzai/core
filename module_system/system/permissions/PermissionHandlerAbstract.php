@@ -59,6 +59,10 @@ abstract class PermissionHandlerAbstract implements PermissionHandlerInterface
      */
     public function onCreate(Root $objRecord)
     {
+        if (!$this->isValid($objRecord)) {
+            return;
+        }
+
         $this->calculatePermissions($objRecord);
     }
 
@@ -67,6 +71,10 @@ abstract class PermissionHandlerAbstract implements PermissionHandlerInterface
      */
     public function onUpdate(Root $objOldRecord, Root $objNewRecord)
     {
+        if (!$this->isValid($objNewRecord)) {
+            return;
+        }
+
         // if nothing has changed we also dont need to set the rights
         if (!$this->hasChanged($objOldRecord, $objNewRecord)) {
             return;
@@ -107,6 +115,18 @@ abstract class PermissionHandlerAbstract implements PermissionHandlerInterface
     protected function hasChanged(Root $objOldRecord, Root $objNewRecord)
     {
         return $objOldRecord->getIntRecordStatus() != $objNewRecord->getIntRecordStatus();
+    }
+
+    /**
+     * Returns whether the record is valid to be processed by the permission handler. IF you want to exclude specific
+     * records you need to overwrite this method
+     *
+     * @param Root $record
+     * @return bool
+     */
+    protected function isValid(Root $record): bool
+    {
+        return true;
     }
 
     /**
