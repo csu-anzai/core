@@ -338,7 +338,7 @@ JS;
         $filter = new DashboardICalendarFilter();
         $userId = Carrier::getInstance()->getObjSession()->getUserID();
         $filter->setStrUserSystemId($userId);
-        $iCal = ICalendar::getFirstObjectFiltered($filter);
+        $iCal = ICalendar::getSingleObjectFiltered($filter);
         if (empty($iCal)) {
             $iCal = new ICalendar();
             $iCal->setStrUserId($userId);

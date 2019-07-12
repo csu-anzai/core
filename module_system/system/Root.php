@@ -362,12 +362,10 @@ abstract class Root
      *
      * @param FilterBase|null $filter
      * @param string $prevId
-     * @param null $start
-     * @param null $end
      * @return object|null
      * @throws Exception
      */
-    public static function getFirstObjectFiltered(FilterBase $filter = null, $prevId = "", $start = null, $end = null): ?object
+    public static function getSingleObjectFiltered(FilterBase $filter = null, $prevId = ""): ?object
     {
         $returnObject = null;
 
@@ -378,13 +376,7 @@ abstract class Root
             $filter->addOrderByConditionToORM($orm);
         }
 
-        $systemIds = $orm->getObjectListIds(get_called_class(), $prevId, $start, $end);
-
-        if (!empty($systemIds)) {
-            $returnObject = Objectfactory::getInstance()->getObject($systemIds[0]);
-        }
-
-        return $returnObject;
+        return $orm->getSingleObject(get_called_class(), $prevId);
     }
 
     /**
