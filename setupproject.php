@@ -300,7 +300,7 @@ TEXT;
             echo "Error exited with a non successful status code";
             exit(1);
         }
-        echo "   " . implode("\n   ", $arrOutput);
+        //echo "   " . implode("\n   ", $arrOutput);
 
     }
 
