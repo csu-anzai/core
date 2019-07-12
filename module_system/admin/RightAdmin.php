@@ -9,12 +9,14 @@
 
 namespace Kajona\System\Admin;
 
+use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Link;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Rights;
 use Kajona\System\System\Root;
 use Kajona\System\System\SystemCommon;
+use Kajona\System\System\SystemEventidentifier;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
 use Kajona\V4skin\View\Components\Rights\Rights as RightComponent;
@@ -233,6 +235,9 @@ class RightAdmin extends AdminController implements AdminInterface
         } else {
             $strReturn = ["message" => $this->getLang("save_rights_error"), "type" => "error"];
         }
+
+        // trigger rights changed event
+        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_RIGHTSCHANGED, [$strSystemid, $permissionRow]);
 
         return $strReturn;
     }
