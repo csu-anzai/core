@@ -6,7 +6,7 @@
     <title>mediamanager</title>
     <description>
         The mediamanager is a central place to handle all kind of files.</description>
-    <version>7.1.2</version>
+    <version>7.1.3</version>
     <author>Kajona Team</author>
     <providesInstaller>TRUE</providesInstaller>
     <requiredModules>
