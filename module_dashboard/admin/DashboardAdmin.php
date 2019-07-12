@@ -346,7 +346,7 @@ JS;
         }
         //Todo: right now AGP API not supports string output, but when the support be implemented, will be possible to use next link instead of the link to action
         //$iCalLink = _apipath_ . '/caldav/' . $iCal->getStrSystemid();
-        $iCalLink = Link::getLinkAdminHref("dashboard", "getiCalendarEvents", "&systemid=" . $iCal->getStrSystemid());
+        $iCalLink = Link::getLinkAdminXml("dashboard", "getiCalendarEvents", "&systemid=" . $iCal->getStrSystemid());
         return ["url" => $iCalLink];
     }
 
