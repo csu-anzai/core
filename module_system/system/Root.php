@@ -367,8 +367,6 @@ abstract class Root
      */
     public static function getSingleObjectFiltered(FilterBase $filter = null, $prevId = ""): ?object
     {
-        $returnObject = null;
-
         $orm = new OrmObjectlist();
 
         if ($filter !== null) {
