@@ -156,11 +156,11 @@
     </target>
 
     <target name="installNpmBuildDependencies">
-        <exec dir="${basedir}" executable="${path.npm}" failonerror="on" outputproperty="npmLog">
+        <exec dir="${basedir}" executable="${path.npm}" failonerror="on">
             <arg line=" install"/>
         </exec>
 
-        <exec dir="${basedir}" executable="${path.npm}" failonerror="on" outputproperty="npmLog">
+        <exec dir="${basedir}" executable="${path.npm}" failonerror="on">
             <arg line=" run build "/>
         </exec>
     </target>
