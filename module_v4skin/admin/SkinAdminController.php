@@ -12,8 +12,10 @@ use Kajona\System\Admin\AdminEvensimpler;
 use Kajona\System\Admin\AdminInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Classloader;
+use Kajona\System\System\Session;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
+use Kajona\System\System\UserUser;
 
 /**
  * Backend Controller to handle various, general actions / callbacks
@@ -159,12 +161,15 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
      */
     private function getJsHead()
     {
+        $user = Session::getInstance()->getUser();
+
         $values = [
             'KAJONA_DEBUG' => $this->objConfig->getDebug("debuglevel"),
             'KAJONA_WEBPATH' => _webpath_,
             'KAJONA_BROWSER_CACHEBUSTER' => SystemSetting::getConfigValue("_system_browser_cachebuster_"),
             'KAJONA_LANGUAGE' => Carrier::getInstance()->getObjSession()->getAdminLanguage(),
             'KAJONA_PHARMAP' => array_values(Classloader::getInstance()->getArrPharModules()),
+            'KAJONA_ACCESS_TOKEN' => $user instanceof UserUser ? $user->getStrAccessToken() : null,
         ];
 
         $parts = [];
