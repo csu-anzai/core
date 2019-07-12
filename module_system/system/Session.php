@@ -567,8 +567,12 @@ final class Session
             $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $objUser->getArrShortGroupIds()));
             $this->setSession(self::STR_SESSION_ISADMIN, $objUser->getIntAdmin());
 
-            /** @var JWTManager $jwtManager */
-            $jwtManager = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::JWT_MANAGER);
+            $accessToken = null;
+            if (Carrier::getInstance()->getContainer()->offsetExists(ServiceProvider::JWT_MANAGER)) {
+                /** @var JWTManager $jwtManager */
+                $jwtManager = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::JWT_MANAGER);
+                $accessToken = $jwtManager->generate($objUser);
+            }
 
             ServiceLifeCycleFactory::getLifeCycle(get_class($this->getObjInternalSession()))->update($this->getObjInternalSession());
             $this->objUser = $objUser;
@@ -580,7 +584,7 @@ final class Session
 
             $objUser->setIntLogins($objUser->getIntLogins() + 1);
             $objUser->setIntLastLogin(time());
-            $objUser->setStrAccessToken($jwtManager->generate($objUser));
+            $objUser->setStrAccessToken($accessToken);
 
             if (!$objUser->getLockManager()->isAccessibleForCurrentUser()) {
                 //force an unlock, may be locked since the user is being edited in the backend
