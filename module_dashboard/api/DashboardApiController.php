@@ -7,10 +7,12 @@
 namespace AGP\Dashboard\Api;
 
 use Kajona\Api\System\ApiControllerInterface;
-use Kajona\Dashboard\System\ServiceProvider;
-use Kajona\System\System\Carrier;
+use Kajona\Dashboard\System\ServiceICalGenerator;
+use Kajona\System\System\AuthenticationException;
+use Kajona\System\System\Exceptions\EntityNotFoundException;
+use Kajona\System\System\Exceptions\WrongSystemIdException;
 use PSX\Http\Environment\HttpContext;
-
+use PSX\Http\Environment\HttpResponse;
 
 /**
  * DashboardApiController
@@ -37,7 +39,21 @@ class DashboardApiController implements ApiControllerInterface
      */
     public function caldav(HttpContext $context)
     {
-        return $this->iCalGenerator->generate($context->getUriFragment('token'));
-    }
+        try {
+            $headers = [
+                'Content-Type' => 'text/calendar',
+                'Content-Disposition' => 'attachment; filename="agpCalendar.ics"'
+            ];
 
+            $body = $this->iCalGenerator->generate($context->getUriFragment('token'));
+
+            return new HttpResponse(200, $headers, $body);
+        } catch (WrongSystemIdException $e) {
+            return new HttpResponse(400, [], '');
+        } catch (EntityNotFoundException $e) {
+            return new HttpResponse(404, [], '');
+        } catch (AuthenticationException $e) {
+            return new HttpResponse(401, [], '');
+        }
+    }
 }
