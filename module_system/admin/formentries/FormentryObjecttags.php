@@ -30,6 +30,11 @@ class FormentryObjecttags extends FormentryTageditor
     protected $strSource;
 
     /**
+     * @var string
+     */
+    protected $opener;
+
+    /**
      * @param string $strSource
      */
     public function setStrSource($strSource)
@@ -50,6 +55,14 @@ class FormentryObjecttags extends FormentryTageditor
         return $this;
     }
 
+    /**
+     * @param string $opener
+     */
+    public function setOpener(string $opener)
+    {
+        $this->opener = $opener;
+    }
+
     public function renderField()
     {
         $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
@@ -61,7 +74,7 @@ class FormentryObjecttags extends FormentryTageditor
         if ($this->getBitReadonly()) {
             $strReturn .= $objToolkit->formInputObjectList($this->getStrEntryName(), $this->getStrLabel(), $this->arrKeyValues, "", $this->getBitReadonly());
         } else {
-            $strReturn .= $objToolkit->formInputObjectTags($this->getStrEntryName(), $this->getStrLabel(), $this->strSource, $this->arrKeyValues, $this->strOnChangeCallback);
+            $strReturn .= $objToolkit->formInputObjectTags($this->getStrEntryName(), $this->getStrLabel(), $this->strSource, $this->arrKeyValues, $this->strOnChangeCallback, $this->opener);
             $strReturn .= $objToolkit->formInputHidden($this->getPresCheckKey(), "1");
         }
 
@@ -104,8 +117,8 @@ class FormentryObjecttags extends FormentryTageditor
      */
     public function setStrValue($strValue)
     {
-        $arrValuesIds = array();
         if (is_array($strValue) || $strValue instanceof Traversable) {
+            $arrValuesIds = array();
             foreach ($strValue as $objValue) {
                 if ($objValue instanceof Model) {
                     $arrValuesIds[] = $objValue->getStrSystemid();
@@ -113,8 +126,8 @@ class FormentryObjecttags extends FormentryTageditor
                     $arrValuesIds[] = $objValue;
                 }
             }
+            $strValue = implode(",", $arrValuesIds);
         }
-        $strValue = implode(",", $arrValuesIds);
 
         $objReturn = parent::setStrValue($strValue);
         $this->setArrKeyValues($this->toObjectArray());
@@ -200,11 +213,6 @@ class FormentryObjecttags extends FormentryTageditor
      */
     public function getValueAsText()
     {
-        $objSourceObject = $this->getObjSourceObject();
-        if ($objSourceObject == null) {
-            return "";
-        }
-
 
         if (!empty($this->arrKeyValues)) {
             $strHtml = "";

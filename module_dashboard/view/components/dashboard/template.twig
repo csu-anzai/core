@@ -1,0 +1,17 @@
+
+<div class="core-component-dashboard row dashBoard">
+
+
+    {% for column in columnNames %}
+        <div id="{{ column.name }}" class="col-md-4 adminwidgetColumn" data-sortable-handle="h2">
+            {% for widget in column.widgets %}
+                {{ widget|raw }}
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+
+    <script type="text/javascript">
+    Dashboard.init();
+</script>
+</div>

@@ -7,6 +7,7 @@
 namespace Kajona\System\Admin\Formentries;
 
 use Kajona\System\Admin\FormentryPrintableInterface;
+use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\Link;
@@ -14,6 +15,7 @@ use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Reflection;
+use Kajona\System\System\Root;
 use Kajona\System\System\SystemModule;
 use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use ReflectionClass;
@@ -55,18 +57,47 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
      */
     protected $options = 0;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $showAddButton = true;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $showDeleteAllButton = true;
 
     /**
-     * @param string $strAddLink
+     * @var bool
      */
-    public function setStrAddLink($strAddLink)
+    protected $showEditButton = false;
+
+    /**
+     * @var bool
+     */
+    protected $showAdditionalLinkData = true;
+
+    /**
+     * @var bool
+     */
+    protected $showLinkObjectType = true;
+
+    /**
+     * A closure which generates the fitting link button for the entry
+     *
+     * @var \Closure
+     */
+    protected $showDetailButton;
+
+    /**
+     * @param string $strAddLink
+     * @return FormentryObjectlist
+     */
+    public function setStrAddLink(string $strAddLink): FormentryObjectlist
     {
         $this->strAddLink = $strAddLink;
+
+        return $this;
     }
 
     /**
@@ -80,21 +111,41 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
     /**
      * @param string $endpointUrl
      * @param array $objectTypes
+     * @return FormentryObjectlist
      */
-    public function setEndpointUrl($endpointUrl, array $objectTypes = [])
+    public function setEndpointUrl(string $endpointUrl, array $objectTypes = []): FormentryObjectlist
     {
         $this->endpointUrl = $endpointUrl;
         $this->objectTypes = $objectTypes;
+
+        return $this;
     }
 
     /**
      * Bitmask consisting of OPTION_SKIP_RIGHT_CHECK
      *
      * @param int $options
+     * @return FormentryObjectlist
      */
-    public function setOptions(int $options)
+    public function setOptions(int $options): FormentryObjectlist
     {
         $this->options = $options;
+
+        return $this;
+    }
+
+    public function setShowAdditionalLinkData(bool $showAdditionalLinkData): FormentryObjectlist
+    {
+        $this->showAdditionalLinkData = $showAdditionalLinkData;
+
+        return $this;
+    }
+
+    public function setShowLinkObjectType(bool $showLinkObjectType): FormentryObjectlist
+    {
+        $this->showLinkObjectType = $showLinkObjectType;
+
+        return $this;
     }
 
     protected function updateValue()
@@ -134,13 +185,14 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
             $arrObjects = $this->arrKeyValues;
         } else {
             $arrObjects = array_values(array_filter($this->arrKeyValues, function ($objObject) {
-                return $objObject->rightView();
+                if ($objObject instanceof Root) {
+                    return $objObject->rightView();
+                }
+                return false;
             }));
         }
 
-        uasort($arrObjects, function (ModelInterface $a, ModelInterface $b) {
-            return strcmp($a->getStrDisplayName(), $b->getStrDisplayName());
-        });
+        $this->orderObject($arrObjects);
 
         $objectList = new Objectlist($this->getStrEntryName(), $this->getStrLabel(), $arrObjects);
         $objectList->setReadOnly($this->getBitReadonly());
@@ -148,6 +200,8 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         $objectList->setSearchInput($this->endpointUrl, $this->objectTypes);
         $objectList->setShowAddButton($this->isShowAddButton());
         $objectList->setShowDeleteAllButton($this->isShowDeleteAllButton());
+        $objectList->setShowEditButton($this->isShowEditButton());
+        $objectList->setShowDetailButton($this->showDetailButton);
         $strReturn .= $objectList->renderComponent();
 
         return $strReturn;
@@ -173,6 +227,10 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         return $objReturn;
     }
 
+    /**
+     * @return mixed|string
+     * @throws Exception
+     */
     public function setValueToObject()
     {
         $objSourceObject = $this->getObjSourceObject();
@@ -201,7 +259,9 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         // filter double object ids
         $arrObjects = array();
         foreach ($arrNewObjects as $objObject) {
-            $arrObjects[$objObject->getStrSystemid()] = $objObject;
+            if ($objObject instanceof Root) {
+                $arrObjects[$objObject->getStrSystemid()] = $objObject;
+            }
         }
         $arrObjects = array_values($arrObjects);
 
@@ -214,6 +274,9 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         return $objSourceObject->{$strSetter}($arrObjects);
     }
 
+    /**
+     * @return bool
+     */
     public function validateValue()
     {
         $arrIds = explode(",", $this->getStrValue());
@@ -226,39 +289,83 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
         return true;
     }
 
+    /**
+     * @return string
+     * @throws Exception
+     * @throws \ReflectionException
+     */
     public function getValueAsText()
     {
-
-        if (!empty($this->arrKeyValues)) {
-            $strHtml = "";
-            foreach ($this->arrKeyValues as $objObject) {
-                if ($objObject instanceof Model && $objObject instanceof ModelInterface) {
-
-                    $strTitle = self::getDisplayName($objObject);
-
-                    if ($objObject->rightView()) {
-
-                        //see, if the matching target-module provides a showSummary method
-                        $objModule = SystemModule::getModuleByName($objObject->getArrModule("modul"));
-                        if ($objModule != null) {
-                            $objAdmin = $objModule->getAdminInstanceOfConcreteModule($objObject->getSystemid());
-
-                            if ($objAdmin !== null && method_exists($objAdmin, "actionShowSummary")) {
-                                $strTitle = Link::getLinkAdminDialog($objObject->getArrModule("modul"), "showSummary", "&systemid=".$objObject->getSystemid()."&folderview=".Carrier::getInstance()->getParam("folderview"), $strTitle);
-                            }
-                        }
-                    }
-                    $strHtml .= $strTitle."<br/>\n";
-                } else {
-                    throw new Exception("Array must contain objects", Exception::$level_ERROR);
-                }
-            }
-            return $strHtml;
+        if (empty($this->arrKeyValues)) {
+            return '-';
         }
 
-        return "-";
+        $htmlResponse = [];
+
+        //Collect object and sort them by create date
+        $skipRightCheck = $this->options & self::OPTION_SKIP_RIGHT_CHECK;
+        $objects = [];
+        foreach ($this->arrKeyValues as $object) {
+            if ($object instanceof Model && $object instanceof ModelInterface) {
+                if ($skipRightCheck || $object->rightView()) {
+                    $objects[] = $object;
+                }
+            } else {
+                throw new Exception('Array must contain objects', Exception::$level_ERROR);
+            }
+        }
+        $this->orderObject($objects);
+
+        //Render content
+        foreach ($objects as $object) {
+            $htmlResponse[] =  $this->createDisplayLinkTextForObject($object);
+        }
+
+        return implode('<br>', $htmlResponse);
     }
 
+
+    /**
+     * @param ModelInterface $modelObject
+     * @return string
+     * @throws \ReflectionException
+     */
+    private function createDisplayLinkTextForObject(ModelInterface $modelObject): string
+    {
+        $displayLinkText = $modelObject->getStrDisplayName();
+
+        // TODO: get rid of deprecated function usage once it is gone
+        if ($this->showLinkObjectType && method_exists($this, 'getDisplayName')) {
+            $displayLinkText = $this->getDisplayName($modelObject);
+        }
+
+        if ($modelObject->rightView()) {
+            //see, if the matching target-module provides a showSummary method
+            $moduleByName = SystemModule::getModuleByName($modelObject->getArrModule('modul'));
+            if ($moduleByName !== null) {
+                $moduleAdmin = $moduleByName->getAdminInstanceOfConcreteModule($modelObject->getSystemid());
+
+                if ($moduleAdmin !== null && method_exists($moduleAdmin, 'actionShowSummary')) {
+                    $displayLinkText = Link::getLinkAdminDialog($modelObject->getArrModule('modul'), 'showSummary', '&systemid='.$modelObject->getSystemid().'&folderview='.Carrier::getInstance()->getParam('folderview'), $displayLinkText);
+                }
+            }
+        }
+        if ($this->showAdditionalLinkData && $modelObject instanceof AdminListableInterface && $modelObject->rightView()) {
+            $displayLinkText .= ' '.$modelObject->getStrAdditionalInfo();
+        }
+
+        return $displayLinkText;
+    }
+
+    /**
+     * @param array $arrObjects
+     */
+    private function orderObject(array &$arrObjects) {
+        //Name
+        uasort($arrObjects, function (ModelInterface $a, ModelInterface $b) {
+            return strcmp($a->getStrDisplayName(), $b->getStrDisplayName());
+        });
+    }
 
     private function toObjectArray()
     {
@@ -277,7 +384,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
     /**
      * Renders the display name for the object and, if possible, also the object type
      *
-     * @param ModelInterface $objObject
+     * @param ModelInterface|AdminListableInterface $objObject
      * @return string
      * @throws \ReflectionException
      * @deprecated
@@ -336,8 +443,7 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
             return "";
         }
 
-        $strPath = implode(" &gt; ", array_reverse($arrPath));
-        return $strPath;
+        return implode(" &gt; ", array_reverse($arrPath));
     }
 
     /**
@@ -366,10 +472,12 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
 
     /**
      * @param bool $showAddButton
+     * @return FormentryObjectlist
      */
     public function setShowAddButton(bool $showAddButton)
     {
         $this->showAddButton = $showAddButton;
+        return $this;
     }
 
     /**
@@ -382,11 +490,39 @@ class FormentryObjectlist extends FormentryBase implements FormentryPrintableInt
 
     /**
      * @param bool $showDeleteAllButton
+     * @return FormentryObjectlist
      */
     public function setShowDeleteAllButton(bool $showDeleteAllButton)
     {
         $this->showDeleteAllButton = $showDeleteAllButton;
+        return $this;
     }
 
+    /**
+     * @return bool
+     */
+    public function isShowEditButton(): bool
+    {
+        return $this->showEditButton;
+    }
 
+    /**
+     * @param bool $showEditButton
+     * @return FormentryObjectlist
+     */
+    public function setShowEditButton(bool $showEditButton): FormentryObjectlist
+    {
+        $this->showEditButton = $showEditButton;
+        return $this;
+    }
+
+    /**
+     * @param \Closure $showDetailButton
+     * @return FormentryObjectlist
+     */
+    public function setShowDetailButton(\Closure $showDetailButton): FormentryObjectlist
+    {
+        $this->showDetailButton = $showDetailButton;
+        return $this;
+    }
 }

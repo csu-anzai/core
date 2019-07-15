@@ -7,22 +7,27 @@
 namespace Kajona\System\System;
 
 use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\AdminFormgeneratorContainerInterface;
 use Kajona\System\Admin\AdminFormgeneratorFilter;
-use Kajona\System\Admin\Formentries\FormentryDropdown;
-use Kajona\System\Admin\Formentries\FormentryYesno;
 use ReflectionClass;
 
 
 /**
  * Base filter class
+ * If you want to remove fields from a filter, you may use the common "remove/default" config logic similar to common form objects.
+ * Therefore the filter looks for a config entry named
+ * <code>$config["filter_field_config"][FilterClass::class]["fieldname"] => ["action"]</code>
+ * The config location is taken from the <code>@module</code> annotation provided by the current filter class.
  *
  * @package module_system
  * @author stefan.meyer@artemeon.de
  * @author christoph.kappestein@artemeon.de
+ * @author stefan.idler@artemeon.de
  */
 abstract class FilterBase
 {
     const STR_ANNOTATION_FILTER_COMPARE_OPERATOR = "@filterCompareOperator";
+    const STR_CONFIG_ENTRY = "filter_field_config";
 
     const STR_COMPAREOPERATOR_EQ = "EQ";
     const STR_COMPAREOPERATOR_GT = "GT";
@@ -60,6 +65,13 @@ abstract class FilterBase
      * @var array
      */
     private $arrAdditionalConditions = array();
+
+    // default filter properties which work on the system table
+    /**
+     * @var boolean
+     * @tableColumn agp_system.system_id
+     */
+    protected $bitViewRight = false;
 
     /**
      * FilterBase constructor.
@@ -101,6 +113,7 @@ abstract class FilterBase
      * By Default the class name (in lower case) is being returned
      *
      * @return string
+     * @throws \ReflectionException
      */
     final public function getFilterId()
     {
@@ -117,6 +130,7 @@ abstract class FilterBase
      * possible to provide another id in case you want to store the filter under a different session key
      *
      * @return string
+     * @throws \ReflectionException
      */
     public function getSessionId()
     {
@@ -144,7 +158,7 @@ abstract class FilterBase
             return trim($arrAnnotationValues[0]);
         }
 
-        throw new Exception(Exception::$level_ERROR, "Missing ".AbstractController::STR_MODULE_ANNOTATION." annotation for class ".__CLASS__);
+        throw new Exception("Missing ".AbstractController::STR_MODULE_ANNOTATION." annotation for class ".__CLASS__, Exception::$level_ERROR);
     }
 
 
@@ -155,6 +169,8 @@ abstract class FilterBase
      * @param string $strClass
      * @param string $strSessionId
      * @return self
+     * @throws Exception
+     * @throws \ReflectionException
      */
     public static function getOrCreateFromSession($strClass = null, $strSessionId = null)
     {
@@ -214,7 +230,7 @@ abstract class FilterBase
     {
         //get properties
         $objReflection = new Reflection($this);
-        $arrProperties = $objReflection->getPropertiesWithAnnotation(OrmBase::STR_ANNOTATION_TABLECOLUMN);
+        $arrProperties = $objReflection->getPropertiesWithAnnotation(AdminFormgenerator::STR_TYPE_ANNOTATION);
 
         //get params
         $arrParams = Carrier::getAllParams();
@@ -252,7 +268,7 @@ abstract class FilterBase
      */
     protected function convertParamValue($strParamName, $arrParams)
     {
-        $strValue = $arrParams[$strParamName] == "" ? null : $arrParams[$strParamName];
+        $strValue = $arrParams[$strParamName] == "" ? null : (is_string($arrParams[$strParamName]) ? urldecode($arrParams[$strParamName]) : $arrParams[$strParamName]);
 
         //check if _id param exists, if yes take that one
         if (array_key_exists($strParamName."_id", $arrParams)) {
@@ -278,6 +294,7 @@ abstract class FilterBase
      * Generates ORM restrictions based on the properties of the filter.
      *
      * @return OrmCondition[]
+     * @throws Exception
      */
     public function getOrmConditions()
     {
@@ -328,14 +345,25 @@ abstract class FilterBase
      */
     protected function getSingleOrmCondition($strAttributeName, $strValue, $strTableColumn, OrmComparatorEnum $enumFilterCompareOperator = null)
     {
+        switch ($strAttributeName) {
+            case "bitViewRight":
+                if ($this->bitViewRight === false) {
+                    // by default we dont filter view rights
+                    return null;
+                } else {
+                    return new OrmViewPermissionCondition($strTableColumn);
+                }
+                break;
+        }
+
         return OrmCondition::getORMConditionForValue($strValue, $strTableColumn, $enumFilterCompareOperator);
     }
-
 
     /**
      * Adds all ORM restrictions to the given $objORM
      *
      * @param OrmObjectlist $objORM
+     * @throws Exception
      */
     public function addWhereConditionToORM(OrmObjectlist $objORM)
     {
@@ -409,10 +437,42 @@ abstract class FilterBase
      * Method is being called when the form for the filter is being generated.
      *
      * @param AdminFormgeneratorFilter $objFilterForm
+     * @throws Exception
      */
     public function updateFilterForm(AdminFormgeneratorFilter $objFilterForm)
     {
 
+        if (!empty($this->getArrModule())) {
+            $cfg = Config::getInstance("module_".$this->getArrModule())->getConfig(self::STR_CONFIG_ENTRY);
+
+            if (!empty($cfg[get_class($this)])) {
+                foreach ($cfg[get_class($this)] as $strFieldName => $arrVisibility) {
+                    $field = $objFilterForm->getField($strFieldName);
+
+                    if (in_array("remove", $arrVisibility)) {
+                        $objFilterForm->removeField($strFieldName);
+                    }
+
+                    if ($field === null) {
+                        $this->removeNestedField($strFieldName, $objFilterForm);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Tries to find an entry in a nested form-entry, so a list of subentries
+     * @param string $name
+     * @param AdminFormgeneratorFilter $form
+     */
+    private function removeNestedField(string $name, AdminFormgeneratorFilter $form)
+    {
+        foreach ($form->getArrFields() as $field) {
+            if ($field instanceof AdminFormgeneratorContainerInterface) {
+                $field->removeField($name);
+            }
+        }
     }
 
     /**
@@ -420,6 +480,7 @@ abstract class FilterBase
      * A clone of the filter is being written to the session.
      *
      * @throws Exception
+     * @throws \ReflectionException
      */
     public function writeFilterToSession()
     {
@@ -435,6 +496,7 @@ abstract class FilterBase
      * @param $strParam
      *
      * @return string
+     * @throws \ReflectionException
      */
     public function getFullParamName($strParam)
     {
@@ -473,5 +535,21 @@ abstract class FilterBase
     public function setArrAdditionalConditions($arrAdditionalConditions)
     {
         $this->arrAdditionalConditions = $arrAdditionalConditions;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getBitViewRight()
+    {
+        return $this->bitViewRight;
+    }
+
+    /**
+     * @param bool $bitViewRight
+     */
+    public function setBitViewRight($bitViewRight)
+    {
+        $this->bitViewRight = $bitViewRight;
     }
 }

@@ -11,6 +11,7 @@ use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\Validators\DummyValidator;
+use Kajona\System\View\Components\Formentry\Inputcheckbox\Inputcheckbox;
 
 
 /**
@@ -42,10 +43,14 @@ class FormentryCheckbox extends FormentryBase implements FormentryPrintableInter
         $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
         $strReturn = "";
         if ($this->getStrHint() != null) {
-            $strReturn .= $objToolkit->formTextRow($this->getStrHint());
+            $strReturn .= $objToolkit->formTextHint($this->getStrHint(), $this->getBitHideLongHints());
         }
 
-        $strReturn .= $objToolkit->formInputCheckbox($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue() == true, "", $this->getBitReadonly());
+        $inputCheckbox = new Inputcheckbox($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue() == true);
+        $inputCheckbox->setReadOnly($this->getBitReadonly());
+        $inputCheckbox->setDataArray($this->getDataAttributes());
+        $strReturn .= $inputCheckbox->renderComponent();
+
         $strReturn .= $objToolkit->formInputHidden($this->getPresCheckKey(), "1");
 
         return $strReturn;
@@ -129,6 +134,7 @@ class FormentryCheckbox extends FormentryBase implements FormentryPrintableInter
         }
         return parent::setValueToObject();
     }
+
 
 
 }

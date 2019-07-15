@@ -69,6 +69,7 @@ class FormEntryFloatIntTest extends Testbase
         foreach ($arrTestValues as $strInputValue => $strExpectedDBValue) {
             Carrier::getInstance()->setParam("name_eintrittswrvormassnahmen", $strInputValue);
             $objFormEntryFloat = new FormentryFloat("name", "eintrittswrvormassnahmen", $objSourceObject);
+            $objFormEntryFloat->readValue();
             $objFormEntryFloat->setValueToObject();
             $this->assertEquals($strExpectedDBValue, $objSourceObject->getFloatEintrittswrVorMassnahmen());
         }
@@ -113,6 +114,7 @@ class FormEntryFloatIntTest extends Testbase
         foreach ($arrTestValues as $strInputValue => $strExpectedValue) {
             Carrier::getInstance()->setParam("name_maxvverlnachmassnahmen", $strInputValue);
             $objFormEntryInt = new FormentryInt("name", "maxvverlnachmassnahmen", $objSourceObject);
+            $objFormEntryInt->readValue();
             $this->assertEquals($strExpectedValue, $objFormEntryInt->getStrValue());
         }
 
@@ -128,6 +130,7 @@ class FormEntryFloatIntTest extends Testbase
         foreach ($arrTestValues as $strInputValue => $strExpectedDBValue) {
             Carrier::getInstance()->setParam("name_maxvverlnachmassnahmen", $strInputValue);
             $objFormEntryInt = new FormentryInt("name", "maxvverlnachmassnahmen", $objSourceObject);
+            $objFormEntryInt->readValue();
             $objFormEntryInt->setValueToObject();
 
             $this->assertTrue($objFormEntryInt->validateValue());

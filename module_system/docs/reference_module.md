@@ -28,7 +28,6 @@ contain.
    7.7. /validators
    7.8. /workflows
 8. /tests
-9. /vendor
 ```
 
 # 1. admin
@@ -68,8 +67,7 @@ Contains all lang properties
 
 # 6. scripts
 
-Contains all javascript files. Each javascript library must be registered in the 
-`provides.json` file.
+Contains all javascript files. 
 
 # 7. system
 

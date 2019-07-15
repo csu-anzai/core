@@ -6,12 +6,10 @@ echo "merge and install vendor dependencies".PHP_EOL;
 $strRoot = realpath(__DIR__."/../../..");
 
 $arrIncludedModules = [];
-if (is_file($strRoot."/project/packageconfig.php")) {
-    include $strRoot."/project/packageconfig.php";
+if (is_file($strRoot."/project/packageconfig.json")) {
+    $arrIncludedModules = json_decode(file_get_contents($strRoot."/project/packageconfig.json"), true);
 }
-if (!isset($arrExcludedModules["core"])) {
-    $arrExcludedModules["core"] = [];
-}
+
 
 // merge composer files
 $vendorDir = $strRoot."/project";
@@ -44,14 +42,8 @@ JSON;
         if ($objCoreDir->isDir() && substr($objCoreDir->getFilename(), 0, 4) == 'core') {
             $objModuleDirs = new DirectoryIterator($objCoreDir->getRealPath());
             foreach ($objModuleDirs as $objDir) {
-
                 //defined as included?
                 if (isset($arrIncludedModules[$objCoreDir->getFilename()]) && !in_array($objDir->getFilename(), $arrIncludedModules[$objCoreDir->getFilename()])) {
-                    continue;
-                }
-
-                //defined as excluded?
-                if (isset($arrExcludedModules[$objCoreDir->getFilename()]) && in_array($objDir->getFilename(), $arrExcludedModules[$objCoreDir->getFilename()])) {
                     continue;
                 }
 
@@ -94,6 +86,11 @@ if ($intReturn == 1) {
         echo "<span style='color: red;'>    target folder " . $vendorDir . " is not writable</span>\n";
     }
 }
+if ($intReturn !== 0) {
+    echo "Error exited with a non successful status code";
+    exit(1);
+}
+
 echo "Composer install finished for " . $vendorComposer . ": \n";
 
 echo "   " . implode("\n   ", $arrOutput);

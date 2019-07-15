@@ -9,6 +9,8 @@
 
 namespace Kajona\System\System;
 
+use Kajona\Api\System\JWTManager;
+use Kajona\Api\System\ServiceProvider;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Security\PasswordExpiredException;
 
@@ -20,15 +22,28 @@ use Kajona\System\System\Security\PasswordExpiredException;
  */
 final class Session
 {
+    public const SCOPE_SESSION = 1;
+    public const SCOPE_REQUEST = 2;
 
+    /**
+     * @var string|null
+     */
     private $strKey = null;
 
+    /**
+     * @var array
+     */
     private $arrRequestArray;
 
-    public static $intScopeSession = 1;
     /**
      * @var int
-     * @deprecated use static fields instead
+     * @deprecated
+     */
+    public static $intScopeSession = 1;
+
+    /**
+     * @var int
+     * @deprecated
      */
     public static $intScopeRequest = 2;
 
@@ -51,6 +66,11 @@ final class Session
     private $objUser = null;
 
     private $bitClosed = false;
+
+    /**
+     * @var int|null
+     */
+    private $sessionScope = null;
 
     const STR_SESSION_ADMIN_LANG_KEY = "STR_SESSION_ADMIN_LANG_KEY";
 
@@ -103,6 +123,10 @@ final class Session
      */
     private function sessionStart()
     {
+        if ($this->sessionScope === self::SCOPE_REQUEST) {
+            return;
+        }
+
         if ($this->bitPhpSessionStarted || $this->bitClosed) {
             return;
         }
@@ -132,6 +156,10 @@ final class Session
      */
     public function sessionClose()
     {
+        if ($this->sessionScope === self::SCOPE_REQUEST) {
+            return;
+        }
+
         if (defined("_autotesting_") && _autotesting_ === true) {
             return;
         }
@@ -149,15 +177,18 @@ final class Session
      *
      * @param string $strKey
      * @param string $strValue
-     * @param int $intSessionScope one of Session::$intScopeRequest or Session::$intScopeSession
+     * @param int $intSessionScope - deprecated
      *
      * @throws Exception
      * @return bool
      */
     public function setSession($strKey, $strValue, $intSessionScope = 1)
     {
+        if ($this->sessionScope !== null) {
+            $intSessionScope = $this->sessionScope;
+        }
 
-        if ($intSessionScope == Session::$intScopeRequest) {
+        if ($intSessionScope === self::SCOPE_REQUEST) {
             $this->arrRequestArray[$strKey] = $strValue;
             return true;
         } else {
@@ -212,13 +243,17 @@ final class Session
      * Returns a value from the session
      *
      * @param string $strKey
-     * @param int $intScope one of Session::$intScopeRequest or Session::$intScopeSession
+     * @param int $intScope - deprecated
      *
      * @return string
      */
-    public function getSession($strKey, $intScope = 1)
+    public function getSession($strKey, $intScope = self::SCOPE_SESSION)
     {
-        if ($intScope == Session::$intScopeRequest) {
+        if ($this->sessionScope !== null) {
+            $intScope = $this->sessionScope;
+        }
+
+        if ($intScope === self::SCOPE_REQUEST) {
             if (!isset($this->arrRequestArray[$strKey])) {
                 return false;
             } else {
@@ -243,11 +278,11 @@ final class Session
      */
     public function sessionIsset($strKey)
     {
-        $this->sessionStart();
-        if (isset($_SESSION[$this->getSessionKey()][$strKey])) {
-            return true;
+        if ($this->sessionScope === self::SCOPE_REQUEST) {
+            return isset($this->arrRequestArray[$strKey]);
         } else {
-            return false;
+            $this->sessionStart();
+            return isset($_SESSION[$this->getSessionKey()][$strKey]);
         }
     }
 
@@ -260,9 +295,15 @@ final class Session
      */
     public function sessionUnset($strKey)
     {
-        $this->sessionStart();
-        if ($this->sessionIsset($strKey)) {
-            unset($_SESSION[$this->getSessionKey()][$strKey]);
+        if ($this->sessionScope === self::SCOPE_REQUEST) {
+            if (isset($this->arrRequestArray[$strKey])) {
+                unset($this->arrRequestArray[$strKey]);
+            }
+        } else {
+            $this->sessionStart();
+            if ($this->sessionIsset($strKey)) {
+                unset($_SESSION[$this->getSessionKey()][$strKey]);
+            }
         }
     }
 
@@ -346,7 +387,7 @@ final class Session
             return $strLanguage;
         }
 
-        if (!$bitSkipSessionEntry && $this->isLoggedin()) {
+        if ($this->isLoggedin()) {
             if ($this->isAdmin()) {
                 if ($this->getUser() != null && $this->getUser()->getStrAdminlanguage() != "") {
                     $strLang = $this->getUser()->getStrAdminlanguage();
@@ -407,6 +448,10 @@ final class Session
      */
     public function loginUser(UserUser $objUser)
     {
+        //validate if the user is assigned to at least a single group
+        if (empty($objUser->getArrGroupIds())) {
+            throw new AuthenticationException("user ".$objUser->getStrDisplayName()." is not assigned to at least a single group", AuthenticationException::$level_ERROR);
+        }
         return $this->internalLoginHelper($objUser);
     }
 
@@ -479,6 +524,26 @@ final class Session
         return false;
     }
 
+    /**
+     * Authenticates the user for the current request without starting a session
+     *
+     * @param UserUser $targetUser
+     * @throws Exception
+     */
+    public function loginUserForRequest(UserUser $targetUser): void
+    {
+        $this->bitBlockDbUpdate = true;
+        $this->bitClosed = true;
+        $this->sessionScope = self::SCOPE_REQUEST;
+
+        $this->setSession(self::STR_SESSION_USERID, $targetUser->getSystemid());
+        $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $targetUser->getArrGroupIds()));
+        $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $targetUser->getArrShortGroupIds()));
+
+        $this->getObjInternalSession()->setStrLoginstatus(SystemSession::$LOGINSTATUS_LOGGEDIN);
+        $this->getObjInternalSession()->setStrUserid($targetUser->getSystemid());
+        $this->getObjInternalSession()->setStrLoginprovider($targetUser->getStrSubsystem());
+    }
 
     /**
      * Does all the internal login-handling
@@ -502,6 +567,13 @@ final class Session
             $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $objUser->getArrShortGroupIds()));
             $this->setSession(self::STR_SESSION_ISADMIN, $objUser->getIntAdmin());
 
+            $accessToken = null;
+            if (Carrier::getInstance()->getContainer()->offsetExists(ServiceProvider::JWT_MANAGER)) {
+                /** @var JWTManager $jwtManager */
+                $jwtManager = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::JWT_MANAGER);
+                $accessToken = $jwtManager->generate($objUser);
+            }
+
             ServiceLifeCycleFactory::getLifeCycle(get_class($this->getObjInternalSession()))->update($this->getObjInternalSession());
             $this->objUser = $objUser;
 
@@ -512,6 +584,7 @@ final class Session
 
             $objUser->setIntLogins($objUser->getIntLogins() + 1);
             $objUser->setIntLastLogin(time());
+            $objUser->setStrAccessToken($accessToken);
 
             if (!$objUser->getLockManager()->isAccessibleForCurrentUser()) {
                 //force an unlock, may be locked since the user is being edited in the backend
@@ -547,6 +620,10 @@ final class Session
      */
     public function logout()
     {
+        if ($this->sessionScope === self::SCOPE_REQUEST) {
+            return;
+        }
+
         Logger::getInstance()->info("User: ".$this->getUsername()." successfully logged out");
         UserLog::registerLogout();
 
@@ -726,10 +803,12 @@ final class Session
     public function initInternalSession()
     {
 
-//        $arrTables = Database::getInstance()->getTables();
-//        if (!in_array("agp_session", $arrTables)) {
-//            return;
-//        }
+        if ($this->getSession("KAJONA_INTERNAL_SESSID") == false) {
+            $arrTables = Database::getInstance()->getTables();
+            if (!in_array("agp_session", $arrTables)) {
+                return;
+            }
+        }
 
         $this->bitLazyLoaded = true;
 

@@ -10,6 +10,7 @@ use Kajona\System\Admin\FormentryPrintableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\Validators\IntValidator;
+use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
 
 /**
  * A simple form-element for integers, makes use of localized thousands-separators
@@ -20,7 +21,15 @@ use Kajona\System\System\Validators\IntValidator;
  */
 class FormentryInt extends FormentryBase implements FormentryPrintableInterface
 {
+    /**
+     * @var string
+     */
+    private $strPrepend = "";
 
+    /**
+     * @var string
+     */
+    private $strAppend = "";
 
     public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
     {
@@ -57,7 +66,14 @@ class FormentryInt extends FormentryBase implements FormentryPrintableInterface
         }
 
         $strValue = self::getStrUIValue($this->getStrValue());
-        $strReturn .= $objToolkit->formInputText($this->getStrEntryName(), $this->getStrLabel(), $strValue, "inputText", "", $this->getBitReadonly());
+
+        $inputText = new Inputtext($this->getStrEntryName(), (string) $this->getStrLabel(), $strValue);
+        $inputText->setClass("inputText");
+        $inputText->setReadOnly($this->getBitReadonly());
+        $inputText->setPrepend($this->getStrPrepend());
+        $inputText->setAppend($this->getStrAppend());
+
+        $strReturn .= $inputText->renderComponent();
 
         return $strReturn;
     }
@@ -133,5 +149,37 @@ class FormentryInt extends FormentryBase implements FormentryPrintableInterface
         }
 
         return numberFormat($strValue, 0);
+    }
+
+    /**
+     * @return string
+     */
+    public function getStrPrepend()
+    {
+        return $this->strPrepend;
+    }
+
+    /**
+     * @param string $strPrepend
+     */
+    public function setStrPrepend(string $strPrepend)
+    {
+        $this->strPrepend = $strPrepend;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStrAppend()
+    {
+        return $this->strAppend;
+    }
+
+    /**
+     * @param string $strAppend
+     */
+    public function setStrAppend(string $strAppend)
+    {
+        $this->strAppend = $strAppend;
     }
 }

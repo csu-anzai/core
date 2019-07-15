@@ -1,26 +1,65 @@
-<div class="container">
+<div class="container core-component-widgetlist">
+    {% set wid = 0 %}
     {% for widget in widgets %}
         <div class="row">
-            <div class="col-sm-2">
-                {#<div style="text-align: center" class="glyphicon glyphicon-exclamation-sign fa-4x" aria-hidden="true"></div>#}
-                <div style="margin: 10px 10px 10px 10px; height:60px">{{ widget['img']|raw }}</div>
-                <div style="padding-top:10px; text-align: center; font-weight: 600">{{ widget['name'] }}</div>
+            <div class="img-col col-sm-3">
+                <div class="widget-img align-center">{{ widget['img']|raw }}</div>
+                <div class="widget-title align-center">{{ widget['name'] }}</div>
+                <div class="widget-module align-center">{% if widget['module'] != "!modul_titel!" %} {{ widget['module'] }}{% endif %}</div>
             </div>
-            <div style="border-left:1px solid lightgrey; height:100px" class="col-sm-7">{{ widget['info'] }}</div>
-            <div style="border-left:1px solid lightgrey; height:100px" class="col-sm-3">
-                <button class="btn" onclick="addWidgetToDashboard('{{ widget['class']|e('js') }}')">Add</button>
+            <div class="info-col col-sm-7 hidden-xs">{{ widget['info'] }}</div>
+            <div class="button-col col-sm-2">
+                <button id="addWidget{{ wid }}" class="add-widget-btn btn" onclick="showColumnSelect({{ wid }})">{{ "add_button_title"|lang("dashboard") }}</button>
+                <div id="selectColumn{{ wid }}" class="select-col-btn btn-toolbar" role="toolbar">
+                    <div class="btn-group mr-2" role="group" aria-label="First group">
+                        <button type="button" class="btn btn-secondary" onclick="addWidgetToDashboard('{{ widget['class']|e('js') }}', 1)">1</button>
+                        <button type="button" class="btn btn-secondary" onclick="addWidgetToDashboard('{{ widget['class']|e('js') }}', 2)">2</button>
+                        <button type="button" class="btn btn-secondary" onclick="addWidgetToDashboard('{{ widget['class']|e('js') }}', 3)">3</button>
+                    </div>
+                    <div class="btn-group mr-2" role="group" aria-label="Second group">
+                        <button type="button" class="btn btn-secondary" onclick="hideColumnSelect({{ wid }})">×</button>
+                    </div>
+                </div>
+                <div id="selectColumnInfo{{ wid }}" class="select-col-info">
+                    {{ "select_col_button_info"|lang("dashboard") }}
+                </div>
             </div>
         </div>
         <hr>
+        {% set wid = wid + 1 %}
     {% endfor %}
 </div>
 <script>
 
-    function addWidgetToDashboard(widgetClass) {
-        var data = "&step=3&widget="+widgetClass+"&column=column1&ajax=true";
-        require(['ajax'], function (ajax) {
-            ajax.genericAjaxCall("dashboard", "addWidgetToDashboard", data);
-        });
+    function showColumnSelect(widgetId) {
+        $("button#addWidget"+widgetId).hide();
+        $("button.add-widget-btn").attr("disabled", "disabled");
+        $("div#selectColumn"+widgetId).show();
+        $("div#selectColumnInfo"+widgetId).show();
+    }
+
+    function hideColumnSelect(widgetId) {
+        $("div#selectColumn"+widgetId).hide();
+        $("div#selectColumnInfo"+widgetId).hide();
+        $("button#addWidget"+widgetId).show();
+        $("button.add-widget-btn").removeAttr("disabled");
+        $("button#addWidget").show();
+    }
+
+    function addWidgetToDashboard(widgetClass, column) {
+        var data = "&widget="+widgetClass+"&column=column"+column+"&ajax=true";
+        Ajax.genericAjaxCall("dashboard", "addWidget", data, null, function() {
+                if (window.opener) {
+                    window.close();
+                } else if (parent) {
+                    var context = parent.Folderview;
+                    parent.Router.reload();
+                    if (context.dialog) {
+                        context.dialog.hide();
+                        context.dialog.setContentRaw("");
+                    }
+                }
+            });
     }
 
 </script>

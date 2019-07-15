@@ -15,4 +15,5 @@ $lang["rssfeed_errorloading"]            = "Fehler beim Laden des Feeds";
 $lang["rssfeed_errorparsing"]            = "Fehler beim Parsen des Feeds";
 $lang["rssfeed_feedurl"]                 = "Feed-URL";
 $lang["rssfeed_name"]                    = "Newsfeed";
+$lang["rssfeed_description"]             = "Newsfeed erstellt eine Übersicht der neusten Nachrichten über einen RSS-Feed";
 $lang["rssfeed_posts"]                   = "Anzahl an Posts";

@@ -22,7 +22,9 @@ class Menu extends AbstractComponent
     /**
      * @var array
      */
-    private $items;
+    private $items = [];
+
+    private $renderMenuContainer = true;
 
     /**
      * @param array $items
@@ -70,8 +72,27 @@ class Menu extends AbstractComponent
     {
         $data = [
             "items" => $this->items,
+            "rendercontainer" => $this->renderMenuContainer
         ];
 
         return $this->renderTemplate($data);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRenderMenuContainer(): bool
+    {
+        return $this->renderMenuContainer;
+    }
+
+    /**
+     * @param bool $renderMenuContainer
+     * @return Menu
+     */
+    public function setRenderMenuContainer(bool $renderMenuContainer): Menu
+    {
+        $this->renderMenuContainer = $renderMenuContainer;
+        return $this;
     }
 }

@@ -9,16 +9,13 @@ namespace Kajona\V4skin\Admin;
 
 use Kajona\System\Admin\AdminController;
 use Kajona\System\Admin\AdminEvensimpler;
-use Kajona\System\Admin\AdminHelper;
 use Kajona\System\Admin\AdminInterface;
-use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Classloader;
-use Kajona\System\System\Resourceloader;
-use Kajona\System\System\ServiceProvider;
-use Kajona\System\System\SystemAspect;
+use Kajona\System\System\Session;
 use Kajona\System\System\SystemModule;
 use Kajona\System\System\SystemSetting;
+use Kajona\System\System\UserUser;
 
 /**
  * Backend Controller to handle various, general actions / callbacks
@@ -72,9 +69,8 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
 
         $arrTemplate["login"] = $this->getOutputLogin();
         $arrTemplate["quickhelp"] = $this->getQuickHelp();
-
         $arrTemplate["webpathTitle"] = urldecode(str_replace(["http://", "https://"], ["", ""], _webpath_));
-        $arrTemplate["head"] = "<script type=\"text/javascript\">KAJONA_DEBUG = ".$this->objConfig->getDebug("debuglevel")."; KAJONA_WEBPATH = '"._webpath_."'; KAJONA_BROWSER_CACHEBUSTER = ".SystemSetting::getConfigValue("_system_browser_cachebuster_")."; KAJONA_LANGUAGE = '".Carrier::getInstance()->getObjSession()->getAdminLanguage()."';KAJONA_PHARMAP = ".json_encode(array_values(Classloader::getInstance()->getArrPharModules())).";</script>";
+        $arrTemplate["head"] = $this->getJsHead();
 
         return $this->templateEngine->render("core/module_v4skin/admin/skins/kajona_v4/main.twig", $arrTemplate);
     }
@@ -136,7 +132,7 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
         $arrTemplate = ["content" => $strContent];
 
         $arrTemplate["webpathTitle"] = urldecode(str_replace(["http://", "https://"], ["", ""], _webpath_));
-        $arrTemplate["head"] = "<script type=\"text/javascript\">KAJONA_DEBUG = ".$this->objConfig->getDebug("debuglevel")."; KAJONA_WEBPATH = '"._webpath_."'; KAJONA_BROWSER_CACHEBUSTER = ".SystemSetting::getConfigValue("_system_browser_cachebuster_")."; KAJONA_LANGUAGE = '".Carrier::getInstance()->getObjSession()->getAdminLanguage()."';KAJONA_PHARMAP = ".json_encode(array_values(Classloader::getInstance()->getArrPharModules())).";</script>";
+        $arrTemplate["head"] = $this->getJsHead();
 
         return $this->templateEngine->render($strTemplate, $arrTemplate);
     }
@@ -159,4 +155,28 @@ class SkinAdminController extends AdminEvensimpler implements AdminInterface
         return (SystemModule::getModuleByName("languages") != null ? "<span>".SystemModule::getModuleByName("languages")->getAdminInstanceOfConcreteModule()->getLanguageSwitch()."</span>" : "<span/>");
     }
 
+    /**
+     * @return string
+     * @throws \Kajona\System\System\Exception
+     */
+    private function getJsHead()
+    {
+        $user = Session::getInstance()->getUser();
+
+        $values = [
+            'KAJONA_DEBUG' => $this->objConfig->getDebug("debuglevel"),
+            'KAJONA_WEBPATH' => _webpath_,
+            'KAJONA_BROWSER_CACHEBUSTER' => SystemSetting::getConfigValue("_system_browser_cachebuster_"),
+            'KAJONA_LANGUAGE' => Carrier::getInstance()->getObjSession()->getAdminLanguage(),
+            'KAJONA_PHARMAP' => array_values(Classloader::getInstance()->getArrPharModules()),
+            'KAJONA_ACCESS_TOKEN' => $user instanceof UserUser ? $user->getStrAccessToken() : null,
+        ];
+
+        $parts = [];
+        foreach ($values as $name => $value) {
+            $parts[] = $name . ' = ' . json_encode($value) . ';';
+        }
+
+        return "<script type=\"text/javascript\">" . implode("\n", $parts) . "</script>";
+    }
 }

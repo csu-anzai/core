@@ -9,6 +9,7 @@ namespace Kajona\System\Admin\Formentries;
 use Kajona\System\Admin\FormentryPrintableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Validators\DummyValidator;
+use Kajona\System\View\Components\Headline\Headline;
 
 
 /**
@@ -18,14 +19,17 @@ use Kajona\System\System\Validators\DummyValidator;
  * @since 4.0
  * @package module_formgenerator
  */
-class FormentryHeadline extends FormentryBase implements FormentryPrintableInterface {
+class FormentryHeadline extends FormentryBase implements FormentryPrintableInterface
+{
 
     protected $strLevel = "h2";
     protected $strClass = "";
 
-    public function __construct($strName = "") {
-        if($strName == "")
+    public function __construct($strName = "")
+    {
+        if ($strName == "") {
             $strName = generateSystemid();
+        }
         parent::__construct("", $strName);
 
         //set the default validator
@@ -38,12 +42,15 @@ class FormentryHeadline extends FormentryBase implements FormentryPrintableInter
      *
      * @return string
      */
-    public function renderField() {
-        $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
-        return $objToolkit->formHeadline($this->getStrValue(), $this->getStrClass()." ".$this->getStrEntryName(), $this->getStrLevel());
+    public function renderField()
+    {
+        $cmp = new Headline($this->getStrValue(), $this->getStrClass(), $this->getStrLevel());
+        $cmp->setData($this->getDataAttributes());
+        return $cmp->renderComponent();
     }
 
-    public function updateLabel($strKey = "") {
+    public function updateLabel($strKey = "")
+    {
         return "";
     }
 
@@ -53,8 +60,11 @@ class FormentryHeadline extends FormentryBase implements FormentryPrintableInter
      *
      * @return string
      */
-    public function getValueAsText() {
-        return Carrier::getInstance()->getObjToolkit("admin")->formHeadline($this->getStrValue(), "", $this->strLevel);
+    public function getValueAsText()
+    {
+        $cmp = new Headline($this->getStrValue(), "", $this->getStrLevel());
+        $cmp->setData($this->getDataAttributes());
+        return $cmp->renderComponent();
     }
 
     /**
@@ -91,4 +101,7 @@ class FormentryHeadline extends FormentryBase implements FormentryPrintableInter
     {
         $this->strClass = $strClass;
     }
+
+
+
 }

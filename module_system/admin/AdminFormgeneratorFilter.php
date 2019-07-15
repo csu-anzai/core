@@ -1,10 +1,10 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-*-------------------------------------------------------------------------------------------------------*
-*	$Id$                                   *
-********************************************************************************************************/
+ *   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
+ *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
+ *-------------------------------------------------------------------------------------------------------*
+ *    $Id$                                   *
+ ********************************************************************************************************/
 
 namespace Kajona\System\Admin;
 
@@ -16,7 +16,7 @@ use Kajona\System\System\Exception;
 use Kajona\System\System\FilterBase;
 use Kajona\System\System\Link;
 use Kajona\System\System\StringUtil;
-
+use Kajona\System\System\SystemModule;
 
 /**
  * @author christoph.kappestein@gmail.com
@@ -106,20 +106,23 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
 
         /* Add hidden specific filter param */
         $this->addField(new FormentryHidden($this->getStrFormname(), self::STR_FORM_PARAM_FILTER))->setStrValue("true");
+        $this->addField(new FormentryHidden("", self::STR_FORM_PARAM_SESSION))->setStrValue($this->getStrFormname());
 
         /* Update sourceobject */
-        if(!$this->validateForm()) {
+        if (!$this->validateForm()) {
             $errorField2Value = [];
             /*
              * If validation errors occur, set values of fields to "empty" and then update sourceobject.
              * This fixes a bug that invalid data is passed to the sourceobject/filter
              *
              * Foreach field which is not valid keep it's value to set it later back to the field
-            */
+             */
             foreach ($this->getArrValidationFormErrors() as $key => $error) {
-                $fieldKey = StringUtil::replace($this->getStrFormname()."_", "", $key);
-                $errorField2Value[$fieldKey] = $this->getField($fieldKey)->getStrValue();
-                $this->getField($fieldKey)->setStrValue("");
+                $fieldKey = StringUtil::replace($this->getStrFormname() . "_", "", $key);
+                if ($this->getField($fieldKey) !== null) {
+                    $errorField2Value[$fieldKey] = $this->getField($fieldKey)->getStrValue();
+                    $this->getField($fieldKey)->setStrValue("");
+                }
             }
             $this->updateSourceObject();
 
@@ -184,11 +187,15 @@ class AdminFormgeneratorFilter extends AdminFormgenerator
             $bitFilterActive ? "icon_filter" : "icon_folderClosed",
             $bitInitiallyVisible
         );
+        $return = $objToolkit->addToContentToolbar($arrFolder[1]) . $arrFolder[0];
 
-        $title = AdminskinHelper::getAdminImage("icon_treeLink") . " " . $objLang->getLang("commons_filter_url", "system");
-        $strFilterUrlButton = Link::getLinkAdminManual(["href" => "#", "onclick" => "require('forms').getFilterURL();return false"], $title);
+        if (SystemModule::getModuleByName("tinyurl") !== null) {
+            $title = AdminskinHelper::getAdminImage("icon_treeLink") . " " . $objLang->getLang("commons_filter_url", "system");
+            $strFilterUrlButton = Link::getLinkAdminManual(["href" => "#", "onclick" => "Forms.getFilterURL();return false"], $title);
+            $return .= $objToolkit->addToContentToolbar(trim($strFilterUrlButton));
+        }
 
-        return $objToolkit->addToContentToolbar($arrFolder[1]) . $objToolkit->addToContentToolbar(trim($strFilterUrlButton)). $arrFolder[0];
+        return $return;
     }
 
     /**

@@ -6,7 +6,10 @@
         <div class="form-group">
             <label class="col-sm-4"></label>
             <div class="col-sm-6">
-                <button type="submit" onclick="startInstaller(this);return false;" class="btn savechanges">{{ "installer_start_installation"|lang("installer") }}</button>
+                <button type="submit" onclick="startInstaller(this);return false;" class="btn savechanges">
+                    <span class="btn-text">{{ "installer_start_installation"|lang("installer") }}</span>
+                    <span class="statusicon"></span>
+                </button>
             </div>
         </div>
         <div class="clearfix"></div>

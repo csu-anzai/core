@@ -10,7 +10,7 @@ Reference: Formentries
 | Kajona\System\Admin\Formentries\FormentryAutoheadline             | 4.5        | Generates a headline out of a properties' value   |
 | Kajona\System\Admin\Formentries\FormentryButton	                | 4.3        | A simple button element |
 | Kajona\System\Admin\Formentries\FormentryCheckbox	                | 4.0        | Simple checkbox element |
-| Kajona\System\Admin\Formentries\FormentryCheckboxarray	        | 4.8        | Renders a list of objects as an array of checkboxes, e.g. assignments |
+| Kajona\System\Admin\Formentries\FormentryCheckboxarray	        | 4.8        | Renders a list of objects as an array of checkboxes, e.g. assignments. May be rendered as a radiogroup, too |
 | Kajona\System\Admin\Formentries\FormentryCheckboxarrayObjectList  | 5.1        | Renders a standard table containing a checkbox and the display name of the object |
 | Kajona\System\Admin\Formentries\FormentryColorpicker              | 6.5        | Input field with color-picker |
 | Kajona\System\Admin\Formentries\FormentryDate                     | 4.1        | Date-Input with date-picker |
@@ -31,7 +31,6 @@ Reference: Formentries
 | Kajona\System\Admin\Formentries\FormentryPage                     | 4.0        | Page-Selctor, text-input with autocomplete and select-popup |
 | Kajona\System\Admin\Formentries\FormentryPassword                 | 4.0        | Password input field |
 | Kajona\System\Admin\Formentries\FormentryPlaintext                | 4.3        | Use this formentry to inject plaintext into the html-output. May be used to add js-script tags and code. |
-| Kajona\System\Admin\Formentries\FormentryRadiogroup               | 7.1        | Same as the dropdown, but rendered as a radio-group
 | Kajona\System\Admin\Formentries\FormentrySubheadline              | 4.7        | Headline-Element to nest headlines  |
 | Kajona\System\Admin\Formentries\FormentryText                     | 4.0        | Text-input field, single line |
 | Kajona\System\Admin\Formentries\FormentryTextrow                  | 4.3        | Formentry useable as a graphical element, adds a line or paragaph of text to the current output. |

@@ -13,6 +13,7 @@ use Kajona\System\System\Objectfactory;
 use Kajona\System\System\Reflection;
 use Kajona\System\System\StringUtil;
 use Kajona\System\System\Validators\DummyValidator;
+use Kajona\System\View\Components\Formentry\Checkboxarray\Checkboxarray;
 
 /**
  * A formelement rendering an array of checkboxes.
@@ -52,6 +53,16 @@ class FormentryCheckboxarray extends FormentryBase implements FormentryPrintable
         return $this;
     }
 
+    /**
+     * @return int
+     */
+    public function getIntType(): int
+    {
+        return $this->intType;
+    }
+
+
+
     public function setBitInline($bitInline)
     {
         $this->bitInline = $bitInline;
@@ -70,10 +81,16 @@ class FormentryCheckboxarray extends FormentryBase implements FormentryPrintable
         $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
         $strReturn = "";
         if ($this->getStrHint() != null) {
-            $strReturn .= $objToolkit->formTextRow($this->getStrHint());
+            $strReturn .= $objToolkit->formTextHint($this->getStrHint(), $this->getBitHideLongHints());
         }
 
-        $strReturn .= $objToolkit->formInputCheckboxArray($this->getStrEntryName(), $this->getStrLabel(), $this->intType, $this->arrKeyValues, $this->getStrValue(), $this->bitInline, $this->getBitReadonly());
+        $cmp = new Checkboxarray($this->getStrEntryName(), $this->getStrLabel(), $this->arrKeyValues, $this->getStrValue());
+        $cmp->setType($this->intType);
+        $cmp->setInline($this->bitInline);
+        $cmp->setReadOnly($this->getBitReadonly());
+        $cmp->setDataArray($this->getDataAttributes());
+
+        $strReturn .= $cmp->renderComponent();
         $strReturn .= $objToolkit->formInputHidden($this->getPresCheckKey(), "1");
 
         return $strReturn;
@@ -194,4 +211,13 @@ class FormentryCheckboxarray extends FormentryBase implements FormentryPrintable
         return implode("<br />", $arrNew);
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return array_merge(parent::jsonSerialize(), [
+            "values" => (object) $this->arrKeyValues
+        ]);
+    }
 }

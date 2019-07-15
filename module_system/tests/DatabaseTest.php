@@ -491,6 +491,8 @@ SQL;
         foreach ($result as $rows) {
             for ($j = 0; $j < $chunkSize; $j++) {
                 if ($page == $pages && $j >= $rest) {
+                    $this->assertEquals($rest, count($rows));
+
                     // if we have reached the last row of the last chunk break
                     break 2;
                 }
@@ -499,11 +501,40 @@ SQL;
                 $i++;
             }
 
+            $this->assertEquals($chunkSize, count($rows));
             $page++;
         }
 
         $this->assertEquals($maxCount, $i);
         $this->assertEquals($pages, $page);
+    }
+
+    public function testGetGeneratorNoPaging()
+    {
+        $this->createTable();
+
+        $maxCount = 60;
+        $chunkSize = 16;
+
+        $data = array();
+        for ($i = 0; $i < $maxCount; $i++) {
+            $data[] = array(generateSystemid(), $i, $i, $i, $i, $i, $i, $i, $i);
+        }
+
+        $database = Carrier::getInstance()->getObjDB();
+        $database->multiInsert("agp_temp_autotest", array("temp_id", "temp_long", "temp_double", "temp_char10", "temp_char20", "temp_char100", "temp_char254", "temp_char500", "temp_text"), $data);
+
+        $result = $database->getGenerator("SELECT temp_id FROM agp_temp_autotest ORDER BY temp_long ASC", [], $chunkSize, false);
+        $i = 0;
+
+        foreach ($result as $rows) {
+            foreach ($rows as $row) {
+                $database->_pQuery("DELETE FROM agp_temp_autotest WHERE temp_id = ?", [$row["temp_id"]]);
+                $i++;
+            }
+        }
+
+        $this->assertEquals($maxCount, $i);
     }
 
     public function testGetGenerator()
@@ -550,6 +581,130 @@ SQL;
         $this->assertEquals(5, $j);
 
         $objDb->_pQuery("DROP TABLE " . $strTable, []);
+    }
+
+    public function testInsert()
+    {
+        $connection = Database::getInstance();
+
+        // create table
+        $tableName = "agp_temp_autotest_insert";
+        $columns = [];
+        $columns["temp_id"] = ["char20", false];
+        $columns["temp_char20"] = ["char20", true];
+
+        // drop table if exists
+        if (in_array($tableName, $connection->getTables())) {
+            $connection->_pQuery("DROP TABLE " . $tableName, []);
+        }
+
+        $this->assertTrue($connection->createTable($tableName, $columns, ["temp_id"]));
+        $this->flushDBCache();
+
+        $row = [
+            "temp_id" => generateSystemid(),
+            "temp_char20" => generateSystemid(),
+        ];
+
+        $connection->insert($tableName, $row);
+
+        $result = $connection->getPArray("SELECT * FROM {$tableName}", []);
+
+        $this->assertSame(1, count($result));
+        $this->assertEquals($row["temp_id"], $result[0]["temp_id"]);
+        $this->assertEquals($row["temp_char20"], $result[0]["temp_char20"]);
+
+        $connection->_pQuery("DROP TABLE " . $tableName, []);
+    }
+
+    public function testUpdate()
+    {
+        $connection = Database::getInstance();
+
+        // create table
+        $tableName = "agp_temp_autotest_update";
+        $columns = [];
+        $columns["temp_id"] = ["char20", false];
+        $columns["temp_int"] = ["int", false];
+        $columns["temp_char20"] = ["char20", true];
+
+        // drop table if exists
+        if (in_array($tableName, $connection->getTables())) {
+            $connection->_pQuery("DROP TABLE " . $tableName, []);
+        }
+
+        $this->assertTrue($connection->createTable($tableName, $columns, ["temp_id"]));
+        $this->flushDBCache();
+
+        $id = generateSystemid();
+
+        $row = [
+            "temp_id" => $id,
+            "temp_int" => 13,
+            "temp_char20" => "foobar",
+        ];
+
+        $connection->insert($tableName, $row);
+
+        $row = $connection->getPRow("SELECT * FROM {$tableName} WHERE temp_id = ?", [$id], 0, false);
+
+        $this->assertEquals($id, $row["temp_id"]);
+        $this->assertEquals(13, $row["temp_int"]);
+        $this->assertEquals("foobar", $row["temp_char20"]);
+
+        $connection->update($tableName, ["temp_int" => 1337, "temp_char20" => "foo"], ["temp_id" => $id]);
+
+        $row = $connection->getPRow("SELECT * FROM {$tableName} WHERE temp_id = ?", [$id], 0, false);
+
+        $this->assertEquals($id, $row["temp_id"]);
+        $this->assertEquals(1337, $row["temp_int"]);
+        $this->assertEquals("foo", $row["temp_char20"]);
+
+        $connection->_pQuery("DROP TABLE " . $tableName, []);
+    }
+
+    public function testDelete()
+    {
+        $connection = Database::getInstance();
+
+        // create table
+        $tableName = "agp_temp_autotest_delete";
+        $columns = [];
+        $columns["temp_id"] = ["char20", false];
+        $columns["temp_int"] = ["int", false];
+        $columns["temp_char20"] = ["char20", true];
+
+        // drop table if exists
+        if (in_array($tableName, $connection->getTables())) {
+            $connection->_pQuery("DROP TABLE " . $tableName, []);
+        }
+
+        $this->assertTrue($connection->createTable($tableName, $columns, ["temp_id"]));
+        $this->flushDBCache();
+
+        $id = generateSystemid();
+
+        $row = [
+            "temp_id" => $id,
+            "temp_int" => 13,
+            "temp_char20" => "foobar",
+        ];
+
+        $connection->insert($tableName, $row);
+
+        $row = $connection->getPRow("SELECT * FROM {$tableName} WHERE temp_id = ?", [$id], 0, false);
+
+        $this->assertEquals($id, $row["temp_id"]);
+        $this->assertEquals(13, $row["temp_int"]);
+        $this->assertEquals("foobar", $row["temp_char20"]);
+
+        $connection->delete($tableName, ["temp_id" => $id]);
+
+        $row = $connection->getPRow("SELECT * FROM {$tableName} WHERE temp_id = ?", [$id], 0, false);
+
+        $this->assertEmpty($row);
+
+        $connection->_pQuery("DROP TABLE " . $tableName, []);
     }
 
     /**

@@ -10,6 +10,8 @@
 namespace Kajona\Dashboard\Admin\Widgets;
 
 use Kajona\Packagemanager\System\PackagemanagerManager;
+use Kajona\System\Admin\AdminFormgenerator;
+use Kajona\System\Admin\Formentries\FormentryCheckbox;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\SystemModule;
 
@@ -19,6 +21,11 @@ use Kajona\System\System\SystemModule;
  */
 class AdminwidgetSysteminfo extends Adminwidget implements AdminwidgetInterface
 {
+
+    /**
+     * @var string
+     */
+    private $imgFileName = "systeminfo.png";
 
     /**
      * Basic constructor, registers the fields to be persisted and loaded
@@ -32,18 +39,21 @@ class AdminwidgetSysteminfo extends Adminwidget implements AdminwidgetInterface
     }
 
     /**
-     * Allows the widget to add additional fields to the edit-/create form.
-     * Use the toolkit class as usual.
-     *
-     * @return string
+     * @inheritdoc
      */
-    public function getEditForm()
+    public function getEditFormContent(AdminFormgenerator $form)
     {
-        $strReturn = "";
-        $strReturn .= $this->objToolkit->formInputCheckbox("php", $this->getLang("sysinfo_checkboxphp"), $this->getFieldValue("php"));
-        $strReturn .= $this->objToolkit->formInputCheckbox("server", $this->getLang("sysinfo_checkboxserver"), $this->getFieldValue("server"));
-        $strReturn .= $this->objToolkit->formInputCheckbox("kajona", $this->getLang("sysinfo_checkboxkajona"), $this->getFieldValue("kajona"));
-        return $strReturn;
+
+        $form->addField(new FormentryCheckbox("", "php"), "")
+            ->setStrLabel($this->getLang("sysinfo_checkboxphp"))
+            ->setStrValue($this->getFieldValue("php"));
+        $form->addField(new FormentryCheckbox("", "server"), "")
+            ->setStrLabel($this->getLang("sysinfo_checkboxserver"))
+            ->setStrValue($this->getFieldValue("server"));
+        $form->addField(new FormentryCheckbox("", "kajona"), "")
+            ->setStrLabel($this->getLang("sysinfo_checkboxkajona"))
+            ->setStrValue($this->getFieldValue("kajona"));
+
     }
 
     /**
@@ -59,6 +69,10 @@ class AdminwidgetSysteminfo extends Adminwidget implements AdminwidgetInterface
 
         if (!SystemModule::getModuleByName("system")->rightView() || !Carrier::getInstance()->getObjSession()->isSuperAdmin()) {
             return $this->getLang("commons_error_permissions");
+        }
+
+        if ($this->getFieldValue("php") == "" && $this->getFieldValue("server") == "" && $this->getFieldValue("kajona") == "") {
+            return $this->getEditWidgetForm();
         }
 
         //check wich infos to produce
@@ -97,15 +111,20 @@ class AdminwidgetSysteminfo extends Adminwidget implements AdminwidgetInterface
         return $this->getLang("sysinfo_name");
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getWidgetDescription()
     {
-        return "System info description!!!!!";
+        return $this->getLang("sysinfo_description");
     }
 
-    public function getWidgetImg()
+    /**
+     * @return string
+     */
+    public function getImgFileName(): string
     {
-        return "/files/extract/widgets/systeminfo.png";
-        //return Resourceloader::getInstance()->getWebPathForModule("module_dashboard")."/img/widgets/systeminfo.png";
+        return $this->imgFileName;
     }
 }
 

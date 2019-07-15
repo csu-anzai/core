@@ -1,15 +1,16 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2004-2006 by MulchProductions, www.mulchprod.de                                                 *
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-*-------------------------------------------------------------------------------------------------------*
-*	$Id$                                                      *
-********************************************************************************************************/
+ *   (c) 2004-2006 by MulchProductions, www.mulchprod.de                                                 *
+ *   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
+ *       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
+ *-------------------------------------------------------------------------------------------------------*
+ *    $Id$                                                      *
+ ********************************************************************************************************/
 namespace Kajona\System;
 
 //Determine the area to load
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Config;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\HttpResponsetypes;
 use Kajona\System\System\HttpStatuscodes;
@@ -20,7 +21,6 @@ use Kajona\System\System\ServiceProvider;
 use Kajona\System\System\SystemEventidentifier;
 
 define("_autotesting_", false);
-
 
 /**
  * Class handling all requests to be served with xml
@@ -58,6 +58,25 @@ class Xml
         $this->objResponse->setStrStatusCode(HttpStatuscodes::SC_OK);
         $this->objResponse->setObjEntrypoint(RequestEntrypointEnum::XML());
 
+        $origin = Config::getInstance()->getConfig("header_cors_origin");
+        if (!empty($origin)) {
+            $this->objResponse->addHeader("Access-Control-Allow-Origin: " . $origin);
+            $this->objResponse->addHeader("Access-Control-Allow-Methods: GET, POST, PUT, DELETE , OPTIONS");
+            $this->objResponse->addHeader("Access-Control-Allow-Headers: Authorization , Content-Type");
+        }
+
+        if ($_SERVER["REQUEST_METHOD"] == "OPTIONS") {
+            ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_OK);
+            return;
+        }
+
+        // in case for options requests i.e. preflight requests we always want to set an ok status code otherwise the
+        // browser will deny the request
+        if ($_SERVER["REQUEST_METHOD"] == "OPTIONS") {
+            ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_OK);
+            return;
+        }
+
         //only allowed with a module definition. if not given skip, so that there's no exception thrown
         if (empty($strModule)) {
             ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_BADREQUEST);
@@ -80,7 +99,7 @@ class Xml
         }
 
         if ($this->objResponse->getStrResponseType() == HttpResponsetypes::STR_TYPE_XML && self::$bitRenderXmlHeader) {
-            $this->objResponse->setStrContent("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n".$this->objResponse->getStrContent());
+            $this->objResponse->setStrContent("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" . $this->objResponse->getStrContent());
         }
     }
 
@@ -95,7 +114,6 @@ class Xml
     {
         self::$bitRenderXmlHeader = !$bitSuppressXmlHeader;
     }
-
 
 }
 
