@@ -51,12 +51,6 @@ class VarAnnotationTest extends Testbase
             if (StringUtil::indexOf($filename, "/config/") !== false) {
                 continue;
             }
-            if (StringUtil::indexOf($filename, "/tests/") !== false) {
-                continue;
-            }
-            if (StringUtil::indexOf($filename, "/ServiceProvider") !== false) {
-                continue;
-            }
 
             //skip files on first level
             $dirs = explode("/", dirname(StringUtil::replace(_realpath_, '', $filename)));
