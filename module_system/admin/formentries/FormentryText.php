@@ -9,6 +9,7 @@ namespace Kajona\System\Admin\Formentries;
 use Kajona\System\Admin\FormentryPrintableInterface;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Validators\TextValidator;
+use Kajona\System\View\Components\Formentry\Inputtext\Inputtext;
 
 
 /**
@@ -38,15 +39,20 @@ class FormentryText extends FormentryBase implements FormentryPrintableInterface
      */
     public function renderField()
     {
-        $objToolkit = Carrier::getInstance()->getObjToolkit("admin");
-        $strReturn = "";
+        $toolkit = Carrier::getInstance()->getObjToolkit("admin");
+        $return = "";
         if ($this->getStrHint() != null) {
-            $strReturn .= $objToolkit->formTextHint($this->getStrHint(), $this->getBitHideLongHints());
+            $return .= $toolkit->formTextHint($this->getStrHint(), $this->getBitHideLongHints());
         }
 
-        $strReturn .= $objToolkit->formInputText($this->getStrEntryName(), $this->getStrLabel(), $this->getStrValue(), "inputText", $this->strOpener, $this->getBitReadonly());
+        $inputText = new Inputtext($this->getStrEntryName(), (string) $this->getStrLabel(), html_entity_decode((string) $this->getStrValue()));
+        $inputText->setReadOnly($this->getBitReadonly());
+        $inputText->setOpener($this->strOpener);
+        $inputText->setDataArray($this->getDataAttributes());
 
-        return $strReturn;
+        $return .= $inputText->renderComponent();
+
+        return $return;
     }
 
     /**

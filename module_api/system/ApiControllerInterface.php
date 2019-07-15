@@ -9,7 +9,7 @@ namespace Kajona\Api\System;
 /**
  * Marker interface to indicate that a class is an API controller
  *
- * @author christoph.kappestein@gmail.com
+ * @author christoph.kappestein@artemeon.de
  * @since 7.1
  */
 interface ApiControllerInterface
