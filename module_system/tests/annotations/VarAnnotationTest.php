@@ -19,7 +19,7 @@ use Kajona\System\Tests\Testbase;
 class VarAnnotationTest extends Testbase
 {
 
-    private static $allowValues = ["string", "objectList", "float", "int", "bool", "Date", "array", "string[]"];
+    private static $allowValues = ["string", "objectList", "float", "int", "bool", "boolean", "Date", "array", "string[]", "int[]"];
 
 
     /**
