@@ -1,6 +1,6 @@
 <?php
 
-namespace Kajona\System\Tests\Filter;
+namespace Kajona\System\Tests\Annotations;
 
 use Kajona\System\System\BootstrapCache;
 use Kajona\System\System\Classloader;
