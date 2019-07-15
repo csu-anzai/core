@@ -344,9 +344,7 @@ JS;
             $iCal->setStrUserId($userId);
             $this->objLifeCycleFactory->factory(get_class($iCal))->update($iCal);
         }
-        //Todo: right now AGP API not supports string output, but when the support be implemented, will be possible to use next link instead of the link to action
-        //$iCalLink = _apipath_ . '/caldav/' . $iCal->getStrSystemid();
-        $iCalLink = Link::getLinkAdminXml("dashboard", "getiCalendarEvents", "&systemid=" . $iCal->getStrSystemid());
+        $iCalLink = _apipath_ . '/caldav/' . $iCal->getStrSystemid();
         return ["url" => $iCalLink];
     }
 
@@ -674,32 +672,6 @@ JS;
         }
 
         return json_encode($arrData);
-    }
-
-    /**
-     * @return string
-     * @throws Exception
-     * @permissions anonymous
-     */
-    public function actionGetiCalendarEvents()
-    {
-        try {
-            ResponseObject::getInstance()->setStrResponseType(HttpResponsetypes::STR_TYPE_ICAL);
-            ResponseObject::getInstance()->addHeader('Content-Disposition: attachment; filename="agpCalendar.ics"');
-            return (Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::DASHBOARD_ICAL_GENERATOR))->generate($this->getParam("systemid"));
-        } catch (WrongSystemIdException $e) {
-            ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_BADREQUEST);
-            ResponseObject::getInstance()->sendHeaders();
-            return "";
-        } catch (EntityNotFoundException $e) {
-            ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_NOT_FOUND);
-            ResponseObject::getInstance()->sendHeaders();
-            return "";
-        } catch (AuthenticationException $e) {
-            ResponseObject::getInstance()->setStrStatusCode(HttpStatuscodes::SC_UNAUTHORIZED);
-            ResponseObject::getInstance()->sendHeaders();
-            return "";
-        }
     }
 
     /**
