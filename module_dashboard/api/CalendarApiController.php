@@ -15,27 +15,25 @@ use PSX\Http\Environment\HttpContext;
 use PSX\Http\Environment\HttpResponse;
 
 /**
- * DashboardApiController
+ * CalendarApiController
  *
  * @author andrii.konoval@artemeon.de
  * @since 7.1
  */
-class DashboardApiController implements ApiControllerInterface
+class CalendarApiController implements ApiControllerInterface
 {
-
     /**
      * @inject dashboard_ical_generator
      * @var ServiceICalGenerator
      */
     private $iCalGenerator;
 
-
     /**
      * Returns internet calendar by token
      *
      * @api
      * @method GET
-     * @path /caldav/{token}
+     * @path /v1/calendar/export/caldav/{token}
      */
     public function caldav(HttpContext $context)
     {

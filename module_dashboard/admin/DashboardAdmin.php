@@ -344,7 +344,7 @@ JS;
             $iCal->setStrUserId($userId);
             $this->objLifeCycleFactory->factory(get_class($iCal))->update($iCal);
         }
-        $iCalLink = _apipath_ . '/caldav/' . $iCal->getStrSystemid();
+        $iCalLink = _apipath_ . '/v1/calendar/export/caldav/' . $iCal->getStrSystemid();
         return ["url" => $iCalLink];
     }
 
