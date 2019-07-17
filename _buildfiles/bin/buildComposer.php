@@ -29,6 +29,8 @@ if (!is_file($vendorLock)) {
     "scripts": {
         "phpcs": "phpcs -wp --colors --cache",
         "phpcs-modified": "phpcs -wp --colors --cache --filter=gitmodified"
+        "phpcbf": "phpcbf -wp",
+        "phpcbf-modified": "phpcbf -wp --filter=gitmodified"
     },
     "repositories": [
         {
