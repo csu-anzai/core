@@ -1,20 +1,19 @@
 #!/usr/bin/php
 <?php
 
-echo "merge and install vendor dependencies".PHP_EOL;
+echo "merge and install vendor dependencies" . PHP_EOL;
 
-$strRoot = realpath(__DIR__."/../../..");
+$strRoot = realpath(__DIR__ . "/../../..");
 
 $arrIncludedModules = [];
-if (is_file($strRoot."/project/packageconfig.json")) {
-    $arrIncludedModules = json_decode(file_get_contents($strRoot."/project/packageconfig.json"), true);
+if (is_file($strRoot . "/project/packageconfig.json")) {
+    $arrIncludedModules = json_decode(file_get_contents($strRoot . "/project/packageconfig.json"), true);
 }
 
-
 // merge composer files
-$vendorDir = $strRoot."/project";
-$vendorComposer = $vendorDir."/composer.json";
-$vendorLock = $vendorDir."/composer.lock";
+$vendorDir = $strRoot . "/project";
+$vendorComposer = $vendorDir . "/composer.json";
+$vendorLock = $vendorDir . "/composer.lock";
 
 // we merge and create a composer json file only in case no composer.lock file exists
 if (!is_file($vendorLock)) {
@@ -53,7 +52,10 @@ JSON;
             $objModuleDirs = new DirectoryIterator($objCoreDir->getRealPath());
             foreach ($objModuleDirs as $objDir) {
                 //defined as included?
-                if (isset($arrIncludedModules[$objCoreDir->getFilename()]) && !in_array($objDir->getFilename(), $arrIncludedModules[$objCoreDir->getFilename()])) {
+                if (isset($arrIncludedModules[$objCoreDir->getFilename()]) && !in_array(
+                    $objDir->getFilename(),
+                    $arrIncludedModules[$objCoreDir->getFilename()]
+                )) {
                     continue;
                 }
 
@@ -65,7 +67,14 @@ JSON;
                         foreach ($content["require"] as $name => $version) {
                             if (strpos($name, "/") !== false && isset($composer["require"][$name])) {
                                 if ($composer["require"][$name] != $version) {
-                                    throw new \RuntimeException("Found dependency {$name} multiple times with different version {$composer["require"][$name]} vs {$version}");
+                                    throw new \RuntimeException(
+                                        sprintf(
+                                            'Found dependency %s multiple times with different version %s vs %s',
+                                            $name,
+                                            $composer['require'][$name],
+                                            $version
+                                        )
+                                    );
                                 }
                             }
 
@@ -76,7 +85,14 @@ JSON;
                         foreach ($content["require-dev"] as $name => $version) {
                             if (strpos($name, "/") !== false && isset($composer["require-dev"][$name])) {
                                 if ($composer["require-dev"][$name] != $version) {
-                                    throw new \RuntimeException("Found development dependency {$name} multiple times with different version {$composer["require-dev"][$name]} vs {$version}");
+                                    throw new \RuntimeException(
+                                        sprintf(
+                                            'Found dev dependency %s multiple times with different version %s vs %s',
+                                            $name,
+                                            $composer['require-dev'][$name],
+                                            $version
+                                        )
+                                    );
                                 }
                             }
 
@@ -94,14 +110,22 @@ JSON;
 }
 
 // install composer
-$arrOutput = array();
+$arrOutput = [];
 $intReturn = 0;
-exec('composer install --prefer-dist --optimize-autoloader --working-dir ' . escapeshellarg($vendorDir), $arrOutput, $intReturn);
+exec(
+    'composer install --prefer-dist --optimize-autoloader --working-dir ' . escapeshellarg($vendorDir),
+    $arrOutput,
+    $intReturn
+);
 if ($intReturn == 127) {
-    echo "<span style='color: red;'>composer was not found. please run 'composer install --prefer-dist --working-dir " . $vendorDir . "' manually</span>\n";
+    echo "<span style='color: red;'>composer was not found. please run
+        'composer install --prefer-dist --working-dir " . $vendorDir . "'
+        manually</span>\n";
 }
 if ($intReturn == 1) {
-    echo "<span style='color: red;'>composer error. please run 'composer install --prefer-dist --working-dir " . $vendorDir . "' manually</span>\n";
+    echo "<span style='color: red;'>composer error. please run
+        'composer install --prefer-dist --working-dir " . $vendorDir . "'
+        manually</span>\n";
 
     if (!is_writable($vendorDir)) {
         echo "<span style='color: red;'>    target folder " . $vendorDir . " is not writable</span>\n";
