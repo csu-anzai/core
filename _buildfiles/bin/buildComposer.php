@@ -22,6 +22,15 @@ if (!is_file($vendorLock)) {
     if (!is_file($vendorComposer)) {
         $content = <<<'JSON'
 {
+    "config": {
+        "platform": {
+            "php": "7.2"
+        }
+    },
+    "scripts": {
+        "phpcs": "phpcs -wp --colors --cache",
+        "phpcs-modified": "phpcs -wp --colors --cache --filter=gitmodified"
+    },
     "repositories": [
         {
             "type": "composer",
@@ -36,6 +45,7 @@ JSON;
     // merge all packages from all composer.json files inside a module
     $composer = json_decode(file_get_contents($vendorComposer), true);
     $composer["require"] = [];
+    $composer["require-dev"] = [];
 
     $objCoreDirs = new DirectoryIterator($strRoot);
     foreach ($objCoreDirs as $objCoreDir) {
@@ -62,6 +72,17 @@ JSON;
                             $composer["require"][$name] = $version;
                         }
                     }
+                    if (isset($content["require-dev"]) && is_array($content["require-dev"])) {
+                        foreach ($content["require-dev"] as $name => $version) {
+                            if (strpos($name, "/") !== false && isset($composer["require-dev"][$name])) {
+                                if ($composer["require-dev"][$name] != $version) {
+                                    throw new \RuntimeException("Found development dependency {$name} multiple times with different version {$composer["require-dev"][$name]} vs {$version}");
+                                }
+                            }
+
+                            $composer["require-dev"][$name] = $version;
+                        }
+                    }
                 }
             }
         }
@@ -75,7 +96,7 @@ JSON;
 // install composer
 $arrOutput = array();
 $intReturn = 0;
-exec('composer install --no-dev --prefer-dist --optimize-autoloader --working-dir ' . escapeshellarg($vendorDir), $arrOutput, $intReturn);
+exec('composer install --prefer-dist --optimize-autoloader --working-dir ' . escapeshellarg($vendorDir), $arrOutput, $intReturn);
 if ($intReturn == 127) {
     echo "<span style='color: red;'>composer was not found. please run 'composer install --prefer-dist --working-dir " . $vendorDir . "' manually</span>\n";
 }
