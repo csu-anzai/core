@@ -40,6 +40,7 @@
     "routie": "github:jgallen23/routie",
     "toastr": "^2.1.4",
     "vue": "^2.6.6",
+    "vue-multiselect": "^2.1.6",
     "vue-property-decorator": "^7.3.0",
     "vue-router": "^3.0.2",
     "vuex": "^3.1.0",
