@@ -68,6 +68,16 @@ class Router {
         if (url.includes('/vm/')) {
             if (!window.VueContainer) {
                 document.getElementById('content').innerHTML = ''
+                // `
+                //     <div class="row pathNaviContainer">
+                //     <div class="col-md-12">
+                //         <ul class="breadcrumb">
+                //             <li class='pathentry home'><i class='fa fa-home'></i></li>
+                //         </ul>
+                //         <div id="quickhelp" class=" pull-right" style=" "><i class="fa fa-question-circle"></i></div>
+                //     </div>
+                // </div>
+                // `
                 App.initVue()
                 return
             }
