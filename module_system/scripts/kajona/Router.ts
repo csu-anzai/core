@@ -64,17 +64,16 @@ class Router {
     }
 
     public static defaultRoutieCallback (url: string) {
-        if (url.indexOf('/vm') === -1) {
-            return
-        }
         // in case we receive an absolute url with no hash redirect the user to this url
         // since we cant resolve this url to a hash route
         if (url.indexOf(KAJONA_WEBPATH) === 0 && url.indexOf('/#') === -1) {
             location.href = url
             return
         }
-
-        var objUrl = Router.generateUrl(url)
+        if (url.indexOf('/vm') === 0) {
+            return
+        }
+        let objUrl = Router.generateUrl(url)
 
         if (!objUrl) {
             return
