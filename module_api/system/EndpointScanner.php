@@ -14,7 +14,7 @@ use Kajona\System\System\Resourceloader;
 /**
  * EndpointScanner
  *
- * @author christoph.kappestein@gmail.com
+ * @author christoph.kappestein@artemeon.de
  * @since 7.1
  */
 class EndpointScanner

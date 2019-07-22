@@ -6,6 +6,7 @@
 
 namespace Kajona\System\Admin\Formentries;
 
+use JsonSerializable;
 use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminFormgeneratorContainerInterface;
 use Kajona\System\System\Carrier;
@@ -29,13 +30,18 @@ use Kajona\System\System\ValidatorInterface;
  * @since 4.0
  * @package module_formgenerator
  */
-abstract class FormentryBase implements \JsonSerializable
+abstract class FormentryBase implements JsonSerializable
 {
 
     /**
      * @var Model
      */
     private $objSourceObject = null;
+
+    /**
+     * A string with additional form entry configurations
+     */
+    private const FORM_FIELD_CONFIG_ANNOTATION = '@fieldConfig';
 
     /**
      * The name of the property as used in the forms, leading type-prefix is removed
@@ -66,6 +72,7 @@ abstract class FormentryBase implements \JsonSerializable
     private $strHint = null;
     private $bitReadonly = false;
     private $bitHideLongHints = false;
+    private $dataAttributes = [];
 
     /**
      * Creates a new instance of the current field.
@@ -81,17 +88,18 @@ abstract class FormentryBase implements \JsonSerializable
         $this->objSourceObject = $objSourceObject;
         $this->strFormName = $strFormName;
 
-        if ($strFormName != "") {
-            $strFormName .= "_";
+        if ($strFormName !== '') {
+            $strFormName .= '_';
         }
 
         $this->strEntryName = StringUtil::toLowerCase($strFormName.$strSourceProperty);
 
-        if ($objSourceObject != null) {
+        if ($objSourceObject !== null) {
             $this->updateLabel();
         }
 
         $this->readValue();
+        $this->getFormEntryConfigAnnotationValues();
     }
 
     /**
@@ -521,7 +529,7 @@ abstract class FormentryBase implements \JsonSerializable
     /**
      * @return bool
      */
-    public function getBitHideLongHints() : bool
+    public function getBitHideLongHints(): bool
     {
         return $this->bitHideLongHints;
     }
@@ -532,6 +540,50 @@ abstract class FormentryBase implements \JsonSerializable
     public function setBitHideLongHints(bool $bitHideLongHints)
     {
         $this->bitHideLongHints = $bitHideLongHints;
+
+        return $this;
+    }
+
+    /**
+     * get @FormEntryConfig Annotation (json format like {"configSetting1": true, "configSetting2": false})
+     * into usable config settings e.g. $this->configSetting1 = true, $this->configSetting2 = false
+     * @throws Exception
+     */
+    private function getFormEntryConfigAnnotationValues(): void
+    {
+        if ($this->getObjSourceObject() === null || $this->getStrSourceProperty() === '') {
+            return;
+        }
+        if (!$currentSourceProperty = $this->getCurrentProperty(self::FORM_FIELD_CONFIG_ANNOTATION)) {
+            return;
+        }
+
+        $reflection = new Reflection($this->getObjSourceObject());
+        if (empty($propertyAnnotationValues = $reflection->getAnnotationJsonValueForProperty($currentSourceProperty, self::FORM_FIELD_CONFIG_ANNOTATION))) {
+            return;
+        }
+
+        foreach ($propertyAnnotationValues as $configName => $configValue) {
+            $this->$configName = (bool) $configValue;
+        }
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getDataAttributes(): array
+    {
+        return $this->dataAttributes;
+    }
+
+    /**
+     * @param array $dataAttributes
+     * @return FormentryBase
+     */
+    public function setDataAttributes(array $dataAttributes): FormentryBase
+    {
+        $this->dataAttributes = $dataAttributes;
         return $this;
     }
 }
