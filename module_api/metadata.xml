@@ -5,13 +5,11 @@
     >
     <title>api</title>
     <description>Provides an entry point to access API endpoints</description>
-    <version>1.0</version>
+    <version>7.1</version>
     <author>Artemeon Team</author>
     <type>MODULE</type>
     <providesInstaller>FALSE</providesInstaller>
-    <requiredModules>
-        <module name="system" version="7.1" />
-    </requiredModules>
+    <requiredModules/>
     <constants>
         <constant name="_api_module_id_" value="1420146491" />
     </constants>

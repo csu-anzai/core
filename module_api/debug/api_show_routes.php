@@ -1,7 +1,7 @@
 <?php
 
 /** @var \Kajona\Api\System\EndpointScanner $scanner */
-$scanner = \Kajona\System\System\Carrier::getInstance()->getContainer()->offsetGet(\Kajona\Api\System\ServiceProvider::STR_ENDPOINT_SCANNER);
+$scanner = \Kajona\System\System\Carrier::getInstance()->getContainer()->offsetGet(\Kajona\Api\System\ServiceProvider::ENDPOINT_SCANNER);
 $endpoints = $scanner->getEndpoints();
 
 foreach ($endpoints as $endpoint) {
