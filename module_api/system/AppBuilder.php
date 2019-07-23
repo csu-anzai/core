@@ -6,6 +6,7 @@
 
 namespace Kajona\Api\System;
 
+use Kajona\System\Admin\Exceptions\ModelNotFoundException;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\ObjectBuilder;
 use Kajona\System\System\RequestEntrypointEnum;
@@ -125,6 +126,10 @@ class AppBuilder
                         $response = $response->withHeader("Content-Type", "application/json")
                             ->write(json_encode($data, JSON_PRETTY_PRINT));
                     }
+                } catch (ModelNotFoundException $e) {
+                    $response = $response->withStatus(404)
+                        ->withHeader("Content-Type", "application/json")
+                        ->write(json_encode(["error" => $e->getMessage()]));
                 } catch (StatusCodeException $e) {
                     $response = $response->withStatus($e->getStatusCode())
                         ->withHeader("Content-Type", "application/json")
