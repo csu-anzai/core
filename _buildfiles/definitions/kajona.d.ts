@@ -29,6 +29,7 @@ declare var KAJONA_DEBUG: number
 declare var KAJONA_LANGUAGE: string
 declare var KAJONA_BROWSER_CACHEBUSTER: number
 declare var KAJONA_PHARMAP: Array<string>
+declare var KAJONA_ACCESS_TOKEN: string
 
 declare var routie: any
 

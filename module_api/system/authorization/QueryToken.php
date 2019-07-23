@@ -4,14 +4,23 @@
  *       Published under the GNU LGPL v2.1
  ********************************************************************************************************/
 
-namespace Kajona\Api\System;
+namespace Kajona\Api\System\Authorization;
+
+use Slim\Http\Request;
 
 /**
- * Marker interface to indicate that a class is an API controller
+ * Authorization service where the user can provide the access token as query parameter
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.1
  */
-interface ApiControllerInterface
+class QueryToken extends UserTokenAbstract
 {
+    /**
+     * @inheritDoc
+     */
+    protected function getToken(Request $request): ?string
+    {
+        return $request->getQueryParam("access_token");
+    }
 }

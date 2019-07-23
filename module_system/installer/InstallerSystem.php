@@ -543,6 +543,11 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         if($arrModule["module_version"] == "7.1.5") {
             $strReturn .= $this->update_715_716();
         }
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.1.6") {
+            $strReturn .= $this->update_716_717();
+        }
+
 
         return $strReturn."\n\n";
     }
@@ -773,6 +778,18 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
 
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.6");
         return $strReturn;
+    }
+
+    private function update_716_717(): string
+    {
+        $return = "Updating to 7.1.7...".PHP_EOL;
+        $return .= "Add access token column to user".PHP_EOL;
+
+        $orm = new OrmSchemamanager();
+        $orm->updateTable(UserUser::class);
+
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.7");
+        return $return;
     }
 
 
