@@ -8,6 +8,9 @@ private modalId : string = uuid()
 
 private mounted () : void{
     $('#' + this.modalId).on('hidden.bs.modal', this.onClose)
+    $('#' + this.modalId).on('shown.bs.modal', () => {
+        this.$emit('open')
+    })
 }
 
 private onClose (e) :void{
