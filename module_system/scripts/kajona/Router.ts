@@ -5,6 +5,7 @@ import Ajax from './Ajax'
 import Util from './Util'
 import Forms from './Forms'
 import routie from 'routie'
+import App from './App'
 declare global {
     interface Window {
         routie: any
@@ -64,16 +65,38 @@ class Router {
     }
 
     public static defaultRoutieCallback (url: string) {
+        if (url.includes('/vm/')) {
+            if (!window.VueContainer) {
+                document.getElementById('content').innerHTML = ''
+                // `
+                //     <div class="row pathNaviContainer">
+                //     <div class="col-md-12">
+                //         <ul class="breadcrumb">
+                //             <li class='pathentry home'><i class='fa fa-home'></i></li>
+                //         </ul>
+                //         <div id="quickhelp" class=" pull-right" style=" "><i class="fa fa-question-circle"></i></div>
+                //     </div>
+                // </div>
+                // `
+                App.initVue()
+                return
+            }
+        } else {
+            if (window.VueContainer !== undefined) {
+                window.VueContainer.$destroy()
+                window.VueContainer.$el.remove()
+                window.VueContainer = null
+                location.reload()
+            }
+        }
         // in case we receive an absolute url with no hash redirect the user to this url
         // since we cant resolve this url to a hash route
         if (url.indexOf(KAJONA_WEBPATH) === 0 && url.indexOf('/#') === -1) {
             location.href = url
             return
         }
-        if (url.indexOf('/vm') === 0) {
-            return
-        }
-        let objUrl = Router.generateUrl(url)
+
+        var objUrl = Router.generateUrl(url)
 
         if (!objUrl) {
             return
@@ -127,7 +150,9 @@ class Router {
         if (url.indexOf(KAJONA_WEBPATH) === 0) {
             url = url.replace(KAJONA_WEBPATH + '/#', '')
         }
-
+        if (url.charAt(0) === '/') {
+            url = url.substr(1)
+        }
         if (url.trim() === '') {
             if ($('#loginContainer').length > 0) {
                 // in case we are on the login template redirect to login action
@@ -139,10 +164,6 @@ class Router {
                 // otherwise we load the dashboard
                 url = 'dashboard'
             }
-        }
-
-        if (url.charAt(0) === '/') {
-            url = url.substr(1)
         }
 
         if (isStackedDialog && url.indexOf('peClose=1') !== -1) {
