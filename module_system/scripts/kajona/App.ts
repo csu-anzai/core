@@ -16,6 +16,7 @@ import VueRouter from './VueMainComponent/VueRouter'
 
 declare global {
     interface Window {
+        VueContainer : Vue
         KAJONA: Kajona
         // eslint-disable-next-line camelcase
         jsDialog_0: Dialog
@@ -83,8 +84,8 @@ class App {
         if (process.env.NODE_ENV === 'development') {
             Vue.config.devtools = true
         }
-        // eslint-disable-next-line no-new
-        new Vue({
+
+        window.VueContainer = new Vue({
             el: '#vueContainer',
             // @ts-ignore
             router: VueRouter,
