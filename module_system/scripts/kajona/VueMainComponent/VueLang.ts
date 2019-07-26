@@ -13,7 +13,6 @@ async function getLanguages () {
         reportconfigurator: await Lang.fetchModule('reportconfigurator')
     }
 
-    console.log(de)
     return new VueI18n({
         locale,
         messages: { de, en }
