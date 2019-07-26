@@ -6,8 +6,11 @@
 
 namespace Kajona\Api\System;
 
+use Kajona\Api\System\Authorization\Composite;
 use Kajona\Api\System\Authorization\FileToken;
-use Kajona\Api\System\Authorization\UserToken;
+use Kajona\Api\System\Authorization\HeaderToken;
+use Kajona\Api\System\Authorization\QueryToken;
+use Kajona\Api\System\Authorization\UserTokenAbstract;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
@@ -45,7 +48,7 @@ class ServiceProvider implements ServiceProviderInterface
     const AUTHORIZATION_FILETOKEN = "api_authorization_filetoken";
 
     /**
-     * @see UserToken
+     * @see UserTokenAbstract
      */
     const AUTHORIZATION_USERTOKEN = "api_authorization_usertoken";
 
@@ -82,11 +85,19 @@ class ServiceProvider implements ServiceProviderInterface
         };
 
         $container[self::AUTHORIZATION_USERTOKEN] = static function ($c) {
-            return new UserToken(
+            $headerToken = new HeaderToken(
                 $c[\Kajona\System\System\ServiceProvider::STR_DB],
                 $c[self::JWT_MANAGER],
                 $c[\Kajona\System\System\ServiceProvider::STR_SESSION]
             );
+
+            $queryToken = new QueryToken(
+                $c[\Kajona\System\System\ServiceProvider::STR_DB],
+                $c[self::JWT_MANAGER],
+                $c[\Kajona\System\System\ServiceProvider::STR_SESSION]
+            );
+
+            return new Composite($headerToken, $queryToken);
         };
     }
 }
