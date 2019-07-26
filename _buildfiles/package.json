@@ -49,6 +49,7 @@
   "devDependencies": {
     "@babel/core": "^7.4.5",
     "@types/bootstrap": "^3.3.40",
+    "@types/bootstrap-datepicker": "0.0.13",
     "@types/chart.js": "^2.7.50",
     "@types/ckeditor": "^4.9.8",
     "@types/d3": "^5.7.2",
