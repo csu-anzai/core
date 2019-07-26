@@ -210,7 +210,7 @@ class Lang {
             '_' +
             KAJONA_BROWSER_CACHEBUSTER)
         if (cacheVersion) {
-            return cacheVersion
+            return JSON.parse(cacheVersion)
         }
         let [err, res] = await to(axios({
             url: KAJONA_WEBPATH +
@@ -219,7 +219,7 @@ class Lang {
             data: { target_module: moduleName }
         }))
         if (res) {
-            return res.data
+            return JSON.parse(res.data)
         }
     }
 }
