@@ -1,6 +1,7 @@
 import $ from 'jquery'
 import CacheManager from './CacheManager'
-
+import axios from 'axios'
+import to from 'await-to-js'
 interface QueueEntry {
     text: string
     module: string
@@ -196,6 +197,30 @@ class Lang {
             strText = strText.replace('{' + i + '}', arrParams[i])
         }
         return strText
+    }
+
+    /**
+    * fetch lang props of whole module and save it in localstorage
+    * @param moduleName name of the module to fetch
+    */
+    public static async fetchModule (moduleName : string) : Promise<void> {
+        let cacheVersion = CacheManager.get(moduleName +
+            '_' +
+            KAJONA_LANGUAGE +
+            '_' +
+            KAJONA_BROWSER_CACHEBUSTER)
+        if (cacheVersion) {
+            return cacheVersion
+        }
+        let [err, res] = await to(axios({
+            url: KAJONA_WEBPATH +
+            '/xml.php?admin=1&module=system&action=fetchProperty',
+            method: 'POST',
+            data: { target_module: moduleName }
+        }))
+        if (res) {
+            return res.data
+        }
     }
 }
 ;(<any>window).Lang = Lang
