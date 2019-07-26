@@ -15,12 +15,12 @@ use Kajona\System\System\UserUser;
 use Slim\Http\Request;
 
 /**
- * Authorization service which uses the access token from a user
+ * Abstract authorization service which uses the access token from a user
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.1
  */
-class UserToken implements AuthorizationInterface
+abstract class UserTokenAbstract implements AuthorizationInterface
 {
     /**
      * @var Database
@@ -54,14 +54,7 @@ class UserToken implements AuthorizationInterface
      */
     public function isAuthorized(Request $request): bool
     {
-        $header = explode(" ", $request->getHeaderLine("Authorization"), 2);
-        $type = $header[0] ?? null;
-        $token = $header[1] ?? null;
-
-        if ($type !== "Bearer") {
-            return false;
-        }
-
+        $token = $this->getToken($request);
         $userId = $this->getUserIdForToken($token);
         if ($userId === null) {
             return false;
@@ -81,7 +74,15 @@ class UserToken implements AuthorizationInterface
         return true;
     }
 
-    private function getUserIdForToken(string $token): ?string
+    /**
+     * Extracts the access token from the request
+     *
+     * @param Request $request
+     * @return string|null
+     */
+    abstract protected function getToken(Request $request): ?string;
+
+    private function getUserIdForToken(?string $token): ?string
     {
         if (empty($token)) {
             return null;
