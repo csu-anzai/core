@@ -1,16 +1,16 @@
 import Vue from 'vue'
-import VueI18n from 'vue-i18n'
+import VueI18n, { LocaleMessageObject } from 'vue-i18n'
 import Lang from 'core/module_system/scripts/kajona/Lang'
 Vue.use(VueI18n)
 let de = {}
 const locale = KAJONA_LANGUAGE
 
 async function getLanguages () {
-    const de = {
-        reportconfigurator: await Lang.fetchModule('reportconfigurator')
+    const de : LocaleMessageObject = {
+        reportconfigurator: await Lang.fetchModule('reportconfigurator', 'de')
     }
-    const en = {
-        reportconfigurator: await Lang.fetchModule('reportconfigurator')
+    const en : LocaleMessageObject = {
+        reportconfigurator: await Lang.fetchModule('reportconfigurator', 'en')
     }
 
     return new VueI18n({
