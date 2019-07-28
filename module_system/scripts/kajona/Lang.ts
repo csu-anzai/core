@@ -203,6 +203,7 @@ class Lang {
     /**
     * fetch lang props of whole module and save it in localstorage
     * @param moduleName name of the module to fetch
+    * @param language wished language of module
     */
     public static async fetchModule (moduleName : string, language : string) : Promise<LocaleMessageObject> {
         let cacheVersion = CacheManager.get(moduleName +
