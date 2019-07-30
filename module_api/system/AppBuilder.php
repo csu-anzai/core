@@ -8,6 +8,7 @@ namespace Kajona\Api\System;
 
 use Kajona\System\Admin\Exceptions\ModelNotFoundException;
 use Kajona\System\System\CoreEventdispatcher;
+use Kajona\System\System\Exception;
 use Kajona\System\System\ObjectBuilder;
 use Kajona\System\System\RequestEntrypointEnum;
 use Kajona\System\System\SystemEventidentifier;
@@ -20,6 +21,8 @@ use PSX\Http\Request;
 use PSX\Uri\Uri;
 use Slim\App;
 use Slim\Container as SlimContainer;
+use Slim\Exception\MethodNotAllowedException;
+use Slim\Exception\NotFoundException;
 use Slim\Http\Request as SlimRequest;
 use Slim\Http\Response as SlimResponse;
 
@@ -61,9 +64,9 @@ class AppBuilder
     /**
      * Creates a new app, attaches all available routes and executes the app
      *
-     * @throws \Kajona\System\System\Exception
-     * @throws \Slim\Exception\MethodNotAllowedException
-     * @throws \Slim\Exception\NotFoundException
+     * @throws Exception
+     * @throws MethodNotAllowedException
+     * @throws NotFoundException
      */
     public function run()
     {
@@ -107,7 +110,7 @@ class AppBuilder
                     $body = $request->getParsedBody();
                     $httpContext = new HttpContext(new Request(new Uri($request->getUri()->__toString()), $request->getMethod(), $request->getHeaders()), $args);
 
-                    if (in_array($request->getMethod(), ["GET", "HEAD", "DELETE"])) {
+                    if (in_array($request->getMethod(), ["GET", "HEAD", 'DELETE'])) {
                         $data = call_user_func_array([$instance, $route["methodName"]], [$httpContext]);
                     } else {
                         $data = call_user_func_array([$instance, $route["methodName"]], [$body, $httpContext]);
