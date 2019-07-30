@@ -67,10 +67,6 @@ class Router {
     public static defaultRoutieCallback (url: string) {
         if (url.includes('/vm/')) {
             return
-        } else {
-            if (window.VueContainer !== undefined) {
-                location.reload()
-            }
         }
         // in case we receive an absolute url with no hash redirect the user to this url
         // since we cant resolve this url to a hash route
