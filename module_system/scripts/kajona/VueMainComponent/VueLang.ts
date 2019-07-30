@@ -5,10 +5,10 @@ Vue.use(VueI18n)
 
 async function getLanguages () {
     const de : LocaleMessageObject = {
-
+        reportconfigurator: await Lang.fetchModule('reportconfigurator', 'de')
     }
     const en : LocaleMessageObject = {
-
+        reportconfigurator: await Lang.fetchModule('reportconfigurator', 'en')
     }
 
     return new VueI18n({
