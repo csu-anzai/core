@@ -256,6 +256,15 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $strReturn .= "Installing password history...\n";
         $objManager->createTable(SystemPwHistory::class);
 
+        // create message queue table
+        $this->objDB->createTable('agp_system_events', [
+            'event_id' => [DbDatatypes::STR_TYPE_CHAR20, false],
+            'event_name' => [DbDatatypes::STR_TYPE_CHAR100, false],
+            'event_args' => [DbDatatypes::STR_TYPE_CHAR500, false]
+        ], [
+            'event_id'
+        ]);
+
         //Now we have to register module by module
 
         //The Systemkernel
@@ -547,6 +556,10 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         if($arrModule["module_version"] == "7.1.6") {
             $strReturn .= $this->update_716_717();
         }
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] == "7.1.7") {
+            $strReturn .= $this->update_717_718();
+        }
 
 
         return $strReturn."\n\n";
@@ -792,6 +805,20 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         return $return;
     }
 
+    private function update_717_718(): string
+    {
+        $return = "Updating to 7.1.8...".PHP_EOL;
+        $return .= "Add event table".PHP_EOL;
 
+        $this->objDB->createTable('agp_system_events', [
+            'event_id' => [DbDatatypes::STR_TYPE_CHAR20, false],
+            'event_name' => [DbDatatypes::STR_TYPE_CHAR100, false],
+            'event_args' => [DbDatatypes::STR_TYPE_CHAR500, false]
+        ], [
+            'event_id'
+        ]);
 
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.8");
+        return $return;
+    }
 }
