@@ -6,7 +6,11 @@ Vue.use(<any>Router)
 export default new Router({
     routes: [
         { path: '/vm/reportconfigurator/:reportId',
-            component: Reportgenerator
+            component: Reportgenerator,
+            beforeEnter: (to, from, next) => {
+                document.getElementById('content').innerHTML = ''
+                next()
+            }
         }
     ]
 })
