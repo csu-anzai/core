@@ -5,14 +5,14 @@ Vue.use(VueI18n)
 
 async function getLanguages () {
     const de : LocaleMessageObject = {
-        search: SearchDe,
-        dashboard: DashboardDe,
-        system: SystemDe
+        search: await Lang.fetchModule('search', 'de'),
+        dashboard: await Lang.fetchModule('dashboard', 'de'),
+        system: await Lang.fetchModule('system', 'de')
     }
     const en : LocaleMessageObject = {
-        search: SearchEn,
-        dashboard: DashboardEn,
-        system: SystemEn
+        search: await Lang.fetchModule('search', 'en'),
+        dashboard: await Lang.fetchModule('dashboard', 'en'),
+        system: await Lang.fetchModule('system', 'en')
     }
 
     return new VueI18n({
