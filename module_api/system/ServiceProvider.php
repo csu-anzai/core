@@ -52,6 +52,11 @@ class ServiceProvider implements ServiceProviderInterface
      */
     const AUTHORIZATION_USERTOKEN = "api_authorization_usertoken";
 
+    /**
+     * @see TokenRefresher
+     */
+    const TOKEN_REFRESHER = "api_token_refresher";
+
     public function register(Container $container)
     {
         $container[self::APP_BUILDER] = static function ($c) {
@@ -99,5 +104,14 @@ class ServiceProvider implements ServiceProviderInterface
 
             return new Composite($headerToken, $queryToken);
         };
+
+        $container[self::TOKEN_REFRESHER] = static function ($c) {
+            return new TokenRefresher(
+                $c[\Kajona\System\System\ServiceProvider::STR_DB],
+                $c[self::JWT_MANAGER],
+                $c[\Kajona\System\System\ServiceProvider::STR_OBJECT_FACTORY]
+            );
+        };
+
     }
 }

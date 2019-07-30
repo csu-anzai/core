@@ -7,6 +7,7 @@
 namespace Kajona\Api\Api;
 
 use Kajona\Api\System\ApiControllerInterface;
+use Kajona\Api\System\TokenRefresher;
 use Kajona\System\System\Session;
 use Kajona\System\System\UserUser;
 
@@ -18,6 +19,12 @@ use Kajona\System\System\UserUser;
  */
 class AuthorizationApiController implements ApiControllerInterface
 {
+    /**
+     * @var TokenRefresher
+     * @inject api_token_refresher
+     */
+    private $tokenRefresher;
+
     /**
      * Returns the current assigned access token for the user. In the future this should become an actual OAuth2
      * endpoint
@@ -41,6 +48,23 @@ class AuthorizationApiController implements ApiControllerInterface
 
         return [
             'access_token' => $user->getStrAccessToken(),
+        ];
+    }
+
+    /**
+     * @method POST
+     * @path /v1/authorization/refresh
+     */
+    public function refreshToken($body)
+    {
+        $token = $body['token'] ?? null;
+
+        if (empty($token)) {
+            throw new \RuntimeException('No token provided');
+        }
+
+        return [
+            'access_token' => $this->tokenRefresher->refresh($token),
         ];
     }
 }
