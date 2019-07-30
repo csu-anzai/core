@@ -38,6 +38,7 @@ use Kajona\System\System\SystemPwHistory;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserUser;
+use Kajona\System\System\Workflows\WorkflowConsumer;
 use Kajona\Workflows\System\WorkflowsHandler;
 use Kajona\Workflows\System\WorkflowsWorkflow;
 
@@ -264,6 +265,13 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         ], [
             'event_id'
         ]);
+
+        // register consumer workflow
+        if (WorkflowsWorkflow::getWorkflowsForClassCount(WorkflowConsumer::class, false) == 0) {
+            $workflow = new WorkflowsWorkflow();
+            $workflow->setStrClass(WorkflowConsumer::class);
+            ServiceLifeCycleFactory::getLifeCycle(get_class($workflow))->update($workflow);
+        }
 
         //Now we have to register module by module
 
@@ -817,6 +825,12 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         ], [
             'event_id'
         ]);
+
+        if (WorkflowsWorkflow::getWorkflowsForClassCount(WorkflowConsumer::class, false) == 0) {
+            $workflow = new WorkflowsWorkflow();
+            $workflow->setStrClass(WorkflowConsumer::class);
+            ServiceLifeCycleFactory::getLifeCycle(get_class($workflow))->update($workflow);
+        }
 
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.8");
         return $return;
