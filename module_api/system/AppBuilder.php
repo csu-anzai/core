@@ -107,7 +107,7 @@ class AppBuilder
                     $body = $request->getParsedBody();
                     $httpContext = new HttpContext(new Request(new Uri($request->getUri()->__toString()), $request->getMethod(), $request->getHeaders()), $args);
 
-                    if (in_array($request->getMethod(), ["GET", "HEAD"])) {
+                    if (in_array($request->getMethod(), ["GET", "HEAD", "DELETE"])) {
                         $data = call_user_func_array([$instance, $route["methodName"]], [$httpContext]);
                     } else {
                         $data = call_user_func_array([$instance, $route["methodName"]], [$body, $httpContext]);
