@@ -5,10 +5,10 @@ Vue.use(<any>Router)
 const router = new Router({
     routes: []
 })
-router.beforeEach((to, from, next) => {
+function resetContainer (to, from, next) : void {
     let moduleOutput = document.getElementById('moduleOutput')
     moduleOutput.innerHTML = ''
     next()
-})
+}
 
 export default router
