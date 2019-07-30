@@ -66,26 +66,9 @@ class Router {
 
     public static defaultRoutieCallback (url: string) {
         if (url.includes('/vm/')) {
-            if (!window.VueContainer) {
-                document.getElementById('content').innerHTML = ''
-                // `
-                //     <div class="row pathNaviContainer">
-                //     <div class="col-md-12">
-                //         <ul class="breadcrumb">
-                //             <li class='pathentry home'><i class='fa fa-home'></i></li>
-                //         </ul>
-                //         <div id="quickhelp" class=" pull-right" style=" "><i class="fa fa-question-circle"></i></div>
-                //     </div>
-                // </div>
-                // `
-                App.initVue()
-                return
-            }
+            return
         } else {
             if (window.VueContainer !== undefined) {
-                window.VueContainer.$destroy()
-                window.VueContainer.$el.remove()
-                window.VueContainer = null
                 location.reload()
             }
         }
