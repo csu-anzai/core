@@ -11,11 +11,6 @@ const router = new Router({
         }
     ]
 })
-router.beforeEach((to, from, next) => {
-    let moduleOutput = document.getElementById('moduleOutput')
-    moduleOutput.innerHTML = ''
-    next()
-})
 function resetContainer (to, from, next) : void {
     let moduleOutput = document.getElementById('moduleOutput')
     moduleOutput.innerHTML = ''
