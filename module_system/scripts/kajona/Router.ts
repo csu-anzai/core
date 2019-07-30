@@ -5,7 +5,6 @@ import Ajax from './Ajax'
 import Util from './Util'
 import Forms from './Forms'
 import routie from 'routie'
-import App from './App'
 declare global {
     interface Window {
         routie: any
