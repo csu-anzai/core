@@ -6,11 +6,14 @@ Vue.use(<any>Router)
 export default new Router({
     routes: [
         { path: '/vm/reportconfigurator/:reportId',
-            component: Reportgenerator,
-            beforeEnter: (to, from, next) => {
-                document.getElementById('content').innerHTML = ''
-                next()
-            }
+            component: Reportgenerator
         }
     ]
+
+router.beforeEach((to, from, next) => {
+    let moduleOutput = document.getElementById('moduleOutput')
+    moduleOutput.innerHTML = ''
+    next()
 })
+
+export default router
