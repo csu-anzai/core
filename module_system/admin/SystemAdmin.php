@@ -1467,11 +1467,11 @@ JS;
     public function actionFetchProperty()
     {
         $strTargetModule = $this->getParam("target_module");
-        $strLanguage = null ;
-        if($this->getParam("language")!==""){
-            $strLanguage = $this->getParam("language") ;
+        $strLanguage = null;
+        if ($this->getParam("language") !== "") {
+            $strLanguage = $this->getParam("language");
         }
-        $strReturn = Lang::getInstance()->getProperties($strTargetModule , $strLanguage);
+        $strReturn = Lang::getInstance()->getProperties($strTargetModule, $strLanguage);
         return json_encode($strReturn);
     }
 
