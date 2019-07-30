@@ -66,16 +66,9 @@ class Router {
 
     public static defaultRoutieCallback (url: string) {
         if (url.includes('/vm/')) {
-            if (!window.VueContainer) {
-                document.getElementById('content').innerHTML = ''
-                App.initVue()
-                return
-            }
+            return
         } else {
             if (window.VueContainer !== undefined) {
-                window.VueContainer.$destroy()
-                window.VueContainer.$el.remove()
-                window.VueContainer = null
                 location.reload()
             }
         }
