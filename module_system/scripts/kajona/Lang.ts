@@ -208,7 +208,7 @@ class Lang {
     public static async fetchModule (moduleName : string, language : string) : Promise<LocaleMessageObject> {
         let cacheVersion = CacheManager.get(moduleName +
             '_' +
-            KAJONA_LANGUAGE +
+            language +
             '_' +
             KAJONA_BROWSER_CACHEBUSTER)
         if (cacheVersion) {
@@ -227,7 +227,7 @@ class Lang {
             CacheManager.set(
                 moduleName +
                     '_' +
-                    KAJONA_LANGUAGE +
+                    language +
                     '_' +
                     KAJONA_BROWSER_CACHEBUSTER,
                 JSON.stringify(res.data)
