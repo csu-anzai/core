@@ -13,6 +13,7 @@ import VueMain from './VueMainComponent/VueMain.vue'
 import Vue from 'vue'
 import store from './VueMainComponent/Store'
 import VueRouter from './VueMainComponent/VueRouter'
+import i18n from './VueMainComponent/VueLang'
 
 declare global {
     interface Window {
@@ -79,18 +80,19 @@ class App {
         // configure toastr global
         toastr.options.positionClass = 'toast-bottom-right'
     }
-    public static initVue (): void {
+    public static async initVue (): Promise<void> {
         Vue.config.productionTip = false
         if (process.env.NODE_ENV === 'development') {
             Vue.config.devtools = true
         }
-
+        let lang = await i18n
         window.VueContainer = new Vue({
             el: '#vueContainer',
             // @ts-ignore
             router: VueRouter,
             // @ts-ignore
             store: store,
+            i18n: lang,
             render: h => h(VueMain)
         })
     }
