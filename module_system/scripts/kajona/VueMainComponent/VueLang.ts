@@ -5,10 +5,12 @@ Vue.use(VueI18n)
 
 async function getLanguages () {
     const de : LocaleMessageObject = {
-        reportconfigurator: await Lang.fetchModule('reportconfigurator', 'de')
+        reportconfigurator: await Lang.fetchModule('reportconfigurator', 'de'),
+        mediamanager: await Lang.fetchModule('mediamanager', 'de')
     }
     const en : LocaleMessageObject = {
-        reportconfigurator: await Lang.fetchModule('reportconfigurator', 'en')
+        reportconfigurator: await Lang.fetchModule('reportconfigurator', 'en'),
+        mediamanager: await Lang.fetchModule('mediamanager', 'en')
     }
 
     return new VueI18n({
