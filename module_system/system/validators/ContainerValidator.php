@@ -1,10 +1,8 @@
 <?php
 /*"******************************************************************************************************
-*   (c) 2007-2016 by Kajona, www.kajona.de                                                              *
-*       Published under the GNU LGPL v2.1, see /system/licence_lgpl.txt                                 *
-*-------------------------------------------------------------------------------------------------------*
-*	$Id$                                                                                                *
-********************************************************************************************************/
+ *   (c) ARTEMEON Management Partner GmbH
+ *       Published under the GNU LGPL v2.1
+ ********************************************************************************************************/
 
 namespace Kajona\System\System\Validators;
 
@@ -23,7 +21,7 @@ class ContainerValidator implements ValidatorExtendedInterface
     /**
      * @var array $entries
      */
-    private $entries = [];
+    private $entries;
 
     /**
      * @var string[] $validationErrorMessages
