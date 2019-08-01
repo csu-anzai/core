@@ -85,15 +85,15 @@ class VarAnnotationTest extends Testbase
     private function getFiles()
     {
         //rename the packageconfig if present
-        if (is_file(_realpath_."project/packageconfig.php")) {
-            rename(_realpath_."project/packageconfig.php", _realpath_."project/packageconfig.php.back");
+        if (is_file(_realpath_."project/packageconfig.json")) {
+            rename(_realpath_."project/packageconfig.json", _realpath_."project/packageconfig.json.back");
             Classloader::getInstance()->flushCache();
         }
 
         $arrMergedFiles = BootstrapCache::getInstance()->getCacheContent(BootstrapCache::CACHE_CLASSES);
 
-        if (is_file(_realpath_."project/packageconfig.php.back")) {
-            rename(_realpath_."project/packageconfig.php.back", _realpath_."project/packageconfig.php");
+        if (is_file(_realpath_."project/packageconfig.json.back")) {
+            rename(_realpath_."project/packageconfig.json.back", _realpath_."project/packageconfig.json");
             Classloader::getInstance()->flushCache();
         }
 
