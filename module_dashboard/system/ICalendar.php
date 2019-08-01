@@ -12,6 +12,7 @@ use Kajona\System\System\Model;
 use Kajona\System\System\ModelInterface;
 use Kajona\System\System\ServiceProvider as SystemServiceProvider;
 use Kajona\System\System\SystemSetting;
+use Sabre\VObject\Component\VCalendar;
 
 /**
  * Object which represents a ICalendar entry
@@ -138,13 +139,9 @@ class ICalendar extends Model implements ModelInterface
      */
     private function generate(array $events): string
     {
-        $iCalendar = <<<ICALHEADER
-BEGIN:VCALENDAR
-VERSION:2.0
-METHOD:PUBLISH
-PRODID:-//AGP Events//DE\n
-ICALHEADER;
-
+        $vCalendar = new VCalendar();
+        $vCalendar->remove('PRODID');
+        $vCalendar->add('PRODID', ['-//AGP Events//DE']);
         foreach ($events as $event) {
             if ($event->getObjStartDate() instanceof Date && $event->getObjEndDate() instanceof Date) {
                 $eventStartDate = date(self::ICAL_LONG_FORMAT, $event->getObjStartDate()->getTimeInOldStyle());
@@ -155,20 +152,16 @@ ICALHEADER;
             } else {
                 continue;
             }
-            $summary = strip_tags($event->getStrDisplayName());
-            $description = $event->getStrHref();
-            $iCalendar .= <<<ICALBODY
-BEGIN:VEVENT
-DTSTART:$eventStartDate
-DTEND:$eventEndDate
-SUMMARY:$summary
-DESCRIPTION:$description
-END:VEVENT\n
-ICALBODY;
-        }
-        $iCalendar .= "END:VCALENDAR";
 
-        return $iCalendar;
+            $vCalendar->add('VEVENT', [
+                'DTSTART' => $eventStartDate,
+                'DTEND' => $eventEndDate,
+                'SUMMARY' => strip_tags($event->getStrDisplayName()),
+                'DESCRIPTION' => $event->getStrHref()
+            ]);
+        }
+
+        return $vCalendar->serialize();
     }
 
     /**
