@@ -15,9 +15,11 @@ import store from './VueMainComponent/Store'
 import VueRouter from './VueMainComponent/VueRouter'
 import i18n from './VueMainComponent/VueLang'
 import GlobalAxiosConfig from './GlobalAxiosConfig'
+import VueI18n from 'vue-i18n'
 
 declare global {
     interface Window {
+        i18n : VueI18n
         VueContainer : Vue
         KAJONA: Kajona
         // eslint-disable-next-line camelcase
@@ -83,19 +85,20 @@ class App {
         // Axios Wrapper
         const axiosConfig = new GlobalAxiosConfig()
     }
-    public static async initVue (): Promise<void> {
+    public static initVue (): void {
         Vue.config.productionTip = false
         if (process.env.NODE_ENV === 'development') {
             Vue.config.devtools = true
         }
-        let lang = await i18n
+
+        window.i18n = i18n
         window.VueContainer = new Vue({
             el: '#vueContainer',
             // @ts-ignore
             router: VueRouter,
             // @ts-ignore
             store: store,
-            i18n: lang,
+            i18n: i18n,
             render: h => h(VueMain)
         })
     }
