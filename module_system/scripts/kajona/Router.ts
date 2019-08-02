@@ -6,11 +6,9 @@ import Util from './Util'
 import Forms from './Forms'
 import routie from 'routie'
 import App from './App'
-
 declare global {
     interface Window {
-        routie: any,
-        Router: any
+        routie: any
     }
 }
 
@@ -45,6 +43,7 @@ class Router {
      */
     private static arrFormCallbacks: Callbacks = {}
 
+    Interface
     /**
      * Global markers to reference on leave / save monitored elements
      * @type {{Interface: {monitoredEl: null, submittedEl: null}}}
@@ -165,9 +164,9 @@ class Router {
                 // in this case we want that the parent routes to the provided url
                 url = url.replace('peClose=1', '')
                 url = url.replace('peLoad=1', '')
-                parent.Router.loadUrl(url)
+                parent.routie(url)
             } else {
-                parent.Router.reload();
+                parent.routie.reload()
             }
             return
         }
