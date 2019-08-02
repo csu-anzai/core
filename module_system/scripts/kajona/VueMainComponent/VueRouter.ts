@@ -1,17 +1,13 @@
 import Vue from 'vue'
-import Router from 'vue-router'
-import ContentToolbar from 'core/module_system/scripts/kajona/ContentToolbar'
-import BreadCrumb from 'core/module_system/scripts/kajona/Breadcrumb'
-Vue.use(<any>Router)
+import VueRouter from 'vue-router'
+import Router from '../Router'
+Vue.use(<any>VueRouter)
 
-const router = new Router({
+const router = new VueRouter({
     routes: []
 })
 function resetContainer (to, from, next) : void {
-    ContentToolbar.resetBar()
-    BreadCrumb.resetBar()
-    let moduleOutput = document.getElementById('moduleOutput')
-    moduleOutput.innerHTML = ''
+    Router.cleanPage(true)
     next()
 }
 
