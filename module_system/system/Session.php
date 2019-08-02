@@ -78,6 +78,7 @@ final class Session
     const STR_SESSION_GROUPIDS = "STR_SESSION_GROUPIDS";
     const STR_SESSION_GROUPIDS_SHORT = "STR_SESSION_GROUPIDS_SHORT";
     const STR_SESSION_ISADMIN = "STR_SESSION_ISADMIN";
+    const STR_SESSION_ISSUPERUSER = "STR_SESSION_ISSUPERUSER";
 
 
     /**
@@ -352,15 +353,9 @@ final class Session
      * @return bool
      * @throws Exception
      */
-    public function isSuperAdmin()
+    public function isSuperAdmin(): bool
     {
-        if ($this->isLoggedin()) {
-            if ($this->getUser() != null && $this->getUser()->getIntAdmin() == 1 && in_array(SystemSetting::getConfigValue("_admins_group_id_"), $this->getGroupIdsAsArray())) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->isLoggedin() && $this->getSession(self::STR_SESSION_ISSUPERUSER);
     }
 
     /**
@@ -515,6 +510,7 @@ final class Session
 
                 $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $objTargetUser->getArrGroupIds()));
                 $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $objTargetUser->getArrShortGroupIds()));
+                $this->setSession(self::STR_SESSION_ISSUPERUSER, in_array(SystemSetting::getConfigValue("_admins_group_id_"), $objTargetUser->getArrGroupIds()));
                 ServiceLifeCycleFactory::getLifeCycle(get_class($this->getObjInternalSession()))->update($this->getObjInternalSession());
                 $this->objUser = $objTargetUser;
 
@@ -539,6 +535,7 @@ final class Session
         $this->setSession(self::STR_SESSION_USERID, $targetUser->getSystemid());
         $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $targetUser->getArrGroupIds()));
         $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $targetUser->getArrShortGroupIds()));
+        $this->setSession(self::STR_SESSION_ISSUPERUSER, in_array(SystemSetting::getConfigValue("_admins_group_id_"), $targetUser->getArrGroupIds()));
 
         $this->getObjInternalSession()->setStrLoginstatus(SystemSession::$LOGINSTATUS_LOGGEDIN);
         $this->getObjInternalSession()->setStrUserid($targetUser->getSystemid());
@@ -566,6 +563,7 @@ final class Session
             $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $objUser->getArrGroupIds()));
             $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $objUser->getArrShortGroupIds()));
             $this->setSession(self::STR_SESSION_ISADMIN, $objUser->getIntAdmin());
+            $this->setSession(self::STR_SESSION_ISSUPERUSER, in_array(SystemSetting::getConfigValue("_admins_group_id_"), $objUser->getArrGroupIds()));
 
             $accessToken = null;
             if (Carrier::getInstance()->getContainer()->offsetExists(ServiceProvider::JWT_MANAGER)) {
