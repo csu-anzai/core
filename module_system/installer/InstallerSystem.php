@@ -38,7 +38,7 @@ use Kajona\System\System\SystemPwHistory;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserUser;
-use Kajona\System\System\Workflows\WorkflowConsumer;
+use Kajona\System\System\Workflows\WorkflowEventConsumer;
 use Kajona\Workflows\System\WorkflowsHandler;
 use Kajona\Workflows\System\WorkflowsWorkflow;
 
@@ -267,9 +267,9 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         ]);
 
         // register consumer workflow
-        if (WorkflowsWorkflow::getWorkflowsForClassCount(WorkflowConsumer::class, false) == 0) {
+        if (WorkflowsWorkflow::getWorkflowsForClassCount(WorkflowEventConsumer::class, false) == 0) {
             $workflow = new WorkflowsWorkflow();
-            $workflow->setStrClass(WorkflowConsumer::class);
+            $workflow->setStrClass(WorkflowEventConsumer::class);
             ServiceLifeCycleFactory::getLifeCycle(get_class($workflow))->update($workflow);
         }
 
@@ -826,9 +826,9 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             'event_id'
         ]);
 
-        if (WorkflowsWorkflow::getWorkflowsForClassCount(WorkflowConsumer::class, false) == 0) {
+        if (WorkflowsWorkflow::getWorkflowsForClassCount(WorkflowEventConsumer::class, false) == 0) {
             $workflow = new WorkflowsWorkflow();
-            $workflow->setStrClass(WorkflowConsumer::class);
+            $workflow->setStrClass(WorkflowEventConsumer::class);
             ServiceLifeCycleFactory::getLifeCycle(get_class($workflow))->update($workflow);
         }
 
