@@ -14,6 +14,41 @@ class VarAnnotationTest extends Testbase
 
     private static $allowValues = ["string", "objectList", "float", "int", "bool", "boolean", "Date", "array", "string[]", "int[]"];
 
+    protected function setUp()
+    {
+        //rename the packageconfig if present
+        if (is_file(_realpath_."project/packageconfig.json")) {
+            rename(_realpath_."project/packageconfig.json", _realpath_."project/packageconfig.json.back");
+
+            $mods = [];
+            foreach (Classloader::getCoreDirectories() as $dir) {
+                $mods[$dir] = [];
+                foreach (scandir(_realpath_.$dir) as $sub) {
+                    if ($sub == '.' || $sub == '..') {
+                        continue;
+                    }
+                    if (is_dir(_realpath_.$dir.'/'.$sub)) {
+                        $mods[$dir][] = $sub;
+                    }
+                }
+            }
+
+            file_put_contents(_realpath_."project/packageconfig.json", json_encode($mods, JSON_PRETTY_PRINT));
+
+            Classloader::getInstance()->flushCache();
+        }
+        parent::setUp();
+    }
+
+    protected function tearDown()
+    {
+        if (is_file(_realpath_."project/packageconfig.json.back")) {
+            rename(_realpath_."project/packageconfig.json.back", _realpath_."project/packageconfig.json");
+            Classloader::getInstance()->flushCache();
+        }
+        parent::tearDown();
+    }
+
 
     /**
      * @param string $class
@@ -51,6 +86,9 @@ class VarAnnotationTest extends Testbase
             if (StringUtil::indexOf($filename, "/config/") !== false) {
                 continue;
             }
+            if (StringUtil::indexOf($filename, "/reports/") !== false) {
+                continue;
+            }
 
             //skip files on first level
             $dirs = explode("/", dirname(StringUtil::replace(_realpath_, '', $filename)));
@@ -84,20 +122,7 @@ class VarAnnotationTest extends Testbase
 
     private function getFiles()
     {
-        //rename the packageconfig if present
-        if (is_file(_realpath_."project/packageconfig.json")) {
-            rename(_realpath_."project/packageconfig.json", _realpath_."project/packageconfig.json.back");
-            Classloader::getInstance()->flushCache();
-        }
-
-        $arrMergedFiles = BootstrapCache::getInstance()->getCacheContent(BootstrapCache::CACHE_CLASSES);
-
-        if (is_file(_realpath_."project/packageconfig.json.back")) {
-            rename(_realpath_."project/packageconfig.json.back", _realpath_."project/packageconfig.json");
-            Classloader::getInstance()->flushCache();
-        }
-
-        return $arrMergedFiles;
+        return BootstrapCache::getInstance()->getCacheContent(BootstrapCache::CACHE_CLASSES);
     }
 
 
