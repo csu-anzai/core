@@ -29,6 +29,11 @@ class Producer
         $this->connection = $connection;
     }
 
+    /**
+     * Dispatches the event which will be executed in the future
+     *
+     * @param Event $event
+     */
     public function dispatch(Event $event): void
     {
         $this->connection->insert('agp_system_events', [
