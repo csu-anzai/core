@@ -2,6 +2,8 @@
 
 namespace Kajona\System\System;
 
+use Kajona\System\System\Lifecycle\User\GroupLifecycle;
+use Kajona\System\System\Lifecycle\User\UserLifecycle;
 use Kajona\System\System\Permissions\PermissionHandlerFactory;
 use Kajona\System\System\Security\PasswordRotator;
 use Kajona\System\System\Security\PasswordValidator;
@@ -103,6 +105,16 @@ class ServiceProvider implements ServiceProviderInterface
      * @see \Kajona\System\System\MessagingAlertLifeCycle
      */
     const STR_LIFE_CYCLE_MESSAGES_ALERT = "system_life_cycle_messages_alert";
+
+    /**
+     * @see \Kajona\System\System\Lifecycle\User\UserLifecycle
+     */
+    const STR_LIFE_CYLE_USER_USER = "system_life_cycle_user_user";
+
+    /**
+     * @see \Kajona\System\System\Lifecycle\User\GroupLifecycle
+     */
+    const STR_LIFE_CYLE_USER_GROUP = "system_life_cycle_user_group";
 
     /**
      * @see \Kajona\System\System\MessagingMessagehandler
@@ -233,6 +245,20 @@ class ServiceProvider implements ServiceProviderInterface
         $objContainer[self::STR_LIFE_CYCLE_MESSAGES_ALERT] = function ($c) {
             return new MessagingAlertLifeCycle(
                 $c[ServiceProvider::STR_PERMISSION_HANDLER_FACTORY]
+            );
+        };
+
+        $objContainer[self::STR_LIFE_CYLE_USER_USER] = function ($c) {
+            return new UserLifecycle(
+                $c[ServiceProvider::STR_PERMISSION_HANDLER_FACTORY],
+                Logger::getInstance(Logger::USERSOURCES)
+            );
+        };
+
+        $objContainer[self::STR_LIFE_CYLE_USER_GROUP] = function ($c) {
+            return new GroupLifecycle(
+                $c[ServiceProvider::STR_PERMISSION_HANDLER_FACTORY],
+                Logger::getInstance(Logger::USERSOURCES)
             );
         };
 
