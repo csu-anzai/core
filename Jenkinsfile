@@ -2,7 +2,7 @@
 
 @Library('art-shared@master') _
 
-pipeline {  
+pipeline {
         agent none
 
         options {
@@ -92,7 +92,7 @@ pipeline {
                         }
                     }
                 }
-                
+
             }
 
         }
