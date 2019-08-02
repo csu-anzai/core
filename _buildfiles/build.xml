@@ -320,6 +320,7 @@
             <fileset dir="${basedir}${tempPath}" includes="**/core*/_buildfiles*/**"/>
             <fileset dir="${basedir}${tempPath}" includes="**/core*/_debugging*/**"/>
             <fileset dir="${basedir}${tempPath}" includes="debug.php"/>
+            <fileset dir="${basedir}${tempPath}" includes="*.json"/>
         </delete>
     </target>
 
