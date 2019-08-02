@@ -60,12 +60,12 @@ class Lang
     private function __construct()
     {
         //load texts from session
-        $this->arrTexts = CacheManager::getInstance()->getValue(__CLASS__."textSessionCache");
+        $this->arrTexts = CacheManager::getInstance()->getValue(__CLASS__ . "textSessionCache");
         if ($this->arrTexts === false) {
             $this->arrTexts = [];
         }
 
-        $this->arrFallbackTextEntrys = CacheManager::getInstance()->getValue(__CLASS__."textSessionFallbackCache");
+        $this->arrFallbackTextEntrys = CacheManager::getInstance()->getValue(__CLASS__ . "textSessionFallbackCache");
         if ($this->arrFallbackTextEntrys === false) {
             $this->arrFallbackTextEntrys = [];
         }
@@ -75,8 +75,10 @@ class Lang
     {
         //save texts to session
         if ($this->bitSaveToCache) {
-            CacheManager::getInstance()->addValue(__CLASS__."textSessionCache", $this->arrTexts, Config::getInstance()->getConfig("textcachetime"));
-            CacheManager::getInstance()->addValue(__CLASS__."textSessionFallbackCache", $this->arrFallbackTextEntrys, Config::getInstance()->getConfig("textcachetime"));
+            CacheManager::getInstance()->addValue(__CLASS__ . "textSessionCache", $this->arrTexts,
+                Config::getInstance()->getConfig("textcachetime"));
+            CacheManager::getInstance()->addValue(__CLASS__ . "textSessionFallbackCache", $this->arrFallbackTextEntrys,
+                Config::getInstance()->getConfig("textcachetime"));
         }
     }
 
@@ -126,31 +128,34 @@ class Lang
         if (isset($this->arrTexts[$language][$strModule][$strText])) {
             $strReturn = $this->arrTexts[$language][$strModule][$strText];
         } else {
-            $strReturn = "!".$strText."!";
+            $strReturn = "!" . $strText . "!";
         }
 
         return $this->replaceParams($strReturn, $arrParameters);
     }
 
     /**
-     * Returns all properties for a specific module
+     * Returns all properties for a specific module , and if wanted a specific language
      *
      * @param string $strModule
-     *
+     * @param string $strLanguage
      * @return array
      */
-    public function getProperties($strModule)
+    public function getProperties($strModule, $strLanguage = null)
     {
-        //Did we already load this text?
-        if (!isset($this->arrTexts[$this->strLanguage][$strModule])) {
-            $this->loadText($strModule);
+        if ($strLanguage === null) {
+            $strLanguage = $this->strLanguage;
         }
-
-        if (isset($this->arrTexts[$this->strLanguage][$strModule])) {
-            return $this->arrTexts[$this->strLanguage][$strModule];
+        //Did we already load this text?
+        if (!isset($this->arrTexts[$strLanguage][$strModule])) {
+            $this->loadText($strModule, $strLanguage);
+        }
+        if (isset($this->arrTexts[$strLanguage][$strModule])) {
+            return $this->arrTexts[$strLanguage][$strModule];
         } else {
             return [];
         }
+
     }
 
     /**
@@ -165,7 +170,7 @@ class Lang
     public function replaceParams($strProperty, $arrParameters)
     {
         foreach ($arrParameters as $intKey => $strParameter) {
-            $strProperty = StringUtil::replace("{".$intKey."}", $strParameter, $strProperty);
+            $strProperty = StringUtil::replace("{" . $intKey . "}", $strParameter, $strProperty);
         }
 
         return $strProperty;
@@ -217,7 +222,7 @@ class Lang
             $strCharLower = StringUtil::toLowerCase($strChar);
 
             if ($i > 0 && $strChar != $strCharLower && $strLastChar != "_") {
-                $strReturn .= "_".$strCharLower;
+                $strReturn .= "_" . $strCharLower;
             } else {
                 $strReturn .= $strCharLower;
             }
@@ -242,12 +247,13 @@ class Lang
             $language = $this->strLanguage;
         }
 
-        $arrCommons = Resourceloader::getInstance()->getLanguageFiles("module_".$this->strCommonsName);
-        $arrModuleFiles = Resourceloader::getInstance()->getLanguageFiles("module_".$strModule);
+        $arrCommons = Resourceloader::getInstance()->getLanguageFiles("module_" . $this->strCommonsName);
+        $arrModuleFiles = Resourceloader::getInstance()->getLanguageFiles("module_" . $strModule);
 
         //following steps:
         // 1. commons fallback language
-        foreach (array_keys($arrCommons, "lang_".$this->strCommonsName."_".$this->strFallbackLanguage.".php") as $strPath) {
+        foreach (array_keys($arrCommons,
+            "lang_" . $this->strCommonsName . "_" . $this->strFallbackLanguage . ".php") as $strPath) {
             $this->loadAndMergeTextfile($strModule, $strPath, $language, $this->arrTexts);
         }
 
@@ -260,7 +266,7 @@ class Lang
         }
 
         // 3. commons current language
-        foreach (array_keys($arrCommons, "lang_".$this->strCommonsName."_".$language.".php") as $strPath) {
+        foreach (array_keys($arrCommons, "lang_" . $this->strCommonsName . "_" . $language . ".php") as $strPath) {
             $this->loadAndMergeTextfile($strModule, $strPath, $language, $this->arrTexts);
         }
 

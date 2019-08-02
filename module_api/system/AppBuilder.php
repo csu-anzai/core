@@ -6,25 +6,30 @@
 
 namespace Kajona\Api\System;
 
+use Kajona\System\Admin\Exceptions\ModelNotFoundException;
 use Kajona\System\System\CoreEventdispatcher;
+use Kajona\System\System\Exception;
 use Kajona\System\System\ObjectBuilder;
 use Kajona\System\System\RequestEntrypointEnum;
 use Kajona\System\System\SystemEventidentifier;
 use Pimple\Container;
 use PSX\Http\Environment\HttpContext;
+use PSX\Http\Environment\HttpResponse;
 use PSX\Http\Exception\StatusCodeException;
 use PSX\Http\Exception\UnauthorizedException;
 use PSX\Http\Request;
 use PSX\Uri\Uri;
 use Slim\App;
 use Slim\Container as SlimContainer;
+use Slim\Exception\MethodNotAllowedException;
+use Slim\Exception\NotFoundException;
 use Slim\Http\Request as SlimRequest;
 use Slim\Http\Response as SlimResponse;
 
 /**
  * AppBuilder
  *
- * @author christoph.kappestein@gmail.com
+ * @author christoph.kappestein@artemeon.de
  * @since 7.1
  */
 class AppBuilder
@@ -59,9 +64,9 @@ class AppBuilder
     /**
      * Creates a new app, attaches all available routes and executes the app
      *
-     * @throws \Kajona\System\System\Exception
-     * @throws \Slim\Exception\MethodNotAllowedException
-     * @throws \Slim\Exception\NotFoundException
+     * @throws Exception
+     * @throws MethodNotAllowedException
+     * @throws NotFoundException
      */
     public function run()
     {
@@ -73,7 +78,7 @@ class AppBuilder
         $routes = $this->endpointScanner->getEndpoints();
 
         // add CORS middleware
-        $app->add(function(SlimRequest $request, SlimResponse $response, callable $next){
+        $app->add(function (SlimRequest $request, SlimResponse $response, callable $next) {
             $response = $response
                 ->withHeader('Access-Control-Allow-Origin', '*')
                 ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
@@ -88,7 +93,7 @@ class AppBuilder
         });
 
         foreach ($routes as $route) {
-            $app->map($route["httpMethod"], $route["path"], function(SlimRequest $request, SlimResponse $response, array $args) use ($route, $objectBuilder, $container){
+            $app->map($route["httpMethod"], $route["path"], function (SlimRequest $request, SlimResponse $response, array $args) use ($route, $objectBuilder, $container) {
                 $instance = $objectBuilder->factory($route["class"]);
 
                 try {
@@ -97,7 +102,7 @@ class AppBuilder
                         /** @var AuthorizationInterface $authorization */
                         $authorization = $container->offsetGet("api_authorization_" . $auth);
 
-                        if (!$authorization->authorize($request->getHeaderLine("Authorization"))) {
+                        if (!$authorization->isAuthorized($request)) {
                             throw new UnauthorizedException("Request not authorized", "Bearer");
                         }
                     }
@@ -105,14 +110,29 @@ class AppBuilder
                     $body = $request->getParsedBody();
                     $httpContext = new HttpContext(new Request(new Uri($request->getUri()->__toString()), $request->getMethod(), $request->getHeaders()), $args);
 
-                    if (in_array($request->getMethod(), ["GET", "HEAD"])) {
+                    if (in_array($request->getMethod(), ["GET", "HEAD", 'DELETE'])) {
                         $data = call_user_func_array([$instance, $route["methodName"]], [$httpContext]);
                     } else {
                         $data = call_user_func_array([$instance, $route["methodName"]], [$body, $httpContext]);
                     }
 
-                    $response = $response->withHeader("Content-Type", "application/json")
-                        ->write(json_encode($data, JSON_PRETTY_PRINT));
+                    if ($data instanceof HttpResponse) {
+                        $response = $response->withStatus($data->getStatusCode());
+
+                        $headers = $data->getHeaders();
+                        foreach ($headers as $name => $value) {
+                            $response = $response->withHeader($name, $value);
+                        }
+
+                        $response = $response->write($data->getBody());
+                    } else {
+                        $response = $response->withHeader("Content-Type", "application/json")
+                            ->write(json_encode($data, JSON_PRETTY_PRINT));
+                    }
+                } catch (ModelNotFoundException $e) {
+                    $response = $response->withStatus(404)
+                        ->withHeader("Content-Type", "application/json")
+                        ->write(json_encode(["error" => $e->getMessage()]));
                 } catch (StatusCodeException $e) {
                     $response = $response->withStatus($e->getStatusCode())
                         ->withHeader("Content-Type", "application/json")
