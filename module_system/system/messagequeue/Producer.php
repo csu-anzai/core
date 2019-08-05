@@ -38,8 +38,8 @@ class Producer
     {
         $this->connection->insert('agp_system_events', [
             'event_id' => generateSystemid(),
-            'event_name' => $event->getName(),
-            'event_args' => \json_encode($event->getArguments()),
+            'event_class' => get_class($event),
+            'event_args' => \json_encode($event->toArray()),
         ]);
     }
 }

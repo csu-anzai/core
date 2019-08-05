@@ -8,6 +8,7 @@ namespace Kajona\System\System\Messagequeue;
 
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\Database;
+use Kajona\System\System\Messagequeue\Event\CallCoreEvent;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -58,18 +59,33 @@ class Consumer
     public function consume(): void
     {
         $startTime = time();
-        $events = $this->connection->getPArray('SELECT event_id, event_name, event_args FROM agp_system_events', [], 0, self::MAX_PREFETCH);
+        $events = $this->connection->getPArray('SELECT event_id, event_class, event_payload FROM agp_system_events', [], 0, self::MAX_PREFETCH);
 
         foreach ($events as $event) {
-            $eventName = $event['event_name'];
-            $arguments = \json_decode($event['event_args'], true);
+            $eventClass = $event['event_class'];
+            $payload = \json_decode($event['event_payload'], true);
 
             // directly delete the event since otherwise this would block the queue in case the event throws an
             // unrecoverable error
             $this->connection->delete('agp_system_events', ['event_id' => $event['event_id']]);
 
+            // check whether the event class exists
+            if (!class_exists($eventClass)) {
+                continue;
+            }
+
             try {
-                $this->eventDispatcher->notifyGenericListeners($eventName, $arguments);
+                if (!is_callable($eventClass . '::fromArray', false, $callable)) {
+                    throw new \RuntimeException('Event has no fromArray method');
+                }
+
+                $event = call_user_func_array($callable, [$payload]);
+
+                if ($event instanceof Event) {
+                    $this->handleEvent($event);
+                } else {
+                    throw new \RuntimeException('Could not create event');
+                }
             } catch (\Throwable $e) {
                 $this->logger->error($e->getMessage());
             }
@@ -78,6 +94,23 @@ class Consumer
             if (time() - $startTime > self::MAX_EXECUTION) {
                 break;
             }
+        }
+    }
+
+    /**
+     * Handles the event
+     *
+     * @TODO in the future if we have more events we want to create a factory service which creates the fitting executor
+     * for the provided event
+     *
+     * @param Event $event
+     */
+    private function handleEvent(Event $event)
+    {
+        if ($event instanceof CallCoreEvent) {
+            $this->eventDispatcher->notifyGenericListeners($event->getName(), $event->getArguments());
+        } else {
+            throw new \RuntimeException('Could not handle event class');
         }
     }
 }
