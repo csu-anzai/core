@@ -266,13 +266,6 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             'command_id'
         ]);
 
-        // register consumer workflow
-        if (WorkflowsWorkflow::getWorkflowsForClassCount(WorkflowCommandConsumer::class, false) == 0) {
-            $workflow = new WorkflowsWorkflow();
-            $workflow->setStrClass(WorkflowCommandConsumer::class);
-            ServiceLifeCycleFactory::getLifeCycle(get_class($workflow))->update($workflow);
-        }
-
         //Now we have to register module by module
 
         //The Systemkernel
