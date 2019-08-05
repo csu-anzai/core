@@ -89,7 +89,7 @@ class SendMessageCommand extends Command
         }, $receivers);
 
         return new self(
-            MessagingMessage::fromJson(json_encode($data['message'] ?? [])),
+            MessagingMessage::fromArray($data['message'] ?? []),
             $receivers
         );
     }
