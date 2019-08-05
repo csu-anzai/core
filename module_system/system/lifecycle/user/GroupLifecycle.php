@@ -11,12 +11,10 @@ namespace Kajona\System\System\Lifecycle\User;
 use Kajona\System\System\IdGenerator;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleImpl;
-use Kajona\System\System\Logger;
 use Kajona\System\System\Permissions\PermissionHandlerFactory;
 use Kajona\System\System\Root;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserSourcefactory;
-use Kajona\System\System\UserUser;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -33,6 +31,7 @@ class GroupLifecycle extends ServiceLifeCycleImpl
 
     /**
      * UserLifecycle constructor.
+     * @param PermissionHandlerFactory $permissionFactory
      * @param LoggerInterface $logger
      */
     public function __construct(PermissionHandlerFactory $permissionFactory, LoggerInterface $logger)
@@ -59,7 +58,7 @@ class GroupLifecycle extends ServiceLifeCycleImpl
         parent::update($model, $prevId);
 
         if ($isNew) {
-            $this->logger->info("saved new group subsystem ".$model->getStrSubsystem()." / ".$model->getStrSystemid());
+            $this->logger->info('saved new group subsystem ' . $model->getStrSubsystem() . ' / ' . $model->getStrSystemid());
             //create the new instance on the remote-system
             $sources = new UserSourcefactory();
             $provider = $sources->getUsersource($model->getStrSubsystem());

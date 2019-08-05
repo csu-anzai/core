@@ -30,6 +30,7 @@ class UserLifecycle extends ServiceLifeCycleImpl
 
     /**
      * UserLifecycle constructor.
+     * @param PermissionHandlerFactory $permissionFactory
      * @param LoggerInterface $logger
      */
     public function __construct(PermissionHandlerFactory $permissionFactory, LoggerInterface $logger)
@@ -52,7 +53,7 @@ class UserLifecycle extends ServiceLifeCycleImpl
         parent::update($model, $prevId);
 
         if ($isNew) {
-            $this->logger->info("new user for subsystem " . $model->getStrSubsystem() . " / " . $model->getStrUsername());
+            $this->logger->info('new user for subsystem ' . $model->getStrSubsystem() . ' / ' . $model->getStrUsername());
             $sources = new UserSourcefactory();
             $provider = $sources->getUsersource($model->getStrSubsystem());
             $targetUser = $provider->getNewUser();

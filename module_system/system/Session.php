@@ -72,13 +72,13 @@ final class Session
      */
     private $sessionScope = null;
 
-    const STR_SESSION_ADMIN_LANG_KEY = "STR_SESSION_ADMIN_LANG_KEY";
+    const SESSION_ADMIN_LANG_KEY = "STR_SESSION_ADMIN_LANG_KEY";
 
-    const STR_SESSION_USERID = "STR_SESSION_USERID";
-    const STR_SESSION_GROUPIDS = "STR_SESSION_GROUPIDS";
-    const STR_SESSION_GROUPIDS_SHORT = "STR_SESSION_GROUPIDS_SHORT";
-    const STR_SESSION_ISADMIN = "STR_SESSION_ISADMIN";
-    const STR_SESSION_ISSUPERUSER = "STR_SESSION_ISSUPERUSER";
+    const SESSION_USERID = "STR_SESSION_USERID";
+    const SESSION_GROUPIDS = "STR_SESSION_GROUPIDS";
+    const SESSION_GROUPIDS_SHORT = "STR_SESSION_GROUPIDS_SHORT";
+    const SESSION_ISADMIN = "STR_SESSION_ISADMIN";
+    const SESSION_ISSUPERUSER = "STR_SESSION_ISSUPERUSER";
 
 
     /**
@@ -336,7 +336,7 @@ final class Session
         return true;
 
         if ($this->isLoggedin()) {
-            if ($this->getSession(self::STR_SESSION_ISADMIN) == 1) {
+            if ($this->getSession(self::SESSION_ISADMIN) == 1) {
                 return true;
             } else {
                 return false;
@@ -355,7 +355,7 @@ final class Session
      */
     public function isSuperAdmin(): bool
     {
-        return $this->isLoggedin() && $this->getSession(self::STR_SESSION_ISSUPERUSER);
+        return $this->isLoggedin() && $this->getSession(self::SESSION_ISSUPERUSER);
     }
 
     /**
@@ -371,8 +371,8 @@ final class Session
     public function getAdminLanguage($bitUseCookie = true, $bitSkipSessionEntry = false)
     {
 
-        if (!$bitSkipSessionEntry && $this->getSession(self::STR_SESSION_ADMIN_LANG_KEY) != "") {
-            return $this->getSession(self::STR_SESSION_ADMIN_LANG_KEY);
+        if (!$bitSkipSessionEntry && $this->getSession(self::SESSION_ADMIN_LANG_KEY) != "") {
+            return $this->getSession(self::SESSION_ADMIN_LANG_KEY);
         }
 
         //Maybe we can load the language from the cookie
@@ -386,7 +386,7 @@ final class Session
             if ($this->isAdmin()) {
                 if ($this->getUser() != null && $this->getUser()->getStrAdminlanguage() != "") {
                     $strLang = $this->getUser()->getStrAdminlanguage();
-                    $this->setSession(self::STR_SESSION_ADMIN_LANG_KEY, $strLang);
+                    $this->setSession(self::SESSION_ADMIN_LANG_KEY, $strLang);
                     return $strLang;
                 }
             }
@@ -506,11 +506,11 @@ final class Session
             if (Carrier::getInstance()->getObjSession()->isSuperAdmin() || $bitForce) {
                 $this->getObjInternalSession()->setStrLoginstatus(SystemSession::$LOGINSTATUS_LOGGEDIN);
                 $this->getObjInternalSession()->setStrUserid($objTargetUser->getSystemid());
-                $this->setSession(self::STR_SESSION_USERID, $objTargetUser->getSystemid());
+                $this->setSession(self::SESSION_USERID, $objTargetUser->getSystemid());
 
-                $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $objTargetUser->getArrGroupIds()));
-                $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $objTargetUser->getArrShortGroupIds()));
-                $this->setSession(self::STR_SESSION_ISSUPERUSER, in_array(SystemSetting::getConfigValue("_admins_group_id_"), $objTargetUser->getArrGroupIds()));
+                $this->setSession(self::SESSION_GROUPIDS, implode(",", $objTargetUser->getArrGroupIds()));
+                $this->setSession(self::SESSION_GROUPIDS_SHORT, implode(",", $objTargetUser->getArrShortGroupIds()));
+                $this->setSession(self::SESSION_ISSUPERUSER, in_array(SystemSetting::getConfigValue("_admins_group_id_"), $objTargetUser->getArrGroupIds()));
                 ServiceLifeCycleFactory::getLifeCycle(get_class($this->getObjInternalSession()))->update($this->getObjInternalSession());
                 $this->objUser = $objTargetUser;
 
@@ -532,10 +532,10 @@ final class Session
         $this->bitClosed = true;
         $this->sessionScope = self::SCOPE_REQUEST;
 
-        $this->setSession(self::STR_SESSION_USERID, $targetUser->getSystemid());
-        $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $targetUser->getArrGroupIds()));
-        $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $targetUser->getArrShortGroupIds()));
-        $this->setSession(self::STR_SESSION_ISSUPERUSER, in_array(SystemSetting::getConfigValue("_admins_group_id_"), $targetUser->getArrGroupIds()));
+        $this->setSession(self::SESSION_USERID, $targetUser->getSystemid());
+        $this->setSession(self::SESSION_GROUPIDS, implode(",", $targetUser->getArrGroupIds()));
+        $this->setSession(self::SESSION_GROUPIDS_SHORT, implode(",", $targetUser->getArrShortGroupIds()));
+        $this->setSession(self::SESSION_ISSUPERUSER, in_array(SystemSetting::getConfigValue("_admins_group_id_"), $targetUser->getArrGroupIds()));
 
         $this->getObjInternalSession()->setStrLoginstatus(SystemSession::$LOGINSTATUS_LOGGEDIN);
         $this->getObjInternalSession()->setStrUserid($targetUser->getSystemid());
@@ -559,11 +559,11 @@ final class Session
             $this->getObjInternalSession()->setStrLoginprovider($objUser->getStrSubsystem());
 
             //save some metadata to the php-session
-            $this->setSession(self::STR_SESSION_USERID, $objUser->getSystemid());
-            $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $objUser->getArrGroupIds()));
-            $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $objUser->getArrShortGroupIds()));
-            $this->setSession(self::STR_SESSION_ISADMIN, $objUser->getIntAdmin());
-            $this->setSession(self::STR_SESSION_ISSUPERUSER, in_array(SystemSetting::getConfigValue("_admins_group_id_"), $objUser->getArrGroupIds()));
+            $this->setSession(self::SESSION_USERID, $objUser->getSystemid());
+            $this->setSession(self::SESSION_GROUPIDS, implode(",", $objUser->getArrGroupIds()));
+            $this->setSession(self::SESSION_GROUPIDS_SHORT, implode(",", $objUser->getArrShortGroupIds()));
+            $this->setSession(self::SESSION_ISADMIN, $objUser->getIntAdmin());
+            $this->setSession(self::SESSION_ISSUPERUSER, in_array(SystemSetting::getConfigValue("_admins_group_id_"), $objUser->getArrGroupIds()));
 
             $accessToken = null;
             if (Carrier::getInstance()->getContainer()->offsetExists(ServiceProvider::JWT_MANAGER)) {
@@ -630,7 +630,7 @@ final class Session
 
         $this->objInternalSession = null;
         $this->objUser = null;
-        $this->setSession(self::STR_SESSION_USERID, "");
+        $this->setSession(self::SESSION_USERID, "");
         if (isset($_COOKIE[session_name()])) {
             setcookie(session_name(), '', time() - 42000);
         }
@@ -669,7 +669,7 @@ final class Session
      */
     public function getUserID()
     {
-        $strUserid = $this->getSession(self::STR_SESSION_USERID);
+        $strUserid = $this->getSession(self::SESSION_USERID);
         if (validateSystemid($strUserid) && $this->isLoggedin()) {
             return $strUserid;
         }
@@ -709,8 +709,8 @@ final class Session
             $this->objUser = Objectfactory::getInstance()->getObject($this->getUserID(), true);
             //reload group-ids to the session
             if ($this->objUser !== null) {
-                $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $this->objUser->getArrGroupIds()));
-                $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $this->objUser->getArrShortGroupIds()));
+                $this->setSession(self::SESSION_GROUPIDS, implode(",", $this->objUser->getArrGroupIds()));
+                $this->setSession(self::SESSION_GROUPIDS_SHORT, implode(",", $this->objUser->getArrShortGroupIds()));
             }
         }
     }
@@ -735,7 +735,7 @@ final class Session
     public function getGroupIdsAsString()
     {
         if ($this->getObjInternalSession() != null) {
-            return $this->getSession(self::STR_SESSION_GROUPIDS);
+            return $this->getSession(self::SESSION_GROUPIDS);
         }
         return "";
     }
@@ -760,7 +760,7 @@ final class Session
     public function getShortGroupIdsAsArray()
     {
         if ($this->getObjInternalSession() != null) {
-            $strGroupids = $this->getSession(self::STR_SESSION_GROUPIDS_SHORT);
+            $strGroupids = $this->getSession(self::SESSION_GROUPIDS_SHORT);
         } else {
             $strGroupids = "";
         }

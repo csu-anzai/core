@@ -82,7 +82,7 @@ class OrmObjectinit extends OrmBase
      * Casts the values' datatype based on the value of the var annotation
      * @param string $varDatatype
      * @param $value
-     * @return bool|float|int|Date|null
+     * @return bool|float|int|Date|string|null
      */
     private function convertToDatatype(string $varDatatype, $value)
     {
@@ -90,7 +90,7 @@ class OrmObjectinit extends OrmBase
             return $value;
         }
         if ($varDatatype === 'string') {
-            return $value;
+            return (string)$value;
         }
         if ($varDatatype === 'Date') {
             return !empty($value) ? new Date($value) : null;

@@ -9,7 +9,6 @@
 
 namespace Kajona\System\System;
 
-use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Usersources\UsersourcesGroupInterface;
 
 /**
