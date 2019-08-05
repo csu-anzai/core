@@ -8,7 +8,7 @@ namespace Kajona\System\System\Messagequeue;
 
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\Database;
-use Kajona\System\System\Messagequeue\Event\CallCoreEvent;
+use Kajona\System\System\Messagequeue\Command\CallEventCommand;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -59,32 +59,32 @@ class Consumer
     public function consume(): void
     {
         $startTime = time();
-        $events = $this->connection->getPArray('SELECT event_id, event_class, event_payload FROM agp_system_events', [], 0, self::MAX_PREFETCH);
+        $result = $this->connection->getPArray('SELECT command_id, command_class, command_payload FROM agp_system_commands', [], 0, self::MAX_PREFETCH);
 
-        foreach ($events as $event) {
-            $eventClass = $event['event_class'];
-            $payload = \json_decode($event['event_payload'], true);
+        foreach ($result as $row) {
+            $class = $row['command_class'];
+            $payload = \json_decode($row['command_payload'], true);
 
             // directly delete the event since otherwise this would block the queue in case the event throws an
             // unrecoverable error
-            $this->connection->delete('agp_system_events', ['event_id' => $event['event_id']]);
+            $this->connection->delete('agp_system_commands', ['command_id' => $row['command_id']]);
 
             // check whether the event class exists
-            if (!class_exists($eventClass)) {
+            if (!class_exists($class)) {
                 continue;
             }
 
             try {
-                if (!is_callable($eventClass . '::fromArray', false, $callable)) {
-                    throw new \RuntimeException('Event has no fromArray method');
+                if (!is_callable($class . '::fromArray', false, $callable)) {
+                    throw new \RuntimeException('Command has no fromArray method');
                 }
 
-                $event = call_user_func_array($callable, [$payload]);
+                $command = call_user_func_array($callable, [$payload]);
 
-                if ($event instanceof Event) {
-                    $this->handleEvent($event);
+                if ($command instanceof Command) {
+                    $this->handleCommand($command);
                 } else {
-                    throw new \RuntimeException('Could not create event');
+                    throw new \RuntimeException('Could not create command');
                 }
             } catch (\Throwable $e) {
                 $this->logger->error($e->getMessage());
@@ -103,14 +103,14 @@ class Consumer
      * @TODO in the future if we have more events we want to create a factory service which creates the fitting executor
      * for the provided event
      *
-     * @param Event $event
+     * @param Command $command
      */
-    private function handleEvent(Event $event)
+    private function handleCommand(Command $command)
     {
-        if ($event instanceof CallCoreEvent) {
-            $this->eventDispatcher->notifyGenericListeners($event->getName(), $event->getArguments());
+        if ($command instanceof CallEventCommand) {
+            $this->eventDispatcher->notifyGenericListeners($command->getName(), $command->getArguments());
         } else {
-            throw new \RuntimeException('Could not handle event class');
+            throw new \RuntimeException('Could not handle command class');
         }
     }
 }

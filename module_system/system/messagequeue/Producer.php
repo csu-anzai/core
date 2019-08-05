@@ -30,16 +30,16 @@ class Producer
     }
 
     /**
-     * Dispatches the event which will be executed in the future
+     * Dispatches the command which will be executed in the future
      *
-     * @param Event $event
+     * @param Command $command
      */
-    public function dispatch(Event $event): void
+    public function dispatch(Command $command): void
     {
-        $this->connection->insert('agp_system_events', [
-            'event_id' => generateSystemid(),
-            'event_class' => get_class($event),
-            'event_args' => \json_encode($event->toArray()),
+        $this->connection->insert('agp_system_commands', [
+            'command_id' => generateSystemid(),
+            'command_class' => get_class($command),
+            'command_args' => \json_encode($command->toArray()),
         ]);
     }
 }

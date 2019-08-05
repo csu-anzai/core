@@ -4,17 +4,17 @@
  *       Published under the GNU LGPL v2.1
  ********************************************************************************************************/
 
-namespace Kajona\System\System\Messagequeue\Event;
+namespace Kajona\System\System\Messagequeue\Command;
 
-use Kajona\System\System\Messagequeue\Event;
+use Kajona\System\System\Messagequeue\Command;
 
 /**
- * Event which dispatches a core event
+ * Command which dispatches a core event
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.2
  */
-class CallCoreEvent extends Event
+class CallEventCommand extends Command
 {
     /**
      * @var string
@@ -68,7 +68,7 @@ class CallCoreEvent extends Event
     /**
      * @inheritDoc
      */
-    public static function fromArray(array $data): Event
+    public static function fromArray(array $data): Command
     {
         return new self(
             $data['name'] ?? null,
