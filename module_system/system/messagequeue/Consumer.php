@@ -100,8 +100,8 @@ class Consumer
     /**
      * Handles the event
      *
-     * @TODO in the future if we have more events we want to create a factory service which creates the fitting executor
-     * for the provided event
+     * @TODO in the future we want to specify the executor either through a factory or through an annotation at the
+     * command class
      *
      * @param Command $command
      */
