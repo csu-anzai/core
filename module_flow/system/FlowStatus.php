@@ -53,7 +53,7 @@ class FlowStatus extends Model implements ModelInterface, AdminListableInterface
     protected $strName;
 
     /**
-     * @var integer
+     * @var int
      * @tableColumn agp_flow_step.step_index
      * @tableColumnDatatype int
      */
