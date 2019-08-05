@@ -1,16 +1,16 @@
 
-# Events
+# Overview
 
 The AGP contains several types of events:
 
-* __System Events__  
-  Events which are handled inside of a request
-* __Message-Queue Events__  
-  Events which are executed outside of the request. Useful for costly operations and where the user does not need direct feedback.
+* __Events__  
+  Events which are handled inside of a request and distributed to every listener
 * __Frontend Events__  
   Events which are triggered by Javascript components
+* __Commands__  
+  A command is executed at the background and executes a specific logic
 
-# System Events
+# Events
 
 Starting with Kajona v4.5, the way how events are handled was rewritten from scratch. Events may 
 be used to react on special actions triggered by the system. For example, it's possible to be 
@@ -93,7 +93,7 @@ callback-method handleEvent.
 Thats all. You should now be able to provide and register event-listeners and to throw new events 
 based on an identifier.
 
-## Overview of system events
+## Reference
 
 <table>
 	<tbody>
@@ -420,41 +420,6 @@ The relevant object and the name of the changed property are passed, too.<br />R
 	</tbody>
 </table>
 
-# Message-Queue Events
-
-## Produce
-```php
-<?php
-
-namespace Kajona\Module\System;
-
-use Kajona\System\System\Carrier;
-use Kajona\System\System\ServiceProvider;
-use Kajona\System\System\Messagequeue\Event;
-
-$event = new Event('my_event', ['foo', 'bar']);
-
-/** @var \Kajona\System\System\Messagequeue\Producer $producer */
-$producer = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::MESSAGE_QUEUE_PRODUCER);
-$producer->dispatch($event);
-
-```
-
-## Overview of Message-Queue Events
-
-<table>
-	<tbody>
-		<tr>
-			<th>Class</th>
-			<th>Description</th>
-		</tr>
-		<tr>
-			<td><code>Kajona\System\System\Messagequeue\Event</code></td>
-			<td>Triggers an system event at the background.</td>
-		</tr>
-    </tbody>
-</table>
-
 # Frontend Events
 There are certain java script modules which throw custom (jQuery) events.
 <table>
@@ -478,4 +443,39 @@ There are certain java script modules which throw custom (jQuery) events.
             <td>7.0</td>
         </tr>
 	</tbody>
+</table>
+
+# Commands
+
+## Produce
+```php
+<?php
+
+namespace Kajona\Module\System;
+
+use Kajona\System\System\Carrier;
+use Kajona\System\System\ServiceProvider;
+use Kajona\System\System\Messagequeue\Command\CallEventCommand;
+
+$event = new CallEventCommand('my_event', ['foo', 'bar']);
+
+/** @var \Kajona\System\System\Messagequeue\Producer $producer */
+$producer = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::MESSAGE_QUEUE_PRODUCER);
+$producer->dispatch($event);
+
+```
+
+## Reference
+
+<table>
+	<tbody>
+		<tr>
+			<th>Class</th>
+			<th>Description</th>
+		</tr>
+		<tr>
+			<td><code>Kajona\System\System\Messagequeue\Command\CallEventCommand</code></td>
+			<td>Triggers an system event at the background.</td>
+		</tr>
+    </tbody>
 </table>
