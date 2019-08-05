@@ -825,6 +825,12 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             ServiceLifeCycleFactory::getLifeCycle(get_class($workflow))->update($workflow);
         }
 
+        // delete messaging message queue workflow
+        $wf = WorkflowsHandler::getHandlerByClass('Kajona\System\System\Workflows\WorkflowMessageQueue');
+        if ($wf !== null) {
+            $wf->deleteObjectFromDatabase();
+        }
+
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.8");
         return $return;
     }
