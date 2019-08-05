@@ -13,7 +13,8 @@ use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserUser;
 
 /**
- * Command to send a message to several receivers. Useful especially if you send a messsage to many recipients
+ * Command to send a message to several receivers in the background, especially useful if you send a messsage to many
+ * recipients
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.2
@@ -31,8 +32,6 @@ class SendMessageCommand extends Command
     private $receivers;
 
     /**
-     * Note arguments can only contain values which can be json_encoded
-     *
      * @param MessagingMessage $message
      * @param array $receivers
      */
