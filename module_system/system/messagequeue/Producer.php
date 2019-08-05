@@ -39,7 +39,7 @@ class Producer
         $this->connection->insert('agp_system_commands', [
             'command_id' => generateSystemid(),
             'command_class' => get_class($command),
-            'command_args' => \json_encode($command->toArray()),
+            'command_payload' => \json_encode($command->toArray()),
         ]);
     }
 }

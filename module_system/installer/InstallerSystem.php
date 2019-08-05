@@ -38,7 +38,7 @@ use Kajona\System\System\SystemPwHistory;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
 use Kajona\System\System\UserUser;
-use Kajona\System\System\Workflows\WorkflowEventConsumer;
+use Kajona\System\System\Workflows\WorkflowCommandConsumer;
 use Kajona\Workflows\System\WorkflowsHandler;
 use Kajona\Workflows\System\WorkflowsWorkflow;
 
@@ -267,9 +267,9 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         ]);
 
         // register consumer workflow
-        if (WorkflowsWorkflow::getWorkflowsForClassCount(WorkflowEventConsumer::class, false) == 0) {
+        if (WorkflowsWorkflow::getWorkflowsForClassCount(WorkflowCommandConsumer::class, false) == 0) {
             $workflow = new WorkflowsWorkflow();
-            $workflow->setStrClass(WorkflowEventConsumer::class);
+            $workflow->setStrClass(WorkflowCommandConsumer::class);
             ServiceLifeCycleFactory::getLifeCycle(get_class($workflow))->update($workflow);
         }
 
@@ -816,19 +816,19 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
     private function update_717_718(): string
     {
         $return = "Updating to 7.1.8...".PHP_EOL;
-        $return .= "Add event table".PHP_EOL;
+        $return .= "Add command table".PHP_EOL;
 
-        $this->objDB->createTable('agp_system_events', [
-            'event_id' => [DbDatatypes::STR_TYPE_CHAR20, false],
-            'event_class' => [DbDatatypes::STR_TYPE_CHAR254, false],
-            'event_payload' => [DbDatatypes::STR_TYPE_CHAR500, false]
+        $this->objDB->createTable('agp_system_commands', [
+            'command_id' => [DbDatatypes::STR_TYPE_CHAR20, false],
+            'command_class' => [DbDatatypes::STR_TYPE_CHAR254, false],
+            'command_payload' => [DbDatatypes::STR_TYPE_CHAR500, false]
         ], [
-            'event_id'
+            'command_id'
         ]);
 
-        if (WorkflowsWorkflow::getWorkflowsForClassCount(WorkflowEventConsumer::class, false) == 0) {
+        if (WorkflowsWorkflow::getWorkflowsForClassCount(WorkflowCommandConsumer::class, false) == 0) {
             $workflow = new WorkflowsWorkflow();
-            $workflow->setStrClass(WorkflowEventConsumer::class);
+            $workflow->setStrClass(WorkflowCommandConsumer::class);
             ServiceLifeCycleFactory::getLifeCycle(get_class($workflow))->update($workflow);
         }
 

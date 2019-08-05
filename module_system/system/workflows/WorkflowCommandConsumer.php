@@ -19,7 +19,7 @@ use Kajona\Workflows\System\WorkflowsWorkflow;
  * @author christoph.kappestein@artemeon.de
  * @since 7.2
  */
-class WorkflowEventConsumer implements WorkflowsHandlerInterface
+class WorkflowCommandConsumer implements WorkflowsHandlerInterface
 {
     /**
      * @var WorkflowsWorkflow
@@ -95,10 +95,5 @@ class WorkflowEventConsumer implements WorkflowsHandlerInterface
     public function providesUserInterface()
     {
         return false;
-    }
-
-    protected function getNowDate()
-    {
-        return new Date();
     }
 }
