@@ -24,7 +24,6 @@ use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\MessagingAlert;
 use Kajona\System\System\MessagingConfig;
 use Kajona\System\System\MessagingMessage;
-use Kajona\System\System\MessagingQueue;
 use Kajona\System\System\OrmSchemamanager;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\Session;
@@ -243,7 +242,6 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $objManager->createTable(MessagingMessage::class);
         $objManager->createTable(MessagingConfig::class);
         $objManager->createTable(MessagingAlert::class);
-        $objManager->createTable(MessagingQueue::class);
 
         // password change history
         $strReturn .= "Installing password reset history...\n";
