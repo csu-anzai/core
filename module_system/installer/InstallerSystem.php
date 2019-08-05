@@ -258,12 +258,12 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $objManager->createTable(SystemPwHistory::class);
 
         // create message queue table
-        $this->objDB->createTable('agp_system_events', [
-            'event_id' => [DbDatatypes::STR_TYPE_CHAR20, false],
-            'event_name' => [DbDatatypes::STR_TYPE_CHAR100, false],
-            'event_args' => [DbDatatypes::STR_TYPE_CHAR500, false]
+        $this->objDB->createTable('agp_system_commands', [
+            'command_id' => [DbDatatypes::STR_TYPE_CHAR20, false],
+            'command_class' => [DbDatatypes::STR_TYPE_CHAR254, false],
+            'command_payload' => [DbDatatypes::STR_TYPE_CHAR500, false]
         ], [
-            'event_id'
+            'command_id'
         ]);
 
         // register consumer workflow
