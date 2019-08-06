@@ -9,7 +9,6 @@ export const FetchLang = (modules : Array<string>) => {
                 en[module] = await Lang.fetchModule(module, 'en')
                 de[module] = await Lang.fetchModule(module, 'de')
             }))
-            console.log('en : ', en)
             window.i18n.setLocaleMessage('en', en)
             window.i18n.setLocaleMessage('de', de)
         }
