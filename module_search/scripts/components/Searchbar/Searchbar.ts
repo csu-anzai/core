@@ -47,7 +47,7 @@ class Searchbar extends Vue {
          }, 500)
      }
      private open () : void {
-         let parent = document.getElementById('content')
+         let parent = document.getElementById('moduleOutput')
          parent.appendChild(this.$el)
          this.openDialog()
      }
