@@ -6,6 +6,6 @@
     }
   ],
   "require": {
-    "sabre/vobject": "~3.4"
+    "sabre/vobject": "^3.3.4"
   }
 }
