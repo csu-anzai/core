@@ -16,7 +16,10 @@ use Kajona\Dashboard\System\DashboardUserRoot;
 use Kajona\Dashboard\System\DashboardWidget;
 use Kajona\Dashboard\System\EventEntry;
 use Kajona\Dashboard\System\EventRepository;
+use Kajona\Dashboard\System\Filter\DashboardICalendarFilter;
+use Kajona\Dashboard\System\ICalendar;
 use Kajona\Dashboard\System\Lifecycle\ConfigLifecycle;
+use Kajona\Dashboard\System\ServiceProvider;
 use Kajona\Dashboard\System\TodoJstreeNodeLoader;
 use Kajona\Dashboard\System\TodoRepository;
 use Kajona\Dashboard\View\Components\Dashboard\Dashboard;
@@ -27,9 +30,13 @@ use Kajona\System\Admin\AdminFormgenerator;
 use Kajona\System\Admin\AdminInterface;
 use Kajona\System\Admin\Formentries\FormentryText;
 use Kajona\System\System\AdminskinHelper;
+use Kajona\System\System\AuthenticationException;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Date;
 use Kajona\System\System\Exception;
+use Kajona\System\System\Exceptions\EntityNotFoundException;
+use Kajona\System\System\Exceptions\WrongSystemIdException;
+use Kajona\System\System\HttpResponsetypes;
 use Kajona\System\System\HttpStatuscodes;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleUpdateException;
 use Kajona\System\System\Link;
@@ -159,7 +166,7 @@ class DashboardAdmin extends AdminEvensimpler implements AdminInterface
             $return .= $this->objToolkit->addToContentToolbar(Link::getLinkAdminDialog("dashboard", "listWidgets", [], $this->getLang("action_add_widget_to_dashboard"), $this->getLang("action_add_widget_to_dashboard"), "icon_new"));
         }
 
-$params = Carrier::getAllParams();
+        $params = Carrier::getAllParams();
         unset($params["module"]);
         unset($params["action"]);
 
@@ -303,17 +310,42 @@ $params = Carrier::getAllParams();
      */
     protected function actionCalendar()
     {
-        $strReturn = "";
+        $return = "";
 
-        $strReturn .= "<div id='dashboard-calendar' class='calendar'></div>";
-        $strReturn .= "<script type=\"text/javascript\">";
-        $strReturn .= <<<JS
+        $return .= "<div id='dashboard-calendar' class='calendar'></div>";
+        $return .= "<script type=\"text/javascript\">";
+        $return .= <<<JS
 
         DashboardCalendar.init();
 JS;
-        $strReturn .= "</script>";
+        $return .= "</script>";
 
-        return $strReturn;
+        $icalLink = Link::getLinkAdminManual(["href" => "#", "onclick" => "DashboardCalendar.getICalendarURL();return false"], $this->getLang("dashboard_ical_url", "dashboard"));
+        $return .= $this->objToolkit->addToContentToolbar($icalLink);
+
+        return $return;
+    }
+
+    /**
+     * Returns a iCal URL
+     * @return array
+     * @throws Exception
+     * @permissions view
+     * @responseType json
+     */
+    public function actionApiGetOrCreateICalUrl()
+    {
+        $filter = new DashboardICalendarFilter();
+        $userId = Carrier::getInstance()->getObjSession()->getUserID();
+        $filter->setStrUserSystemId($userId);
+        $iCal = ICalendar::getSingleObjectFiltered($filter);
+        if (empty($iCal)) {
+            $iCal = new ICalendar();
+            $iCal->setStrUserId($userId);
+            $this->objLifeCycleFactory->factory(get_class($iCal))->update($iCal);
+        }
+        $iCalLink = _apipath_ . '/v1/calendar/export/caldav/' . $iCal->getStrSystemid();
+        return ["url" => $iCalLink];
     }
 
     /**
