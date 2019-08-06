@@ -6,11 +6,15 @@ export const FetchLang = (modules : Array<string>) => {
             let en = {}
             let de = {}
             await Promise.all(modules.map(async module => {
-                en[module] = await Lang.fetchModule(module, 'en')
-                de[module] = await Lang.fetchModule(module, 'de')
+                if (!window.i18n.messages.en[module]) {
+                    en[module] = await Lang.fetchModule(module, 'en')
+                    window.i18n.mergeLocaleMessage('en', en)
+                }
+                if (!window.i18n.messages.de[module]) {
+                    de[module] = await Lang.fetchModule(module, 'de')
+                    window.i18n.mergeLocaleMessage('de', de)
+                }
             }))
-            window.i18n.setLocaleMessage('en', en)
-            window.i18n.setLocaleMessage('de', de)
         }
     })
 }
