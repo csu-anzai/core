@@ -4,8 +4,11 @@ import SearchResult from '../SearchResult/SearchResult.vue'
 import Loader from 'core/module_system/scripts/components/Loader/Loader.vue'
 import SearchbarFilter from '../SearchbarFilter/SearchbarFilter.vue'
 import Modal from 'core/module_system/scripts/components/Modal/Modal.vue'
+import { FetchLang } from 'core/module_system/scripts/kajona/VueI18nDecorator'
 
-@Component({ components: { SearchResult, Loader, SearchbarFilter, Modal } }) class Searchbar extends Vue {
+@Component({ components: { SearchResult, Loader, SearchbarFilter, Modal } })
+@FetchLang(['search', 'dashboard', 'system'])
+class Searchbar extends Vue {
      @namespace('SearchModule').Action triggerSearch: any
      @namespace('SearchModule').Action resetSearchResults: any
      @namespace('SearchModule').State searchResults : Array<any>
