@@ -5,7 +5,9 @@ import Ajax from './Ajax'
 import Util from './Util'
 import Forms from './Forms'
 import routie from 'routie'
-import App from './App'
+import ContentToolbar from './ContentToolbar'
+import BreadCrumb from './Breadcrumb'
+
 declare global {
     interface Window {
         routie: any
@@ -66,18 +68,7 @@ class Router {
 
     public static defaultRoutieCallback (url: string) {
         if (url.includes('/vm/')) {
-            if (!window.VueContainer) {
-                document.getElementById('content').innerHTML = ''
-                App.initVue()
-                return
-            }
-        } else {
-            if (window.VueContainer !== undefined) {
-                window.VueContainer.$destroy()
-                window.VueContainer.$el.remove()
-                window.VueContainer = null
-                location.reload()
-            }
+            return
         }
         // in case we receive an absolute url with no hash redirect the user to this url
         // since we cant resolve this url to a hash route
@@ -195,10 +186,17 @@ class Router {
 
         return { url: strUrlToLoad, module: arrSections[0] }
     }
-
-    private static cleanPage () {
-        // contentToolbar.resetBar(); //TODO: aktuell in ToolkitAdmin und RequestDispatcher, muss aber in einen Callback bevor der content in das target div geschrieben wird
-        // breadcrumb.resetBar();
+    /**
+    * clean contenttoolbar/breadcrumb/quickhelp/tooltip before route enter
+    * @param vueClean  : if set to true it will clean contenttoolbar and breadcrum , else this will be done in the backend
+     */
+    public static cleanPage (vueClean : boolean = false) {
+        // TODO: aktuell in ToolkitAdmin und RequestDispatcher, muss aber in einen Callback bevor der content in das target div geschrieben wird
+        if (vueClean) {
+            ContentToolbar.resetBar()
+            BreadCrumb.resetBar()
+            document.getElementById('moduleOutput').innerHTML = ''
+        }
         Quickhelp.resetQuickhelp()
         Tooltip.removeTooltip($('*[rel=tooltip]'))
         // disable visible tooltips
