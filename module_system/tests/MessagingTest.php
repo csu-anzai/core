@@ -216,12 +216,6 @@ class MessagingTest extends Testbase
             $objMessage = Objectfactory::getInstance()->getObject($arrRow["message_id"]);
             $objMessage->deleteObjectFromDatabase();
         }
-
-        $arrResult = $objDb->getPArray("SELECT queue_id FROM agp_messages_queue", []);
-        foreach ($arrResult as $arrRow) {
-            $objQueue = Objectfactory::getInstance()->getObject($arrRow["queue_id"]);
-            $objQueue->deleteObjectFromDatabase();
-        }
     }
 }
 
