@@ -8,7 +8,6 @@ use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Messageproviders\MessageproviderExceptions;
 use Kajona\System\System\MessagingMessage;
 use Kajona\System\System\MessagingMessagehandler;
-use Kajona\System\System\MessagingQueue;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\SystemSetting;
 use Kajona\System\System\UserGroup;
@@ -83,78 +82,6 @@ class MessagingTest extends Testbase
 
             $this->assertTrue($bitFound);
         }
-    }
-
-    public function testSendMessageObjectWithSendDateFuture()
-    {
-        $objSendDate = new Date();
-        $objSendDate->setNextDay();
-        $objMessage = $this->newMessage();
-        $objUser = new UserUser();
-        $objUser->setStrUsername(generateSystemid());
-        ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
-
-        $objMessageHandler = new MessagingMessagehandler();
-        $objMessageHandler->sendMessageObject($objMessage, $objUser, $objSendDate);
-
-        $arrQueue = MessagingQueue::getObjectListFiltered();
-        $this->assertEquals(1, count($arrQueue));
-
-        $arrMessages = MessagingMessage::getMessagesByIdentifier($objMessage->getStrInternalIdentifier());
-        $this->assertEquals(0, count($arrMessages));
-
-        /** @var MessagingQueue $objQueue */
-        $objQueue = $arrQueue[0];
-
-        // the sender sets the date to the beginning of the day
-        $objSendDate->setBeginningOfDay();
-
-        $this->assertInstanceOf(MessagingQueue::class, $objQueue);
-        $this->assertEquals($objUser->getSystemid(), $objQueue->getStrRecipient());
-        $this->assertEquals($objSendDate->getLongTimestamp(), $objQueue->getObjSendDate()->getLongTimestamp());
-
-        $objDbMessage = $objQueue->getMessage();
-
-        $this->assertInstanceOf(MessagingMessage::class, $objDbMessage);
-        $this->assertEquals($objMessage->getStrTitle(), $objDbMessage->getStrTitle());
-        $this->assertEquals($objMessage->getStrBody(), $objDbMessage->getStrBody());
-        $this->assertEquals($objMessage->getStrInternalIdentifier(), $objDbMessage->getStrInternalIdentifier());
-        $this->assertEquals($objMessage->getStrMessageProvider(), $objDbMessage->getStrMessageProvider());
-        $this->assertEquals($objMessage->getStrSenderId(), $objDbMessage->getStrSenderId());
-        $this->assertEquals($objMessage->getStrMessageRefId(), $objDbMessage->getStrMessageRefId());
-
-        $objUser->deleteObjectFromDatabase();
-    }
-
-    public function testSendMessageObjectWithSendDateNow()
-    {
-        $objSendDate = new Date();
-        $objMessage = $this->newMessage();
-        $objUser = new UserUser();
-        $objUser->setStrUsername(generateSystemid());
-        ServiceLifeCycleFactory::getLifeCycle(get_class($objUser))->update($objUser);
-
-        $objMessageHandler = new MessagingMessagehandler();
-        $objMessageHandler->sendMessageObject($objMessage, $objUser, $objSendDate);
-
-        $arrQueue = MessagingQueue::getObjectListFiltered();
-        $this->assertEquals(0, count($arrQueue));
-
-        $arrMessages = MessagingMessage::getMessagesByIdentifier($objMessage->getStrInternalIdentifier());
-        $this->assertEquals(1, count($arrMessages));
-
-        /** @var MessagingQueue $objQueue */
-        $objDbMessage = $arrMessages[0];
-
-        $this->assertInstanceOf(MessagingMessage::class, $objDbMessage);
-        $this->assertEquals($objMessage->getStrTitle(), $objDbMessage->getStrTitle());
-        $this->assertEquals($objMessage->getStrBody(), $objDbMessage->getStrBody());
-        $this->assertEquals($objMessage->getStrInternalIdentifier(), $objDbMessage->getStrInternalIdentifier());
-        $this->assertEquals($objMessage->getStrMessageProvider(), $objDbMessage->getStrMessageProvider());
-        $this->assertEquals($objMessage->getStrSenderId(), $objDbMessage->getStrSenderId());
-        $this->assertEquals($objMessage->getStrMessageRefId(), $objDbMessage->getStrMessageRefId());
-
-        $objUser->deleteObjectFromDatabase();
     }
 
     public function testUnreadCount()
