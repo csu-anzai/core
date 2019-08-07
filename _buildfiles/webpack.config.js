@@ -103,7 +103,7 @@ module.exports = async env => {
                 '@': path.resolve(__dirname, '../../'), // define root directory as @ : makes typecript imports easier / avoid long relative path input
                 core: path.resolve(__dirname, '../'), // define core directory as core : makes typecript imports easier / avoid long relative path input
                 core_agp: path.resolve(__dirname, '../../core_agp'), // define core_agp directory as core_agp : makes typecript imports easier / avoid long relative path input
-                core_customer: path.resolve(__dirname, '../../core_customer') // define core_customer directory as core_customer : makes typecript imports easier / avoid long relative path input
+                core_customer: path.resolve(__dirname, '../../core_customer') // define core_customer directory as core_customer : makes typescript imports easier / avoid long relative path input
                 // !important all the aliases definitions needs to be defined in the tsconfig.json as well
             }
         },

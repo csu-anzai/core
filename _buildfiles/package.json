@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "author": "",
   "scripts": {
-    "build": "webpack --mode production --env.NODE_ENV=production --progress",
+    "build": "webpack --mode production --env.NODE_ENV=production",
     "dev": "webpack --watch --mode development --env.NODE_ENV=development --progress",
     "analyse": "webpack --mode production --env.NODE_ENV=production --progress --config webpack.analyse.js",
     "cypress": "./node_modules/.bin/cypress open",

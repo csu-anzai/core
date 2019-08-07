@@ -48,7 +48,7 @@ class ICalendar extends Model implements ModelInterface
     private $strICalCache = "";
 
     /**
-     * @var int|null
+     * @var int
      * @tableColumn agp_dashboard_ical.create_date
      */
     private $longCreateDate;
