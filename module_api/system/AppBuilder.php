@@ -72,7 +72,19 @@ class AppBuilder
     {
         define("_autotesting_", false);
 
-        $app = $this->newApp();
+        $this->build()->run();
+
+        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_ENDPROCESSING, array());
+        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_AFTERCONTENTSEND, array(RequestEntrypointEnum::XML()));
+    }
+
+    /**
+     * @return App
+     * @throws Exception
+     */
+    public function build(): App
+    {
+        $app = new App($this->newContainer());
         $objectBuilder = $this->objectBuilder;
         $container = $this->container;
         $routes = $this->endpointScanner->getEndpoints();
@@ -147,16 +159,13 @@ class AppBuilder
             });
         }
 
-        $app->run();
-
-        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_ENDPROCESSING, array());
-        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_AFTERCONTENTSEND, array(RequestEntrypointEnum::XML()));
+        return $app;
     }
 
     /**
-     * @return App
+     * @return SlimContainer
      */
-    private function newApp()
+    private function newContainer(): SlimContainer
     {
         $container = new SlimContainer();
         $container['notFoundHandler'] = function ($c) {
@@ -184,6 +193,6 @@ class AppBuilder
             };
         };
 
-        return new App($container);
+        return $container;
     }
 }
