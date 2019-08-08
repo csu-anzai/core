@@ -17,10 +17,10 @@ use Kajona\System\System\Objectfactory;
 use Kajona\System\System\UserUser;
 
 /**
- * Service to extend an existing JWT
+ * RefreshTokenTest
  *
  * @author christoph.kappestein@artemeon.de
- * @since 7.1
+ * @since 7.2
  */
 class RefreshTokenTest extends ApiTestCase
 {
