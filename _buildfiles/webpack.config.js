@@ -27,7 +27,7 @@ module.exports = async env => {
         },
         output: {
             filename: './[name].min.js',
-            path: path.resolve(__dirname, '../module_system/scripts/')
+            path: path.resolve(__dirname, '../../files/extract/assets/')
         },
 
         module: {
@@ -38,8 +38,7 @@ module.exports = async env => {
                     options: {
                         loaders: {
                             scss: 'vue-style-loader!css-loader!sass-loader',
-                            sass:
-                                'vue-style-loader!css-loader!sass-loader?indentedSyntax'
+                            sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax'
                         }
                     }
                 },
@@ -63,7 +62,15 @@ module.exports = async env => {
                     exclude: /node_modules/
                 },
                 {
-                    test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)|\.(png|jpg|gif)$/, // loader for the fonts/images , makes import of this files possible
+                    test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)$/, // loader for the fonts makes import of this files possible
+                    loader: 'file-loader',
+                    options: {
+                        name: "fonts/[name].[ext]",
+                        publicPath: 'files/extract/assets',
+                    }
+                },
+                {
+                    test: /\.(png|jpg|gif)$/, // images , makes import of this files possible
                     loader: 'url-loader'
                 },
                 {
