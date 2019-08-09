@@ -44,7 +44,7 @@ class RefreshTokenTest extends ApiTestCase
 
     public function testRefresh(): void
     {
-        $user = $this->getUser();
+        $user = $this->getRandomUser();
         $token = $this->jwtManager->generate($user);
 
         // set new access token to user
@@ -93,7 +93,7 @@ JSON;
         $this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
     }
 
-    private function getUser(): UserUser
+    private function getRandomUser(): UserUser
     {
         $row = Database::getInstance()->getPRow('SELECT user_id FROM agp_user', []);
         return Objectfactory::getInstance()->getObject($row['user_id']);
