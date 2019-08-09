@@ -34,7 +34,7 @@ class RefreshTokenTest extends ApiTestCase
      */
     private $projectSecret;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -42,7 +42,7 @@ class RefreshTokenTest extends ApiTestCase
         $this->projectSecret = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::PROJECT_SECRET);
     }
 
-    public function testRefresh()
+    public function testRefresh(): void
     {
         $user = $this->getUser();
         $token = $this->jwtManager->generate($user);
@@ -65,7 +65,7 @@ class RefreshTokenTest extends ApiTestCase
         $this->assertEquals($user->getStrUsername(), $claims->name);
     }
 
-    public function testRefreshNoToken()
+    public function testRefreshNoToken(): void
     {
         $response = $this->send('POST', '/v1/authorization/refresh');
 
@@ -79,7 +79,7 @@ JSON;
         $this->assertJsonStringEqualsJsonString($expect, (string) $response->getBody());
     }
 
-    public function testRefreshInvalidToken()
+    public function testRefreshInvalidToken(): void
     {
         $response = $this->send('POST', '/v1/authorization/refresh', ['Content-Type' => 'application/json'], json_encode(['token' => 'foobar']));
 
