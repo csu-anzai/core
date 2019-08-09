@@ -22,9 +22,8 @@ module.exports = async env => {
 
     return {
         entry: {
-            agp: devMode // if dev mode compile all the modules
-                ? glob.sync('../../core*/module_*/scripts/**/*.ts', { ignore: ['../../core*/module_*/scripts/**/*.e2e.cypress.ts', '../../core*/module_*/scripts/**/*.unit.cypress.ts'] })
-                : tsPaths // else only compile the needed modules for prod
+            agp: tsPaths,
+            less: '../module_v4skin/admin/skins/kajona_v4/less/styles.less'
         },
         output: {
             filename: './[name].min.js',
@@ -103,7 +102,7 @@ module.exports = async env => {
                 '@': path.resolve(__dirname, '../../'), // define root directory as @ : makes typecript imports easier / avoid long relative path input
                 core: path.resolve(__dirname, '../'), // define core directory as core : makes typecript imports easier / avoid long relative path input
                 core_agp: path.resolve(__dirname, '../../core_agp'), // define core_agp directory as core_agp : makes typecript imports easier / avoid long relative path input
-                core_customer: path.resolve(__dirname, '../../core_customer') // define core_customer directory as core_customer : makes typecript imports easier / avoid long relative path input
+                core_customer: path.resolve(__dirname, '../../core_customer') // define core_customer directory as core_customer : makes typescript imports easier / avoid long relative path input
                 // !important all the aliases definitions needs to be defined in the tsconfig.json as well
             }
         },
@@ -111,9 +110,7 @@ module.exports = async env => {
             ? [
                 new Dotenv({
                     // adds support for .env files
-                    path: devMode
-                        ? path.resolve(__dirname, '.env.dev')
-                        : path.resolve(__dirname, '.env.prod')
+                    path: path.resolve(__dirname, '.env.dev')
                 }),
                 new webpack.ProvidePlugin({
                     // Automatically load modules instead of having to import or require them everywhere. needed for alot of jquery based modules
@@ -125,14 +122,13 @@ module.exports = async env => {
                 new WatchMissingNodeModulesPlugin( // This Webpack plugin ensures npm install <library> forces a project rebuild.
                     path.resolve('node_modules')
                 ),
-                new VueLoaderPlugin() // adds support for the vue DevTools plugin (chrome)
+                new VueLoaderPlugin(),
+                new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // ignores not used languages for moment.js and fullcalendar.js for a smaller bundle size
             ] // else use these plugins
             : [
                 new Dotenv({
                     // adds support for .env files
-                    path: devMode
-                        ? path.resolve(__dirname, '.env.dev')
-                        : path.resolve(__dirname, '.env.prod')
+                    path: path.resolve(__dirname, '.env.prod')
                 }),
                 new webpack.ProvidePlugin({
                     // Automatically load modules instead of having to import or require them everywhere. needed for alot of jquery based modules
@@ -140,8 +136,8 @@ module.exports = async env => {
                     $: 'jquery',
                     jquery: 'jquery'
                 }),
+                new VueLoaderPlugin(),
                 new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // ignores not used languages for moment.js and fullcalendar.js for a smaller bundle size
-                new VueLoaderPlugin() // adds support for the vue DevTools plugin (chrome)
             ],
         optimization: {
             minimize: !devMode, // minimize bundle size only in prod
