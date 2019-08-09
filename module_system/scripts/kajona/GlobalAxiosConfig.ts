@@ -22,7 +22,7 @@ class GlobalAxiosConfig {
         axios.interceptors.request.use((config) => {
             const token = KAJONA_ACCESS_TOKEN
             let jwt = jwtDecode(token)
-            if (!(token != null && Date.now() - (jwt.exp + 120000) > 0)) {
+            if ((token != null && Date.now() - (jwt.exp + 120000) > 0)) {
                 config.headers.Authorization = `Bearer ${token}`
             } else {
                 fetch('api.php/v1/authorization/refresh', { method: 'post',
