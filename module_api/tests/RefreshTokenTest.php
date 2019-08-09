@@ -96,7 +96,6 @@ JSON;
     private function getUser(): UserUser
     {
         $row = Database::getInstance()->getPRow('SELECT user_id FROM agp_user', []);
-        /** @var UserUser $user */
         return Objectfactory::getInstance()->getObject($row['user_id']);
     }
 
