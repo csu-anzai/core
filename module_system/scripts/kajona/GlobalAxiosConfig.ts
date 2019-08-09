@@ -29,7 +29,16 @@ class GlobalAxiosConfig {
             onResponse (response : any) {
                 WorkingIndicator.stop()
                 return response
+            },
+            onRequestError (error : any) {
+                WorkingIndicator.stop()
+                return error
+            },
+            onResponseError (error :any) {
+                WorkingIndicator.stop()
+                return error
             }
+
         })
     }
 }
