@@ -736,7 +736,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
                 $arrGroupIds = $objInheritUser->getArrGroupIds();
 
                 foreach ($arrGroupIds as $strGroupId) {
-                    $objGroup = new UserGroup($strGroupId);
+                    $objGroup = Objectfactory::getInstance()->getObject($strGroupId);
                     $objSourceGroup = $objGroup->getObjSourceGroup();
                     $objSourceGroup->addMember($objUser->getObjSourceUser());
                 }
@@ -878,7 +878,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
 
             return $objForm->renderForm(Link::getLinkAdminHref($this->getArrModule("modul"), "groupSave"));
         } else {
-            $objNewGroup = new UserGroup($this->getSystemid());
+            $objNewGroup = Objectfactory::getInstance()->getObject($this->getSystemid());
             $this->setParam("usersource", $objNewGroup->getStrSubsystem());
 
             if ($objForm == null) {
@@ -942,7 +942,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
             $objNewGroup = $objSource->getNewGroup();
             $objForm = $this->getGroupForm($objNewGroup);
         } else {
-            $objNewGroup = new UserGroup($this->getSystemid());
+            $objNewGroup = Objectfactory::getInstance()->getObject($this->getSystemid());
             $objForm = $this->getGroupForm($objNewGroup->getObjSourceGroup());
         }
 
@@ -954,7 +954,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
             $objGroup = new UserGroup();
             $objGroup->setStrSubsystem($this->getParam("usersource"));
         } else {
-            $objGroup = new UserGroup($this->getSystemid());
+            $objGroup = Objectfactory::getInstance()->getObject($this->getSystemid());
         }
 
         $objGroup->setStrName($this->getParam("group_name"));
@@ -995,7 +995,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
     {
         $strReturn = "";
         if ($this->getSystemid() != "") {
-            $objGroup = new UserGroup($this->getSystemid());
+            $objGroup = Objectfactory::getInstance()->getObject($this->getSystemid());
 
             //validate possible blocked groups
             $bitRenderEdit = $this->isGroupEditable($objGroup);
@@ -1046,7 +1046,7 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      */
     protected function actionAddUserToGroupForm(AdminFormgenerator $objForm = null)
     {
-        $objGroup = new UserGroup($this->getSystemid());
+        $objGroup = Objectfactory::getInstance()->getObject($this->getSystemid());
 
         //validate possible blocked groups
         $bitRenderEdit = $this->isGroupEditable($objGroup);
@@ -1072,7 +1072,8 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
      */
     protected function actionAddUserToGroup()
     {
-        $objGroup = new UserGroup($this->getSystemid());
+        /** @var UserGroup $objGroup */
+        $objGroup = Objectfactory::getInstance()->getObject($this->getSystemid());
         //validate possible blocked groups
         if (!$this->isGroupEditable($objGroup)) {
             return $this->getLang("commons_error_permissions");
@@ -1192,7 +1193,8 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
     protected function actionGroupDelete()
     {
         //Delete memberships
-        $objGroup = new UserGroup($this->getSystemid());
+        /** @var UserGroup $objGroup */
+        $objGroup = Objectfactory::getInstance()->getObject($this->getSystemid());
 
         //validate possible blocked groups
         if (!$this->isGroupEditable($objGroup)) {
@@ -1238,7 +1240,8 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
 
         foreach ($arrGroups as $strSingleGroup) {
             //to avoid privilege escalation, the admin-group and other special groups need to be treated in a special manner
-            $objSingleGroup = new UserGroup($strSingleGroup);
+            /** @var UserGroup $objSingleGroup */
+            $objSingleGroup = Objectfactory::getInstance()->getObject($strSingleGroup);
             if (!$this->isGroupEditable($objSingleGroup)) {
                 continue;
             }
@@ -1299,7 +1302,8 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
         $strReturn = $this->objToolkit->listHeader();
         $arrGroups = $objUser->getObjSourceUser()->getGroupIdsForUser();
         foreach ($arrGroups as $strOneId) {
-            $objGroup = new UserGroup($strOneId);
+            /** @var UserGroup $objGroup */
+            $objGroup = Objectfactory::getInstance()->getObject($strOneId);
             $strReturn .= $this->objToolkit->genericAdminList($strOneId, $objGroup->getStrDisplayName(), AdminskinHelper::getAdminImage("icon_group"), "");
         }
         $strReturn .= $this->objToolkit->listFooter();
@@ -1505,7 +1509,8 @@ class UserAdmin extends AdminEvensimpler implements AdminInterface
             );
         } else {
             //show members of group
-            $objGroup = new UserGroup($this->getSystemid());
+            /** @var UserGroup $objGroup */
+            $objGroup = Objectfactory::getInstance()->getObject($this->getSystemid());
             $objSourceGroup = $objGroup->getObjSourceGroup();
 
             $objIterator = new ArraySectionIterator($objSourceGroup->getNumberOfMembers());
