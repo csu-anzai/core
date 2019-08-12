@@ -17,7 +17,7 @@ use Kajona\System\System\Objectfactory;
 use Kajona\System\System\OrmObjectlist;
 use Kajona\System\System\Root;
 use Kajona\System\System\SystemModule;
-use PSX\Http\Environment\HttpContext;
+use PSX\Http\Environment\HttpContextInterface;
 
 /**
  * A general API endpoint which can be used to get the form of a specific model and also to CRUD objects
@@ -44,11 +44,12 @@ class ObjectApiController implements ApiControllerInterface
      *
      * @api
      * @method GET
-     * @path /v1/system/forms
+     * @path /v1/system/forms/{systemid}
+     * @authorization usertoken
      */
-    public function getForm(HttpContext $context): JsonResponse
+    public function getForm(HttpContextInterface $context): JsonResponse
     {
-        $systemId = $context->getParameter('systemid');
+        $systemId = $context->getUriFragment('systemid');
         if (validateSystemid($systemId)) {
             $model = $this->getModelBySystemId($systemId);
         } else {
@@ -68,8 +69,9 @@ class ObjectApiController implements ApiControllerInterface
      * @api
      * @method GET
      * @path /v1/system/objects
+     * @authorization usertoken
      */
-    public function listObjects(HttpContext $context): JsonResponse
+    public function listObjects(HttpContextInterface $context): JsonResponse
     {
         $model = $this->getModelByClass($context->getParameter('class'));
         $previd = $context->getParameter('previd');
@@ -90,8 +92,9 @@ class ObjectApiController implements ApiControllerInterface
      * @api
      * @method GET
      * @path /v1/system/objects/{systemid}
+     * @authorization usertoken
      */
-    public function detailObject(HttpContext $context): JsonResponse
+    public function detailObject(HttpContextInterface $context): JsonResponse
     {
         $systemId = $context->getUriFragment('systemid');
         $object = $this->objectFactory->getObject($systemId);
@@ -113,8 +116,9 @@ class ObjectApiController implements ApiControllerInterface
      * @api
      * @method POST
      * @path /v1/system/objects
+     * @authorization usertoken
      */
-    public function createObject(HttpContext $context): JsonResponse
+    public function createObject(HttpContextInterface $context): JsonResponse
     {
         $model = $this->getModelByClass($context->getParameter('class'));
 
@@ -152,8 +156,9 @@ class ObjectApiController implements ApiControllerInterface
      * @api
      * @method PUT
      * @path /v1/system/objects/{systemid}
+     * @authorization usertoken
      */
-    public function updateObject(HttpContext $context): JsonResponse
+    public function updateObject(HttpContextInterface $context): JsonResponse
     {
         $model = $this->getModelBySystemId($context->getParameter('systemid'));
 
@@ -183,8 +188,9 @@ class ObjectApiController implements ApiControllerInterface
      * @api
      * @method DELETE
      * @path /v1/system/objects/{systemid}
+     * @authorization usertoken
      */
-    public function deleteObject(HttpContext $context): JsonResponse
+    public function deleteObject(HttpContextInterface $context): JsonResponse
     {
         $model = $this->getModelBySystemId($context->getParameter('systemid'));
 
