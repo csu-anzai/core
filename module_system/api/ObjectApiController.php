@@ -44,12 +44,12 @@ class ObjectApiController implements ApiControllerInterface
      *
      * @api
      * @method GET
-     * @path /v1/system/forms/{systemid}
+     * @path /v1/system/forms
      * @authorization usertoken
      */
     public function getForm(HttpContextInterface $context): JsonResponse
     {
-        $systemId = $context->getUriFragment('systemid');
+        $systemId = $context->getParameter('systemid');
         if (validateSystemid($systemId)) {
             $model = $this->getModelBySystemId($systemId);
         } else {
