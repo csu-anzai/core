@@ -2,7 +2,7 @@ import { createDecorator } from 'vue-class-component'
 import Lang from 'core/module_system/scripts/kajona/Lang'
 export const FetchLang = (modules : Array<string>) => {
     return createDecorator((component, key) => {
-        component.created = async () => {
+        component.beforeRouteEnter = async (to, from, next) => {
             let en = {}
             let de = {}
             await Promise.all(modules.map(async module => {
@@ -15,6 +15,7 @@ export const FetchLang = (modules : Array<string>) => {
                     window.i18n.mergeLocaleMessage('de', de)
                 }
             }))
+            next()
         }
     })
 }

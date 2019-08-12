@@ -67,8 +67,10 @@ class Router {
     }
 
     public static defaultRoutieCallback (url: string) {
-        if (url.includes('/vm/')) {
+        if (url.includes('/vm/') && KAJONA_ACCESS_TOKEN) {
             return
+        } else if (!KAJONA_ACCESS_TOKEN) {
+            url = 'login/login'
         }
         // in case we receive an absolute url with no hash redirect the user to this url
         // since we cant resolve this url to a hash route
