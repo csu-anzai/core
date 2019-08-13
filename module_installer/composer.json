@@ -1,4 +1,5 @@
 {
+    "name": "agp/installer",
     "repositories": [
         {
             "type": "composer",

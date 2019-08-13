@@ -1,4 +1,5 @@
 {
+    "name": "agp/fileindexer",
     "require": {
         "symfony/process": "^3.3"
     }

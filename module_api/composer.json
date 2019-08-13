@@ -1,4 +1,5 @@
 {
+    "name": "agp/api",
     "repositories": [
         {
             "type": "composer",
