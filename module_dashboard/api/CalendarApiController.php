@@ -34,6 +34,7 @@ class CalendarApiController implements ApiControllerInterface
      * @api
      * @method GET
      * @path /v1/calendar/export/caldav/{token}
+     * @authorization anonymous
      */
     public function caldav(HttpContext $context)
     {
