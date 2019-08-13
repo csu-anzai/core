@@ -352,7 +352,7 @@
     </target>
 
     <target name="phpcs-ci" description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
-        <exec executable="${path.phpcs}" dir="${basedir}${projectPath}" output="/dev/null">
+        <exec executable="${path.phpcs}" dir="${basedir}${projectPath}">
             <arg value="-q" />
             <arg value="--parallel=4" />
             <arg value="--report-file=${basedir}${buildPath}/logs/checkstyle.xml" />
