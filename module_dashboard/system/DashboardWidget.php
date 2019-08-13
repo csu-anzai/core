@@ -64,6 +64,10 @@ class DashboardWidget extends \Kajona\System\System\Model implements \Kajona\Sys
     private function getWidgetClassName()
     {
         $class = $this->getStrClass();
+        if (empty($class)) {
+            return "";
+        }
+
         $adminWidgetAmtasks = new $class;
         return $adminWidgetAmtasks->getWidgetName();
     }
