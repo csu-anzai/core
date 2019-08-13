@@ -9,6 +9,8 @@
 
 namespace Kajona\System\System;
 
+use Kajona\Api\System\JWTManager;
+use Kajona\Api\System\ServiceProvider;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Security\PasswordExpiredException;
 
@@ -20,15 +22,28 @@ use Kajona\System\System\Security\PasswordExpiredException;
  */
 final class Session
 {
+    public const SCOPE_SESSION = 1;
+    public const SCOPE_REQUEST = 2;
 
+    /**
+     * @var string|null
+     */
     private $strKey = null;
 
+    /**
+     * @var array
+     */
     private $arrRequestArray;
 
-    public static $intScopeSession = 1;
     /**
      * @var int
-     * @deprecated use static fields instead
+     * @deprecated
+     */
+    public static $intScopeSession = 1;
+
+    /**
+     * @var int
+     * @deprecated
      */
     public static $intScopeRequest = 2;
 
@@ -52,12 +67,18 @@ final class Session
 
     private $bitClosed = false;
 
-    const STR_SESSION_ADMIN_LANG_KEY = "STR_SESSION_ADMIN_LANG_KEY";
+    /**
+     * @var int|null
+     */
+    private $sessionScope = null;
 
-    const STR_SESSION_USERID = "STR_SESSION_USERID";
-    const STR_SESSION_GROUPIDS = "STR_SESSION_GROUPIDS";
-    const STR_SESSION_GROUPIDS_SHORT = "STR_SESSION_GROUPIDS_SHORT";
-    const STR_SESSION_ISADMIN = "STR_SESSION_ISADMIN";
+    const SESSION_ADMIN_LANG_KEY = "STR_SESSION_ADMIN_LANG_KEY";
+
+    const SESSION_USERID = "STR_SESSION_USERID";
+    const SESSION_GROUPIDS = "STR_SESSION_GROUPIDS";
+    const SESSION_GROUPIDS_SHORT = "STR_SESSION_GROUPIDS_SHORT";
+    const SESSION_ISADMIN = "STR_SESSION_ISADMIN";
+    const SESSION_ISSUPERUSER = "STR_SESSION_ISSUPERUSER";
 
 
     /**
@@ -103,6 +124,10 @@ final class Session
      */
     private function sessionStart()
     {
+        if ($this->sessionScope === self::SCOPE_REQUEST) {
+            return;
+        }
+
         if ($this->bitPhpSessionStarted || $this->bitClosed) {
             return;
         }
@@ -132,6 +157,10 @@ final class Session
      */
     public function sessionClose()
     {
+        if ($this->sessionScope === self::SCOPE_REQUEST) {
+            return;
+        }
+
         if (defined("_autotesting_") && _autotesting_ === true) {
             return;
         }
@@ -149,15 +178,18 @@ final class Session
      *
      * @param string $strKey
      * @param string $strValue
-     * @param int $intSessionScope one of Session::$intScopeRequest or Session::$intScopeSession
+     * @param int $intSessionScope - deprecated
      *
      * @throws Exception
      * @return bool
      */
     public function setSession($strKey, $strValue, $intSessionScope = 1)
     {
+        if ($this->sessionScope !== null) {
+            $intSessionScope = $this->sessionScope;
+        }
 
-        if ($intSessionScope == Session::$intScopeRequest) {
+        if ($intSessionScope === self::SCOPE_REQUEST) {
             $this->arrRequestArray[$strKey] = $strValue;
             return true;
         } else {
@@ -212,13 +244,17 @@ final class Session
      * Returns a value from the session
      *
      * @param string $strKey
-     * @param int $intScope one of Session::$intScopeRequest or Session::$intScopeSession
+     * @param int $intScope - deprecated
      *
      * @return string
      */
-    public function getSession($strKey, $intScope = 1)
+    public function getSession($strKey, $intScope = self::SCOPE_SESSION)
     {
-        if ($intScope == Session::$intScopeRequest) {
+        if ($this->sessionScope !== null) {
+            $intScope = $this->sessionScope;
+        }
+
+        if ($intScope === self::SCOPE_REQUEST) {
             if (!isset($this->arrRequestArray[$strKey])) {
                 return false;
             } else {
@@ -243,11 +279,11 @@ final class Session
      */
     public function sessionIsset($strKey)
     {
-        $this->sessionStart();
-        if (isset($_SESSION[$this->getSessionKey()][$strKey])) {
-            return true;
+        if ($this->sessionScope === self::SCOPE_REQUEST) {
+            return isset($this->arrRequestArray[$strKey]);
         } else {
-            return false;
+            $this->sessionStart();
+            return isset($_SESSION[$this->getSessionKey()][$strKey]);
         }
     }
 
@@ -260,9 +296,15 @@ final class Session
      */
     public function sessionUnset($strKey)
     {
-        $this->sessionStart();
-        if ($this->sessionIsset($strKey)) {
-            unset($_SESSION[$this->getSessionKey()][$strKey]);
+        if ($this->sessionScope === self::SCOPE_REQUEST) {
+            if (isset($this->arrRequestArray[$strKey])) {
+                unset($this->arrRequestArray[$strKey]);
+            }
+        } else {
+            $this->sessionStart();
+            if ($this->sessionIsset($strKey)) {
+                unset($_SESSION[$this->getSessionKey()][$strKey]);
+            }
         }
     }
 
@@ -294,7 +336,7 @@ final class Session
         return true;
 
         if ($this->isLoggedin()) {
-            if ($this->getSession(self::STR_SESSION_ISADMIN) == 1) {
+            if ($this->getSession(self::SESSION_ISADMIN) == 1) {
                 return true;
             } else {
                 return false;
@@ -311,15 +353,9 @@ final class Session
      * @return bool
      * @throws Exception
      */
-    public function isSuperAdmin()
+    public function isSuperAdmin(): bool
     {
-        if ($this->isLoggedin()) {
-            if ($this->getUser() != null && $this->getUser()->getIntAdmin() == 1 && in_array(SystemSetting::getConfigValue("_admins_group_id_"), $this->getGroupIdsAsArray())) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->isLoggedin() && $this->getSession(self::SESSION_ISSUPERUSER);
     }
 
     /**
@@ -335,8 +371,8 @@ final class Session
     public function getAdminLanguage($bitUseCookie = true, $bitSkipSessionEntry = false)
     {
 
-        if (!$bitSkipSessionEntry && $this->getSession(self::STR_SESSION_ADMIN_LANG_KEY) != "") {
-            return $this->getSession(self::STR_SESSION_ADMIN_LANG_KEY);
+        if (!$bitSkipSessionEntry && $this->getSession(self::SESSION_ADMIN_LANG_KEY) != "") {
+            return $this->getSession(self::SESSION_ADMIN_LANG_KEY);
         }
 
         //Maybe we can load the language from the cookie
@@ -350,7 +386,7 @@ final class Session
             if ($this->isAdmin()) {
                 if ($this->getUser() != null && $this->getUser()->getStrAdminlanguage() != "") {
                     $strLang = $this->getUser()->getStrAdminlanguage();
-                    $this->setSession(self::STR_SESSION_ADMIN_LANG_KEY, $strLang);
+                    $this->setSession(self::SESSION_ADMIN_LANG_KEY, $strLang);
                     return $strLang;
                 }
             }
@@ -470,10 +506,11 @@ final class Session
             if (Carrier::getInstance()->getObjSession()->isSuperAdmin() || $bitForce) {
                 $this->getObjInternalSession()->setStrLoginstatus(SystemSession::$LOGINSTATUS_LOGGEDIN);
                 $this->getObjInternalSession()->setStrUserid($objTargetUser->getSystemid());
-                $this->setSession(self::STR_SESSION_USERID, $objTargetUser->getSystemid());
+                $this->setSession(self::SESSION_USERID, $objTargetUser->getSystemid());
 
-                $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $objTargetUser->getArrGroupIds()));
-                $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $objTargetUser->getArrShortGroupIds()));
+                $this->setSession(self::SESSION_GROUPIDS, implode(",", $objTargetUser->getArrGroupIds()));
+                $this->setSession(self::SESSION_GROUPIDS_SHORT, implode(",", $objTargetUser->getArrShortGroupIds()));
+                $this->setSession(self::SESSION_ISSUPERUSER, in_array(SystemSetting::getConfigValue("_admins_group_id_"), $objTargetUser->getArrGroupIds()));
                 ServiceLifeCycleFactory::getLifeCycle(get_class($this->getObjInternalSession()))->update($this->getObjInternalSession());
                 $this->objUser = $objTargetUser;
 
@@ -483,6 +520,27 @@ final class Session
         return false;
     }
 
+    /**
+     * Authenticates the user for the current request without starting a session
+     *
+     * @param UserUser $targetUser
+     * @throws Exception
+     */
+    public function loginUserForRequest(UserUser $targetUser): void
+    {
+        $this->bitBlockDbUpdate = true;
+        $this->bitClosed = true;
+        $this->sessionScope = self::SCOPE_REQUEST;
+
+        $this->setSession(self::SESSION_USERID, $targetUser->getSystemid());
+        $this->setSession(self::SESSION_GROUPIDS, implode(",", $targetUser->getArrGroupIds()));
+        $this->setSession(self::SESSION_GROUPIDS_SHORT, implode(",", $targetUser->getArrShortGroupIds()));
+        $this->setSession(self::SESSION_ISSUPERUSER, in_array(SystemSetting::getConfigValue("_admins_group_id_"), $targetUser->getArrGroupIds()));
+
+        $this->getObjInternalSession()->setStrLoginstatus(SystemSession::$LOGINSTATUS_LOGGEDIN);
+        $this->getObjInternalSession()->setStrUserid($targetUser->getSystemid());
+        $this->getObjInternalSession()->setStrLoginprovider($targetUser->getStrSubsystem());
+    }
 
     /**
      * Does all the internal login-handling
@@ -501,10 +559,18 @@ final class Session
             $this->getObjInternalSession()->setStrLoginprovider($objUser->getStrSubsystem());
 
             //save some metadata to the php-session
-            $this->setSession(self::STR_SESSION_USERID, $objUser->getSystemid());
-            $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $objUser->getArrGroupIds()));
-            $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $objUser->getArrShortGroupIds()));
-            $this->setSession(self::STR_SESSION_ISADMIN, $objUser->getIntAdmin());
+            $this->setSession(self::SESSION_USERID, $objUser->getSystemid());
+            $this->setSession(self::SESSION_GROUPIDS, implode(",", $objUser->getArrGroupIds()));
+            $this->setSession(self::SESSION_GROUPIDS_SHORT, implode(",", $objUser->getArrShortGroupIds()));
+            $this->setSession(self::SESSION_ISADMIN, $objUser->getIntAdmin());
+            $this->setSession(self::SESSION_ISSUPERUSER, in_array(SystemSetting::getConfigValue("_admins_group_id_"), $objUser->getArrGroupIds()));
+
+            $accessToken = null;
+            if (Carrier::getInstance()->getContainer()->offsetExists(ServiceProvider::JWT_MANAGER)) {
+                /** @var JWTManager $jwtManager */
+                $jwtManager = Carrier::getInstance()->getContainer()->offsetGet(ServiceProvider::JWT_MANAGER);
+                $accessToken = $jwtManager->generate($objUser);
+            }
 
             ServiceLifeCycleFactory::getLifeCycle(get_class($this->getObjInternalSession()))->update($this->getObjInternalSession());
             $this->objUser = $objUser;
@@ -516,6 +582,7 @@ final class Session
 
             $objUser->setIntLogins($objUser->getIntLogins() + 1);
             $objUser->setIntLastLogin(time());
+            $objUser->setStrAccessToken($accessToken);
 
             if (!$objUser->getLockManager()->isAccessibleForCurrentUser()) {
                 //force an unlock, may be locked since the user is being edited in the backend
@@ -551,6 +618,10 @@ final class Session
      */
     public function logout()
     {
+        if ($this->sessionScope === self::SCOPE_REQUEST) {
+            return;
+        }
+
         Logger::getInstance()->info("User: ".$this->getUsername()." successfully logged out");
         UserLog::registerLogout();
 
@@ -559,7 +630,7 @@ final class Session
 
         $this->objInternalSession = null;
         $this->objUser = null;
-        $this->setSession(self::STR_SESSION_USERID, "");
+        $this->setSession(self::SESSION_USERID, "");
         if (isset($_COOKIE[session_name()])) {
             setcookie(session_name(), '', time() - 42000);
         }
@@ -598,7 +669,7 @@ final class Session
      */
     public function getUserID()
     {
-        $strUserid = $this->getSession(self::STR_SESSION_USERID);
+        $strUserid = $this->getSession(self::SESSION_USERID);
         if (validateSystemid($strUserid) && $this->isLoggedin()) {
             return $strUserid;
         }
@@ -638,8 +709,8 @@ final class Session
             $this->objUser = Objectfactory::getInstance()->getObject($this->getUserID(), true);
             //reload group-ids to the session
             if ($this->objUser !== null) {
-                $this->setSession(self::STR_SESSION_GROUPIDS, implode(",", $this->objUser->getArrGroupIds()));
-                $this->setSession(self::STR_SESSION_GROUPIDS_SHORT, implode(",", $this->objUser->getArrShortGroupIds()));
+                $this->setSession(self::SESSION_GROUPIDS, implode(",", $this->objUser->getArrGroupIds()));
+                $this->setSession(self::SESSION_GROUPIDS_SHORT, implode(",", $this->objUser->getArrShortGroupIds()));
             }
         }
     }
@@ -664,7 +735,7 @@ final class Session
     public function getGroupIdsAsString()
     {
         if ($this->getObjInternalSession() != null) {
-            return $this->getSession(self::STR_SESSION_GROUPIDS);
+            return $this->getSession(self::SESSION_GROUPIDS);
         }
         return "";
     }
@@ -689,7 +760,7 @@ final class Session
     public function getShortGroupIdsAsArray()
     {
         if ($this->getObjInternalSession() != null) {
-            $strGroupids = $this->getSession(self::STR_SESSION_GROUPIDS_SHORT);
+            $strGroupids = $this->getSession(self::SESSION_GROUPIDS_SHORT);
         } else {
             $strGroupids = "";
         }

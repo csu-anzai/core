@@ -37,6 +37,7 @@ $lang["commons_create_date"]             = "Anlagedatum";
 $lang["commons_save_as_image"]          = "Als Bild speichern";
 $lang["commons_lastmodification_date"]   = "Letztes Änderungsdatum";
 $lang["commons_delete"]                  = "Löschen";
+$lang["commons_deleted"]                  = "Gelöscht";
 $lang["commons_delete_category_question"] = "Möchten Sie die Kategorie &quot;<b>%%element_name%%</b>&quot; wirklich löschen?";
 $lang["commons_delete_error"]            = "Fehler beim Löschen des Datensatzes";
 $lang["commons_delete_ok"]               = "Datensatz erfolgreich gelöscht";
@@ -140,12 +141,16 @@ $lang["commons_error_move_hierarchy"] = "Das Verschieben unterhalb des angegeben
 
 $lang["commons_interval_day"]                    = "Tag";
 $lang["commons_interval_days"]                   = "Tage";
+$lang["commons_interval_day_days"] = "Tag(e)";
 $lang["commons_interval_week"]                   = "Woche";
 $lang["commons_interval_weeks"]                  = "Wochen";
+$lang["commons_interval_week_weeks"] = "Woche(n)";
 $lang["commons_interval_month"]                  = "Monat";
 $lang["commons_interval_months"]                 = "Monate";
+$lang["commons_interval_month_months"] = "Monat(e)";
 $lang["commons_interval_year"]                   = "Jahr";
 $lang["commons_interval_years"]                  = "Jahre";
+$lang["commons_interval_year_years"] = "Jahr(e)";
 
 $lang["commons_skin_footer"] = "<p>powered by <a href=\"https://github.com/artemeon/core\" target=\"_blank\" title=\"Kajona Core\">Kajona Core</a></p>";
 $lang["commons_login_footer"] = "<a href=\"https://github.com/artemeon/core\" target=\"_blank\">Kajona Core</a>";

@@ -11,6 +11,7 @@ namespace Kajona\System\System;
 
 use ReflectionClass;
 use ReflectionException;
+use RuntimeException;
 
 /**
  * Annotations are a common way to enrich classes and methods with metainformation and documentation.
@@ -468,6 +469,25 @@ class Reflection
         return $strValue;
     }
 
+
+    /**
+     * @param string $property
+     * @param string $annotation
+     * @return array
+     */
+    public function getAnnotationJsonValueForProperty(string $property, string $annotation): array
+    {
+        if (empty($formEntryConfig = $this->getAnnotationValueForProperty($property, $annotation))) {
+            return [];
+        }
+
+        $configResponse = json_decode($formEntryConfig, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new RuntimeException('JSON Error: ' . json_last_error_msg());
+        }
+
+        return $configResponse ?? [];
+    }
 
     /**
      * Gets the param value for the given property, annotation and param name

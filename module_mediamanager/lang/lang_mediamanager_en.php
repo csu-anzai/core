@@ -49,6 +49,7 @@ $lang["form_mediamanager_description"]   = "Description";
 $lang["form_mediamanager_name"]          = "Title";
 $lang["form_mediamanager_content"]       = "Indexed file content";
 $lang["form_mediamanager_subtitle"]      = "Subtitle";
+$lang["form_mediamanager_mark"]          = "Mark";
 $lang["form_repo_uploadFilter"]          = "Upload-filter";
 $lang["form_repo_viewFilter"]            = "View-Filter";
 $lang["header_amount"]                   = "Amount";

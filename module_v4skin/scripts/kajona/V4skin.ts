@@ -4,6 +4,7 @@ import 'bootstrap/dist/js/bootstrap.min.js'
 import 'bootstrap-datepicker/dist/js/bootstrap-datepicker.min'
 import 'bootstrap-datepicker/dist/locales/bootstrap-datepicker.de.min.js'
 import 'bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min'
+import 'bootstrap-select/dist/js/bootstrap-select.min'
 import 'bootstrap-switch'
 import 'floatthead'
 import Messaging from 'core/module_system/scripts/kajona/Messaging'
@@ -17,7 +18,7 @@ import Breadcrumb from 'core/module_system/scripts/kajona/Breadcrumb'
 
 // import all the kajona styles
 import 'jquery-ui.custom/dist/jquery-ui.custom.css'
-import '../../admin/skins/kajona_v4/less/styles.less'
+// import '../../admin/skins/kajona_v4/less/styles.less'
 
 class DefaultAutoComplete implements JQueryUI.AutocompleteOptions {
     public keepUi: boolean = false

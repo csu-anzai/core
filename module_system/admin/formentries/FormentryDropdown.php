@@ -42,8 +42,7 @@ class FormentryDropdown extends FormentryBase implements FormentryPrintableInter
     private $strAddons = "";
     private $strDataPlaceholder = "";
     private $bitRenderReset = false;
-
-    private $dataAttributes = [];
+    private $iconValues = false;
 
     public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
     {
@@ -69,8 +68,8 @@ class FormentryDropdown extends FormentryBase implements FormentryPrintableInter
 
         $strOpener = "";
         if ($this->bitRenderReset) {
-            $strOpener = " ".Link::getLinkAdminManual(
-                    "href=\"#\" onclick=\"$('#".$this->getStrEntryName()."').val('');return false;\"",
+            $strOpener = " " . Link::getLinkAdminManual(
+                    "href=\"#\" onclick=\"$('#" . $this->getStrEntryName() . "').val('');return false;\"",
                     "",
                     Carrier::getInstance()->getObjLang()->getLang("commons_reset", "prozessverwaltung"),
                     "icon_delete"
@@ -82,11 +81,12 @@ class FormentryDropdown extends FormentryBase implements FormentryPrintableInter
         $dropdown->setReadOnly($this->getBitReadonly());
         $dropdown->setOpener($strOpener);
         $dropdown->setAddons($this->getStrAddons());
+        $dropdown->setIconValues($this->isIconValues());
 
         if (!empty($this->getStrDataPlaceholder())) {
             $dropdown->setData('placeholder', $this->getStrDataPlaceholder());
         }
-        foreach ($this->dataAttributes as $key => $val) {
+        foreach ($this->getDataAttributes() as $key => $val) {
             $dropdown->setData($key, $val);
         }
 
@@ -174,7 +174,7 @@ class FormentryDropdown extends FormentryBase implements FormentryPrintableInter
                 $strKey = trim($arrOneKeyValue[0]) == "" ? " " : trim($arrOneKeyValue[0]);
                 if (count($arrOneKeyValue) == 2) {
                     $strValue = Carrier::getInstance()->getObjLang()->getLang(trim($arrOneKeyValue[1]), $strModule);
-                    if ($strValue == "!".trim($arrOneKeyValue[1])."!") {
+                    if ($strValue == "!" . trim($arrOneKeyValue[1]) . "!") {
                         $strValue = $arrOneKeyValue[1];
                     }
                     $arrDDValues[$strKey] = $strValue;
@@ -283,23 +283,19 @@ class FormentryDropdown extends FormentryBase implements FormentryPrintableInter
     }
 
     /**
-     * @return array
+     * @return bool
      */
-    public function getDataAttributes(): array
+    public function isIconValues(): bool
     {
-        return $this->dataAttributes;
+        return $this->iconValues;
     }
 
     /**
-     * @param array $dataAttributes
-     * @return FormentryDropdown
+     * @param bool $iconValues
      */
-    public function setDataAttributes(array $dataAttributes): FormentryDropdown
+    public function setIconValues(bool $iconValues): void
     {
-        $this->dataAttributes = $dataAttributes;
-        return $this;
+        $this->iconValues = $iconValues;
     }
-
-
 
 }

@@ -1,7 +1,0 @@
-{
-  "paths": {
-    "fullcalendar": "fullcalendar/fullcalendar",
-    "fullcalendar-locale": "fullcalendar/locale-all",
-    "gcal": "fullcalendar/gcal"
-  }
-}

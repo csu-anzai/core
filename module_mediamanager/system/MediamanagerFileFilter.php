@@ -21,7 +21,7 @@ use Kajona\System\System\OrmObjectlistOrderby;
 class MediamanagerFileFilter extends FilterBase
 {
     /**
-     * @var boolean
+     * @var bool
      * @tableColumn file_search_content
      */
     private $bitIndexPending;
@@ -39,7 +39,10 @@ class MediamanagerFileFilter extends FilterBase
      */
     private $strFilename;
 
-    private $bitDateDescOrder = false;
+    /**
+     * @var bool
+     */
+    private $bitDateDescOrder = true;
 
     /**
      *@inheritdoc
@@ -59,7 +62,7 @@ class MediamanagerFileFilter extends FilterBase
 
             case "strFilename":
                 if (!empty($strValue)) {
-                    return new OrmCondition(" {$strTableColumn} LIKE ? ", ["{$strValue}/%"]);
+                    return new OrmCondition(" {$strTableColumn} LIKE ? ", ["{$strValue}%"]);
                 }
                 break;
         }

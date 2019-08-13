@@ -174,6 +174,16 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
             $strReturn .= $this->update71_711();
         }
 
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] === "7.1.1") {
+            $strReturn .= $this->update711_712();
+        }
+
+        $arrModule = SystemModule::getPlainModuleData($this->objMetadata->getStrTitle(), false);
+        if($arrModule["module_version"] === "7.1.2") {
+            $strReturn .= $this->update712_713();
+        }
+
 
         return $strReturn."\n\n";
     }
@@ -192,14 +202,14 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
         $objRepo = new MediamanagerRepo();
         $objRepo->setStrTitle("Temp uploads");
         $objRepo->setStrPath(_filespath_."/temp");
-        $objRepo->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle($objRepo)->update($objRepo);
         $objRepo->syncRepo();
         $strReturn .= "ID of new repo: ".$objRepo->getSystemid()."\n";
 
         $strReturn .= "Setting the repository as the default files repository\n";
         $objSetting = SystemSetting::getConfigByName("_mediamanager_default_temprepoid_");
         $objSetting->setStrValue($objRepo->getSystemid());
-        $objSetting->updateObjectToDb();
+        ServiceLifeCycleFactory::getLifeCycle($objSetting)->update($objSetting);
 
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.0.1");
         return $strReturn;
@@ -224,6 +234,32 @@ class InstallerMediamanager extends InstallerBase implements InstallerInterface
         $this->objDB->changeColumn("agp_mediamanager_dllog", "downloads_log_ip", "downloads_log_ip", DbDatatypes::STR_TYPE_CHAR254);
 
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.1");
+        return $strReturn;
+    }
+
+    private function update711_712()
+    {
+        $strReturn = "Update to 7.1.2".PHP_EOL;
+
+        $strReturn .= "Updateing file schema".PHP_EOL;
+
+        $schema = new OrmSchemamanager();
+        $schema->updateTable(MediamanagerFile::class);
+
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.2");
+        return $strReturn;
+    }
+
+    private function update712_713()
+    {
+        $strReturn = "Update to 7.1.3".PHP_EOL;
+
+        $strReturn .= "Updateing file schema".PHP_EOL;
+
+        $schema = new OrmSchemamanager();
+        $schema->updateTable(MediamanagerFile::class);
+
+        $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.3");
         return $strReturn;
     }
 

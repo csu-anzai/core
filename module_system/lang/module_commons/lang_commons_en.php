@@ -37,6 +37,7 @@ $lang["commons_create_date"]             = "Create date";
 $lang["commons_save_as_image"]       = "Save as image";
 $lang["commons_lastmodification_date"]   = "Last modification date";
 $lang["commons_delete"]                  = "Delete";
+$lang["commons_deleted"]                  = "Deleted";
 $lang["commons_delete_category_question"] = "Do you really want to delete the category &quot;<b>%%element_name%%</b>&quot;?";
 $lang["commons_delete_error"]            = "Error deleting the record";
 $lang["commons_delete_ok"]               = "Record deleted successfully";
@@ -141,12 +142,16 @@ $lang["commons_error_move_hierarchy"] = "Moving this object below the given obje
 
 $lang["commons_interval_day"]                    = "Day";
 $lang["commons_interval_days"]                   = "Days";
+$lang["commons_interval_day_days"] = "Day(s)";
 $lang["commons_interval_week"]                   = "Week";
 $lang["commons_interval_weeks"]                  = "Weeks";
+$lang["commons_interval_week_weeks"] = "Week(s)";
 $lang["commons_interval_month"]                  = "Month";
 $lang["commons_interval_months"]                 = "Months";
+$lang["commons_interval_month_months"] = "Month(s)";
 $lang["commons_interval_year"]                   = "Year";
 $lang["commons_interval_years"]                  = "Years";
+$lang["commons_interval_year_years"] = "Year(s)";
 
 $lang["commons_skin_footer"] = "<p>powered by <a href=\"https://github.com/artemeon/core\" target=\"_blank\" title=\"Kajona Core\">Kajona Core</a></p>";
 $lang["commons_login_footer"] = "<a href=\"https://github.com/artemeon/core\" target=\"_blank\">Kajona Core</a>";

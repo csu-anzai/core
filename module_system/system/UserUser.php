@@ -9,7 +9,6 @@
 
 namespace Kajona\System\System;
 
-use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Usersources\UsersourcesUserInterface;
 
 
@@ -24,6 +23,8 @@ use Kajona\System\System\Usersources\UsersourcesUserInterface;
  * @moduleId _user_modul_id_
  *
  * @targetTable agp_user.user_id
+ *
+ * @lifeCycleService system_life_cycle_user_user
  */
 class UserUser extends Model implements ModelInterface, AdminListableInterface
 {
@@ -108,6 +109,13 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
     private $strAuthcode = "";
 
     /**
+     * @var string
+     * @tableColumn agp_user.user_accesstoken
+     * @tableColumnDatatype char500
+     */
+    private $strAccessToken;
+
+    /**
      * @var int
      * @tableColumn agp_user.user_items_per_page
      * @tableColumnDatatype int
@@ -180,23 +188,6 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
         }
         return "";
     }
-
-    /**
-     * @inheritDoc
-     */
-    protected function onInsertToDb()
-    {
-        Logger::getInstance(Logger::USERSOURCES)->info("new user for subsystem ".$this->getStrSubsystem()." / ".$this->getStrUsername());
-        $objSources = new UserSourcefactory();
-        $objProvider = $objSources->getUsersource($this->getStrSubsystem());
-        $objTargetUser = $objProvider->getNewUser();
-        ServiceLifeCycleFactory::getLifeCycle(get_class($objTargetUser))->update($objTargetUser);
-        $objTargetUser->setNewRecordId($this->getSystemid());
-        $this->objDB->flushQueryCache();
-        $this->objSourceUser = $objTargetUser;
-        return true;
-    }
-
 
     /**
      * @param FilterBase|null $objFilter
@@ -550,6 +541,22 @@ class UserUser extends Model implements ModelInterface, AdminListableInterface
     public function setStrAuthcode($strAuthcode)
     {
         $this->strAuthcode = $strAuthcode;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getStrAccessToken(): ?string
+    {
+        return $this->strAccessToken;
+    }
+
+    /**
+     * @param string|null $accessToken
+     */
+    public function setStrAccessToken(?string $accessToken): void
+    {
+        $this->strAccessToken = $accessToken;
     }
 
     /**

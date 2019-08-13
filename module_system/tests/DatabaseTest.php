@@ -583,6 +583,130 @@ SQL;
         $objDb->_pQuery("DROP TABLE " . $strTable, []);
     }
 
+    public function testInsert()
+    {
+        $connection = Database::getInstance();
+
+        // create table
+        $tableName = "agp_temp_autotest_insert";
+        $columns = [];
+        $columns["temp_id"] = ["char20", false];
+        $columns["temp_char20"] = ["char20", true];
+
+        // drop table if exists
+        if (in_array($tableName, $connection->getTables())) {
+            $connection->_pQuery("DROP TABLE " . $tableName, []);
+        }
+
+        $this->assertTrue($connection->createTable($tableName, $columns, ["temp_id"]));
+        $this->flushDBCache();
+
+        $row = [
+            "temp_id" => generateSystemid(),
+            "temp_char20" => generateSystemid(),
+        ];
+
+        $connection->insert($tableName, $row);
+
+        $result = $connection->getPArray("SELECT * FROM {$tableName}", []);
+
+        $this->assertSame(1, count($result));
+        $this->assertEquals($row["temp_id"], $result[0]["temp_id"]);
+        $this->assertEquals($row["temp_char20"], $result[0]["temp_char20"]);
+
+        $connection->_pQuery("DROP TABLE " . $tableName, []);
+    }
+
+    public function testUpdate()
+    {
+        $connection = Database::getInstance();
+
+        // create table
+        $tableName = "agp_temp_autotest_update";
+        $columns = [];
+        $columns["temp_id"] = ["char20", false];
+        $columns["temp_int"] = ["int", false];
+        $columns["temp_char20"] = ["char20", true];
+
+        // drop table if exists
+        if (in_array($tableName, $connection->getTables())) {
+            $connection->_pQuery("DROP TABLE " . $tableName, []);
+        }
+
+        $this->assertTrue($connection->createTable($tableName, $columns, ["temp_id"]));
+        $this->flushDBCache();
+
+        $id = generateSystemid();
+
+        $row = [
+            "temp_id" => $id,
+            "temp_int" => 13,
+            "temp_char20" => "foobar",
+        ];
+
+        $connection->insert($tableName, $row);
+
+        $row = $connection->getPRow("SELECT * FROM {$tableName} WHERE temp_id = ?", [$id], 0, false);
+
+        $this->assertEquals($id, $row["temp_id"]);
+        $this->assertEquals(13, $row["temp_int"]);
+        $this->assertEquals("foobar", $row["temp_char20"]);
+
+        $connection->update($tableName, ["temp_int" => 1337, "temp_char20" => "foo"], ["temp_id" => $id]);
+
+        $row = $connection->getPRow("SELECT * FROM {$tableName} WHERE temp_id = ?", [$id], 0, false);
+
+        $this->assertEquals($id, $row["temp_id"]);
+        $this->assertEquals(1337, $row["temp_int"]);
+        $this->assertEquals("foo", $row["temp_char20"]);
+
+        $connection->_pQuery("DROP TABLE " . $tableName, []);
+    }
+
+    public function testDelete()
+    {
+        $connection = Database::getInstance();
+
+        // create table
+        $tableName = "agp_temp_autotest_delete";
+        $columns = [];
+        $columns["temp_id"] = ["char20", false];
+        $columns["temp_int"] = ["int", false];
+        $columns["temp_char20"] = ["char20", true];
+
+        // drop table if exists
+        if (in_array($tableName, $connection->getTables())) {
+            $connection->_pQuery("DROP TABLE " . $tableName, []);
+        }
+
+        $this->assertTrue($connection->createTable($tableName, $columns, ["temp_id"]));
+        $this->flushDBCache();
+
+        $id = generateSystemid();
+
+        $row = [
+            "temp_id" => $id,
+            "temp_int" => 13,
+            "temp_char20" => "foobar",
+        ];
+
+        $connection->insert($tableName, $row);
+
+        $row = $connection->getPRow("SELECT * FROM {$tableName} WHERE temp_id = ?", [$id], 0, false);
+
+        $this->assertEquals($id, $row["temp_id"]);
+        $this->assertEquals(13, $row["temp_int"]);
+        $this->assertEquals("foobar", $row["temp_char20"]);
+
+        $connection->delete($tableName, ["temp_id" => $id]);
+
+        $row = $connection->getPRow("SELECT * FROM {$tableName} WHERE temp_id = ?", [$id], 0, false);
+
+        $this->assertEmpty($row);
+
+        $connection->_pQuery("DROP TABLE " . $tableName, []);
+    }
+
     /**
      * This test checks whether we can use a long timestamp format in in an sql query
      * @dataProvider intComparisonDataProvider

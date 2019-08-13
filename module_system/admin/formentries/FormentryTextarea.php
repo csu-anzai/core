@@ -25,8 +25,6 @@ class FormentryTextarea extends FormentryBase implements FormentryPrintableInter
     private $intNumberOfRows = 4;
     private $strPlaceholder;
 
-    private $dataAttributes = [];
-
     public function __construct($strFormName, $strSourceProperty, $objSourceObject = null)
     {
         parent::__construct($strFormName, $strSourceProperty, $objSourceObject);
@@ -56,7 +54,7 @@ class FormentryTextarea extends FormentryBase implements FormentryPrintableInter
         $cmp->setNumberOfRows($this->getIntNumberOfRows());
         $cmp->setOpener($this->getStrOpener());
         $cmp->setPlaceholder($this->getStrPlaceholder());
-        $cmp->setDataArray($this->dataAttributes);
+        $cmp->setDataArray($this->getDataAttributes());
 
         $strReturn .= $cmp->renderComponent();
         return $strReturn;
@@ -143,23 +141,6 @@ class FormentryTextarea extends FormentryBase implements FormentryPrintableInter
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getDataAttributes(): array
-    {
-        return $this->dataAttributes;
-    }
-
-    /**
-     * @param array $dataAttributes
-     * @return FormentryTextarea
-     */
-    public function setDataAttributes(array $dataAttributes): FormentryTextarea
-    {
-        $this->dataAttributes = $dataAttributes;
-        return $this;
-    }
 
 
 

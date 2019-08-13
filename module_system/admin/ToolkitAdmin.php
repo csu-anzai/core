@@ -769,10 +769,10 @@ class ToolkitAdmin extends Toolkit
     {
         $objLang = Lang::getInstance();
         $arrKeyValues = [
-            "D" => $objLang->getLang("commons_interval_day", "system"),
-            "W" => $objLang->getLang("commons_interval_week", "system"),
-            "M" => $objLang->getLang("commons_interval_month", "system"),
-            "Y" => $objLang->getLang("commons_interval_year", "system"),
+            "D" => $objLang->getLang("commons_interval_day_days", "system"),
+            "W" => $objLang->getLang("commons_interval_week_weeks", "system"),
+            "M" => $objLang->getLang("commons_interval_month_months", "system"),
+            "Y" => $objLang->getLang("commons_interval_year_years", "system"),
         ];
 
         $strKeySelected = "";
@@ -1495,7 +1495,7 @@ HTML;
     public function listDeleteButton($strElementName, $strQuestion, $strLinkHref)
     {
         $strElementName = StringUtil::replace(array('\''), array('\\\''), $strElementName);
-        $strQuestion = StringUtil::replace("%%element_name%%", StringUtil::jsSafeString($strElementName), $strQuestion);
+        $strQuestion = StringUtil::replace("%%element_name%%", StringUtil::jsSafeString(html_entity_decode($strElementName)), $strQuestion);
         return $this->listConfirmationButton($strQuestion, $strLinkHref, "icon_delete", Carrier::getInstance()->getObjLang()->getLang("commons_delete", "system"), Carrier::getInstance()->getObjLang()->getLang("dialog_deleteHeader", "system"), Carrier::getInstance()->getObjLang()->getLang("dialog_deleteButton", "system"));
     }
 

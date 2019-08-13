@@ -66,7 +66,7 @@ class Indexer
         $objFilter = new MediamanagerFileFilter();
         $objFilter->setBitIndexPending(true);
         $objFilter->setIntFileType(MediamanagerFile::$INT_TYPE_FILE);
-        $objFilter->setStrFilename($objRepo->getStrPath());
+        $objFilter->setStrFilename($objRepo->getStrPath()."/");
         $arrFiles = MediamanagerFile::getObjectListFiltered($objFilter, "", 0, self::MAX_INDEX_COUNT);
         $arrResult = [];
 

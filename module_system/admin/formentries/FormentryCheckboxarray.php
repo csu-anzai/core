@@ -88,6 +88,7 @@ class FormentryCheckboxarray extends FormentryBase implements FormentryPrintable
         $cmp->setType($this->intType);
         $cmp->setInline($this->bitInline);
         $cmp->setReadOnly($this->getBitReadonly());
+        $cmp->setDataArray($this->getDataAttributes());
 
         $strReturn .= $cmp->renderComponent();
         $strReturn .= $objToolkit->formInputHidden($this->getPresCheckKey(), "1");
@@ -216,7 +217,7 @@ class FormentryCheckboxarray extends FormentryBase implements FormentryPrintable
     public function jsonSerialize()
     {
         return array_merge(parent::jsonSerialize(), [
-            "values" => $this->arrKeyValues
+            "values" => (object) $this->arrKeyValues
         ]);
     }
 }
