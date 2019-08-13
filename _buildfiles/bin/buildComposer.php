@@ -48,6 +48,27 @@ JSON;
     $composer["require"] = [];
     $composer["require-dev"] = [];
 
+    $collectRequiredPackages = static function (array $requirements, array &$into): void {
+        if (isset($requirements) && is_array($requirements)) {
+            foreach ($requirements as $name => $version) {
+                if (strpos($name, "/") !== false && isset($into[$name])) {
+                    if ($into[$name] != $version) {
+                        throw new \RuntimeException(
+                            sprintf(
+                                'Found dependency %s multiple times with different version %s vs %s',
+                                $name,
+                                $into[$name],
+                                $version
+                            )
+                        );
+                    }
+                }
+
+                $into[$name] = $version;
+            }
+        }
+    };
+
     $objCoreDirs = new DirectoryIterator($strRoot);
     foreach ($objCoreDirs as $objCoreDir) {
         if ($objCoreDir->isDir() && substr($objCoreDir->getFilename(), 0, 4) == 'core') {
@@ -64,43 +85,8 @@ JSON;
                 $composerFile = $objDir->getRealPath() . '/composer.json';
                 if (is_file($composerFile)) {
                     $content = json_decode(file_get_contents($composerFile), true);
-
-                    if (isset($content["require"]) && is_array($content["require"])) {
-                        foreach ($content["require"] as $name => $version) {
-                            if (strpos($name, "/") !== false && isset($composer["require"][$name])) {
-                                if ($composer["require"][$name] != $version) {
-                                    throw new \RuntimeException(
-                                        sprintf(
-                                            'Found dependency %s multiple times with different version %s vs %s',
-                                            $name,
-                                            $composer['require'][$name],
-                                            $version
-                                        )
-                                    );
-                                }
-                            }
-
-                            $composer["require"][$name] = $version;
-                        }
-                    }
-                    if (isset($content["require-dev"]) && is_array($content["require-dev"])) {
-                        foreach ($content["require-dev"] as $name => $version) {
-                            if (strpos($name, "/") !== false && isset($composer["require-dev"][$name])) {
-                                if ($composer["require-dev"][$name] != $version) {
-                                    throw new \RuntimeException(
-                                        sprintf(
-                                            'Found dev dependency %s multiple times with different version %s vs %s',
-                                            $name,
-                                            $composer['require-dev'][$name],
-                                            $version
-                                        )
-                                    );
-                                }
-                            }
-
-                            $composer["require-dev"][$name] = $version;
-                        }
-                    }
+                    $collectRequiredPackages(@$content["require"], $composer["require"]);
+                    $collectRequiredPackages(@$content["require-dev"], $composer["require-dev"]);
                 }
             }
         }
