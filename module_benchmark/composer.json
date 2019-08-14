@@ -2,9 +2,9 @@
     "name": "agp/benchmark",
     "autoload": {
         "psr-4": {
-            "Kajona\Benchmark\System\Bench": "./system/bench/",
-            "Kajona\Benchmark\System": "./system/",
-            "Kajona\Benchmark": "./"
+            "Kajona\\Benchmark\\System\\Bench\\": "./system/bench/",
+            "Kajona\\Benchmark\\System\\": "./system/",
+            "Kajona\\Benchmark\\": "./"
         }
     }
 }

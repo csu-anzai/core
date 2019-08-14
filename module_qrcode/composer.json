@@ -11,8 +11,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Kajona\Qrcode\Tests": "./tests/",
-            "Kajona\Qrcode\System": "./system/"
+            "Kajona\\Qrcode\\Tests\\": "./tests/",
+            "Kajona\\Qrcode\\System\\": "./system/"
         }
     }
 }

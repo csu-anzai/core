@@ -11,9 +11,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Kajona\Installer\System": "./system/",
-            "Kajona\Installer\Api": "./api/",
-            "Kajona\Installer": "./"
+            "Kajona\\Installer\\System\\": "./system/",
+            "Kajona\\Installer\\Api\\": "./api/",
+            "Kajona\\Installer\\": "./"
         }
     }
 }

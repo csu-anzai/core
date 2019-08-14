@@ -6,10 +6,10 @@
     },
     "autoload": {
         "psr-4": {
-            "Kajona\Oauth2\Tests": "./tests/",
-            "Kajona\Oauth2\System": "./system/",
-            "Kajona\Oauth2\Installer": "./installer/",
-            "Kajona\Oauth2\Admin": "./admin/"
+            "Kajona\\Oauth2\\Tests\\": "./tests/",
+            "Kajona\\Oauth2\\System\\": "./system/",
+            "Kajona\\Oauth2\\Installer\\": "./installer/",
+            "Kajona\\Oauth2\\Admin\\": "./admin/"
         }
     }
 }

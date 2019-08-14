@@ -2,9 +2,9 @@
     "name": "agp/dbbrowser",
     "autoload": {
         "psr-4": {
-            "Kajona\Dbbrowser\Installer": "./installer/",
-            "Kajona\Dbbrowser\Api": "./api/",
-            "Kajona\Dbbrowser\Admin": "./admin/"
+            "Kajona\\Dbbrowser\\Installer\\": "./installer/",
+            "Kajona\\Dbbrowser\\Api\\": "./api/",
+            "Kajona\\Dbbrowser\\Admin\\": "./admin/"
         }
     }
 }

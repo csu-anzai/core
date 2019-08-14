@@ -13,9 +13,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Kajona\Api\System\Authorization": "./system/authorization/",
-            "Kajona\Api\System": "./system/",
-            "Kajona\Api\Api": "./api/"
+            "Kajona\\Api\\System\\Authorization\\": "./system/authorization/",
+            "Kajona\\Api\\System\\": "./system/",
+            "Kajona\\Api\\Api\\": "./api/"
         }
     }
 }

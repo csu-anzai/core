@@ -2,17 +2,17 @@
     "name": "agp/dashboard",
     "autoload": {
         "psr-4": {
-            "Kajona\Dashboard\View\Components\Widgetlist": "./view/components/widgetlist/",
-            "Kajona\Dashboard\View\Components\Widget": "./view/components/widget/",
-            "Kajona\Dashboard\View\Components\Dashboard": "./view/components/dashboard/",
-            "Kajona\Dashboard\System\Lifecycle": "./system/lifecycle/",
-            "Kajona\Dashboard\System\Filter": "./system/filter/",
-            "Kajona\Dashboard\Admin\Widgets": "./admin/widgets/",
-            "Kajona\Dashboard\System": "./system/",
-            "Kajona\Dashboard\Service": "./service/",
-            "Kajona\Dashboard\Installer": "./installer/",
-            "Kajona\Dashboard\Event": "./event/",
-            "Kajona\Dashboard\Admin": "./admin/"
+            "Kajona\\Dashboard\\View\\Components\\Widgetlist\\": "./view/components/widgetlist/",
+            "Kajona\\Dashboard\\View\\Components\\Widget\\": "./view/components/widget/",
+            "Kajona\\Dashboard\\View\\Components\\Dashboard\\": "./view/components/dashboard/",
+            "Kajona\\Dashboard\\System\\Lifecycle\\": "./system/lifecycle/",
+            "Kajona\\Dashboard\\System\\Filter\\": "./system/filter/",
+            "Kajona\\Dashboard\\Admin\\Widgets\\": "./admin/widgets/",
+            "Kajona\\Dashboard\\System\\": "./system/",
+            "Kajona\\Dashboard\\Service\\": "./service/",
+            "Kajona\\Dashboard\\Installer\\": "./installer/",
+            "Kajona\\Dashboard\\Event\\": "./event/",
+            "Kajona\\Dashboard\\Admin\\": "./admin/"
         }
     }
 }

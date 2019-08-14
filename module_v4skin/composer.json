@@ -2,10 +2,10 @@
     "name": "agp/v4skin",
     "autoload": {
         "psr-4": {
-            "Kajona\V4skin\View\Components\Rights": "./view/components/rights/",
-            "Kajona\V4skin\Admin\Skins\Kajona_V4": "./admin/skins/kajona_v4/",
-            "Kajona\V4skin\Installer": "./installer/",
-            "Kajona\V4skin\Admin": "./admin/"
+            "Kajona\\V4skin\\View\\Components\\Rights\\": "./view/components/rights/",
+            "Kajona\\V4skin\\Admin\\Skins\\Kajona_V4\\": "./admin/skins/kajona_v4/",
+            "Kajona\\V4skin\\Installer\\": "./installer/",
+            "Kajona\\V4skin\\Admin\\": "./admin/"
         }
     }
 }

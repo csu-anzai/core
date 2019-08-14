@@ -2,11 +2,11 @@
     "name": "agp/tags",
     "autoload": {
         "psr-4": {
-            "Kajona\Tags\Tests": "./tests/",
-            "Kajona\Tags\System": "./system/",
-            "Kajona\Tags\Installer": "./installer/",
-            "Kajona\Tags\Event": "./event/",
-            "Kajona\Tags\Admin": "./admin/"
+            "Kajona\\Tags\\Tests\\": "./tests/",
+            "Kajona\\Tags\\System\\": "./system/",
+            "Kajona\\Tags\\Installer\\": "./installer/",
+            "Kajona\\Tags\\Event\\": "./event/",
+            "Kajona\\Tags\\Admin\\": "./admin/"
         }
     }
 }

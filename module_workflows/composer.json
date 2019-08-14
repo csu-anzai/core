@@ -2,15 +2,15 @@
     "name": "agp/workflows",
     "autoload": {
         "psr-4": {
-            "Kajona\Workflows\System\Workflows": "./system/workflows/",
-            "Kajona\Workflows\System\Messageproviders": "./system/messageproviders/",
-            "Kajona\Workflows\Admin\Widgets": "./admin/widgets/",
-            "Kajona\Workflows\Admin\Systemtasks": "./admin/systemtasks/",
-            "Kajona\Workflows\Tests": "./tests/",
-            "Kajona\Workflows\System": "./system/",
-            "Kajona\Workflows\Installer": "./installer/",
-            "Kajona\Workflows\Event": "./event/",
-            "Kajona\Workflows\Admin": "./admin/"
+            "Kajona\\Workflows\\System\\Workflows\\": "./system/workflows/",
+            "Kajona\\Workflows\\System\\Messageproviders\\": "./system/messageproviders/",
+            "Kajona\\Workflows\\Admin\\Widgets\\": "./admin/widgets/",
+            "Kajona\\Workflows\\Admin\\Systemtasks\\": "./admin/systemtasks/",
+            "Kajona\\Workflows\\Tests\\": "./tests/",
+            "Kajona\\Workflows\\System\\": "./system/",
+            "Kajona\\Workflows\\Installer\\": "./installer/",
+            "Kajona\\Workflows\\Event\\": "./event/",
+            "Kajona\\Workflows\\Admin\\": "./admin/"
         }
     }
 }

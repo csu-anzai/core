@@ -2,13 +2,13 @@
     "name": "agp/search",
     "autoload": {
         "psr-4": {
-            "Kajona\Search\System\Workflows": "./system/workflows/",
-            "Kajona\Search\Admin\Systemtasks": "./admin/systemtasks/",
-            "Kajona\Search\Tests": "./tests/",
-            "Kajona\Search\System": "./system/",
-            "Kajona\Search\Installer": "./installer/",
-            "Kajona\Search\Event": "./event/",
-            "Kajona\Search\Admin": "./admin/"
+            "Kajona\\Search\\System\\Workflows\\": "./system/workflows/",
+            "Kajona\\Search\\Admin\\Systemtasks\\": "./admin/systemtasks/",
+            "Kajona\\Search\\Tests\\": "./tests/",
+            "Kajona\\Search\\System\\": "./system/",
+            "Kajona\\Search\\Installer\\": "./installer/",
+            "Kajona\\Search\\Event\\": "./event/",
+            "Kajona\\Search\\Admin\\": "./admin/"
         }
     }
 }

@@ -2,7 +2,7 @@
     "name": "agp/basicauthentication",
     "autoload": {
         "psr-4": {
-            "Kajona\Basicauthentication\Event": "./event/"
+            "Kajona\\Basicauthentication\\Event\\": "./event/"
         }
     }
 }

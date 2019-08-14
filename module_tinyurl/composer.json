@@ -2,10 +2,10 @@
     "name": "agp/tinyurl",
     "autoload": {
         "psr-4": {
-            "Kajona\Tinyurl\Tests": "./tests/",
-            "Kajona\Tinyurl\System": "./system/",
-            "Kajona\Tinyurl\Installer": "./installer/",
-            "Kajona\Tinyurl\Admin": "./admin/"
+            "Kajona\\Tinyurl\\Tests\\": "./tests/",
+            "Kajona\\Tinyurl\\System\\": "./system/",
+            "Kajona\\Tinyurl\\Installer\\": "./installer/",
+            "Kajona\\Tinyurl\\Admin\\": "./admin/"
         }
     }
 }
