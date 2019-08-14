@@ -2,10 +2,14 @@
     "name": "agp/packagemanager",
     "autoload": {
         "psr-4": {
-            "Kajona\\Packagemanager\\Tests\\": "./tests/",
             "Kajona\\Packagemanager\\System\\": "./system/",
             "Kajona\\Packagemanager\\Installer\\": "./installer/",
             "Kajona\\Packagemanager\\Admin\\": "./admin/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Kajona\\Packagemanager\\Tests\\": "./tests/"
         }
     }
 }

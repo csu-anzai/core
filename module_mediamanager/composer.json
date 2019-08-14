@@ -4,11 +4,15 @@
         "psr-4": {
             "Kajona\\Mediamanager\\System\\Validators\\": "./system/validators/",
             "Kajona\\Mediamanager\\Admin\\Formentries\\": "./admin/formentries/",
-            "Kajona\\Mediamanager\\Tests\\": "./tests/",
             "Kajona\\Mediamanager\\System\\": "./system/",
             "Kajona\\Mediamanager\\Installer\\": "./installer/",
             "Kajona\\Mediamanager\\Admin\\": "./admin/",
             "Kajona\\Mediamanager\\": "./"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Kajona\\Mediamanager\\Tests\\": "./tests/"
         }
     }
 }
