@@ -33,6 +33,7 @@ interface UploadSettings {
     acceptFileTypes: string
     downloadTemplate: string
     uploadTemplate: string
+    prependFiles: boolean
 }
 
 class UploadManager {
@@ -52,7 +53,8 @@ class UploadManager {
             maxFileSize: 0,
             acceptFileTypes: '',
             downloadTemplate: null,
-            uploadTemplate: null
+            uploadTemplate: null,
+            prependFiles: false
 
         }, options );
 
@@ -70,7 +72,8 @@ class UploadManager {
             uploadTemplateId: null,
             downloadTemplateId: null,
             downloadTemplate: this.settings.downloadTemplate,
-            uploadTemplate: this.settings.uploadTemplate
+            uploadTemplate: this.settings.uploadTemplate,
+            prependFiles: this.settings.prependFiles
         };
 
         if (this.settings.autoUpload && !this.settings.multiUpload) {

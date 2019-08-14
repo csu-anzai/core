@@ -627,6 +627,7 @@ Upload-Field for multiple files with progress bar
             var uploader = fileupload.initUploader({
                 baseElement: $('#%%name%%_upl'),
                 autoUpload: true,
+                prependFiles: true,
                 readOnly: %%readOnly%%,
                 multiUpload: %%multiUpload%%,
                 paramName: '%%name%%_upl',
@@ -634,7 +635,7 @@ Upload-Field for multiple files with progress bar
                     {name: 'systemid', value: '%%mediamanagerRepoId%%'},
                     {name: 'inputElement', value : '%%name%%_upl'},
                     {name: 'folder', value : '%%folder%%'}
-            ],
+                ],
                 maxFileSize: %%maxFileSize%%,
                 acceptFileTypes: %%acceptFileTypes%%,
                 downloadTemplate: function (o) {
