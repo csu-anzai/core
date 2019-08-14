@@ -23,13 +23,30 @@ class GlobalAxiosConfig {
         this.service = new Service(axios)
         this.service.register({
             onRequest (config : any) {
+                let loadingContainer : HTMLElement = document.getElementById('moduleOutput')
+                loadingContainer.style.opacity = '0.4'
                 WorkingIndicator.start()
                 return config
             },
             onResponse (response : any) {
+                let loadingContainer : HTMLElement = document.getElementById('moduleOutput')
+                loadingContainer.style.opacity = '1'
                 WorkingIndicator.stop()
                 return response
+            },
+            onRequestError (error : any) {
+                let loadingContainer : HTMLElement = document.getElementById('moduleOutput')
+                loadingContainer.style.opacity = '1'
+                WorkingIndicator.stop()
+                return error
+            },
+            onResponseError (error :any) {
+                let loadingContainer : HTMLElement = document.getElementById('moduleOutput')
+                loadingContainer.style.opacity = '1'
+                WorkingIndicator.stop()
+                return error
             }
+
         })
     }
 }
