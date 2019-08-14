@@ -50,8 +50,7 @@ class PngChartRenderer implements ChartRendererInterface
         $process->setInput(json_encode($input));
         $process->run();
 
-        $process->getExitCode();
-
+        // todo some evaluation of $process->getOutput() to handle possible thrown exceptions from render javascript
         return $process->getOutput();
     }
 }
