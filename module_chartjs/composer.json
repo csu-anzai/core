@@ -1,3 +1,10 @@
 {
-    "name": "agp/chartjs"
+    "name": "agp/chartjs",
+    "autoload": {
+        "psr-4": {
+            "Kajona\Chartjs\Tests": "./tests/",
+            "Kajona\Chartjs\System": "./system/",
+            "Kajona\Chartjs\Debug": "./debug/"
+        }
+    }
 }

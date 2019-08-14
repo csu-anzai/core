@@ -8,5 +8,11 @@
     ],
     "require": {
         "aferrandini/phpqrcode": "1.0.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kajona\Qrcode\Tests": "./tests/",
+            "Kajona\Qrcode\System": "./system/"
+        }
     }
 }

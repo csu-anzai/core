@@ -1,3 +1,9 @@
 {
-    "name": "agp/devops"
+    "name": "agp/devops",
+    "autoload": {
+        "psr-4": {
+            "Kajona\Devops\System": "./system/",
+            "Kajona\Devops\Api": "./api/"
+        }
+    }
 }

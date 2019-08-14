@@ -1,3 +1,8 @@
 {
-    "name": "agp/wizard"
+    "name": "agp/wizard",
+    "autoload": {
+        "psr-4": {
+            "Kajona\Wizard\System": "./system/"
+        }
+    }
 }

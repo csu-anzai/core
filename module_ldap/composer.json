@@ -1,3 +1,12 @@
 {
-    "name": "agp/ldap"
+    "name": "agp/ldap",
+    "autoload": {
+        "psr-4": {
+            "Kajona\Ldap\System\Workflows": "./system/workflows/",
+            "Kajona\Ldap\System\Usersources": "./system/usersources/",
+            "Kajona\Ldap\Admin\Systemtasks": "./admin/systemtasks/",
+            "Kajona\Ldap\System": "./system/",
+            "Kajona\Ldap\Installer": "./installer/"
+        }
+    }
 }

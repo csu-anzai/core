@@ -1,3 +1,8 @@
 {
-    "name": "agp/dbdump"
+    "name": "agp/dbdump",
+    "autoload": {
+        "psr-4": {
+            "Kajona\Dbdump\System": "./system/"
+        }
+    }
 }

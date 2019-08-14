@@ -1,3 +1,9 @@
 {
-    "name": "agp/jqplot"
+    "name": "agp/jqplot",
+    "autoload": {
+        "psr-4": {
+            "Kajona\Jqplot\System": "./system/",
+            "Kajona\Jqplot\Debug": "./debug/"
+        }
+    }
 }
