@@ -2,6 +2,7 @@ import axios from 'axios'
 import qs from 'qs'
 import { Service } from 'axios-middleware'
 import WorkingIndicator from './WorkingIndicator'
+import StatusDisplay from './StatusDisplay'
 /**
  * a wrapper class for axios used to configure axios globally and adds middleware for loading animation
  */
@@ -37,12 +38,14 @@ class GlobalAxiosConfig {
             onRequestError (error : any) {
                 let loadingContainer : HTMLElement = document.getElementById('moduleOutput')
                 loadingContainer.style.opacity = '1'
+                StatusDisplay.messageError('<b>Request failed!</b>')
                 WorkingIndicator.stop()
                 return error
             },
             onResponseError (error :any) {
                 let loadingContainer : HTMLElement = document.getElementById('moduleOutput')
                 loadingContainer.style.opacity = '1'
+                StatusDisplay.messageError('<b>Request failed!</b>')
                 WorkingIndicator.stop()
                 return error
             }
