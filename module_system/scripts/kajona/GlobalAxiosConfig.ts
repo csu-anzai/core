@@ -37,7 +37,7 @@ class GlobalAxiosConfig {
                 return error
             },
             onResponseError (error :any) {
-                StatusDisplay.messageError('<b>Request failed!</b>')
+                StatusDisplay.messageError('<b>Response failed!</b>')
                 WorkingIndicator.stop()
                 return error
             }
