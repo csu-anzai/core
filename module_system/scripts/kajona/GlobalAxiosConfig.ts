@@ -21,8 +21,8 @@ class GlobalAxiosConfig {
         // Before each request, verify token
         axios.interceptors.request.use((config) => {
             const token = KAJONA_ACCESS_TOKEN
-            let jwt = jwtDecode(token)
-            if ((token != null && Date.now() - (jwt.exp + 120000) > 0)) {
+            const jwt = jwtDecode(token)
+            if ((token && Date.now() - (jwt.exp + 120000) > 0)) {
                 config.headers.Authorization = `Bearer ${token}`
             } else {
                 fetch('api.php/v1/authorization/refresh', { method: 'post',
@@ -31,16 +31,15 @@ class GlobalAxiosConfig {
                     },
                     body: JSON.stringify({ token: KAJONA_ACCESS_TOKEN }) }
                 ).then(res => {
-                    res.json().then(function (myJson) {
-                        KAJONA_ACCESS_TOKEN = myJson.access_token
-                        config.headers.Authorization = `Bearer ${myJson.access_token}`
+                    res.json().then(function (response) {
+                        KAJONA_ACCESS_TOKEN = response.access_token
+                        config.headers.Authorization = `Bearer ${response.access_token}`
                     })
                 })
             }
-
             return config
-        }, function (err) {
-            return Promise.reject(err)
+        }, (err) => {
+            Promise.reject(err)
         })
 
         this.createMiddleware()
