@@ -236,9 +236,6 @@ class RightAdmin extends AdminController implements AdminInterface
             $strReturn = ["message" => $this->getLang("save_rights_error"), "type" => "error"];
         }
 
-        // trigger rights changed event
-        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_RIGHTSCHANGED, [$strSystemid, $permissionRow]);
-
         return $strReturn;
     }
 }
