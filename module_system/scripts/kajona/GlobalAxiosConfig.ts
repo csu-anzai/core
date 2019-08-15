@@ -17,7 +17,7 @@ class GlobalAxiosConfig {
         // golbal axios's baseURL config
         axios.defaults.baseURL = KAJONA_WEBPATH
         // golbal axios's config : Access Token
-        axios.defaults.headers.common = { 'Authorization': `bearer ${KAJONA_ACCESS_TOKEN}` }
+        axios.defaults.headers.common = { 'Authorization': `Bearer ${KAJONA_ACCESS_TOKEN}` }
         // Before each request, verify token
         axios.interceptors.request.use((config) => {
             const token = KAJONA_ACCESS_TOKEN
