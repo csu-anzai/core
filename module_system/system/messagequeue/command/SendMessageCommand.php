@@ -6,7 +6,7 @@
 
 namespace Kajona\System\System\Messagequeue\Command;
 
-use Kajona\System\System\Messagequeue\Command;
+use Kajona\System\System\Messagequeue\CommandInterface;
 use Kajona\System\System\MessagingMessage;
 use Kajona\System\System\Objectfactory;
 use Kajona\System\System\UserGroup;
@@ -19,7 +19,7 @@ use Kajona\System\System\UserUser;
  * @author christoph.kappestein@artemeon.de
  * @since 7.2
  */
-class SendMessageCommand extends Command
+class SendMessageCommand implements CommandInterface
 {
     /**
      * @var MessagingMessage
@@ -81,7 +81,7 @@ class SendMessageCommand extends Command
     /**
      * @inheritDoc
      */
-    public static function fromArray(array $data): Command
+    public static function fromArray(array $data): CommandInterface
     {
         $receivers = $data['receivers'] ?? [];
         $receivers = array_map(function($receiverId){
