@@ -14,9 +14,9 @@ class GlobalAxiosConfig {
         axios.defaults.paramsSerializer = (params : any) => {
             return qs.stringify(params, { arrayFormat: 'brackets' })
         }
-        // golbal axios's baseURL config
+        // global axios's baseURL config
         axios.defaults.baseURL = KAJONA_WEBPATH
-        // golbal axios's config : Access Token
+        // global axios's config : Access Token
         axios.defaults.headers.common = { 'Authorization': `Bearer ${KAJONA_ACCESS_TOKEN}` }
         // Before each request, verify token
         axios.interceptors.request.use((config) => {
