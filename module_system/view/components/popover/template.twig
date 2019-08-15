@@ -11,7 +11,7 @@
                  if ($('#pc_{{ id|escape("js") }}').hasClass('loadDone')) {
                      window.setTimeout(function(){
                          $('#lc_{{ id|escape("js") }}').html($('#pc_{{ id|escape("js") }}').html());
-                     }, 0);
+                     }, 0.25);
 
                      return '<div id="lc_{{ id|escape("js") }}"></div>';
                  }
