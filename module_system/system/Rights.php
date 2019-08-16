@@ -219,8 +219,6 @@ class Rights
             Logger::getInstance()->error("saving rights of record ".$strSystemid." failed");
             throw new Exception("saving rights of record ".$strSystemid." failed", Exception::$level_ERROR);
         }
-        
-        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_PERMISSIONSCHANGED, array($strSystemid, $arrRights));
 
         return $bitSave;
     }
@@ -307,6 +305,9 @@ class Rights
         }
 
         $bitReturn = $bitReturn && $this->writeSingleRecord($strSystemid, $arrRights);
+
+        // trigger permission changed event
+        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_PERMISSIONSCHANGED, array($strSystemid, $arrRights));
 
         //load all child records in order to update them, too.
         $arrChilds = $this->getChildNodes($strSystemid);
