@@ -4,25 +4,24 @@
  *       Published under the GNU LGPL v2.1
  ********************************************************************************************************/
 
-namespace Kajona\Api\System\Http;
+namespace Kajona\Api\System\Authorization;
 
-use PSX\Http\Environment\HttpResponse;
+use Kajona\Api\System\AuthorizationInterface;
+use Slim\Http\Request;
 
 /**
+ * Anonymous authorization strategy to explicit allow public access without authorization
+ *
  * @author christoph.kappestein@artemeon.de
  * @since 7.2
  */
-class JsonResponse extends HttpResponse
+class Anonymous implements AuthorizationInterface
 {
     /**
-     * @param mixed $data
-     * @param int $code
-     * @param array $headers
+     * @inheritdoc
      */
-    public function __construct($data, int $code = 200, array $headers = [])
+    public function isAuthorized(Request $request): bool
     {
-        $headers['Content-Type'] = 'application/json';
-
-        parent::__construct($code, $headers, \json_encode($data));
+        return true;
     }
 }

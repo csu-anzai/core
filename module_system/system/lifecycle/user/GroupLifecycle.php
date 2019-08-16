@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace Kajona\System\System\Lifecycle\User;
 
-use Kajona\System\System\Carrier;
 use Kajona\System\System\IdGenerator;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleImpl;
@@ -66,7 +65,6 @@ class GroupLifecycle extends ServiceLifeCycleImpl
             $targetGroup = $provider->getNewGroup();
             ServiceLifeCycleFactory::getLifeCycle(get_class($targetGroup))->update($targetGroup);
             $targetGroup->setNewRecordId($model->getSystemid());
-            Carrier::getInstance()->getObjDB()->flushQueryCache();
             $model->setObjSourceGroup($targetGroup);
         }
     }
