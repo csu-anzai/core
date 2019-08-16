@@ -1,14 +1,13 @@
-import { Component, Vue, Watch } from 'vue-property-decorator'
+import { Component, Watch, Mixins } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import SearchResult from '../SearchResult/SearchResult.vue'
 import Loader from 'core/module_system/scripts/components/Loader/Loader.vue'
 import SearchbarFilter from '../SearchbarFilter/SearchbarFilter.vue'
 import Modal from 'core/module_system/scripts/components/Modal/Modal.vue'
-import { FetchLang } from 'core/module_system/scripts/kajona/VueI18nDecorator'
+import { LangMixin } from 'core/module_system/scripts/kajona/VueMixings'
 
 @Component({ components: { SearchResult, Loader, SearchbarFilter, Modal } })
-@FetchLang(['search', 'dashboard', 'system'])
-class Searchbar extends Vue {
+class Searchbar extends Mixins(LangMixin(['search', 'dashboard', 'system'])) {
      @namespace('SearchModule').Action triggerSearch: any
      @namespace('SearchModule').Action resetSearchResults: any
      @namespace('SearchModule').State searchResults : Array<any>
@@ -22,7 +21,7 @@ class Searchbar extends Vue {
      @namespace('SearchModule').Action setSearchQuery : any
      @namespace('SearchModule').Action setShowResultsNumber : any
 
-     private userInput : String =''
+     private userInput : string = ''
      private inputTimer : number
      private mounted () : void {
          var parent = document.getElementById('searchbarContainer')
