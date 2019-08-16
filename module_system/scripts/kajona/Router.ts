@@ -155,9 +155,13 @@ class Router {
                 // in this case we want that the parent routes to the provided url
                 url = url.replace('peClose=1', '')
                 url = url.replace('peLoad=1', '')
-                parent.routie(url)
+
+                // @ts-ignore
+                parent.window.Router.loadUrl(url)
+
             } else {
-                parent.routie.reload()
+                // @ts-ignore
+                parent.window.Router.reload()
             }
             return
         }

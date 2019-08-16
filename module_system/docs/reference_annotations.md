@@ -46,3 +46,14 @@ Annotation         |Context    |Introduced in     |Description
 |@templateExport	|Property	|4.5|	A property marked with this annotation will be picked up by the portal-template-mapper, the property is available to be used in templates.
 |@templateMapper name	|Property	|4.5	|Optional annotation. If present, the named mapper will be used to transform the propties' value before writing it back to the template.
 |@versionable	|Property	|4.1	|If the changlog is enabled, the old and new values are added to the changelog on object updates.
+
+## API Annotations
+
+These annotations can be used at any API controller:
+
+|Annotation        |Context    |Since |Description
+|------------------|-----------|------|--------------------
+|@api	           |Method	   |7.2	  |Declares that the method is accessible through the API.
+|@method           |Method	   |7.2	  |Defines the required HTTP method i.e. GET or POST.
+|@path             |Method	   |7.2	  |Defines the route which invokes this method. More details at the [Slim Router](http://www.slimframework.com/docs/v3/objects/router.html) documentation.
+|@authorization    |Method	   |7.2	  |Defines the authorization type. By default your method should use `usertoken` but it is also possible to use `anonymous` if you want that your method can be accessed without user authentication.

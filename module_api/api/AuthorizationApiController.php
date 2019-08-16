@@ -33,6 +33,7 @@ class AuthorizationApiController implements ApiControllerInterface
      * @api
      * @method POST
      * @path /v1/authorization/token
+     * @authorization anonymous
      */
     public function getAccessToken(): array
     {
@@ -54,6 +55,7 @@ class AuthorizationApiController implements ApiControllerInterface
     /**
      * @method POST
      * @path /v1/authorization/refresh
+     * @authorization anonymous
      */
     public function refreshToken($body)
     {

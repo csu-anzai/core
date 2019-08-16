@@ -40,9 +40,9 @@ class MessagingTest extends Testbase
         $strIdentifier = generateSystemid() . " identifier";
 
         $objMessageHandler = new MessagingMessagehandler();
-        $objMessageHandler->sendMessage($strText, new UserGroup(SystemSetting::getConfigValue("_admins_group_id_")), new MessageproviderExceptions(), $strIdentifier, $strTitle);
+        $objMessageHandler->sendMessage($strText, Objectfactory::getInstance()->getObject(SystemSetting::getConfigValue("_admins_group_id_")), new MessageproviderExceptions(), $strIdentifier, $strTitle);
 
-        $objGroup = new UserGroup(SystemSetting::getConfigValue("_admins_group_id_"));
+        $objGroup = Objectfactory::getInstance()->getObject(SystemSetting::getConfigValue("_admins_group_id_"));
         $arrUsers = $objGroup->getObjSourceGroup()->getUserIdsForGroup();
 
         $arrMessages = MessagingMessage::getObjectListFiltered(null, $arrUsers[0]);
@@ -64,9 +64,9 @@ class MessagingTest extends Testbase
         $objMessage = $this->newMessage();
 
         $objMessageHandler = new MessagingMessagehandler();
-        $objMessageHandler->sendMessageObject($objMessage, new UserGroup(SystemSetting::getConfigValue("_admins_group_id_")));
+        $objMessageHandler->sendMessageObject($objMessage, Objectfactory::getInstance()->getObject(SystemSetting::getConfigValue("_admins_group_id_")));
 
-        $objGroup = new UserGroup(SystemSetting::getConfigValue("_admins_group_id_"));
+        $objGroup = Objectfactory::getInstance()->getObject(SystemSetting::getConfigValue("_admins_group_id_"));
         $arrUsers = $objGroup->getObjSourceGroup()->getUserIdsForGroup();
 
         foreach ($arrUsers as $objOneUser) {
@@ -162,9 +162,9 @@ class MessagingTest extends Testbase
         $strText = generateSystemid() . " autotest";
 
         $objMessageHandler = new MessagingMessagehandler();
-        $objMessageHandler->sendMessage($strText, new UserGroup(SystemSetting::getConfigValue("_admins_group_id_")), new MessageproviderExceptions());
+        $objMessageHandler->sendMessage($strText, Objectfactory::getInstance()->getObject(SystemSetting::getConfigValue("_admins_group_id_")), new MessageproviderExceptions());
 
-        $objGroup = new UserGroup(SystemSetting::getConfigValue("_admins_group_id_"));
+        $objGroup = Objectfactory::getInstance()->getObject(SystemSetting::getConfigValue("_admins_group_id_"));
         $arrUsers = $objGroup->getObjSourceGroup()->getUserIdsForGroup();
         $strUserId = $arrUsers[0];
 
