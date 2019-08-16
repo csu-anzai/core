@@ -67,8 +67,10 @@ class Router {
     }
 
     public static defaultRoutieCallback (url: string) {
-        if (url.includes('/vm/')) {
+        if (url.includes('/vm/') && KAJONA_ACCESS_TOKEN) {
             return
+        } else if (!KAJONA_ACCESS_TOKEN) {
+            url = 'login/login'
         }
         // in case we receive an absolute url with no hash redirect the user to this url
         // since we cant resolve this url to a hash route
@@ -155,9 +157,13 @@ class Router {
                 // in this case we want that the parent routes to the provided url
                 url = url.replace('peClose=1', '')
                 url = url.replace('peLoad=1', '')
-                parent.routie(url)
+
+                // @ts-ignore
+                parent.window.Router.loadUrl(url)
+
             } else {
-                parent.routie.reload()
+                // @ts-ignore
+                parent.window.Router.reload()
             }
             return
         }
