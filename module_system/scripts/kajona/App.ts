@@ -16,7 +16,7 @@ import VueRouter from './VueMainComponent/VueRouter'
 import i18n from './VueMainComponent/VueLang'
 import GlobalAxiosConfig from './GlobalAxiosConfig'
 import VueI18n from 'vue-i18n'
-import GlobalAxiosConfig from './GlobalAxiosConfig'
+
 declare global {
     interface Window {
         i18n : VueI18n
@@ -107,6 +107,8 @@ class App {
 // register all the global dependencies in window object
 ;(<any>window).App = App
 ;(<any>window).$ = (<any>window).jQuery = require('jquery')
-;(<any>window).moment = moment
+;
+
+(<any>window).moment = moment
 ;(<any>window).mermaid = mermaid
 export default App
