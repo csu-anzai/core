@@ -107,6 +107,8 @@ class App {
 // register all the global dependencies in window object
 ;(<any>window).App = App
 ;(<any>window).$ = (<any>window).jQuery = require('jquery')
-;(<any>window).moment = moment
+;
+
+(<any>window).moment = moment
 ;(<any>window).mermaid = mermaid
 export default App

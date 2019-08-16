@@ -8,7 +8,7 @@ const pathsFinder = require('./pathsFinder')
 const LiveReloadPlugin = require('webpack-livereload-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin')
-const {VueLoaderPlugin} = require('vue-loader')
+const { VueLoaderPlugin } = require('vue-loader')
 const liveReloadOptions = {
     hostname: 'localhost',
     protocol: 'http'
@@ -22,30 +22,33 @@ module.exports = async env => {
 
     return {
         entry: {
-            agp: tsPaths,
-            less: '../module_v4skin/admin/skins/kajona_v4/less/styles.less'
+            agp: devMode // if dev mode compile all the modules
+                ? glob.sync('../../core*/module_*/scripts/**/*.ts')
+                : tsPaths // else only compile the needed modules for prod
         },
         output: {
             filename: './[name].min.js',
-            path: path.resolve(__dirname, '../../files/extract/assets/')
+            path: path.resolve(__dirname, '../module_system/scripts/')
         },
 
         module: {
             rules: [
                 {
                     test: /\.vue$/, // vue loader for the template files
+
                     loader: 'vue-loader',
                     options: {
                         loaders: {
                             scss: 'vue-style-loader!css-loader!sass-loader',
-                            sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax'
+                            sass:
+                                'vue-style-loader!css-loader!sass-loader?indentedSyntax'
                         }
                     }
                 },
                 {
                     test: /\.tsx?$/, // typescript loader for the .ts and .tsx files
                     use: [
-                        {loader: 'babel-loader'},
+                        { loader: 'babel-loader' },
                         {
                             loader: 'ts-loader',
                             options: {
@@ -62,15 +65,7 @@ module.exports = async env => {
                     exclude: /node_modules/
                 },
                 {
-                    test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)$/, // loader for the fonts makes import of this files possible
-                    loader: 'file-loader',
-                    options: {
-                        name: "fonts/[name].[ext]",
-                        publicPath: 'files/extract/assets',
-                    }
-                },
-                {
-                    test: /\.(png|jpg|gif)$/, // images , makes import of this files possible
+                    test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)|\.(png|jpg|gif)$/, // loader for the fonts/images , makes import of this files possible
                     loader: 'url-loader'
                 },
                 {
@@ -108,7 +103,7 @@ module.exports = async env => {
                 '@': path.resolve(__dirname, '../../'), // define root directory as @ : makes typecript imports easier / avoid long relative path input
                 core: path.resolve(__dirname, '../'), // define core directory as core : makes typecript imports easier / avoid long relative path input
                 core_agp: path.resolve(__dirname, '../../core_agp'), // define core_agp directory as core_agp : makes typecript imports easier / avoid long relative path input
-                core_customer: path.resolve(__dirname, '../../core_customer') // define core_customer directory as core_customer : makes typescript imports easier / avoid long relative path input
+                core_customer: path.resolve(__dirname, '../../core_customer') // define core_customer directory as core_customer : makes typecript imports easier / avoid long relative path input
                 // !important all the aliases definitions needs to be defined in the tsconfig.json as well
             }
         },
@@ -116,7 +111,9 @@ module.exports = async env => {
             ? [
                 new Dotenv({
                     // adds support for .env files
-                    path: path.resolve(__dirname, '.env.dev')
+                    path: devMode
+                        ? path.resolve(__dirname, '.env.dev')
+                        : path.resolve(__dirname, '.env.prod')
                 }),
                 new webpack.ProvidePlugin({
                     // Automatically load modules instead of having to import or require them everywhere. needed for alot of jquery based modules
@@ -128,13 +125,14 @@ module.exports = async env => {
                 new WatchMissingNodeModulesPlugin( // This Webpack plugin ensures npm install <library> forces a project rebuild.
                     path.resolve('node_modules')
                 ),
-                new VueLoaderPlugin(),
-                new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // ignores not used languages for moment.js and fullcalendar.js for a smaller bundle size
+                new VueLoaderPlugin() // adds support for the vue DevTools plugin (chrome)
             ] // else use these plugins
             : [
                 new Dotenv({
                     // adds support for .env files
-                    path: path.resolve(__dirname, '.env.prod')
+                    path: devMode
+                        ? path.resolve(__dirname, '.env.dev')
+                        : path.resolve(__dirname, '.env.prod')
                 }),
                 new webpack.ProvidePlugin({
                     // Automatically load modules instead of having to import or require them everywhere. needed for alot of jquery based modules
@@ -142,8 +140,8 @@ module.exports = async env => {
                     $: 'jquery',
                     jquery: 'jquery'
                 }),
-                new VueLoaderPlugin(),
                 new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // ignores not used languages for moment.js and fullcalendar.js for a smaller bundle size
+                new VueLoaderPlugin() // adds support for the vue DevTools plugin (chrome)
             ],
         optimization: {
             minimize: !devMode, // minimize bundle size only in prod
