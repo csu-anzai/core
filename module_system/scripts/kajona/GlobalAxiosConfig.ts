@@ -8,7 +8,7 @@ const jwtDecode = require('jwt-decode')
  * a wrapper class for axios used to configure axios globally and adds middleware for loading animation
  */
 class GlobalAxiosConfig {
-    private service : any
+    private service : Service
     constructor () {
         // global parameter serializer for axios : converts json data to url params
         axios.defaults.paramsSerializer = (params : any) => {
@@ -19,7 +19,7 @@ class GlobalAxiosConfig {
         // global axios's config : Access Token
         axios.defaults.headers.common = { 'Authorization': `Bearer ${KAJONA_ACCESS_TOKEN}` }
         // Before each request, verify token
-        axios.interceptors.request.use((config) => {
+        axios.interceptors.request.use(config => {
             const token = KAJONA_ACCESS_TOKEN
             const jwt = jwtDecode(token)
             if ((token && Date.now() - (jwt.exp + 120000) > 0)) {
@@ -38,9 +38,8 @@ class GlobalAxiosConfig {
                 })
             }
             return config
-        }, (err) => {
-            Promise.reject(err)
-        })
+        }, err => Promise.reject(err)
+        )
 
         this.createMiddleware()
     }
