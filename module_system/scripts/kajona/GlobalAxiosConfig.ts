@@ -3,6 +3,7 @@ import qs from 'qs'
 import { Service } from 'axios-middleware'
 import WorkingIndicator from './WorkingIndicator'
 import StatusDisplay from './StatusDisplay'
+
 const jwtDecode = require('jwt-decode')
 
 /**
@@ -57,10 +58,6 @@ class GlobalAxiosConfig {
             onResponse (response : any) {
                 WorkingIndicator.stop()
                 return response
-            }
-        })
-    }
-}
             },
             onRequestError (error : any) {
                 StatusDisplay.messageError('<b>Request failed!</b>')
@@ -72,7 +69,6 @@ class GlobalAxiosConfig {
                 WorkingIndicator.stop()
                 return error
             }
-
         })
     }
 }
