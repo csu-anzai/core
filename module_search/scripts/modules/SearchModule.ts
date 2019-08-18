@@ -107,9 +107,7 @@ const SearchModule = {
                 }
 
             }))
-            if (err) {
-                toastr.error('Fehler')
-            } if (res) {
+            if (res) {
                 commit('SET_SEARCH_RESULTS', res.data)
             }
             commit('SET_SHOW_RESULTS_NUMBER', true)
@@ -152,9 +150,7 @@ const SearchModule = {
                     action: 'getModulesForFilter'
                 }
             }))
-            if (err) {
-                toastr.error('Fehler')
-            }
+
             if (res) {
                 commit('SET_FILTER_MODULES', res.data)
             }
@@ -176,9 +172,7 @@ const SearchModule = {
                     filter: userQuery !== '' ? userQuery : undefined
                 }
             }))
-            if (err) {
-                toastr.error('Fehler')
-            }
+
             if (res) {
                 commit('SET_AUTOCPMPLETE_USERS', res.data)
             }
