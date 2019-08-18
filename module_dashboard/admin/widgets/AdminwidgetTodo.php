@@ -23,36 +23,57 @@ class AdminwidgetTodo extends Adminwidget implements AdminwidgetInterface
     /**
      * @var string
      */
-    private $imgFileName = 'todo.png';
-
-    private const SELECTED_KEY = 'selected';
+    private $imgFileName = "todo.png";
 
     public function __construct()
     {
         parent::__construct();
 
         //register the fields to be persisted and loaded
-        $this->setPersistenceKeys([self::SELECTED_KEY]);
+        $arrCategories = TodoRepository::getAllCategories();
+        $arrKeys = array();
+        foreach ($arrCategories as $strTitle => $arrRows) {
+            $arrKeys[] = md5($strTitle);
+        }
+
+        $this->setPersistenceKeys($arrKeys);
+    }
+
+    /**
+     * Allows the widget to add additional fields to the edit-/create form.
+     * Use the toolkit class as usual.
+     *
+     * @return string
+     */
+    public function getEditForm()
+    {
+        $strReturn = "";
+        $arrCategories = TodoRepository::getAllCategories();
+        foreach ($arrCategories as $strTitle => $arrRows) {
+            $strKey = md5($strTitle);
+            $strReturn .= $this->objToolkit->formInputCheckbox($strKey, $strTitle, $this->getFieldValue($strKey));
+        }
+
+        return $strReturn;
     }
 
     /**
      * @param AdminFormgenerator $form
-     * @throws Exception
      */
     public function getEditFormContent(AdminFormgenerator $form)
     {
         $arrCategories = TodoRepository::getAllCategories();
 
-        $arrCheckboxes = [];
         foreach ($arrCategories as $strTitle => $arrRows) {
             $strKey = md5($strTitle);
-            $arrCheckboxes[$strKey] = $strTitle;
+            try {
+                $form->addField(new FormentryCheckboxarray("", $strKey), "")
+                    ->setStrLabel($strTitle)
+                    ->setStrValue($this->getFieldValue($strKey));
+            } catch (Exception $exception) {
+                // unable to add checkbox array form entry for category
+            }
         }
-
-        $form->addField(new FormentryCheckboxarray('', self::SELECTED_KEY), '')
-            ->setStrLabel($strTitle)
-            ->setArrKeyValues($arrCheckboxes)
-            ->setStrValue($this->getFieldValue(self::SELECTED_KEY));
     }
 
     /**
@@ -61,11 +82,10 @@ class AdminwidgetTodo extends Adminwidget implements AdminwidgetInterface
      * Do NOT use the toolkit right here!
      *
      * @return string
-     * @throws Exception
      */
     public function getWidgetOutput()
     {
-        $strReturn = '';
+        $strReturn = "";
 
         $arrCategories = TodoRepository::getAllCategories();
 
@@ -73,7 +93,7 @@ class AdminwidgetTodo extends Adminwidget implements AdminwidgetInterface
             return $this->getEditWidgetForm();
         }
 
-        $bitConfiguration = !empty($this->getFieldValue(self::SELECTED_KEY));
+        $bitConfiguration = $this->hasConfiguration();
         $arrValues = array();
 
         foreach ($arrCategories as $strProviderName => $arrTaskCategories) {
@@ -83,7 +103,7 @@ class AdminwidgetTodo extends Adminwidget implements AdminwidgetInterface
 
             // check whether the category is enabled for the user. If the user has not configured the widget all
             // categories are displayed
-            if ($bitConfiguration && !array_key_exists(md5($strProviderName), $this->getFieldValue(self::SELECTED_KEY))) {
+            if ($bitConfiguration && !$this->getFieldValue(md5($strProviderName))) {
                 continue;
             }
 
@@ -91,18 +111,18 @@ class AdminwidgetTodo extends Adminwidget implements AdminwidgetInterface
                 $arrTodos = TodoRepository::getOpenTodos($strKey);
 
                 if (count($arrTodos) > 0) {
-                    $strLink = Link::getLinkAdmin('dashboard', 'todo', 'listfilter_category=' . $strKey, count($arrTodos));
+                    $strLink = Link::getLinkAdmin("dashboard", "todo", "listfilter_category=".$strKey, count($arrTodos));
                     $arrValues[] = array($strProviderName, $strCategoryName, $strLink);
                 }
             }
         }
 
         if (empty($arrValues)) {
-            $strReturn .= $this->objToolkit->warningBox($this->getLang('no_tasks_available'), 'alert-success');
+            $strReturn .= $this->objToolkit->warningBox($this->getLang("no_tasks_available"), "alert-success");
             return $strReturn;
+        } else {
+            $strReturn .= $this->objToolkit->dataTable(array(), $arrValues);
         }
-
-        $strReturn .= $this->objToolkit->dataTable(array(), $arrValues);
 
         return $strReturn;
     }
@@ -114,7 +134,20 @@ class AdminwidgetTodo extends Adminwidget implements AdminwidgetInterface
      */
     public function getWidgetName()
     {
-        return $this->getLang('todo_name');
+        return $this->getLang("todo_name");
+    }
+
+    protected function hasConfiguration()
+    {
+        $arrCategories = TodoRepository::getAllCategories();
+        foreach ($arrCategories as $strTitle => $arrRows) {
+            $strKey = md5($strTitle);
+            $strValue = $this->getFieldValue($strKey);
+            if ($strValue !== "") {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -122,7 +155,7 @@ class AdminwidgetTodo extends Adminwidget implements AdminwidgetInterface
      */
     public function getWidgetDescription()
     {
-        return $this->getLang('todo_description');
+        return $this->getLang("todo_description");
     }
 
     /**
