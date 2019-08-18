@@ -11,13 +11,14 @@ const SearchModule = {
         searchQuery: '',
         filterModules: null,
         selectedIds: [],
-        fetchingResults: false,
         fetchingUsers: false,
         showResultsNumber: false,
         startDate: '',
         endDate: '',
         selectedUser: '',
-        autoCompleteUsers: []
+        autoCompleteUsers: [],
+        isLoading: false,
+        filterIsOpen: false
     },
     mutations: {
         SET_SEARCH_RESULTS (state : any, payload : Array<SearchResult>) : void {
@@ -50,9 +51,6 @@ const SearchModule = {
         SET_SHOW_RESULTS_NUMBER (state : any, payload : boolean) {
             state.showResultsNumber = payload
         },
-        SET_FETCHING_RESULTS  (state : any, payload : boolean) {
-            state.fetchingResults = payload
-        },
         SET_START_DATE (state : any, payload : Date) {
             state.startDate = payload
         },
@@ -76,13 +74,22 @@ const SearchModule = {
         },
         SET_FETCHING_USERS (state : any, payload : boolean) {
             state.fetchingUsers = payload
+        },
+        START_LOADING (state : any) : void {
+            state.isLoading = true
+        },
+        STOP_LOADING (state : any) : void {
+            state.isLoading = false
+        },
+        SET_FILTER_IS_OPEN (state : any, payload : boolean): void {
+            state.filterIsOpen = payload
         }
 
     },
     actions: {
         async triggerSearch ({ commit, state }) : Promise<void> {
             commit('SET_SHOW_RESULTS_NUMBER', false)
-            commit('SET_FETCHING_RESULTS', true)
+            commit('START_LOADING')
             const [err, res] = await to(axios({
                 url: '/xml.php',
                 method: 'POST',
@@ -105,8 +112,8 @@ const SearchModule = {
             } if (res) {
                 commit('SET_SEARCH_RESULTS', res.data)
             }
-            commit('SET_FETCHING_RESULTS', false)
             commit('SET_SHOW_RESULTS_NUMBER', true)
+            commit('STOP_LOADING')
         },
         setSearchQuery ({ commit, state }, searchQuery : string) : void {
             if (state.searchQuery.length > searchQuery.length && searchQuery.length < 2 && state.searchResults.length !== 0) {
@@ -126,7 +133,8 @@ const SearchModule = {
             commit('RESET_SELECTED_IDS')
             commit('RESET_SELECTED_USER')
             commit('SET_SHOW_RESULTS_NUMBER', false)
-            commit('SET_FETCHING_RESULTS', false)
+            commit('STOP_LOADING')
+            commit('SET_FILTER_IS_OPEN', false)
         },
         openDialog ({ commit }) : void {
             commit('OPEN_SEARCH_DIALOG')
@@ -135,6 +143,7 @@ const SearchModule = {
             commit('REST_SEARCH_QUERY')
         },
         async getFilterModules ({ commit }) : Promise<void> {
+            commit('START_LOADING')
             const [err, res] = await to(axios({
                 url: '/xml.php?',
                 method: 'GET',
@@ -149,6 +158,7 @@ const SearchModule = {
             if (res) {
                 commit('SET_FILTER_MODULES', res.data)
             }
+            commit('STOP_LOADING')
         },
         setSelectedIds ({ commit }, ids: string) : void {
             commit('SET_SELECTED_IDS', ids)
@@ -188,6 +198,9 @@ const SearchModule = {
         },
         setShowResultsNumber ({ commit }, payload : boolean) : void {
             commit('SET_SHOW_RESULTS_NUMBER', payload)
+        },
+        setFilterIsOpen ({ commit }, payload: boolean) : void {
+            commit('SET_FILTER_IS_OPEN', payload)
         }
     },
     getters: {}

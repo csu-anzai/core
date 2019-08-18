@@ -27,15 +27,16 @@
               autocomplete="off"
               :placeholder="$t('dashboard.globalSearchPlaceholder')"
             />
-            <span class="input-group-addon">
-              <i class="fa fa-search" aria-hidden="true"></i>
+            <span class="input-group-addon" id="searchbarFilterToggle" @click="toggleFilter">
+              <i
+                class="fa fa-caret-down"
+                v-bind:class="{'fa fa-caret-up' : !filterIsOpen , 'fa fa-caret-up' : filterIsOpen}"
+              ></i>
             </span>
           </div>
         </form>
-        <div v-if="dialogIsOpen">
-          <SearchbarFilter></SearchbarFilter>
-        </div>
-        <Loader :loading="fetchingResults"></Loader>
+        <SearchbarFilter v-if="dialogIsOpen && filterIsOpen"></SearchbarFilter>
+        <Loader :loading="isLoading"></Loader>
         <div v-if="showResultsNumber">
           <p>
             {{ $t("search.hitlist_text1") }}

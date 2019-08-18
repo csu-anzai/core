@@ -23,13 +23,10 @@ import Util from 'core/module_system/scripts/kajona/Util'
     @namespace('SearchModule').State autoCompleteUsers : Array<User>
     @namespace('SearchModule').State fetchingUsers : boolean
 
-    private filterIsOpen : boolean = false
-
-    private toggleFilter () : void {
+    private mounted () : void {
         if (this.filterModules === null) {
             this.getFilterModules()
         }
-        this.filterIsOpen = !this.filterIsOpen
     }
     private get moduleNames () : Array<string> {
         return this.filterModules.map(element => element.module)

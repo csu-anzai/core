@@ -14,12 +14,14 @@ class Searchbar extends Mixins(LangMixin(['search', 'dashboard', 'system'])) {
      @namespace('SearchModule').State dialogIsOpen : boolean
      @namespace('SearchModule').State searchQuery : String
      @namespace('SearchModule').State showResultsNumber : boolean
-     @namespace('SearchModule').State fetchingResults : boolean
      @namespace('SearchModule').Action openDialog: any
      @namespace('SearchModule').Action closeDialog: any
      @namespace('SearchModule').Action resetSearchQuery: any
      @namespace('SearchModule').Action setSearchQuery : any
      @namespace('SearchModule').Action setShowResultsNumber : any
+     @namespace('SearchModule').State isLoading : boolean
+     @namespace('SearchModule').State filterIsOpen : boolean
+     @namespace('SearchModule').Action setFilterIsOpen : any
 
      private userInput : string = ''
      private inputTimer : number
@@ -82,6 +84,9 @@ class Searchbar extends Mixins(LangMixin(['search', 'dashboard', 'system'])) {
       }
       private onModalOpen () : void {
           document.getElementById('searchbarInput').focus()
+      }
+      private toggleFilter () : void {
+          this.setFilterIsOpen(!this.filterIsOpen)
       }
 }
 
