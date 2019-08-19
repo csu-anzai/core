@@ -53,12 +53,12 @@ class TokenRefresher
         }
 
         // generate new token
-        $token = $this->jwtManager->generate($user);
+        $newToken = $this->jwtManager->generate($user);
 
         // update user token
-        $this->connection->update('agp_user', ['access_token' => $token], ['user_id' => $user->getSystemid()]);
+        $this->connection->update('agp_user', ['user_accesstoken' => $newToken], ['user_id' => $user->getSystemid()]);
 
-        return $token;
+        return $newToken;
     }
 
     private function getUser(string $token): ?UserUser

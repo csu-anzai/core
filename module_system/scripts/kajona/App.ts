@@ -82,6 +82,8 @@ class App {
 
         // configure toastr global
         toastr.options.positionClass = 'toast-bottom-right'
+        // Axios Wrapper
+        const axiosConfig = new GlobalAxiosConfig()
     }
     public static initVue (): void {
         Vue.config.productionTip = false
