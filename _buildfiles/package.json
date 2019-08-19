@@ -12,7 +12,6 @@
   "dependencies": {
     "await-to-js": "^2.1.1",
     "axios": "^0.19.0",
-    "axios-middleware": "^0.3.1",
     "blueimp-file-upload": "^9.28.0",
     "bootstrap": "^3.3.7",
     "bootstrap-colorpicker": "^2.5.1",
@@ -35,7 +34,6 @@
     "jquery-ui.custom": "github:artemeon/jquery-ui.custom",
     "jquery.caret": "^0.3.1",
     "jstree": "^3.3.7",
-    "jwt-decode": "^2.2.0",
     "mermaid": "github:artemeon/mermaid",
     "moment": "^2.24.0",
     "qs": "^6.7.0",
@@ -88,6 +86,7 @@
     "ts-loader": "^5.4.5",
     "typescript": "^3.3.4000",
     "url-loader": "^1.1.2",
+    "file-loader": "^4.2.0",
     "vue-loader": "^15.7.0",
     "vue-template-compiler": "^2.6.10",
     "webpack": "^4.32.2",
