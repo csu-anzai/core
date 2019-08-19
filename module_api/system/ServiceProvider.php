@@ -69,6 +69,7 @@ class ServiceProvider implements ServiceProviderInterface
             return new AppBuilder(
                 $c[self::ENDPOINT_SCANNER],
                 $c[\Kajona\System\System\ServiceProvider::STR_OBJECT_BUILDER],
+                $c[\Kajona\System\System\ServiceProvider::EVENT_DISPATCHER],
                 $c
             );
         };
