@@ -100,7 +100,7 @@ class WysiwygEditor extends FormentryComponentAbstract
             "name" => $this->name,
             "title" => $this->title,
             "opener" => $this->opener,
-            "readonly" => $this->readOnly ? ' readonly ' : '',
+            "readonly" => $this->readOnly,
             "content" => $this->content,
             "editorid" => $this->editorId,
             "toolbarSet" => $this->toolbarset,

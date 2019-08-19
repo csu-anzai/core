@@ -124,6 +124,8 @@ class AppBuilder
                         if (!$authorization->isAuthorized($request)) {
                             throw new UnauthorizedException("Request not authorized", "Bearer");
                         }
+                    } else {
+                        throw new \RuntimeException('No authorization defined');
                     }
 
                     $body = $request->getParsedBody();

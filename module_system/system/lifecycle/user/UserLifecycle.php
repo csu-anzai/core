@@ -8,13 +8,10 @@ declare(strict_types=1);
 
 namespace Kajona\System\System\Lifecycle\User;
 
-use Kajona\System\System\Carrier;
-use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\Lifecycle\ServiceLifeCycleImpl;
 use Kajona\System\System\Permissions\PermissionHandlerFactory;
 use Kajona\System\System\Root;
-use Kajona\System\System\SystemEventidentifier;
 use Kajona\System\System\UserSourcefactory;
 use Kajona\System\System\UserUser;
 use Psr\Log\LoggerInterface;
@@ -62,10 +59,7 @@ class UserLifecycle extends ServiceLifeCycleImpl
             $targetUser = $provider->getNewUser();
             ServiceLifeCycleFactory::getLifeCycle(get_class($targetUser))->update($targetUser);
             $targetUser->setNewRecordId($model->getSystemid());
-            Carrier::getInstance()->getObjDB()->flushQueryCache();
             $model->setObjSourceUser($targetUser);
         }
-
-        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_USERCREATED, [$model->getSystemid()]);
     }
 }

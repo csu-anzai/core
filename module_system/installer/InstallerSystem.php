@@ -24,6 +24,7 @@ use Kajona\System\System\Lifecycle\ServiceLifeCycleFactory;
 use Kajona\System\System\MessagingAlert;
 use Kajona\System\System\MessagingConfig;
 use Kajona\System\System\MessagingMessage;
+use Kajona\System\System\MessagingQueue;
 use Kajona\System\System\OrmSchemamanager;
 use Kajona\System\System\Resourceloader;
 use Kajona\System\System\Session;
@@ -242,6 +243,7 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
         $objManager->createTable(MessagingMessage::class);
         $objManager->createTable(MessagingConfig::class);
         $objManager->createTable(MessagingAlert::class);
+        $objManager->createTable(MessagingQueue::class);
 
         // password change history
         $strReturn .= "Installing password reset history...\n";
@@ -821,12 +823,6 @@ class InstallerSystem extends InstallerBase implements InstallerInterface {
             $workflow = new WorkflowsWorkflow();
             $workflow->setStrClass(WorkflowCommandConsumer::class);
             ServiceLifeCycleFactory::getLifeCycle(get_class($workflow))->update($workflow);
-        }
-
-        // delete messaging message queue workflow
-        $wf = WorkflowsHandler::getHandlerByClass('Kajona\System\System\Workflows\WorkflowMessageQueue');
-        if ($wf !== null) {
-            $wf->deleteObjectFromDatabase();
         }
 
         $this->updateModuleVersion($this->objMetadata->getStrTitle(), "7.1.8");
