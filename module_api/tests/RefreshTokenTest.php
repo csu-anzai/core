@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Kajona\Api\Tests;
 
 use Firebase\JWT\JWT;
-use Kajona\Api\System\ApiTestCase;
 use Kajona\Api\System\JWTManager;
 use Kajona\Api\System\ProjectSecret;
 use Kajona\Api\System\ServiceProvider;

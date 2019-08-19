@@ -7,8 +7,9 @@
 
 declare(strict_types=1);
 
-namespace Kajona\Api\System;
+namespace Kajona\Api\Tests;
 
+use Kajona\Api\System\ServiceProvider;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
 use PHPUnit\Framework\TestCase;
