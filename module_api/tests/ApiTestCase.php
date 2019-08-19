@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Kajona\Api\Tests;
 
+use Kajona\Api\System\AppBuilder;
 use Kajona\Api\System\ServiceProvider;
 use Kajona\System\System\Carrier;
 use Kajona\System\System\Exception;
