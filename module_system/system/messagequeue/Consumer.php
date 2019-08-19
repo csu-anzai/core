@@ -9,6 +9,8 @@ namespace Kajona\System\System\Messagequeue;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\Database;
 use Kajona\System\System\Messagequeue\Command\CallEventCommand;
+use Kajona\System\System\Messagequeue\Command\SendMessageCommand;
+use Kajona\System\System\MessagingMessagehandler;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -118,6 +120,8 @@ class Consumer
     {
         if ($command instanceof CallEventCommand) {
             $this->eventDispatcher->notifyGenericListeners($command->getName(), $command->getArguments());
+        } elseif ($command instanceof SendMessageCommand) {
+            (new MessagingMessagehandler())->sendMessageObject($command->getMessage(), $command->getReceivers());
         } else {
             throw new \RuntimeException('Could not handle command class');
         }
