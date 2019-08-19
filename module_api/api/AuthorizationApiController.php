@@ -53,6 +53,7 @@ class AuthorizationApiController implements ApiControllerInterface
     }
 
     /**
+     * @api
      * @method POST
      * @path /v1/authorization/refresh
      * @authorization anonymous

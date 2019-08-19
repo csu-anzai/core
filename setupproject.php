@@ -145,6 +145,7 @@ JSON;
   },
   "extends": ["plugin:vue/essential", "@vue/standard", "@vue/typescript"],
   "rules": {
+    "import/newline-after-import": ["error", { "count": 1 }],
     "semi": ["error", "never"],
     "indent": [
       "error",
