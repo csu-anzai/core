@@ -1,5 +1,5 @@
 <template>
-  <form v-if="filterModules" class="form-horizontal">
+  <form v-if="filterModules" class="form-horizontal" id="searchbarFilterContainer">
     <br />
     <Multiselect
       :options="moduleNames"
