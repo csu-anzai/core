@@ -5,6 +5,9 @@ import Ajax from './Ajax'
 import Util from './Util'
 import Forms from './Forms'
 import routie from 'routie'
+import ContentToolbar from './ContentToolbar'
+import BreadCrumb from './Breadcrumb'
+
 declare global {
     interface Window {
         routie: any
@@ -64,6 +67,11 @@ class Router {
     }
 
     public static defaultRoutieCallback (url: string) {
+        if (url.includes('/vm/') && KAJONA_ACCESS_TOKEN) {
+            return
+        } else if (!KAJONA_ACCESS_TOKEN) {
+            url = 'login/login'
+        }
         // in case we receive an absolute url with no hash redirect the user to this url
         // since we cant resolve this url to a hash route
         if (url.indexOf(KAJONA_WEBPATH) === 0 && url.indexOf('/#') === -1) {
@@ -125,7 +133,9 @@ class Router {
         if (url.indexOf(KAJONA_WEBPATH) === 0) {
             url = url.replace(KAJONA_WEBPATH + '/#', '')
         }
-
+        if (url.charAt(0) === '/') {
+            url = url.substr(1)
+        }
         if (url.trim() === '') {
             if ($('#loginContainer').length > 0) {
                 // in case we are on the login template redirect to login action
@@ -139,10 +149,6 @@ class Router {
             }
         }
 
-        if (url.charAt(0) === '/') {
-            url = url.substr(1)
-        }
-
         if (isStackedDialog && url.indexOf('peClose=1') !== -1) {
             // react on peClose statements by reloading the parent view
             parent.KAJONA.admin.folderview.dialog.hide()
@@ -151,9 +157,13 @@ class Router {
                 // in this case we want that the parent routes to the provided url
                 url = url.replace('peClose=1', '')
                 url = url.replace('peLoad=1', '')
-                parent.routie(url)
+
+                // @ts-ignore
+                parent.window.Router.loadUrl(url)
+
             } else {
-                parent.routie.reload()
+                // @ts-ignore
+                parent.window.Router.reload()
             }
             return
         }
@@ -182,10 +192,17 @@ class Router {
 
         return { url: strUrlToLoad, module: arrSections[0] }
     }
-
-    private static cleanPage () {
-        // contentToolbar.resetBar(); //TODO: aktuell in ToolkitAdmin und RequestDispatcher, muss aber in einen Callback bevor der content in das target div geschrieben wird
-        // breadcrumb.resetBar();
+    /**
+    * clean contenttoolbar/breadcrumb/quickhelp/tooltip before route enter
+    * @param vueClean  : if set to true it will clean contenttoolbar and breadcrum , else this will be done in the backend
+     */
+    public static cleanPage (vueClean : boolean = false) {
+        // TODO: aktuell in ToolkitAdmin und RequestDispatcher, muss aber in einen Callback bevor der content in das target div geschrieben wird
+        if (vueClean) {
+            ContentToolbar.resetBar()
+            BreadCrumb.resetBar()
+            document.getElementById('moduleOutput').innerHTML = ''
+        }
         Quickhelp.resetQuickhelp()
         Tooltip.removeTooltip($('*[rel=tooltip]'))
         // disable visible tooltips

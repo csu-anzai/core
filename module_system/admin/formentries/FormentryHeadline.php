@@ -24,7 +24,6 @@ class FormentryHeadline extends FormentryBase implements FormentryPrintableInter
 
     protected $strLevel = "h2";
     protected $strClass = "";
-    private $dataAttributes = [];
 
     public function __construct($strName = "")
     {
@@ -46,7 +45,7 @@ class FormentryHeadline extends FormentryBase implements FormentryPrintableInter
     public function renderField()
     {
         $cmp = new Headline($this->getStrValue(), $this->getStrClass(), $this->getStrLevel());
-        $cmp->setData($this->dataAttributes);
+        $cmp->setData($this->getDataAttributes());
         return $cmp->renderComponent();
     }
 
@@ -64,7 +63,7 @@ class FormentryHeadline extends FormentryBase implements FormentryPrintableInter
     public function getValueAsText()
     {
         $cmp = new Headline($this->getStrValue(), "", $this->getStrLevel());
-        $cmp->setData($this->dataAttributes);
+        $cmp->setData($this->getDataAttributes());
         return $cmp->renderComponent();
     }
 
@@ -103,23 +102,6 @@ class FormentryHeadline extends FormentryBase implements FormentryPrintableInter
         $this->strClass = $strClass;
     }
 
-    /**
-     * @return array
-     */
-    public function getDataAttributes(): array
-    {
-        return $this->dataAttributes;
-    }
-
-    /**
-     * @param array $dataAttributes
-     * @return FormentryHeadline
-     */
-    public function setDataAttributes(array $dataAttributes): FormentryHeadline
-    {
-        $this->dataAttributes = $dataAttributes;
-        return $this;
-    }
 
 
 }

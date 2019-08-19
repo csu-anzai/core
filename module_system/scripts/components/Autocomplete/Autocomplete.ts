@@ -44,6 +44,7 @@ import Tooltip from '../../kajona/Tooltip'
         }
     }
     @Watch('input') onChange () : void {
+        $('.spinner').show()
         if (this.input.length === 0) {
             this.$emit('delete')
         } else {

@@ -14,7 +14,7 @@ use Kajona\System\System\Resourceloader;
 /**
  * EndpointScanner
  *
- * @author christoph.kappestein@gmail.com
+ * @author christoph.kappestein@artemeon.de
  * @since 7.1
  */
 class EndpointScanner
@@ -60,6 +60,10 @@ class EndpointScanner
 
                 if (empty($path)) {
                     throw new \RuntimeException("Provided an empty path at {$class}::{$methodName}");
+                }
+
+                if (empty($authorization)) {
+                    throw new \RuntimeException("Provided no authorization at {$class}::{$methodName}");
                 }
 
                 $routes[] = [

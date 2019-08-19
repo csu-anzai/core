@@ -145,6 +145,7 @@ JSON;
   },
   "extends": ["plugin:vue/essential", "@vue/standard", "@vue/typescript"],
   "rules": {
+    "import/newline-after-import": ["error", { "count": 1 }],
     "semi": ["error", "never"],
     "indent": [
       "error",
@@ -300,7 +301,7 @@ TEXT;
             echo "Error exited with a non successful status code";
             exit(1);
         }
-        echo "   " . implode("\n   ", $arrOutput);
+        //echo "   " . implode("\n   ", $arrOutput);
 
     }
 

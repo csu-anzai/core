@@ -1,9 +1,14 @@
 import Vue from 'vue'
-import Router from 'vue-router'
+import VueRouter from 'vue-router'
+import Router from '../Router'
+Vue.use(<any>VueRouter)
 
-Vue.use(<any>Router)
-
-export default new Router({
-    mode: 'history',
+const router = new VueRouter({
     routes: []
 })
+function resetContainer (to, from, next) : void {
+    Router.cleanPage(true)
+    next()
+}
+
+export default router
