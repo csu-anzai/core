@@ -36,7 +36,7 @@ const SearchModule = {
         SET_SEARCH_QUERY (state :any, payload : String) : void {
             state.searchQuery = payload
         },
-        REST_SEARCH_QUERY (state : any) : void {
+        RESET_SEARCH_QUERY (state : any) : void {
             state.searchQuery = ''
         },
         SET_FILTER_MODULES (state : any, payload : Array<FilterModule>) {
@@ -57,10 +57,10 @@ const SearchModule = {
         SET_END_DATE (state : any, payload : Date) {
             state.endDate = payload
         },
-        REST_END_DATE (state : any) {
+        RESET_END_DATE (state : any) {
             state.endDate = ''
         },
-        REST_START_DATE (state : any) {
+        RESET_START_DATE (state : any) {
             state.startDate = ''
         },
         SET_AUTOCPMPLETE_USERS (state : any, payload : Array<User>) {
@@ -125,9 +125,9 @@ const SearchModule = {
         closeDialog ({ commit }) : void {
             commit('CLOSE_SEARCH_DIALOG')
             commit('RESET_SEARCH_RESULTS')
-            commit('REST_SEARCH_QUERY')
-            commit('REST_END_DATE')
-            commit('REST_START_DATE')
+            commit('RESET_SEARCH_QUERY')
+            commit('RESET_END_DATE')
+            commit('RESET_START_DATE')
             commit('RESET_SELECTED_IDS')
             commit('RESET_SELECTED_USER')
             commit('SET_SHOW_RESULTS_NUMBER', false)
@@ -138,7 +138,7 @@ const SearchModule = {
             commit('OPEN_SEARCH_DIALOG')
         },
         resetSearchQuery ({ commit }) : void {
-            commit('REST_SEARCH_QUERY')
+            commit('RESET_SEARCH_QUERY')
         },
         async getFilterModules ({ commit }) : Promise<void> {
             commit('START_LOADING')
