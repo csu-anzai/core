@@ -209,9 +209,14 @@ class Folderview {
      * closes the current dialog
      */
     public static close() {
-        if (window.opener) {
-            window.close();
-        } else if (parent) {
+        try {
+            if (window.opener && window.opener.KAJONA) {
+               window.close();
+            }
+        } catch (ex) {
+        }
+
+        if (parent && parent !== window) {
             var context = parent.require('folderview');
             // in case we call setCheckboxArrayObjectListItems without dialog
             if (context.dialog) {

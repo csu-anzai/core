@@ -27,9 +27,13 @@ class Util {
      * @returns {*}
      */
     public static getElementFromOpener(strElementId: string) {
-        if (window.opener) {
-            return $('#' + strElementId, window.opener.document);
-        } else if (parent){
+        try {
+            if (window.opener && window.opener.KAJONA) {
+                return $('#' + strElementId, window.opener.document);
+            }
+        } catch (ex) {
+        }
+        if (parent && parent !== window) {
             if (parent.KAJONA.util.folderviewHandler) {
                 // in case we are coming from a nested view
                 var el = parent.$('#folderviewDialog_iframe').contents().find('#' + strElementId);
@@ -39,9 +43,9 @@ class Util {
             }
             return parent.$('#' + strElementId);
         }
-        else {
-            return $('#' + strElementId);
-        }
+
+        return $('#' + strElementId);
+
     }
 
     /**
