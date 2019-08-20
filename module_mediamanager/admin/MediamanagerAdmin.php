@@ -16,6 +16,7 @@ use Kajona\Mediamanager\System\MediamanagerFile;
 use Kajona\Mediamanager\System\MediamanagerFileFilter;
 use Kajona\Mediamanager\System\MediamanagerLogbook;
 use Kajona\Mediamanager\System\MediamanagerRepo;
+use Kajona\Mediamanager\View\Components\InputUploadMultiple\InputUploadMultiple;
 use Kajona\System\Admin\AdminEvensimpler;
 use Kajona\System\Admin\AdminInterface;
 use Kajona\System\System\AdminListableInterface;
@@ -418,7 +419,8 @@ HTML;
             $objCurFile = Objectfactory::getInstance()->getObject($objCurFile->getPrevId());
         }
 
-        $strReturn .= $this->objToolkit->formInputUploadMultiple("mediamanager_upload", $objCurFile->getStrUploadFilter(), $this->getSystemid());
+        $inputUpload = new InputUploadMultiple("mediamanager_upload", "", $objCurFile->getStrUploadFilter(), $this->getSystemid());
+        $strReturn .= $inputUpload->renderComponent();
 
         return $strReturn;
     }
