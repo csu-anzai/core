@@ -49,6 +49,7 @@ use Kajona\System\View\Components\Formentry\Radiogroup\Radiogroup;
 use Kajona\System\View\Components\Formentry\Submit\Submit;
 use Kajona\System\View\Components\Headline\Headline;
 use Kajona\System\View\Components\Listbody\Listbody;
+use Kajona\System\View\Components\ListButton\ListButton;
 use Kajona\System\View\Components\Popover\Popover;
 use Kajona\System\View\Components\Tabbedcontent\Tabbedcontent;
 use Kajona\System\View\Components\Textrow\TextRow;
@@ -625,99 +626,6 @@ class ToolkitAdmin extends Toolkit
         }
     }
 
-    /**
-     * Returns a input-file element for uploading multiple files with progress bar. Only functional in combination with
-     * the mediamanager module
-     *
-     * @param string $strName
-     * @param string $strAllowedFileTypes
-     * @param string $strMediamangerRepoSystemId
-     *
-     * @return string
-     */
-    public function formInputUploadMultiple($strName, $strAllowedFileTypes, $strMediamangerRepoSystemId)
-    {
-
-        if (SystemModule::getModuleByName("mediamanager") === null) {
-            return ($this->warningBox("Module mediamanager is required for multiple uploads"));
-        }
-
-        $objConfig = Carrier::getInstance()->getObjConfig();
-        $objText = Carrier::getInstance()->getObjLang();
-
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["mediamanagerRepoId"] = $strMediamangerRepoSystemId;
-
-        $strAllowedFileRegex = StringUtil::replace(array(".", ","), array("", "|"), $strAllowedFileTypes);
-        $strAllowedFileTypes = StringUtil::replace(array(".", ","), array("", "', '"), $strAllowedFileTypes);
-
-        $arrTemplate["allowedExtensions"] = $strAllowedFileTypes != "" ? $objText->getLang("upload_allowed_extensions", "mediamanager") . ": '" . $strAllowedFileTypes . "'" : $strAllowedFileTypes;
-        $arrTemplate["maxFileSize"] = $objConfig->getPhpMaxUploadSize();
-        $arrTemplate["acceptFileTypes"] = $strAllowedFileRegex != "" ? "/(\.|\/)(" . $strAllowedFileRegex . ")$/i" : "''";
-
-        $arrTemplate["upload_multiple_errorFilesize"] = $objText->getLang("upload_multiple_errorFilesize", "mediamanager") . " " . bytesToString($objConfig->getPhpMaxUploadSize());
-
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_upload_multiple");
-    }
-
-    /**
-     * Creates a multi-upload field inline, so directly within a form.
-     * Only to be used in combination with FormentryMultiUpload.
-     * The dir-param is the directory in the filesystem. The Mediamanager-Backend takes
-     * care of validating permissions and creating the relevant MediamanagerFile entries on the fly.
-     *
-     * @param string $strName
-     * @param $strTitle
-     * @param MediamanagerRepo $objRepo
-     * @param $strTargetDir
-     * @param bool $bitReadonly
-     * @param bool $bitVersioning
-     * @return string
-     * @see FormentryMultiUpload
-     */
-    public function formInputUploadInline($strName, $strTitle, MediamanagerRepo $objRepo, $strTargetDir, $bitReadonly = false, $bitVersioning = true, $bitMultiUpload = true, $showArchive = false, $targetSystemId = null)
-    {
-
-        if (SystemModule::getModuleByName("mediamanager") === null) {
-            return ($this->warningBox("Module mediamanager is required for multiple uploads"));
-        }
-
-        $objConfig = Carrier::getInstance()->getObjConfig();
-        $objText = Carrier::getInstance()->getObjLang();
-
-        $arrTemplate = array();
-        $arrTemplate["name"] = $strName;
-        $arrTemplate["title"] = $strTitle;
-        $arrTemplate["mediamanagerRepoId"] = $objRepo->getSystemid();
-        $arrTemplate["folder"] = $strTargetDir;
-        $arrTemplate["readOnly"] = $bitReadonly ? 'true' : 'false';
-        $arrTemplate["multiUpload"] = $bitMultiUpload ? 'true' : 'false';
-        $arrTemplate["addButton"] = $bitReadonly ? "" : $this->listButton("<i class='kj-icon fa fa-plus-circle'></i>"); //AdminskinHelper::getAdminImage("icon_new", $objText->getLang("mediamanager_upload", "mediamanager"));
-        $arrTemplate["moveButton"] = $bitReadonly || !$bitVersioning ? "" : "<a id='version_{$strName}'>" . $this->listButton(AdminskinHelper::getAdminImage("icon_archive", $objText->getLang("version_files", "mediamanager"))) . "</a>";
-        $arrTemplate["archiveButton"] = $bitReadonly || !$showArchive ? "" : "<a id='archive_{$strName}'>".$this->listButton(AdminskinHelper::getAdminImage("icon_phar", $objText->getLang("archive_files", "mediamanager")))."</a>";
-        $arrTemplate["archiveTitle"] = $objText->getLang("archive_files", "mediamanager");
-        $arrTemplate["archiveBody"] = $objText->getLang("archive_files_notice", "mediamanager");
-        $arrTemplate["targetSystemId"] = $targetSystemId;
-
-        $strAllowedFileRegex = StringUtil::replace(array(".", ","), array("", "|"), $objRepo->getStrUploadFilter());
-        $strAllowedFileTypes = StringUtil::replace(array(".", ","), array("", "', '"), $objRepo->getStrUploadFilter());
-
-        $arrTemplate["allowedExtensions"] = $strAllowedFileTypes != "" ? $objText->getLang("upload_allowed_extensions", "mediamanager") . ": '" . $strAllowedFileTypes . "'" : $strAllowedFileTypes;
-        $arrTemplate["maxFileSize"] = $objConfig->getPhpMaxUploadSize();
-        $arrTemplate["acceptFileTypes"] = $strAllowedFileRegex != "" ? "/(\.|\/)(" . $strAllowedFileRegex . ")$/i" : "''";
-        $arrTemplate["upload_multiple_errorFilesize"] = $objText->getLang("upload_multiple_errorFilesize", "mediamanager") . " " . bytesToString($objConfig->getPhpMaxUploadSize());
-
-        $arrTemplate["helpButton"] = $bitReadonly ? "" : $this->listButton(
-            "<a>" . $this->getPopoverText(
-                AdminskinHelper::getAdminImage("icon_question", "", true),
-                $objText->getLang("mediamanager_upload", "mediamanager"),
-                $objText->getLang("upload_dropArea_extended", "mediamanager", [$strAllowedFileTypes, bytesToString($objConfig->getPhpMaxUploadSize())])
-            ) . "</a>"
-        );
-
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "input_upload_inline");
-    }
 
     /**
      * Returning a complete Dropdown
@@ -1473,12 +1381,14 @@ HTML;
      * @param string $strContent
      *
      * @return string
+     *
+     * @deprecated use new ListButton($content) instead
      */
-    public function listButton($strContent)
+    public function listButton($content)
     {
-        $arrTemplate = array();
-        $arrTemplate["content"] = $strContent;
-        return $this->objTemplate->fillTemplateFile($arrTemplate, "/admin/skins/kajona_v4/elements.tpl", "list_button");
+        $listAddButton = new ListButton($content);
+
+        return $listAddButton->renderComponent();
     }
 
     /**
