@@ -60,6 +60,7 @@
         </table>
     </div>
     <script type="text/javascript">
+        (function () {
             var filesToUpload = 0;
             var uploader = Fileupload.initUploader({
                 baseElement: $('#{{ name }}'),
@@ -112,7 +113,7 @@
                         $(this).find('.fileupload-progress').css('display', 'none');
                     }
                 });
-
+        })();
 
     </script>
 </div>

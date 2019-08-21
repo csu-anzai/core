@@ -54,7 +54,9 @@
         {{ moveButton|raw }}
         {{ archiveButton|raw }}
     </div>
-    <script type="text/javascript">
+</div>
+<script type="text/javascript">
+    (function () {
         var readOnly = {% if readOnly %} true {% else %} false {% endif %};
         var multiUpload = {% if multiUpload %} true {% else %} false {% endif %};
         /**
@@ -130,7 +132,8 @@
         }
 
         uploader.renderArchiveList();
+    })()
 
-    </script>
-</div>
+</script>
+
 
