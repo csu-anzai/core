@@ -49,7 +49,7 @@ use Kajona\System\View\Components\Formentry\Objectlist\Objectlist;
 use Kajona\System\View\Components\Formentry\Submit\Submit;
 use Kajona\System\View\Components\Headline\Headline;
 use Kajona\System\View\Components\Listbody\Listbody;
-use Kajona\System\View\Components\ListButton\ListButton;
+use Kajona\System\View\Components\Listbutton\ListButton;
 use Kajona\System\View\Components\Popover\Popover;
 use Kajona\System\View\Components\Tabbedcontent\Tabbedcontent;
 use Kajona\System\View\Components\Textrow\TextRow;

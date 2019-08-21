@@ -6,7 +6,7 @@
 
 declare(strict_types = 1);
 
-namespace Kajona\System\View\Components\ListButton;
+namespace Kajona\System\View\Components\Listbutton;
 
 use Kajona\System\View\Components\AbstractComponent;
 
