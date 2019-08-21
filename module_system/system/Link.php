@@ -492,4 +492,22 @@ class Link
         return $strParams;
     }
 
+    /** creates a link containing #/vm/ at the beginning in order to enter vue context (similar to router-link of vue-router)
+     * @param $strVueLink
+     * @param string $strText
+     * @param string $strAlt
+     * @param string $strImage
+     * @param bool $bitTooltip
+     * @param string $strCss
+     * @param string $strOnClick
+     * @return string
+     */
+    public static  function getVueLink($strVueLink, $strText = "", $strAlt = "", $strImage = "", $bitTooltip = true, $strCss = "", $strOnClick = "" ) {
+        $strHref = "href=\"#/vm/" . $strVueLink. "\"";
+        if (!empty($strOnClick)) {
+            $strHref .= ' onclick="' . htmlspecialchars($strOnClick) . '"';
+        }
+        return self::getLinkAdminManual($strHref, $strText, $strAlt, $strImage, "", "", $bitTooltip, $strCss);
+    }
+
 }
