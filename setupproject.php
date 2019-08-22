@@ -327,18 +327,14 @@ TEXT;
 
     private static function scanComposer()
     {
-        if (is_file(__DIR__ . "/_buildfiles/bin/buildComposer.php")) {
-            echo "Install composer dependencies" . PHP_EOL;
-            $arrOutput = array();
-            exec("php -f " . escapeshellarg(self::$strRealPath . "/core/_buildfiles/bin/buildComposer.php"), $arrOutput, $exitCode);
-            if ($exitCode !== 0) {
-                echo "Error exited with a non successful status code";
-                exit(1);
-            }
-            echo "   " . implode("\n   ", $arrOutput);
-        } else {
-            echo "<span style='color: red;'>Missing buildComposer.php helper</span>";
+        echo "Install composer dependencies" . PHP_EOL;
+        $arrOutput = array();
+        exec("composer install -d " . escapeshellarg(self::$strRealPath), $arrOutput, $exitCode);
+        if ($exitCode !== 0) {
+            echo "Error exited with a non successful status code";
+            exit(1);
         }
+        echo "   " . implode("\n   ", $arrOutput);
     }
 }
 
