@@ -10,7 +10,7 @@ use Kajona\Mediamanager\System\MediamanagerFile;
 use Kajona\Mediamanager\System\MediamanagerFileFilter;
 use Kajona\Mediamanager\System\MediamanagerRepo;
 use Kajona\Mediamanager\System\Validators\MediamanagerUploadValidator;
-use Kajona\Mediamanager\View\Components\Formentry\InputUploadInline\InputUploadInline;
+use Kajona\Mediamanager\View\Components\Formentry\Inputuploadinline\InputUploadInline;
 use Kajona\System\Admin\Formentries\FormentryBase;
 use Kajona\System\Admin\FormentryPrintableInterface;
 use Kajona\System\System\Carrier;
