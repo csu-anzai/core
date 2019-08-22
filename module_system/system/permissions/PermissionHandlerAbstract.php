@@ -57,30 +57,30 @@ abstract class PermissionHandlerAbstract implements PermissionHandlerInterface
     /**
      * @inheritdoc
      */
-    public function onCreate(Root $objRecord)
+    public function onCreate(Root $record)
     {
-        if (!$this->isValid($objRecord)) {
+        if (!$this->isValid($record)) {
             return;
         }
 
-        $this->calculatePermissions($objRecord);
+        $this->calculatePermissions($record);
     }
 
     /**
      * @inheritdoc
      */
-    public function onUpdate(Root $objOldRecord, Root $objNewRecord)
+    public function onUpdate(Root $oldRecord, Root $newRecord)
     {
-        if (!$this->isValid($objNewRecord)) {
+        if (!$this->isValid($newRecord)) {
             return;
         }
 
         // if nothing has changed we also dont need to set the rights
-        if (!$this->hasChanged($objOldRecord, $objNewRecord)) {
+        if (!$this->hasChanged($oldRecord, $newRecord)) {
             return;
         }
 
-        $this->calculatePermissions($objNewRecord);
+        $this->calculatePermissions($newRecord);
     }
 
     /**
