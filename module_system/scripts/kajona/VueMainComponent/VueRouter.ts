@@ -7,7 +7,9 @@ Vue.use(<any>VueRouter)
 
 const router = new VueRouter({
     routes: [
-        { path: '/vm/reportconfigurator/:reportId',
+        {
+            path: '/vm/reportconfigurator/:reportId/:page',
+            name: 'reportconfigurator',
             component: Reportgenerator,
             beforeEnter: resetContainer
         }
