@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace Kajona\Mediamanager\View\Components\Formentry\InputUploadInline;
+namespace Kajona\Mediamanager\View\Components\Formentry\Inputuploadinline;
 
 use Kajona\Mediamanager\System\MediamanagerRepo;
 use Kajona\System\System\AdminskinHelper;
