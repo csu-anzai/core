@@ -13,6 +13,7 @@ use Kajona\System\System\Messagequeue\CommandInterface;
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.2
+ * @executor system_message_queue_executor_call_event
  */
 class CallEventCommand implements CommandInterface
 {

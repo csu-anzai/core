@@ -18,6 +18,7 @@ use Kajona\System\System\UserUser;
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.2
+ * @executor system_message_queue_executor_send_message
  */
 class SendMessageCommand implements CommandInterface
 {

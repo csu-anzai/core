@@ -7,7 +7,7 @@
 namespace Kajona\System\System\Messagequeue\Executor;
 
 use Kajona\System\System\Messagequeue\CommandInterface;
-use Kajona\System\System\Messagequeue\Command\InvalidCommandException;
+use Kajona\System\System\Messagequeue\Exception\InvalidCommandException;
 use Kajona\System\System\Messagequeue\Command\SendMessageCommand;
 use Kajona\System\System\Messagequeue\ExecutorInterface;
 use Kajona\System\System\MessagingMessagehandler;
@@ -17,7 +17,6 @@ use Kajona\System\System\MessagingMessagehandler;
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.2
- * @executor system_message_queue_executor_send_message
  */
 class SendMessageExecutor implements ExecutorInterface
 {

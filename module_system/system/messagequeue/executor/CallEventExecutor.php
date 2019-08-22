@@ -9,7 +9,7 @@ namespace Kajona\System\System\Messagequeue\Executor;
 use Kajona\System\System\CoreEventdispatcher;
 use Kajona\System\System\Messagequeue\CommandInterface;
 use Kajona\System\System\Messagequeue\Command\CallEventCommand;
-use Kajona\System\System\Messagequeue\Command\InvalidCommandException;
+use Kajona\System\System\Messagequeue\Exception\InvalidCommandException;
 use Kajona\System\System\Messagequeue\ExecutorInterface;
 
 /**
@@ -17,7 +17,6 @@ use Kajona\System\System\Messagequeue\ExecutorInterface;
  *
  * @author christoph.kappestein@artemeon.de
  * @since 7.2
- * @executor system_message_queue_executor_call_event
  */
 class CallEventExecutor implements ExecutorInterface
 {
