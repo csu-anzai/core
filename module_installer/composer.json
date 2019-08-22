@@ -1,11 +1,5 @@
 {
     "name": "agp/installer",
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://buildpackages.kajona.de:5443"
-        }
-    ],
     "require": {
         "symfony/lock": "^4.2"
     },

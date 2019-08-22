@@ -1,11 +1,5 @@
 {
     "name": "agp/api",
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://buildpackages.kajona.de:5443"
-        }
-    ],
     "require": {
         "slim/slim": "^3.0",
         "psx/data": "^2.3",
