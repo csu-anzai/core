@@ -5,6 +5,7 @@
       per-page="1"
       :prev-text="$t('commons.commons_back')"
       :next-text="$t('commons.commons_continue')"
+      v-model="currentPage"
       @change="onChange($event)"
     ></BPagination>
   </div>
