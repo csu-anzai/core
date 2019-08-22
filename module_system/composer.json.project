@@ -1,6 +1,10 @@
 {
     "repositories": [
         {
+            "type": "composer",
+            "url": "https://buildpackages.kajona.de:5443"
+        },
+        {
             "type": "path",
             "url": "../core*/module_*",
             "options": {
