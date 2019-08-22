@@ -1,14 +1,22 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Router from '../Router'
+import store from './Store'
 import RatingDetail from 'core_customer/module_hsbcact/scripts/components/RatingDetail/RatingDetail.vue'
 Vue.use(<any>VueRouter)
 
 const router = new VueRouter({
     routes: [
-        { path: '/vm/evaluation/:systemId/details',
+        {
+            path: '/vm/hsbcact/rating/:systemId',
             component: RatingDetail,
-            beforeEnter: resetContainer
+            beforeEnter: resetContainer,
+            props: route => ({
+                query: {
+                    startDate: route.query.startDate,
+                    endDate: route.query.endDate
+                }
+            })
         }
     ]
 })
