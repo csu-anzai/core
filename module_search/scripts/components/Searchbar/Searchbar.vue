@@ -1,6 +1,6 @@
 <template >
-  <div v-if="langFetched">
-    <form class="navbar-search pull-left" v-if="!dialogIsOpen">
+  <div v-if="langFetched" class="core-component-searchbar">
+    <form class="navbar-search pull-left " v-if="!dialogIsOpen">
       <div class="input-group">
         <input
           class="form-control search-query"
@@ -14,6 +14,7 @@
     </form>
     <Modal :show="dialogIsOpen" @close="close" @open="onModalOpen">
       <div class="modal-body">
+        <div class="row container-fluid">
         <form @submit="onSubmit" class="navbar-search pull-left">
           <div class="input-group">
             <input
@@ -27,7 +28,7 @@
               autocomplete="off"
               :placeholder="$t('dashboard.globalSearchPlaceholder')"
             />
-            <span class="input-group-addon" id="searchbarFilterToggle" @click="toggleFilter">
+            <span class="input-group-addon searchbarFilterToggle" @click="toggleFilter" :title="$t('search.form_additionalheader')" rel="tooltip">
               <i
                 class="fa fa-caret-down"
                 v-bind:class="{'fa fa-caret-up' : !filterIsOpen , 'fa fa-caret-up' : filterIsOpen}"
@@ -35,18 +36,19 @@
             </span>
           </div>
         </form>
+        </div>
         <SearchbarFilter v-if="dialogIsOpen && filterIsOpen"></SearchbarFilter>
         <Loader :loading="isLoading"></Loader>
-        <div v-if="showResultsNumber">
-          <p>
-            {{ $t("search.hitlist_text1") }}
-            "{{ searchQuery }}"
-            {{ $t("search.hitlist_text2") }}
-            {{ searchResults.length }}
-            {{ $t("search.hitlist_text3") }}
-          </p>
-        </div>
-        <div id="searchResultsContainer">
+        <div class="searchResultsContainer">
+          <div v-if="showResultsNumber">
+            <p>
+              {{ $t("search.hitlist_text1") }}
+              "{{ searchQuery }}"
+              {{ $t("search.hitlist_text2") }}
+              {{ searchResults.length }}
+              {{ $t("search.hitlist_text3") }}
+            </p>
+          </div>
           <div
             v-if="
               searchResults.length !== 0 &&

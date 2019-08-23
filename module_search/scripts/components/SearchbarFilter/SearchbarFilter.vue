@@ -1,6 +1,6 @@
 <template>
-  <form v-if="filterModules" class="form-horizontal" id="searchbarFilterContainer">
-    <br />
+  <div class="core-component-searchbarfilter row container-fluid">
+  <form v-if="filterModules" class="form-horizontal">
     <Multiselect
       :options="moduleNames"
       :label="$t('search.search_modules')"
@@ -29,6 +29,7 @@
       :tooltip="$t('search.delete_action')"
     ></Datepicker>
   </form>
+  </div>
 </template>
 <script lang="ts" src="./SearchbarFilter.ts">
 </script>
