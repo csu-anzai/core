@@ -25,7 +25,7 @@ class Consumer
     /**
      * Count of events which are max processed
      */
-    private const MAX_PREFETCH = 50;
+    private const MAX_PREFETCH = 512;
 
     /**
      * @var Database
