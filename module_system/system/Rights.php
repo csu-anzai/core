@@ -209,7 +209,12 @@ class Rights
             $objLog->processChanges($objInstance, "editPermissions", $arrChanges);
         }
 
-        $bitSave = $this->setRightsRecursive($arrRights, $strSystemid);
+        $affectedSystemIds = [];
+
+        $bitSave = $this->setRightsRecursive($arrRights, $strSystemid, $affectedSystemIds);
+
+        // trigger permission changed event
+        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_PERMISSIONSCHANGED, array($strSystemid, $affectedSystemIds, $arrRights));
 
         if ($bitSave) {
             $this->objDb->transactionCommit();
@@ -279,10 +284,11 @@ class Rights
      *
      * @param array $arrRights
      * @param string $strSystemid
+     * @param array $affectedSystemIds
      *
      * @return bool
      */
-    private function setRightsRecursive(array $arrRights, string $strSystemid): bool
+    private function setRightsRecursive(array $arrRights, string $strSystemid, array &$affectedSystemIds): bool
     {
         $bitReturn = true;
         $this->flushRightsCache();
@@ -304,10 +310,9 @@ class Rights
             $arrRights[self::$STR_RIGHT_INHERIT] = 1;
         }
 
-        $bitReturn = $bitReturn && $this->writeSingleRecord($strSystemid, $arrRights);
+        $affectedSystemIds[] = $strSystemid;
 
-        // trigger permission changed event
-        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_PERMISSIONSCHANGED, array($strSystemid, $arrRights));
+        $bitReturn = $bitReturn && $this->writeSingleRecord($strSystemid, $arrRights);
 
         //load all child records in order to update them, too.
         $arrChilds = $this->getChildNodes($strSystemid);
@@ -319,7 +324,7 @@ class Rights
                 if ($arrChildRights[self::$STR_RIGHT_INHERIT] == 1) {
                     $arrChildRights = $arrRights;
                     $arrChildRights[self::$STR_RIGHT_INHERIT] = 1;
-                    $bitReturn = $bitReturn && $this->setRightsRecursive($arrChildRights, $strOneChildId);
+                    $bitReturn = $bitReturn && $this->setRightsRecursive($arrChildRights, $strOneChildId, $affectedSystemIds);
                 }
             }
         }
