@@ -1498,7 +1498,10 @@ place ajaxScript before the closing input_tagselector-tag.
     <div class="panel panel-default panel-combined">
         <div class="panel-heading">
             <span class="linkcontainer collapsed">
-                %%combined_header%%
+            %%combined_header%%
+                <a rel="tooltip" data-kajona-module="search" onclick="">
+                    <i class="fa fa-search"></i>
+                </a>
             </span>
         </div>
         %%combined_body%%
