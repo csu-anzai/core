@@ -1859,7 +1859,6 @@ JS;
                 "messaging" => "fa-envelope",
                 "dashboard" => "fa-home",
                 "tags" => "fa-tags",
-//                "search" => "fa-search",
             ];
 
             $strModules = "";
