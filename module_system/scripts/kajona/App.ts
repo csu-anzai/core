@@ -8,7 +8,6 @@ import Dialog from 'core/module_v4skin/scripts/kajona/Dialog'
 import Folderview from './Folderview'
 import DialogHelper from 'core/module_v4skin/scripts/kajona/DialogHelper'
 import moment from 'moment'
-import mermaid from 'mermaid'
 import VueMain from './VueMainComponent/VueMain.vue'
 import Vue from 'vue'
 import store from './VueMainComponent/Store'
@@ -110,5 +109,4 @@ class App {
 ;
 
 (<any>window).moment = moment
-;(<any>window).mermaid = mermaid
 export default App
