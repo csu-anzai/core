@@ -270,37 +270,20 @@ class FlowGraphWriter
         $strAction = Lang::getInstance()->getLang("modul_titel_transition_action", "flow");
         $strCondition = Lang::getInstance()->getLang("modul_titel_transition_condition", "flow");
 
-        $strInit = "{}";
         $strHeight = "";
         if (self::$bitIsIe) {
-            $strInit = '{flowchart:{
-                htmlLabels:false,
-                useMaxWidth:true
-            }}';
             $strHeight = "height: 900px;";
         }
+
+        $isIe = self::$bitIsIe ? 'true' : 'false';
 
         return <<<HTML
 <div id='flow-graph' class='mermaid' style='color:#fff; {$strHeight} '>{$strGraph}</div>
 <script type="text/javascript">
-
-
-
-    Loader.loadFile(["/core/module_flow/scripts/mermaid/mermaid.forest.css"], function(){
-        
-        let mm = new window.Mermaidwrapper('{$strTmpSystemId}', '{$strLinkTransition}', '{$strLinkTransitionAction}', '{$strLinkTransitionCondition}', {$strInit}, '{$strAction}', '{$strCondition}');
+        let mm = new window.Mermaidwrapper('{$strTmpSystemId}', '{$strLinkTransition}', '{$strLinkTransitionAction}', '{$strLinkTransitionCondition}', '{$strAction}', '{$strCondition}', {$isIe})
         mm.renderGraph();
         
-        });
 </script>
-<style type="text/css">
-.mermaid .label {
-    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: normal;
-    font-size: 13px;
-}
-
-</style>
 HTML;
     }
 
