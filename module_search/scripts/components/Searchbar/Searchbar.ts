@@ -29,10 +29,10 @@ class Searchbar extends Mixins(LangMixin(['search', 'dashboard', 'system'])) {
          var parent = document.getElementById('searchbarContainer')
          parent.appendChild(this.$el)
          // add event listener : ctrl + f opens searchbar , Esc closes searchbar
-         document.body.addEventListener('keydown', this.shortcutHandler)
+         //  document.body.addEventListener('keydown', this.shortcutHandler)
      }
      private destroyed () : void {
-         document.body.removeEventListener('keydown', this.shortcutHandler)
+         //  document.body.removeEventListener('keydown', this.shortcutHandler)
      }
      private onSubmit (e : Event) : void {
          e.preventDefault()
