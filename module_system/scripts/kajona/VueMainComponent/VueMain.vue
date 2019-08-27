@@ -1,6 +1,7 @@
 <template>
   <div>
-    <router-view />
+    <Searchbar></Searchbar>
+    <router-view/>
   </div>
 </template>
 <script lang="ts" src="./VueMain.ts">
