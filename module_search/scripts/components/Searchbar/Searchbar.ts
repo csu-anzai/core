@@ -1,25 +1,29 @@
-import { Component, Vue, Watch } from 'vue-property-decorator'
+import { Component, Watch, Mixins } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import SearchResult from '../SearchResult/SearchResult.vue'
 import Loader from 'core/module_system/scripts/components/Loader/Loader.vue'
 import SearchbarFilter from '../SearchbarFilter/SearchbarFilter.vue'
 import Modal from 'core/module_system/scripts/components/Modal/Modal.vue'
+import { LangMixin } from 'core/module_system/scripts/kajona/VueMixings'
 
-@Component({ components: { SearchResult, Loader, SearchbarFilter, Modal } }) class Searchbar extends Vue {
+@Component({ components: { SearchResult, Loader, SearchbarFilter, Modal } })
+class Searchbar extends Mixins(LangMixin(['search', 'dashboard', 'system'])) {
      @namespace('SearchModule').Action triggerSearch: any
      @namespace('SearchModule').Action resetSearchResults: any
      @namespace('SearchModule').State searchResults : Array<any>
      @namespace('SearchModule').State dialogIsOpen : boolean
      @namespace('SearchModule').State searchQuery : String
      @namespace('SearchModule').State showResultsNumber : boolean
-     @namespace('SearchModule').State fetchingResults : boolean
      @namespace('SearchModule').Action openDialog: any
      @namespace('SearchModule').Action closeDialog: any
      @namespace('SearchModule').Action resetSearchQuery: any
      @namespace('SearchModule').Action setSearchQuery : any
      @namespace('SearchModule').Action setShowResultsNumber : any
+     @namespace('SearchModule').State isLoading : boolean
+     @namespace('SearchModule').State filterIsOpen : boolean
+     @namespace('SearchModule').Action setFilterIsOpen : any
 
-     private userInput : String =''
+     private userInput : string = ''
      private inputTimer : number
      private mounted () : void {
          var parent = document.getElementById('searchbarContainer')
@@ -44,7 +48,7 @@ import Modal from 'core/module_system/scripts/components/Modal/Modal.vue'
          }, 500)
      }
      private open () : void {
-         let parent = document.getElementById('content')
+         let parent = document.getElementById('moduleOutput')
          parent.appendChild(this.$el)
          this.openDialog()
      }
@@ -80,6 +84,9 @@ import Modal from 'core/module_system/scripts/components/Modal/Modal.vue'
       }
       private onModalOpen () : void {
           document.getElementById('searchbarInput').focus()
+      }
+      private toggleFilter () : void {
+          this.setFilterIsOpen(!this.filterIsOpen)
       }
 }
 

@@ -11,13 +11,14 @@ const SearchModule = {
         searchQuery: '',
         filterModules: null,
         selectedIds: [],
-        fetchingResults: false,
         fetchingUsers: false,
         showResultsNumber: false,
         startDate: '',
         endDate: '',
         selectedUser: '',
-        autoCompleteUsers: []
+        autoCompleteUsers: [],
+        isLoading: false,
+        filterIsOpen: false
     },
     mutations: {
         SET_SEARCH_RESULTS (state : any, payload : Array<SearchResult>) : void {
@@ -35,7 +36,7 @@ const SearchModule = {
         SET_SEARCH_QUERY (state :any, payload : String) : void {
             state.searchQuery = payload
         },
-        REST_SEARCH_QUERY (state : any) : void {
+        RESET_SEARCH_QUERY (state : any) : void {
             state.searchQuery = ''
         },
         SET_FILTER_MODULES (state : any, payload : Array<FilterModule>) {
@@ -50,19 +51,16 @@ const SearchModule = {
         SET_SHOW_RESULTS_NUMBER (state : any, payload : boolean) {
             state.showResultsNumber = payload
         },
-        SET_FETCHING_RESULTS  (state : any, payload : boolean) {
-            state.fetchingResults = payload
-        },
         SET_START_DATE (state : any, payload : Date) {
             state.startDate = payload
         },
         SET_END_DATE (state : any, payload : Date) {
             state.endDate = payload
         },
-        REST_END_DATE (state : any) {
+        RESET_END_DATE (state : any) {
             state.endDate = ''
         },
-        REST_START_DATE (state : any) {
+        RESET_START_DATE (state : any) {
             state.startDate = ''
         },
         SET_AUTOCPMPLETE_USERS (state : any, payload : Array<User>) {
@@ -76,13 +74,22 @@ const SearchModule = {
         },
         SET_FETCHING_USERS (state : any, payload : boolean) {
             state.fetchingUsers = payload
+        },
+        START_LOADING (state : any) : void {
+            state.isLoading = true
+        },
+        STOP_LOADING (state : any) : void {
+            state.isLoading = false
+        },
+        SET_FILTER_IS_OPEN (state : any, payload : boolean): void {
+            state.filterIsOpen = payload
         }
 
     },
     actions: {
         async triggerSearch ({ commit, state }) : Promise<void> {
             commit('SET_SHOW_RESULTS_NUMBER', false)
-            commit('SET_FETCHING_RESULTS', true)
+            commit('START_LOADING')
             const [err, res] = await to(axios({
                 url: '/xml.php',
                 method: 'POST',
@@ -100,13 +107,11 @@ const SearchModule = {
                 }
 
             }))
-            if (err) {
-                toastr.error('Fehler')
-            } if (res) {
+            if (res) {
                 commit('SET_SEARCH_RESULTS', res.data)
             }
-            commit('SET_FETCHING_RESULTS', false)
             commit('SET_SHOW_RESULTS_NUMBER', true)
+            commit('STOP_LOADING')
         },
         setSearchQuery ({ commit, state }, searchQuery : string) : void {
             if (state.searchQuery.length > searchQuery.length && searchQuery.length < 2 && state.searchResults.length !== 0) {
@@ -120,21 +125,23 @@ const SearchModule = {
         closeDialog ({ commit }) : void {
             commit('CLOSE_SEARCH_DIALOG')
             commit('RESET_SEARCH_RESULTS')
-            commit('REST_SEARCH_QUERY')
-            commit('REST_END_DATE')
-            commit('REST_START_DATE')
+            commit('RESET_SEARCH_QUERY')
+            commit('RESET_END_DATE')
+            commit('RESET_START_DATE')
             commit('RESET_SELECTED_IDS')
             commit('RESET_SELECTED_USER')
             commit('SET_SHOW_RESULTS_NUMBER', false)
-            commit('SET_FETCHING_RESULTS', false)
+            commit('STOP_LOADING')
+            commit('SET_FILTER_IS_OPEN', false)
         },
         openDialog ({ commit }) : void {
             commit('OPEN_SEARCH_DIALOG')
         },
         resetSearchQuery ({ commit }) : void {
-            commit('REST_SEARCH_QUERY')
+            commit('RESET_SEARCH_QUERY')
         },
         async getFilterModules ({ commit }) : Promise<void> {
+            commit('START_LOADING')
             const [err, res] = await to(axios({
                 url: '/xml.php?',
                 method: 'GET',
@@ -143,12 +150,11 @@ const SearchModule = {
                     action: 'getModulesForFilter'
                 }
             }))
-            if (err) {
-                toastr.error('Fehler')
-            }
+
             if (res) {
                 commit('SET_FILTER_MODULES', res.data)
             }
+            commit('STOP_LOADING')
         },
         setSelectedIds ({ commit }, ids: string) : void {
             commit('SET_SELECTED_IDS', ids)
@@ -166,9 +172,7 @@ const SearchModule = {
                     filter: userQuery !== '' ? userQuery : undefined
                 }
             }))
-            if (err) {
-                toastr.error('Fehler')
-            }
+
             if (res) {
                 commit('SET_AUTOCPMPLETE_USERS', res.data)
             }
@@ -188,6 +192,9 @@ const SearchModule = {
         },
         setShowResultsNumber ({ commit }, payload : boolean) : void {
             commit('SET_SHOW_RESULTS_NUMBER', payload)
+        },
+        setFilterIsOpen ({ commit }, payload: boolean) : void {
+            commit('SET_FILTER_IS_OPEN', payload)
         }
     },
     getters: {}
