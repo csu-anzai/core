@@ -493,6 +493,7 @@ class Link
     }
 
     /** creates a link containing #/vm/ at the beginning in order to enter vue context (similar to router-link of vue-router)
+     *
      * @param $strVueLink
      * @param string $strText
      * @param string $strAlt
