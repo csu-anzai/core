@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace Kajona\Mediamanager\View\Components\InputUploadMultiple;
+namespace Kajona\Mediamanager\View\Components\Inputuploadmultiple;
 
 use Kajona\Mediamanager\System\MediamanagerRepo;
 use Kajona\System\System\Carrier;
