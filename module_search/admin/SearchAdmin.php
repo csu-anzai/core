@@ -20,6 +20,7 @@ use Kajona\System\System\AdminListableInterface;
 use Kajona\System\System\AdminskinHelper;
 use Kajona\System\System\ArraySectionIterator;
 use Kajona\System\System\Carrier;
+use Kajona\System\System\Date;
 use Kajona\System\System\HttpResponsetypes;
 use Kajona\System\System\Link;
 use Kajona\System\System\Model;
@@ -201,11 +202,31 @@ class SearchAdmin extends AdminSimple implements AdminInterface
     }
 
     /**
-     * Decoupled rendering of search results
-     *
+     * Returns the possible modules and their ids as json for filter
+     * @responseType json
      * @permissions view
+     * @return array
+     * @throws \Kajona\System\System\Exception
      */
-    public function actionRenderSearch()
+    protected function actionGetModulesForFilter()
+    {
+        $objSearch = new SearchSearch($this->getParam("systemid"));
+        $arrModules = $objSearch->getPossibleModulesForFilter() ;
+        $arrReturn = [] ;
+        foreach($arrModules as $key => $value ){
+           $arrReturn[] = array("module" => $value , "id" => $key) ;
+       }
+        return $arrReturn ;
+    }
+
+    /**
+     * Returns search results as json
+     * @permissions view
+     * @return array
+     * @responseType json
+     * @throws \Kajona\System\System\Exception
+     */
+    public function actionGetFilteredSearch()
     {
 
         Carrier::getInstance()->getObjSession()->sessionClose();
@@ -237,30 +258,7 @@ class SearchAdmin extends AdminSimple implements AdminInterface
 
         $objSearchCommons = new SearchCommons();
         $arrResult = $objSearchCommons->doIndexedSearch($objSearch, 0, self::INT_MAX_NR_OF_RESULTS_FULLSEARCH);
-
-        $arrMappedObjects = array_map(function (SearchResult $objSearchResult) {
-            return $objSearchResult->getObjObject();
-        }, $arrResult);
-
-        $strReturn = "<content><![CDATA[";
-
-        if (count($arrMappedObjects) > 20) {
-            $strReturn .= $this->objToolkit->warningBox($this->getLang("search_reduce_hits_link"));
-        }
-
-        if (count($arrMappedObjects) > 0) {
-            $strReturn .= $this->objToolkit->listHeader();
-            foreach ($arrMappedObjects as $objOneObject) {
-                $strReturn .= $this->objToolkit->simpleAdminList($objOneObject, $this->getActionIcons($objOneObject, "searchResultList"));
-            }
-            $strReturn .= $this->objToolkit->listFooter();
-        } else {
-            $strReturn .= $this->getLang("commons_list_empty");
-        }
-
-        $strReturn .= "]]></content>";
-
-        return $strReturn;
+        return  $this->createSearchJson($this->getParam("search_query") , $arrResult) ;
     }
 
     /**
@@ -362,8 +360,8 @@ class SearchAdmin extends AdminSimple implements AdminInterface
     /**
      * @param string $strSearchterm
      * @param SearchResult[] $arrResults
-     *
-     * @return string
+     * @return array
+     * @throws \Kajona\System\System\Exception
      */
     private function createSearchJson($strSearchterm, $arrResults)
     {
@@ -393,7 +391,13 @@ class SearchAdmin extends AdminSimple implements AdminInterface
             $arrItem["systemid"] = $objOneResult->getStrSystemid();
             $arrItem["icon"] = AdminskinHelper::getAdminImage($strIcon, "", true);
             $arrItem["score"] = $objOneResult->getStrSystemid();
-            $arrItem["description"] = StringUtil::truncate($objOneResult->getObjObject()->getStrDisplayName(), 200);
+            $arrItem["description"] = $objOneResult->getObjObject()->getStrDisplayName();
+            if ($objOneResult->getObjObject() instanceof AdminListableInterface) {
+
+                $arrItem["additionalInfos"] = $objOneResult->getObjObject()->getStrAdditionalInfo();
+            }
+            $arrItem["lastModifiedBy"] = $objOneResult->getObjObject()->getLastEditUser($this->getSystemid()) ;
+            $arrItem["lastModifiedTime"] = dateToString(new Date($objOneResult->getObjObject()->getIntLmTime()));
             $arrItem["link"] = html_entity_decode($strLink);
 
             $arrItems[] = $arrItem;

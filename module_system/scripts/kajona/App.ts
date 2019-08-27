@@ -13,9 +13,14 @@ import VueMain from './VueMainComponent/VueMain.vue'
 import Vue from 'vue'
 import store from './VueMainComponent/Store'
 import VueRouter from './VueMainComponent/VueRouter'
+import i18n from './VueMainComponent/VueLang'
+import GlobalAxiosConfig from './GlobalAxiosConfig'
+import VueI18n from 'vue-i18n'
 
 declare global {
     interface Window {
+        i18n : VueI18n
+        VueContainer : Vue
         KAJONA: Kajona
         // eslint-disable-next-line camelcase
         jsDialog_0: Dialog
@@ -77,19 +82,23 @@ class App {
 
         // configure toastr global
         toastr.options.positionClass = 'toast-bottom-right'
+        // Axios Wrapper
+        const axiosConfig = new GlobalAxiosConfig()
     }
     public static initVue (): void {
         Vue.config.productionTip = false
         if (process.env.NODE_ENV === 'development') {
             Vue.config.devtools = true
         }
-        // eslint-disable-next-line no-new
-        new Vue({
+
+        window.i18n = i18n
+        window.VueContainer = new Vue({
             el: '#vueContainer',
             // @ts-ignore
             router: VueRouter,
             // @ts-ignore
             store: store,
+            i18n: i18n,
             render: h => h(VueMain)
         })
     }
@@ -98,6 +107,8 @@ class App {
 // register all the global dependencies in window object
 ;(<any>window).App = App
 ;(<any>window).$ = (<any>window).jQuery = require('jquery')
-;(<any>window).moment = moment
+;
+
+(<any>window).moment = moment
 ;(<any>window).mermaid = mermaid
 export default App

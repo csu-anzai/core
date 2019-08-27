@@ -6,8 +6,12 @@
 
 namespace Kajona\Api\System;
 
+use Kajona\Api\System\Authorization\Anonymous;
+use Kajona\Api\System\Authorization\Composite;
 use Kajona\Api\System\Authorization\FileToken;
-use Kajona\Api\System\Authorization\UserToken;
+use Kajona\Api\System\Authorization\HeaderToken;
+use Kajona\Api\System\Authorization\QueryToken;
+use Kajona\Api\System\Authorization\UserTokenAbstract;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
@@ -45,9 +49,19 @@ class ServiceProvider implements ServiceProviderInterface
     const AUTHORIZATION_FILETOKEN = "api_authorization_filetoken";
 
     /**
-     * @see UserToken
+     * @see UserTokenAbstract
      */
     const AUTHORIZATION_USERTOKEN = "api_authorization_usertoken";
+
+    /**
+     * @see Anonymous
+     */
+    const AUTHORIZATION_ANONYMOUS = "api_authorization_anonymous";
+
+    /**
+     * @see TokenRefresher
+     */
+    const TOKEN_REFRESHER = "api_token_refresher";
 
     public function register(Container $container)
     {
@@ -55,6 +69,7 @@ class ServiceProvider implements ServiceProviderInterface
             return new AppBuilder(
                 $c[self::ENDPOINT_SCANNER],
                 $c[\Kajona\System\System\ServiceProvider::STR_OBJECT_BUILDER],
+                $c[\Kajona\System\System\ServiceProvider::EVENT_DISPATCHER],
                 $c
             );
         };
@@ -82,11 +97,32 @@ class ServiceProvider implements ServiceProviderInterface
         };
 
         $container[self::AUTHORIZATION_USERTOKEN] = static function ($c) {
-            return new UserToken(
+            $headerToken = new HeaderToken(
                 $c[\Kajona\System\System\ServiceProvider::STR_DB],
                 $c[self::JWT_MANAGER],
                 $c[\Kajona\System\System\ServiceProvider::STR_SESSION]
             );
+
+            $queryToken = new QueryToken(
+                $c[\Kajona\System\System\ServiceProvider::STR_DB],
+                $c[self::JWT_MANAGER],
+                $c[\Kajona\System\System\ServiceProvider::STR_SESSION]
+            );
+
+            return new Composite($headerToken, $queryToken);
         };
+
+        $container[self::AUTHORIZATION_ANONYMOUS] = static function ($c) {
+            return new Anonymous();
+        };
+
+        $container[self::TOKEN_REFRESHER] = static function ($c) {
+            return new TokenRefresher(
+                $c[\Kajona\System\System\ServiceProvider::STR_DB],
+                $c[self::JWT_MANAGER],
+                $c[\Kajona\System\System\ServiceProvider::STR_OBJECT_FACTORY]
+            );
+        };
+
     }
 }
