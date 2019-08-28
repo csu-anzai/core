@@ -1256,17 +1256,7 @@ place ajaxScript before the closing input_tagselector-tag.
     <div id='changelogTimeline' style='text-align:center;'></div>
 
     <script type="text/javascript">
-            Changelog.lang = %%strLang%%;
-            Changelog.systemId = "%%strSystemId%%";
-            Changelog.format = Util.transformDateFormat('%%strDateFormat%%', "momentjs");
-            Changelog.now = moment().endOf('day').toDate();
-            Changelog.yearAgo = moment().startOf('day').subtract(1, 'year').toDate();
-            Changelog.selectColumn("right");
-            Changelog.loadChartData();
-
-            Changelog.loadDate("%%strSystemId%%", "%%strLeftDate%%", "left", function(){
-                Changelog.loadDate("%%strSystemId%%", "%%strRightDate%%", "right", Changelog.compareTable);
-            });
+        Changelog.initChangelog(%%strLang%%, '%%strSystemId%%', '%%strLeftDate%%', '%%strRightDate%%');
     </script>
 </changelog_heatmap>
 
