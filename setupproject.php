@@ -145,6 +145,7 @@ JSON;
   },
   "extends": ["plugin:vue/essential", "@vue/standard", "@vue/typescript"],
   "rules": {
+    "import/newline-after-import": ["error", { "count": 1 }],
     "semi": ["error", "never"],
     "indent": [
       "error",
@@ -177,7 +178,7 @@ JSON;
 
 
 JSON;
-        file_put_contents(self::$strRealPath . "/.eslintrc.json", $content);
+        file_put_contents(self::$strRealPath . "/core/_buildfiles/.eslintrc.json", $content);
     }
 
 
@@ -291,10 +292,10 @@ TEXT;
         echo "Build js files" . PHP_EOL;
         $arrOutput = array();
 
-        $workingDirectory = \getcwd();
-        \chdir(__DIR__ . '/_buildfiles');
+        $workingDirectory = getcwd();
+        chdir(__DIR__ . '/_buildfiles');
         exec('npm run build', $arrOutput, $exitCode);
-        \chdir($workingDirectory);
+        chdir($workingDirectory);
 
         if ($exitCode !== 0) {
             echo "Error exited with a non successful status code";
@@ -310,11 +311,11 @@ TEXT;
 
         $arrOutput = array();
 
-        $workingDirectory = \getcwd();
-        \chdir(__DIR__ . '/_buildfiles');
+        $workingDirectory = getcwd();
+        chdir(__DIR__ . '/_buildfiles');
         exec('npm config set registry "http://packages.artemeon.int:4873/"');
         exec('npm install', $arrOutput, $exitCode);
-        \chdir($workingDirectory);
+        chdir($workingDirectory);
 
         if ($exitCode !== 0) {
             echo "Error exited with a non successful status code";

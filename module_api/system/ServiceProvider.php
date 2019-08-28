@@ -6,6 +6,7 @@
 
 namespace Kajona\Api\System;
 
+use Kajona\Api\System\Authorization\Anonymous;
 use Kajona\Api\System\Authorization\Composite;
 use Kajona\Api\System\Authorization\FileToken;
 use Kajona\Api\System\Authorization\HeaderToken;
@@ -53,6 +54,11 @@ class ServiceProvider implements ServiceProviderInterface
     const AUTHORIZATION_USERTOKEN = "api_authorization_usertoken";
 
     /**
+     * @see Anonymous
+     */
+    const AUTHORIZATION_ANONYMOUS = "api_authorization_anonymous";
+
+    /**
      * @see TokenRefresher
      */
     const TOKEN_REFRESHER = "api_token_refresher";
@@ -63,6 +69,7 @@ class ServiceProvider implements ServiceProviderInterface
             return new AppBuilder(
                 $c[self::ENDPOINT_SCANNER],
                 $c[\Kajona\System\System\ServiceProvider::STR_OBJECT_BUILDER],
+                $c[\Kajona\System\System\ServiceProvider::EVENT_DISPATCHER],
                 $c
             );
         };
@@ -103,6 +110,10 @@ class ServiceProvider implements ServiceProviderInterface
             );
 
             return new Composite($headerToken, $queryToken);
+        };
+
+        $container[self::AUTHORIZATION_ANONYMOUS] = static function ($c) {
+            return new Anonymous();
         };
 
         $container[self::TOKEN_REFRESHER] = static function ($c) {

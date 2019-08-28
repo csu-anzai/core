@@ -45,6 +45,11 @@ class AppBuilder
     private $objectBuilder;
 
     /**
+     * @var CoreEventdispatcher
+     */
+    private $eventDispatcher;
+
+    /**
      * @var Container
      */
     private $container;
@@ -52,12 +57,14 @@ class AppBuilder
     /**
      * @param EndpointScanner $endpointScanner
      * @param ObjectBuilder $objectBuilder
+     * @param CoreEventdispatcher $eventDispatcher
      * @param Container $container
      */
-    public function __construct(EndpointScanner $endpointScanner, ObjectBuilder $objectBuilder, Container $container)
+    public function __construct(EndpointScanner $endpointScanner, ObjectBuilder $objectBuilder, CoreEventdispatcher $eventDispatcher, Container $container)
     {
         $this->endpointScanner = $endpointScanner;
         $this->objectBuilder = $objectBuilder;
+        $this->eventDispatcher = $eventDispatcher;
         $this->container = $container;
     }
 
@@ -72,7 +79,19 @@ class AppBuilder
     {
         define("_autotesting_", false);
 
-        $app = $this->newApp();
+        $this->build()->run();
+
+        $this->eventDispatcher->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_ENDPROCESSING, []);
+        $this->eventDispatcher->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_AFTERCONTENTSEND, [RequestEntrypointEnum::XML()]);
+    }
+
+    /**
+     * @return App
+     * @throws Exception
+     */
+    public function build(): App
+    {
+        $app = new App($this->newContainer());
         $objectBuilder = $this->objectBuilder;
         $container = $this->container;
         $routes = $this->endpointScanner->getEndpoints();
@@ -105,6 +124,8 @@ class AppBuilder
                         if (!$authorization->isAuthorized($request)) {
                             throw new UnauthorizedException("Request not authorized", "Bearer");
                         }
+                    } else {
+                        throw new \RuntimeException('No authorization defined');
                     }
 
                     $body = $request->getParsedBody();
@@ -147,16 +168,13 @@ class AppBuilder
             });
         }
 
-        $app->run();
-
-        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_ENDPROCESSING, array());
-        CoreEventdispatcher::getInstance()->notifyGenericListeners(SystemEventidentifier::EVENT_SYSTEM_REQUEST_AFTERCONTENTSEND, array(RequestEntrypointEnum::XML()));
+        return $app;
     }
 
     /**
-     * @return App
+     * @return SlimContainer
      */
-    private function newApp()
+    private function newContainer(): SlimContainer
     {
         $container = new SlimContainer();
         $container['notFoundHandler'] = function ($c) {
@@ -184,6 +202,6 @@ class AppBuilder
             };
         };
 
-        return new App($container);
+        return $container;
     }
 }
