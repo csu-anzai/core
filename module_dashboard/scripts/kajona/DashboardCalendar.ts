@@ -1,50 +1,50 @@
 import $ from 'jquery'
-import 'fullcalendar'
 import WorkingIndicator from '../../../module_system/scripts/kajona/WorkingIndicator'
 import Tooltip from '../../../module_system/scripts/kajona/Tooltip'
-import Loader from '../../../module_system/scripts/kajona/Loader'
-import Ajax from "core/module_system/scripts/kajona/Ajax";
-import DialogHelper from "core/module_v4skin/scripts/kajona/DialogHelper";
-import Lang from "core/module_system/scripts/kajona/Lang";
+import Ajax from "core/module_system/scripts/kajona/Ajax"
+import DialogHelper from "core/module_v4skin/scripts/kajona/DialogHelper"
+import Lang from "core/module_system/scripts/kajona/Lang"
 
 class DashboardCalendar {
-    public static init () {
-        $('#dashboard-calendar').fullCalendar({
-            header: {
-                left: 'prev,next',
-                center: 'title',
-                right: ''
-            },
-            editable: false,
-            // theme: false,
-            locale: KAJONA_LANGUAGE,
-            eventLimit: true,
-            events:
-                KAJONA_WEBPATH +
-                '/xml.php?admin=1&module=dashboard&action=getCalendarEvents',
-            eventRender: function (event, el) {
-                Tooltip.addTooltip(el, event.tooltip)
-                if (event.icon) {
-                    el.find('span.fc-title').prepend(event.icon + ' ')
+    public static init() {
+        import(/* webpackChunkName: "fullcalendar" */ 'fullcalendar').then(({default: fullCalendar}) => {
+            $('#dashboard-calendar').fullCalendar({
+                header: {
+                    left: 'prev,next',
+                    center: 'title',
+                    right: ''
+                },
+                editable: false,
+                // theme: false,
+                locale: KAJONA_LANGUAGE,
+                eventLimit: true,
+                events:
+                    KAJONA_WEBPATH +
+                    '/xml.php?admin=1&module=dashboard&action=getCalendarEvents',
+                eventRender: function (event, el) {
+                    Tooltip.addTooltip(el, event.tooltip)
+                    if (event.icon) {
+                        el.find('span.fc-title').prepend(event.icon + ' ')
+                    }
+                },
+                loading: function (isLoading) {
+                    if (isLoading) {
+                        WorkingIndicator.start()
+                    } else {
+                        WorkingIndicator.stop()
+                    }
                 }
-            },
-            loading: function (isLoading) {
-                if (isLoading) {
-                    WorkingIndicator.start()
-                } else {
-                    WorkingIndicator.stop()
-                }
-            }
+            })
+            $('.fc-button-group')
+                .removeClass()
+                .addClass('btn-group')
+            $('.fc-button')
+                .removeClass()
+                .addClass('btn btn-default')
         })
-        $('.fc-button-group')
-            .removeClass()
-            .addClass('btn-group')
-        $('.fc-button')
-            .removeClass()
-            .addClass('btn btn-default')
     }
 
-    public static getICalendarURL () {
+    public static getICalendarURL() {
         Ajax.genericAjaxCall(
             'dashboard',
             'apiGetOrCreateICalUrl',

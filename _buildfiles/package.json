@@ -97,7 +97,9 @@
     "webpack-livereload-plugin": "^2.2.0"
   },
   "babel": {
-    "plugins": ["@babel/plugin-syntax-dynamic-import"]
+    "plugins": [
+      "@babel/plugin-syntax-dynamic-import"
+    ]
   },
   "license": "ISC"
 }

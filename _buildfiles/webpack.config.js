@@ -183,10 +183,6 @@ module.exports = async env => {
                     })
                 ]
                 : [],
-            // splitChunks: {
-            //     chunks: 'all', // make a separate vendors.chunks bundle for all the npm modules (avoides duplicated dependecies + smaller bundle size)
-            //     name: 'vendors.chunks'
-            // }
         }
     }
 }
