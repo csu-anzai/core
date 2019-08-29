@@ -7,7 +7,7 @@ import Lang from 'core/module_system/scripts/kajona/Lang'
 
 import { Calendar } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
-import listGridPlugin from '@fullcalendar/list'
+import listPlugin from '@fullcalendar/list'
 import deLocale from '@fullcalendar/core/locales/de'
 import enLocale from '@fullcalendar/core/locales/en-gb'
 
@@ -15,11 +15,11 @@ class DashboardCalendar {
     public static init () {
         let calendarEl: HTMLElement = document.getElementById('dashboard-calendar')!
         let calendar = new Calendar(calendarEl, {
-            plugins: [dayGridPlugin, listGridPlugin],
+            plugins: [dayGridPlugin, listPlugin],
             header: {
                 left: 'prev,next today',
                 center: 'title',
-                right: 'dayGridMonth,listWeek'
+                right: 'dayGridMonth,listMonth'
             },
             editable: false,
             locales: [deLocale, enLocale],
@@ -29,7 +29,7 @@ class DashboardCalendar {
             eventRender: function (info) {
                 Tooltip.addTooltip(info.el, info.event.extendedProps.tooltip)
                 if (info.event.extendedProps.icon) {
-                    info.el.innerHTML = info.el.innerHTML.replace('fc-title">', 'fc-title">' + info.event.extendedProps.icon + ' ')
+                    info.el.innerHTML = info.el.innerHTML.replace('$ICON', info.event.extendedProps.icon)
                 }
             },
             loading: function (isLoading) {
@@ -43,8 +43,8 @@ class DashboardCalendar {
 
         calendar.render()
 
-        $('.fc-button-group').removeClass().addClass('btn-group')
-        $('.fc-button').removeClass().addClass('btn btn-default')
+        $('.fc-button-group').addClass('btn-group')
+        $('.fc-button').addClass('btn btn-default')
     }
 
     public static getICalendarURL () {
