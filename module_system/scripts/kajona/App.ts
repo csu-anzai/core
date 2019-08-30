@@ -7,8 +7,6 @@ import V4skin from 'core/module_v4skin/scripts/kajona/V4skin'
 import Dialog from 'core/module_v4skin/scripts/kajona/Dialog'
 import Folderview from './Folderview'
 import DialogHelper from 'core/module_v4skin/scripts/kajona/DialogHelper'
-import moment from 'moment'
-import mermaid from 'mermaid'
 import VueMain from './VueMainComponent/VueMain.vue'
 import Vue from 'vue'
 import store from './VueMainComponent/Store'
@@ -111,6 +109,5 @@ class App {
 ;(<any>window).$ = (<any>window).jQuery = require('jquery')
 ;
 
-(<any>window).moment = moment
-;(<any>window).mermaid = mermaid
+// (<any>window).moment = moment
 export default App

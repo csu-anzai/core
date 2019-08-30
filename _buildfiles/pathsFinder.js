@@ -7,7 +7,7 @@ module.exports = {
         let modulesPaths = null
         if (!fs.existsSync('./../../project/packageconfig.json')) {
             // fallback: the complete ts file list
-            return glob.sync(['../../core*/module_*/scripts/**/*.ts', { ignore: ['../../core*/module_*/scripts/**/*.e2e.cypress.ts', '../../core*/module_*/scripts/**/*.unit.cypress.ts', '../../core*/module_*/scripts/**/*.story.ts'] }])
+            return glob.sync('../../core*/module_*/scripts/**/*.ts', { ignore: ['../../core*/module_*/scripts/**/*.e2e.cypress.ts', '../../core*/module_*/scripts/**/*.unit.cypress.ts', '../../core*/module_*/scripts/**/*.story.ts'] })
         }
         let packageConfig = require('./../../project/packageconfig.json')
 

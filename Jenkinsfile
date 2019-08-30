@@ -18,56 +18,6 @@ pipeline {
             stage('Build') {
                 parallel {
 
-                    stage ('slave mssql') {
-                        agent {
-                            node {
-                                label 'mssql'
-                                customWorkspace "C:/j/workspace/KajonaCore_${BRANCH_NAME}"
-                            }
-                        }
-                        steps {
-                            checkout([
-                                $class: 'GitSCM', branches: scm.branches, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'core']], userRemoteConfigs: scm.userRemoteConfigs
-                            ])
-
-                            withAnt(installation: 'Ant') {
-                                bat "ant -buildfile core/_buildfiles/build.xml buildSqliteFast"
-                            }
-                            archiveArtifacts 'core/_buildfiles/packages/'
-                        }
-                        post {
-                            always {
-                                junit 'core/_buildfiles/build/logs/junit.xml'
-                                step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']])])
-                                deleteDir()
-                            }
-                        }
-                    }
-
-
-                    stage ('slave php 7.2') {
-                        agent {
-                            label 'php 7.2'
-                        }
-                        steps {
-                            checkout([
-                                $class: 'GitSCM', branches: scm.branches, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'core']], userRemoteConfigs: scm.userRemoteConfigs
-                            ])
-
-                            withAnt(installation: 'Ant') {
-                                sh "ant -buildfile core/_buildfiles/build.xml buildSqliteFast"
-                            }
-                            archiveArtifacts 'core/_buildfiles/packages/'
-                        }
-                        post {
-                            always {
-                                junit 'core/_buildfiles/build/logs/junit.xml'
-                                step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']])])
-                                deleteDir()
-                            }
-                        }
-                    }
-
 
                     stage ('slave php 7.3') {
                         agent {
