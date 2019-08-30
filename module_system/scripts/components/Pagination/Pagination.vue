@@ -1,5 +1,5 @@
 <template>
-  <div v-if="langFetched" class="pager">
+  <div v-if="langFetched" class="pager core-component-pager">
     <ul class="pagination">
       <li v-if="current!==1" @click="previous()">
         <a>« {{$t('commons.commons_back')}}</a>
