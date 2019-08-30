@@ -2,8 +2,9 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { LangMixin } from 'core/module_system/scripts/kajona/VueMixings'
 
 @Component class Pagination extends Mixins(LangMixin(['commons', 'system'])) {
-@Prop({ type: Number, required: true }) total !: number
+@Prop({ type: Number, required: true }) totalPages !: number
 @Prop({ type: Number, required: true }) currentPage !: number
+@Prop({ type: Number, required: true }) totalElements !: number
 private current : number = null as number
 private mounted () : void {
     this.current = this.currentPage
@@ -15,7 +16,7 @@ private changePage (page : number) : void{
     }
 }
 private next () : void {
-    if (this.current + 1 <= this.total) {
+    if (this.current + 1 <= this.totalPages) {
         this.current = this.current + 1
         this.$emit('change', this.current)
     }
@@ -26,6 +27,9 @@ private previous () : void {
         this.current = this.current - 1
         this.$emit('change', this.current)
     }
+}
+private onTotalElementsClick () : void {
+    this.$emit('totalElementsClick')
 }
 }
 
