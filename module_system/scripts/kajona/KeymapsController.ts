@@ -1,24 +1,23 @@
+import hotkeys from 'hotkeys-js'
+import { keymaps, KeymapInterface } from './Keymaps'
 /**
  * Class to register all the user keymaps
  */
 class KeymapsController {
-    public static pressedKey : KeyboardEvent
     public static init () : void {
-        document.body.addEventListener('keydown', this.onKeyDown)
+        keymaps.forEach((keymap: KeymapInterface) => {
+            this.registerEventListener(keymap.keys, keymap.eventName)
+        })
     }
-
-    /** emits an event on key press
-     *
-     * @param key the pressed key
-     * @param event the event to emit on key press
-     */
-    public static emitEvent (key : string, event: string) : void {
-        console.log('emit ', event, ' key : ', key)
+    public static registerEventListener (keys : string, eventName : string) : void {
+        hotkeys(keys, (e) => {
+            e.preventDefault()
+            this.triggerEvent(eventName)
+        })
     }
-
-    public static onKeyDown (e : KeyboardEvent) : void {
-        this.pressedKey = e
-        this.emitEvent('f', 'openSearchbar')
+    public static triggerEvent (eventName : string) : void {
+        const event = new Event(eventName)
+        document.body.dispatchEvent(event)
     }
 }
 
