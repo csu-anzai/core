@@ -3,8 +3,8 @@ import qs from 'qs'
 import { Service } from 'axios-middleware'
 import WorkingIndicator from './WorkingIndicator'
 import StatusDisplay from './StatusDisplay'
-
 import jwtDecode from 'jwt-decode'
+import { Token } from './Interfaces/SystemInterfaces'
 
 /**
  * a wrapper class for axios used to configure axios globally and adds middleware for loading animation
@@ -72,19 +72,6 @@ class GlobalAxiosConfig {
             }
         })
     }
-}
-
-interface Token {
-    admin : number,
-    exp : number,
-    forename : string,
-    iat : number,
-    iss : string,
-    lang : string,
-    lastname : string,
-    name : string,
-    nonce : string,
-    sub : string
 }
 
 export default GlobalAxiosConfig
