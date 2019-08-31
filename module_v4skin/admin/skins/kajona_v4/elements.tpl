@@ -1214,13 +1214,19 @@ place ajaxScript before the closing input_tagselector-tag.
         <div class="panel-heading">
             <span class="linkcontainer collapsed">
             %%combined_header%%
-                <a rel="tooltip" data-kajona-module="search" onclick="">
+                <a rel="tooltip" data-kajona-module="search" onclick="openSearchbar()">
                     <i class="fa fa-search"></i>
                 </a>
             </span>
         </div>
         %%combined_body%%
     </div>
+    <script type="text/javascript">
+        function openSearchbar(){
+            var event = new Event('openSearchbar');
+            document.body.dispatchEvent(event)
+        }
+    </script>
 </sitemap_combined_entry_wrapper>
 
 
