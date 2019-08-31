@@ -1,6 +1,8 @@
 import { Vue, Component } from 'vue-property-decorator'
 import Searchbar from 'core/module_search/scripts/components/Searchbar/Searchbar.vue'
+import Fragment from 'vue-fragment'
 
+Vue.use(Fragment.Plugin)
 @Component({ components: { Searchbar } })
 class VueMain extends Vue {
     mounted () {
