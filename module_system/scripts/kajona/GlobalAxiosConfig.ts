@@ -4,7 +4,7 @@ import { Service } from 'axios-middleware'
 import WorkingIndicator from './WorkingIndicator'
 import StatusDisplay from './StatusDisplay'
 import jwtDecode from 'jwt-decode'
-import { Token } from './Interfaces/SystemInterfaces'
+import Token from './Interfaces/Token'
 
 /**
  * a wrapper class for axios used to configure axios globally and adds middleware for loading animation

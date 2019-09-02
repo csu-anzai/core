@@ -11,4 +11,4 @@ interface Token {
     sub : string
 }
 
-export { Token }
+export default Token
