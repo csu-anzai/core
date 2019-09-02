@@ -81,7 +81,7 @@ class App {
         // configure toastr global
         toastr.options.positionClass = 'toast-bottom-right'
         // Axios Wrapper
-        const axiosConfig = new GlobalAxiosConfig()
+        GlobalAxiosConfig.init()
     }
     public static initVue (): void {
         Vue.config.productionTip = false
@@ -105,7 +105,6 @@ class App {
 // register all the global dependencies in window object
 ;(<any>window).App = App
 ;(<any>window).$ = (<any>window).jQuery = require('jquery')
-;
 
 // (<any>window).moment = moment
 export default App
